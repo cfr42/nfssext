@@ -29,10 +29,12 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: testadf.dtx 10130 2024-07-03 05:51:19Z cfrees $}[v0.0 \revinfo][testadf DTX: test for 8-bit engines]
+\ProvidesFileSVN{$Id: testadf.dtx 10133 2024-07-04 18:12:42Z cfrees $}[v0.0 \revinfo][testadf DTX: test for 8-bit engines]
 \DefineFileInfoSVN
 \GetFileInfoSVN*
 \documentclass[11pt,british]{ltxdoc}
+\pdfmapfile{+xxx.map}
+\usepackage{test}
 \EnableCrossrefs
 \CodelineIndex
 \RecordChanges
@@ -66,7 +68,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[test.sty]{$Id: testadf.dtx 10130 2024-07-03 05:51:19Z cfrees $}[\filebase v1.1 \revinfo]
+\ProvidesPackageSVN[test.sty]{$Id: testadf.dtx 10133 2024-07-04 18:12:42Z cfrees $}[\filebase v1.1 \revinfo]
 \DefineFileInfoSVN[test]
 \RequirePackage[T1]{fontenc}
 \RequirePackage{nfssext-cfr}
@@ -83,7 +85,7 @@
   lf .default:n = true,
   osf .bool_set:N = \g__test_osf_bool,
   osf .default:n = true,
-  osf .initial:n = true,
+  osf .initial:n = false,
 }
 \ProcessKeyOptions[test]
 \tl_new:N \g__test_rm_tl

@@ -1,17 +1,18 @@
--- $Id: build.lua 10129 2024-07-03 02:38:04Z cfrees $
+-- $Id: build.lua 10135 2024-07-05 15:03:27Z cfrees $
 -- Build configuration for testadf
 ctanpkg = "testadf"
 module = "test"
 vendor = "arkandis"
+maindir = ".." -- ??
 dofile("../fontinst.lua")
-checkdeps = {}
+checkdeps = {maindir .. "/nfssext-cfr"}
+typesetdeps = {maindir .. "/nfssext-cfr"}
 -- sourcefiles = {"*.dtx", "*.ins", "afm/*.afm", "type1/*.pfb"}
-typesetdeps = {} 
 -- typesetsourcefiles = {}
 -- for arkandis
--- maindir = "../../.." -- ??
--- o/w
 -- maindir = "../.." -- ??
+-- o/w
+
 
 function filch()
 	-- avoid having to think about licences for H's work

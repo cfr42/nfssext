@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10131 2024-07-03 05:55:48Z cfrees $
+-- $Id: fontinst.lua 10134 2024-07-04 20:58:43Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -195,7 +195,7 @@ familymakers = {"*-drv.tex"}
 -- maindir before checkdeps
 -- maindir = "../.."
 -- checkdeps = {maindir .. "/nfssext-cfr"} 
-installfiles = {"*.afm", "*.cls", "*.enc", "*.fd", "*.map", "*.otf", "*.pfb", "*.tfm", "*.ttf", "*.vf"}
+installfiles = {"*.afm", "*.cls", "*.enc", "*.fd", "*.map", "*.otf", "*.pfb", "*.sty", "*.tfm", "*.ttf", "*.vf"}
 -- match default as not yet existent
 sourcefiledir = sourcefiledir or "."
 keepdir = keepdir or sourcefiledir .. "/keep"
@@ -204,6 +204,9 @@ keepfiles = keepfiles or {"*.enc", "*.fd", "*.map", "*.tfm", "*.vf"}
 keeptempfiles = keeptempfiles or {"*.mtx", "*.pl", "*-pltotf.sh", "*-rec.tex", "*.vpl", "*.zz"}
 manifestfile = {"manifest.txt"}
 mapmakers = {"*-map.tex"}
+-- enable l3build doc to find font files
+-- cannot concatenate variables here as they don't (yet?) exist
+typesetexe = "TEXMFDOTDIR=.:../local: pdflatex"
 -- need module test or default?
 sourcefiles = {"*.afm", "afm/*.afm", "*.dtx", "*.ins", "opentype/*.otf", "*.otf", "*.pfb", "truetype/*.ttf", "*.ttf", "type1/*.pfb"}
 tagfiles = {"*.dtx", "*.ins", "manifest.txt", "MANIFEST.txt", "README", "README.md"}
