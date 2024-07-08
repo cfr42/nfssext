@@ -1,0 +1,52 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+\ProvidesFileSVN{$Id: fnt-tests.tex 10142 2024-07-08 05:33:30Z cfrees $}[v0.0 \revinfo][fnt-tests]
+\documentclass[10pt]{article}
+\usepackage{fonttable}
+\usepackage{tracefnt}
+
+\makeatletter
+\newcommand\sampler{}
+\def\sampler#1#2#3#4{%
+  \setbox0=\hbox{%
+    \pikfont{#1}{#2}{#3}{#4}%
+    \aztext
+  }%
+  \showbox0
+  \box0 
+
+  \setbox0=\hbox{%
+    \pikfont{#1}{#2}{#3}{#4}%
+    \AZtext
+  }%
+  \showbox0
+  \box0 
+
+  \setbox0=\hbox{%
+    \pikfont{#1}{#2}{#3}{#4}%
+    \digitstext\ 
+  }%
+  \showbox0
+  \box0 
+
+  \setbox0=\hbox{%
+    \pikfont{#1}{#2}{#3}{#4}%
+    \punctext
+  }%
+  \showbox0
+  \box0 
+
+  \showoutput
+  \pikfont{#1}{#2}{#3}{#4}%
+  \knutext
+  \vfil\break
+
+  \xfonttable{#1}{#2}{#3}{#4}%
+  \vfil\break
+}
+
+\makeatother
+
+\endinput
+
+% vim: ts=2:sw=2:tw=80:nospell:filetype=tex

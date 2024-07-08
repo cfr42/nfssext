@@ -1,9 +1,9 @@
--- $Id: build.lua 10137 2024-07-05 23:44:52Z cfrees $
+-- $Id: build.lua 10142 2024-07-08 05:33:30Z cfrees $
 -- Build configuration for testadf
 ctanpkg = "testadf"
 module = "test"
 vendor = "arkandis"
-maindir = ".." 
+maindir = ".."
 dofile("../fontinst.lua")
 
 
@@ -41,4 +41,4 @@ function filch()
 end
 filch()
 
--- vim: ts=2:sw=2:tw=80
+-- vim: ts=2:sw=2:tw=80:nospell:et

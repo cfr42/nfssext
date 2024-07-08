@@ -2,35 +2,11 @@
 % !TEX encoding = UTF-8 Unicode
 \listfiles
 \input regression-test.tex\relax
-\documentclass[12pt]{article}
-\usepackage{fonttable}
-\usepackage{tracefnt}
+\input fnt-tests.tex\relax
 	
 \usepackage[T1]{fontenc}
 \pdfmapfile{+xxx.map}
 \usepackage{test}
-
-\makeatletter
-\newcommand\sampler{}
-\def\sampler#1#2#3#4{%
-  \setbox0=\hbox{%
-    \pikfont{#1}{#2}{#3}{#4}%
-    \aztext\ \AZtext\ \digitstext\ \punctext
-  }%
-  \showbox0
-  \box0 
-
-  \setbox0=\hbox{%
-    \pikfont{#1}{#2}{#3}{#4}%
-    \knutext
-  }%
-  \showbox0
-  \box0
-
-  \xfonttable{#1}{#2}{#3}{#4}%
-}
-
-\makeatother
 
 \begin{document}
 \setlength{\parindent}{0pt}
@@ -41,4 +17,4 @@
 \END
 
 \end{document} 
-% vim: set ts=4 sw=2 tw=80
+% vim: ts=2:sw=2:tw=80:nospell

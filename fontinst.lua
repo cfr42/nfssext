@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10137 2024-07-05 23:44:52Z cfrees $
+-- $Id: fontinst.lua 10142 2024-07-08 05:33:30Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -189,7 +189,7 @@ binaryfiles = {"*.pdf", "*.zip", "*.vf", "*.tfm", "*.pfb", "*.ttf", "*.otf", "*.
 binmakers = {"*-pltotf.sh"}
 -- maindir before checkdeps
 -- maindir = "../.."
-checkdeps = {maindir .. "/nfssext-cfr"}
+checkdeps = {maindir .. "/nfssext-cfr", maindir .. "/fnt-tests"}
 checkengines = {"pdftex"}
 checkformat = "latex"
 -- checksuppfiles = {""}
@@ -234,4 +234,4 @@ typesetexe = "TEXMFDOTDIR=.:../local: pdflatex"
 typesetsourcefiles = {keepdir .. "/*", "nfssext-cfr*.sty"}
 unpackexe = "pdflatex"
 unpackfiles = {"*.ins"}
--- vim: ts=2:sw=2:tw=80
+-- vim: ts=2:sw=2:tw=80:et:nospell
