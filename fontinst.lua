@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10145 2024-07-13 04:51:18Z cfrees $
+-- $Id: fontinst.lua 10146 2024-07-13 15:26:13Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -176,7 +176,12 @@ function docinit_hook ()
   local file = unpackdir .. "/" .. filename
   local targfile = unpackdir .. "/" .. targname
   local coll = ""
-  tbdir = maindir .. "/fnt-tests"
+  local tbdir = maindir .. "/fnt-tests"
+  local maps = ""
+  local mapfiles=filelist(unpackdir, "*.map")
+  for i, j in ipairs(mapfiles) do
+    maps = maps .. "\n\\pdfmapfile{+" .. j .. "}"
+  end
   if not fileexists(tbdir .. "/" .. filename) then
     print("Skipping font tables.\n")
   else
@@ -201,13 +206,13 @@ function docinit_hook ()
           end
         end
       end
-      coll = "\n\\begin{document}\n" .. coll .. "\n\\end{document}\n"
+      coll = maps .. "\n\\begin{document}\n" .. coll .. "\n\\end{document}\n"
       local new_content = string.gsub(content, "\n\\endinput *\n", coll)
       local f = assert(io.open(targfile,"w"))
-      -- normalisation is pointless since I didn't do it above, but maybe
+      -- normalisation probably pointless since I didn't do it above, but maybe
       -- it'll be useful at some point
+      -- but os_newline isn't public ...
       -- f:write(string.gsub(new_content,"\n",os_newline))
-      -- however, it doesn't work
       f:write(new_content)
       f:close()
       rm(unpackdir,filename)
