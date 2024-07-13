@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10147 2024-07-13 22:33:27Z cfrees $
+-- $Id: fontinst.lua 10148 2024-07-13 22:48:22Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -223,10 +223,8 @@ function docinit_hook ()
       coll = maps .. "\n\\begin{document}\n" .. coll .. "\n\\end{document}\n"
       local new_content = string.gsub(content, "\n\\endinput *\n", coll)
       local f = assert(io.open(targfile,"w"))
-      -- normalisation probably pointless since I didn't do it above, but maybe
-      -- it'll be useful at some point
-      f:write(string.gsub(new_content,"\n",os_newline_cp))
-      f:write(new_content)
+      -- this somehow removes the second value returned by string.gsub??
+      f:write((string.gsub(new_content,"\n",os_newline_cp)))
       f:close()
       rm(unpackdir,filename)
       cp(targname,unpackdir,sourcefiledir)
