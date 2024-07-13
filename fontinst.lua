@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10146 2024-07-13 15:26:13Z cfrees $
+-- $Id: fontinst.lua 10147 2024-07-13 22:33:27Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -13,6 +13,16 @@ os.setenv ("PATH", "/usr/local/texlive/bin:/usr/bin:")
 os.setenv ("TEXMFHOME", ".")
 os.setenv ("TEXMFLOCAL", ".")
 os.setenv ("TEXMFARCH", ".")
+-------------------------------------------------
+-- copy non-public things from l3build
+local os_newline_cp = "\n"
+if os.type == "windows" then
+  if tonumber(status.luatex_version) < 100 or
+     (tonumber(status.luatex_version) == 100
+       and tonumber(status.luatex_revision) < 4) then
+    os_newline_cp = "\r\n"
+  end
+end
 -------------------------------------------------
 nifergwall = 0
 ntarg = "fnttarg"
@@ -196,7 +206,11 @@ function docinit_hook ()
       local f = assert(io.open(file,"rb"))
       local content = f:read("*all")
       f:close()
-      -- ought to normalise line endings here but I don't understand the code in
+      -- ought to normalise line endings here 
+      -- copied from l3build
+      -- but I don't understand why the first subs is needed
+      -- is it a problem if the file doesn't end with a newline?
+      content = string.gsub(content .. (string.match(content,"\n$") and "" or "\n"), "\r\n", "\n") 
       -- l3build-tagging.lua
       for i, j in ipairs(fdfiles) do
         j = unpackdir .. "/" .. j
@@ -211,8 +225,7 @@ function docinit_hook ()
       local f = assert(io.open(targfile,"w"))
       -- normalisation probably pointless since I didn't do it above, but maybe
       -- it'll be useful at some point
-      -- but os_newline isn't public ...
-      -- f:write(string.gsub(new_content,"\n",os_newline))
+      f:write(string.gsub(new_content,"\n",os_newline_cp))
       f:write(new_content)
       f:close()
       rm(unpackdir,filename)
