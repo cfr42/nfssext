@@ -1,44 +1,31 @@
 % !TEX TS-program = pdflatex
 % !TEX encoding = UTF-8 Unicode
-\ProvidesFileSVN{$Id: fnt-tests.tex 10142 2024-07-08 05:33:30Z cfrees $}[v0.0 \revinfo][fnt-tests]
-\documentclass[10pt]{article}
+\pdftracingfonts=1
+\RequirePackage{svn-prov}
+\ProvidesFileSVN{$Id: fnt-tests.tex 10144 2024-07-08 21:05:58Z cfrees $}[v0.0 \revinfo][fnt-tests]
+\documentclass[10pt,a4paper]{article}
 \usepackage{fonttable}
-\usepackage{tracefnt}
-
+\usepackage{tracefnt}% infoshow is default; debugshow traces maths fonts, too
+\PassOptionsToPackage{nfssext-cfr}{debug}
 \makeatletter
 \newcommand\sampler{}
 \def\sampler#1#2#3#4{%
-  \setbox0=\hbox{%
-    \pikfont{#1}{#2}{#3}{#4}%
-    \aztext
-  }%
-  \showbox0
-  \box0 
-
-  \setbox0=\hbox{%
-    \pikfont{#1}{#2}{#3}{#4}%
-    \AZtext
-  }%
-  \showbox0
-  \box0 
-
-  \setbox0=\hbox{%
-    \pikfont{#1}{#2}{#3}{#4}%
-    \digitstext\ 
-  }%
-  \showbox0
-  \box0 
-
-  \setbox0=\hbox{%
-    \pikfont{#1}{#2}{#3}{#4}%
-    \punctext
-  }%
-  \showbox0
-  \box0 
-
+  % \tracingoutput=1
+  \tracinglostchars\thr@@
+  % \tracingonline\thr@@
   \showoutput
   \pikfont{#1}{#2}{#3}{#4}%
+  \aztext
+  
+  \AZtext
+  
+  \digitstext 
+  
+  \punctext
+  
   \knutext
+
+  Ææ Ŵŵ Ŷŷ Šš € \textperthousand
   \vfil\break
 
   \xfonttable{#1}{#2}{#3}{#4}%
@@ -49,4 +36,4 @@
 
 \endinput
 
-% vim: ts=2:sw=2:tw=80:nospell:filetype=tex
+% vim: ts=2:sw=2:tw=80:nospell

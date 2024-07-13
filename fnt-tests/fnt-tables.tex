@@ -1,0 +1,16 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+\pdftracingfonts=1
+\RequirePackage{svn-prov}
+\ProvidesFileSVN{$Id: fnt-tables.tex 10145 2024-07-13 04:51:18Z cfrees $}[v0.0 \revinfo][fnt-tests]
+\documentclass[10pt,a4paper]{article}
+\usepackage{geometry}
+\usepackage{fonttable}
+\newcommand\sampletable[4]{%
+  #1/#2/#3/#4:\par\noindent
+  \xfonttable{#1}{#2}{#3}{#4}%
+  \clearpage
+}
+\endinput
+
+% vim: ts=2:sw=2:tw=80:nospell

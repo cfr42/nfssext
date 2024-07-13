@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10142 2024-07-08 05:33:30Z cfrees $
+-- $Id: fontinst.lua 10145 2024-07-13 04:51:18Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -168,6 +168,54 @@ function update_tag (file,content,tagname,tagdate)
 	end
 	return content
 end
+-- doc_init
+function docinit_hook ()
+  local fdfiles = filelist(keepdir, "*.fd")
+  local filename = "fnt-tables.tex"
+  local targname = ctanpkg .. "-tables.tex"
+  local file = unpackdir .. "/" .. filename
+  local targfile = unpackdir .. "/" .. targname
+  local coll = ""
+  tbdir = maindir .. "/fnt-tests"
+  if not fileexists(tbdir .. "/" .. filename) then
+    print("Skipping font tables.\n")
+  else
+    local errorlevel = cp(filename,tbdir,unpackdir)
+    -- local errorlevel = ren(unpackdir, filename, targname)
+    if errorlevel ~= 0 then
+      gwall("Copy ", filename, errorlevel)
+      return errorlevel
+    else
+      -- need to get content here
+      -- copy this from l3build-tagging.lua
+      local f = assert(io.open(file,"rb"))
+      local content = f:read("*all")
+      f:close()
+      -- ought to normalise line endings here but I don't understand the code in
+      -- l3build-tagging.lua
+      for i, j in ipairs(fdfiles) do
+        j = unpackdir .. "/" .. j
+        for line in io.lines(j) do
+          if string.match(line,"^\\DeclareFontShape%{[^%}]*%}%{[^%}]*%}%{[^%}]*%}%{[^%}]*%}%{$") then
+            coll = (coll .. string.gsub(string.gsub(line,"%{$","%%%%"),"^\\DeclareFontShape","\\sampletable"))
+          end
+        end
+      end
+      coll = "\n\\begin{document}\n" .. coll .. "\n\\end{document}\n"
+      local new_content = string.gsub(content, "\n\\endinput *\n", coll)
+      local f = assert(io.open(targfile,"w"))
+      -- normalisation is pointless since I didn't do it above, but maybe
+      -- it'll be useful at some point
+      -- f:write(string.gsub(new_content,"\n",os_newline))
+      -- however, it doesn't work
+      f:write(new_content)
+      f:close()
+      rm(unpackdir,filename)
+      cp(targname,unpackdir,sourcefiledir)
+    end
+  end
+  return 0
+end
 -- fontinst must be specified first
 -- it just ain't TeX
 target_list[ntarg] = {
@@ -230,7 +278,7 @@ typesetdeps = {maindir .. "/nfssext-cfr"}
 -- enable l3build doc/check to find font files
 -- cannot concatenate variables here as they don't (yet?) exist
 typesetexe = "TEXMFDOTDIR=.:../local: pdflatex"
--- typesetfiles = {"*.tex"}
+typesetfiles = typesetfiles or  {"*.dtx", "*-tables.tex"}
 typesetsourcefiles = {keepdir .. "/*", "nfssext-cfr*.sty"}
 unpackexe = "pdflatex"
 unpackfiles = {"*.ins"}
