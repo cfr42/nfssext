@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10156 2024-07-15 03:31:10Z cfrees $
+-- $Id: fontinst.lua 10158 2024-07-15 06:17:06Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -180,11 +180,12 @@ function update_tag (file,content,tagname,tagdate)
 end
 -- checkinit_hook
 function checkinit_hook ()
-  local fdfilestmp = filelist(keepdir, "*.fd")
-  local fdfiles = {}
-  for i, j in ipairs(fdfilestmp) do
-    if not string.match(j,"^ts1") then
-      table.insert (fdfiles, j)
+  if #autotestfds == 0 then
+    local autotestfdstmp = filelist(keepdir, "*.fd")
+    for i, j in ipairs(autotestfdstmp) do
+      if not string.match(j,"^ts1") then
+        table.insert (autotestfds, j)
+      end
     end
   end
   local filename = "fnt-test.lvt"
@@ -218,7 +219,7 @@ function checkinit_hook ()
       -- is it a problem if the file doesn't end with a newline?
       content = string.gsub(content .. (string.match(content,"\n$") and "" or "\n"), "\r\n", "\n")
       -- l3build-tagging.lua
-      for i, j in ipairs(fdfiles) do
+      for i, j in ipairs(autotestfds) do
         local errorlevel = cp(j, keepdir, unpackdir)
         if errorlevel ~= 0 then
           gwall("Copy ", j, errorlevel)
@@ -316,6 +317,7 @@ target_list[ntarg] = {
 	end
 }
 -------------------------------------------------
+autotestfds = autotestfds or {}
 -- auxfiles = {"*.aux"}
 bakext = ".bkup"
 binaryfiles = {"*.pdf", "*.zip", "*.vf", "*.tfm", "*.pfb", "*.ttf", "*.otf", "*.tar.gz"}
