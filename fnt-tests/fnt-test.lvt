@@ -1,0 +1,12 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+\RequirePackage{svn-prov}
+\ProvidesFileSVN{$Id: fnt-test.lvt 10155 2024-07-15 02:15:16Z cfrees $}[v0.0 \revinfo][fnt-test]
+\listfiles
+\input regression-test.tex\relax
+\input fnt-tests.tex\relax
+\setlength{\parindent}{0pt}
+
+SAMP
+
+% vim: ts=2:sw=2:tw=80:nospell

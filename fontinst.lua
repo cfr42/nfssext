@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10148 2024-07-13 22:48:22Z cfrees $
+-- $Id: fontinst.lua 10156 2024-07-15 03:31:10Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -178,6 +178,75 @@ function update_tag (file,content,tagname,tagdate)
 	end
 	return content
 end
+-- checkinit_hook
+function checkinit_hook ()
+  local fdfilestmp = filelist(keepdir, "*.fd")
+  local fdfiles = {}
+  for i, j in ipairs(fdfilestmp) do
+    if not string.match(j,"^ts1") then
+      table.insert (fdfiles, j)
+    end
+  end
+  local filename = "fnt-test.lvt"
+  local targname = ctanpkg .. "-test.lvt"
+  local file = unpackdir .. "/" .. filename
+  local targfile = unpackdir .. "/" .. targname
+  local coll = ""
+  local fnttestdir = maindir .. "/fnt-tests"
+  local maps = ""
+  local mapfiles=filelist(keepdir, "*.map")
+  for i, j in ipairs(mapfiles) do
+    maps = maps .. "\n\\pdfmapfile{+" .. j .. "}"
+  end
+  if not fileexists(fnttestdir .. "/" .. filename) then
+    print("Skipping test creation.\n")
+  else
+    local errorlevel = cp(filename,fnttestdir,unpackdir)
+    -- local errorlevel = ren(unpackdir, filename, targname)
+    if errorlevel ~= 0 then
+      gwall("Copy ", filename, errorlevel)
+      return errorlevel
+    else
+      -- need to get content here
+      -- copy this from l3build-tagging.lua
+      local f = assert(io.open(file,"rb"))
+      local content = f:read("*all")
+      f:close()
+      -- ought to normalise line endings here
+      -- copied from l3build
+      -- but I don't understand why the first subs is needed
+      -- is it a problem if the file doesn't end with a newline?
+      content = string.gsub(content .. (string.match(content,"\n$") and "" or "\n"), "\r\n", "\n")
+      -- l3build-tagging.lua
+      for i, j in ipairs(fdfiles) do
+        local errorlevel = cp(j, keepdir, unpackdir)
+        if errorlevel ~= 0 then
+          gwall("Copy ", j, errorlevel)
+          return errorlevel
+        else
+          j = unpackdir .. "/" .. j
+          for line in io.lines(j) do
+            -- it would be much better to filter the file list ...
+            if string.match(line,"^\\DeclareFontShape%{[^%}]*%}%{[^%}]*%}%{[^%}]*%}%{[^%}]*%}%{$") then
+              coll = (coll .. string.gsub(string.gsub(line,"%{$","%%%%"),"^\\DeclareFontShape%{([^%}]*)%}%{([^%}]*)%}%{([^%}]*)%}%{([^%}]*)%}","\n\\TEST{test-%1-%2-%3-%4}{%%%%\n  \\sampler{%1}{%2}{%3}{%4}%%%%\n}"))
+            end
+          end
+        end
+      end
+      coll = maps .. "\n\\usepackage{" .. module .. "}\n\\begin{document}\n\\START\n" .. coll .. "\n\\END\n\\end{document}\n"
+      local new_content = string.gsub(content, "\nSAMP *\n", coll)
+      local f = assert(io.open(targfile,"w"))
+      -- this somehow removes the second value returned by string.gsub??
+      f:write((string.gsub(new_content,"\n",os_newline_cp)))
+      f:close()
+      rm(unpackdir,filename)
+      -- PAID Â CHEISIO YR ISOD!!
+      -- cp(targname,unpackdir,testfiledir)
+      cp(targname,unpackdir,testdir)
+    end
+  end
+  return 0
+end
 -- doc_init
 function docinit_hook ()
   local fdfiles = filelist(keepdir, "*.fd")
@@ -186,16 +255,16 @@ function docinit_hook ()
   local file = unpackdir .. "/" .. filename
   local targfile = unpackdir .. "/" .. targname
   local coll = ""
-  local tbdir = maindir .. "/fnt-tests"
+  local fnttestdir = maindir .. "/fnt-tests"
   local maps = ""
   local mapfiles=filelist(unpackdir, "*.map")
   for i, j in ipairs(mapfiles) do
     maps = maps .. "\n\\pdfmapfile{+" .. j .. "}"
   end
-  if not fileexists(tbdir .. "/" .. filename) then
+  if not fileexists(fnttestdir .. "/" .. filename) then
     print("Skipping font tables.\n")
   else
-    local errorlevel = cp(filename,tbdir,unpackdir)
+    local errorlevel = cp(filename,fnttestdir,unpackdir)
     -- local errorlevel = ren(unpackdir, filename, targname)
     if errorlevel ~= 0 then
       gwall("Copy ", filename, errorlevel)
@@ -216,7 +285,7 @@ function docinit_hook ()
         j = unpackdir .. "/" .. j
         for line in io.lines(j) do
           if string.match(line,"^\\DeclareFontShape%{[^%}]*%}%{[^%}]*%}%{[^%}]*%}%{[^%}]*%}%{$") then
-            coll = (coll .. string.gsub(string.gsub(line,"%{$","%%%%"),"^\\DeclareFontShape","\\sampletable"))
+            coll = (coll .. string.gsub(string.gsub(line,"%{$","%%%%"),"^\\DeclareFontShape","\n\\sampletable"))
           end
         end
       end
