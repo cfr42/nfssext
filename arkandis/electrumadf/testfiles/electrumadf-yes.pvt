@@ -1,0 +1,117 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+\listfiles
+\RequirePackage{svn-prov}
+\ProvidesFileSVN{$Id: electrumadf-yes.pvt 10163 2024-07-16 06:00:15Z cfrees $}[v1.1 \revinfo][\filebase: test file]
+\documentclass[12pt]{article}
+\title{Brief Article}
+\author{The Author}
+
+\newcommand{\alphaline}{%
+	ABCDEFGHIJKLMNOPQRSTUVWXYZ\par abcdefghijklmnopqrs\kern0pt tuvwxyz\par %
+% apparently TeX handles 14 diacritical marks...?	
+%	\hspace*{-5em}\begin{longtable}{llll}
+%	\textsc{input}	&	&	&	\\\endhead
+%	standard & \^A \^a \^C \^c \^E \^e \^G \^g \^H \^h \^I \^i \^J \^j \^O \^o \^U \^u \^W \^w \^Y \^y & capital & \capitalcircumflex{A}\\%
+%	direct & Â â Ĉ ĉ Ê ê Ĝ ĝ Ĥ ĥ Î î Ĵ ĵ Ô ô Û û Ŵ ŵ Ŷ ŷ	&	&	\\
+%	standard	&	\"A \"a \"E \"e \"I \"i \"O \"o \"U \"u \"W \"w \"Y \"y	&	capital	& \capitaldieresis{A}\\%circumflex, dieresis/umlaut
+%	direct	&	Ë ë Ï ï Ẅ ẅ Ÿ ÿ\\
+%	standard	&	\`A \`a \`E \`e \`I \`i \`O \`o \`U \`u	&	capital	&	\capitalgrave{A}\\%\`W\`w\`Y\`y 
+%	direct	&	À à È è Ì ì Ò ò Ù ù \\%
+%	standard	&	\'A \'a \'C \'c \'E \'e \'I \'i \'L \'l \'N \'n \'O \'o \'R \'r \'S \'s \'U \'u \'W \'w \'Y \'y \'Z \'z	&	capital	& \capitalacute{A}\\%grave, acute
+%	direct	&	Á á Ć ć É é Í í Ĺ ĺ Ń ń Ó ó Ŕ ŕ Ś ś Ú ú Ẃ ẃ Ý ý Ź ź\\
+%	standard	&	\r{A} \r{a} %\r{E}\r{e}\r{I}\r{i}\r{O}\r{o}
+%	\r{U} \r{u} %\r{W}\r{w}\r{Y}\r{y}
+%	\={A} \={a} \={E} \={e} \={I} \={i} \={O} \={o} \={U} \={u} \AA\ \aa	&	capital	& \capitalring{A} \capitalmacron{A}\\%ring, macron
+%	 direct	&	Ā ā Ē ē Ī ī Ō ō Ū ū\\
+%	standard	&	\u{A} \u{a} \u{E} \u{e} %\u{I}\u{i}
+%	\u{G} \u{g} %\u{O}\u{o}\u{U}\u{u}\u{W}\u{w}\u{Y}\u{Y} 
+%	\H{O} \H{o} \H{U} \H{u}	&	capital	& \capitalbreve{A}\\%breve, hungarian umlaut
+%	standard	&	\.{G} \.{g} \.{C} \.{c} \.{E} \.{e} %
+%	\.{I} \.{i} %\.{O} \.{o} \.{U} \.{u} %\.{W} \.{w} \.{Y} \.{y}
+%	\.{Z} \.{z} %
+%	\~A \~a %\~E\~e
+%	\~I \~i %
+%	\~N \~n \~O \~o \~U \~u %\~W\~w\~Y\~y 
+%		&	capital	& \capitaldotaccent{I} \capitaltilde{A}\\%dot accent, tilde
+%	direct	&	Ġ ġ İ Ã ã Ĩ ĩ Ñ ñ Õ õ Ũ ũ %ı˙U˙uẆẇẎẏ ̧̨̨̣̉̌̆̃…\ae\leq\geqảǎ
+%%	́Ė ė Ċ ċ Ż ż % apparently a combining character in unicode - needs special options
+%	\\
+%	standard	&	\v{C} \v{c} \v{D} \v{d} \v{E} \v{e} \v{L} \v{l} \v{N} \v{n} \v{R} \v{r} \v{S} \v{s} \v{T} \v{t} \v{Z} \v{z}	&	capital	& \capitalcaron{C}\\%caron
+%	direct			&	Č č Ď ď Ě ě Ľ ľ Ň ň Ř ř Š š Ť ť Ž ž	&	&	\\
+%	standard	&	\k{A} \k{a} %\k{C}\k{c}
+%	\k{E} \k{e} \k{I} \k{i} %\k{O}\k{S}\k{s}\k{T}\k{T}\k{o}\k{U}\k{u}\k{W}\k{w}\k{Y}\k{y}
+%	 \c{C} \c{c} \c{D} \c{d} \c{E} \c{e} \c{G} \c{g} \c{K} \c{k} \c{L} \c{l} \c{N} \c{n} \c{R} \c{r} \c{S} \c{s} \c{T} \c{t}	&	capital	& \capitalogonek{A} \capitalcedilla{C}\\%ogonek, cedilla
+%	 direct		&	Ą ą Ę ę Į į Ḑ ḑ Ȩ ȩ Ģ Ķ ķ Ļ ļ Ņ ņ Ŗ ŗ Ş ş Ţ ţ 	&	&	\\
+%	standard	&	\O\ \o\ \AE\ \ae\ \OE\ \oe\ \L\ \l	&	&	\\
+%	direct			&	Ł ł	&	&	\\
+%	\end{longtable}
+	0123456789\par 
+	Q Q* f\kern0pt f ff f\kern0pt i fi f\kern0pt l fl f\kern0pt f\kern0pt i ffi f\kern0pt f\kern0pt l ffl c\kern0pt t ct i\kern0pt t it s\kern0pt p sp s\kern0pt t st t\kern0pt t tt 
+	<\kern0pt < << >\kern0pt > >> - -\kern0pt - -- -\kern0pt -\kern0pt - ---\par 
+		 \& \texteuro\ \textdollar\ \textsterling\ \textyen\ \textcurrency\ \textflorin\ \textcent\ \textohm\ \textmu\ \textcelsius\ \textnumero\ \textdiv\ \texttimes\ \textpm\ \textregistered\ \textcopyright\ \texttrademark\ \textparagraph\ \textonequarter\ \textonehalf\ \textthreequarters\ \textonesuperior\ \texttwosuperior\ \textthreesuperior\par 
+	Sphinx of black quartz, judge my vow.\par 
+	The quick brown fox jumps over the lazy dog.\par 
+	f\kern0pt f ff af\kern0pt f\kern0pt luent shelf\kern0pt ful shelfful\par 
+	A shelf\kern0pt ful of offerings flitted fitfully, reacting finely to floundering figures of gasping spats and staggering iterations of otters in the affluent offing.\par 
+	Kit, actor-spy and Queen of AQUA as Acting Erector Aesthete, deactivated the sporadically impacted TORQUE despite aspirating stridently amidst the hysteria of wispy, wasted wasps wistfully whistling.}
+\newcommand{\alphatest}{%
+  \begin{flushleft}
+	\textlg{%
+		\textup{upright shape:\\\alphaline}\\
+		\textit{italics/oblique:\\\alphaline}\\
+		\textsc{small-caps:\\\alphaline}\\
+		\textsi{italic/oblique small-caps:\\\alphaline}}\smallskip\par
+	\textup{upright shape:\\\alphaline}\smallskip\par
+	\textit{italics/oblique:\\\alphaline}\smallskip\par
+	\textsc{small-caps:\\\alphaline}\smallskip\par
+	\textsi{italic/oblique small-caps:\\\alphaline}\smallskip\par
+	\textsb{%
+		\textup{upright shape:\\\alphaline}\\
+		\textit{italics/oblique:\\\alphaline}\\
+		\textsc{small-caps:\\\alphaline}\\
+		\textsi{italic/oblique small-caps:\\\alphaline}}\smallskip\par
+	\textbf{%
+		\textup{upright shape:\\\alphaline}\\
+		\textit{italics/oblique:\\\alphaline}\\
+		\textsc{small-caps:\\\alphaline}\\
+		\textsi{italic/oblique small-caps:\\\alphaline}}\smallskip\par
+  \end{flushleft}%
+}
+	
+\usepackage[T1]{fontenc}
+\pdfmapfile{yes.map}
+\pdfmapfile{+pdftex.map}
+\usepackage{electrum}
+
+\begin{document}
+\setlength{\parindent}{0pt}
+
+shelf\kern0pt ful \textit{shelf\kern0pt ful}
+
+\section*{regular modified with \textsc{osf}}
+
+\alphatest
+
+\section*{regular modified with lining figures}
+
+{\lstyle\alphatest}
+
+\section*{ligature with \textsc{osf}}
+
+{\swashstyle\alphatest}
+
+\section*{ligature with lining figures}
+
+{\lstyle\swashstyle\alphatest}
+
+\section*{inferiors}
+
+{\instyle\alphatest}
+
+\section*{superiors}
+
+{\sustyle\alphatest}
+
+\end{document} 
+% vim: nospell:ft=tex:
