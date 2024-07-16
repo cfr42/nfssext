@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10158 2024-07-15 06:17:06Z cfrees $
+-- $Id: fontinst.lua 10163 2024-07-16 06:00:15Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -197,8 +197,9 @@ function checkinit_hook ()
   local maps = ""
   local mapfiles=filelist(keepdir, "*.map")
   for i, j in ipairs(mapfiles) do
-    maps = maps .. "\n\\pdfmapfile{+" .. j .. "}"
+    maps = maps .. "\n\\pdfmapfile{" .. j .. "}"
   end
+  maps = maps .. "\n\\pdfmapfile{+pdftex.map}"
   if not fileexists(fnttestdir .. "/" .. filename) then
     print("Skipping test creation.\n")
   else
@@ -260,8 +261,9 @@ function docinit_hook ()
   local maps = ""
   local mapfiles=filelist(unpackdir, "*.map")
   for i, j in ipairs(mapfiles) do
-    maps = maps .. "\n\\pdfmapfile{+" .. j .. "}"
+    maps = maps .. "\n\\pdfmapfile{" .. j .. "}"
   end
+  maps = maps .. "\n\\pdfmapfile{+pdftex.map}"
   if not fileexists(fnttestdir .. "/" .. filename) then
     print("Skipping font tables.\n")
   else
