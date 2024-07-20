@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10163 2024-07-16 06:00:15Z cfrees $
+-- $Id: fontinst.lua 10167 2024-07-20 00:31:56Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -139,6 +139,7 @@ end
 function update_tag (file,content,tagname,tagdate)
   -- stolen from l2e build-config.lua
 	local year = os.date("%Y")
+  local dyddiad = os.date("%Y-%m-%d")
 	if string.match(content,"%%+ +[ a-zA-Z0-9]* [Cc]opyright %([Cc]%) %d%d%d%d-%d%d%d%d Clea F%. Rees") then
     content = string.gsub(content,
       "[cC]opyright %([cC]%) (%d%d%d%d)%-%d%d%d%d Clea F%. Rees",
@@ -171,11 +172,16 @@ function update_tag (file,content,tagname,tagdate)
 		return string.gsub (content,
 		"(\\ProvidesFileSVN%{%$[^%}]*%$%} *%[)v%d[%d%.]*( *\\revinfo%])",
 		"%1" .. vtagname .. "%2")
-	elseif string.match (file,"%.md$") then
-		return string.gsub (content,
-		"(\nVersion )%d[%d%.]*( *\n)",
-		"%1" .. tagname .. "%2")
-	end
+	elseif string.match (file,"%.md$") or string.match (file, "README*") then
+    if string.match (content,"\nVersion %d[%d%.]* *\n") then
+      return string.gsub (content,
+      "(\nClea F%. Rees *\nVersion )%d[%.%d]* *\n%d%d%d*[%/%-]%d%d%d*[%/%-]%d%d%d* *(\n)",
+      "%1" .. tagname .. "\n" .. dyddiad .. "%2")
+    else return string.gsub (content,
+      "(\nClea F%. Rees *\n)%d%d%d*[%/%-]%d%d%d*[%/%-]%d%d%d* *(\n)",
+      "%1Version " .. tagname .. "\n" .. dyddiad .. "%2")
+    end
+  end
 	return content
 end
 -- checkinit_hook
@@ -331,7 +337,10 @@ checkengines = {"pdftex"}
 checkformat = "latex"
 -- checksuppfiles = {""}
 cleanfiles = {keeptempfiles}
+ctanreadme = "README"
 familymakers = {"*-drv.tex"}
+flatten = true
+flattentds = false
 installfiles = {"*.afm", "*.cls", "*.enc", "*.fd", "*.map", "*.otf", "*.pfb", "*.sty", "*.tfm", "*.ttf", "*.vf"}
 -- match default as not yet existent
 sourcefiledir = sourcefiledir or "."
@@ -339,8 +348,9 @@ keepdir = keepdir or sourcefiledir .. "/keep"
 keeptempdir = keeptempdir or sourcefiledir .. "/keeptemp"
 keepfiles = keepfiles or {"*.enc", "*.fd", "*.map", "*.tfm", "*.vf"}
 keeptempfiles = keeptempfiles or {"*.mtx", "*.pl", "*-pltotf.sh", "*-rec.tex", "*.vpl", "*.zz"}
-manifestfile = {"manifest.txt"}
+manifestfile = "manifest.txt"
 mapmakers = {"*-map.tex"}
+packtdszip = true
 -- need module test or default?
 sourcefiles = {"*.afm", "afm/*.afm", "*.pfb", "*.dtx", "*.ins", "opentype/*.otf", "*.otf", "truetype/*.ttf", "*.ttf", "type1/*.pfb"}
 tagfiles = {"*.dtx", "*.ins", "manifest.txt", "MANIFEST.txt", "README", "README.md"}

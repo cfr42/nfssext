@@ -1,4 +1,4 @@
--- $Id: build.lua 10161 2024-07-15 20:46:46Z cfrees $
+-- $Id: build.lua 10166 2024-07-18 05:36:06Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -49,5 +49,7 @@ uploadconfig = {
   -- note_file
   -- curlopt_file
 }
+--
+dofile(maindir .. "/arkandis/arkandis-manifest.lua")
 -- os.execute ("printenv")
 -- vim: ts=2:sw=2:tw=80:nospell
