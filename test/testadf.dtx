@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: testadf.dtx 10133 2024-07-04 18:12:42Z cfrees $}[v0.0 \revinfo][testadf DTX: test for 8-bit engines]
+\ProvidesFileSVN{$Id: testadf.dtx 10168 2024-07-21 14:04:13Z cfrees $}[v0.0 \revinfo][testadf DTX: test for 8-bit engines]
 \DefineFileInfoSVN
 \GetFileInfoSVN*
 \documentclass[11pt,british]{ltxdoc}
@@ -68,7 +68,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[test.sty]{$Id: testadf.dtx 10133 2024-07-04 18:12:42Z cfrees $}[\filebase v1.1 \revinfo]
+\ProvidesPackageSVN[test.sty]{$Id: testadf.dtx 10168 2024-07-21 14:04:13Z cfrees $}[\filebase v1.1 \revinfo]
 \DefineFileInfoSVN[test]
 \RequirePackage[T1]{fontenc}
 \RequirePackage{nfssext-cfr}
@@ -86,6 +86,8 @@
   osf .bool_set:N = \g__test_osf_bool,
   osf .default:n = true,
   osf .initial:n = false,
+  scale .tl_set:N = \xxx@scale,
+  scale .initial:V = \@empty,
 }
 \ProcessKeyOptions[test]
 \tl_new:N \g__test_rm_tl
@@ -133,6 +135,7 @@
 \input fontinst.sty
 \needsfontinstversion{1.926}
 \recordtransforms{xxx-rec.tex}
+  \declaresize{}{<-> \string\xxx@@scale}
   \transformfont{xxxr8r}{\reencodefont{8r}{\fromafm{xxxr8a}}}
   \transformfont{xxxr8s}{\reencodefont{supp-xxx}{\fromafm{xxxr8a}}}
   \input reglyph-xxx.tex

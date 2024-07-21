@@ -1,11 +1,11 @@
--- $Id: build.lua 10142 2024-07-08 05:33:30Z cfrees $
+-- $Id: build.lua 10168 2024-07-21 14:04:13Z cfrees $
 -- Build configuration for testadf
 ctanpkg = "testadf"
 module = "test"
 vendor = "arkandis"
 maindir = ".."
 dofile("../fontinst.lua")
-
+typesetfiles = {"test-test.tex"}
 
 function filch()
 	-- avoid having to think about licences for H's work

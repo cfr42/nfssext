@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10167 2024-07-20 00:31:56Z cfrees $
+-- $Id: fontinst.lua 10168 2024-07-21 14:04:13Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -27,114 +27,121 @@ end
 nifergwall = 0
 ntarg = "fnttarg"
 function gwall (msg,file,rtn)
-	file = file or "current file"
-	msg = msg or "Error: "
-	rtn = rtn or 0
-	if rtn ~= 0 
-		then 
-			nifergwall = nifergwall + rtn
-			print (msg .. file .. " failed (" .. rtn .. ")\n")
-		end
+  file = file or "current file"
+  msg = msg or "Error: "
+  rtn = rtn or 0
+  if rtn ~= 0 then 
+    nifergwall = nifergwall + rtn
+    print (msg .. file .. " failed (" .. rtn .. ")\n")
+  end
 end
 function finst (patt,dir,mode)
   dir = dir or "."
   mode = mode or "nonstopmode"
-	local cmd = "pdftex --interaction=" .. mode
-	local targs = {}
-	-- https://lunarmodules.github.io/luafilesystem/examples.html (expl)
-	-- l3build-file-functions.lua (filelist fn)
-	targs = filelist(dir,patt)
-	for i,j in ipairs(targs)
-		do
-			local errorlevel = tex(j,dir,cmd)
-			gwall("Compilation of ", j, errorlevel)
-		end
+  local cmd = "pdftex --interaction=" .. mode
+  local targs = {}
+  -- https://lunarmodules.github.io/luafilesystem/examples.html (expl)
+  -- l3build-file-functions.lua (filelist fn)
+  targs = filelist(dir,patt)
+  for i,j in ipairs(targs) do
+    local errorlevel = tex(j,dir,cmd)
+    gwall("Compilation of ", j, errorlevel)
+  end
 end
 function fontinst (dir,mode)
   dir = dir or unpackdir
-	mode = mode or "errorstopmode --halt-on-error"
-	if not direxists(dir) then
-		print("Missing directory. Unpacking first.\n")
-		local errorlevel = unpack() 
-	end
-  for i,j in ipairs(familymakers)
-		do
-			local errorlevel = finst(j,dir,mode)
-			gwall("Compilation of driver ", j, errorlevel)
-		end
-	if nifergwall ~= 0 then return nifergwall end
-	for i,j in ipairs(mapmakers)
-		do
-			local errorlevel = finst (j,dir,mode)
-			gwall("Compilation of map ", j, errorlevel)
-		end
-		if nifergwall ~= 0 then return nifergwall end
-	for i,j in ipairs(binmakers) 
-	do
-		local targs = filelist(dir,j)
-		-- https://www.lua.org/pil/21.1.html
-		for k,m in ipairs(targs)
-			do
-				targ = dir .. "/" .. m
-				-- is this really the right way to do this?
-				-- surely it is not at all safe?
-				-- though presumably no worse than executing the script directly
-				for line in io.lines(targ)
-					do
-						if string.match(line,"^pltotf [a-zA-Z0-9%-]+%.pl [a-zA-Z0-9%-]+%.tfm$") then
-							local errorlevel = runcmd(line,dir)
-							gwall("Creation of TFM using " .. line .. " from ", j, errorlevel)
-						else
-							print("Ignoring unexpected line \"" .. line .. "\" in " .. j .. ".\n")
-							nifergwall = nifergwall + 1
-						end
-					end
-				end
-	end
-	if nifergwall ~= 0 then return nifergwall end
-	local targs = filelist(dir,"*.vpl")
-	for i,j in ipairs(targs)
-		do
-	    local cmd = "vptovf " .. j
-			local errorlevel = runcmd(cmd,dir)
-			gwall("Creation of virtual font from ", j, errorlevel)
-		end
-	local rtn = direxists(keepdir)
-	if rtn ~= 0
-		then
-			local errorlevel = mkdir(keepdir)
-			if errorlevel ~= 0 then
-				print("DO NOT BUILD STANDARD TARGETS WITHOUT RESOLVING!!\n")
-				gwall("Attempt to create directory ", keepdir, errorlevel)
-			else
-				for i,j in ipairs(keepfiles)
-					do
-						local rtn = cp(j, unpackdir, keepdir)
-						if rtn ~= 0 then
-							gwall("Copy ", j, errorlevel)
-							print("DO NOT BUILD STANDARD TARGETS WITHOUT RESOLVING!\n")
-						end
-					end
-				if keeptempfiles ~= {} then
-					local rtn = direxists(keeptempdir)
-					if rtn ~= 0 then
-						local errorlevel = mkdir(keeptempdir)
-						if errorlevel ~= 0 then
-							gwall("Attempt to create directory ", keeptempdir, errorlevel)
-						else
-							for i,j in ipairs(keeptempfiles)
-								do 
-									local errorlevel = cp(j,unpackdir,keeptempdir)
-									if errorlevel ~= 0 then
-										gwall("Copy ", j, errorlevel)
-									end
-								end
-							end
-						end
-					end
-				end
-		end	
-	return nifergwall
+  mode = mode or "errorstopmode --halt-on-error"
+  if not direxists(dir) then
+    print("Missing directory. Unpacking first.\n")
+    local errorlevel = unpack() 
+  end
+  for i,j in ipairs(familymakers) do
+    local errorlevel = finst(j,dir,mode)
+    gwall("Compilation of driver ", j, errorlevel)
+  end
+  if nifergwall ~= 0 then return nifergwall end
+  for i,j in ipairs(mapmakers) do
+    local errorlevel = finst (j,dir,mode)
+    gwall("Compilation of map ", j, errorlevel)
+  end
+  if nifergwall ~= 0 then return nifergwall end
+  for i,j in ipairs(binmakers) do
+    local targs = filelist(dir,j)
+    -- https://www.lua.org/pil/21.1.html
+    for k,m in ipairs(targs) do
+      targ = dir .. "/" .. m
+      -- is this really the right way to do this?
+      -- surely it is not at all safe?
+      -- though presumably no worse than executing the script directly
+      for line in io.lines(targ) do
+        if string.match(line,"^pltotf [a-zA-Z0-9%-]+%.pl [a-zA-Z0-9%-]+%.tfm$") then
+          local errorlevel = runcmd(line,dir)
+          gwall("Creation of TFM using " .. line .. " from ", j, errorlevel)
+        else
+          print("Ignoring unexpected line \"" .. line .. "\" in " .. j .. ".\n")
+          nifergwall = nifergwall + 1
+        end
+      end
+    end
+  end
+  if nifergwall ~= 0 then return nifergwall end
+  local targs = filelist(dir,"*.vpl")
+  for i,j in ipairs(targs) do
+    local cmd = "vptovf " .. j
+    local errorlevel = runcmd(cmd,dir)
+    gwall("Creation of virtual font from ", j, errorlevel)
+  end
+  -- edit the .fd files if a scale factor is declared because fontinst 
+  -- doesn't allow us to do this and the last message to the mailing list
+  -- is from 2022 with no response from the maintainer
+  local fdfiles = filelist(unpackdir, "*.fd")
+  for i,j in ipairs(fdfiles) do
+    local f = assert(io.open(unpackdir .. "/" .. j,"rb"))
+    local content = f:read("*all")
+    f:close()
+    local csscaleaux = string.match(content, "%<%-%> *\\([%a%d][%a%d]*@@scale)") 
+    local csscale = string.gsub(csscaleaux, "@(@)", "%1")
+    if csscale ~= nil then
+      local new_content = string.gsub(content, "(\\DeclareFontFamily{)", "%% addaswyd o t1phv.fd (dyddiad y ffeil fd: 2020-03-25)\n\\expandafter\\ifx\\csname " .. csscale .. "\\endcsname\\relax\n  \\let\\" .. csscaleaux .. "\\@empty\n\\else\n  \\edef\\" .. csscaleaux .. "{s*[\\csname " .. csscale .. "\\endcsname]}%%\n\\fi\n\n%1")
+      local f = assert(io.open(unpackdir .. "/" .. j,"w"))
+      -- this somehow removes the second value returned by string.gsub??
+      f:write((string.gsub(new_content,"\n",os_newline_cp)))
+      f:close()
+    end
+  end
+  local rtn = direxists(keepdir)
+  if rtn ~= 0 then
+    local errorlevel = mkdir(keepdir)
+    if errorlevel ~= 0 then
+      print("DO NOT BUILD STANDARD TARGETS WITHOUT RESOLVING!!\n")
+      gwall("Attempt to create directory ", keepdir, errorlevel)
+    else
+      for i,j in ipairs(keepfiles) do
+        local rtn = cp(j, unpackdir, keepdir)
+        if rtn ~= 0 then
+          gwall("Copy ", j, errorlevel)
+          print("DO NOT BUILD STANDARD TARGETS WITHOUT RESOLVING!\n")
+        end
+      end
+      if keeptempfiles ~= {} then
+        local rtn = direxists(keeptempdir)
+        if rtn ~= 0 then
+          local errorlevel = mkdir(keeptempdir)
+          if errorlevel ~= 0 then
+            gwall("Attempt to create directory ", keeptempdir, errorlevel)
+          else
+            for i,j in ipairs(keeptempfiles) do 
+              local errorlevel = cp(j,unpackdir,keeptempdir)
+              if errorlevel ~= 0 then
+                gwall("Copy ", j, errorlevel)
+              end
+            end
+          end
+        end
+      end
+    end
+  end	
+  return nifergwall
 end
 function update_tag (file,content,tagname,tagdate)
   -- stolen from l2e build-config.lua

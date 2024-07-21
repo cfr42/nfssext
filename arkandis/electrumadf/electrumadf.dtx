@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: electrumadf.dtx 10164 2024-07-16 21:04:29Z cfrees $}[v1.1 \revinfo][electrumadf DTX: electrum for 8-bit engines]
+\ProvidesFileSVN{$Id: electrumadf.dtx 10168 2024-07-21 14:04:13Z cfrees $}[v1.1 \revinfo][electrumadf DTX: electrum for 8-bit engines]
 \DefineFileInfoSVN
 \GetFileInfoSVN*
 \documentclass[11pt,british]{ltxdoc}
@@ -725,7 +725,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[electrum.sty]{$Id: electrumadf.dtx 10164 2024-07-16 21:04:29Z cfrees $}[\filebase v1.1 \revinfo]
+\ProvidesPackageSVN[electrum.sty]{$Id: electrumadf.dtx 10168 2024-07-21 14:04:13Z cfrees $}[\filebase v1.1 \revinfo]
 \DefineFileInfoSVN[electrum]
 \RequirePackage[T1]{fontenc}
 \RequirePackage{nfssext-cfr}
@@ -749,10 +749,12 @@
 \ExplSyntaxOn
 %    \end{macrocode}
 % The actual \verb|sty| is ultra simple.
-% Three options of which only two are actually needed.
+% Four options of which only three are actually needed.
 % \texttt{lig} sets additional ligatures (swash) or not.
 % \texttt{osf}/\texttt{lf} set lining or oldstyle figures.
 % Two booleans suffice.
+% \texttt{scale} takes a factor by which to scale the fonts.
+% This is empty by default, which is equivalent to \texttt{1}, but more efficient.
 %    \begin{macrocode}
 \keys_define:nn { electrum }
 {
@@ -764,6 +766,8 @@
   osf .bool_set:N = \g__electrum_osf_bool,
   osf .default:n = true,
   osf .initial:n = true,
+  scale .tl_set:N = \yes@scale,
+  scale .initial:V = \@empty,
 }
 %    \end{macrocode}
 % Note the optional argument is mandatory in case we're on an older kernel.
@@ -852,9 +856,14 @@
 \substitutesilent{sl}{scsl}
 \substitutesilent{it}{sl}
 %    \end{macrocode}
-% Rrecord transformations for later map file creation
+% Record transformations for later map file creation
 %    \begin{macrocode}
 \recordtransforms{yes-rec.tex}
+%    \end{macrocode}
+% Allow fonts to be scaled via variable in fd files
+% Also requires fontinst.lua fnttarg as no means to define variable in fontinst 
+%    \begin{macrocode}
+\declaresize{}{<-> \string\yes@@scale}
 %    \end{macrocode}
 % Transformations : reencode fonts
 %    \begin{macrocode}
