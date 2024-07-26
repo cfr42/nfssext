@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10168 2024-07-21 14:04:13Z cfrees $
+-- $Id: fontinst.lua 10177 2024-07-26 04:44:10Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -345,6 +345,7 @@ checkformat = "latex"
 -- checksuppfiles = {""}
 cleanfiles = {keeptempfiles}
 ctanreadme = "README"
+demofiles = {"*-example.tex"}
 familymakers = {"*-drv.tex"}
 flatten = true
 flattentds = false
@@ -384,8 +385,8 @@ typesetdeps = {maindir .. "/nfssext-cfr"}
 -- enable l3build doc/check to find font files
 -- cannot concatenate variables here as they don't (yet?) exist
 typesetexe = "TEXMFDOTDIR=.:../local: pdflatex"
-typesetfiles = typesetfiles or  {"*.dtx", "*-tables.tex"}
+typesetfiles = typesetfiles or  {"*.dtx", "*-tables.tex", "*-example.tex"}
 typesetsourcefiles = {keepdir .. "/*", "nfssext-cfr*.sty"}
 unpackexe = "pdflatex"
 unpackfiles = {"*.ins"}
--- vim: ts=2:sw=2:tw=80:et:nospell
+-- vim: ts=2:sw=2:et:

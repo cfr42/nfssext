@@ -1,0 +1,3515 @@
+% \iffalse meta-comment
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% baskervaldadf-build.dtx
+% Additions and changes Copyright (C) 2010-2024 Clea F. Rees.
+% Code from skeleton.dtx Copyright (C) 2015-2024 Scott Pakin (see below).
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   https://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2008-05-04 or later.
+%
+% This work has the LPPL maintenance status `maintained'.
+%
+% The Current Maintainer of this work is Clea F. Rees.
+%
+% This work consists of all files listed in manifest.txt.
+%
+% The file baskervaldadf-build.dtx is a derived work under the terms of the
+% LPPL. It is based on version 2.4 of skeleton.dtx which is part of 
+% dtxtut by Scott Pakin. A copy of dtxtut, including the 
+% unmodified version of skeleton.dtx is available from
+% https://www.ctan.org/pkg/dtxtut and released under the LPPL.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \fi
+%
+% \iffalse
+%<*driver>
+\RequirePackage{svn-prov}
+\ProvidesFileSVN{$Id: baskervaldadf-build.dtx 10177 2024-07-26 04:44:10Z cfrees $}[v0.0 \revinfo][\filebase DTX: BaskervaldADF encodings for 8-bit engines]
+\DefineFileInfoSVN[baskervaldadf@build]
+\documentclass[11pt,british]{l3doc}
+% l3doc loads fancyvrb
+% fancyvrb overwrites svn-prov's macros without warning
+% restore \fileversion \filerev
+\GetFileInfoSVN{baskervaldadf@build}
+\EnableCrossrefs
+\CodelineIndex
+\RecordChanges
+\DoNotIndex{\verb,\ProvidesPackageSVN,\NeedsTeXFormat,\ProcessKeyOptions}
+\usepackage{babel}
+\usepackage{lmodern}
+\renewcommand{\ttdefault}{lmvtt}
+\let\origrmdefault\rmdefault
+\DeclareRobustCommand{\origrmfamily}{%
+  \fontencoding{T1}%
+  \fontfamily{\origrmdefault}%
+  \selectfont}
+\DeclareTextFontCommand{\textorigrm}{\origrmfamily}
+\usepackage[]{baskervald}
+\pdfmapfile{ybv.map}	% not necessary for installed package
+\pdfmapfile{+pdftex.map}	% not necessary for installed package
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{xurl}
+\urlstyle{tt}
+\usepackage{microtype}
+\usepackage[a4paper,headheight=14pt]{geometry}	% use 14pt for 11pt text, 15pt for 12pt text
+\usepackage{csquotes}
+\MakeAutoQuote{‘}{’}
+\MakeAutoQuote*{“}{”}
+% sicrhau hyperindex=false: llwytho CYN bookmark
+\usepackage{hypdoc}% ateb Ulrike Fischer: https://tex.stackexchange.com/a/695555/
+\usepackage{bookmark}
+\hypersetup{%
+  colorlinks=true,
+  citecolor={moss},
+  extension=pdf,
+  linkcolor={strawberry},
+  linktocpage=true,
+  pdfcreator={TeX},
+  pdfproducer={pdfeTeX},
+  urlcolor={blueberry}%
+}
+\usepackage{fancyref}
+\title{\filebase{}: Encodings}
+\author{Clea F. Rees\thanks{%
+    Bug tracker:
+  \href{https://codeberg.org/cfr/nfssext/issues}{\url{codeberg.org/cfr/nfssext/issues}}
+  \textbar{} Code:
+  \href{https://codeberg.org/cfr/nfssext}{\url{codeberg.org/cfr/nfssext}}
+  \textbar{} Mirror:
+  \href{https://github.com/cfr42/nfssext}{\url{github.com/cfr42/nfssext}}% 
+}}
+\date{\filetoday}
+\pagestyle{fancy}
+\fancyhf[rh]{\itshape\filetoday}
+\fancyhf[lh]{\itshape\filebase~\fileversion{}: Encodings}
+\fancyhf[ch]{}
+\fancyhf[lf]{}
+\fancyhf[rf]{}
+\fancyhf[cf]{--- \thepage~/~\lastpage{} ---}
+\ExplSyntaxOn
+\hook_gput_code:nnn {shipout/lastpage} {.}
+{
+  \property_record:nn {t:lastpage}{abspage,page,pagenum}
+}
+\cs_new_protected_nopar:Npn \lastpage 
+{
+  \property_ref:nn {t:lastpage}{page}
+}
+\ExplSyntaxOff
+\definecolor{strawberry}{rgb}{1.000,0.000,0.502}
+\definecolor{blueberry}{rgb}{0.000,0.000,1.000}
+\definecolor{moss}{rgb}{0.000,0.502,0.251}
+\begin{document}
+  \DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+% \maketitle\thispagestyle{empty}
+% \pdfinfo{%
+% 	/Creator		(TeX)
+% 	/Producer		(pdfTeX)
+% 	/Author			(Clea F. Rees)
+% 	/Title			(baskervaldadf: Encodings)
+% 	/Subject		(TeX)
+% 	/Keywords
+% 	(TeX,LaTeX,font,fonts,tex,latex,Baskervald,baskervald,baskervaldadf,BaskervaldADF,ADF,adf,Arkandis,Digital,Foundry,arkandis,digital,foundry,Hirwen,Harendal,Clea,Rees,encoding,encodings,etx)}
+% \pdfcatalog{%
+% 	/URL				()
+% 	/PageMode	/UseOutlines}	^^A other values: /UseNone, /UseOutlines, /UseThumbs, /FullScreen
+% 	^^A[openaction <actionspec>]
+% \setlength{\parindent}{0pt}
+% \setlength{\parskip}{0.5em}
+%	
+% \newcommand*{\adf}{adf}
+% \newcommand*{\lpack}[1]{\textsf{#1}}
+% \newcommand*{\fgroup}[1]{\textsf{#1}}
+% \newcommand*{\fname}[1]{\textsf{#1}}
+%
+% \begin{abstract}
+%   This file contains listings for the encodings used by \lpack{baskervaldadf}.
+%   For commentary and documentation, see \texttt{baskervaldadf.pdf}.
+% \end{abstract}
+%
+% \tableofcontents
+% 
+% \MaybeStop{%
+% \PrintIndex
+% }
+% 
+% \section{Supplementary (raw)}
+% 
+% \begin{itemize} 
+%   \item \texttt{supp-ybv.etx}
+% \end{itemize}
+%
+% \iffalse
+%<*supp-ybv>
+% \fi
+%    \begin{macrocode}
+\relax
+\encoding
+	\setslot{afii61289}\endsetslot
+	\setslot{uniFB01}\endsetslot
+	\setslot{uniFB02}\endsetslot
+	\setslot{uniFB00}\endsetslot
+	\setslot{uniFB03}\endsetslot
+	\setslot{uniFB04}\endsetslot
+	\setslot{uni02C9}\endsetslot
+	\setslot{uni2215}\endsetslot
+	\setslot{uni2219}\endsetslot
+	\setslot{uni2002}\endsetslot
+	\setslot{uni2010}\endsetslot
+	\setslot{uni00B2}\endsetslot
+	\setslot{uni00B3}\endsetslot
+	\setslot{uni00B5}\endsetslot
+	\setslot{uni00B9}\endsetslot
+	\setslot{uni2016}\endsetslot
+	\setslot{uni2126}\endsetslot
+	\setslot{uni2206}\endsetslot
+	\setslot{uniE087}\endsetslot
+	\setslot{uniE095}\endsetslot
+	\setslot{uniE09A}\endsetslot
+	\setslot{uniE0DB}\endsetslot
+	\setslot{uniFB06}\endsetslot
+	\setslot{uniFB05}\endsetslot
+	\setslot{uniF638}\endsetslot
+	\setslot{longs}\endsetslot
+	\setslot{estimated}\endsetslot
+\endencoding
+%    \end{macrocode}
+% \iffalse
+%</supp-ybv>
+% \fi
+%
+% \section{Reglyph}
+% 
+% \begin{itemize}
+%   \item \texttt{reglyph-ybv.etx}
+% \end{itemize}
+%
+% \iffalse
+%<*reglyph>
+% \fi
+%    \begin{macrocode}
+\relax
+\reglyphfonts
+	\renameglyph{lscript}{afii61289}
+	\renameglyph{fi}{uniFB01}
+	\renameglyph{fl}{uniFB02}
+	\renameglyph{ff}{uniFB00}
+	\renameglyph{ffi}{uniFB03}
+	\renameglyph{ffl}{uniFB04}
+	\renameglyph{firsttonechinese}{uni02C9}
+	\renameglyph{divisionslash}{uni2215}
+	\renameglyph{bulletoperator}{uni2219}
+	\renameglyph{enspace}{uni2002}
+	\renameglyph{hyphentwo}{uni2010}
+	\renameglyph{twosuperior}{uni00B2}
+	\renameglyph{threesuperior}{uni00B3}
+	\renameglyph{mu}{uni00B5}
+	\renameglyph{onesuperior}{uni00B9}
+	\renameglyph{dblverticalbar}{uni2016}
+	\renameglyph{Omega}{uni2126}
+	\renameglyph{Delta}{uni2206}
+	\renameglyph{ct}{uniE087}
+	\renameglyph{ffj}{uniE095}
+	\renameglyph{fj}{uniE09A}
+	\renameglyph{sp}{uniE0DB}
+	\renameglyph{st}{uniFB06}
+	\renameglyph{longst}{uniFB05}
+	\renameglyph{zeroslash}{uniF638}
+	\reglyphfont{ybvb8sr}{ybvb8s}
+	\reglyphfont{ybvbi8sr}{ybvbi8s}
+	\reglyphfont{ybvh8sr}{ybvh8s}
+	\reglyphfont{ybvho8sr}{ybvho8s}
+	\reglyphfont{ybvr8sr}{ybvr8s}
+	\reglyphfont{ybvri8sr}{ybvri8s}
+\endreglyphfonts
+%    \end{macrocode}
+% \iffalse
+%</reglyph>
+% \fi
+% 
+% \section{Encodings (output)}
+% 
+% \begin{itemize}
+%   \item \texttt{t1-baskervald.etx}
+%   \item \texttt{t1-baskervald-lig.etx}
+%   \item \texttt{ts1-baskervald.etx}
+% \end{itemize}
+%
+% \iffalse
+%<*t1-baskervald>
+% \fi
+%    \begin{macrocode}
+\relax
+\encoding
+
+\needsfontinstversion{1.910}
+
+\setcommand\lc#1#2{#2}
+\setcommand\uc#1#2{#1}
+\setcommand\lctop#1#2{#2}
+\setcommand\uctop#1#2{#1}
+\setcommand\lclig#1#2{#2}
+\ifisint{letterspacing}\then
+   \ifnumber{\int{letterspacing}}={0}\then \Else
+      \setcommand\uclig#1#2{#1spaced}
+      \comment{Here we set \verb|\uclig#1#2| to \verb|#1spaced|, but 
+      you can't see it as \verb|\setcommand| commands are invisible in 
+      the typeset output.}
+   \Fi
+\Fi
+\setcommand\uclig#1#2{#1}
+\setcommand\digit#1{#1}
+
+\ifisint{monowidth}\then
+   \setint{ligaturing}{0}
+\Else
+   % The following empty line is *important* to get the formatting
+   % right here (sigh)! (Remember that it is a \par token.)
+   
+   \ifisint{letterspacing}\then
+      \ifnumber{\int{letterspacing}}={0}\then \Else
+         \setint{ligaturing}{0}
+      \Fi
+   \Fi
+	\setint{ligaturing}{1}
+\Fi
+
+\setint{italicslant}{0}
+\setint{quad}{1000}
+\setint{baselineskip}{1200}
+
+\ifisglyph{x}\then
+   \setint{xheight}{\height{x}}
+\Else
+   \setint{xheight}{500}
+\Fi
+
+\ifisglyph{space}\then
+   \setint{interword}{\width{space}}
+\Else\ifisglyph{i}\then
+   \setint{interword}{\width{i}}
+\Else
+   \setint{interword}{333}
+\Fi\Fi
+
+\ifisint{monowidth}\then
+   \setint{stretchword}{0}
+   \setint{shrinkword}{0}
+   \setint{extraspace}{\int{interword}}
+\Else
+   \setint{stretchword}{\scale{\int{interword}}{600}}
+   \setint{shrinkword}{\scale{\int{interword}}{240}}
+   \setint{extraspace}{\scale{\int{interword}}{240}}
+\Fi
+
+\ifisglyph{X}\then
+   \setint{capheight}{\height{X}}
+\Else
+   \setint{capheight}{750}
+\Fi
+
+\ifisglyph{d}\then
+   \setint{ascender}{\height{d}}
+\Else\ifisint{capheight}\then
+   \setint{ascender}{\int{capheight}}
+\Else
+   \setint{ascender}{750}
+\Fi\Fi
+
+\ifisglyph{Aring}\then
+   \setint{acccapheight}{\height{Aring}}
+\Else
+   \setint{acccapheight}{999}
+\Fi
+
+\ifisint{descender_neg}\then
+   \setint{descender}{\neg{\int{descender_neg}}}
+\Else\ifisglyph{p}\then
+   \setint{descender}{\depth{p}}
+\Else
+   \setint{descender}{250}
+\Fi\Fi
+
+\ifisglyph{Aring}\then
+   \setint{maxheight}{\height{Aring}}
+\Else
+   \setint{maxheight}{1000}
+\Fi
+
+\ifisint{maxdepth_neg}\then
+   \setint{maxdepth}{\neg{\int{maxdepth_neg}}}
+\Else\ifisglyph{j}\then
+   \setint{maxdepth}{\depth{j}}
+\Else
+   \setint{maxdepth}{250}
+\Fi\Fi
+
+\ifisglyph{six}\then
+   \setint{digitwidth}{\width{six}}
+\Else
+   \setint{digitwidth}{500}
+\Fi
+
+\setint{capstem}{0} % not in AFM files
+
+\setfontdimen{1}{italicslant}    % italic slant
+\setfontdimen{2}{interword}      % interword space
+\setfontdimen{3}{stretchword}    % interword stretch
+\setfontdimen{4}{shrinkword}     % interword shrink
+\setfontdimen{5}{xheight}        % x-height
+\setfontdimen{6}{quad}           % quad
+\setfontdimen{7}{extraspace}     % extra space after .
+\setfontdimen{8}{capheight}      % cap height
+\setfontdimen{9}{ascender}       % ascender
+\setfontdimen{10}{acccapheight}  % accented cap height
+\setfontdimen{11}{descender}     % descender's depth
+\setfontdimen{12}{maxheight}     % max height
+\setfontdimen{13}{maxdepth}      % max depth
+\setfontdimen{14}{digitwidth}    % digit width
+\setfontdimen{15}{verticalstem}  % dominant width of verical stems
+\setfontdimen{16}{baselineskip}  % baselineskip
+
+\ifnumber{\int{ligaturing}}<{0}\then 
+   \comment{In this case, the codingscheme can be different from the 
+     default, and therefore we refrain from setting it.}
+\Else
+   \setstr{codingscheme}{EXTENDED TEX ENC - BASKERVALD}
+\Fi
+
+\setslot{\lc{Grave}{grave}}
+   \comment{The grave accent `\`{}'.}
+\endsetslot
+
+\setslot{\lc{Acute}{acute}}
+   \comment{The acute accent `\'{}'.}
+\endsetslot
+
+\setslot{\lc{Circumflex}{circumflex}}
+   \comment{The circumflex accent `\^{}'.}
+\endsetslot
+
+\setslot{\lc{Tilde}{tilde}}
+   \comment{The tilde accent `\~{}'.}
+\endsetslot
+
+\setslot{\lc{Dieresis}{dieresis}}
+   \comment{The umlaut or dieresis accent `\"{}'.}
+\endsetslot
+
+\setslot{\lc{Hungarumlaut}{hungarumlaut}}
+   \comment{The long Hungarian umlaut `\H{}'.}
+\endsetslot
+
+\setslot{\lc{Ring}{ring}}
+   \comment{The ring accent `\r{}'.}
+\endsetslot
+
+\setslot{\lc{Caron}{caron}}
+   \comment{The caron or h\'a\v cek accent `\v{}'.}
+\endsetslot
+
+\setslot{\lc{Breve}{breve}}
+   \comment{The breve accent `\u{}'.}
+\endsetslot
+
+\setslot{\lc{Macron}{macron}}
+   \comment{The macron accent `\={}'.}
+\endsetslot
+
+\setslot{\lc{Dotaccent}{dotaccent}}
+   \comment{The dot accent `\.{}'.}
+\endsetslot
+
+\setslot{\lc{Cedilla}{cedilla}}
+   \comment{The cedilla accent `\c {}'.}
+\endsetslot
+
+\setslot{\lc{Ogonek}{ogonek}}
+   \comment{The ogonek accent `\k {}'.}
+\endsetslot
+
+\setslot{quotesinglbase}
+  \comment{A German single quote mark `\quotesinglbase' similar to a comma,
+      but with different sidebearings.}
+\endsetslot
+
+\setslot{guilsinglleft}
+  \comment{A French single opening quote mark `\guilsinglleft',
+      unavailable in \plain\ \TeX.}
+\endsetslot
+
+\setslot{guilsinglright}
+  \comment{A French single closing quote mark `\guilsinglright',
+      unavailable in \plain\ \TeX.}
+\endsetslot
+
+\setslot{quotedblleft}
+  \comment{The English opening quote mark `\,\textquotedblleft\,'.}
+\endsetslot
+
+\setslot{quotedblright}
+  \comment{The English closing quote mark `\,\textquotedblright\,'.}
+\endsetslot
+
+\setslot{quotedblbase}
+  \comment{A German double quote mark `\quotedblbase' similar to two commas,
+      but with tighter letterspacing and different sidebearings.}
+\endsetslot
+
+\setslot{guillemotleft}
+  \comment{A French double opening quote mark `\guillemotleft',
+      unavailable in \plain\ \TeX.}
+\endsetslot
+
+\setslot{guillemotright}
+  \comment{A French closing opening quote mark `\guillemotright',
+      unavailable in \plain\ \TeX.}
+\endsetslot
+
+\setslot{endash}
+   \ligature{LIG}{hyphen}{emdash}
+   \comment{The number range dash `1--9'. This is called `rangedash' by fontinst's t1.etx, but it needs to be called `endash' to work right. The `\textendash'.  In a monowidth font, this
+      might be set as `\texttt{1{-}9}'.}
+\endsetslot
+
+\setslot{emdash}
+   \comment{The punctuation dash `Oh---boy.' This is calle `punctdash' by fontinst's t1.etx, but needs to be called `emdash' to work right. The `\textemdash'.  In a monowidth font, this
+      might be set as `\texttt{Oh{-}{-}boy.}'}
+\endsetslot
+
+\setslot{compwordmark}
+   \comment{An invisible glyph, with zero width and depth, but the
+      height of lowercase letters without ascenders.
+      It is used to stop ligaturing in words like `shelf{}ful'.}
+\endsetslot
+
+\setslot{perthousandzero}
+   \comment{A glyph which is placed after `\%' to produce a
+      `per-thousand', or twice to produce `per-ten-thousand'.
+      Your guess is as good as mine as to what this glyph should look
+      like in a monowidth font.}
+\endsetslot
+
+\setslot{\lc{dotlessI}{dotlessi}}
+   \comment{A dotless i `\i', used to produce accented letters such as
+      `\=\i'.}
+\endsetslot
+
+\setslot{\lc{dotlessJ}{dotlessj}}
+   \comment{A dotless j `\j', used to produce accented letters such as
+      `\=\j'.  Most non-\TeX\ fonts do not have this glyph.}
+\endsetslot
+
+\ifnumber{\int{ligaturing}}<{0}\then \skipslots{5}\Else
+
+\setslot{\lclig{FF}{ff}}
+   \ifnumber{\int{ligaturing}}>{0}\then
+      \ligature{LIG}{\lc{I}{i}}{\lclig{FFI}{ffi}}
+      \ligature{LIG}{\lc{J}{j}}{\lclig{FFJ}{ffj}}
+      \ligature{LIG}{\lc{L}{l}}{\lclig{FFL}{ffl}}
+   \Fi
+   \comment{The `ff' ligature.  It should be two characters wide in a
+      monowidth font.}
+\endsetslot
+
+\setslot{\lclig{FI}{fi}}
+   \comment{The `fi' ligature.  It should be two characters wide in a
+      monowidth font.}
+\endsetslot
+
+\setslot{\lclig{FL}{fl}}
+   \comment{The `fl' ligature.  It should be two characters wide in a
+      monowidth font.}
+\endsetslot
+
+\setslot{\lclig{FFI}{ffi}}
+   \comment{The `ffi' ligature.  It should be three characters wide in a
+      monowidth font.}
+\endsetslot
+
+\setslot{\lclig{FFL}{ffl}}
+   \comment{The `ffl' ligature.  It should be three characters wide in a
+      monowidth font.}
+\endsetslot
+
+\Fi
+
+\setslot{visiblespace}
+   \comment{A visible space glyph `\textvisiblespace'.}
+\endsetslot
+
+\setslot{exclam}
+   \ligature{LIG}{quoteleft}{exclamdown}
+   \comment{The exclamation mark `!'.}
+\endsetslot
+
+\setslot{quotedbl}
+  \comment{The `neutral' double quotation mark `\,\textquotedbl\,',
+      included for use in monowidth fonts, or for setting computer
+      programs.  Note that the inclusion of this glyph in this slot
+      means that \TeX\ documents which used `{\tt\char`\"}' as an
+      input character will no longer work.}
+\endsetslot
+
+\setslot{numbersign}
+   \comment{The hash sign `\#'.}
+\endsetslot
+
+\setslot{dollar}
+   \comment{The dollar sign `\$'.}
+\endsetslot
+
+\setslot{percent}
+   \comment{The percent sign `\%'.}
+\endsetslot
+
+\setslot{ampersand}
+   \comment{The ampersand sign `\&'.}
+\endsetslot
+
+\setslot{quoteright}
+   \ligature{LIG}{quoteright}{quotedblright}
+   \comment{The English closing single quote mark `\,\textquoteright\,'.}
+\endsetslot
+
+\setslot{parenleft}
+   \comment{The opening parenthesis `('.}
+\endsetslot
+
+\setslot{parenright}
+   \comment{The closing parenthesis `)'.}
+\endsetslot
+
+\setslot{asterisk}
+   \comment{The raised asterisk `*'.}
+\endsetslot
+
+\setslot{plus}
+   \comment{The addition sign `+'.}
+\endsetslot
+
+\setslot{comma}
+   \ligature{LIG}{comma}{quotedblbase}
+   \comment{The comma `,'.}
+\endsetslot
+
+\setslot{hyphen}
+   \ligature{LIG}{hyphen}{endash}
+   \ligature{LIG}{hyphenchar}{hyphenchar}
+   \comment{The hyphen `-'.}
+\endsetslot
+
+\setslot{period}
+   \comment{The period `.'.}
+\endsetslot
+
+\setslot{slash}
+   \comment{The forward oblique `/'.}
+\endsetslot
+
+\setslot{\digit{zero}}
+   \comment{The number `0'.  This (and all the other numerals) may be
+      old style or ranging digits.}
+\endsetslot
+
+\setslot{\digit{one}}
+   \comment{The number `1'.}
+\endsetslot
+
+\setslot{\digit{two}}
+   \comment{The number `2'.}
+\endsetslot
+
+\setslot{\digit{three}}
+   \comment{The number `3'.}
+\endsetslot
+
+\setslot{\digit{four}}
+   \comment{The number `4'.}
+\endsetslot
+
+\setslot{\digit{five}}
+   \comment{The number `5'.}
+\endsetslot
+
+\setslot{\digit{six}}
+   \comment{The number `6'.}
+\endsetslot
+
+\setslot{\digit{seven}}
+   \comment{The number `7'.}
+\endsetslot
+
+\setslot{\digit{eight}}
+   \comment{The number `8'.}
+\endsetslot
+
+\setslot{\digit{nine}}
+   \comment{The number `9'.}
+\endsetslot
+
+\setslot{colon}
+   \comment{The colon punctuation mark `:'.}
+\endsetslot
+
+\setslot{semicolon}
+   \comment{The semi-colon punctuation mark `;'.}
+\endsetslot
+
+\setslot{less}
+   \ligature{LIG}{less}{guillemotleft}
+   \comment{The less-than sign `\textless'.}
+\endsetslot
+
+\setslot{equal}
+   \comment{The equals sign `='.}
+\endsetslot
+
+\setslot{greater}
+   \ligature{LIG}{greater}{guillemotright}
+   \comment{The greater-than sign `\textgreater'.}
+\endsetslot
+
+\setslot{question}
+   \ligature{LIG}{quoteleft}{questiondown}
+   \comment{The question mark `?'.}
+\endsetslot
+
+\setslot{at}
+   \comment{The at sign `@'.}
+\endsetslot
+
+\setslot{\uc{A}{a}}
+   \comment{The letter `{A}'.}
+\endsetslot
+
+\setslot{\uc{B}{b}}
+   \comment{The letter `{B}'.}
+\endsetslot
+
+\setslot{\uc{C}{c}}
+   \comment{The letter `{C}'.}
+\endsetslot
+
+\setslot{\uc{D}{d}}
+   \comment{The letter `{D}'.}
+\endsetslot
+
+\setslot{\uc{E}{e}}
+   \comment{The letter `{E}'.}
+\endsetslot
+
+\setslot{\uc{F}{f}}
+   \comment{The letter `{F}'.}
+\endsetslot
+
+\setslot{\uc{G}{g}}
+   \comment{The letter `{G}'.}
+\endsetslot
+
+\setslot{\uc{H}{h}}
+   \comment{The letter `{H}'.}
+\endsetslot
+
+\ifnumber{\int{ligaturing}}<{-1}\then \skipslots{1}\Else
+
+\setslot{\uc{I}{i}}
+   \comment{The letter `{I}'.}
+\endsetslot
+
+\Fi
+
+\setslot{\uc{J}{j}}
+   \comment{The letter `{J}'.}
+\endsetslot
+
+\setslot{\uc{K}{k}}
+   \comment{The letter `{K}'.}
+\endsetslot
+
+\setslot{\uc{L}{l}}
+   \comment{The letter `{L}'.}
+\endsetslot
+
+\setslot{\uc{M}{m}}
+   \comment{The letter `{M}'.}
+\endsetslot
+
+\setslot{\uc{N}{n}}
+   \comment{The letter `{N}'.}
+\endsetslot
+
+\setslot{\uc{O}{o}}
+   \comment{The letter `{O}'.}
+\endsetslot
+
+\setslot{\uc{P}{p}}
+   \comment{The letter `{P}'.}
+\endsetslot
+
+\setslot{\uc{Q}{q}}
+   \comment{The letter `{Q}'.}
+\endsetslot
+
+\setslot{\uc{R}{r}}
+   \comment{The letter `{R}'.}
+\endsetslot
+
+\setslot{\uc{S}{s}}
+   \comment{The letter `{S}'.}
+\endsetslot
+
+\setslot{\uc{T}{t}}
+   \comment{The letter `{T}'.}
+\endsetslot
+
+\setslot{\uc{U}{u}}
+   \comment{The letter `{U}'.}
+\endsetslot
+
+\setslot{\uc{V}{v}}
+   \comment{The letter `{V}'.}
+\endsetslot
+
+\setslot{\uc{W}{w}}
+   \comment{The letter `{W}'.}
+\endsetslot
+
+\setslot{\uc{X}{x}}
+   \comment{The letter `{X}'.}
+\endsetslot
+
+\setslot{\uc{Y}{y}}
+   \comment{The letter `{Y}'.}
+\endsetslot
+
+\setslot{\uc{Z}{z}}
+   \comment{The letter `{Z}'.}
+\endsetslot
+
+\setslot{bracketleft}
+   \comment{The opening square bracket `['.}
+\endsetslot
+
+\setslot{backslash}
+   \comment{The backwards oblique `\textbackslash'.}
+\endsetslot
+
+\setslot{bracketright}
+   \comment{The closing square bracket `]'.}
+\endsetslot
+
+\setslot{asciicircum}
+   \comment{The ASCII upward-pointing arrow head `\textasciicircum'.
+      This is included for compatibility with typewriter fonts used
+      for computer listings.}
+\endsetslot
+
+\setslot{underscore}
+   \comment{The ASCII underline character `\textunderscore', usually
+      set on the baseline.
+      This is included for compatibility with typewriter fonts used
+      for computer listings.}
+\endsetslot
+
+\setslot{quoteleft}
+   \ligature{LIG}{quoteleft}{quotedblleft}
+   \comment{The English opening single quote mark `\,\textquoteleft\,'.}
+\endsetslot
+
+\setslot{\lc{A}{a}}
+   \comment{The letter `{a}'.}
+\endsetslot
+
+\setslot{\lc{B}{b}}
+   \comment{The letter `{b}'.}
+\endsetslot
+
+\ifnumber{\int{ligaturing}}<{-1}\then \skipslots{1}\Else
+
+   \setslot{\lc{C}{c}}
+      \comment{The letter `{c}'.}
+   \endsetslot
+
+\Fi
+
+\setslot{\lc{D}{d}}
+   \comment{The letter `{d}'.}
+\endsetslot
+
+\setslot{\lc{E}{e}}
+   \comment{The letter `{e}'.}
+\endsetslot
+
+\ifnumber{\int{ligaturing}}<{-1}\then \skipslots{1}\Else
+
+   \setslot{\lc{F}{f}}
+      \ifnumber{\int{ligaturing}}>{0}\then
+         \ligature{LIG}{\lc{I}{i}}{\lclig{FI}{fi}}
+         \ligature{LIG}{\lc{J}{j}}{\lclig{FJ}{fj}}
+         \ligature{LIG}{\lc{F}{f}}{\lclig{FF}{ff}}
+         \ligature{LIG}{\lc{L}{l}}{\lclig{FL}{fl}}
+      \Fi
+      \comment{The letter `{f}'.}
+   \endsetslot
+
+\Fi
+
+\setslot{\lc{G}{g}}
+   \comment{The letter `{g}'.}
+\endsetslot
+
+\setslot{\lc{H}{h}}
+   \comment{The letter `{h}'.}
+\endsetslot
+
+\ifnumber{\int{ligaturing}}<{-1}\then \skipslots{1}\Else
+
+   \setslot{\lc{I}{i}}
+      \comment{The letter `{i}'.}
+   \endsetslot
+
+\Fi
+
+\setslot{\lc{J}{j}}
+   \comment{The letter `{j}'.}
+\endsetslot
+
+\setslot{\lc{K}{k}}
+   \comment{The letter `{k}'.}
+\endsetslot
+
+\setslot{\lc{L}{l}}
+   \comment{The letter `{l}'.}
+\endsetslot
+
+\setslot{\lc{M}{m}}
+   \comment{The letter `{m}'.}
+\endsetslot
+
+\setslot{\lc{N}{n}}
+   \comment{The letter `{n}'.}
+\endsetslot
+
+\setslot{\lc{O}{o}}
+   \comment{The letter `{o}'.}
+\endsetslot
+
+\setslot{\lc{P}{p}}
+   \comment{The letter `{p}'.}
+\endsetslot
+
+\setslot{\lc{Q}{q}}
+   \comment{The letter `{q}'.}
+\endsetslot
+
+\setslot{\lc{R}{r}}
+   \comment{The letter `{r}'.}
+\endsetslot
+
+\ifnumber{\int{ligaturing}}<{-1}\then \skipslots{1}\Else
+
+   \setslot{\lc{S}{s}}
+      \comment{The letter `{s}'.}
+   \endsetslot
+
+\Fi
+
+\setslot{\lc{T}{t}}
+   \comment{The letter `{t}'.}
+\endsetslot
+
+\setslot{\lc{U}{u}}
+   \comment{The letter `{u}'.}
+\endsetslot
+
+\setslot{\lc{V}{v}}
+   \comment{The letter `{v}'.}
+\endsetslot
+
+\setslot{\lc{W}{w}}
+   \comment{The letter `{w}'.}
+\endsetslot
+
+\setslot{\lc{X}{x}}
+   \comment{The letter `{x}'.}
+\endsetslot
+
+\setslot{\lc{Y}{y}}
+   \comment{The letter `{y}'.}
+\endsetslot
+
+\setslot{\lc{Z}{z}}
+   \comment{The letter `{z}'.}
+\endsetslot
+
+\setslot{braceleft}
+   \comment{The opening curly brace `\textbraceleft'.}
+\endsetslot
+
+\setslot{bar}
+   \comment{The ASCII vertical bar `\textbar'.
+      This is included for compatibility with typewriter fonts used
+      for computer listings.}
+\endsetslot
+
+\setslot{braceright}
+   \comment{The closing curly brace `\textbraceright'.}
+\endsetslot
+
+\setslot{asciitilde}
+   \comment{The ASCII tilde `\textasciitilde'.
+      This is included for compatibility with typewriter fonts used
+      for computer listings.}
+\endsetslot
+
+\setslot{hyphenchar}
+   \comment{The glyph used for hyphenation in this font, which will
+      almost always be the same as `hyphen'.}
+\endsetslot
+
+\setslot{\uctop{Abreve}{abreve}}
+   \comment{The letter `\u A'.}
+\endsetslot
+
+\setslot{\uc{Aogonek}{aogonek}}
+   \comment{The letter `\k A'.}
+\endsetslot
+
+\setslot{\uctop{Cacute}{cacute}}
+   \comment{The letter `\' C'.}
+\endsetslot
+
+\setslot{\uctop{Ccaron}{ccaron}}
+   \comment{The letter `\v C'.}
+\endsetslot
+
+\setslot{\uctop{Dcaron}{dcaron}}
+   \comment{The letter `\v D'.}
+\endsetslot
+
+\setslot{\uctop{Ecaron}{ecaron}}
+   \comment{The letter `\v E'.}
+\endsetslot
+
+\setslot{\uc{Eogonek}{eogonek}}
+   \comment{The letter `\k E'.}
+\endsetslot
+
+\setslot{\uctop{Gbreve}{gbreve}}
+   \comment{The letter `\u G'.}
+\endsetslot
+
+\setslot{\uctop{Lacute}{lacute}}
+   \comment{The letter `\' L'.}
+\endsetslot
+
+\setslot{\uc{Lcaron}{lcaron}}
+   \comment{The letter `\v L'.}
+\endsetslot
+
+\setslot{\uc{Lslash}{lslash}}
+   \comment{The letter `\L'.}
+\endsetslot
+
+\setslot{\uctop{Nacute}{nacute}}
+   \comment{The letter `\' N'.}
+\endsetslot
+
+\setslot{\uctop{Ncaron}{ncaron}}
+   \comment{The letter `\v N'.}
+\endsetslot
+
+\ifnumber{\int{ligaturing}}<{0}\then \skipslots{1}\Else
+
+\setslot{\lclig{FJ}{fj}}
+   \comment{The `fj' ligature.  It should be two characters wide in a
+      monowidth font.}
+\endsetslot
+
+\Fi
+
+\setslot{\uctop{Ohungarumlaut}{ohungarumlaut}}
+   \comment{The letter `\H O'.}
+\endsetslot
+
+\setslot{\uctop{Racute}{racute}}
+   \comment{The letter `\' R'.}
+\endsetslot
+
+\setslot{\uctop{Rcaron}{rcaron}}
+   \comment{The letter `\v R'.}
+\endsetslot
+
+\setslot{\uctop{Sacute}{sacute}}
+   \comment{The letter `\' S'.}
+\endsetslot
+
+\setslot{\uctop{Scaron}{scaron}}
+   \comment{The letter `\v S'.}
+\endsetslot
+
+\setslot{\uc{Scedilla}{scedilla}}
+   \comment{The letter `\c S'.}
+\endsetslot
+
+\setslot{\uctop{Tcaron}{tcaron}}
+   \comment{The letter `\v T'.}
+\endsetslot
+
+\setslot{\uc{Tcedilla}{tcedilla}}
+   \comment{The letter `\c T'.}
+\endsetslot
+
+\setslot{\uctop{Uhungarumlaut}{uhungarumlaut}}
+   \comment{The letter `\H U'.}
+\endsetslot
+
+\setslot{\uctop{Uring}{uring}}
+   \comment{The letter `\r U'.}
+\endsetslot
+
+\setslot{\uctop{Ydieresis}{ydieresis}}
+   \comment{The letter `\" Y'.}
+\endsetslot
+
+\setslot{\uctop{Zacute}{zacute}}
+   \comment{The letter `\' Z'.}
+\endsetslot
+
+\setslot{\uctop{Zcaron}{zcaron}}
+   \comment{The letter `\v Z'.}
+\endsetslot
+
+\setslot{\uctop{Zdotaccent}{zdotaccent}}
+   \comment{The letter `\. Z'.}
+\endsetslot
+
+\ifnumber{\int{ligaturing}}<{0}\then \skipslots{1}\Else
+
+   \setslot{\uclig{IJ}{ij}}
+      \comment{The letter `IJ'.  This is a single letter, and in a 
+        monowidth font should ideally be one letter wide.}
+   \endsetslot
+
+\Fi
+
+\setslot{\uctop{Idotaccent}{idotaccent}}
+   \comment{The letter `\. I'.}
+\endsetslot
+
+\setslot{\lc{Dbar}{dbar}}
+   \comment{The letter `\dj'.}
+\endsetslot
+
+\setslot{section}
+   \comment{The section mark `\textsection'.}
+\endsetslot
+
+\setslot{\lctop{Abreve}{abreve}}
+   \comment{The letter `\u a'.}
+\endsetslot
+
+\setslot{\lc{Aogonek}{aogonek}}
+   \comment{The letter `\k a'.}
+\endsetslot
+
+\setslot{\lctop{Cacute}{cacute}}
+   \comment{The letter `\' c'.}
+\endsetslot
+
+\setslot{\lctop{Ccaron}{ccaron}}
+   \comment{The letter `\v c'.}
+\endsetslot
+
+\setslot{\lctop{Dcaron}{dcaron}}
+   \comment{The letter `\v d'.}
+\endsetslot
+
+\setslot{\lctop{Ecaron}{ecaron}}
+   \comment{The letter `\v e'.}
+\endsetslot
+
+\setslot{\lc{Eogonek}{eogonek}}
+   \comment{The letter `\k e'.}
+\endsetslot
+
+\setslot{\lctop{Gbreve}{gbreve}}
+   \comment{The letter `\u g'.}
+\endsetslot
+
+\setslot{\lctop{Lacute}{lacute}}
+   \comment{The letter `\' l'.}
+\endsetslot
+
+\setslot{\lc{Lcaron}{lcaron}}
+   \comment{The letter `\v l'.}
+\endsetslot
+
+\setslot{\lc{Lslash}{lslash}}
+   \comment{The letter `\l'.}
+\endsetslot
+
+\setslot{\lctop{Nacute}{nacute}}
+   \comment{The letter `\' n'.}
+\endsetslot
+
+\setslot{\lctop{Ncaron}{ncaron}}
+   \comment{The letter `\v n'.}
+\endsetslot
+
+\ifnumber{\int{ligaturing}}<{0}\then \skipslots{1}\Else
+
+\setslot{\lclig{FFJ}{ffj}}
+   \comment{The `ffj' ligature.  It should be two characters wide in a
+      monowidth font.}
+\endsetslot
+
+\Fi
+
+\setslot{\lctop{Ohungarumlaut}{ohungarumlaut}}
+   \comment{The letter `\H o'.}
+\endsetslot
+
+\setslot{\lctop{Racute}{racute}}
+   \comment{The letter `\' r'.}
+\endsetslot
+
+\setslot{\lctop{Rcaron}{rcaron}}
+   \comment{The letter `\v r'.}
+\endsetslot
+
+\setslot{\lctop{Sacute}{sacute}}
+   \comment{The letter `\' s'.}
+\endsetslot
+
+\setslot{\lctop{Scaron}{scaron}}
+   \comment{The letter `\v s'.}
+\endsetslot
+
+\setslot{\lc{Scedilla}{scedilla}}
+   \comment{The letter `\c s'.}
+\endsetslot
+
+\setslot{\lctop{Tcaron}{tcaron}}
+   \comment{The letter `\v t'.}
+\endsetslot
+
+\setslot{\lc{Tcedilla}{tcedilla}}
+   \comment{The letter `\c t'.}
+\endsetslot
+
+\setslot{\lctop{Uhungarumlaut}{uhungarumlaut}}
+   \comment{The letter `\H u'.}
+\endsetslot
+
+\setslot{\lctop{Uring}{uring}}
+   \comment{The letter `\r u'.}
+\endsetslot
+
+\setslot{\lctop{Ydieresis}{ydieresis}}
+   \comment{The letter `\" y'.}
+\endsetslot
+
+\setslot{\lctop{Zacute}{zacute}}
+   \comment{The letter `\' z'.}
+\endsetslot
+
+\setslot{\lctop{Zcaron}{zcaron}}
+   \comment{The letter `\v z'.}
+\endsetslot
+
+\setslot{\lctop{Zdotaccent}{zdotaccent}}
+   \comment{The letter `\. z'.}
+\endsetslot
+
+\ifnumber{\int{ligaturing}}<{0}\then \skipslots{1}\Else
+
+   \setslot{\lclig{IJ}{ij}}
+      \comment{The letter `ij'.  This is a single letter, and in a 
+        monowidth font should ideally be one letter wide.}
+   \endsetslot
+
+\Fi
+
+\setslot{exclamdown}
+   \comment{The Spanish punctuation mark `!`'.}
+\endsetslot
+
+\setslot{questiondown}
+   \comment{The Spanish punctuation mark `?`'.}
+\endsetslot
+
+\setslot{sterling}
+   \comment{The British currency mark `\textsterling'.}
+\endsetslot
+
+\setslot{\uctop{Agrave}{agrave}}
+   \comment{The letter `\` A'.}
+\endsetslot
+
+\setslot{\uctop{Aacute}{aacute}}
+   \comment{The letter `\' A'.}
+\endsetslot
+
+\setslot{\uctop{Acircumflex}{acircumflex}}
+   \comment{The letter `\^ A'.}
+\endsetslot
+
+\setslot{\uctop{Atilde}{atilde}}
+   \comment{The letter `\~ A'.}
+\endsetslot
+
+\setslot{\uctop{Adieresis}{adieresis}}
+   \comment{The letter `\" A'.}
+\endsetslot
+
+\setslot{\uctop{Aring}{aring}}
+   \comment{The letter `\r A'.}
+\endsetslot
+
+\setslot{\uc{AE}{ae}}
+   \comment{The letter `\AE'.  This is a single letter, and should not be
+      faked with `AE'.}
+\endsetslot
+
+\setslot{\uc{Ccedilla}{ccedilla}}
+   \comment{The letter `\c C'.}
+\endsetslot
+
+\setslot{\uctop{Egrave}{egrave}}
+   \comment{The letter `\` E'.}
+\endsetslot
+
+\setslot{\uctop{Eacute}{eacute}}
+   \comment{The letter `\' E'.}
+\endsetslot
+
+\setslot{\uctop{Ecircumflex}{ecircumflex}}
+   \comment{The letter `\^ E'.}
+\endsetslot
+
+\setslot{\uctop{Edieresis}{edieresis}}
+   \comment{The letter `\" E'.}
+\endsetslot
+
+\setslot{\uctop{Igrave}{igrave}}
+   \comment{The letter `\` I'.}
+\endsetslot
+
+\setslot{\uctop{Iacute}{iacute}}
+   \comment{The letter `\' I'.}
+\endsetslot
+
+\setslot{\uctop{Icircumflex}{icircumflex}}
+   \comment{The letter `\^ I'.}
+\endsetslot
+
+\setslot{\uctop{Idieresis}{idieresis}}
+   \comment{The letter `\" I'.}
+\endsetslot
+
+\setslot{\uc{Eth}{eth}}
+   \comment{The uppercase Icelandic letter `Eth' similar to a `D'
+      with a horizontal bar through the stem.  It is unavailable
+      in \plain\ \TeX.}
+\endsetslot
+
+\setslot{\uctop{Ntilde}{ntilde}}
+   \comment{The letter `\~ N'.}
+\endsetslot
+
+\setslot{\uctop{Ograve}{ograve}}
+   \comment{The letter `\` O'.}
+\endsetslot
+
+\setslot{\uctop{Oacute}{oacute}}
+   \comment{The letter `\' O'.}
+\endsetslot
+
+\setslot{\uctop{Ocircumflex}{ocircumflex}}
+   \comment{The letter `\^ O'.}
+\endsetslot
+
+\setslot{\uctop{Otilde}{otilde}}
+   \comment{The letter `\~ O'.}
+\endsetslot
+
+\setslot{\uctop{Odieresis}{odieresis}}
+   \comment{The letter `\" O'.}
+\endsetslot
+
+\setslot{\uc{OE}{oe}}
+   \comment{The letter `\OE'.  This is a single letter, and should not be
+      faked with `OE'.}
+\endsetslot
+
+\setslot{\uc{Oslash}{oslash}}
+   \comment{The letter `\O'.}
+\endsetslot
+
+\setslot{\uctop{Ugrave}{ugrave}}
+   \comment{The letter `\` U'.}
+\endsetslot
+
+\setslot{\uctop{Uacute}{uacute}}
+   \comment{The letter `\' U'.}
+\endsetslot
+
+\setslot{\uctop{Ucircumflex}{ucircumflex}}
+   \comment{The letter `\^ U'.}
+\endsetslot
+
+\setslot{\uctop{Udieresis}{udieresis}}
+   \comment{The letter `\" U'.}
+\endsetslot
+
+\setslot{\uctop{Yacute}{yacute}}
+   \comment{The letter `\' Y'.}
+\endsetslot
+
+\setslot{\uc{Thorn}{thorn}}
+   \comment{The Icelandic capital letter Thorn, similar to a `P'
+      with the bowl moved down.  It is unavailable in \plain\ \TeX.}
+\endsetslot
+
+\setslot{\uclig{SS}{germandbls}}
+   \comment{The ligature `SS', used to give an upper case `\ss'.
+      In a monowidth font it should be two letters wide.}
+\endsetslot
+
+\setslot{\lctop{Agrave}{agrave}}
+   \comment{The letter `\` a'.}
+\endsetslot
+
+\setslot{\lctop{Aacute}{aacute}}
+   \comment{The letter `\' a'.}
+\endsetslot
+
+\setslot{\lctop{Acircumflex}{acircumflex}}
+   \comment{The letter `\^ a'.}
+\endsetslot
+
+\setslot{\lctop{Atilde}{atilde}}
+   \comment{The letter `\~ a'.}
+\endsetslot
+
+\setslot{\lctop{Adieresis}{adieresis}}
+   \comment{The letter `\" a'.}
+\endsetslot
+
+\setslot{\lctop{Aring}{aring}}
+   \comment{The letter `\r a'.}
+\endsetslot
+
+\setslot{\lc{AE}{ae}}
+   \comment{The letter `\ae'.  This is a single letter, and should not be
+      faked with `ae'.}
+\endsetslot
+
+\setslot{\lc{Ccedilla}{ccedilla}}
+   \comment{The letter `\c c'.}
+\endsetslot
+
+\setslot{\lctop{Egrave}{egrave}}
+   \comment{The letter `\` e'.}
+\endsetslot
+
+\setslot{\lctop{Eacute}{eacute}}
+   \comment{The letter `\' e'.}
+\endsetslot
+
+\setslot{\lctop{Ecircumflex}{ecircumflex}}
+   \comment{The letter `\^ e'.}
+\endsetslot
+
+\setslot{\lctop{Edieresis}{edieresis}}
+   \comment{The letter `\" e'.}
+\endsetslot
+
+\setslot{\lctop{Igrave}{igrave}}
+   \comment{The letter `\`\i'.}
+\endsetslot
+
+\setslot{\lctop{Iacute}{iacute}}
+   \comment{The letter `\'\i'.}
+\endsetslot
+
+\setslot{\lctop{Icircumflex}{icircumflex}}
+   \comment{The letter `\^\i'.}
+\endsetslot
+
+\setslot{\lctop{Idieresis}{idieresis}}
+   \comment{The letter `\"\i'.}
+\endsetslot
+
+\setslot{\lc{Eth}{eth}}
+   \comment{The Icelandic lowercase letter `eth' similar to
+     a `$\partial$' with an oblique bar through the stem.
+     It is unavailable in \plain\ \TeX.}
+\endsetslot
+
+\setslot{\lctop{Ntilde}{ntilde}}
+   \comment{The letter `\~ n'.}
+\endsetslot
+
+\setslot{\lctop{Ograve}{ograve}}
+   \comment{The letter `\` o'.}
+\endsetslot
+
+\setslot{\lctop{Oacute}{oacute}}
+   \comment{The letter `\' o'.}
+\endsetslot
+
+\setslot{\lctop{Ocircumflex}{ocircumflex}}
+   \comment{The letter `\^ o'.}
+\endsetslot
+
+\setslot{\lctop{Otilde}{otilde}}
+   \comment{The letter `\~ o'.}
+\endsetslot
+
+\setslot{\lctop{Odieresis}{odieresis}}
+   \comment{The letter `\" o'.}
+\endsetslot
+
+\setslot{\lc{OE}{oe}}
+   \comment{The letter `\oe'.  This is a single letter, and should not be
+      faked with `oe'.}
+\endsetslot
+
+\setslot{\lc{Oslash}{oslash}}
+   \comment{The letter `\o'.}
+\endsetslot
+
+\setslot{\lctop{Ugrave}{ugrave}}
+   \comment{The letter `\` u'.}
+\endsetslot
+
+\setslot{\lctop{Uacute}{uacute}}
+   \comment{The letter `\' u'.}
+\endsetslot
+
+\setslot{\lctop{Ucircumflex}{ucircumflex}}
+   \comment{The letter `\^ u'.}
+\endsetslot
+
+\setslot{\lctop{Udieresis}{udieresis}}
+   \comment{The letter `\" u'.}
+\endsetslot
+
+\setslot{\lctop{Yacute}{yacute}}
+   \comment{The letter `\' y'.}
+\endsetslot
+
+\setslot{\lc{Thorn}{thorn}}
+   \comment{The Icelandic lowercase letter `thorn', similar to a `p'
+      with an ascender rising from the stem.  It is unavailable
+      in \plain\ \TeX.}
+\endsetslot
+
+\setslot{\lc{SS}{germandbls}}
+   \comment{The letter `\ss'.}
+\endsetslot
+
+\endencoding
+%    \end{macrocode}
+% \iffalse
+%</t1-baskervald>
+% \fi
+%
+% \iffalse
+%<*t1-baskervald-lig>
+% \fi
+%    \begin{macrocode}
+\relax
+\encoding
+
+\needsfontinstversion{1.910}
+
+\setcommand\lc#1#2{#2}
+\setcommand\uc#1#2{#1}
+\setcommand\lctop#1#2{#2}
+\setcommand\uctop#1#2{#1}
+\setcommand\lclig#1#2{#2}
+\ifisint{letterspacing}\then
+   \ifnumber{\int{letterspacing}}={0}\then \Else
+      \setcommand\uclig#1#2{#1spaced}
+      \comment{Here we set \verb|\uclig#1#2| to \verb|#1spaced|, but 
+      you can't see it as \verb|\setcommand| commands are invisible in 
+      the typeset output.}
+   \Fi
+\Fi
+\setcommand\uclig#1#2{#1}
+\setcommand\digit#1{#1}
+
+\ifisint{monowidth}\then
+   \setint{ligaturing}{0}
+\Else
+   % The following empty line is *important* to get the formatting
+   % right here (sigh)! (Remember that it is a \par token.)
+   
+   \ifisint{letterspacing}\then
+      \ifnumber{\int{letterspacing}}={0}\then \Else
+         \setint{ligaturing}{0}
+      \Fi
+   \Fi
+	\setint{ligaturing}{1}
+\Fi
+
+\setint{italicslant}{0}
+\setint{quad}{1000}
+\setint{baselineskip}{1200}
+
+\ifisglyph{x}\then
+   \setint{xheight}{\height{x}}
+\Else
+   \setint{xheight}{500}
+\Fi
+
+\ifisglyph{space}\then
+   \setint{interword}{\width{space}}
+\Else\ifisglyph{i}\then
+   \setint{interword}{\width{i}}
+\Else
+   \setint{interword}{333}
+\Fi\Fi
+
+\ifisint{monowidth}\then
+   \setint{stretchword}{0}
+   \setint{shrinkword}{0}
+   \setint{extraspace}{\int{interword}}
+\Else
+   \setint{stretchword}{\scale{\int{interword}}{600}}
+   \setint{shrinkword}{\scale{\int{interword}}{240}}
+   \setint{extraspace}{\scale{\int{interword}}{240}}
+\Fi
+
+\ifisglyph{X}\then
+   \setint{capheight}{\height{X}}
+\Else
+   \setint{capheight}{750}
+\Fi
+
+\ifisglyph{d}\then
+   \setint{ascender}{\height{d}}
+\Else\ifisint{capheight}\then
+   \setint{ascender}{\int{capheight}}
+\Else
+   \setint{ascender}{750}
+\Fi\Fi
+
+\ifisglyph{Aring}\then
+   \setint{acccapheight}{\height{Aring}}
+\Else
+   \setint{acccapheight}{999}
+\Fi
+
+\ifisint{descender_neg}\then
+   \setint{descender}{\neg{\int{descender_neg}}}
+\Else\ifisglyph{p}\then
+   \setint{descender}{\depth{p}}
+\Else
+   \setint{descender}{250}
+\Fi\Fi
+
+\ifisglyph{Aring}\then
+   \setint{maxheight}{\height{Aring}}
+\Else
+   \setint{maxheight}{1000}
+\Fi
+
+\ifisint{maxdepth_neg}\then
+   \setint{maxdepth}{\neg{\int{maxdepth_neg}}}
+\Else\ifisglyph{j}\then
+   \setint{maxdepth}{\depth{j}}
+\Else
+   \setint{maxdepth}{250}
+\Fi\Fi
+
+\ifisglyph{six}\then
+   \setint{digitwidth}{\width{six}}
+\Else
+   \setint{digitwidth}{500}
+\Fi
+
+\setint{capstem}{0} % not in AFM files
+
+\setfontdimen{1}{italicslant}    % italic slant
+\setfontdimen{2}{interword}      % interword space
+\setfontdimen{3}{stretchword}    % interword stretch
+\setfontdimen{4}{shrinkword}     % interword shrink
+\setfontdimen{5}{xheight}        % x-height
+\setfontdimen{6}{quad}           % quad
+\setfontdimen{7}{extraspace}     % extra space after .
+\setfontdimen{8}{capheight}      % cap height
+\setfontdimen{9}{ascender}       % ascender
+\setfontdimen{10}{acccapheight}  % accented cap height
+\setfontdimen{11}{descender}     % descender's depth
+\setfontdimen{12}{maxheight}     % max height
+\setfontdimen{13}{maxdepth}      % max depth
+\setfontdimen{14}{digitwidth}    % digit width
+\setfontdimen{15}{verticalstem}  % dominant width of verical stems
+\setfontdimen{16}{baselineskip}  % baselineskip
+
+\ifnumber{\int{ligaturing}}<{0}\then 
+   \comment{In this case, the codingscheme can be different from the 
+     default, and therefore we refrain from setting it.}
+\Else
+   \setstr{codingscheme}{EXTENDED TEX ENC - BASKERVALD LIG}
+\Fi
+
+\setslot{\lc{Grave}{grave}}
+   \comment{The grave accent `\`{}'.}
+\endsetslot
+
+\setslot{\lc{Acute}{acute}}
+   \comment{The acute accent `\'{}'.}
+\endsetslot
+
+\setslot{\lc{Circumflex}{circumflex}}
+   \comment{The circumflex accent `\^{}'.}
+\endsetslot
+
+\setslot{\lc{Tilde}{tilde}}
+   \comment{The tilde accent `\~{}'.}
+\endsetslot
+
+\setslot{\lc{Dieresis}{dieresis}}
+   \comment{The umlaut or dieresis accent `\"{}'.}
+\endsetslot
+
+\setslot{\lc{Hungarumlaut}{hungarumlaut}}
+   \comment{The long Hungarian umlaut `\H{}'.}
+\endsetslot
+
+\setslot{\lc{Ring}{ring}}
+   \comment{The ring accent `\r{}'.}
+\endsetslot
+
+\setslot{\lc{Caron}{caron}}
+   \comment{The caron or h\'a\v cek accent `\v{}'.}
+\endsetslot
+
+\setslot{\lc{Breve}{breve}}
+   \comment{The breve accent `\u{}'.}
+\endsetslot
+
+\setslot{\lc{Macron}{macron}}
+   \comment{The macron accent `\={}'.}
+\endsetslot
+
+\setslot{\lc{Dotaccent}{dotaccent}}
+   \comment{The dot accent `\.{}'.}
+\endsetslot
+
+\setslot{\lc{Cedilla}{cedilla}}
+   \comment{The cedilla accent `\c {}'.}
+\endsetslot
+
+\setslot{\lc{Ogonek}{ogonek}}
+   \comment{The ogonek accent `\k {}'.}
+\endsetslot
+
+\setslot{quotesinglbase}
+  \comment{A German single quote mark `\quotesinglbase' similar to a comma,
+      but with different sidebearings.}
+\endsetslot
+
+\setslot{guilsinglleft}
+  \comment{A French single opening quote mark `\guilsinglleft',
+      unavailable in \plain\ \TeX.}
+\endsetslot
+
+\setslot{guilsinglright}
+  \comment{A French single closing quote mark `\guilsinglright',
+      unavailable in \plain\ \TeX.}
+\endsetslot
+
+\setslot{quotedblleft}
+  \comment{The English opening quote mark `\,\textquotedblleft\,'.}
+\endsetslot
+
+\setslot{quotedblright}
+  \comment{The English closing quote mark `\,\textquotedblright\,'.}
+\endsetslot
+
+\setslot{quotedblbase}
+  \comment{A German double quote mark `\quotedblbase' similar to two commas,
+      but with tighter letterspacing and different sidebearings.}
+\endsetslot
+
+\setslot{guillemotleft}
+  \comment{A French double opening quote mark `\guillemotleft',
+      unavailable in \plain\ \TeX.}
+\endsetslot
+
+\setslot{guillemotright}
+  \comment{A French closing opening quote mark `\guillemotright',
+      unavailable in \plain\ \TeX.}
+\endsetslot
+
+\setslot{endash}
+   \ligature{LIG}{hyphen}{emdash}
+   \comment{The number range dash `1--9'. This is called `rangedash' by fontinst's t1.etx, but it needs to be called `endash' to work right. The `\textendash'.  In a monowidth font, this
+      might be set as `\texttt{1{-}9}'.}
+\endsetslot
+
+\setslot{emdash}
+   \comment{The punctuation dash `Oh---boy.' This is calle `punctdash' by fontinst's t1.etx, but needs to be called `emdash' to work right. The `\textemdash'.  In a monowidth font, this
+      might be set as `\texttt{Oh{-}{-}boy.}'}
+\endsetslot
+
+\setslot{compwordmark}
+   \comment{An invisible glyph, with zero width and depth, but the
+      height of lowercase letters without ascenders.
+      It is used to stop ligaturing in words like `shelf{}ful'.}
+\endsetslot
+
+\setslot{perthousandzero}
+   \comment{A glyph which is placed after `\%' to produce a
+      `per-thousand', or twice to produce `per-ten-thousand'.
+      Your guess is as good as mine as to what this glyph should look
+      like in a monowidth font.}
+\endsetslot
+
+\setslot{\lc{dotlessI}{dotlessi}}
+   \comment{A dotless i `\i', used to produce accented letters such as
+      `\=\i'.}
+\endsetslot
+
+\setslot{\lc{dotlessJ}{dotlessj}}
+   \comment{A dotless j `\j', used to produce accented letters such as
+      `\=\j'.  Most non-\TeX\ fonts do not have this glyph.}
+\endsetslot
+
+\ifnumber{\int{ligaturing}}<{0}\then \skipslots{5}\Else
+
+\setslot{\lclig{FF}{ff}}
+   \ifnumber{\int{ligaturing}}>{0}\then
+      \ligature{LIG}{\lc{I}{i}}{\lclig{FFI}{ffi}}
+      \ligature{LIG}{\lc{J}{j}}{\lclig{FFJ}{ffj}}
+      \ligature{LIG}{\lc{L}{l}}{\lclig{FFL}{ffl}}
+   \Fi
+   \comment{The `ff' ligature.  It should be two characters wide in a
+      monowidth font.}
+\endsetslot
+
+\setslot{\lclig{FI}{fi}}
+   \comment{The `fi' ligature.  It should be two characters wide in a
+      monowidth font.}
+\endsetslot
+
+\setslot{\lclig{FL}{fl}}
+   \comment{The `fl' ligature.  It should be two characters wide in a
+      monowidth font.}
+\endsetslot
+
+\setslot{\lclig{FFI}{ffi}}
+   \comment{The `ffi' ligature.  It should be three characters wide in a
+      monowidth font.}
+\endsetslot
+
+\setslot{\lclig{FFL}{ffl}}
+   \comment{The `ffl' ligature.  It should be three characters wide in a
+      monowidth font.}
+\endsetslot
+
+\Fi
+
+\setslot{visiblespace}
+   \comment{A visible space glyph `\textvisiblespace'.}
+\endsetslot
+
+\setslot{exclam}
+   \ligature{LIG}{quoteleft}{exclamdown}
+   \comment{The exclamation mark `!'.}
+\endsetslot
+
+
+\ifnumber{\int{ligaturing}}<{0}\then \skipslots{1}\Else
+
+\setslot{\lclig{SP}{sp}}
+   \comment{The `sp' ligature.  It should be two characters wide in a
+      monowidth font.}
+\endsetslot
+
+\Fi
+
+\setslot{numbersign}
+   \comment{The hash sign `\#'.}
+\endsetslot
+
+\setslot{dollar}
+   \comment{The dollar sign `\$'.}
+\endsetslot
+
+\setslot{percent}
+   \comment{The percent sign `\%'.}
+\endsetslot
+
+\setslot{ampersand}
+   \comment{The ampersand sign `\&'.}
+\endsetslot
+
+\setslot{quoteright}
+   \ligature{LIG}{quoteright}{quotedblright}
+   \comment{The English closing single quote mark `\,\textquoteright\,'.}
+\endsetslot
+
+\setslot{parenleft}
+   \comment{The opening parenthesis `('.}
+\endsetslot
+
+\setslot{parenright}
+   \comment{The closing parenthesis `)'.}
+\endsetslot
+
+\setslot{asterisk}
+   \comment{The raised asterisk `*'.}
+\endsetslot
+
+\setslot{plus}
+   \comment{The addition sign `+'.}
+\endsetslot
+
+\setslot{comma}
+   \ligature{LIG}{comma}{quotedblbase}
+   \comment{The comma `,'.}
+\endsetslot
+
+\setslot{hyphen}
+   \ligature{LIG}{hyphen}{endash}
+   \ligature{LIG}{hyphenchar}{hyphenchar}
+   \comment{The hyphen `-'.}
+\endsetslot
+
+\setslot{period}
+   \comment{The period `.'.}
+\endsetslot
+
+\setslot{slash}
+   \comment{The forward oblique `/'.}
+\endsetslot
+
+\setslot{\digit{zero}}
+   \comment{The number `0'.  This (and all the other numerals) may be
+      old style or ranging digits.}
+\endsetslot
+
+\setslot{\digit{one}}
+   \comment{The number `1'.}
+\endsetslot
+
+\setslot{\digit{two}}
+   \comment{The number `2'.}
+\endsetslot
+
+\setslot{\digit{three}}
+   \comment{The number `3'.}
+\endsetslot
+
+\setslot{\digit{four}}
+   \comment{The number `4'.}
+\endsetslot
+
+\setslot{\digit{five}}
+   \comment{The number `5'.}
+\endsetslot
+
+\setslot{\digit{six}}
+   \comment{The number `6'.}
+\endsetslot
+
+\setslot{\digit{seven}}
+   \comment{The number `7'.}
+\endsetslot
+
+\setslot{\digit{eight}}
+   \comment{The number `8'.}
+\endsetslot
+
+\setslot{\digit{nine}}
+   \comment{The number `9'.}
+\endsetslot
+
+\setslot{colon}
+   \comment{The colon punctuation mark `:'.}
+\endsetslot
+
+\setslot{semicolon}
+   \comment{The semi-colon punctuation mark `;'.}
+\endsetslot
+
+\setslot{less}
+   \ligature{LIG}{less}{guillemotleft}
+   \comment{The less-than sign `\textless'.}
+\endsetslot
+
+\setslot{equal}
+   \comment{The equals sign `='.}
+\endsetslot
+
+\setslot{greater}
+   \ligature{LIG}{greater}{guillemotright}
+   \comment{The greater-than sign `\textgreater'.}
+\endsetslot
+
+\setslot{question}
+   \ligature{LIG}{quoteleft}{questiondown}
+   \comment{The question mark `?'.}
+\endsetslot
+
+\setslot{at}
+   \comment{The at sign `@'.}
+\endsetslot
+
+\setslot{\uc{A}{a}}
+   \comment{The letter `{A}'.}
+\endsetslot
+
+\setslot{\uc{B}{b}}
+   \comment{The letter `{B}'.}
+\endsetslot
+
+\setslot{\uc{C}{c}}
+   \comment{The letter `{C}'.}
+\endsetslot
+
+\setslot{\uc{D}{d}}
+   \comment{The letter `{D}'.}
+\endsetslot
+
+\setslot{\uc{E}{e}}
+   \comment{The letter `{E}'.}
+\endsetslot
+
+\setslot{\uc{F}{f}}
+   \comment{The letter `{F}'.}
+\endsetslot
+
+\setslot{\uc{G}{g}}
+   \comment{The letter `{G}'.}
+\endsetslot
+
+\setslot{\uc{H}{h}}
+   \comment{The letter `{H}'.}
+\endsetslot
+
+\ifnumber{\int{ligaturing}}<{-1}\then \skipslots{1}\Else
+
+\setslot{\uc{I}{i}}
+   \comment{The letter `{I}'.}
+\endsetslot
+
+\Fi
+
+\setslot{\uc{J}{j}}
+   \comment{The letter `{J}'.}
+\endsetslot
+
+\setslot{\uc{K}{k}}
+   \comment{The letter `{K}'.}
+\endsetslot
+
+\setslot{\uc{L}{l}}
+   \comment{The letter `{L}'.}
+\endsetslot
+
+\setslot{\uc{M}{m}}
+   \comment{The letter `{M}'.}
+\endsetslot
+
+\setslot{\uc{N}{n}}
+   \comment{The letter `{N}'.}
+\endsetslot
+
+\setslot{\uc{O}{o}}
+   \comment{The letter `{O}'.}
+\endsetslot
+
+\setslot{\uc{P}{p}}
+   \comment{The letter `{P}'.}
+\endsetslot
+
+\setslot{\uc{Q}{q}}
+   \comment{The letter `{Q}'.}
+\endsetslot
+
+\setslot{\uc{R}{r}}
+   \comment{The letter `{R}'.}
+\endsetslot
+
+\setslot{\uc{S}{s}}
+   \comment{The letter `{S}'.}
+\endsetslot
+
+\setslot{\uc{T}{t}}
+   \comment{The letter `{T}'.}
+\endsetslot
+
+\setslot{\uc{U}{u}}
+   \comment{The letter `{U}'.}
+\endsetslot
+
+\setslot{\uc{V}{v}}
+   \comment{The letter `{V}'.}
+\endsetslot
+
+\setslot{\uc{W}{w}}
+   \comment{The letter `{W}'.}
+\endsetslot
+
+\setslot{\uc{X}{x}}
+   \comment{The letter `{X}'.}
+\endsetslot
+
+\setslot{\uc{Y}{y}}
+   \comment{The letter `{Y}'.}
+\endsetslot
+
+\setslot{\uc{Z}{z}}
+   \comment{The letter `{Z}'.}
+\endsetslot
+
+\setslot{bracketleft}
+   \comment{The opening square bracket `['.}
+\endsetslot
+
+\setslot{backslash}
+   \comment{The backwards oblique `\textbackslash'.}
+\endsetslot
+
+\setslot{bracketright}
+   \comment{The closing square bracket `]'.}
+\endsetslot
+
+\ifnumber{\int{ligaturing}}<{0}\then \skipslots{1}\Else
+
+\setslot{\lclig{CT}{ct}}
+   \comment{The `ct' ligature.  It should be two characters wide in a
+      monowidth font.}
+\endsetslot
+
+\Fi
+
+\setslot{underscore}
+   \comment{The ASCII underline character `\textunderscore', usually
+      set on the baseline.
+      This is included for compatibility with typewriter fonts used
+      for computer listings.}
+\endsetslot
+
+\setslot{quoteleft}
+   \ligature{LIG}{quoteleft}{quotedblleft}
+   \comment{The English opening single quote mark `\,\textquoteleft\,'.}
+\endsetslot
+
+\setslot{\lc{A}{a}}
+   \comment{The letter `{a}'.}
+\endsetslot
+
+\setslot{\lc{B}{b}}
+   \comment{The letter `{b}'.}
+\endsetslot
+
+\ifnumber{\int{ligaturing}}<{-1}\then \skipslots{1}\Else
+
+   \setslot{\lc{C}{c}}
+      \ifnumber{\int{ligaturing}}>{0}\then
+         \ligature{LIG}{\lc{T}{t}}{\lclig{CT}{ct}}
+	\Fi
+      \comment{The letter `{c}'.}
+   \endsetslot
+
+\Fi
+
+\setslot{\lc{D}{d}}
+   \comment{The letter `{d}'.}
+\endsetslot
+
+\setslot{\lc{E}{e}}
+   \comment{The letter `{e}'.}
+\endsetslot
+
+\ifnumber{\int{ligaturing}}<{-1}\then \skipslots{1}\Else
+
+   \setslot{\lc{F}{f}}
+      \ifnumber{\int{ligaturing}}>{0}\then
+         \ligature{LIG}{\lc{I}{i}}{\lclig{FI}{fi}}
+         \ligature{LIG}{\lc{J}{j}}{\lclig{FJ}{fj}}
+         \ligature{LIG}{\lc{F}{f}}{\lclig{FF}{ff}}
+         \ligature{LIG}{\lc{L}{l}}{\lclig{FL}{fl}}
+      \Fi
+      \comment{The letter `{f}'.}
+   \endsetslot
+
+\Fi
+
+\setslot{\lc{G}{g}}
+   \comment{The letter `{g}'.}
+\endsetslot
+
+\setslot{\lc{H}{h}}
+   \comment{The letter `{h}'.}
+\endsetslot
+
+\ifnumber{\int{ligaturing}}<{-1}\then \skipslots{1}\Else
+
+   \setslot{\lc{I}{i}}
+      \comment{The letter `{i}'.}
+   \endsetslot
+
+\Fi
+
+\setslot{\lc{J}{j}}
+   \comment{The letter `{j}'.}
+\endsetslot
+
+\setslot{\lc{K}{k}}
+   \comment{The letter `{k}'.}
+\endsetslot
+
+\setslot{\lc{L}{l}}
+   \comment{The letter `{l}'.}
+\endsetslot
+
+\setslot{\lc{M}{m}}
+   \comment{The letter `{m}'.}
+\endsetslot
+
+\setslot{\lc{N}{n}}
+   \comment{The letter `{n}'.}
+\endsetslot
+
+\setslot{\lc{O}{o}}
+   \comment{The letter `{o}'.}
+\endsetslot
+
+\setslot{\lc{P}{p}}
+   \comment{The letter `{p}'.}
+\endsetslot
+
+\setslot{\lc{Q}{q}}
+   \comment{The letter `{q}'.}
+\endsetslot
+
+\setslot{\lc{R}{r}}
+   \comment{The letter `{r}'.}
+\endsetslot
+
+\ifnumber{\int{ligaturing}}<{-1}\then \skipslots{1}\Else
+
+   \setslot{\lc{S}{s}}
+      \ifnumber{\int{ligaturing}}>{0}\then
+         \ligature{LIG}{\lc{P}{p}}{\lclig{SP}{sp}}
+         \ligature{LIG}{\lc{T}{t}}{\lclig{ST}{st}}
+	\Fi
+      \comment{The letter `{s}'.}
+   \endsetslot
+
+\Fi
+
+\setslot{\lc{T}{t}}
+   \comment{The letter `{t}'.}
+\endsetslot
+
+\setslot{\lc{U}{u}}
+   \comment{The letter `{u}'.}
+\endsetslot
+
+\setslot{\lc{V}{v}}
+   \comment{The letter `{v}'.}
+\endsetslot
+
+\setslot{\lc{W}{w}}
+   \comment{The letter `{w}'.}
+\endsetslot
+
+\setslot{\lc{X}{x}}
+   \comment{The letter `{x}'.}
+\endsetslot
+
+\setslot{\lc{Y}{y}}
+   \comment{The letter `{y}'.}
+\endsetslot
+
+\setslot{\lc{Z}{z}}
+   \comment{The letter `{z}'.}
+\endsetslot
+
+\setslot{braceleft}
+   \comment{The opening curly brace `\textbraceleft'.}
+\endsetslot
+
+\setslot{bar}
+   \comment{The ASCII vertical bar `\textbar'.
+      This is included for compatibility with typewriter fonts used
+      for computer listings.}
+\endsetslot
+
+\setslot{braceright}
+   \comment{The closing curly brace `\textbraceright'.}
+\endsetslot
+
+\ifnumber{\int{ligaturing}}<{0}\then \skipslots{1}\Else
+
+\setslot{\lclig{ST}{st}}
+   \comment{The `st' ligature.  It should be two characters wide in a
+      monowidth font.}
+\endsetslot
+
+\Fi
+
+\setslot{hyphenchar}
+   \comment{The glyph used for hyphenation in this font, which will
+      almost always be the same as `hyphen'.}
+\endsetslot
+
+\setslot{\uctop{Abreve}{abreve}}
+   \comment{The letter `\u A'.}
+\endsetslot
+
+\setslot{\uc{Aogonek}{aogonek}}
+   \comment{The letter `\k A'.}
+\endsetslot
+
+\setslot{\uctop{Cacute}{cacute}}
+   \comment{The letter `\' C'.}
+\endsetslot
+
+\setslot{\uctop{Ccaron}{ccaron}}
+   \comment{The letter `\v C'.}
+\endsetslot
+
+\setslot{\uctop{Dcaron}{dcaron}}
+   \comment{The letter `\v D'.}
+\endsetslot
+
+\setslot{\uctop{Ecaron}{ecaron}}
+   \comment{The letter `\v E'.}
+\endsetslot
+
+\setslot{\uc{Eogonek}{eogonek}}
+   \comment{The letter `\k E'.}
+\endsetslot
+
+\setslot{\uctop{Gbreve}{gbreve}}
+   \comment{The letter `\u G'.}
+\endsetslot
+
+\setslot{\uctop{Lacute}{lacute}}
+   \comment{The letter `\' L'.}
+\endsetslot
+
+\setslot{\uc{Lcaron}{lcaron}}
+   \comment{The letter `\v L'.}
+\endsetslot
+
+\setslot{\uc{Lslash}{lslash}}
+   \comment{The letter `\L'.}
+\endsetslot
+
+\setslot{\uctop{Nacute}{nacute}}
+   \comment{The letter `\' N'.}
+\endsetslot
+
+\setslot{\uctop{Ncaron}{ncaron}}
+   \comment{The letter `\v N'.}
+\endsetslot
+
+\ifnumber{\int{ligaturing}}<{0}\then \skipslots{1}\Else
+
+\setslot{\lclig{FJ}{fj}}
+   \comment{The `fj' ligature.  It should be two characters wide in a
+      monowidth font.}
+\endsetslot
+
+\Fi
+
+\setslot{\uctop{Ohungarumlaut}{ohungarumlaut}}
+   \comment{The letter `\H O'.}
+\endsetslot
+
+\setslot{\uctop{Racute}{racute}}
+   \comment{The letter `\' R'.}
+\endsetslot
+
+\setslot{\uctop{Rcaron}{rcaron}}
+   \comment{The letter `\v R'.}
+\endsetslot
+
+\setslot{\uctop{Sacute}{sacute}}
+   \comment{The letter `\' S'.}
+\endsetslot
+
+\setslot{\uctop{Scaron}{scaron}}
+   \comment{The letter `\v S'.}
+\endsetslot
+
+\setslot{\uc{Scedilla}{scedilla}}
+   \comment{The letter `\c S'.}
+\endsetslot
+
+\setslot{\uctop{Tcaron}{tcaron}}
+   \comment{The letter `\v T'.}
+\endsetslot
+
+\setslot{\uc{Tcedilla}{tcedilla}}
+   \comment{The letter `\c T'.}
+\endsetslot
+
+\setslot{\uctop{Uhungarumlaut}{uhungarumlaut}}
+   \comment{The letter `\H U'.}
+\endsetslot
+
+\setslot{\uctop{Uring}{uring}}
+   \comment{The letter `\r U'.}
+\endsetslot
+
+\setslot{\uctop{Ydieresis}{ydieresis}}
+   \comment{The letter `\" Y'.}
+\endsetslot
+
+\setslot{\uctop{Zacute}{zacute}}
+   \comment{The letter `\' Z'.}
+\endsetslot
+
+\setslot{\uctop{Zcaron}{zcaron}}
+   \comment{The letter `\v Z'.}
+\endsetslot
+
+\setslot{\uctop{Zdotaccent}{zdotaccent}}
+   \comment{The letter `\. Z'.}
+\endsetslot
+
+\ifnumber{\int{ligaturing}}<{0}\then \skipslots{1}\Else
+
+   \setslot{\uclig{IJ}{ij}}
+      \comment{The letter `IJ'.  This is a single letter, and in a 
+        monowidth font should ideally be one letter wide.}
+   \endsetslot
+
+\Fi
+
+\setslot{\uctop{Idotaccent}{idotaccent}}
+   \comment{The letter `\. I'.}
+\endsetslot
+
+\setslot{\lc{Dbar}{dbar}}
+   \comment{The letter `\dj'.}
+\endsetslot
+
+\setslot{section}
+   \comment{The section mark `\textsection'.}
+\endsetslot
+
+\setslot{\lctop{Abreve}{abreve}}
+   \comment{The letter `\u a'.}
+\endsetslot
+
+\setslot{\lc{Aogonek}{aogonek}}
+   \comment{The letter `\k a'.}
+\endsetslot
+
+\setslot{\lctop{Cacute}{cacute}}
+   \comment{The letter `\' c'.}
+\endsetslot
+
+\setslot{\lctop{Ccaron}{ccaron}}
+   \comment{The letter `\v c'.}
+\endsetslot
+
+\setslot{\lctop{Dcaron}{dcaron}}
+   \comment{The letter `\v d'.}
+\endsetslot
+
+\setslot{\lctop{Ecaron}{ecaron}}
+   \comment{The letter `\v e'.}
+\endsetslot
+
+\setslot{\lc{Eogonek}{eogonek}}
+   \comment{The letter `\k e'.}
+\endsetslot
+
+\setslot{\lctop{Gbreve}{gbreve}}
+   \comment{The letter `\u g'.}
+\endsetslot
+
+\setslot{\lctop{Lacute}{lacute}}
+   \comment{The letter `\' l'.}
+\endsetslot
+
+\setslot{\lc{Lcaron}{lcaron}}
+   \comment{The letter `\v l'.}
+\endsetslot
+
+\setslot{\lc{Lslash}{lslash}}
+   \comment{The letter `\l'.}
+\endsetslot
+
+\setslot{\lctop{Nacute}{nacute}}
+   \comment{The letter `\' n'.}
+\endsetslot
+
+\setslot{\lctop{Ncaron}{ncaron}}
+   \comment{The letter `\v n'.}
+\endsetslot
+
+\ifnumber{\int{ligaturing}}<{0}\then \skipslots{1}\Else
+
+\setslot{\lclig{FFJ}{ffj}}
+   \comment{The `ffj' ligature.  It should be two characters wide in a
+      monowidth font.}
+\endsetslot
+
+\Fi
+
+\setslot{\lctop{Ohungarumlaut}{ohungarumlaut}}
+   \comment{The letter `\H o'.}
+\endsetslot
+
+\setslot{\lctop{Racute}{racute}}
+   \comment{The letter `\' r'.}
+\endsetslot
+
+\setslot{\lctop{Rcaron}{rcaron}}
+   \comment{The letter `\v r'.}
+\endsetslot
+
+\setslot{\lctop{Sacute}{sacute}}
+   \comment{The letter `\' s'.}
+\endsetslot
+
+\setslot{\lctop{Scaron}{scaron}}
+   \comment{The letter `\v s'.}
+\endsetslot
+
+\setslot{\lc{Scedilla}{scedilla}}
+   \comment{The letter `\c s'.}
+\endsetslot
+
+\setslot{\lctop{Tcaron}{tcaron}}
+   \comment{The letter `\v t'.}
+\endsetslot
+
+\setslot{\lc{Tcedilla}{tcedilla}}
+   \comment{The letter `\c t'.}
+\endsetslot
+
+\setslot{\lctop{Uhungarumlaut}{uhungarumlaut}}
+   \comment{The letter `\H u'.}
+\endsetslot
+
+\setslot{\lctop{Uring}{uring}}
+   \comment{The letter `\r u'.}
+\endsetslot
+
+\setslot{\lctop{Ydieresis}{ydieresis}}
+   \comment{The letter `\" y'.}
+\endsetslot
+
+\setslot{\lctop{Zacute}{zacute}}
+   \comment{The letter `\' z'.}
+\endsetslot
+
+\setslot{\lctop{Zcaron}{zcaron}}
+   \comment{The letter `\v z'.}
+\endsetslot
+
+\setslot{\lctop{Zdotaccent}{zdotaccent}}
+   \comment{The letter `\. z'.}
+\endsetslot
+
+\ifnumber{\int{ligaturing}}<{0}\then \skipslots{1}\Else
+
+   \setslot{\lclig{IJ}{ij}}
+      \comment{The letter `ij'.  This is a single letter, and in a 
+        monowidth font should ideally be one letter wide.}
+   \endsetslot
+
+\Fi
+
+\setslot{exclamdown}
+   \comment{The Spanish punctuation mark `!`'.}
+\endsetslot
+
+\setslot{questiondown}
+   \comment{The Spanish punctuation mark `?`'.}
+\endsetslot
+
+\setslot{sterling}
+   \comment{The British currency mark `\textsterling'.}
+\endsetslot
+
+\setslot{\uctop{Agrave}{agrave}}
+   \comment{The letter `\` A'.}
+\endsetslot
+
+\setslot{\uctop{Aacute}{aacute}}
+   \comment{The letter `\' A'.}
+\endsetslot
+
+\setslot{\uctop{Acircumflex}{acircumflex}}
+   \comment{The letter `\^ A'.}
+\endsetslot
+
+\setslot{\uctop{Atilde}{atilde}}
+   \comment{The letter `\~ A'.}
+\endsetslot
+
+\setslot{\uctop{Adieresis}{adieresis}}
+   \comment{The letter `\" A'.}
+\endsetslot
+
+\setslot{\uctop{Aring}{aring}}
+   \comment{The letter `\r A'.}
+\endsetslot
+
+\setslot{\uc{AE}{ae}}
+   \comment{The letter `\AE'.  This is a single letter, and should not be
+      faked with `AE'.}
+\endsetslot
+
+\setslot{\uc{Ccedilla}{ccedilla}}
+   \comment{The letter `\c C'.}
+\endsetslot
+
+\setslot{\uctop{Egrave}{egrave}}
+   \comment{The letter `\` E'.}
+\endsetslot
+
+\setslot{\uctop{Eacute}{eacute}}
+   \comment{The letter `\' E'.}
+\endsetslot
+
+\setslot{\uctop{Ecircumflex}{ecircumflex}}
+   \comment{The letter `\^ E'.}
+\endsetslot
+
+\setslot{\uctop{Edieresis}{edieresis}}
+   \comment{The letter `\" E'.}
+\endsetslot
+
+\setslot{\uctop{Igrave}{igrave}}
+   \comment{The letter `\` I'.}
+\endsetslot
+
+\setslot{\uctop{Iacute}{iacute}}
+   \comment{The letter `\' I'.}
+\endsetslot
+
+\setslot{\uctop{Icircumflex}{icircumflex}}
+   \comment{The letter `\^ I'.}
+\endsetslot
+
+\setslot{\uctop{Idieresis}{idieresis}}
+   \comment{The letter `\" I'.}
+\endsetslot
+
+\setslot{\uc{Eth}{eth}}
+   \comment{The uppercase Icelandic letter `Eth' similar to a `D'
+      with a horizontal bar through the stem.  It is unavailable
+      in \plain\ \TeX.}
+\endsetslot
+
+\setslot{\uctop{Ntilde}{ntilde}}
+   \comment{The letter `\~ N'.}
+\endsetslot
+
+\setslot{\uctop{Ograve}{ograve}}
+   \comment{The letter `\` O'.}
+\endsetslot
+
+\setslot{\uctop{Oacute}{oacute}}
+   \comment{The letter `\' O'.}
+\endsetslot
+
+\setslot{\uctop{Ocircumflex}{ocircumflex}}
+   \comment{The letter `\^ O'.}
+\endsetslot
+
+\setslot{\uctop{Otilde}{otilde}}
+   \comment{The letter `\~ O'.}
+\endsetslot
+
+\setslot{\uctop{Odieresis}{odieresis}}
+   \comment{The letter `\" O'.}
+\endsetslot
+
+\setslot{\uc{OE}{oe}}
+   \comment{The letter `\OE'.  This is a single letter, and should not be
+      faked with `OE'.}
+\endsetslot
+
+\setslot{\uc{Oslash}{oslash}}
+   \comment{The letter `\O'.}
+\endsetslot
+
+\setslot{\uctop{Ugrave}{ugrave}}
+   \comment{The letter `\` U'.}
+\endsetslot
+
+\setslot{\uctop{Uacute}{uacute}}
+   \comment{The letter `\' U'.}
+\endsetslot
+
+\setslot{\uctop{Ucircumflex}{ucircumflex}}
+   \comment{The letter `\^ U'.}
+\endsetslot
+
+\setslot{\uctop{Udieresis}{udieresis}}
+   \comment{The letter `\" U'.}
+\endsetslot
+
+\setslot{\uctop{Yacute}{yacute}}
+   \comment{The letter `\' Y'.}
+\endsetslot
+
+\setslot{\uc{Thorn}{thorn}}
+   \comment{The Icelandic capital letter Thorn, similar to a `P'
+      with the bowl moved down.  It is unavailable in \plain\ \TeX.}
+\endsetslot
+
+\setslot{\uclig{SS}{germandbls}}
+   \comment{The ligature `SS', used to give an upper case `\ss'.
+      In a monowidth font it should be two letters wide.}
+\endsetslot
+
+\setslot{\lctop{Agrave}{agrave}}
+   \comment{The letter `\` a'.}
+\endsetslot
+
+\setslot{\lctop{Aacute}{aacute}}
+   \comment{The letter `\' a'.}
+\endsetslot
+
+\setslot{\lctop{Acircumflex}{acircumflex}}
+   \comment{The letter `\^ a'.}
+\endsetslot
+
+\setslot{\lctop{Atilde}{atilde}}
+   \comment{The letter `\~ a'.}
+\endsetslot
+
+\setslot{\lctop{Adieresis}{adieresis}}
+   \comment{The letter `\" a'.}
+\endsetslot
+
+\setslot{\lctop{Aring}{aring}}
+   \comment{The letter `\r a'.}
+\endsetslot
+
+\setslot{\lc{AE}{ae}}
+   \comment{The letter `\ae'.  This is a single letter, and should not be
+      faked with `ae'.}
+\endsetslot
+
+\setslot{\lc{Ccedilla}{ccedilla}}
+   \comment{The letter `\c c'.}
+\endsetslot
+
+\setslot{\lctop{Egrave}{egrave}}
+   \comment{The letter `\` e'.}
+\endsetslot
+
+\setslot{\lctop{Eacute}{eacute}}
+   \comment{The letter `\' e'.}
+\endsetslot
+
+\setslot{\lctop{Ecircumflex}{ecircumflex}}
+   \comment{The letter `\^ e'.}
+\endsetslot
+
+\setslot{\lctop{Edieresis}{edieresis}}
+   \comment{The letter `\" e'.}
+\endsetslot
+
+\setslot{\lctop{Igrave}{igrave}}
+   \comment{The letter `\`\i'.}
+\endsetslot
+
+\setslot{\lctop{Iacute}{iacute}}
+   \comment{The letter `\'\i'.}
+\endsetslot
+
+\setslot{\lctop{Icircumflex}{icircumflex}}
+   \comment{The letter `\^\i'.}
+\endsetslot
+
+\setslot{\lctop{Idieresis}{idieresis}}
+   \comment{The letter `\"\i'.}
+\endsetslot
+
+\setslot{\lc{Eth}{eth}}
+   \comment{The Icelandic lowercase letter `eth' similar to
+     a `$\partial$' with an oblique bar through the stem.
+     It is unavailable in \plain\ \TeX.}
+\endsetslot
+
+\setslot{\lctop{Ntilde}{ntilde}}
+   \comment{The letter `\~ n'.}
+\endsetslot
+
+\setslot{\lctop{Ograve}{ograve}}
+   \comment{The letter `\` o'.}
+\endsetslot
+
+\setslot{\lctop{Oacute}{oacute}}
+   \comment{The letter `\' o'.}
+\endsetslot
+
+\setslot{\lctop{Ocircumflex}{ocircumflex}}
+   \comment{The letter `\^ o'.}
+\endsetslot
+
+\setslot{\lctop{Otilde}{otilde}}
+   \comment{The letter `\~ o'.}
+\endsetslot
+
+\setslot{\lctop{Odieresis}{odieresis}}
+   \comment{The letter `\" o'.}
+\endsetslot
+
+\setslot{\lc{OE}{oe}}
+   \comment{The letter `\oe'.  This is a single letter, and should not be
+      faked with `oe'.}
+\endsetslot
+
+\setslot{\lc{Oslash}{oslash}}
+   \comment{The letter `\o'.}
+\endsetslot
+
+\setslot{\lctop{Ugrave}{ugrave}}
+   \comment{The letter `\` u'.}
+\endsetslot
+
+\setslot{\lctop{Uacute}{uacute}}
+   \comment{The letter `\' u'.}
+\endsetslot
+
+\setslot{\lctop{Ucircumflex}{ucircumflex}}
+   \comment{The letter `\^ u'.}
+\endsetslot
+
+\setslot{\lctop{Udieresis}{udieresis}}
+   \comment{The letter `\" u'.}
+\endsetslot
+
+\setslot{\lctop{Yacute}{yacute}}
+   \comment{The letter `\' y'.}
+\endsetslot
+
+\setslot{\lc{Thorn}{thorn}}
+   \comment{The Icelandic lowercase letter `thorn', similar to a `p'
+      with an ascender rising from the stem.  It is unavailable
+      in \plain\ \TeX.}
+\endsetslot
+
+\setslot{\lc{SS}{germandbls}}
+   \comment{The letter `\ss'.}
+\endsetslot
+
+\endencoding
+%    \end{macrocode}
+% \iffalse
+%</t1-baskervald-lig>
+% \fi
+%
+% \iffalse
+%<*ts1-baskervald>
+% \fi
+%    \begin{macrocode}
+\relax
+
+\encoding
+
+\setstr{codingscheme}{TEX TEXT COMPANION 1---TS1 - BASKERVALD}
+
+\ifisglyph{x}\then
+   \setint{xheight}{\height{x}}
+\else
+   \setint{xheight}{500}
+\fi
+
+\ifisglyph{space}\then
+   \setint{interword}{\width{space}}
+\else\ifisglyph{i}\then
+   \setint{interword}{\width{i}}
+\else
+   \setint{interword}{333}
+\fi\fi
+
+\setint{italicslant}{0}
+
+\setint{fontdimen(1)}{\int{italicslant}}              % italic slant
+\setint{fontdimen(2)}{\int{interword}}                % interword space
+\setint{fontdimen(3)}{0}                              % interword stretch
+\setint{fontdimen(4)}{0}                              % interword shrink
+\setint{fontdimen(5)}{\int{xheight}}                  % x-height
+\setint{fontdimen(6)}{1000}                           % quad
+\setint{fontdimen(7)}{\int{interword}}                % extra space after .
+
+\nextslot{0}
+\setslot{capitalgrave}
+   \comment{The grave accent `\capitalgrave{}', intended for use with
+      capital letters.}
+\endsetslot
+
+\setslot{capitalacute}
+   \comment{The acute accent `\capitalacute{}', intended for use with
+      capital letters.}
+\endsetslot
+
+\setslot{capitalcircumflex}
+   \comment{The circumflex accent `\capitalcircumflex{}', intended for
+      use with capital letters.}
+\endsetslot
+
+\setslot{capitaltilde}
+   \comment{The tilde accent `\capitaltilde{}', intended for use with
+      capital letters.}
+\endsetslot
+
+\setslot{capitaldieresis}
+   \comment{The umlaut or dieresis accent `\capitaldieresis{}',
+      intended for use with capital letters.}
+\endsetslot
+
+\setslot{capitalhungarumlaut}
+   \comment{The long Hungarian umlaut `\capitalhungarumlaut{}',
+      intended for use with capital letters.}
+\endsetslot
+
+\setslot{capitalring}
+   \comment{The ring accent `\capitalring{}', intended for use with
+      capital letters.}
+\endsetslot
+
+\setslot{capitalcaron}
+   \comment{The caron or h\'a\v cek accent `\capitalcaron{}', intended
+      for use with capital letters.}
+\endsetslot
+
+\setslot{capitalbreve}
+   \comment{The breve accent `\capitalbreve{}', intended for use with
+      capital letters.}
+\endsetslot
+
+\setslot{capitalmacron}
+   \comment{The macron accent `\capitalmacron{}', intended for use with
+      capital letters.}
+\endsetslot
+
+\setslot{capitaldotaccent}
+   \comment{The dot accent `\capitaldotaccent{}', intended for use with
+      capital letters.}
+\endsetslot
+
+\setslot{cedilla}
+   \comment{The cedilla accent `\capitalcedilla{}', intended for use
+      with capital letters.}
+\endsetslot
+
+\setslot{ogonek}
+   \comment{The ogonek accent `\capitalogonek{}', intended for use with
+      capital letters.}
+\endsetslot
+
+\nextslot{13}
+\setslot{quotesinglbase}
+   \comment{A straight single quote mark on the baseline,
+      `\textquotestraightbase'.}
+\endsetslot
+
+\nextslot{18}
+\setslot{quotedblbase}
+   \comment{A straight double quote mark on the baseline,
+      `\textquotestraightdblbase'.}
+\endsetslot
+
+\nextslot{21}
+\setslot{twelveudash}
+   \comment{A 2/3~em dash, `\texttwelveudash'.}
+\endsetslot
+
+\setslot{threequartersemdash}
+   \comment{A 3/4~em dash, `\textthreequartersemdash'.}
+\endsetslot
+
+\nextslot{23}
+\setslot{capitalcompwordmark}
+    \comment{An invisible glyph, with zero width and depth, but the
+      height of capital letters.
+      It is used to stop ligaturing in words like `shelf{}ful'.}
+\endsetslot
+
+\nextslot{24}
+\setslot{arrowleft}
+   \comment{A left pointing arrow, `\textleftarrow', unavailable in
+      most PostScript fonts.}
+\endsetslot
+
+\setslot{arrowright}
+   \comment{A right pointing arrow, `\textrightarrow', unavailable in
+      most PostScript fonts.}
+\endsetslot
+
+\nextslot{26}
+\setslot{tieaccentlowercase}
+   \comment{The original tie accent `\t{}', intended for use with
+      lowercase letters.}
+\endsetslot
+
+\setslot{tieaccentcapital}
+   \comment{The tie accent `\capitaltie{}', intended for use with
+      capital letters.}
+\endsetslot
+
+\setslot{newtieaccentlowercase}
+   \comment{A new tie accent `\newtie{}', intended for use with
+      lowercase letters.}
+\endsetslot
+
+\setslot{newtieaccentcapital}
+   \comment{A new tie accent `\capitalnewtie{}', intended for use
+      with capital letters.}
+\endsetslot
+
+\nextslot{31}
+\setslot{ascendercompwordmark}
+    \comment{An invisible glyph, with zero width and depth, but the
+      height of lowercase letters with ascenders.
+      It is used to stop ligaturing in words like `shelf{}ful'.}
+\endsetslot
+
+\nextslot{32}
+\setslot{blank}
+   \comment{The blank indicator `\textblank', similar to the letter `b'
+      with an oblique bar throgh the stem.}
+\endsetslot
+
+\nextslot{36}
+\setslot{dollar}
+   \comment{The dollar sign `\textdollar'.}
+\endsetslot
+
+\nextslot{39}
+\setslot{quotesingle}
+   \comment{A straight single quote mark, `\textquotesingle'.}
+\endsetslot
+
+\nextslot{42}
+\setslot{asteriskcentered}
+   \comment{The centered asterisk, `\textasteriskcentered'.}
+\endsetslot
+
+\nextslot{44}
+\setslot{comma}
+   \comment{The decimal comma `,'.}
+\endsetslot
+
+\nextslot{45}
+\setslot{hyphendbl}
+   \comment{An alternate double hyphen, `\textdblhyphen'.}
+\endsetslot
+
+\nextslot{46}
+\setslot{period}
+   \comment{The decimal point `.'.}
+\endsetslot
+
+\nextslot{47}
+\setslot{fraction}
+   \comment{The fraction slash `\textfractionsolidus'.}
+\endsetslot
+
+\nextslot{48}
+\setslot{zerooldstyle}
+   \comment{The oldstyle number `\oldstylenums{0}'.}
+\endsetslot
+
+\setslot{oneoldstyle}
+   \comment{The oldstyle number `\oldstylenums{1}'.}
+\endsetslot
+
+\setslot{twooldstyle}
+   \comment{The oldstyle number `\oldstylenums{2}'.}
+\endsetslot
+
+\setslot{threeoldstyle}
+   \comment{The oldstyle number `\oldstylenums{3}'.}
+\endsetslot
+
+\setslot{fouroldstyle}
+   \comment{The oldstyle number `\oldstylenums{4}'.}
+\endsetslot
+
+\setslot{fiveoldstyle}
+   \comment{The oldstyle number `\oldstylenums{5}'.}
+\endsetslot
+
+\setslot{sixoldstyle}
+   \comment{The oldstyle number `\oldstylenums{6}'.}
+\endsetslot
+
+\setslot{sevenoldstyle}
+   \comment{The oldstyle number `\oldstylenums{7}'.}
+\endsetslot
+
+\setslot{eightoldstyle}
+   \comment{The oldstyle number `\oldstylenums{8}'.}
+\endsetslot
+
+\setslot{nineoldstyle}
+   \comment{The oldstyle number `\oldstylenums{9}'.}
+\endsetslot
+
+\nextslot{60}
+\setslot{angbracketleft}
+   \comment{The opening angle bracket `\textlangle', unavailable in
+      most PostScript fonts.}
+\endsetslot
+
+\nextslot{61}
+\setslot{minus}
+   \comment{The subtraction sign `\textminus'.}
+\endsetslot
+
+\nextslot{62}
+\setslot{angbracketright}
+   \comment{The closing angle bracket `\textrangle', unavailable in
+      most PostScript fonts.}
+\endsetslot
+
+\nextslot{77}
+\setslot{Omegainv}
+   \comment{The inverted Ohm sign `\textmho', unavailable in most fonts.}
+\endsetslot
+
+\nextslot{79}
+   \comment{A circle `\textbigcircle', big enough to enclose a letter
+      as in `\textcopyright' or `\textregistered'.}
+\setslot{bigcircle}
+\endsetslot
+
+\nextslot{87}
+\setslot{Omega}
+   \comment{The upright Ohm sign `\textohm', unavailable in most fonts.
+      Even if it is available in Mac-encoded fonts, it isn't directly
+      accessible in the 8r or 8y encodings.}
+\endsetslot
+
+\nextslot{91}
+\setslot{openbracketleft}
+   \comment{The opening double square bracket `\textlbrackdbl',
+      unavailable in most PostScript fonts.}
+\endsetslot
+
+\nextslot{93}
+\setslot{openbracketright}
+   \comment{The closing double square bracket `\textrbrackdbl',
+      unavailable in most PostScript fonts.}
+\endsetslot
+
+\nextslot{94}
+\setslot{arrowup}
+   \comment{An upwards pointing arrow `\textuparrow', unavailable in
+      most PostScript fonts.}
+\endsetslot
+
+\nextslot{95}
+\setslot{arrowdown}
+   \comment{An downwards pointing arrow `\textdownarrow', unavailable
+      in most PostScript fonts.}
+\endsetslot
+
+\nextslot{96}
+\setslot{asciigrave}
+   \comment{An ASCII-style grave `\textasciigrave'. This is supposed
+      to be a character by itself rather than a combining accents.}
+\endsetslot
+
+\nextslot{98}
+\setslot{born}
+   \comment{The born symbol `\textborn', unavailable in most PostScript
+      fonts.}
+\endsetslot
+
+\nextslot{99}
+\setslot{divorced}
+   \comment{The divorced symbol `\textdivorced', unavailable in most
+      PostScript fonts.}
+\endsetslot
+
+\nextslot{100}
+\setslot{died}
+   \comment{The died symbol `\textdied', unavailable in most PostScript
+      fonts.}
+\endsetslot
+
+\nextslot{108}
+\setslot{leaf}
+   \comment{The leaf symbol `\textleaf', unavailable in most PostScript
+      fonts.}
+\endsetslot
+
+\nextslot{109}
+\setslot{married}
+   \comment{The married symbol `\textmarried', unavailable in most
+      PostScript  fonts.}
+\endsetslot
+
+\nextslot{110}
+\setslot{musicalnote}
+   \comment{A musical note symbol `\textmusicalnote', unavailable in
+      most PostScript fonts.}
+\endsetslot
+
+\nextslot{126}
+\setslot{tildelow}
+   \comment{A lowered tilde `\texttildelow'.  In most PostScript fonts
+      it can be substituted by `asciitilde', while `\textasciitilde'
+      is supposed to be a raised `tilde'.}
+\endsetslot
+
+\nextslot{127}
+\setslot{hyphendblchar}
+    \comment{The glyph used for hyphenation in this font, which will
+      almost always be the same as `hyphendbl'.}
+\endsetslot
+
+\nextslot{128}
+\setslot{asciibreve}
+   \comment{An ASCII-style breve `\textasciibreve'. This is supposed
+      to be a character by itself rather than a combining accents.}
+\endsetslot
+
+\setslot{asciicaron}
+   \comment{An ASCII-style caron `\textasciicaron'. This is supposed
+      to be a character by itself rather than a combining accents.}
+\endsetslot
+
+\setslot{asciiacutedbl}
+   \comment{An ASCII-style double tick mark, `\textacutedbl'.}
+\endsetslot
+
+\setslot{asciigravedbl}
+   \comment{An ASCII-style double backtick mark, `\textgravedbl'.}
+\endsetslot
+
+\setslot{dagger}
+   \comment{The single dagger `\textdagger'.}
+\endsetslot
+
+\setslot{daggerdbl}
+   \comment{The double dagger `\textdaggerdbl'.}
+\endsetslot
+
+\setslot{bardbl}
+   \comment{The double vertical bar `\textbardbl'.}
+\endsetslot
+
+\setslot{perthousand}
+   \comment{The perthousand sign `\textperthousand'.}
+\endsetslot
+
+\setslot{bullet}
+   \comment{The centered bullet `\textbullet'.}
+\endsetslot
+
+\setslot{centigrade}
+   \comment{The degree centigrade symbol `\textcelsius'.}
+\endsetslot
+
+\setslot{dollaroldstyle}
+   \comment{An oldstyle dollar sign `\textdollaroldstyle'.}
+\endsetslot
+
+\setslot{centoldstyle}
+   \comment{An oldstyle cent sign `\textcentoldstyle'.}
+\endsetslot
+
+\setslot{florin}
+   \comment{The florin sign `\textflorin'.}
+\endsetslot
+
+\setslot{colonmonetary}
+   \comment{The Colon currency sign `\textcolonmonetary', similar to
+      a capital `C' with a vertical bar through the middle.}
+\endsetslot
+
+\setslot{won}
+   \comment{The Won currency sign `\textwon', similar to a capital `W'
+      with two horizontal bars.}
+\endsetslot
+
+\setslot{naira}
+   \comment{The Naira currency sign `\textnaira', similar to a
+      capital `N' with two horizontal bars.}
+\endsetslot
+
+\setslot{guarani}
+   \comment{The Guarani currency sign `\textguarani',  similar to
+      a capital `G' with a vertical bar through the middle.}
+\endsetslot
+
+\setslot{peso}
+   \comment{The Peso currency sign `\textpeso', similar to a capital `P'
+      with a horizontal bar through the bowl or below the bowl.}
+\endsetslot
+
+\setslot{lira}
+   \comment{The Lira currency sign `\textlira', similar to a sterling
+      sign `\textsterling' with two horizontal bars.}
+\endsetslot
+
+\setslot{recipe}
+   \comment{The recipe symbol `\textrecipe', similar to a capital `R'
+      with an oblique bar through the tail.}
+\endsetslot
+
+\setslot{interrobang}
+   \comment{The interrobang symbol `\textinterrobang', similar to
+      a combination of an exclamation mark and a question mark.}
+\endsetslot
+
+\setslot{interrobangdown}
+   \comment{The inverted interrobang symbol `\textinterrobangdown',
+      similar to a combination of an inverted exclamation mark
+      and an inverted question mark.}
+\endsetslot
+
+\setslot{dong}
+   \comment{The Dong currency sign `\textdong', similar to a lowercase
+      `d'  with a horizontal bar through the stem and another bar below
+      the letter.}
+\endsetslot
+
+\setslot{trademark}
+   \comment{The trademark sign `\texttrademark', similar to the raised
+     letters `TM'.}
+\endsetslot
+
+\setslot{pertenthousand}
+   \comment{The pertenthousand sign `\textpertenthousand', unavailable
+     in most PostScript fonts.}
+\endsetslot
+
+\setslot{pilcrow}
+   \comment{The pilcrow mark `\textpilcrow', similar to a paragraph
+      mark `\textparagraph' with a single stem.}
+\endsetslot
+
+\setslot{baht}
+   \comment{The Baht currency sign `\textbaht', similar to a capital `B'
+      with a vertical bar through the middle.}
+\endsetslot
+
+\setslot{numero}
+   \comment{The numero sign `\textnumero', similar to the letter `N'
+      with a raised `o', unavailable in most PostScript fonts.}
+\endsetslot
+
+\setslot{discount}
+   \comment{The discount sign `\textdiscount', similar to a stylized
+      percent sign, unavailable in most PostScript fonts.}
+\endsetslot
+
+\setslot{estimated}
+   \comment{The estimated sign `\textestimated', similar to an enlarged
+      lowercase `e', unavailable in most PostScript fonts.}
+\endsetslot
+
+\setslot{openbullet}
+   \comment{The centered open bullet `\textopenbullet'', unavailable
+      in most PostScript fonts.}
+\endsetslot
+
+\setslot{servicemark}
+   \comment{The service mark sign `\textservicemark', similar to the
+      raised letters `SM', unavailable in most PostScript fonts.}
+\endsetslot
+
+\nextslot{160}
+\setslot{quillbracketleft}
+   \comment{The opening quill bracket `\textlquill', unavailable in
+      most PostScript fonts.}
+\endsetslot
+
+\setslot{quillbracketright}
+   \comment{The closing quill bracket `\textrquill', unavailable in
+      most PostScript fonts.}
+\endsetslot
+
+\setslot{cent}
+   \comment{The cent sign `\textcent'.}
+\endsetslot
+
+\setslot{sterling}
+   \comment{The British currency sign, `\textsterling'.}
+\endsetslot
+
+\setslot{currency}
+   \comment{The international currency sign, `\textcurrency'.}
+\endsetslot
+
+\setslot{yen}
+   \comment{The Japanese currency sign, `\textyen'.}
+\endsetslot
+
+\setslot{brokenbar}
+   \comment{A broken vertical bar, `\textbrokenbar', similar to
+      `\textbar' with a gap through the middle.}
+\endsetslot
+
+\setslot{section}
+   \comment{The section mark `\textsection'.}
+\endsetslot
+
+\setslot{asciidieresis}
+   \comment{An ASCII-style dieresis `\textasciidieresis'. This is
+       supposed to be character by itself  rather than an accents.}
+\endsetslot
+
+\setslot{copyright}
+   \comment{The copyright sign `\textcopyright',  similar to a small
+       letter `C' enclosed by a circle.}
+\endsetslot
+
+\setslot{ordfeminine}
+   \comment{The raised letter `\textordfeminine'.}
+\endsetslot
+
+\setslot{copyleft}
+   \comment{The reversed copyright sign `\textcopyleft', similar to
+      a small reversed `C' enclosed by a circle.}
+\endsetslot
+
+\setslot{logicalnot}
+   \comment{The logical not sign `\textlnot'.}
+\endsetslot
+
+\setslot{circledP}
+   \comment{A small letter `P' enclosed by a circle, `\textcircledP',
+      unavailable in most fonts.}
+\endsetslot
+
+\setslot{registered}
+   \comment{The registered trademark sign `\textregistered', similar to
+      a small letter `R' enclosed by a circle.}
+\endsetslot
+
+\setslot{asciimacron}
+   \comment{An ASCII-style macron `\textasciimacron'. This is supposed
+      to be a character by itself rather than a combining accents.}
+\endsetslot
+
+\setslot{degree}
+   \comment{The degree sign `\textdegree'.}
+\endsetslot
+
+\setslot{plusminus}
+   \comment{The plus or minus sign `\textpm'.}
+\endsetslot
+
+\setslot{twosuperior}
+   \comment{The raised digit `\texttwosuperior'.}
+\endsetslot
+
+\setslot{threesuperior}
+   \comment{The raised digit `\textthreesuperior'.}
+\endsetslot
+
+\setslot{asciiacute}
+   \comment{An ASCII-style acute `\textasciiacute'. This is supposed
+      to be a character by itself rather than a combining accents.}
+\endsetslot
+
+\setslot{mu}
+   \comment{The lowercase Greek letter `\textmu', intended  for use as
+      a prefix `micro' in physical units.}
+\endsetslot
+
+\setslot{paragraph}
+   \comment{The paragraph mark `\textparagraph'.}
+\endsetslot
+
+\setslot{periodcentered}
+   \comment{The centered period `\textperiodcentered'.}
+\endsetslot
+
+\setslot{referencemark}
+   \comment{The reference mark `\textreferencemark', similar to
+      a combination of the `multiply' and `divide' symbols.}
+\endsetslot
+
+\setslot{onesuperior}
+   \comment{The raised digit `\textonesuperior'.}
+\endsetslot
+
+\setslot{ordmasculine}
+   \comment{The raised letter `\textordmasculine'.}
+\endsetslot
+
+\setslot{radical}
+   \comment{The radical sign `\textsurd', unavailable in most fonts.
+      Even if it is available in Mac-encoded fonts, it isn't directly
+      accessible in the 8r or 8y encodings.}
+\endsetslot
+
+\setslot{onequarter}
+   \comment{The fraction `\textonequarter'.}
+\endsetslot
+
+\setslot{onehalf}
+   \comment{The fraction `\textonehalf'.}
+\endsetslot
+
+\setslot{threequarters}
+   \comment{The fraction `\textthreequarters'.}
+\endsetslot
+
+\setslot{euro}
+   \comment{The European currency sign, similar to `\texteuro'.}
+\endsetslot
+
+
+\nextslot{214}
+\setslot{multiply}
+   \comment{The multiplication sign `\texttimes'.
+      This symbol was originally intended to be put into slot~215,
+      but ended up in this slot by mistake, at which time it was
+      considered too late to change it.}
+\endsetslot
+
+\nextslot{225}
+\setslot{zeroslash}
+\endsetslot
+
+\nextslot{246}
+\setslot{divide}
+   \comment{The divison sign `\textdiv'.
+      This symbol was originally intended to be put into slot~247,
+      but ended up in this slot by mistake, at which time it was
+      onsidered too late to change it.}
+\endsetslot
+
+\endencoding
+%    \end{macrocode}
+% \iffalse
+%</ts1-baskervald>
+% \fi
+%
+%\Finale
+%^^A vim: tw=80:

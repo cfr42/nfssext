@@ -1,0 +1,765 @@
+% \iffalse meta-comment
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% baskervaldadf.dtx
+% Additions and changes Copyright (C) 2010-2024 Clea F. Rees.
+% Code from skeleton.dtx Copyright (C) 2015-2024 Scott Pakin (see below).
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   https://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2008-05-04 or later.
+%
+% This work has the LPPL maintenance status `maintained'.
+%
+% The Current Maintainer of this work is Clea F. Rees.
+%
+% This work consists of all files listed in manifest.txt.
+%
+% The file baskervaldadf.dtx is a derived work under the terms of the
+% LPPL. It is based on version 2.4 of skeleton.dtx which is part of 
+% dtxtut by Scott Pakin. A copy of dtxtut, including the 
+% unmodified version of skeleton.dtx is available from
+% https://www.ctan.org/pkg/dtxtut and released under the LPPL.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \fi
+%
+% \iffalse
+%<@@=baskervald>
+%<*driver>
+\RequirePackage{svn-prov}
+\ProvidesFileSVN{$Id: baskervaldadf.dtx 10177 2024-07-26 04:44:10Z cfrees $}[v0.0 \revinfo][\filebase DTX: BaskervaldADF for 8-bit engines]
+\DefineFileInfoSVN[baskervaldadf]
+\documentclass[11pt,british]{l3doc}
+% l3doc loads fancyvrb
+% fancyvrb overwrites svn-prov's macros without warning
+% restore \fileversion \filerev
+\GetFileInfoSVN{baskervaldadf}
+\EnableCrossrefs
+\CodelineIndex
+\RecordChanges
+% \OnlyDescription
+\DoNotIndex{\verb,\ProvidesPackageSVN,\NeedsTeXFormat,\ProcessKeyOptions}
+\usepackage{babel}
+\usepackage{lmodern}
+\renewcommand{\ttdefault}{lmvtt}
+\let\origrmdefault\rmdefault
+\DeclareRobustCommand{\origrmfamily}{%
+  \fontencoding{T1}%
+  \fontfamily{\origrmdefault}%
+  \selectfont}
+\DeclareTextFontCommand{\textorigrm}{\origrmfamily}
+\usepackage[]{ baskervald}
+\pdfmapfile{ybv.map}	% not necessary for installed package
+\pdfmapfile{+pdftex.map}	% not necessary for installed package
+\usepackage{fancyhdr}
+\usepackage{fixfoot}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{xurl}
+\urlstyle{tt}
+\usepackage{microtype}
+\usepackage[a4paper,headheight=14pt]{geometry}	% use 14pt for 11pt text, 15pt for 12pt text
+\usepackage{csquotes}
+\MakeAutoQuote{‘}{’}
+\MakeAutoQuote*{“}{”}
+\usepackage{caption}
+\DeclareCaptionFont{lf}{\lstyle}
+\captionsetup[table]{labelfont=lf}
+% sicrhau hyperindex=false: llwytho CYN bookmark
+\usepackage{hypdoc}% ateb Ulrike Fischer: https://tex.stackexchange.com/a/695555/
+\usepackage{bookmark}
+\hypersetup{%
+  colorlinks=true,
+  citecolor={moss},
+  extension=pdf,
+  linkcolor={strawberry},
+  linktocpage=true,
+  pdfcreator={TeX},
+  pdfproducer={pdfeTeX},
+  urlcolor={blueberry}%
+}
+\usepackage{fancyref}
+\title{\filebase}
+\author{Clea F. Rees\thanks{%
+    Bug tracker:
+  \href{https://codeberg.org/cfr/nfssext/issues}{\url{codeberg.org/cfr/nfssext/issues}}
+  \textbar{} Code:
+  \href{https://codeberg.org/cfr/nfssext}{\url{codeberg.org/cfr/nfssext}}
+  \textbar{} Mirror:
+  \href{https://github.com/cfr42/nfssext}{\url{github.com/cfr42/nfssext}}% 
+}}
+\date{\fileversion~\filetoday}
+\pagestyle{fancy}
+\fancyhf[lh]{\itshape\filebase~\fileversion}
+\fancyhf[rh]{\itshape\filetoday}
+\fancyhf[ch]{}
+\fancyhf[lf]{}
+\fancyhf[rf]{}
+\fancyhf[cf]{--- \thepage~/~\lastpage{} ---}
+\ExplSyntaxOn
+\hook_gput_code:nnn {shipout/lastpage} {.}
+{
+  \property_record:nn {t:lastpage}{abspage,page,pagenum}
+}
+\cs_new_protected_nopar:Npn \lastpage 
+{
+  \property_ref:nn {t:lastpage}{page}
+}
+\ExplSyntaxOff
+\definecolor{strawberry}{rgb}{1.000,0.000,0.502}
+\definecolor{blueberry}{rgb}{0.000,0.000,1.000}
+\definecolor{moss}{rgb}{0.000,0.502,0.251}
+\begin{document}
+  \DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+% 
+% \maketitle\thispagestyle{empty}
+% \pdfinfo{%
+% 	/Creator		(TeX)
+% 	/Producer		(pdfTeX)
+% 	/Author			(Clea F. Rees)
+% 	/Title			(baskervaldadf)
+% 	/Subject		(TeX)
+% 	/Keywords		(TeX,LaTeX,font,fonts,tex,latex,Baskervald,baskervald,baskervaldadf,BaskervaldADF,ADF,adf,Arkandis,Digital,Foundry,arkandis,digital,foundry,Hirwen,Harendal,Clea,Rees)}
+% \pdfcatalog{%
+% 	/URL				()
+% 	/PageMode	/UseOutlines}	^^A other values: /UseNone, /UseOutlines, /UseThumbs, /FullScreen
+% 	^^A[openaction <actionspec>]
+% \setlength{\parindent}{0pt}
+% \setlength{\parskip}{0.5em}
+%	
+%	
+% \newcommand*{\adf}{ADF}
+% \newcommand*{\lpack}[1]{\textsf{#1}}
+% \newcommand*{\fgroup}[1]{\textsf{#1}}
+% \newcommand*{\fname}[1]{\textsf{#1}}
+%
+% \begin{abstract}
+% 	\hspace*{-\parindent}Hirwen Harendal, Arkandis Digital Foundry (\adf) has produced the Baskervald \adf\ font collection.
+% This guide outlines the \TeX/\LaTeX\ support provided by \lpack{baskervaldadf} for version 1.016 of the fonts.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Introduction}
+%
+% This document explains how to use the \TeX/\LaTeX\ support provided for version 1.016 of the Baskervald \adf\ font collection developed by Hirwen Harendal of the Arkandis Digital Foundry (\adf). \lpack{baskervaldadf} includes copies of the fonts in postscript type 1 format. Further  information about the fonts themselves and alternative font formats for use with other programmes can be found at \url{http://arkandis.tuxfamily.org/adffonts.html}. The fonts are released under the \MakeUppercase{gnu} General Public License as published by the Free Software Foundation; either version 2 of the License, or any later version, with font exception. For details, see \MakeUppercase{notice}.txt and \MakeUppercase{ctan} but you can always comment out the relevant lines in \path{baskervaldadf.tex} if you wish.
+%
+% \section{The support package}\label{sec:support}
+% 
+% \subsection{Encodings}\label{sec:encs}
+% 
+% The package supports modified \MakeUppercase{ec}/\MakeUppercase{t1} and Text Companion (\MakeUppercase{ts1}) encodings. Most characters in the \MakeUppercase{ec} encoding are available and the fonts provide a small number of characters from the \MakeUppercase{ts1} encoding as well, including the \texteuro. The regular version of the \MakeUppercase{ec}/\MakeUppercase{t1} encoding (\path{t1-baskervald.enc}) reassigns two slots which would otherwise be empty due to missing glyphs which \path{fontinst} cannot fake. In the \MakeUppercase{t1} encoding, these slot are standardly used for the Sami Eng/eng characters (\textorigrm{\NG}/\textorigrm{\ng}) . \path{t1-baskervald.enc} uses these slots for the non-standard ligatures ‘fj’ and ‘ffj’. The fonts also lack the unfakable per thousand zero. Although this slot remains in the regular version of the encoding, it is empty due to the lack of a suitable glyph.
+% 
+% The ‘ligature’ version of the \MakeUppercase{ec}/\MakeUppercase{t1} encoding (\path{t1-baskervald-lig.enc}) provides access to the full range of ligatures available: \textswash{‘ct’, ‘sp’ and ‘st’}. Because further slots are required to accommodate the relevant glyphs, a number of characters normally available in the \MakeUppercase{ec} encoding are unavailable. These are the \MakeUppercase{ascii} tilde (\textasciitilde), the \MakeUppercase{ascii} upward-pointing arrow head (\textasciicircum) and the ‘neutral’ double quotation mark (\textquotedbl). Attempting to access these characters while using the ligature versions of the fonts may result in errors of various kinds and will certainly produce unexpected output even though the characters are provided by the fonts, as the previous sentence demonstrates. To access these glyphs, ensure that the regular version of the fonts is active.
+% 
+% \subsection{\LaTeX\ package}
+% 
+% To use the fonts in a \LaTeX\ document, add \verb|\usepackage{baskervald}| to your document preamble. This will set the default serif/roman family to \fname{ybv} (\fgroup{baskervald}) and enable access to the additional glyphs available in the other family. The package supports the single option \verb|lig|. Loading \lpack{baskervald} with this option will select the ‘ligature’ version as the default serif/roman family. \textbf{\emph{This option is not recommended unless you are \emph{certain} you do not wish to access any of the characters described in \fref{sec:encs}.}} You should also note that this option will mean all of the additional ligatures will be active, which may not be what you want.
+% 
+% Note that loading \path{baskervald.sty} will not affect the default sans-serif or typewriter families.
+% 	
+% \section{Additional font selection commands}\label{sec:commands}
+% 
+% 	The \LaTeX\ package \lpack{baskervald}\ loads \lpack{nfssext-cfr}\ which is an extension of the package \lpack{nfssext}\ supplied by Philipp Lehman as part of The Font Installation Guide. The file extends the font selection commands to facilitate access to various font features. Both the original and the extension are designed for use with a wide range of fonts. For this reason, only a subset of the additional commands are relevant to any particular font support package. Those relevant to \lpack{baskervaldadf}\ are described below.
+% 	
+% See \lpack{nfssext-cfr} for further details, caveats and changes affecting use
+% on post-2020 kernels.
+% 	
+% \subsection{nfssext-cfr}
+% 
+% These commands are available when \lpack{baskervald} is loaded. If for some reason you wish to make them available when no relevant package is loaded, use \verb|\usepackage{nfssext-cfr}| in your document preamble.
+% 
+% \subsubsection{Weights}
+% 
+% \begin{table}
+%   \centering
+%   \caption{Weights}\label{tab:weights}
+% 	\begin{tabular}{lll}
+% 		\toprule
+% 		\textbf{weight}		&	\textbf{weight command}	&	\textbf{text command}\\\midrule
+% 		heavy							&	\verb|\ebweight|					&	\verb|\texteb{}|\\
+%    \bottomrule
+% 	\end{tabular}
+% \end{table}
+% 	
+% The commands in \fref{tab:weights} work in the same way as the standard \LaTeX\ commands for switching to bold text, for example.
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+  \texteb{Heavy and \textsl{heavy oblique}}
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% produces:
+%	\begin{center}
+%		\texteb{Heavy and \textsl{heavy oblique}}
+%	\end{center}
+% 	
+% \subsubsection{Styles}
+% 
+% \begin{table}
+%   \centering
+%   \caption{Styles}\label{tab:styles}
+%	\begin{tabular}{llll}
+%		\toprule
+%		\textbf{style}								&	\textbf{style command}	&	\textbf{text command}	&	\textbf{effect}\\\midrule
+%		ligature/script/swash				&	\verb|\swashstyle|				&	\verb|\textswash{}|			&	additional ligatures\\
+%   \bottomrule
+%	\end{tabular}
+% \end{table}
+% 		
+%	\verb|\swashstyle| and \verb|\textswash{}| switch to the ‘ligature’ family
+%	(\fgroup{ybvw}) (\fref{tab:styles}). 
+% Within the scope of these commands:
+%	\begin{itemize}
+%		\item \verb|ct|, \verb|sp| and \verb|st| will typeset the corresponding ligature (\textswash{ct}/\textswash{sp}/\textswash{st});
+%		\item attempting to typeset certain standard characters will produce unexpected results (see \fref{sec:encs}).
+%	\end{itemize}
+% 	
+%	For example, suppose that \lpack{baskervald}\ was loaded and the following commands set up:
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+  \newcommand{\fytext}{%
+    Sphinx of black quartz, judge my vow.\smallskip\par
+    Somewhat splendid fjords act last.}
+  \newcommand{\fytest}{%
+    \fytext\smallskip\par
+    \textit{\fytext}}
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% \newcommand{\fytext}{%
+%     Sphinx of black quartz, judge my vow.\smallskip\par
+%     Somewhat splendid fjords act last.}
+%   \newcommand{\fytest}{%
+%     \fytext\smallskip\par
+%     \textit{\fytext}}
+%	Then:
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+\begin{center}
+  --- ‘regular’ ---\smallskip\par
+  \fytest\medskip\par
+  --- ‘ligature’ ---\smallskip\par
+  \swashstyle			
+  \fytest
+\end{center}
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% produces:
+% \begin{center}
+%   --- ‘regular’ ---\smallskip\par
+%   \fytest\medskip\par
+%   --- ‘ligature’ ---\smallskip\par
+%   \swashstyle			
+%   \fytest
+% \end{center}
+% 		
+% \subsection{The slashed zero (\zeroslash)}
+% 
+% Both of the modified \MakeUppercase{t1} encodings used by \lpack{baskervaldadf} include a non-standard ligature to accommodate the slashed zero. Provided \lpack{baskervald} is loaded and the default serif/roman family is active, \verb|\zeroslash| will produce the slashed zero (\zeroslash). 
+% 	
+% \changes{v??}{2010/07/13}{First public release.}
+% \changes{\fileversion}{\filedate}{Belated update for (New) NFSS and revised nfssext-cfr.
+% Try switching to DTX/INS.}
+%
+% 
+% \appendix
+% 
+% \DeclareFixedFootnote \fnupdmap {%
+%   See, for example, \href{https://tex.stackexchange.com/q/255709/}{Why shouldn't I use \texttt{getnonfreefonts} to install additional fonts? Why shouldn't I use \texttt{updmap} when installing or removing fonts?}.}
+% 
+% \section{Installation}
+% 
+% \textbf{The vast majority of users should IGNORE this section entirely.}
+% \lpack{ baskervaldadf} is included in all major \TeX{} distributions and should be installed as part of your \TeX{} installation.
+% Installing the package yourself should be done only as a last resort or an educational exercise.
+% 
+% Note, in particular, that this version of \lpack{ baskervaldadf} should \textbf{not} be installed on older \LaTeX{} kernels as it is designed to work with the (New) New Font Selection Scheme, as updated around 2020\footnote{%
+%   The package should\texttrademark{} work fine on older kernels, but the new version is bound to have some bugs and there is no reason to use it on these systems.
+%   The sole purpose of the update is to accommodate the breaking changes made to font selection.
+%   If you don't have those changes installed locally, nothing should be broken and the newer version of \lpack{ baskervaldadf} offers no advantage at all.%
+% }.
+% Use the initial release of \lpack{ baskervaldadf} if your installation of \LaTeX{} predates those changes.
+% 
+% Installation varies with \TeX\ distribution so you should consult the documentation which came with your system for details.
+% In most cases, you will need to perform three steps:
+% \begin{enumerate}
+%   \item move or copy the package files to appropriate locations on your system;
+%   \item refresh the \TeX\ database;
+%   \item incorporate the included map file fragments for the different engines your distribution supports.
+% \end{enumerate}
+% 
+% The following instructions assume you are using \TeX~Live\footnote{This includes Mac\TeX\ for OS X users.}. 
+% They should not be too difficult to adapt if you are using a different distribution.
+% 
+% \subsection{Install the files}
+% 
+% The files should be installed in one of two locations: \emph{either} the local system-wide \TeX\ tree \emph{or} your personal tree.
+% If the package is installed system-wide, all users will have access to it.
+% On the other hand, you may need privileges you do not have to do this in which case you must use your personal tree.
+% 
+% \textbf{There are serious disadvantages to installing the package into your personal tree.
+% In particular, these pertain to use of \verb|updmap --user| rather than \verb|updmap --sys|.
+% If you are not aware of these disadvantages, please ensure you are fully cognisant of them before proceeding\fnupdmap.
+% Merely removing the package from your personal tree at a later point will \emph{not} undo the effects.}
+% 
+% For \TeX~Live, \verb|kpsewhich -var-value TEXMFLOCAL| will return the path to the local tree and \verb|kpsewhich -var-value TEXMFHOME| the path to your personal tree. 
+% The package already includes a hierarchy of files to help you install them correctly.
+% Ignoring any symbolic link in the top directory, move or copy the files in \path{doc}, \path{fonts} and \path{tex} into the appropriate locations.
+% If the tree is initially empty, you can simply move or copy the directories in as they are.
+% If the tree already contains other packages, you may need to merge the package hierarchy with the pre-existing one.
+% For example, if you already have a \path{doc/fonts} directory, move or copy \path{doc/fonts/ baskervald} into \path{doc/fonts/}.
+% If you have a \path{doc} directory but not a \path{doc/fonts}, move \path{doc/fonts} into \path{doc/}.
+% 
+% \subsection{Refresh the database}
+% 
+% Again, this depends on your distribution. For \TeX~Live, \verb|mktexlsr <path to directory>| for the directory you used in the first step should do the trick.
+% Note that you \emph{may} be able to skip this step if you install into your personal tree.
+% Whether this is so depends on the details of your set-up.
+% As a test, move to a directory containing none of the package files and try \verb|kpsewhich  baskervald.sty|.
+% If the file is found, you don't need to refresh the database; otherwise use \verb|mktexlsr| and then try again.
+% 
+% \subsection{Install the map fragments}
+% 
+% For \TeX~Live, there are at least two ways of doing this. 
+% The second method varies according to the version of \TeX~Live and instructions are provided accordingly.
+% Both methods depend on whether you installed into \verb|TEXMFLOCAL| or \verb|TEXMFHOME|.
+% If you installed system-wide, the choice is relatively straightforward --- it obviously makes sense in that case to update the font maps system-wide as well.
+% 
+% If, on the other hand, you installed into your personal tree, the matter is more complex. 
+% On the one hand, updating the system-wide maps may create difficulties or confusion for other users because while the map files will list the fonts as available, they will not be able to access them.
+% On the other hand, maintaining personal font map files can produce difficulties and confusions of its own\fnupdmap.
+% Whether it is to be preferred or not is a complex issue and depends on the details of your \TeX\ distribution, local configuration and personal preference. 
+% The one clear case is that in which you install into your personal tree because you lack the privileges needed to install system-wide. 
+% In that case, you have no choice but to maintain personal font map files or forgo the use of all fonts not provided by your administrator.
+% Other cases are thankfully beyond the scope of this document.
+% 
+% \subsubsection{Method 1}
+% 
+% If you installed the package system-wide, use the command:
+% \iffalse
+%^^A ateb Heiko Oberdiek: https://tex.stackexchange.com/a/172896/
+%^^A dyw hwn ddim yn gweithio tu mewn i arg macro! 
+%^^A (*wrth gwrs* dyw e ddim yn weithio! wyt ti'n *hollol* dwp?)
+%<*verb>
+% \fi
+\begin{verbatim}
+  updmap-sys --enable Map=ybv.map
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+%
+% If you installed the package in your personal tree, you \emph{may} prefer\fnupdmap:
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+  updmap --enable Map=ybv.map
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% Either way, \verb|updmap| will output a good deal of information after each incantation.
+% This is normal.
+% Just check that it does not end with an error and that it found the new map file.
+% 
+% \subsubsection{Method 2: \TeX~Live 2008 (and probably earlier)}
+% 
+% If you installed the package system-wide, use \verb|updmap-sys --edit|.
+% 
+% If you installed into your personal tree, you \emph{may} prefer to use	\verb|updmap --edit|\fnupdmap.
+% 
+% Either way, a configuration file will be opened which you can edit.
+% Move to the end of the file and add the following line:
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+  Map ybv.map
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% When you are done, save the file.
+% \verb|updmap| or \verb|updmap-sys| will produce a great deal of output if all is well. 
+% Just check that it does not end with an error and that \path{ybv.map} is found.
+% 
+% \subsubsection{Method 2: \TeX~Live 2009 (and possibly later)}
+% 
+% If you installed the package system-wide, edit or or create \path{TEXMFLOCAL/web2c/updmap-local.cfg} and add the following line to the end of the file:
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+  Map ybv.map
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% Save the file and tell \verb|tlmgr| to merge in your addition using the command:
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+  tlmgr generate updmap
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% \verb|tlmgr| will then tell you that you need to ensure the changes are propagated correctly by calling \verb|updmap-sys|. 
+% This should produce a great deal of output.
+% Check that it finds the new map file and does not end with an error.
+% 
+% If you installed into your personal tree, you \emph{may} prefer to use \verb|updmap --edit| as described above for \TeX~Live 2008\fnupdmap.
+% 
+% \subsubsection{Method 3: Current/Recent \TeX~Live}
+% 
+% If you installed the package system-wide, tell \cs{updmap} to enable the map file:
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+  updmap --sys --enable Map=ybv.map
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% This should produce a great deal of output.
+% Check that it finds the new map file and does not end with an error.
+% 
+% If you installed into your personal tree, you \emph{could} use \verb|updmap --user| in place of \verb|updmap --sys| as described above for \TeX~Live 2008, but this is \textbf{not} recommended\fnupdmap.
+% 
+% To test your installation and that the package works on your system, latex this file (\path{ baskervaldadf.tex}).
+% The console output and/or log should tell you whether any fonts were not found. 
+% If you are careful not to overwrite it, you may also compare your output with \path{ baskervaldadf.pdf}.%
+% 
+% \MaybeStop{%
+% \PrintChanges
+% \PrintIndex
+% }
+% 
+% \section{Implementation}
+%
+% You do not need to read the remainder of this document in order to install
+% or use the fonts.
+%
+% \iffalse
+%<*sty>
+% \fi
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}
+\RequirePackage{svn-prov}
+\ProvidesPackageSVN[baskervald.sty]{$Id: baskervaldadf.dtx 10177 2024-07-26 04:44:10Z cfrees $}[\filebase v1.0 \revinfo]
+\DefineFileInfoSVN[baskervald]
+\RequirePackage[T1]{fontenc}
+\RequirePackage{nfssext-cfr}
+%    \end{macrocode}
+% \lpack{nfssext-cfr} provides \cs{ProcessKeyOptions}, \cs{IfFormatAtLeastTF} on older kernels.
+%    \begin{macrocode}
+\IfFormatAtLeastTF {2020-02-02}{%
+%    \end{macrocode}
+% To get the oldstyle numbers etc.\ used from TS1, we need to set the subset to 0 or 1.
+% Unfortunately, this means characters missing from the fonts will not use default symbols as fallback, but this seems to be unavoidable.
+%    \begin{macrocode}
+  \DeclareEncodingSubset{TS1}{ybv}{1}%
+  \DeclareEncodingSubset{TS1}{ybvw}{1}%
+}{%
+  \RequirePackage{textcomp}}
+\ExplSyntaxOn
+%    \end{macrocode}
+% The actual \verb|sty| is ultra simple.
+% Four options of which only three are actually needed.
+% \texttt{lig} sets additional ligatures (swash) or not.
+% Two booleans suffice.
+% \texttt{scale} takes a factor by which to scale the fonts.
+% This is empty by default, which is equivalent to \texttt{1}, but more efficient.
+%    \begin{macrocode}
+\keys_define:nn {  baskervald }
+{
+  lig .bool_set:N = \g__baskervald_lig_bool,
+  lig .default:n = true,
+  lig .initial:n = false,
+  scale .tl_set:N = \ybv@scale,
+  scale .initial:V = \@empty,
+}
+%    \end{macrocode}
+% Note the optional argument is mandatory in case we're on an older kernel.
+% \begin{macrocode}
+\ProcessKeyOptions[baskervald]
+%    \end{macrocode}
+% Use a token list initialised with the bare Berry name.
+% %% could I just use \rmdefault directly here?
+% %% does it matter if it is a cs rather than a tl?
+%    \begin{macrocode}
+\tl_new:N \g__baskervald_rm_tl
+\tl_gset:Nn \g__baskervald_rm_tl {ybv}
+%    \end{macrocode}
+% Add indicator for swash or not.
+%    \begin{macrocode}
+\bool_if:NT \g__baskervald_lig_bool
+{
+  \tl_gput_right:Nn \g__baskervald_rm_tl {w}
+}
+%    \end{macrocode}
+% Order is critical as we're matching on family names.
+% Make BaskervaldADF default roman font, using the assembled name to implement requested options.
+% Note that older versions of this package ignored the lig option entirely ....
+%    \begin{macrocode}
+\renewcommand{\rmdefault}{\g__baskervald_rm_tl}
+\ExplSyntaxOff
+\DeclareTextSymbol{\zeroslash}{TS1}{225}
+\DeclareTextSymbolDefault{\zeroslash}{TS1}
+\AddToHook {begindocument}[.]
+{%
+  \@ifpackageloaded{hyperref}{%
+    \DeclareTextCommand{\zeroslash}{PU}{0}% U+0030
+    \DeclareTextCommand{\zeroslash}{PD1}{0}% U+0030
+  }{}%
+}
+%^^A paid â chynnwys \endinput - docstrip yn chwilio amddo fe yn arbennigol
+%^^A & bydd doctrip yn ei ychwanegu fe beth bynnag
+%^^A (Martin Scharrer: https://tex.stackexchange.com/a/28997/)
+%% end baskervald.sty
+%    \end{macrocode}
+% \iffalse
+%</sty>
+%<@@=>
+% \fi
+% 
+% The remaining files are not used directly, but are required to generate the files which allow \TeX{} and \LaTeX{} to use the fonts.
+% The sources use \verb|fontinst| as explained in the (sparse) comments.
+% While you can install these files into a \TeX{} tree, they are not required for typesetting.
+% 
+% \subsection{Driver}
+%
+% The file does all the initial setup of the fonts.
+% It organises the fonts into families, defines shapes and reencodes as required.
+%
+% \iffalse
+%<*drv>
+% \fi
+%    \begin{macrocode}
+\input fontinst.sty
+\needsfontinstversion{1.926}
+%    \end{macrocode}
+% Substitutions
+% Bold for bold extended
+%    \begin{macrocode}
+\substitutesilent{bx}{b}
+\substitutesilent{si}{it}
+\substitutesilent{scit}{si}
+\substitutesilent{it}{sl}
+\substitutesilent{sl}{it}
+\substitutesilent{sc}{n}
+% light for medium
+%\substitutesilent{m}{l}
+% demi-bold for bold
+%\substitutesilent{bx}{db}
+% simulate small caps (if optical small caps are unavailable)
+% 800 is fontinst's default
+\setint{smallcapsscale}{800}
+%    \end{macrocode}
+% Record transformations for later map file creation
+%    \begin{macrocode}
+\recordtransforms{ybv-rec.tex}
+%    \end{macrocode}
+% Allow fonts to be scaled via variable in fd files
+% Also requires fontinst.lua fnttarg as no means to define variable in fontinst 
+%    \begin{macrocode}
+\declaresize{}{<-> \string\ybv@@scale}
+%    \end{macrocode}
+% Transformations : reencode fonts
+%    \begin{macrocode}
+	\transformfont{ybvr8r}{\reencodefont{8r}{\fromafm{ybvr8a}}}
+	\transformfont{ybvri8r}{\reencodefont{8r}{\fromafm{ybvri8a}}}
+	\transformfont{ybvb8r}{\reencodefont{8r}{\fromafm{ybvb8a}}}
+	\transformfont{ybvbi8r}{\reencodefont{8r}{\fromafm{ybvbi8a}}}
+	\transformfont{ybvh8r}{\reencodefont{8r}{\fromafm{ybvh8a}}}
+	\transformfont{ybvho8r}{\reencodefont{8r}{\fromafm{ybvho8a}}}
+	\transformfont{ybvr8s}{\reencodefont{supp-ybv}{\fromafm{ybvr8a}}}
+	\transformfont{ybvri8s}{\reencodefont{supp-ybv}{\fromafm{ybvri8a}}}
+	\transformfont{ybvb8s}{\reencodefont{supp-ybv}{\fromafm{ybvb8a}}}
+	\transformfont{ybvbi8s}{\reencodefont{supp-ybv}{\fromafm{ybvbi8a}}}
+	\transformfont{ybvh8s}{\reencodefont{supp-ybv}{\fromafm{ybvh8a}}}
+	\transformfont{ybvho8s}{\reencodefont{supp-ybv}{\fromafm{ybvho8a}}}
+	\input reglyph-ybv.tex
+%    \end{macrocode}
+% Installation: creation of virtual fonts
+%    \begin{macrocode}
+	\installfonts
+		\installfamily{T1}{ybv}{}
+		\installfont{ybvr8t}{ybvr8r,ybvr8sr,newlatin}{t1-baskervald}{T1}{ybv}{m}{n}{}
+		\installfont{ybvri8t}{ybvri8r,ybvri8sr,newlatin}{t1-baskervald}{T1}{ybv}{m}{it}{}
+		\installfont{ybvb8t}{ybvb8r,ybvb8sr,newlatin}{t1-baskervald}{T1}{ybv}{b}{n}{}
+		\installfont{ybvbi8t}{ybvbi8r,ybvbi8sr,newlatin}{t1-baskervald}{T1}{ybv}{b}{it}{}
+		\installfont{ybvh8t}{ybvh8r,ybvh8sr,newlatin}{t1-baskervald}{T1}{ybv}{eb}{n}{}
+		\installfont{ybvho8t}{ybvho8r,ybvho8sr,newlatin}{t1-baskervald}{T1}{ybv}{eb}{sl}{}
+		\installfamily{T1}{ybvw}{}
+		\installfont{ybvrw8t}{ybvr8r,ybvr8sr,newlatin}{t1-baskervald-lig}{T1}{ybvw}{m}{n}{}
+		\installfont{ybvriw8t}{ybvri8r,ybvri8sr,newlatin}{t1-baskervald-lig}{T1}{ybvw}{m}{it}{}
+		\installfont{ybvbw8t}{ybvb8r,ybvb8sr,newlatin}{t1-baskervald-lig}{T1}{ybvw}{b}{n}{}
+		\installfont{ybvbiw8t}{ybvbi8r,ybvbi8sr,newlatin}{t1-baskervald-lig}{T1}{ybvw}{b}{it}{}
+		\installfont{ybvhw8t}{ybvh8r,ybvh8sr,newlatin}{t1-baskervald-lig}{T1}{ybvw}{eb}{n}{}
+		\installfont{ybvhow8t}{ybvho8r,ybvho8sr,newlatin}{t1-baskervald-lig}{T1}{ybvw}{eb}{sl}{}
+		\installfamily{TS1}{ybv}{}
+		\installfont{ybvr8c}{ybvr8r,ybvr8sr,textcomp}{ts1-baskervald}{TS1}{ybv}{m}{n}{}
+		\installfont{ybvri8c}{ybvri8r,ybvri8sr,textcomp}{ts1-baskervald}{TS1}{ybv}{m}{it}{}
+		\installfont{ybvb8c}{ybvb8r,ybvb8sr,textcomp}{ts1-baskervald}{TS1}{ybv}{b}{n}{}
+		\installfont{ybvbi8c}{ybvbi8r,ybvbi8sr,textcomp}{ts1-baskervald}{TS1}{ybv}{b}{it}{}
+		\installfont{ybvh8c}{ybvh8r,ybvh8sr,textcomp}{ts1-baskervald}{TS1}{ybv}{eb}{n}{}
+		\installfont{ybvho8c}{ybvho8r,ybvho8sr,textcomp}{ts1-baskervald}{TS1}{ybv}{eb}{sl}{}
+		\installfamily{TS1}{ybvw}{}
+		\installfontas{ybvr8c}{TS1}{ybvw}{m}{n}{}
+		\installfontas{ybvri8c}{TS1}{ybvw}{m}{it}{}
+		\installfontas{ybvb8c}{TS1}{ybvw}{b}{n}{}
+		\installfontas{ybvbi8c}{TS1}{ybvw}{b}{it}{}
+		\installfontas{ybvh8c}{TS1}{ybvw}{eb}{n}{}
+		\installfontas{ybvho8c}{TS1}{ybvw}{eb}{sl}{}
+	\endinstallfonts
+\endrecordtransforms
+\bye
+%    \end{macrocode}
+% \iffalse
+%</drv>
+% \fi
+% \subsection{Map}
+% 
+% This file is compiled to produce the map file fragment \verb|updmap| needs to install the fonts.
+% It uses files recorded during compilation of the driver.
+% \iffalse
+%<*map>
+% \fi
+%    \begin{macrocode}
+\input finstmsc.sty
+\resetstr{PSfontsuffix}{.pfb}
+\adddriver{dvips}{ybv.map}
+\adddriver{pltotf}{ybv-pltotf.sh}
+\input ybv-rec.tex
+\donedrivers
+\bye
+%    \end{macrocode}
+% \iffalse
+%</map>
+% \fi
+%
+% \subsection{Encodings}
+%
+% \lpack{baskervaldadf} uses several custom encoding files (\texttt{.etx}) to generate the files required to use BaskervaldADF in \LaTeXe{}.
+% These are included in the package, listed in \texttt{baskervaldadf-build.pdf} and briefly described in this section.
+% 
+% \subsubsection{Supplementary (raw)}
+% 
+% We need an additional ‘raw’ encoding to pick up characters otherwise missed.
+% Many of these are here just because they are named differently, but this also covers fancy ligatures, alternate styles of digits etc.
+%
+% Note that \verb|etx| files may specify raw and/or output encodings.
+% Those which are specific to BaskervaldADF are described below and included in this package.
+% Those which are not are included as separate sources unless provided by
+% \verb|fontinst|.
+% \begin{itemize} 
+%   \item \texttt{supp-ybv.etx}
+% \end{itemize}
+%
+% \subsubsection{Reglyph}
+% We need to rename characters whose names don't match our TeX font encodings.
+% \begin{itemize}
+%   \item \texttt{reglyph-ybv.etx}
+% \end{itemize}
+% 
+% \subsubsection{Encodings (output)}
+% These files define variant T1 and TS1 font encodings.
+% \begin{itemize}
+%   \item \texttt{t1-baskervald.etx}
+%   \item \texttt{t1-baskervald-lig.etx}
+%   \item \texttt{ts1-baskervald.etx}
+% \end{itemize}
+% In addition to these encodings, we use encoding files supplied by
+% \verb|fontinst|.
+% 
+% The \verb|etx| files are not used directly by \LaTeX{} or \TeX.
+% Where needed, they are processed to produce \verb|enc| files.
+% In some cases, however, they are not themselves standalone encodings.
+% Instead, they change how some other encoding is interpreted.
+% 
+% \subsubsection{MEX}
+% \verb|mtx| files are used to build ‘fake’ glyphs where these are missing from the original fonts.
+% We do not fake small-caps or bold, but only glyphs which can be constructed without altering the original design.
+%
+% This package doesn't use any \verb|mtx| files specific to BaskervaldADF, but it does make use of standard files supplied by \lpack{fontinst}.
+% \iffalse
+%<*ee>
+% \fi
+%    \begin{macrocode}
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+\documentclass[12pt]{article}
+\usepackage{longtable}
+\title{\textswash{baskervald test (ybv, ybvw)}}
+\author{\textswash{splendid spiky strains of active fjords}}
+\newcommand{\alphaline}{%
+  \begin{flushleft}
+	ABCDEFGHIJKLMNOPQRSTUVWXYZ\par abcdefghijklmnopqrs{}tuvwxyz\par %
+	0\zeroslash 123456789 f{}f ff f{}i fi f{}l fl f{}f{}i ffi f{}f{}l ffl f{}j fj f{}f{}j ffj c{}t ct s{}p sp s{}t st\par 
+	<{}< << >{}> >> - -{}- -- -{}-{}- ---\par 
+		 \& \texteuro\ \textdollar\ \textsterling\ \textyen\ \textcurrency\ \textflorin\ \textcent\ \textohm\ \textmu\ \textcelsius\ \textnumero\ \textdiv\ \texttimes\ \textpm\ \textregistered\ \textcopyright\ \texttrademark\ \textparagraph\ \textestimated\ \textonequarter\ \textonehalf\ \textthreequarters\ \textonesuperior\ \texttwosuperior\ \textthreesuperior\par 
+	Sphinx of black quartz, judge my vow.\par 
+	The quick brown fox jumps over the lazy dog.\par 
+	Somewhat splendid fjords act last.
+  \end{flushleft}}
+\newcommand{\alphatest}{%
+  \begin{flushleft}
+	{\upshape upright shape:\par \alphaline}\smallskip\par
+	{\itshape italics/oblique:\par \alphaline}\smallskip\par
+	{\bfseries
+		{\upshape upright shape:\par \alphaline}\smallskip\par
+		{\itshape italics/oblique:\par \alphaline}\smallskip\par}
+	{\ebweight
+			{\upshape upright shape:\par \alphaline}\smallskip\par
+		{\itshape italics/oblique:\par \alphaline}\smallskip\par}
+  \end{flushleft}}
+	
+\usepackage[T1]{fontenc}
+\pdfmapfile{+ybv.map}
+\usepackage{baskervald}
+
+\begin{document}
+\maketitle
+\setlength{\parindent}{0pt}
+
+\section*{regular modified encoding}
+
+\alphatest
+
+\section*{alternative modified encoding (ligature)}
+
+\swashstyle
+
+\alphatest
+
+\end{document}
+
+%    \end{macrocode}
+% \iffalse
+%</ee>
+% \fi
+%\Finale
+%^^A vim: tw=0:
