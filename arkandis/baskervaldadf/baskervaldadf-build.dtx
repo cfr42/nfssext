@@ -29,12 +29,14 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: baskervaldadf-build.dtx 10177 2024-07-26 04:44:10Z cfrees $}[v0.0 \revinfo][\filebase DTX: BaskervaldADF encodings for 8-bit engines]
+% ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
+%^^A \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
+\ProvidesFileSVN{$Id: baskervaldadf-build.dtx 10186 2024-07-29 18:56:15Z cfrees $}[v0.0 \revinfo][\filebase DTX: BaskervaldADF encodings for 8-bit engines]
 \DefineFileInfoSVN[baskervaldadf@build]
-\documentclass[11pt,british]{l3doc}
+\documentclass[11pt,british]{ltxdoc}
 % l3doc loads fancyvrb
 % fancyvrb overwrites svn-prov's macros without warning
-% restore \fileversion \filerev
+% restore \fileversion \filerev in case we're using l3doc
 \GetFileInfoSVN{baskervaldadf@build}
 \EnableCrossrefs
 \CodelineIndex

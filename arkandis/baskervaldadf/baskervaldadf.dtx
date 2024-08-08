@@ -30,12 +30,14 @@
 %<@@=baskervald>
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: baskervaldadf.dtx 10177 2024-07-26 04:44:10Z cfrees $}[v0.0 \revinfo][\filebase DTX: BaskervaldADF for 8-bit engines]
+% ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
+\def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
+\ProvidesFileSVN{$Id: baskervaldadf.dtx 10186 2024-07-29 18:56:15Z cfrees $}[v0.0 \revinfo][\filebase DTX: BaskervaldADF for 8-bit engines]
 \DefineFileInfoSVN[baskervaldadf]
-\documentclass[11pt,british]{l3doc}
+\documentclass[11pt,british]{ltxdoc}
 % l3doc loads fancyvrb
 % fancyvrb overwrites svn-prov's macros without warning
-% restore \fileversion \filerev
+% restore \fileversion \filerev in case we're using l3doc
 \GetFileInfoSVN{baskervaldadf}
 \EnableCrossrefs
 \CodelineIndex
@@ -468,7 +470,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[baskervald.sty]{$Id: baskervaldadf.dtx 10177 2024-07-26 04:44:10Z cfrees $}[\filebase v1.0 \revinfo]
+\ProvidesPackageSVN[baskervald.sty]{$Id: baskervaldadf.dtx 10186 2024-07-29 18:56:15Z cfrees $}[\filebase v1.0 \revinfo]
 \DefineFileInfoSVN[baskervald]
 \RequirePackage[T1]{fontenc}
 \RequirePackage{nfssext-cfr}
