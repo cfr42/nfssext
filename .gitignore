@@ -351,9 +351,11 @@ build
 keep
 keeptemp
 arkandis/*/*-tables.pdf
-arkandis/electrumadf/electrumadf-tables.pdf
+arkandis/*/*-tables.tex
+arkandis/baskervaldadf/baskervaldadf.pdf
+arkandis/baskervaldadf/baskervaldadf-build.pdf
+arkandis/baskervaldadf/baskervald-ybv-example.pdf
 arkandis/electrumadf/electrumadf.pdf
 test/testadf-tables.pdf
 test/testadf-tables.tex
 test/testadf.pdf
-arkandis/electrumadf/electrumadf-tables.tex

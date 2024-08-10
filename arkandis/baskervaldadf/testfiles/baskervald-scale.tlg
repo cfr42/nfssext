@@ -1,14 +1,14 @@
 This is a generated file for the l3build validation system.
 Don't change this file in any respect.
 ============================================================
-TEST 1: electrumadf-scale-test
+TEST 1: baskervaldadf-scale-test
 ============================================================
 > \box...=
-\hbox(147.99995+49.69997)x362.8
-.\T1/yesj/m/n/10 p
-.\T1/yesj/m/n/10 o
-.\T1/yesj/m/n/10 b
-.\T1/yesj/m/n/10 l
+\hbox(140.89984+50.89989)x363.80003
+.\T1/ybv/m/n/10 p
+.\T1/ybv/m/n/10 o
+.\T1/ybv/m/n/10 b
+.\T1/ybv/m/n/10 l
 ! OK.
 <argument> \l_tmpa_box 
 l. ...}
