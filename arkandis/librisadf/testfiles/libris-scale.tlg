@@ -1,0 +1,18 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+============================================================
+TEST 1: librisadf-scale-test
+============================================================
+LaTeX Font Info:    Trying to load font information for T1+yly on input line ....
+LaTeX Font Info:    Font shape `T1/yly/m/n' will be
+(Font)              scaled to size 200.0pt on input line ....
+> \box...=
+\hbox(148.49986+39.99995)x328.79999
+.\T1/yly/m/n/10 p
+.\T1/yly/m/n/10 o
+.\T1/yly/m/n/10 b
+.\T1/yly/m/n/10 l
+! OK.
+<argument> \l_tmpa_box 
+l. ...}
+============================================================

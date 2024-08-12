@@ -32,7 +32,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: baskervaldadf.dtx 10186 2024-07-29 18:56:15Z cfrees $}[v0.0 \revinfo][\filebase DTX: BaskervaldADF for 8-bit engines]
+\ProvidesFileSVN{$Id: baskervaldadf.dtx 10229 2024-08-12 00:22:46Z cfrees $}[v0.0 \revinfo][\filebase DTX: BaskervaldADF for 8-bit engines]
 \DefineFileInfoSVN[baskervaldadf]
 \documentclass[11pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -152,7 +152,42 @@
 %
 % \section{Introduction}
 %
-% This document explains how to use the \TeX/\LaTeX\ support provided for version 1.016 of the Baskervald \adf\ font collection developed by Hirwen Harendal of the Arkandis Digital Foundry (\adf). \lpack{baskervaldadf} includes copies of the fonts in postscript type 1 format. Further  information about the fonts themselves and alternative font formats for use with other programmes can be found at \url{http://arkandis.tuxfamily.org/adffonts.html}. The fonts are released under the \MakeUppercase{gnu} General Public License as published by the Free Software Foundation; either version 2 of the License, or any later version, with font exception. For details, see \MakeUppercase{notice}.txt and \MakeUppercase{ctan} but you can always comment out the relevant lines in \path{baskervaldadf.tex} if you wish.
+% This document explains how to use the \TeX/\LaTeX\ support provided for version 1.016 of the Baskervald \adf\ font collection developed by Hirwen Harendal of the Arkandis Digital Foundry (\adf). \lpack{baskervaldadf} includes copies of the fonts in postscript type 1 format. Further  information about the fonts themselves and alternative font formats for use with other programmes can be found at \url{http://arkandis.tuxfamily.org/adffonts.html}. The fonts are released under the \MakeUppercase{gnu} General Public License as published by the Free Software Foundation; either version 2 of the License, or any later version, with font exception. For details, see \MakeUppercase{notice}.txt and \MakeUppercase{ctan}.
+%
+% \section{Requirements}
+%
+% Apart from such obvious requirements as \LaTeXe, the \LaTeX\ support provided by \path{baskervald.sty} requires \lpack{nfssext-cfr}.
+% Without this, you will get errors complaining that the package cannot be found and you will not be able to use any of the additional font commands described in \fref{sec:commands}.
+%
+% The documentation requires in addition:
+% \begin{itemize}
+% 	\item \lpack{array}
+% 	\item \lpack{babel}
+% 	\item \lpack{bookmark}
+% 	\item \lpack{booktabs}
+% 	\item \lpack{caption}
+% 	\item \lpack{csquotes}
+% 	\item \lpack{enumitem}
+% 	\item \lpack{fancyhdr}
+% 	\item \lpack{fancyref}
+% 	\item \lpack{fixfoot}
+% 	\item \lpack{geometry}
+% 	\item \lpack{hyperref}
+% 	\item	\lpack{lm}
+% 	\item \lpack{microtype}
+% 	\item \lpack{xcolor}
+% 	\item \lpack{xurl}
+% \end{itemize}
+%
+% Note that creating the font files, as opposed to just the package and documentation files, \emph{requires} \texttt{l3build} and a set of custom \texttt{lua} scripts available on \texttt{codeberg}.
+% More specifically, if you want to build the font definition files (\tetxttt{.fd}) yourself, you \emph{must} use \texttt{l3build fnttarg} and this requires files available from the code repository, but not included in this package.
+%
+% The reason for this is that \lpack{fontinst} provides no way\footnote{Or no way I've yet discovered.} to enable variable scaling.
+% While it is entirely possible to scale a font by any factor you please, it is not, as far as I can tell, possible to enable scaling by any factor a user later pleases.
+% In particular, while it is possible to define shapes and families to use a variable factor, it is not possible to write a definition of that factor into the font definition file, which is the way variable scaling is usually configured.
+% 
+% In order to enable this functionality, \texttt{lua} is used to inject the relevant code into the \texttt{.fd} files after \lpack{fontinst} has generated them.
+% If you simply process the relevant \TeX{} files by hand, you will create broken definition files, since the code produced by \lpack{fontinst} assumes the relevant lines have been injected.
 %
 % \section{The support package}\label{sec:support}
 % 
@@ -279,9 +314,11 @@
 % Both of the modified \MakeUppercase{t1} encodings used by \lpack{baskervaldadf} include a non-standard ligature to accommodate the slashed zero. Provided \lpack{baskervald} is loaded and the default serif/roman family is active, \verb|\zeroslash| will produce the slashed zero (\zeroslash). 
 % 	
 % \changes{v??}{2010/07/13}{First public release.}
-% \changes{\fileversion}{\filedate}{Belated update for (New) NFSS and revised nfssext-cfr.
-% Try switching to DTX/INS.}
-%
+% \changes{\fileversion}{\filedate}{%
+%   Belated update for (New) NFSS and revised nfssext-cfr.
+%   Add package option to scale fonts.
+%   Try switching to DTX/INS.%
+% }
 % 
 % \appendix
 % 
@@ -328,7 +365,7 @@
 % Ignoring any symbolic link in the top directory, move or copy the files in \path{doc}, \path{fonts} and \path{tex} into the appropriate locations.
 % If the tree is initially empty, you can simply move or copy the directories in as they are.
 % If the tree already contains other packages, you may need to merge the package hierarchy with the pre-existing one.
-% For example, if you already have a \path{doc/fonts} directory, move or copy \path{doc/fonts/ baskervald} into \path{doc/fonts/}.
+% For example, if you already have a \path{doc/fonts} directory, move or copy \path{doc/fonts/baskervald} into \path{doc/fonts/}.
 % If you have a \path{doc} directory but not a \path{doc/fonts}, move \path{doc/fonts} into \path{doc/}.
 % 
 % \subsection{Refresh the database}
@@ -450,9 +487,9 @@
 % 
 % If you installed into your personal tree, you \emph{could} use \verb|updmap --user| in place of \verb|updmap --sys| as described above for \TeX~Live 2008, but this is \textbf{not} recommended\fnupdmap.
 % 
-% To test your installation and that the package works on your system, latex this file (\path{ baskervaldadf.tex}).
+% To test your installation and that the package works on your system, latex this file (\path{baskervaldadf.tex}).
 % The console output and/or log should tell you whether any fonts were not found. 
-% If you are careful not to overwrite it, you may also compare your output with \path{ baskervaldadf.pdf}.%
+% If you are careful not to overwrite it, you may also compare your output with \path{baskervaldadf.pdf}.%
 % 
 % \MaybeStop{%
 % \PrintChanges
@@ -470,7 +507,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[baskervald.sty]{$Id: baskervaldadf.dtx 10186 2024-07-29 18:56:15Z cfrees $}[\filebase v1.0 \revinfo]
+\ProvidesPackageSVN[baskervald.sty]{$Id: baskervaldadf.dtx 10229 2024-08-12 00:22:46Z cfrees $}[\filebase v1.0 \revinfo]
 \DefineFileInfoSVN[baskervald]
 \RequirePackage[T1]{fontenc}
 \RequirePackage{nfssext-cfr}

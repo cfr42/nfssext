@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: electrumadf.dtx 10168 2024-07-21 14:04:13Z cfrees $}[v1.1 \revinfo][electrumadf DTX: electrum for 8-bit engines]
+\ProvidesFileSVN{$Id: electrumadf.dtx 10229 2024-08-12 00:22:46Z cfrees $}[v1.1 \revinfo][electrumadf DTX: electrum for 8-bit engines]
 \DefineFileInfoSVN
 \GetFileInfoSVN*
 \documentclass[11pt,british]{ltxdoc}
@@ -201,8 +201,19 @@
 % Apart from such obvious requirements as \LaTeXe, the \LaTeX\ support provided by \path{electrum.sty} requires \lpack{nfssext-cfr}.
 % Without this, you will get errors complaining that the package cannot be found and you will not be able to use any of the additional font commands described in \cref{sec:commands}.
 % 
-% The documentation requires in additional packages.
+% The documentation requires additional packages.
 % These are all standard and available from \textsc{ctan} but you can always comment out the relevant lines in \path{electrumadf.tex} if you wish.
+%
+% Note that creating the font files, as opposed to just the package and documentation files, \emph{requires} \texttt{l3build} and a set of custom \texttt{lua} scripts available on \texttt{codeberg}.
+% More specifically, if you want to build the font definition files (\tetxttt{.fd}) yourself, you \emph{must} use \texttt{l3build fnttarg} and this requires files available from the code repository, but not included in this package.
+%
+% The reason for this is that \lpack{fontinst} provides no way\footnote{Or no way I've yet discovered.} to enable variable scaling.
+% While it is entirely possible to scale a font by any factor you please, it is not, as far as I can tell, possible to enable scaling by any factor a user later pleases.
+% In particular, while it is possible to define shapes and families to use a variable factor, it is not possible to write a definition of that factor into the font definition file, which is the way variable scaling is usually configured.
+% 
+% In order to enable this functionality, \texttt{lua} is used to inject the relevant code into the \texttt{.fd} files after \lpack{fontinst} has generated them.
+% If you simply process the relevant \TeX{} files by hand, you will create broken definition files, since the code produced by \lpack{fontinst} assumes the relevant lines have been injected.
+%
 % 
 % \section{The support package}\label{sec:support}
 % 
@@ -725,7 +736,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[electrum.sty]{$Id: electrumadf.dtx 10168 2024-07-21 14:04:13Z cfrees $}[\filebase v1.1 \revinfo]
+\ProvidesPackageSVN[electrum.sty]{$Id: electrumadf.dtx 10229 2024-08-12 00:22:46Z cfrees $}[\filebase v1.1 \revinfo]
 \DefineFileInfoSVN[electrum]
 \RequirePackage[T1]{fontenc}
 \RequirePackage{nfssext-cfr}

@@ -1,5 +1,5 @@
 -- $Id: build.lua 10226 2024-08-11 03:12:44Z cfrees $
--- Build configuration for electrumadf
+-- Build configuration for librisadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
 	os.setenv requires shell-escape (which l3build always enables) but will 
@@ -14,24 +14,25 @@ os.setenv ("TEXMFHOME", ".")
 os.setenv ("TEXMFLOCAL", ".")
 os.setenv ("TEXMFARCH", ".")
 --
-ctanpkg = "electrumadf"
+ctanpkg = "libris"
 maindir = "../.."
-module = "electrum"
+module = "libris"
 vendor = "arkandis"
-autotestfds = {  "t1yes.fd", "t1yesj.fd", "t1yesjw.fd", "t1yesw.fd" }
+autotestfds = {  "t1yly.fd", "t1ylyw.fd" }
 dofile(maindir .. "/fontinst.lua")
-local srcfiles = {"dotsc2.etx", "dotscbuild.mtx", "dotscmisc.mtx", "newlatin-dotsc.mtx", "t1-dotinf.etx", "t1-dotsup.etx", "ts1-dotinf.etx", "ts1-dotsup.etx"}
+local srcfiles = {"t1-cfr.etx", "ts1-euro.etx", "t1-cfr.enc", "ts1-euro.enc"}
 for i,j in ipairs(srcfiles) do table.insert(sourcefiles,j) end
+typesetruns = 5
 --
 uploadconfig = {
   -- *required* --
   -- announcement (don't include here?)
 	author     = "Hirwen Harendal; Clea F. Rees",
   -- email (don't include here!)
-	ctanPath   = "pkg/electrumadf",
+	ctanPath   = "fonts/libris",
 	license    = {"lppl1.3c","GPL 2 with font exception"},
 	pkg        = ctanpkg,
-	summary    = "Support for ElectrumADF on 8-bit engines",
+	summary    = "Support for LibrisADF on 8-bit engines",
   uploader   = "Clea F. Rees",
 	version    = "v1.1",
   -- optional --
@@ -39,8 +40,9 @@ uploadconfig = {
   -- description
   -- development {}
   -- home {}
-	note       = "The catalogue currently shows the package as included only in MikTeX, but it is also included in TeX Live. Any chance this could be corrected?",
-	repository = {"https://codeberg.org/cfr/nfssext", "https://github.com/cfr42/nfssext"},
+	-- repository = {"https://codeberg.org/cfr/nfssext", "https://github.com/cfr42/nfssext"},
+	note = "Repository mirrored at https://github.com/cfr42/nfssext",
+	repository = "https://codeberg.org/cfr/nfssext",
   -- support {}
 	topic      = {"font", "font-type1"},
 	update     = true,

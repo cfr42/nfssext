@@ -1,0 +1,803 @@
+% \iffalse meta-comment
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% librisadf.dtx
+% Additions and changes Copyright (C) YYYY-2024 Clea F. Rees.
+% Code from skeleton.dtx Copyright (C) 2015-2024 Scott Pakin (see below).
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   https://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2008-05-04 or later.
+%
+% This work has the LPPL maintenance status `maintained'.
+%
+% The Current Maintainer of this work is Clea F. Rees.
+%
+% This work consists of all files listed in manifest.txt.
+%
+% The file librisadf.dtx is a derived work under the terms of the
+% LPPL. It is based on version 2.4 of skeleton.dtx which is part of 
+% dtxtut by Scott Pakin. A copy of dtxtut, including the 
+% unmodified version of skeleton.dtx is available from
+% https://www.ctan.org/pkg/dtxtut and released under the LPPL.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \fi
+%
+% \iffalse
+%<*driver>
+\RequirePackage{svn-prov}
+% ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
+\def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
+\ProvidesFileSVN{$Id: librisadf.dtx 10229 2024-08-12 00:22:46Z cfrees $}[v0.0 \revinfo][\filebase DTX: LibrisADF for 8-bit engines]
+\DefineFileInfoSVN[librisadf]
+\documentclass[11pt,british]{ltxdoc}
+% l3doc loads fancyvrb
+% fancyvrb overwrites svn-prov's macros without warning
+% restore \fileversion \filerev in case we're using l3doc
+\GetFileInfoSVN{librisadf}
+\EnableCrossrefs
+\CodelineIndex
+\RecordChanges
+%^^A \OnlyDescription
+\DoNotIndex{\verb,\ProvidesPackageSVN,\NeedsTeXFormat,\ProcessKeyOptions,\revinfo,\DefineFileInfoSVN,\GetFileInfoSVN,\filebase,\filename}
+\usepackage{babel}
+\usepackage{lmodern}
+\renewcommand{\ttdefault}{lmvtt}
+\let\origsfdefault\sfdefault
+\DeclareRobustCommand{\origsffamily}{%
+	\fontencoding{T1}%
+	\fontfamily{\origsfdefault}%
+	\selectfont}
+\DeclareTextFontCommand{\textorigsf}{\origsffamily}
+\usepackage{libris}
+\pdfmapfile{yly.map}	% not necessary for installed package
+\pdfmapfile{+pdftex.map}	% not necessary for installed package
+\usepackage{fancyref}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{fixfoot}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{xurl}
+\urlstyle{tt}
+\usepackage{microtype}
+\usepackage[a4paper,headheight=14pt]{geometry}	% use 14pt for 11pt text, 15pt for 12pt text
+\usepackage{csquotes}
+\MakeAutoQuote{‘}{’}
+\MakeAutoQuote*{“}{”}
+\usepackage{caption}
+\DeclareCaptionFont{lf}{\lstyle}
+\captionsetup[table]{labelfont=lf}
+% sicrhau hyperindex=false: llwytho CYN bookmark
+\usepackage{hypdoc}% ateb Ulrike Fischer: https://tex.stackexchange.com/a/695555/
+\usepackage{bookmark}
+\hypersetup{%
+  colorlinks=true,
+  citecolor={moss},
+  extension=pdf,
+  linkcolor={strawberry},
+  linktocpage=true,
+  pdfcreator={TeX},
+  pdfproducer={pdfeTeX},
+  urlcolor={blueberry}%
+}
+\title{\filebase}
+\author{Clea F. Rees\thanks{%
+    Bug tracker:
+  \href{https://codeberg.org/cfr/nfssext/issues}{\url{codeberg.org/cfr/nfssext/issues}}
+  \textbar{} Code:
+  \href{https://codeberg.org/cfr/nfssext}{\url{codeberg.org/cfr/nfssext}}
+  \textbar{} Mirror:
+  \href{https://github.com/cfr42/nfssext}{\url{github.com/cfr42/nfssext}}% 
+}}
+% \date{\fileversion~\filetoday}
+\date{\fileversion~\filedate}
+\pagestyle{fancy}
+\fancyhf[lh]{\itshape\filebase~\fileversion}
+% \fancyhf[rh]{\itshape\filetoday}
+\fancyhf[rh]{\itshape\filedate}
+\fancyhf[ch]{}
+\fancyhf[lf]{}
+\fancyhf[rf]{}
+\fancyhf[cf]{--- \thepage~/~\lastpage{} ---}
+\ExplSyntaxOn
+\hook_gput_code:nnn {shipout/lastpage} {.}
+{
+  \property_record:nn {t:lastpage}{abspage,page,pagenum}
+}
+\cs_new_protected_nopar:Npn \lastpage 
+{
+  \property_ref:nn {t:lastpage}{page}
+}
+\ExplSyntaxOff
+\definecolor{strawberry}{rgb}{1.000,0.000,0.502}
+\definecolor{blueberry}{rgb}{0.000,0.000,1.000}
+\definecolor{moss}{rgb}{0.000,0.502,0.251}
+\begin{document}
+  \DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+% 
+% \newcommand*{\adf}{ADF}
+% \newcommand*{\lpack}[1]{\textsf{#1}}
+% \newcommand*{\fgroup}[1]{\textsf{#1}}
+% \newcommand*{\fname}[1]{\textsf{#1}}
+%
+% \changes{v1.0}{2008}{First public release.}
+% \changes{\fileversion}{\filedate}{%
+%   Belated update for (New) NFSS and revised nfssext-cfr.
+%   Add scale option to package.
+%   Try switching to DTX/INS.%
+% }
+%
+% \maketitle\thispagestyle{empty}
+% \pdfinfo{%
+% 	/Creator		(TeX)
+% 	/Producer		(pdfTeX)
+% 	/Author			(Clea F.\ Rees)
+% 	/Title				(librisadf)
+% 	/Subject		(TeX)
+% 	/Keywords		(TeX,LaTeX,font,fonts,tex,latex,Libris,libris,librisadf,LibrisADF,ADF,adf,Arkandis,Digital,Foundry,arkandis,digital,foundry,Hirwen,Harendal,Clea,Rees)}
+% \pdfcatalog{%
+% 	/URL				()
+% 	/PageMode	/UseOutlines}	
+% \setlength{\parindent}{0pt}
+% \setlength{\parskip}{0.5em}
+%
+%
+% \begin{abstract}
+% 	\hspace*{-\parindent}Hirwen Harendal, Arkandis Digital Foundry (\adf) has produced the Libris \adf\ font collection. This guide outlines the \emph{experimental} \TeX/\LaTeX\ support provided with version 1.007 of the fonts.
+% \end{abstract}
+%
+% This document explains how to use the \TeX/\LaTeX\ support included with version 1.007 of the Libris \adf\ font collection. The fonts were developed by Hirwen Harendal of the Arkandis Digital Foundry (\adf) and information about the fonts themselves can be found at \url{http://arkandis.tuxfamily.org/adffonts.html}. The fonts are released under the \textsc{gnu} General Public License as published by the Free Software Foundation; either version 2 of the License, or any later version, with font exception. For details, see \textsc{notice}.txt and \textsc{copying}.
+%
+% The \TeX/\LaTeX\ support package consists of all files listed in \path{manifest.txt}\ and these files are released under the \LaTeX\ Project Public Licence as explained in the included licensing notices. Please let me know of any problems so that I can solve them if I can. If you can correct the problems and send me the fix, that would be even better. Unlike the fonts themselves, the \TeX/\LaTeX\ support is still somewhat experimental.
+%
+% \section{The collection}
+%
+% Libris \adf\ is a sans-serif family with lining figures. The family currently includes upright and italic shapes in each of regular and bold weights. The support package renames the fonts according to the Karl Berry fontname scheme and defines two families. The first of these is primarily designed to provide access to the ``standard'' or default characters while the second ``swash'' family supports alternate characters and additional ligatures. The included package files provide access to these features in \LaTeX\ as explained in \fref{sec:support} and \fref{sec:commands}. 
+%
+% \begin{table}
+%   \centering
+%   \caption{LibrisADF original and Berry font names.}\label{tab:fonts}
+%   \begin{tabular}{llll}
+%   	\toprule
+%   	{\fontseries{b}\selectfont Original grouping}		&	{\fontseries{b}\selectfont\TeX\ directory/group}	&	{\fontseries{b}\selectfont Original} \textbf{name}	& {\fontseries{b}\selectfont\TeX\ name}\\\midrule
+%     	Libris-Std		&	libris	&	LibrisADFStd-Regular		&	ylyr8a\\
+% 							&				&	LibrisADFStd-Italic			&	ylyri8a\\
+% 							&				&	LibrisADFStd-Bold				&	ylyb8a\\
+% 							&				&	LibrisADFStd-BoldItalic	&	ylybi8a\\
+%       \bottomrule
+%   \end{tabular}
+% \end{table}
+%
+% \section{Requirements}
+%
+% Apart from such obvious requirements as \LaTeXe, the \LaTeX\ support provided by \path{libris.sty} requires \lpack{nfssext-cfr}.
+% Without this, you will get errors complaining that the package cannot be found and you will not be able to use any of the additional font commands described in \fref{sec:commands}.
+%
+% The documentation requires in addition:
+% \begin{itemize}
+% 	\item \lpack{array}
+% 	\item \lpack{babel}
+% 	\item \lpack{bookmark}
+% 	\item \lpack{booktabs}
+% 	\item \lpack{caption}
+% 	\item \lpack{csquotes}
+% 	\item \lpack{enumitem}
+% 	\item \lpack{fancyhdr}
+% 	\item \lpack{fancyref}
+% 	\item \lpack{fixfoot}
+% 	\item \lpack{geometry}
+% 	\item \lpack{hyperref}
+% 	\item	\lpack{lm}
+% 	\item \lpack{microtype}
+% 	\item \lpack{xcolor}
+% 	\item \lpack{xurl}
+% \end{itemize}
+%
+% Note that creating the font files, as opposed to just the package and documentation files, \emph{requires} \texttt{l3build} and a set of custom \texttt{lua} scripts available on \texttt{codeberg}.
+% More specifically, if you want to build the font definition files (\tetxttt{.fd}) yourself, you \emph{must} use \texttt{l3build fnttarg} and this requires files available from the code repository, but not included in this package.
+%
+% The reason for this is that \lpack{fontinst} provides no way\footnote{Or no way I've yet discovered.} to enable variable scaling.
+% While it is entirely possible to scale a font by any factor you please, it is not, as far as I can tell, possible to enable scaling by any factor a user later pleases.
+% In particular, while it is possible to define shapes and families to use a variable factor, it is not possible to write a definition of that factor into the font definition file, which is the way variable scaling is usually configured.
+% 
+% In order to enable this functionality, \texttt{lua} is used to inject the relevant code into the \texttt{.fd} files after \lpack{fontinst} has generated them.
+% If you simply process the relevant \TeX{} files by hand, you will create broken definition files, since the code produced by \lpack{fontinst} assumes the relevant lines have been injected.
+%
+% \section{The support package}\label{sec:support}
+%
+% \subsection{Encodings}
+%
+% The package supports modified \textsc{ec}/\textsc{t1} and Text Companion (\textsc{ts1}) encodings. Most characters in the \textsc{ec} encoding are available and the fonts provide a small number of characters from the \textsc{ts1} encoding as well, including the \texteuro. The regular version of the \textsc{ec}/\textsc{t1} encoding (\path{t1-libris.enc}) reassigns three slots which would otherwise be empty due to missing glyphs which \path{fontinst} cannot fake. In the \textsc{t1} encoding, these slots are standardly used for the per thousand zero and the Sami Eng/eng characters (\NG/\ng). \path{t1-libris.enc} uses them for three additional ligatures (`\textsf{tt}', `\textsf{fj}' and `\textsf{ffj}').
+%
+% The ‘swash’ version of the \textsc{ec}/\textsc{t1} encoding (\path{t1-librisswash.enc}) provides access to the full range of ligatures available, in addition to replacing default glyphs by alternates. Because additional slots are required to accommodate the additional ligatures, a number of characters normally available in the \textsc{ec} encoding are unavailable. These are the \textsc{ascii} circumflex (\textsf{\textasciicircum}), the \textsc{ascii} tilde (\textsf{\textasciitilde}), the IJ/ij ligature (\textsf\IJ/\textsf\ij), dbar (\textsf\dj), the Eth/eth (\textsf\DH/\textsf\dh) and the Thorn/thorn (\textsf\TH/\textsf\th). Attempting to access these characters while using this font may result in errors of various kinds and will certainly produce unexpected output even though the characters are provided by the font, as the previous sentence demonstrates. To access these glyphs, ensure that the regular version of the font is active.
+%
+% \subsection{\LaTeX\ package}
+%
+% To use the fonts in a \LaTeX\ document, add \verb|\usepackage{libris}| to your document preamble. This will set the default sans-serif family to \fname{yly} (\fgroup{libris}) and enable access to the various alternates and additional glyphs available in \fname{ylyw}.
+%
+% Note that loading \path{libris.sty} will not affect the default roman family or, therefore, the default document font. To use \fgroup{libris} (\fname{yly}) as the default document font, add the line \verb|\renewcommand{\familydefault}{\sfdefault}| to your preamble as well.
+%	
+% \section{Additional font selection commands}\label{sec:commands}
+%
+% 	The \LaTeX\ package \lpack{libris}\ loads \lpack{nfssext-cfr}\ which is an extension of the package \lpack{nfssext}\ supplied by Philipp Lehman as part of The Font Installation Guide. The file extends the font selection commands to facilitate access to various font features. Both the original and the extension are designed for use with a wide range of fonts. For this reason, only a subset of the additional commands are relevant to any particular font support package. Those relevant to \lpack{librisadf}\ are described below.
+%	
+% 	I consider my additions to \lpack{nfssext-cfr}\ to be \emph{highly experimental}. If things don't work as advertised, apart from letting me know about the problem, you may be able to access the features you need by issuing a \verb|\normalfont| and then selecting features from there. This command will return you to the default document text font --- typically the relevant serif in regular weight, standard width and upright shape with oldstyle or lining figures etc.\ as determined by the packages and options loaded or your distribution's setup.
+%	
+% \subsection{nfssext-cfr}
+%
+% These commands are available when \lpack{libris} is loaded. If for some reason you wish to make them available when no relevant package is loaded, use \verb|\usepackage{nfssext-cfr}| in your document preamble.
+%	
+% \subsubsection{Styles}
+% 
+% Commands for switching to the ‘swash’ variant, which provides more ligatures and alternate characters are shown in \fref{tab:styles}.
+% \begin{table}
+%   \centering
+%   \caption{LibrisADF styles.}\label{tab:styles}
+% 	\begin{tabular}{lll}
+% 		\toprule
+% 		\textbf{style}			&	\textbf{style command}	&	\textbf{text command}\\\midrule
+% 		swash							&	\verb|\swashstyle|				&	\verb|\textswash{}|\\
+%     \bottomrule
+% 	\end{tabular}
+% \end{table}
+%	
+% 	For example, if \lpack{libris}\ was loaded then:
+% 		\begin{verbatim}
+% 				\newcommand*{\fytext}{%
+% 				ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrs{}tuvwxyz\\
+% 				0123456789 \textonequarter \textonehalf \textthreequarters \textsurd \texttimes 
+% 				\textdiv \textpm\ 	\& \texteuro \textcent \textsterling \textcurrency \textyen 
+% 				\textflorin \textdollar\ \textregistered \textcopyright \texttrademark 
+% 				\textestimated \textnumero\ \textohm \textmu\ \textsection \textparagraph\ 
+% 				\textdagger \textdaggerdbl\ \textcelsius\\
+% 				Sphinx of black quartz, judge my vow.\\
+% 				The quick brown fox jumps over the lazy dog.\\
+% 				The quick bronzing wax lay over the impish fjord.\\
+% 				A churlish skittish bespectacled clerk strictly slacks.}
+% 			\newcommand*{\fytest}{\fytext\\[.5em]\textswash{\fytext}}
+% 			\textsf{%	
+% 				\fytest\\[1em]
+% 				\textit{\fytest}\\[1em]
+% 				\textbf{\fytest}\\[1em]
+% 				\textbf{\textit{\fytest}}}
+% 		\end{verbatim}
+% 		produces:
+% 		\begin{center}
+% 			\newcommand*{\fytext}{%
+% 				ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrs{}tuvwxyz\\
+% 				0123456789 \textonequarter \textonehalf \textthreequarters \textsurd \texttimes 
+% 				\textdiv \textpm\ 	\& \texteuro \textcent \textsterling \textcurrency \textyen 
+% 				\textflorin \textdollar\ \textregistered \textcopyright \texttrademark 
+% 				\textestimated \textnumero\ \textohm \textmu\ \textsection \textparagraph\ 
+% 				\textdagger \textdaggerdbl\ \textcelsius\\
+% 				Sphinx of black quartz, judge my vow.\\
+% 				The quick brown fox jumps over the lazy dog.\\
+% 				The quick bronzing wax lay over the impish fjord.\\
+% 				A churlish skittish bespectacled clerk strictly slacks.}
+% 			\newcommand*{\fytest}{\fytext\\[.5em]\textswash{\fytext}}
+% 			\textsf{%	
+% 				\fytest\\[1em]
+% 				\textit{\fytest}\\[1em]
+% 				\textbf{\fytest}\\[1em]
+% 				\textbf{\textit{\fytest}}}
+% 		\end{center}
+%
+% 
+% \appendix
+% 
+% \DeclareFixedFootnote \fnupdmap {%
+%   See, for example, \href{https://tex.stackexchange.com/q/255709/}{Why shouldn't I use \texttt{getnonfreefonts} to install additional fonts? Why shouldn't I use \texttt{updmap} when installing or removing fonts?}.}
+% 
+% \section{Installation}
+% 
+% \textbf{The vast majority of users should IGNORE this section entirely.}
+% \lpack{librisadf} is included in all major \TeX{} distributions and should be installed as part of your \TeX{} installation.
+% Installing the package yourself should be done only as a last resort or an educational exercise.
+% 
+% Note, in particular, that this version of \lpack{librisadf} should \textbf{not} be installed on older \LaTeX{} kernels as it is designed to work with the (New) New Font Selection Scheme, as updated around 2020\footnote{%
+%   The package should\texttrademark{} work fine on older kernels, but the new version is bound to have some bugs and there is no reason to use it on these systems.
+%   The sole purpose of the update is to accommodate the breaking changes made to font selection.
+%   If you don't have those changes installed locally, nothing should be broken and the newer version of \lpack{librisadf} offers no advantage at all.%
+% }.
+% Use the initial release of \lpack{librisadf} if your installation of \LaTeX{} predates those changes.
+% 
+% Installation varies with \TeX\ distribution so you should consult the documentation which came with your system for details.
+% In most cases, you will need to perform three steps:
+% \begin{enumerate}
+%   \item move or copy the package files to appropriate locations on your system;
+%   \item refresh the \TeX\ database;
+%   \item incorporate the included map file fragments for the different engines your distribution supports.
+% \end{enumerate}
+% 
+% The following instructions assume you are using \TeX~Live\footnote{This includes Mac\TeX\ for OS X users.}. 
+% They should not be too difficult to adapt if you are using a different distribution.
+% 
+% \subsection{Install the files}
+% 
+% The files should be installed in one of two locations: \emph{either} the local system-wide \TeX\ tree \emph{or} your personal tree.
+% If the package is installed system-wide, all users will have access to it.
+% On the other hand, you may need privileges you do not have to do this in which case you must use your personal tree.
+% 
+% \textbf{There are serious disadvantages to installing the package into your personal tree.
+% In particular, these pertain to use of \verb|updmap --user| rather than \verb|updmap --sys|.
+% If you are not aware of these disadvantages, please ensure you are fully cognisant of them before proceeding\fnupdmap.
+% Merely removing the package from your personal tree at a later point will \emph{not} undo the effects.}
+% 
+% For \TeX~Live, \verb|kpsewhich -var-value TEXMFLOCAL| will return the path to the local tree and \verb|kpsewhich -var-value TEXMFHOME| the path to your personal tree. 
+% The package already includes a hierarchy of files to help you install them correctly.
+% Ignoring any symbolic link in the top directory, move or copy the files in \path{doc}, \path{fonts} and \path{tex} into the appropriate locations.
+% If the tree is initially empty, you can simply move or copy the directories in as they are.
+% If the tree already contains other packages, you may need to merge the package hierarchy with the pre-existing one.
+% For example, if you already have a \path{doc/fonts} directory, move or copy \path{doc/fonts/libris} into \path{doc/fonts/}.
+% If you have a \path{doc} directory but not a \path{doc/fonts}, move \path{doc/fonts} into \path{doc/}.
+% 
+% \subsection{Refresh the database}
+% 
+% Again, this depends on your distribution. For \TeX~Live, \verb|mktexlsr <path to directory>| for the directory you used in the first step should do the trick.
+% Note that you \emph{may} be able to skip this step if you install into your personal tree.
+% Whether this is so depends on the details of your set-up.
+% As a test, move to a directory containing none of the package files and try \verb|kpsewhich libris.sty|.
+% If the file is found, you don't need to refresh the database; otherwise use \verb|mktexlsr| and then try again.
+% 
+% \subsection{Install the map fragments}
+% 
+% For \TeX~Live, there are at least two ways of doing this. 
+% The second method varies according to the version of \TeX~Live and instructions are provided accordingly.
+% Both methods depend on whether you installed into \verb|TEXMFLOCAL| or \verb|TEXMFHOME|.
+% If you installed system-wide, the choice is relatively straightforward --- it obviously makes sense in that case to update the font maps system-wide as well.
+% 
+% If, on the other hand, you installed into your personal tree, the matter is more complex. 
+% On the one hand, updating the system-wide maps may create difficulties or confusion for other users because while the map files will list the fonts as available, they will not be able to access them.
+% On the other hand, maintaining personal font map files can produce difficulties and confusions of its own\fnupdmap.
+% Whether it is to be preferred or not is a complex issue and depends on the details of your \TeX\ distribution, local configuration and personal preference. 
+% The one clear case is that in which you install into your personal tree because you lack the privileges needed to install system-wide. 
+% In that case, you have no choice but to maintain personal font map files or forgo the use of all fonts not provided by your administrator.
+% Other cases are thankfully beyond the scope of this document.
+% 
+% \subsubsection{Method 1}
+% 
+% If you installed the package system-wide, use the command:
+% \iffalse
+%^^A ateb Heiko Oberdiek: https://tex.stackexchange.com/a/172896/
+%^^A dyw hwn ddim yn gweithio tu mewn i arg macro! 
+%^^A (*wrth gwrs* dyw e ddim yn weithio! wyt ti'n *hollol* dwp?)
+%<*verb>
+% \fi
+\begin{verbatim}
+  updmap-sys --enable Map=yly.map
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+%
+% If you installed the package in your personal tree, you \emph{may} prefer\fnupdmap:
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+  updmap --enable Map=yly.map
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% Either way, \verb|updmap| will output a good deal of information after each incantation.
+% This is normal.
+% Just check that it does not end with an error and that it found the new map file.
+% 
+% \subsubsection{Method 2: \TeX~Live 2008 (and probably earlier)}
+% 
+% If you installed the package system-wide, use \verb|updmap-sys --edit|.
+% 
+% If you installed into your personal tree, you \emph{may} prefer to use	\verb|updmap --edit|\fnupdmap.
+% 
+% Either way, a configuration file will be opened which you can edit.
+% Move to the end of the file and add the following line:
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+  Map yly.map
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% When you are done, save the file.
+% \verb|updmap| or \verb|updmap-sys| will produce a great deal of output if all is well. 
+% Just check that it does not end with an error and that \path{yly.map} is found.
+% 
+% \subsubsection{Method 2: \TeX~Live 2009 (and possibly later)}
+% 
+% If you installed the package system-wide, edit or or create \path{TEXMFLOCAL/web2c/updmap-local.cfg} and add the following line to the end of the file:
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+  Map yly.map
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% Save the file and tell \verb|tlmgr| to merge in your addition using the command:
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+  tlmgr generate updmap
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% \verb|tlmgr| will then tell you that you need to ensure the changes are propagated correctly by calling \verb|updmap-sys|. 
+% This should produce a great deal of output.
+% Check that it finds the new map file and does not end with an error.
+% 
+% If you installed into your personal tree, you \emph{may} prefer to use \verb|updmap --edit| as described above for \TeX~Live 2008\fnupdmap.
+% 
+% \subsubsection{Method 3: Current/Recent \TeX~Live}
+% 
+% If you installed the package system-wide, tell \cs{updmap} to enable the map file:
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+  updmap --sys --enable Map=yly.map
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% This should produce a great deal of output.
+% Check that it finds the new map file and does not end with an error.
+% 
+% If you installed into your personal tree, you \emph{could} use \verb|updmap --user| in place of \verb|updmap --sys| as described above for \TeX~Live 2008, but this is \textbf{not} recommended\fnupdmap.
+% 
+% To test your installation and that the package works on your system, latex this file (\path{librisadf.tex}).
+% The console output and/or log should tell you whether any fonts were not found. 
+% If you are careful not to overwrite it, you may also compare your output with \path{librisadf.pdf}.%
+% 
+% \MaybeStop{%
+% \PrintChanges
+% \PrintIndex
+% }
+% 
+% \section{Implementation}
+%
+% You do not need to read the remainder of this document in order to install
+% or use the fonts.
+%
+% \iffalse
+%<*sty>
+% \fi
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}
+\RequirePackage{svn-prov}
+\ProvidesPackageSVN[libris.sty]{$Id: librisadf.dtx 10229 2024-08-12 00:22:46Z cfrees $}[\filebase v1.0 \revinfo]
+\DefineFileInfoSVN[libris]
+\RequirePackage[T1]{fontenc}
+\RequirePackage{nfssext-cfr}
+%    \end{macrocode}
+% \lpack{nfssext-cfr} provides \cs{ProcessKeyOptions}, \cs{IfFormatAtLeastTF} on older kernels.
+%    \begin{macrocode}
+\IfFormatAtLeastTF {2020-02-02}{%
+%    \end{macrocode}
+% To get the available ASCII accents etc.\ used from TS1, we need to set the subset to 0 or 1.
+% Unfortunately, this means characters missing from the fonts will not use default symbols as fallback, but this seems to be unavoidable.
+% Note this approach is at odds with the kernel's: the kernel prefers losing font-specific glyphs to missing glyphs, whereas we prefer missing to lost glyphs\footnote{%
+%   I probably wouldn't do this for a non-Arkandis font with coverage as poor as Lbris's, where it is markedly less plausible than is the case for something like Electrum.
+%   But note that some Arkandis fonts include glyphs deemed to exist only in \TeX-world fonts by the architects of \LaTeX's TS1 support, which also seems more aimed at \texttt{autoinst}-installed fonts than use of \texttt{fontinst}.
+%   But maybe there is a better solution I'm just not seeing here \dots?%
+% }.
+%    \begin{macrocode}
+  \DeclareEncodingSubset{TS1}{yly}{1}%
+  \DeclareEncodingSubset{TS1}{ylyw}{1}%
+}{%
+  \RequirePackage{textcomp}}
+\UndeclareTextCommand{\textperthousand}{T1}
+\ExplSyntaxOn
+%    \end{macrocode}
+% The actual \verb|sty| is ultra simple.
+% Only a single option is provided, in case the fonts should be scaled.
+% \texttt{scale} takes a factor by which to scale the fonts.
+% This is empty by default, which is equivalent to \texttt{1}, but more efficient.
+%    \begin{macrocode}
+\keys_define:nn { libris }
+{
+  scale .tl_set:N = \yly@scale,
+  scale .initial:V = \@empty,
+}
+%    \end{macrocode}
+% Note the optional argument is mandatory in case we're on an older kernel.
+%    \begin{macrocode}
+\ProcessKeyOptions[libris]
+\ExplSyntaxOff
+\renewcommand{\sfdefault}{yly}
+%% end libris.sty
+%^^A paid â chynnwys \endinput - docstrip yn chwilio amddo fe yn arbennigol
+%^^A & bydd doctrip yn ei ychwanegu fe beth bynnag
+%^^A (Martin Scharrer: https://tex.stackexchange.com/a/28997/)
+%% end libris.sty
+%    \end{macrocode}
+% \iffalse
+%</sty>
+% \fi
+% 
+% The remaining files are not used directly, but are required to generate the files which allow \TeX{} and \LaTeX{} to use the fonts.
+% The sources use \verb|fontinst| as explained in the (sparse) comments.
+% While you can install these files into a \TeX{} tree, they are not required for typesetting.
+% 
+% \subsection{Driver}
+%
+% The file does all the initial setup of the fonts.
+% It organises the fonts into families, defines shapes and reencodes as required.
+%
+% \iffalse
+%<*drv>
+% \fi
+%    \begin{macrocode}
+\input fontinst.sty
+\needsfontinstversion{1.926}
+%    \end{macrocode}
+% Substitutions
+% Bold for bold extended
+%    \begin{macrocode}
+\substitutesilent{bx}{b}
+%    \end{macrocode}
+% upright for small-caps
+%    \begin{macrocode}
+\substitutesilent{sc}{n}
+%    \end{macrocode}
+% italic for oblique
+%    \begin{macrocode}
+\substitutesilent{sl}{it}
+%    \end{macrocode}
+% italic for italic small-caps
+%    \begin{macrocode}
+\substitutesilent{scsl}{sl}
+\substitutesilent{scit}{scsl}
+\substitutesilent{si}{scit}
+%    \end{macrocode}
+% Record transformations for later map file creation
+%    \begin{macrocode}
+\recordtransforms{yly-rec.tex}
+%    \end{macrocode}
+% Allow fonts to be scaled via variable in fd files
+% Also requires fontinst.lua fnttarg as no means to define variable in fontinst 
+%    \begin{macrocode}
+\declaresize{}{<-> \string\yly@@scale}
+%    \end{macrocode}
+% Transformations : reencode fonts
+%    \begin{macrocode}
+	\transformfont{ylyr-t1}{\reencodefont{t1-cfr}{\fromafm{ylyr8a}}}
+	\transformfont{ylyri-t1}{\reencodefont{t1-cfr}{\fromafm{ylyri8a}}}
+	\transformfont{ylyb-t1}{\reencodefont{t1-cfr}{\fromafm{ylyb8a}}}
+	\transformfont{ylybi-t1}{\reencodefont{t1-cfr}{\fromafm{ylybi8a}}}
+	\transformfont{ylyr-ts1}{\reencodefont{ts1-euro}{\fromafm{ylyr8a}}}
+	\transformfont{ylyri-ts1}{\reencodefont{ts1-euro}{\fromafm{ylyri8a}}}
+	\transformfont{ylyb-ts1}{\reencodefont{ts1-euro}{\fromafm{ylyb8a}}}
+	\transformfont{ylybi-ts1}{\reencodefont{ts1-euro}{\fromafm{ylybi8a}}}
+	\transformfont{ylyr8s}{\reencodefont{libris-supp}{\fromafm{ylyr8a}}}
+	\transformfont{ylyri8s}{\reencodefont{libris-supp}{\fromafm{ylyri8a}}}
+	\transformfont{ylyb8s}{\reencodefont{libris-supp}{\fromafm{ylyb8a}}}
+	\transformfont{ylybi8s}{\reencodefont{libris-supp}{\fromafm{ylybi8a}}}
+	\input reglyph-yly.tex
+%    \end{macrocode}
+% Installation: creation of virtual fonts
+%    \begin{macrocode}
+	\installfonts
+		\installfamily{T1}{yly}{}
+		\installfont{ylyr8t}{ylyr-t1,ylyr8sr,newlatin}{t1-libris}{T1}{yly}{m}{n}{}
+		\installfont{ylyri8t}{ylyri-t1,ylyri8sr,newlatin}{t1-libris}{T1}{yly}{m}{it}{}
+%    \end{macrocode}
+% Repeat for bold fonts
+%    \begin{macrocode}
+		\installfont{ylyb8t}{ylyb-t1,ylyb8sr,newlatin}{t1-libris}{T1}{yly}{b}{n}{}
+		\installfont{ylybi8t}{ylybi-t1,ylybi8sr,newlatin}{t1-libris}{T1}{yly}{b}{it}{}
+%    \end{macrocode}
+% Swash
+%    \begin{macrocode}
+		\installfamily{T1}{ylyw}{}
+		\installfont{ylyrw8t}{ylyr-t1,ylyr8sr,resetalt,newlatin}{t1-librisswash}{T1}{ylyw}{m}{n}{}
+		\installfont{ylyriw8t}{ylyri-t1,ylyri8sr,resetalt,newlatin}{t1-librisswash}{T1}{ylyw}{m}{it}{}
+		\installfont{ylybw8t}{ylyb-t1,ylyb8sr,resetalt,newlatin}{t1-librisswash}{T1}{ylyw}{b}{n}{}
+		\installfont{ylybiw8t}{ylybi-t1,ylybi8sr,resetalt,newlatin}{t1-librisswash}{T1}{ylyw}{b}{it}{}
+%    \end{macrocode}
+% Install with TS1 encoding for extra glyphs through textcomp
+%    \begin{macrocode}
+		\installfamily{TS1}{yly}{}
+		\installfont{ylyr8c}{ylyr-t1,ylyr-ts1,ylyr8sr,textcomp}{ts1-euro}{TS1}{yly}{m}{n}{}
+		\installfont{ylyri8c}{ylyri-t1,ylyri-ts1,ylyri8sr,textcomp}{ts1-euro}{TS1}{yly}{m}{it}{}
+%    \end{macrocode}
+% Repeat for bold fonts
+%    \begin{macrocode}
+		\installfont{ylyb8c}{ylyb-t1,ylyb-ts1,ylyb8sr,textcomp}{ts1-euro}{TS1}{yly}{b}{n}{}
+		\installfont{ylybi8c}{ylybi-t1,ylybi-ts1,ylybi8sr,textcomp}{ts1-euro}{TS1}{yly}{b}{it}{}
+%    \end{macrocode}
+% Swash
+%    \begin{macrocode}
+		\installfamily{TS1}{ylyw}{}
+		\installfontas{ylyr8c}{TS1}{ylyw}{m}{n}{}
+		\installfontas{ylyri8c}{TS1}{ylyw}{m}{it}{}
+		\installfontas{ylyb8c}{TS1}{ylyw}{b}{n}{}
+		\installfontas{ylybi8c}{TS1}{ylyw}{b}{it}{}
+	\endinstallfonts
+\endrecordtransforms
+\bye
+%    \end{macrocode}
+% \iffalse
+%</drv>
+% \fi
+% \subsection{Map}
+% 
+% This file is compiled to produce the map file fragment \verb|updmap| needs to install the fonts.
+% It uses files recorded during compilation of the driver.
+% \iffalse
+%<*map>
+% \fi
+%    \begin{macrocode}
+\input finstmsc.sty
+\resetstr{PSfontsuffix}{.pfb}
+\adddriver{dvips}{yly.map}
+\adddriver{pltotf}{yly-pltotf.sh}
+\input yly-rec.tex
+\donedrivers
+\bye
+%    \end{macrocode}
+% \iffalse
+%</map>
+% \fi
+%
+% \subsection{Encodings}
+%
+% \lpack{librisadf} uses several custom encoding files (\texttt{.etx}) to generate the files required to use LibrisADF in \LaTeXe{}.
+% These are included in the package, listed in \texttt{librisadf-build.pdf} and briefly described in this section.
+% 
+% \subsubsection{Supplementary (raw)}
+% 
+% We need an additional ‘raw’ encoding to pick up characters otherwise missed.
+% Many of these are here just because they are named differently, but this also covers fancy ligatures, alternate styles of digits etc.
+%
+% Note that \verb|etx| files may specify raw and/or output encodings.
+% Those which are specific to LibrisADF are described below and included in this package.
+% Those which are not are included as separate sources unless provided by \verb|fontinst|.
+% \begin{itemize} 
+%   \item \texttt{libris-supp.etx}
+% \end{itemize}
+%
+% \subsubsection{Reglyph}
+% 
+% We need to rename characters whose names don't match our TeX font encodings.
+% \begin{itemize}
+%   \item \texttt{reglyph-yly.tex}
+% \end{itemize}
+% 
+% \subsubsection{Encodings (output)}
+% 
+% These files define variant T1 and TS1 font encodings.
+% \begin{itemize}
+%   \item \texttt{t1-libris.etx}
+%   \item \texttt{t1-librisswash.etx}
+% \end{itemize}
+% In addition to these encodings, we use encoding files supplied by \verb|fontinst|, along with
+% \begin{itemize}
+%   \item \texttt{t1-cfr.etx}
+%   \item \texttt{ts1-euro.etx}
+% \end{itemize}
+% 
+% The \verb|etx| files are not used directly by \LaTeX{} or \TeX.
+% Where needed, they are processed to produce \verb|enc| files.
+% In some cases, however, they are not themselves standalone encodings.
+% Instead, they change how some other encoding is interpreted.
+% 
+% \subsubsection{MTX}
+% 
+% \verb|mtx| files are used to build ‘fake’ glyphs where these are missing from the original fonts.
+% We do not fake small-caps or bold, but only glyphs which can be constructed without altering the original design.
+%
+% \verb|mtx| files are also used to adjust or reset kerning.
+% \lpack{librisadf} uses
+% \begin{itemize}
+%   \item \texttt{resetalt.mtx}
+% \end{itemize}
+% in addition to standard files supplied by \lpack{fontinst}.
+%
+% \iffalse
+%<*ee>
+% \fi
+%    \begin{macrocode}
+%% !TEX TS-program = pdflatex
+%% !TEX encoding = UTF-8 Unicode
+\documentclass[12pt]{article}
+\usepackage{libris}
+\usepackage{csquotes}
+\MakeAutoQuote{‘}{’}
+\MakeAutoQuote*{“}{”}
+\title{\textswash{Libris ADF Sample (yly, ylyw)}}
+\author{\textswash{splendid spiky strains of active fjords}}
+
+\providecommand{\zeroslash}{}
+\providecommand{\textsi}[1]{}
+\newcommand{\alphaline}{%
+  \begin{flushleft}
+    ABCDEFGHIJKLMNOPQRSTUVWXYZ\par abcdefghijklmnopqrs{}tuvwxyz\par 
+    0123456789 f\kern0pt f ff f\kern0pt i fi f\kern0pt j fj f\kern0pt l fl f\kern0pt f\kern0pt i ffi f\kern0pt f\kern0pt j ffj f\kern0pt f\kern0pt l ffl c\kern0pt h ch c\kern0pt k ck c\kern0pt l cl c\kern0pt t ct s\kern0pt h sh s\kern0pt k sk s\kern0pt l sl s\kern0pt p sp s\kern0pt t st t\kern0pt t tt\par
+%   ^^A \^{A} \^{a} \^{C} \^{c} \^{E} \^{e} \^{G} \^{g} \^{H} \^{h} \^{I} \^{i} \^{J} \^{j} \^{O} \^{o} \^{U} \^{u} \^{W} \^{w} \^{Y} \^{y}  \capitalcircumflex{A}\par
+    Â â Ĉ ĉ Ê ê Ĝ ĝ Ĥ ĥ Î î Ĵ ĵ Ô ô Û û Ŵ ŵ Ŷ ŷ \capitalcircumflex{A}\par
+%    ^^A \"A \"a \"E \"e \"I \"i \"O \"o \"U \"u \"W \"w \"Y \"y \capitaldieresis{A}\par
+    Ë ë Ï ï Ÿ ÿ \capitaldieresis{A}\par
+%    ^^A \`A \`a \`E \`e \`I \`i \`O \`o \`U \`u  \capitalgrave{A}\par
+    À à È è Ì ì Ò ò Ù ù \capitalgrave{A}\par
+%    ^^A \'A \'a \'C \'c \'E \'e \'I \'i \'L \'l \'N \'n \'O \'o \'R \'r \'S \'s \'U \'u \'W \'w \'Y \'y \'Z \'z \capitalacute{A}\par
+    Á á Ć ć É é Í í Ĺ ĺ Ń ń Ó ó Ŕ ŕ Ś ś Ú ú Ý ý Ź ź \capitalacute{A}\par
+%    ^^A \r{A} \r{a} 
+%    ^^A \r{U} \r{u} 
+%    ^^A \={A} \={a} \={E} \={e} \={I} \={\i} \={O} \={o} \={U} \={u} \AA\ \aa\ \capitalring{A} \capitalmacron{A}\par
+    Ā ā Ē ē Ī ī Ō ō Ū ū \capitalring{A} \capitalmacron{A}\par
+    \u{A} \u{a} \u{E} \u{e} 
+    \u{G} \u{g} 
+    \H{A} \H{a} \H{U} \H{u} \capitalbreve{A}\par
+    \.{A} \.{a} \.{C} \.{c} \.{E} \.{e} 
+    \.{I} \.{i} 
+    \.{Z} \.{z} 
+    \~A \~a % 
+    \~I \~\i\ %
+    \~N \~n \~O \~o %
+    \capitaldotaccent{I} \capitaltilde{A}\par
+%    ^^A Ȧ ȧ İ 
+    \par
+    \v{C} \v{c} \v{D} \v{d} \v{E} \v{e} \v{L} \v{l} \v{N} \v{n} \v{R} \v{r} \v{S} \v{s} \v{T} \v{t} \v{Z} \v{z} \capitalcaron{C}\par
+    \k{A} \k{a} %
+    \k{E} \k{e} %
+    \c{C} \c{c} \c{D} \c{d} \c{E} \c{e} \c{G} \c{g} \c{K} \c{k} \c{L} \c{l} \c{N} \c{n} \c{R} \c{r} \c{S} \c{s} \c{T} \c{t} \capitalogonek{A} \capitalcedilla{C}\par
+    \O\ \o\ \AE\ \ae\ \OE\ \oe\ \L\ \l\smallskip\par
+    <\kern0pt< << >\kern0pt> >> - -\kern0pt- -- -\kern0pt-\kern0pt- ---\par 
+    \& \texteuro\ \textdollar\ \textsterling\ \textyen\ \textcurrency\ \textflorin\ \textcent\ \textohm\ \textmu\ \textcelsius\ \textnumero\ \textdiv\ \texttimes\ \textpm\ \textregistered\ \textcopyright\ \texttrademark\ \textparagraph\ \textestimated\ \textonequarter\ \textonehalf\ \textthreequarters\ \textonesuperior\ \texttwosuperior\ \textthreesuperior\par\ \textservicemark\smallskip\par 
+    Sphinx of black quartz, judge my vow.\par
+    The quick brown fox jumps over the lazy dog.\par
+    Somewhat splendid fjords act last.\par
+    A churlish skittish lisping clerk strictly slows.
+  \end{flushleft}%
+}
+\newcommand{\alphatest}{%
+  \begin{flushleft}
+	{\upshape upright shape:\par \alphaline}\smallskip\par
+	{\itshape italics:\par \alphaline}\smallskip\par
+	{\bfseries
+		{\upshape upright shape:\par \alphaline}\smallskip\par
+		{\itshape italics:\par \alphaline}\smallskip\par}
+  \end{flushleft}}
+	
+\pdfmapfile{+yly.map}
+\usepackage{libris}
+\renewcommand\thepage{\textsf{\arabic{page}}}
+\begin{document}
+\sffamily
+\maketitle
+\setlength{\parindent}{0pt}
+
+\section*{regular modified encoding (yly)}
+
+A sans-serif family with lining figures.
+
+\alphatest
+
+\section*{alternative modified encoding (ylyw)}
+
+\swashstyle
+A ‘swash’ variant with alternate characters and additional ligatures:
+
+\alphatest
+
+\end{document} 
+%    \end{macrocode}
+% \iffalse
+%</ee>
+% \fi
+%\Finale
+%^^A vim: tw=0:

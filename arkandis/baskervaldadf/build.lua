@@ -1,4 +1,4 @@
--- $Id: build.lua 10175 2024-07-25 02:18:15Z cfrees $
+-- $Id: build.lua 10226 2024-08-11 03:12:44Z cfrees $
 -- Build configuration for baskervaldadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -27,7 +27,7 @@ typesetruns = 5
 uploadconfig = {
   -- *required* --
   -- announcement (don't include here?)
-	author     = "Clea F. Rees",
+	author     = "Hirwen Harendal; Clea F. Rees",
   -- email (don't include here!)
 	ctanPath   = "pkg/baskervaldadf",
 	license    = {"lppl1.3c","GPL 2 with font exception"},
