@@ -1,0 +1,150 @@
+%% $Id: romandeadf.ins 10233 2024-08-12 23:03:22Z cfrees $
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% romandeadf.ins
+%% Additions and changes Copyright (C) 2010-2024 Clea F. Rees.
+%% Code from skeleton.ins Copyright (C) 2015-2024 Scott Pakin (see below).
+%%
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3c
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%   https://www.latex-project.org/lppl.txt
+%% and version 1.3c or later is part of all distributions of LaTeX
+%% version 2008-05-04 or later.
+%%
+%% This work has the LPPL maintenance status `maintained'.
+%%
+%% The Current Maintainer of this work is Clea F. Rees.
+%%
+%% This work consists of all files listed in manifest.txt.
+%%
+%% The file romandeadf.ins is a derived work under the terms of the
+%% LPPL. It is based on version 2.4 of skeleton.ins which is part of 
+%% dtxtut by Scott Pakin. A copy of dtxtut, including the 
+%% unmodified version of skeleton.ins is available from
+%% https://www.ctan.org/pkg/dtxtut and released under the LPPL.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input docstrip.tex
+\keepsilent
+
+\usedir{tex/latex/romande}
+
+\declarepreamble\safonol
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Copyright (C) 2010-2024 Clea F. Rees.
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either version 1.3c
+of this license or (at your option) any later version.
+The latest version of this license is in
+  https://www.latex-project.org/lppl.txt
+and version 1.3c or later is part of all distributions of LaTeX
+version 2008-05-04 or later.
+
+This work has the LPPL maintenance status `maintained'.
+
+The Current Maintainer of this work is Clea F. Rees.
+
+This file may only be distributed together with a copy of the package
+romandeadf. You may however distribute the package romandeadf without
+such generated files.
+
+This work consists of all files listed in manifest.txt.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\endpreamble
+
+\newcommand* \baseFileName{t1.etx}
+\newcommand* \encName{T1}
+\newcommand* \targFontName{ROMANDE ADF T1 ENCODING}
+\newcommand* \preChanges{%
+  - The commentary in the original is deleted in this version. For 
+  information about the \encName{} etc., typeset the original \baseFileName{} 
+  included with fontinst.
+  - Slots are altered to accommodate characters which are named 
+  differently. For example, this encoding uses "endash" and "emdash" 
+  whereas \baseFileName{} called for "rangedash" and "punctdash".
+  - The original notices at the top of that file concerning authors,
+  maintenance etc. are replaced by this notice.
+  - The file is renamed.
+  - The encoding name is modified.
+  - f_f, f_f_i and f_f_l replace ff, ffi and ffl.
+  - The encoding has been modified for use with \targFontName.}
+\newcommand* \targType{The encoding }
+
+\declarepreamble\derfontinst
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Additions and changes Copyright (C) 2010-2024 Clea F. Rees.
+Code from t1.etx Copyright 2002 Alan Jeffrey and Sebastian 
+Rahtz and Ulrik Vieth and Lars Hellström (see below)
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either version 1.3c
+of this license or (at your option) any later version.
+The latest version of this license is in
+  https://www.latex-project.org/lppl.txt
+and version 1.3c or later is part of all distributions of LaTeX
+version 2008-05-04 or later.
+
+This work has the LPPL maintenance status `maintained'.
+
+The Current Maintainer of this work is Clea F. Rees.
+
+This work consists of all files listed in manifest.txt.
+
+\targType\outFileName is a derived work under the terms of the 
+LPPL. The original file, \baseFileName, is supplied with fontinst. A copy 
+of fontinst including an unmodified copy of \baseFileName is available from
+https://tug.ctan.org/tex-archive/fonts/utilities/fontinst.
+The main modifications made to this file are as follows:
+\preChanges
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\endpreamble
+
+\askonceonly
+
+\usepreamble\safonol
+
+\generate{\file{romande.sty}{\from{romandeadf.dtx}{sty}}
+  \file{yrd-drv.tex}{\from{romandeadf.dtx}{drv}}
+  \file{yrd-map.tex}{\from{romandeadf.dtx}{map}}
+  \file{romandeadf-example.tex}{\from{romandeadf.dtx}{ee}}
+  \file{reglyph-yrd.tex}{\from{romandeadf-build.dtx}{reglyph}}
+  \file{romande-supp.etx}{\from{romandeadf-build.dtx}{supp-yrd}}
+  \usepreamble\derfontinst
+  \file{t1-romandeadf.etx}{\from{romandeadf-build.dtx}{t1-romandeadf}}
+  \def\targFontName{ROMANDE ADF ALT T1 ENCODING}
+  \let\origpreChanges\preChanges
+  \def\preChanges{\origpreChanges
+  - Some slots have been reallocated to accommodate additional ligatures and/or
+  alternate characters.}
+  \file{t1-romandeadf-alt.etx}{\from{romandeadf-build.dtx}{t1-romandeadf-alt}}
+}
+
+\obeyspaces
+\Msg{*************************************************************}
+\Msg{*                                                           *}
+\Msg{* To finish the installation you have to move the following *}
+\Msg{* files into a directory searched by TeX:                   *}
+\Msg{*                                                           *}
+\Msg{*     romande.sty                                           *}
+\Msg{*     *.fd                                                  *}
+\Msg{*     *.map                                                 *}
+\Msg{*     *.vf                                                  *}
+\Msg{*     *.pfb                                                 *}
+\Msg{*     *.tfm                                                 *}
+\Msg{*     *.enc                                                 *}
+\Msg{*                                                           *}
+\Msg{* update the filename database, if applicable, and install  *}
+\Msg{* the map file(s) with updmap-sys or similar.               *}
+\Msg{*                                                           *}
+\Msg{* To produce the documentation run the file romandeadf.dtx  *}
+\Msg{* through LaTeX.                                            *}
+\Msg{*                                                           *}
+\Msg{* Happy TeXing!                                             *}
+\Msg{*                                                           *}
+\Msg{*************************************************************}
+
+\endbatchfile
+
+% vim: tw=80:

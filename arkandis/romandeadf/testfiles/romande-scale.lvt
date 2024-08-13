@@ -1,0 +1,27 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+\RequirePackage{svn-prov}
+\ProvidesFileSVN{$Id: romande-scale.lvt 10234 2024-08-13 01:16:07Z cfrees $}[v1.1 \revinfo][\filebase: scale test]
+\pdfmapfile{yrd.map}
+\input regression-test.tex\relax
+\documentclass{article}
+	
+\usepackage[scale=20]{romande}
+
+\begin{document}
+\START
+% RHAID ddefnyddio'r llinell isod tu allan i'r \TEST
+\ExplSyntaxOn
+\TEST{romandeadf-scale-test}{
+  \hbox_set:Nn \l_tmpa_box 
+  {
+    \normalfont\normalsize
+    pobl
+  }
+  \box_show:N \l_tmpa_box
+}
+\ExplSyntaxOff
+\END
+
+\end{document} 
+% vim: ts=2:sw=2:

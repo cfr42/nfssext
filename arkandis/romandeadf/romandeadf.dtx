@@ -1,0 +1,921 @@
+% \iffalse meta-comment
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% romandadf.dtx
+% Additions and changes Copyright (C) 2010-2024 Clea F. Rees.
+% Code from skeleton.dtx Copyright (C) 2015-2024 Scott Pakin (see below).
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   https://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2008-05-04 or later.
+%
+% This work has the LPPL maintenance status `maintained'.
+%
+% The Current Maintainer of this work is Clea F. Rees.
+%
+% This work consists of all files listed in manifest.txt.
+%
+% The file romandadf.dtx is a derived work under the terms of the
+% LPPL. It is based on version 2.4 of skeleton.dtx which is part of 
+% dtxtut by Scott Pakin. A copy of dtxtut, including the 
+% unmodified version of skeleton.dtx is available from
+% https://www.ctan.org/pkg/dtxtut and released under the LPPL.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \fi
+%
+% \iffalse
+%<*driver>
+\RequirePackage{svn-prov}
+% ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
+\def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
+\ProvidesFileSVN{$Id: romandeadf.dtx 10234 2024-08-13 01:16:07Z cfrees $}[v0.0
+\revinfo][\filebase DTX: RomandeADF for 8-bit engines]
+\DefineFileInfoSVN[romandadf]
+\documentclass[11pt,british]{ltxdoc}
+% l3doc loads fancyvrb
+% fancyvrb overwrites svn-prov's macros without warning
+% restore \fileversion \filerev in case we're using l3doc
+\GetFileInfoSVN{romandadf}
+\EnableCrossrefs
+\CodelineIndex
+\RecordChanges
+% \OnlyDescription
+\DoNotIndex{\verb,\ProvidesPackageSVN,\NeedsTeXFormat,\ProcessKeyOptions,\revinfo,\filebase,\filename,\filedate,\RequirePackage,\usepackage,\DefineFileInfoSVN,\GetFileInfoSVN,\ProvidesPackageSVN,\documentclass,\MakeAutoQuote,\parindent,\par,\smallskip,\setlength,\bigskip,\maketitle,\title,\author,\date,\ExplSyntaxOn,\ExplSyntaxOff}
+\usepackage{babel}
+\usepackage{lmodern}
+\renewcommand{\ttdefault}{lmvtt}
+\let\origrmdefault\rmdefault
+\DeclareRobustCommand{\origrmfamily}{%
+  \fontencoding{T1}%
+  \fontfamily{\origrmdefault}%
+  \selectfont}
+\DeclareTextFontCommand{\textorigrm}{\origrmfamily}
+\usepackage[]{romande}
+\pdfmapfile{yrd.map}	% not necessary for installed package
+\pdfmapfile{+pdftex.map}	% not necessary for installed package
+\usepackage{fancyhdr}
+\usepackage{fixfoot}
+\usepackage{array,tabularx}
+\usepackage{enumitem}
+\usepackage[referable]{threeparttablex}
+\usepackage{enumitem}
+\makeatletter
+\def\TPT@measurement{% ateb David Carlisle: https://tex.stackexchange.com/a/370691/
+  \ifdim\wd\@tempboxb<\TPTminimum
+    \hsize \TPTminimum
+  \else
+    \hsize\wd\@tempboxb
+  \fi
+  \xdef\TPT@hsize{\hsize\the\hsize \noexpand\@parboxrestore}\TPT@hsize
+  \ifx\TPT@docapt\@undefined\else
+    \TPT@docapt \vskip.2\baselineskip
+  \fi \par
+  \dimen@\dp\@tempboxb % new
+  \box\@tempboxb
+  \ifvmode \prevdepth\dimen@ \fi% was \z@ not \dimen@
+}
+\renewlist{tablenotes}{enumerate}{1}
+\setlist[tablenotes]{label=\tnote{\alph*},ref=\alph*,itemsep=\z@,topsep=\z@skip,partopsep=\z@skip,parsep=\z@,itemindent=\z@,labelindent=\tabcolsep,labelsep=.2em,leftmargin=*,align=left,before={\unskip\medskip\footnotesize}}
+\makeatother
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{xurl}
+\urlstyle{tt}
+\usepackage{microtype}
+\usepackage[a4paper,headheight=14pt]{geometry}	% use 14pt for 11pt text, 15pt for 12pt text
+\usepackage{csquotes}
+\MakeAutoQuote{‘}{’}
+\MakeAutoQuote*{“}{”}
+\usepackage{caption}
+\DeclareCaptionFont{lf}{\lstyle}
+\captionsetup[table]{labelfont=lf}
+\usepackage{fancyref}
+% sicrhau hyperindex=false: llwytho CYN bookmark
+\usepackage{hypdoc}% ateb Ulrike Fischer: https://tex.stackexchange.com/a/695555/
+\usepackage{bookmark}
+\hypersetup{%
+  colorlinks=true,
+  citecolor={moss},
+  extension=pdf,
+  linkcolor={strawberry},
+  linktocpage=true,
+  pdfcreator={TeX},
+  pdfproducer={pdfeTeX},
+  urlcolor={blueberry}%
+}
+\NewDocElement[%
+  idxtype=opt.,
+  idxgroup=options,
+  printtype=\textit{opt.},
+]{Opt}{option}
+\NewDocumentCommand \val { m }
+{%
+  {\ttfamily =\,\meta{#1}}%
+}
+\ExplSyntaxOn
+\NewDocumentCommand \vals { m }
+{
+  {
+    \ttfamily = \, 
+    \clist_use:nn { #1 } { \textbar }
+  }
+} 
+\ExplSyntaxOff
+\title{\filebase}
+\author{Clea F. Rees\thanks{%
+    Bug tracker:
+  \href{https://codeberg.org/cfr/nfssext/issues}{\url{codeberg.org/cfr/nfssext/issues}}
+  \textbar{} Code:
+  \href{https://codeberg.org/cfr/nfssext}{\url{codeberg.org/cfr/nfssext}}
+  \textbar{} Mirror:
+  \href{https://github.com/cfr42/nfssext}{\url{github.com/cfr42/nfssext}}% 
+}}
+% \date{\fileversion~\filetoday}
+\date{\fileversion~\filedate}
+\pagestyle{fancy}
+\fancyhf[lh]{\itshape\filebase~\fileversion}
+% \fancyhf[rh]{\itshape\filetoday}
+\fancyhf[rh]{\itshape\filedate}
+\fancyhf[ch]{}
+\fancyhf[lf]{}
+\fancyhf[rf]{}
+\fancyhf[cf]{\itshape --- \thepage~/~\lastpage{} ---}
+\ExplSyntaxOn
+\hook_gput_code:nnn {shipout/lastpage} {.}
+{
+  \property_record:nn {t:lastpage}{abspage,page,pagenum}
+}
+\cs_new_protected_nopar:Npn \lastpage 
+{
+  \property_ref:nn {t:lastpage}{page}
+}
+\ExplSyntaxOff
+\definecolor{strawberry}{rgb}{1.000,0.000,0.502}
+\definecolor{blueberry}{rgb}{0.000,0.000,1.000}
+\definecolor{moss}{rgb}{0.000,0.502,0.251}
+\begin{document}
+  \DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+%
+% \newcommand*{\adf}{ADF}
+% \newcommand*{\lpack}[1]{\textsf{#1}}
+% \newcommand*{\fgroup}[1]{\textsf{#1}}
+% \newcommand*{\fname}[1]{\textsf{#1}}
+% \newcommand*{\file}[1]{\texttt{#1}}
+%
+% \changes{v??}{YYYY/??/??}{First public release.}
+% \changes{\fileversion}{\filedate}{%
+%   Belated update for (New) NFSS and revised nfssext-cfr.
+%   Try switching to DTX/INS.
+%   Implement scale package option.%
+% }
+%
+% \maketitle\thispagestyle{empty}
+% \pdfinfo{%
+% 	/Creator		(TeX)
+% 	/Producer		(pdfTeX)
+% 	/Author			(Clea F.\ Rees)
+% 	/Title				(romandeadf)
+% 	/Subject		(TeX)
+% 	/Keywords		(TeX,LaTeX,font,fonts,tex,latex,Romande,romande,romandeadf,RomandeADF,ADF,adf,Arkandis,Digital,Foundry,arkandis,digital,foundry,Hirwen,Harendal,Clea,Rees)}
+% \pdfcatalog{%
+% 	/URL				()
+% 	/PageMode	/UseOutlines}
+% \setlength{\parindent}{0pt}
+% \setlength{\parskip}{0.5em}
+%
+% \begin{abstract}
+% 	\hspace*{-\parindent}Hirwen Harendal, Arkandis Digital Foundry (\adf) has produced the Romande \adf\ font collection.
+% This guide outlines the \TeX/\LaTeX\ support provided by \lpack{romandeadf} for version 1.008 of the fonts.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Introduction}
+%
+% This document explains how to use the \TeX/\LaTeX\ support provided for version 1.008 of the Romande \adf\ font collection developed by Hirwen Harendal of the Arkandis Digital Foundry (\adf).
+% \lpack{romandeadf} includes copies of the fonts in postscript type 1 format.
+% Further  information about the fonts themselves and alternative font formats for use with other programmes can be found at \url{http://arkandis.tuxfamily.org/adffonts.html}.
+% The fonts are released under the \textsc{gnu} General Public License as published by the Free Software Foundation; either version 2 of the License, or any later version, with font exception.
+% For details, see \textsc{notice}.txt and \textsc{copying}.
+%
+% The \TeX/\LaTeX\ support package consists of all files listed in \path{manifest.txt}\ and these files are released under the \LaTeX\ Project Public Licence as explained in the included licensing notices.
+% Please file bugs for any problems so that I can solve them if I can.
+% If you can correct the problems and include the fix, that would be even better.
+%
+% \section{The collection}
+%
+% Romande \adf\ is a serif family with oldstyle figures designed as a substitute for Times, Tiffany or Caslon.
+% The family currently includes upright, italic and small-caps shapes in each of regular and demi-bold\footnote{As \fgroup{romande} does not include bold or bold extended fonts, \lpack{romadeadf} substitutes demi-bold so that the ordinary commands to select bold work as expected.} weights and an italic script in regular.
+% The support package renames the fonts according to the Karl Berry fontname scheme and defines four families.
+% Two of these primarily provide access to the ‘standard’ or default characters while the ‘alternate’ families support alternate characters, additional ligatures and the long s\footnote{\Fref{sec:encs} describes the encodings used to create these families.
+% For further details see the encoding files \path{t1-romandeadf.etx} and \path{t1-romandeadf-alt.etx}.}.
+% The included package files provide access to these features in \LaTeX\ as explained in \fref{sec:support} and \fref{sec:commands}.
+%
+% \Fref{tab:names} lists the original and Berry names for all included fonts.
+%
+% \begin{table}
+%   \centering
+%   \caption{RomandADF original and Berry font names.}\label{tab:names}
+%   \begin{tabular}{llll}
+% 	\toprule
+% 	\textbf{\TeX\ directory}	&	\textbf{font families}	&	\textbf{Original name}	& \textbf{\TeX\ name}\\\midrule
+% 	romande		&	yrdw, yrdaw	&	RomandeADFScriptStd-Italic			&	yrdriw8a\\\cline{2-4}
+% 						& yrd, yrda		&	RomandeADFStd-DemiBold				&	yrdd8a\\
+% 						& 							&	RomandeADFStd-DemiBoldItalic	&	yrddi8a\\
+% 						&							&	RomandeADFStd-Italic						&	yrdri8a\\
+% 						&							&	RomandeADFStd-Regular					&	yrdr8a\\
+% 						&							&	RomandeADFStyleStd-DemiBold	&	yrddc8a\\
+% 						&							&	RomandeADFStyleStd-Regular		&	yrdrc8a\\
+% 		\bottomrule
+%   \end{tabular}
+% \end{table}
+%
+% \section{Requirements}
+%
+% Apart from such obvious requirements as \LaTeXe, the \LaTeX\ support provided by \path{romande.sty} requires \lpack{nfssext-cfr}.
+% Without this, you will get errors complaining that the package cannot be found and you will not be able to use any of the additional font commands described in \fref{sec:commands}.
+%
+% The documentation requires in additional packages.
+% These are all standard and available from \textsc{ctan} but you can always comment out the relevant lines in \path{romandeadf.tex} if you wish.
+%
+% \section{The support package}\label{sec:support}
+%
+% \subsection{Encodings}\label{sec:encs}
+%
+% The package supports modified \textsc{ec}/\textsc{t1} and Text Companion (\textsc{ts1}) encodings.
+% Most characters in the \textsc{ec} encoding are available and the fonts provide a small number of characters from the \textsc{ts1} encoding as well, including the \texteuro.
+% The regular version of the \textsc{ec}/\textsc{t1} encoding (\path{t1-romandeadf.enc}) reassigns one slot which would otherwise be empty due to missing glyphs which \path{fontinst} cannot fake.
+% In the \textsc{t1} encoding, this slot is standardly used for the per thousand zero.
+% \path{t1-romandeadf.enc} uses the slot for the slashed zero (0*).
+% The fonts also lack the unfakable Sami Eng/eng characters (\textorigrm{\NG}/\textorigrm{\ng}).
+% Although these slots remain in the regular version of the encoding, they are empty due to the lack of suitable glyphs.
+%
+% The ‘alternative’ version of the \textsc{ec}/\textsc{t1} encoding (\path{t1-romandeadf-alt.enc}) provides access to the full range of ligatures available --- including ‘\textalt{ct}’, ‘\textalt{sp}’, ‘\textalt{st}’ and ‘\textalt{s*t}’ --- in addition to the alternate ‘Q’ (\textalt{Q*}) and the long s (\textalt{s*}).
+% The slots used by \textsc{t1} for the Sami characters and per thousand zero are reassigned first since these would otherwise be empty, but because further slots are required, a number of characters normally available in the \textsc{ec} encoding are unavailable.
+% These are Ohungarumlaut (\u{O}), ohungarumlaut (\u{o}), Uhungarumlaut (\u{U}) and dbar (\dj).
+% Attempting to access these characters while using the alternative versions of the fonts may result in errors of various kinds and will certainly produce unexpected output even though the characters are provided by the fonts, as the previous sentence demonstrates.
+% To access these glyphs, ensure that the regular versions of the fonts are active.
+%
+% \subsection{\LaTeX\ package}
+%
+% To use the fonts in a \LaTeX\ document, add \verb|\usepackage{romande}| to your document preamble.
+% This will set the default serif/roman family to \fname{yrd} (\fgroup{romande}) and enable access to the various alternates and additional glyphs available in the other families.
+%
+% \DescribeOpt{alt}\vals{true,false}
+% 
+% Loading \lpack{romande} with this option will select the ‘alternative’ version as the default serif/roman family.
+% \textbf{\emph{This option is not recommended unless you are \emph{certain} you do not wish to access any of the characters described in \fref{sec:encs}.}}
+% You should also note that this option will mean all of the additional ligatures will be active, which may not be what you want.
+%
+% Initially \texttt{false}; defaults to \texttt{true} if used with no value.
+%
+% \DescribeOpt{scale}\val{scaling factor}
+%
+% Scale all fonts provided by the package by \meta{scaling factor}, which should be a positive integer or simple decimal such as \verb|2| or \verb|1.2|.
+% This option is intended for cases where the fonts should be scaled to match other families used in the document e.g.~for consistency with the size of sans-serif or typewriter fonts.
+%
+% Initially empty, which is equivalent to \verb|1| but more efficient.
+%
+% Note that loading \path{romande.sty} will not affect the default sans-serif or typewriter families.
+%	
+% \section{Additional font selection commands}\label{sec:commands}
+%
+%	The \LaTeX\ package \lpack{romande}\ loads \lpack{nfssext-cfr}\ which is an extension of the package \lpack{nfssext}\ supplied by Philipp Lehman as part of The Font Installation Guide.
+% The file extends the font selection commands to facilitate access to various font features.
+% Both the original and the extension are designed for use with a wide range of fonts.
+% For this reason, only a subset of the additional commands are relevant to any particular font support package.
+% Those relevant to \lpack{romandeadf}\ are described below.
+%	
+% \subsection{nfssext-cfr}
+%
+% These commands are available when \lpack{romande} is loaded.
+% If for some reason you wish to make them available when no relevant package is loaded, use \verb|\usepackage{nfssext-cfr}| in your document preamble.
+%	
+% \subsubsection{Styles}
+%
+% Alternate and swash styles may be accessed using the macros shown in \fref{tab:styles}.
+% \begin{table}
+%   \centering
+%   \caption{RomandeADF styles.}\label{tab:styles}
+% 	\begin{tabular}{llll}
+% 		\toprule
+% 		\textbf{style}			&	\textbf{style command}	&	\textbf{text command}	&	\textbf{effect}\\\midrule
+% 		alternate					&	\verb|\altstyle|					&	\verb|\textalt{}|					&	‘alternative’\\
+% 		script/swash				&	\verb|\swashstyle|				&	\verb|\textswash{}|			&	italic, regular script\\
+%     \bottomrule
+% 	\end{tabular}
+% \end{table}
+%	
+% \DescribeMacro{\textswash}\marg{text}
+%	
+% \DescribeMacro{\swashstyle}
+%	\verb|\swashstyle| and \verb|\textswash{}| switch to the script font (\fgroup{yrdw}/\fgroup{yrdaw}) regardless of the current shape and weight --- you do not need to select italic shape or regular weight.
+%	
+% \DescribeMacro{\textalt}\marg{text}
+%
+% \DescribeMacro{\altstyle}
+%	\verb|\altstyle| and \verb|\textalt{}| switch to the ‘alternative’ families (\fgroup{yrda}/\fgroup{yrdaw}). Within the scope of these commands and except for small-caps:
+%	\begin{itemize}
+%		\item \verb|Q*| will typeset the alternate ‘Q’ (\textalt{Q*});
+%		\item \verb|s*| will typeset the long s (\textalt{s*});
+%		\item \verb|ct|, \verb|sp|, \verb|st| and \verb|s*t| will typeset the corresponding ligature (\textalt{ct}/\textalt{sp}/\textalt{st}/\textalt{s*t});
+%		\item attempting to typeset certain standard characters will produce unexpected results (see \fref{sec:encs}).
+%	\end{itemize}
+%	
+%	To make things slightly more convenient, \verb|Q*| and \verb|s*| will not be typeset literally when the regular encoding (or small-caps) is active.
+% Rather, these sequences will simply typeset the standard ‘Q’ and ‘s’.
+%	
+%	For example, suppose that \lpack{romande}\ was loaded and the following commands set up:
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+  \newcommand{\fytext}{%
+    Sphinx of black quartz, judge my vow.\par
+    Querulous sponges act last.\par
+    Q*uerulous s*ponges* act las*t.}
+  \newcommand{\fytest}{%
+    \fytext\smallskip\par
+    {\itshape\fytext}\smallskip\par
+    {\scshape\fytext}\smallskip\par
+    {\bfseries\fytext\smallskip\par
+    {\itshape\fytext}\smallskip\par
+    {\scshape\fytext}}\smallskip\par
+    {\swashstyle\fytext}}
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+%	\newcommand{\fytext}{%
+%		Sphinx of black quartz, judge my vow.\par
+%		Querulous sponges act last.\par
+%		Q*uerulous s*ponges* act las*t.}
+%	\newcommand{\fytest}{%
+%		\fytext\smallskip\par
+%		{\itshape\fytext}\smallskip\par
+%		{\scshape\fytext}\smallskip\par
+%		{\bfseries\fytext\smallskip\par
+%		{\itshape\fytext}\smallskip\par
+%		{\scshape\fytext}}\smallskip\par
+%		{\swashstyle\fytext}}
+%	Then:
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+  --- ‘regular’ ---\smallskip\par
+  \fytest\bigskip\par
+  --- ‘alternate’ ---\smallskip\par
+  \altstyle			
+  \fytest
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+%	produces:
+%	\begin{center}
+%		--- ‘regular’ ---\smallskip\par
+%		\fytest\bigskip\par
+%		--- ‘alternate’ ---\smallskip\par
+%		\altstyle			
+%		\fytest
+%	\end{center}
+%		
+% \subsubsection{The slashed zero (0*)}
+%
+% Both of the modified \textsc{t1} encodings used by \lpack{romandeadf} include a non-standard ligature to accommodate the slashed zero.
+% Provided \lpack{romande} is loaded and the default serif/roman family is active, \verb|0*| will produce the slashed zero (0*).
+%  
+% \appendix
+% 
+% \DeclareFixedFootnote \fnupdmap {%
+%   See, for example, \href{https://tex.stackexchange.com/q/255709/}{Why shouldn't I use \texttt{getnonfreefonts} to install additional fonts? Why shouldn't I use \texttt{updmap} when installing or removing fonts?}.}
+% 
+% \section{Installation}
+% 
+% \textbf{The vast majority of users should IGNORE this section entirely.}
+% \lpack{romandadf} is included in all major \TeX{} distributions and should be installed as part of your \TeX{} installation.
+% Installing the package yourself should be done only as a last resort or an educational exercise.
+% 
+% Note, in particular, that this version of \lpack{romandadf} should \textbf{not} be installed on older \LaTeX{} kernels as it is designed to work with the (New) New Font Selection Scheme, as updated around 2020\footnote{%
+%   The package should\texttrademark{} work fine on older kernels, but the new version is bound to have some bugs and there is no reason to use it on these systems.
+%   The sole purpose of the update is to accommodate the breaking changes made to font selection.
+%   If you don't have those changes installed locally, nothing should be broken and the newer version of \lpack{romandadf} offers no advantage at all.%
+% }.
+% Use the initial release of \lpack{romandadf} if your installation of \LaTeX{} predates those changes.
+% 
+% Installation varies with \TeX\ distribution so you should consult the documentation which came with your system for details.
+% In most cases, you will need to perform three steps:
+% \begin{enumerate}
+%   \item move or copy the package files to appropriate locations on your system;
+%   \item refresh the \TeX\ database;
+%   \item incorporate the included map file fragments for the different engines your distribution supports.
+% \end{enumerate}
+% 
+% The following instructions assume you are using \TeX~Live\footnote{This includes Mac\TeX\ for OS X users.}. 
+% They should not be too difficult to adapt if you are using a different distribution.
+% 
+% \subsection{Install the files}
+% 
+% The files should be installed in one of two locations: \emph{either} the local system-wide \TeX\ tree \emph{or} your personal tree.
+% If the package is installed system-wide, all users will have access to it.
+% On the other hand, you may need privileges you do not have to do this in which case you must use your personal tree.
+% 
+% \textbf{There are serious disadvantages to installing the package into your personal tree.
+% In particular, these pertain to use of \verb|updmap --user| rather than \verb|updmap --sys|.
+% If you are not aware of these disadvantages, please ensure you are fully cognisant of them before proceeding\fnupdmap.
+% Merely removing the package from your personal tree at a later point will \emph{not} undo the effects.}
+% 
+% For \TeX~Live, \verb|kpsewhich -var-value TEXMFLOCAL| will return the path to the local tree and \verb|kpsewhich -var-value TEXMFHOME| the path to your personal tree. 
+% The package already includes a hierarchy of files to help you install them correctly.
+% Ignoring any symbolic link in the top directory, move or copy the files in \path{doc}, \path{fonts} and \path{tex} into the appropriate locations.
+% If the tree is initially empty, you can simply move or copy the directories in as they are.
+% If the tree already contains other packages, you may need to merge the package hierarchy with the pre-existing one.
+% For example, if you already have a \path{doc/fonts} directory, move or copy \path{doc/fonts/romande} into \path{doc/fonts/}.
+% If you have a \path{doc} directory but not a \path{doc/fonts}, move \path{doc/fonts} into \path{doc/}.
+% 
+% \subsection{Refresh the database}
+% 
+% Again, this depends on your distribution. For \TeX~Live, \verb|mktexlsr <path to directory>| for the directory you used in the first step should do the trick.
+% Note that you \emph{may} be able to skip this step if you install into your personal tree.
+% Whether this is so depends on the details of your set-up.
+% As a test, move to a directory containing none of the package files and try \verb|kpsewhich romande.sty|.
+% If the file is found, you don't need to refresh the database; otherwise use \verb|mktexlsr| and then try again.
+% 
+% \subsection{Install the map fragments}
+% 
+% For \TeX~Live, there are at least two ways of doing this. 
+% The second method varies according to the version of \TeX~Live and instructions are provided accordingly.
+% Both methods depend on whether you installed into \verb|TEXMFLOCAL| or \verb|TEXMFHOME|.
+% If you installed system-wide, the choice is relatively straightforward --- it obviously makes sense in that case to update the font maps system-wide as well.
+% 
+% If, on the other hand, you installed into your personal tree, the matter is more complex. 
+% On the one hand, updating the system-wide maps may create difficulties or confusion for other users because while the map files will list the fonts as available, they will not be able to access them.
+% On the other hand, maintaining personal font map files can produce difficulties and confusions of its own\fnupdmap.
+% Whether it is to be preferred or not is a complex issue and depends on the details of your \TeX\ distribution, local configuration and personal preference. 
+% The one clear case is that in which you install into your personal tree because you lack the privileges needed to install system-wide. 
+% In that case, you have no choice but to maintain personal font map files or forgo the use of all fonts not provided by your administrator.
+% Other cases are thankfully beyond the scope of this document.
+% 
+% \subsubsection{Method 1}
+% 
+% If you installed the package system-wide, use the command:
+% \iffalse
+%^^A ateb Heiko Oberdiek: https://tex.stackexchange.com/a/172896/
+%^^A dyw hwn ddim yn gweithio tu mewn i arg macro! 
+%^^A (*wrth gwrs* dyw e ddim yn weithio! wyt ti'n *hollol* dwp?)
+%<*verb>
+% \fi
+\begin{verbatim}
+  updmap-sys --enable Map=yrd.map
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+%
+% If you installed the package in your personal tree, you \emph{may} prefer\fnupdmap:
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+  updmap --enable Map=yrd.map
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% Either way, \verb|updmap| will output a good deal of information after each incantation.
+% This is normal.
+% Just check that it does not end with an error and that it found the new map file.
+% 
+% \subsubsection{Method 2: \TeX~Live 2008 (and probably earlier)}
+% 
+% If you installed the package system-wide, use \verb|updmap-sys --edit|.
+% 
+% If you installed into your personal tree, you \emph{may} prefer to use	\verb|updmap --edit|\fnupdmap.
+% 
+% Either way, a configuration file will be opened which you can edit.
+% Move to the end of the file and add the following line:
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+  Map yrd.map
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% When you are done, save the file.
+% \verb|updmap| or \verb|updmap-sys| will produce a great deal of output if all is well. 
+% Just check that it does not end with an error and that \path{yrd.map} is found.
+% 
+% \subsubsection{Method 2: \TeX~Live 2009 (and possibly later)}
+% 
+% If you installed the package system-wide, edit or or create \path{TEXMFLOCAL/web2c/updmap-local.cfg} and add the following line to the end of the file:
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+  Map yrd.map
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% Save the file and tell \verb|tlmgr| to merge in your addition using the command:
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+  tlmgr generate updmap
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% \verb|tlmgr| will then tell you that you need to ensure the changes are propagated correctly by calling \verb|updmap-sys|. 
+% This should produce a great deal of output.
+% Check that it finds the new map file and does not end with an error.
+% 
+% If you installed into your personal tree, you \emph{may} prefer to use \verb|updmap --edit| as described above for \TeX~Live 2008\fnupdmap.
+% 
+% \subsubsection{Method 3: Current/Recent \TeX~Live}
+% 
+% If you installed the package system-wide, tell \cs{updmap} to enable the map file:
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+  updmap --sys --enable Map=yrd.map
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% This should produce a great deal of output.
+% Check that it finds the new map file and does not end with an error.
+% 
+% If you installed into your personal tree, you \emph{could} use \verb|updmap --user| in place of \verb|updmap --sys| as described above for \TeX~Live 2008, but this is \textbf{not} recommended\fnupdmap.
+% 
+% To test your installation and that the package works on your system, latex this file (\path{romandadf.tex}).
+% The console output and/or log should tell you whether any fonts were not found. 
+% If you are careful not to overwrite it, you may also compare your output with \path{romandadf.pdf}.%
+% 
+% \MaybeStop{%
+% \PrintChanges
+% \PrintIndex
+% }
+% 
+% \section{Implementation}
+%
+% You do not need to read the remainder of this document in order to install or use the fonts.
+%
+% To understand how the package is implemented, this section should be read in conjunction with \file{romandeadf-build.pdf}, which includes codes for custom encodings and ‘reglyph’ commands, which are necessary to ensure access to the full range of glyphs.
+% This file contains source for only the main ‘driver’ and ‘map’ files.
+%
+% Note that creating the font files, as opposed to just the package and documentation files, \emph{requires} \texttt{l3build} and a set of custom \texttt{lua} scripts available on \texttt{codeberg}.
+% More specifically, if you want to build the font definition files (\texttt{.fd}) yourself, you \emph{must} use \texttt{l3build fnttarg} and this requires files available from the code repository, but not included in this package.
+%
+% The reason for this is that \lpack{fontinst} provides no way\footnote{Or no way I've yet discovered.} to enable variable scaling.
+% While it is entirely possible to scale a font by any factor you please, it is not, as far as I can tell, possible to enable scaling by any factor a user later pleases.
+% In particular, while it is possible to define shapes and families to use a variable factor, it is not possible to write a definition of that factor into the font definition file, which is the way variable scaling is usually configured.
+% 
+% In order to enable this functionality, \texttt{lua} is used to inject the relevant code into the \texttt{.fd} files after \lpack{fontinst} has generated them.
+% If you simply process the relevant \TeX{} files by hand, you will create broken definition files, since the code produced by \lpack{fontinst} assumes the relevant lines have been injected.
+%
+% \iffalse
+%<*sty>
+% \fi
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}
+\RequirePackage{svn-prov}
+\ProvidesPackageSVN[romande.sty]{$Id: romandeadf.dtx 10234 2024-08-13 01:16:07Z cfrees $}[\filebase v2.1 \revinfo]
+\DefineFileInfoSVN[romande]
+\RequirePackage[T1]{fontenc}
+\RequirePackage{nfssext-cfr}
+%    \end{macrocode}
+% \lpack{nfssext-cfr} provides \cs{ProcessKeyOptions}, \cs{IfFormatAtLeastTF} on older kernels.
+%    \begin{macrocode}
+\IfFormatAtLeastTF {2020-02-02}{%
+%    \end{macrocode}
+% To get the oldstyle numbers etc.\ used from TS1, we need to set the subset to 0 or 1.
+% Unfortunately, this means characters missing from the fonts will not use default symbols as fallback, but this seems to be unavoidable.
+%    \begin{macrocode}
+  \DeclareEncodingSubset{TS1}{yrd}{1}%
+  \DeclareEncodingSubset{TS1}{yrda}{1}%
+  \DeclareEncodingSubset{TS1}{yrdw}{1}%
+  \DeclareEncodingSubset{TS1}{yrdaw}{1}%
+}{%
+  \RequirePackage{textcomp}}
+\UndeclareTextCommand{\textperthousand}{T1}
+\ExplSyntaxOn
+%    \end{macrocode}
+% The actual \verb|sty| is ultra simple.
+% Four options of which only three are actually needed.
+% \texttt{alt} sets the ‘alternative’ encoding as default or not.
+% A single boolean suffices.
+% \texttt{scale} takes a factor by which to scale the fonts.
+% This is empty by default, which is equivalent to \texttt{1}, but more efficient.
+%    \begin{macrocode}
+\keys_define:nn { romande }
+{
+  alt .bool_set:N = \g__romande_alt_bool,
+  alt .default:n = true,
+  alt .initial:n = false,
+  scale .tl_set:N = \yrd@scale,
+  scale .initial:V = \@empty,
+}
+%    \end{macrocode}
+% Note the optional argument is mandatory in case we're on an older kernel.
+%    \begin{macrocode}
+\ProcessKeyOptions[romande]
+%    \end{macrocode}
+% Use a token list initialised with the bare Berry name.
+% %% could I just use \rmdefault directly here?
+% %% does it matter if it is a cs rather than a tl?
+%    \begin{macrocode}
+\tl_new:N \g__romande_rm_tl
+\tl_gset:Nn \g__romande_rm_tl {yrd}
+%    \end{macrocode}
+% Add indicator for ‘alt’ or not.
+%    \begin{macrocode}
+\bool_if:NT \g__romande_alt_bool
+{
+  \tl_gput_right:Nn \g__romande_rm_tl {a}
+}
+%    \end{macrocode}
+% Order is critical as we're matching on family names.
+% Make RomandeADF default roman font, using the assembled name to implement requested options.
+%    \begin{macrocode}
+\renewcommand{\rmdefault}{\g__romande_rm_tl}
+\ExplSyntaxOff
+%^^A paid â chynnwys \endinput - docstrip yn chwilio amddo fe yn arbennigol
+%^^A & bydd doctrip yn ei ychwanegu fe beth bynnag
+%^^A (Martin Scharrer: https://tex.stackexchange.com/a/28997/)
+%% end romande.sty
+%    \end{macrocode}
+% \iffalse
+%</sty>
+% \fi
+% 
+% The remaining files are not used directly, but are required to generate the files which allow \TeX{} and \LaTeX{} to use the fonts.
+% The sources use \verb|fontinst| as explained in the (sparse) comments.
+% While you can install these files into a \TeX{} tree, they are not required for typesetting.
+% 
+% \subsection{Driver}
+%
+% The file does all the initial setup of the fonts.
+% It organises the fonts into families, defines shapes and reencodes as required.
+%
+% \iffalse
+%<*drv>
+% \fi
+%    \begin{macrocode}
+\input fontinst.sty
+\needsfontinstversion{1.926}
+%    \end{macrocode}
+% Substitutions
+% Bold for bold extended
+%    \begin{macrocode}
+\substitutesilent{bx}{b}
+\substitutesilent{b}{db}
+\substitutesilent{db}{m}
+\substitutesilent{scit}{sc}
+\substitutesilent{scsl}{scit}
+\substitutesilent{si}{scsl}
+\substitutesilent{sl}{it}
+%    \end{macrocode}
+% Record transformations for later map file creation
+%    \begin{macrocode}
+\recordtransforms{yrd-rec.tex}
+%    \end{macrocode}
+% Allow fonts to be scaled via variable in fd files
+% Also requires fontinst.lua fnttarg as no means to define variable in fontinst 
+%    \begin{macrocode}
+\declaresize{}{<-> \string\yrd@@scale}
+%    \end{macrocode}
+% Transformations : reencode fonts
+%    \begin{macrocode}
+	\transformfont{t1-romandeadf-yrdr}{\reencodefont{t1-romandeadf}{\fromafm{yrdr8a}}}
+	\transformfont{t1-romandeadf-yrdri}{\reencodefont{t1-romandeadf}{\fromafm{yrdri8a}}}
+	\transformfont{t1-romandeadf-yrdrc}{\reencodefont{t1-romandeadf}{\fromafm{yrdrc8a}}}
+	\transformfont{t1-romandeadf-yrdd}{\reencodefont{t1-romandeadf}{\fromafm{yrdd8a}}}
+	\transformfont{t1-romandeadf-yrddi}{\reencodefont{t1-romandeadf}{\fromafm{yrddi8a}}}
+	\transformfont{t1-romandeadf-yrddc}{\reencodefont{t1-romandeadf}{\fromafm{yrddc8a}}}
+	\transformfont{t1-romandeadf-yrdriw}{\reencodefont{t1-romandeadf}{\fromafm{yrdriw8a}}}
+	\transformfont{t1-romandeadf-alt-yrdr}{\reencodefont{t1-romandeadf-alt}{\fromafm{yrdr8a}}}
+	\transformfont{t1-romandeadf-alt-yrdri}{\reencodefont{t1-romandeadf-alt}{\fromafm{yrdri8a}}}
+	\transformfont{t1-romandeadf-alt-yrdd}{\reencodefont{t1-romandeadf-alt}{\fromafm{yrdd8a}}}
+	\transformfont{t1-romandeadf-alt-yrddi}{\reencodefont{t1-romandeadf-alt}{\fromafm{yrddi8a}}}
+	\transformfont{t1-romandeadf-alt-yrdriw}{\reencodefont{t1-romandeadf-alt}{\fromafm{yrdriw8a}}}
+	\transformfont{s-yrdr}{\reencodefont{romande-supp}{\fromafm{yrdr8a}}}
+	\transformfont{s-yrdri}{\reencodefont{romande-supp}{\fromafm{yrdri8a}}}
+	\transformfont{s-yrdrc}{\reencodefont{romande-supp}{\fromafm{yrdrc8a}}}
+	\transformfont{s-yrdd}{\reencodefont{romande-supp}{\fromafm{yrdd8a}}}
+	\transformfont{s-yrddi}{\reencodefont{romande-supp}{\fromafm{yrddi8a}}}
+	\transformfont{s-yrddc}{\reencodefont{romande-supp}{\fromafm{yrddc8a}}}
+	\transformfont{s-yrdriw}{\reencodefont{romande-supp}{\fromafm{yrdriw8a}}}
+	\transformfont{ts1-yrdr}{\reencodefont{ts1-euro}{\fromafm{yrdr8a}}}
+	\transformfont{ts1-yrdri}{\reencodefont{ts1-euro}{\fromafm{yrdri8a}}}
+	\transformfont{ts1-yrdd}{\reencodefont{ts1-euro}{\fromafm{yrdd8a}}}
+	\transformfont{ts1-yrddi}{\reencodefont{ts1-euro}{\fromafm{yrddi8a}}}
+	\transformfont{ts1-yrdriw}{\reencodefont{ts1-euro}{\fromafm{yrdriw8a}}}
+	\input reglyph-yrd.tex
+%    \end{macrocode}
+% Installation: creation of virtual fonts
+%    \begin{macrocode}
+	\installfonts
+		\installfamily{T1}{yrd}{}
+		\installfont{yrdr8t}{t1-romandeadf-yrdr,newlatin}{t1-romandeadf}{T1}{yrd}{m}{n}{}
+		\installfont{yrdrc8t}{t1-romandeadf-yrdrc,newlatin}{t1-romandeadf}{T1}{yrd}{m}{sc}{}
+		\installfont{yrdri8t}{t1-romandeadf-yrdri,newlatin}{t1-romandeadf}{T1}{yrd}{m}{it}{}
+		\installfontas{yrdri8t}{T1}{yrd}{m}{sl}{}
+		\installfont{yrdd8t}{t1-romandeadf-yrdd,newlatin}{t1-romandeadf}{T1}{yrd}{db}{n}{}
+		\installfont{yrddc8t}{t1-romandeadf-yrddc,newlatin}{t1-romandeadf}{T1}{yrd}{db}{sc}{}
+		\installfont{yrddi8t}{t1-romandeadf-yrddi,newlatin}{t1-romandeadf}{T1}{yrd}{db}{it}{}
+		\installfontas{yrddi8t}{T1}{yrd}{db}{sl}{}
+		\installfamily{T1}{yrda}{}
+		\installfont{yrdra8t}{t1-romandeadf-alt-yrdr,rs-yrdr,newlatin}{t1-romandeadf-alt}{T1}{yrda}{m}{n}{}
+		\installfontas{yrdrc8t}{T1}{yrda}{m}{sc}{}
+		\installfont{yrdrai8t}{t1-romandeadf-alt-yrdri,rs-yrdri,newlatin}{t1-romandeadf-alt}{T1}{yrda}{m}{it}{}
+		\installfont{yrdda8t}{t1-romandeadf-alt-yrdd,rs-yrdd,newlatin}{t1-romandeadf-alt}{T1}{yrda}{db}{n}{}
+		\installfontas{yrddc8t}{T1}{yrda}{db}{sc}{}
+		\installfont{yrddai8t}{t1-romandeadf-alt-yrddi,rs-yrddi,newlatin}{t1-romandeadf-alt}{T1}{yrda}{db}{it}{}
+		\installfamily{T1}{yrdw}{}
+		\installfont{yrdriw8t}{t1-romandeadf-yrdriw,newlatin}{t1-romandeadf}{T1}{yrdw}{m}{it}{}
+		\installfontas{yrdriw8t}{T1}{yrdw}{m}{n}{}
+		\installfontas{yrdriw8t}{T1}{yrdw}{m}{sc}{}
+		\installfamily{T1}{yrdaw}{}
+		\installfont{yrdraiw8t}{t1-romandeadf-alt-yrdriw,rs-yrdriw,newlatin}{t1-romandeadf-alt}{T1}{yrdaw}{m}{it}{}
+		\installfontas{yrdraiw8t}{T1}{yrdaw}{m}{n}{}
+		\installfontas{yrdraiw8t}{T1}{yrdaw}{m}{sc}{}
+		\installfamily{TS1}{yrd}{}
+		\installfont{yrdr8c}{t1-romandeadf-yrdr,ts1-yrdr,t1-romandeadf-yrdr suffix oldstyle,rs-yrdr,textcomp}{ts1-euro}{TS1}{yrd}{m}{n}{}
+		\installfontas{yrdr8c}{TS1}{yrd}{m}{sc}{}
+		\installfont{yrdri8c}{t1-romandeadf-yrdri,ts1-yrdri,t1-romandeadf-yrdri suffix oldstyle,rs-yrdri,textcomp}{ts1-euro}{TS1}{yrd}{m}{it}{}
+		\installfont{yrdd8c}{t1-romandeadf-yrdd,ts1-yrdd,t1-romandeadf-yrdd suffix oldstyle,rs-yrdd,textcomp}{ts1-euro}{TS1}{yrd}{db}{n}{}
+		\installfontas{yrdd8c}{TS1}{yrd}{db}{sc}{}
+		\installfont{yrddi8c}{t1-romandeadf-yrddi,ts1-yrddi,t1-romandeadf-yrddi suffix oldstyle,rs-yrddi,textcomp}{ts1-euro}{TS1}{yrd}{db}{it}{}
+		\installfamily{TS1}{yrda}{}
+		\installfontas{yrdr8c}{TS1}{yrda}{m}{n}{}
+		\installfontas{yrdr8c}{TS1}{yrda}{m}{sc}{}
+		\installfontas{yrdri8c}{TS1}{yrda}{m}{it}{}
+		\installfontas{yrdd8c}{TS1}{yrda}{db}{n}{}
+		\installfontas{yrdd8c}{TS1}{yrda}{db}{sc}{}
+		\installfontas{yrddi8c}{TS1}{yrda}{db}{it}{}
+		\installfamily{TS1}{yrdw}{}
+		\installfont{yrdriw8c}{t1-romandeadf-yrdriw,ts1-yrdriw,t1-romandeadf-yrdriw suffix oldstyle,rs-yrdriw,textcomp}{ts1-euro}{TS1}{yrdw}{m}{it}{}
+		\installfontas{yrdriw8c}{TS1}{yrdw}{m}{n}{}
+		\installfontas{yrdriw8c}{TS1}{yrdw}{m}{sc}{}
+		\installfamily{TS1}{yrdaw}{}
+		\installfontas{yrdriw8c}{TS1}{yrdaw}{m}{it}{}
+		\installfontas{yrdriw8c}{TS1}{yrdaw}{m}{n}{}
+		\installfontas{yrdriw8c}{TS1}{yrdaw}{m}{sc}{}
+	\endinstallfonts
+\endrecordtransforms
+\bye
+%    \end{macrocode}
+% \iffalse
+%</drv>
+% \fi
+% \subsection{Map}
+% 
+% This file is compiled to produce the map file fragment \verb|updmap| needs to install the fonts.
+% It uses files recorded during compilation of the driver.
+% \iffalse
+%<*map>
+% \fi
+%    \begin{macrocode}
+\input finstmsc.sty
+\resetstr{PSfontsuffix}{.pfb}
+\adddriver{dvips}{yrd.map}
+\adddriver{pltotf}{yrd-pltotf.sh}
+\input yrd-rec.tex
+\donedrivers
+\bye
+%    \end{macrocode}
+% \iffalse
+%</map>
+% \fi
+% 
+% The remaining file listings are included in \file{romandeadf-build.pdf} in order to keep the length of this file manageable.
+% Brief descriptions of these files are included below for ease of reference.
+% 
+% \subsection{Supplementary (raw)}
+% 
+% We need an additional ‘raw’ encoding to pick up characters otherwise missed.
+% Many of these are here just because they are named differently, but this also covers fancy ligatures, alternate styles of digits etc.
+%
+% Note that \verb|etx| files may specify raw and/or output encodings.
+% Those which are specific to romande-TC are described below and included in this file.
+% Those which are not are included as separate sources unless provided by
+% \verb|fontinst|.
+% 
+% \begin{itemize}
+%   \item \file{romande-supp.etx}
+% \end{itemize}
+%
+% \subsection{Reglyph}
+% We need to rename characters whose names don't match our TeX font
+% encodings.
+%
+% \begin{itemize}
+%   \item \file{reglyph-yrd.tex}
+% \end{itemize}
+%
+% \subsection{Encodings (output)}
+% These files define variant T1 and TS1 font encodings.
+% \begin{itemize}
+%   \item \file{t1-romandeadf-alt.etx}
+%   \item \file{t1-romandeadf.etx}
+% \end{itemize}
+%
+% In addition to these encodings, we use encoding files supplied by \verb|fontinst| and some custom files not included in this package's \verb|dtx| as they are not specific to \lpack{romandeadf}.
+% They are, however, part of the package:
+% \begin{itemize}
+%   \item \file{ts1-euro.etx}
+%   \item[] [and \file{ts1-euro.enc}]
+% \end{itemize}
+%
+% The \verb|etx| files are not used directly by \LaTeX{} or \TeX.
+% Where needed, they are processed to produce \verb|enc| files.
+% In some cases, however, they are not themselves standalone encodings.
+% Instead, they change how some other encoding is interpreted.
+% 
+% \subsection{MTX}
+% \verb|mtx| files are used to build ‘fake’ glyphs where these are missing from the original fonts.
+% We do not fake small-caps or bold, but only glyphs which can be constructed without altering the original design.
+%
+% \verb|mtx| files are also used to adjust the scale of glyphs and to modify kerning pairs, for example.
+%
+% We do not use any custom \verb|mtx| files, though we do use \verb|mtx| files supplied by \verb|fontinst|.
+%
+% \section{Example}
+%
+% This would be better included in the documentation as a standalone \texttt{.tex} file, but I can't figure out how to do that, so I include the listing here and note that the source for the example can be produced by processing the \texttt{.ins} file with target \verb|ee|.
+%
+% \iffalse
+%<*ee>
+% \fi
+%    \begin{macrocode}
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+\documentclass[12pt]{article}
+\usepackage{csquotes}
+\MakeAutoQuote{‘}{’}
+\MakeAutoQuote*{“}{”}
+\title{\textswash{Romande ADF Sample (yrd, yrda, yrdaw, yrdw)}}
+\author{\textswash{Quick, Q*uesting, Contracting Contrasts Desperately Instantiating Effigies}}
+
+\newcommand{\alphaline}{%
+	ABCDEFGHIJKLMNOPQRSTUVWXYZ\par abcdefghijklmnopqrs\kern0pt tuvwxyz\par 
+	00*123456789 Q Q* f\kern0pt f ff f\kern0pt i fi f\kern0pt l fl f\kern0pt f\kern0pt i ffi f\kern0pt f\kern0pt l ffl c\kern0pt t ct s\kern0pt p sp s\kern0pt t st\par 
+	<\kern0pt < << >\kern0pt > >> - -\kern0pt - -- -\kern0pt -\kern0pt - ---\par  
+		 \& \texteuro\ \textdollar\ \textsterling\ \textyen\ \textcurrency\ \textflorin\ \textcent\ \textohm\ \textmu\ \textcelsius\ \textnumero\ \textdiv\ \texttimes\ \textpm\ \textregistered\ \textcopyright\ \texttrademark\ \textparagraph\ \textonequarter\ \textonehalf\ \textthreequarters\ \textonesuperior\ \texttwosuperior\ \textthreesuperior\par 
+	Sphinx of black quartz, judge my vow.\par 
+	The quick brown fox jumps over the lazy dog.\par 
+	Querulous sponges act last.\par 
+	Q*uerulous s*ponges* act las*t.}
+\newcommand{\abc}{ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz}
+\newcommand{\digits}{0123456789}
+\newcommand{\alphatest}{%
+	{\upshape upright shape:\par \alphaline}\smallskip\par
+	{\scshape small caps:\par \alphaline}\smallskip\par
+	{\itshape italics:\par \alphaline}\smallskip\par
+	{\bfseries
+		{\upshape upright shape:\par \alphaline}\smallskip\par
+		{\scshape small caps:\par \alphaline}\smallskip\par
+    {\itshape italics:\par \alphaline}\smallskip\par
+  }%
+	{\swashstyle script/swash:\par \alphaline}\smallskip\par
+}
+	
+\pdfmapfile{+yrd.map}
+\usepackage{romande}
+
+\begin{document}
+\setlength{\parindent}{0pt}%
+\maketitle
+
+\section*{regular modified encoding}
+
+\alphatest
+
+\section*{alternative modified encoding}
+
+\altstyle
+
+\alphatest
+
+\end{document} 
+%    \end{macrocode}
+% \iffalse
+%</ee>
+% \fi
+%
+% 
+%\Finale
+%^^A vim: tw=0:
