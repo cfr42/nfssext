@@ -1,4 +1,4 @@
--- $Id: arkandis-manifest.lua 10167 2024-07-20 00:31:56Z cfrees $
+-- $Id: arkandis-manifest.lua 10240 2024-08-17 03:18:39Z cfrees $
 ---------------------------------------------------------------------
 -- local derivedfiles = derivedfiles or {"*.cls","*.enc","*.fd","*.map","*.sty","*.tfm","*.vf"}
 -- local arkandisfiles = arkandisfiles or {"*.afm","*.otf","*.pfb",".pfm","*.ttf","NOTICE.txt","COPYING"}
@@ -91,7 +91,7 @@ function manifest_write_opening(filehandle)
 Project Public License, either version 1.3c of this license or (at your option)
 any later version.  The latest version of this license is in
       https://www.latex-project.org/lppl.txt
-and version 1.3 or later is part of all distributions of LaTeX version 
+and version 1.3c or later is part of all distributions of LaTeX version 
 2008-05-04 or later.
 
 This work has the LPPL maintenance status `maintained'.

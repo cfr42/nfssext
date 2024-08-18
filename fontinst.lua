@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10223 2024-08-10 15:47:20Z cfrees $
+-- $Id: fontinst.lua 10243 2024-08-17 17:04:36Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -51,10 +51,11 @@ end
 function fontinst (dir,mode)
   dir = dir or unpackdir
   mode = mode or "errorstopmode --halt-on-error"
-  if not direxists(dir) then
-    print("Missing directory. Unpacking first.\n")
+  -- if not direxists(dir) then
+    -- print("Missing directory. Unpacking first.\n")
+    print("Unpacking ...\n")
     local errorlevel = unpack() 
-  end
+  -- end
   for i,j in ipairs(familymakers) do
     local errorlevel = finst(j,dir,mode)
     gwall("Compilation of driver ", j, errorlevel)
@@ -276,15 +277,15 @@ end
 -- it just ain't TeX
 target_list[ntarg] = {
 	func = fontinst,
-	desc = "Creates TeX font file",
-	pre = function(names)
-		if names then
-			print("fontinst does not need names\n")
-			help()
-			exit(1)
-		end
-		return 0
-	end
+  desc = "Creates TeX font file",
+  pre = function(names)
+    if names then
+      print("fontinst does not need names\n")
+      help()
+      exit(1)
+    end
+    return 0
+  end
 }
 -------------------------------------------------
 autotestfds = autotestfds or {}
@@ -327,6 +328,7 @@ tdslocations = {
 	"fonts/tfm/" .. vendor .. "/" .. module .. "/" .. "*.tfm",
 	"fonts/truetype/" .. vendor .. "/" .. module .. "/" .. "*.ttf",
 	"fonts/type1/" .. vendor .. "/" .. module .. "/" .. "*.pfb",
+	"fonts/type1/" .. vendor .. "/" .. module .. "/" .. "*.pfm",
 	"fonts/vf/" .. vendor .. "/" .. module .. "/" .. "*.vf",
 	"source/fonts/" .. module .. "/" .. "*.etx",
 	"source/fonts/" .. module .. "/" .. "*.mtx",

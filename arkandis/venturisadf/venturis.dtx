@@ -1,0 +1,814 @@
+% \iffalse meta-comment
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% venturis.dtx
+% Additions and changes Copyright (C) 2008-2024 Clea F. Rees.
+% Code from skeleton.dtx Copyright (C) 2015-2024 Scott Pakin (see below).
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   https://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status `maintained'.
+%
+% The Current Maintainer of this work is Clea F. Rees.
+%
+% This work consists of all files listed in manifest.txt.
+%
+% The file venturis.dtx is a derived work under the terms of the
+% LPPL. It is based on version 2.4 of skeleton.dtx which is part of 
+% dtxtut by Scott Pakin. A copy of dtxtut, including the 
+% unmodified version of skeleton.dtx is available from
+% https://www.ctan.org/pkg/dtxtut and released under the LPPL.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \fi
+%
+% \iffalse
+%<*driver>
+\RequirePackage{svn-prov}
+% ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
+\def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
+\ProvidesFileSVN{$Id: venturis.dtx 10246 2024-08-18 01:29:07Z cfrees $}[v0.0
+\revinfo][\filebase DTX: Venturis ADF for 8-bit engines]
+\DefineFileInfoSVN[venturis]
+\documentclass[11pt,british]{ltxdoc}
+% l3doc loads fancyvrb
+% fancyvrb overwrites svn-prov's macros without warning
+% restore \fileversion \filerev in case we're using l3doc
+\GetFileInfoSVN{venturis}
+\newcommand* \pkgname{venturisadf}
+\EnableCrossrefs
+\CodelineIndex
+\RecordChanges
+\DoNotIndex{\verb,\ProvidesPackageSVN,\NeedsTeXFormat,\ProcessKeyOptions,\revinfo,\filebase,\filename,\filedate,\RequirePackage,\usepackage,\DefineFileInfoSVN,\GetFileInfoSVN,\ProvidesPackageSVN,\documentclass,\MakeAutoQuote,\parindent,\par,\smallskip,\setlength,\bigskip,\maketitle,\title,\author,\date,\ExplSyntaxOn,\ExplSyntaxOff,\bye,\edef\gdef,\def,\relax,\renewcommand,\tempf,\tempo,\tempr,\temps}
+\usepackage{babel}
+\pdfmapfile{- yvt.map}
+\pdfmapfile{- yv1.map}
+\pdfmapfile{- yv2.map}
+\pdfmapfile{- yv3.map}
+\pdfmapfile{- yvo.map}
+\pdfmapfile{+ yvt.map}
+\pdfmapfile{+ yv1.map}
+\pdfmapfile{+ yv2.map}
+\pdfmapfile{+ yv3.map}
+\pdfmapfile{+ yvo.map}
+\usepackage{venturis}
+% The following commands are only necessary to enable access to all the fonts in the collection in the same document. 
+% Normally, one would load venturis2 or venturisold rather than defining things explicitly.
+% But those packages will overwrite the declarations in venturis so aren't an option in this peculiar context.
+% (It is assumed that in ordinary usage, only one of the serif/sans-serif combinations provided by venturis and venturis2 or the serif offered by venturisold will be wanted in a single document.)
+\DeclareRobustCommand{\venturistworm}{%
+  \fontencoding{T1}%
+  \fontfamily{yv2}%
+  \selectfont}
+\DeclareRobustCommand{\venturistwosf}{%
+  \fontencoding{T1}%
+  \fontfamily{yv3}%
+  \selectfont}
+\DeclareRobustCommand{\venturisold}{%
+  \fontencoding{T1}%
+  \fontfamily{yvo}%
+  \selectfont}
+\DeclareTextFontCommand{\vtworm}{\venturistworm}
+\DeclareTextFontCommand{\vtwosf}{\venturistwosf}
+\DeclareTextFontCommand{\vo}{\venturisold}
+\makeatletter
+\DeclareRobustCommand{\vostyle}[1][]{%
+  \not@math@alphabet\vostyle\relax
+  \fontfamily{yvod}\selectfont}
+\makeatother
+\DeclareTextFontCommand{\textvo}{\vostyle}
+\DeclareTextFontCommand{\textvol}{\vostyle}
+\DeclareRobustCommand{\lmrmfamily}{%
+  \fontencoding{T1}%
+  \fontfamily{lmr}%
+  \selectfont}
+\DeclareTextFontCommand{\lmrm}{\lmrmfamily}
+\renewcommand{\ttdefault}{lmvtt}
+\usepackage{fancyhdr}
+\usepackage{fancyref}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{metalogo}
+	\setlogokern{Te}{-0.065em}% default: -0.1667em
+	\setlogokern{eX}{-0.06em}% default: -0.125em
+	\setlogokern{La}{-0.265em}% default: -0.36em
+	\setlogokern{aT}{-.055em}% default: -0.15em
+%	\setlogokern{X2}{}% default: 0.15em
+	\setlogodrop[TeX]{0.355ex}% default: 0.5ex
+	\setLaTeXa{\scshape a}
+%	\setLaTeXee{<arg>}	
+\usepackage{fixfoot}
+\usepackage{enumitem}
+\usepackage[referable]{threeparttablex}
+\usepackage{enumitem}
+\makeatletter
+\def\TPT@measurement{% ateb David Carlisle: https://tex.stackexchange.com/a/370691/
+  \ifdim\wd\@tempboxb<\TPTminimum
+    \hsize \TPTminimum
+  \else
+    \hsize\wd\@tempboxb
+  \fi
+  \xdef\TPT@hsize{\hsize\the\hsize \noexpand\@parboxrestore}\TPT@hsize
+  \ifx\TPT@docapt\@undefined\else
+    \TPT@docapt \vskip.2\baselineskip
+  \fi \par
+  \dimen@\dp\@tempboxb % new
+  \box\@tempboxb
+  \ifvmode \prevdepth\dimen@ \fi% was \z@ not \dimen@
+}
+\renewlist{tablenotes}{enumerate}{1}
+\setlist[tablenotes]{label=\tnote{\alph*},ref=\alph*,itemsep=\z@,topsep=\z@skip,partopsep=\z@skip,parsep=\z@,itemindent=\z@,labelindent=\tabcolsep,labelsep=.2em,leftmargin=*,align=left,before={\unskip\medskip\footnotesize}}
+\makeatother
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{xurl}
+\urlstyle{sf}
+\usepackage{microtype}
+\usepackage[a4paper,headheight=14pt]{geometry}	% use 14pt for 11pt text, 15pt for 12pt text
+\usepackage{csquotes}
+\MakeAutoQuote{‘}{’}
+\MakeAutoQuote*{“}{”}
+\usepackage{caption}
+\DeclareCaptionFont{lf}{\lstyle}
+\captionsetup[table]{labelfont=lf}
+% sicrhau hyperindex=false: llwytho CYN bookmark
+\usepackage{hypdoc}% ateb Ulrike Fischer: https://tex.stackexchange.com/a/695555/
+\usepackage{bookmark}
+\hypersetup{%
+  colorlinks=true,
+  citecolor={moss},
+  extension=pdf,
+  linkcolor={strawberry},
+  linktocpage=true,
+  pdfcreator={TeX},
+  pdfproducer={pdfeTeX},
+  urlcolor={blueberry}%
+}
+\NewDocElement[%
+  idxtype=opt.,
+  idxgroup=options,
+  printtype=\textit{opt.},
+]{Opt}{option}
+\NewDocumentCommand \val { m }
+{%
+  {\ttfamily =\,\meta{#1}}%
+}
+\ExplSyntaxOn
+\NewDocumentCommand \vals { m }
+{
+  {
+    \ttfamily = \, 
+    \clist_use:nn { #1 } { \textbar }
+  }
+} 
+\ExplSyntaxOff
+\title{\filebase}
+\author{Clea F. Rees\thanks{%
+    Bug tracker:
+  \href{https://codeberg.org/cfr/nfssext/issues}{\url{codeberg.org/cfr/nfssext/issues}}
+  \textbar{} Code:
+  \href{https://codeberg.org/cfr/nfssext}{\url{codeberg.org/cfr/nfssext}}
+  \textbar{} Mirror:
+  \href{https://github.com/cfr42/nfssext}{\url{github.com/cfr42/nfssext}}% 
+}}
+%^^A \date{\fileversion~\filetoday}
+\date{\fileversion~\filedate}
+\pagestyle{fancy}
+\fancyhf[lh]{\itshape\filebase~\fileversion}
+%^^A \fancyhf[rh]{\itshape\filetoday}
+\fancyhf[rh]{\itshape\filedate}
+\fancyhf[ch]{}
+\fancyhf[lf]{}
+\fancyhf[rf]{}
+\fancyhf[cf]{\itshape--- \thepage~/~\lastpage{} ---}
+\ExplSyntaxOn
+\hook_gput_code:nnn {shipout/lastpage} {.}
+{
+  \property_record:nn {t:lastpage}{abspage,page,pagenum}
+}
+\cs_new_protected_nopar:Npn \lastpage 
+{
+  \property_ref:nn {t:lastpage}{page}
+}
+\ExplSyntaxOff
+\definecolor{strawberry}{rgb}{1.000,0.000,0.502}
+\definecolor{blueberry}{rgb}{0.000,0.000,1.000}
+\definecolor{moss}{rgb}{0.000,0.502,0.251}
+\begin{document}
+  \DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+%
+% \newcommand*{\adf}{\textsc{adf}}
+% \newcommand*{\lpack}[1]{\textsf{#1}}
+% \newcommand*{\fgroup}[1]{\textsf{#1}}
+% \newcommand*{\fname}[1]{\textsf{#1}}
+% \newcommand*{\file}[1]{\texttt{#1}}
+%
+% \changes{\fileversion}{\filedate}{See \file{\pkgname.pdf} for revision history.}
+% 
+% 
+% \maketitle\thispagestyle{empty}
+% \pdfinfo{%
+% 	/Creator		(TeX)
+% 	/Producer		(pdfTeX)
+% 	/Author			(Clea F. Rees)
+% 	/Title			(venturis)
+% 	/Subject		(TeX)
+% 	/Keywords		(TeX,LaTeX,font,fonts,tex,latex,Venturis,venturis,venturisadf,VenturisADF,ADF,adf,Arkandis,Digital,Foundry,arkandis,digital,foundry,Hirwen,Harendal,Clea,Rees)}
+% \pdfcatalog{%
+% 	/URL				()
+% 	/PageMode	/UseOutlines}	
+% \setlength{\parindent}{0pt}
+% \setlength{\parskip}{0.5em}
+% 
+% 
+% 
+% \begin{abstract}
+%   \noindent This file is part of \lpack{\pkgname}.
+%   \file{\pkgname.pdf} constitutes the main documentation for the package.
+% \end{abstract}
+% 
+% \tableofcontents
+% 
+% \MaybeStop{%
+% \PrintChanges
+% \PrintIndex
+% }
+% 
+% \section{Implementation}
+%
+% \iffalse
+%<*sty>
+% \fi
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}
+\RequirePackage{svn-prov}
+\ProvidesPackageSVN[\filebase.sty]{$Id: venturis.dtx 10246 2024-08-18 01:29:07Z cfrees $}[\filebase v1.1 \revinfo for VenturisADF PS 1.005]
+\DefineFileInfoSVN[venturis]
+\RequirePackage[T1]{fontenc}
+\RequirePackage{nfssext-cfr}
+%    \end{macrocode}
+% \lpack{nfssext-cfr} provides \cs{ProcessKeyOptions}, \cs{IfFormatAtLeastTF} on older kernels.
+%    \begin{macrocode}
+\IfFormatAtLeastTF {2020-02-02}{%
+%    \end{macrocode}
+% To get the oldstyle numbers etc.\ used from TS1, we need to set the subset to 0 or 1.
+% Unfortunately, this means characters missing from the fonts will not use default symbols as fallback, but this seems to be unavoidable.
+%    \begin{macrocode}
+  \DeclareEncodingSubset{TS1}{yvt}{1}%
+  \DeclareEncodingSubset{TS1}{yvtj}{1}%
+  \DeclareEncodingSubset{TS1}{yvtw}{1}%
+  \DeclareEncodingSubset{TS1}{yvtaw}{1}%
+  \DeclareEncodingSubset{TS1}{yvtjw}{1}%
+  \DeclareEncodingSubset{TS1}{yvtajw}{1}%
+  \DeclareEncodingSubset{TS1}{yvtd}{1}%
+  \DeclareEncodingSubset{TS1}{yv1}{1}%
+  \DeclareEncodingSubset{TS1}{yv1d}{1}%
+}{%
+  \RequirePackage{textcomp}}
+\UndeclareTextCommand{\textperthousand}{T1}
+\ExplSyntaxOn
+%    \end{macrocode}
+% The actual \verb|sty| is ultra simple.
+% Five options of which only three are actually needed.
+% \texttt{osf}/\texttt{lf} set lining or oldstyle figures.
+% \texttt{scale rm} and \texttt{scale sf} take factors by which to scale the fonts.
+% These are empty by default, which is equivalent to \texttt{1}, but more efficient.
+% \texttt{scale} is a convenience wrapper which sets both \texttt{scale rm} and \texttt{scale sf} by a common factor.
+%    \begin{macrocode}
+\keys_define:nn { venturis }
+{
+%    \end{macrocode}
+% boolkeys for roman osf/lf
+%    \begin{macrocode}
+  lf .bool_set_inverse:N = \l__venturis_osf_bool,
+  lf .default:n = true,
+  osf .bool_set:N = \l__venturis_osf_bool,
+  osf .default:n = true,
+  osf .initial:n = true,
+  scale ~ rm .tl_set:N = \yvt@scale,
+  scale ~ rm .initial:V = \@empty,
+  scale ~ sf .tl_set:N = \yvi@scale,
+  scale ~ sf .initial:V = \@empty,
+  scale .code:n = {
+    \gdef\yvt@scale{#1}
+    \gdef\yvi@scale{#1}
+  },
+}
+\ProcessKeyOptions[venturis]
+%    \end{macrocode}
+% make Venturis default for roman text, implementing the relevant option
+%    \begin{macrocode}
+\bool_if:NTF \l__venturis_osf_bool
+{
+  \cs_set:Npn \rmdefault { yvtj }
+}{
+  \cs_set:Npn \rmdefault { yvt }
+}
+\ExplSyntaxOff
+%    \end{macrocode}
+% make Venturis Sans default for sans-serif text
+%    \begin{macrocode}
+\renewcommand{\sfdefault}{yv1}
+%    \end{macrocode}
+% introduce special titling commands
+%    \begin{macrocode}
+\DeclareRobustCommand{\vtstyle}[1][]{%
+	\edef\vt@shape{#1}%
+	\def\tempo{ol}%
+	\def\temps{yv1}%
+	\def\tempr{yvt}%
+	\not@math@alphabet\vtstyle\relax
+%    \end{macrocode}
+% because the titling fonts have limited availability, don't use the \tistyle set-up, but choose the family explicitly in case we're currently using sans or typewriter - note, though, that some are also called as small-caps commands in certain sans-serif variants (though the seriffed variant seems not to match anything...)
+%    \begin{macrocode}
+	\ifx\vt@shape\tempo
+		\fontfamily{yvtd}\fontshape{ol}\selectfont
+	\else
+		\edef\tempf{\expandafter\exfs@get@base\f@family\@nil}%
+		\ifx\tempf\temps
+			\fontfamily{yv1d}\selectfont
+		\else
+			\ifx\tempf\tempr
+				\fontfamily{yvtd}\selectfont
+			\else
+				\PackageWarning{venturis.sty}{%
+          \tempf is unknown.
+          This command requires that yv1 or yvt be active in order to determine whether serif or sans-serif titling is required.
+          I am going to guess that you want serif titling. If this is wrong, be sure to activate yv1 first or copy and adapt the styling command from venturis.sty.%
+        }%
+				\fontfamily{yvtd}\selectfont
+			\fi
+		\fi
+	\fi
+	}
+%    \end{macrocode}
+% Text font commands
+%    \begin{macrocode}
+\DeclareTextFontCommand{\textvt}{\vtstyle}
+\DeclareTextFontCommand{\textvtl}{\vtstyle[ol]}
+%    \end{macrocode}
+%^^A paid â chynnwys \endinput - docstrip yn chwilio amddo fe yn arbennigol
+%^^A & bydd doctrip yn ei ychwanegu fe beth bynnag
+%^^A (Martin Scharrer: https://tex.stackexchange.com/a/28997/)
+%    \begin{macrocode}
+%% end venturis.sty
+%    \end{macrocode}
+% \iffalse
+%</sty>
+% \fi
+% 
+% The remaining files are not used directly, but are required to generate the files which allow \TeX{} and \LaTeX{} to use the fonts.
+% The sources use \verb|fontinst| as explained in the (sparse) comments.
+% While you can install these files into a \TeX{} tree, they are not required for typesetting.
+% 
+% \subsection{Driver}
+%
+% The file does all the initial setup of the fonts.
+% It organises the fonts into families, defines shapes and reencodes as required.
+%
+% \iffalse
+%<*drv>
+% \fi
+%    \begin{macrocode}
+\input fontinst.sty
+\needsfontinstversion{1.926}
+%    \end{macrocode}
+% Substitutions
+% Bold for bold extended
+%    \begin{macrocode}
+\substitutesilent{bx}{b}
+\substitutesilent{scit}{sc}
+\substitutesilent{scsl}{scit}
+\substitutesilent{si}{scsl}
+\substitutesilent{sl}{it}
+\substitutesilent{sc}{n}
+%    \end{macrocode}
+% Record transformations for later map file creation
+%    \begin{macrocode}
+\recordtransforms{yvt-rec.tex}
+%    \end{macrocode}
+% Allow fonts to be scaled via variable in fd files
+% Also requires fontinst.lua fnttarg as no means to define variable in fontinst 
+%    \begin{macrocode}
+\declaresize{}{<-> \string\yvt@@scale}
+%    \end{macrocode}
+% Transformations : reencode fonts
+%    \begin{macrocode}
+	\transformfont{t1-yvtr}{\reencodefont{t1-f_f}{\fromafm{yvtr8a}}}
+	\transformfont{ts1-yvtr}{\reencodefont{ts1-euro}{\fromafm{yvtr8a}}}
+	\transformfont{vent-yvtr}{\reencodefont{t1-venturis}{\fromafm{yvtr8a}}}
+	\transformfont{t1-yvtri}{\reencodefont{t1-f_f}{\fromafm{yvtri8a}}}
+	\transformfont{t1-yvtb}{\reencodefont{t1-f_f}{\fromafm{yvtb8a}}}
+	\transformfont{t1-yvtbi}{\reencodefont{t1-f_f}{\fromafm{yvtbi8a}}}
+	\transformfont{ts1-yvtri}{\reencodefont{ts1-euro}{\fromafm{yvtri8a}}}
+	\transformfont{ts1-yvtb}{\reencodefont{ts1-euro}{\fromafm{yvtb8a}}}
+	\transformfont{ts1-yvtbi}{\reencodefont{ts1-euro}{\fromafm{yvtbi8a}}}
+	\transformfont{t1-yvtrc}{\reencodefont{t1-f_f}{\fromafm{yvtrc8a}}}
+	\transformfont{t1-yvtrci}{\reencodefont{t1-f_f}{\fromafm{yvtrci8a}}}
+	\transformfont{t1-yvtbc}{\reencodefont{t1-f_f}{\fromafm{yvtbc8a}}}
+	\transformfont{t1-yvtbci}{\reencodefont{t1-f_f}{\fromafm{yvtbci8a}}}
+	\transformfont{t1alt-yvtrc}{\reencodefont{t1-dotalt-f_f}{\fromafm{yvtrc8a}}}
+	\transformfont{t1alt-yvtrci}{\reencodefont{t1-dotalt-f_f}{\fromafm{yvtrci8a}}}
+	\transformfont{t1alt-yvtbc}{\reencodefont{t1-dotalt-f_f}{\fromafm{yvtbc8a}}}
+	\transformfont{t1alt-yvtbci}{\reencodefont{t1-dotalt-f_f}{\fromafm{yvtbci8a}}}
+	\transformfont{ts1-yvtrc}{\reencodefont{ts1-euro}{\fromafm{yvtrc8a}}}
+	\transformfont{ts1-yvtrci}{\reencodefont{ts1-euro}{\fromafm{yvtrci8a}}}
+	\transformfont{ts1-yvtbc}{\reencodefont{ts1-euro}{\fromafm{yvtbc8a}}}
+	\transformfont{ts1-yvtbci}{\reencodefont{ts1-euro}{\fromafm{yvtbci8a}}}
+%    \end{macrocode}
+% Transformations : reencode heavy weights
+%    \begin{macrocode}
+	\transformfont{t1-yvth}{\reencodefont{t1-f_f}{\fromafm{yvth8a}}}
+	\transformfont{t1-yvthi}{\reencodefont{t1-f_f}{\fromafm{yvthi8a}}}
+	\transformfont{ts1-yvth}{\reencodefont{ts1-euro}{\fromafm{yvth8a}}}
+	\transformfont{ts1-yvthi}{\reencodefont{ts1-euro}{\fromafm{yvthi8a}}}
+%    \end{macrocode}
+% Transformations : reencode condensed widths
+%    \begin{macrocode}
+	\transformfont{t1-yvtr-c}{\reencodefont{t1-f_f}{\fromafm{yvtr8ac}}}
+	\transformfont{t1-yvtri-c}{\reencodefont{t1-f_f}{\fromafm{yvtri8ac}}}
+	\transformfont{t1-yvtb-c}{\reencodefont{t1-f_f}{\fromafm{yvtb8ac}}}
+	\transformfont{t1-yvtbi-c}{\reencodefont{t1-f_f}{\fromafm{yvtbi8ac}}}
+	\transformfont{ts1-yvtr-c}{\reencodefont{ts1-euro}{\fromafm{yvtr8ac}}}
+	\transformfont{ts1-yvtri-c}{\reencodefont{ts1-euro}{\fromafm{yvtri8ac}}}
+	\transformfont{ts1-yvtb-c}{\reencodefont{ts1-euro}{\fromafm{yvtb8ac}}}
+	\transformfont{ts1-yvtbi-c}{\reencodefont{ts1-euro}{\fromafm{yvtbi8ac}}}
+	\transformfont{t1-yvtrc-c}{\reencodefont{t1-f_f}{\fromafm{yvtrc8ac}}}
+	\transformfont{t1-yvtrci-c}{\reencodefont{t1-f_f}{\fromafm{yvtrci8ac}}}
+	\transformfont{t1-yvtbc-c}{\reencodefont{t1-f_f}{\fromafm{yvtbc8ac}}}
+	\transformfont{t1-yvtbci-c}{\reencodefont{t1-f_f}{\fromafm{yvtbci8ac}}}
+	\transformfont{t1alt-yvtrc-c}{\reencodefont{t1-dotalt-f_f}{\fromafm{yvtrc8ac}}}
+	\transformfont{t1alt-yvtrci-c}{\reencodefont{t1-dotalt-f_f}{\fromafm{yvtrci8ac}}}
+	\transformfont{t1alt-yvtbc-c}{\reencodefont{t1-dotalt-f_f}{\fromafm{yvtbc8ac}}}
+	\transformfont{t1alt-yvtbci-c}{\reencodefont{t1-dotalt-f_f}{\fromafm{yvtbci8ac}}}
+	\transformfont{ts1-yvtrc-c}{\reencodefont{ts1-euro}{\fromafm{yvtrc8ac}}}
+	\transformfont{ts1-yvtrci-c}{\reencodefont{ts1-euro}{\fromafm{yvtrci8ac}}}
+	\transformfont{ts1-yvtbc-c}{\reencodefont{ts1-euro}{\fromafm{yvtbc8ac}}}
+	\transformfont{ts1-yvtbci-c}{\reencodefont{ts1-euro}{\fromafm{yvtbci8ac}}}
+%    \end{macrocode}
+% Transformations : reencode titling fonts
+%    \begin{macrocode}
+	\transformfont{t1-yvtbd-c}{\reencodefont{t1-f_f}{\fromafm{yvtbd8ac}}}
+	\transformfont{t1-yvtrdl}{\reencodefont{t1-f_f}{\fromafm{yvtrdl8a}}}
+	\transformfont{ts1-yvtbd-c}{\reencodefont{ts1-euro}{\fromafm{yvtbd8ac}}}
+	\transformfont{ts1-yvtrdl}{\reencodefont{ts1-euro}{\fromafm{yvtrdl8a}}}
+%    \end{macrocode}
+% Installation: creation of virtual fonts
+%    \begin{macrocode}
+	\installfonts
+		\installfamily{T1}{yvt}{}
+		\installfont{yvtr8t}{t1-yvtr,newlatin}{t1-f_f}{T1}{yvt}{m}{n}{}
+		\installfont{yvtrc8t}{t1-yvtrc,t1-yvtr suffix lining,newlatin}{lining,t1-f_f}{T1}{yvt}{m}{sc}{}
+		\installfont{yvtrci8t}{t1-yvtrci,t1-yvtri suffix lining,newlatin}{lining,t1-f_f}{T1}{yvt}{m}{scit}{}
+		\installfont{yvtri8t}{t1-yvtri,t1-yvtrci,newlatin}{t1-f_f}{T1}{yvt}{m}{it}{}
+%    \end{macrocode}
+% Installation: repeat for bold fonts
+%    \begin{macrocode}
+		\installfont{yvtb8t}{t1-yvtb,t1-yvtbc,newlatin}{t1-f_f}{T1}{yvt}{b}{n}{}
+		\installfont{yvtbc8t}{t1-yvtbc,t1-yvtb suffix lining,newlatin}{lining,t1-f_f}{T1}{yvt}{b}{sc}{}
+		\installfont{yvtbci8t}{t1-yvtbci,t1-yvtbi suffix lining,newlatin}{lining,t1-f_f}{T1}{yvt}{b}{scit}{}
+		\installfont{yvtbi8t}{t1-yvtbi,t1-yvtbci,newlatin}{t1-f_f}{T1}{yvt}{b}{it}{}
+%    \end{macrocode}
+% Installation: heavy weights
+%    \begin{macrocode}
+		\installfont{yvth8t}{t1-yvth,newlatin}{t1-f_f}{T1}{yvt}{eb}{n}{}
+		\installfont{yvthi8t}{t1-yvthi,newlatin}{t1-f_f}{T1}{yvt}{eb}{it}{}
+%    \end{macrocode}
+% Installation: condensed widths
+%    \begin{macrocode}
+		\installfont{yvtr8tc}{t1-yvtr-c,newlatin}{t1-f_f}{T1}{yvt}{c}{n}{}
+		\installfont{yvtrc8tc}{t1-yvtrc-c,t1-yvtr-c suffix lining,newlatin}{lining,t1-f_f}{T1}{yvt}{c}{sc}{}
+		\installfont{yvtrci8tc}{t1-yvtrci-c,t1-yvtri-c suffix lining,newlatin}{lining,t1-f_f}{T1}{yvt}{c}{scit}{}
+		\installfont{yvtri8tc}{t1-yvtri-c,newlatin}{t1-f_f}{T1}{yvt}{c}{it}{}
+%    \end{macrocode}
+% Installation: bold condensed
+%    \begin{macrocode}
+		\installfont{yvtb8tc}{t1-yvtb-c,newlatin}{t1-f_f}{T1}{yvt}{bc}{n}{}
+		\installfont{yvtbc8tc}{t1-yvtbc-c,t1-yvtb-c suffix lining,newlatin}{lining,t1-f_f}{T1}{yvt}{bc}{sc}{}
+		\installfont{yvtbci8tc}{t1-yvtbci-c,t1-yvtbi-c suffix lining,newlatin}{lining,t1-f_f}{T1}{yvt}{bc}{scit}{}
+		\installfont{yvtbi8tc}{t1-yvtbi-c,newlatin}{t1-f_f}{T1}{yvt}{bc}{it}{}
+%    \end{macrocode}
+% Installation: titling HOW to do this??
+%    \begin{macrocode}
+		\installfamily{T1}{yvtd}{}
+		\installfont{yvtbd8tc}{t1-yvtbd-c,newlatin}{t1-f_f}{T1}{yvtd}{bc}{sc}{}
+		\installfontas{yvtbd8tc}{T1}{yvtd}{c}{sc}{}
+		\installfontas{yvtbd8tc}{T1}{yvtd}{m}{sc}{}
+		\installfontas{yvtbd8tc}{T1}{yvtd}{b}{sc}{}
+		\installfontas{yvtbd8tc}{T1}{yvtd}{eb}{sc}{}
+		\installfont{yvtrdl8t}{t1-yvtrdl,newlatin}{t1-f_f}{T1}{yvtd}{m}{ol}{}
+		\installfontas{yvtrdl8t}{T1}{yvtd}{c}{ol}{}
+		\installfontas{yvtrdl8t}{T1}{yvtd}{bc}{ol}{}
+		\installfontas{yvtrdl8t}{T1}{yvtd}{b}{ol}{}
+		\installfontas{yvtrdl8t}{T1}{yvtd}{eb}{ol}{}
+%substitute small caps for upright shape
+		\installfontas{yvtbd8tc}{T1}{yvtd}{c}{n}{}
+		\installfontas{yvtbd8tc}{T1}{yvtd}{m}{n}{}
+		\installfontas{yvtbd8tc}{T1}{yvtd}{bc}{n}{}
+		\installfontas{yvtbd8tc}{T1}{yvtd}{b}{n}{}
+		\installfontas{yvtbd8tc}{T1}{yvtd}{eb}{n}{}
+%    \end{macrocode}
+% Installation: OSF
+%    \begin{macrocode}
+		\installfamily{T1}{yvtj}{}
+		\installfont{yvtrj8t}{t1-yvtr,t1-yvtrc suffix oldstyle,newlatin}{t1j-f_f}{T1}{yvtj}{m}{n}{}
+		\installfont{yvtrcj8t}{t1-yvtrc,newlatin}{t1-f_f}{T1}{yvtj}{m}{sc}{}
+		\installfont{yvtrcij8t}{t1-yvtrci,newlatin}{t1-f_f}{T1}{yvtj}{m}{scit}{}
+		\installfont{yvtrij8t}{t1-yvtri,t1-yvtrci suffix oldstyle,t1-yvtrci,newlatin}{t1j-f_f}{T1}{yvtj}{m}{it}{}
+		\installfont{yvtbj8t}{t1-yvtb,t1-yvtbc suffix oldstyle,t1-yvtbc,newlatin}{t1j-f_f}{T1}{yvtj}{b}{n}{}
+		\installfont{yvtbcj8t}{t1-yvtbc,newlatin}{t1-f_f}{T1}{yvtj}{b}{sc}{}
+		\installfont{yvtbcij8t}{t1-yvtbci,newlatin}{t1-f_f}{T1}{yvtj}{b}{scit}{}
+		\installfont{yvtbij8t}{t1-yvtbi,t1-yvtbci suffix oldstyle,t1-yvtbci,newlatin}{t1j-f_f}{T1}{yvtj}{b}{it}{}
+		\installfont{yvtrj8tc}{t1-yvtr-c,t1-yvtrc-c suffix oldstyle,t1-yvtrc,newlatin}{t1j-f_f}{T1}{yvtj}{c}{n}{}
+		\installfont{yvtrcj8tc}{t1-yvtrc-c,newlatin}{t1-f_f}{T1}{yvtj}{c}{sc}{}
+		\installfont{yvtrcij8tc}{t1-yvtrci-c,newlatin}{t1-f_f}{T1}{yvtj}{c}{scit}{}
+		\installfont{yvtrij8tc}{t1-yvtri-c,t1-yvtrci-c suffix oldstyle,t1-yvtrci-c,newlatin}{t1j-f_f}{T1}{yvtj}{c}{it}{}
+		\installfont{yvtbj8tc}{t1-yvtb-c,t1-yvtbc-c suffix oldstyle,t1-yvtbc-c,newlatin}{t1j-f_f}{T1}{yvtj}{bc}{n}{}
+		\installfont{yvtbcj8tc}{t1-yvtbc-c,newlatin}{t1-f_f}{T1}{yvtj}{bc}{sc}{}
+		\installfont{yvtbcij8tc}{t1-yvtbci-c,newlatin}{t1-f_f}{T1}{yvtj}{bc}{scit}{}
+		\installfont{yvtbij8tc}{t1-yvtbi-c,t1-yvtbci-c suffix oldstyle,t1-yvtbci-c,newlatin}{t1j-f_f}{T1}{yvtj}{bc}{it}{}
+		\installfamily{T1}{yvtw}{}
+		\installfont{yvtrw8t}{t1-yvtr,t1alt-yvtrc,t1-yvtr suffix .alt,resetalt,newlatin}{ucdotalt,t1-f_f}{T1}{yvtw}{m}{n}{}
+		\installfont{yvtriw8t}{t1-yvtri,t1alt-yvtrci,t1-yvtri suffix .alt,resetalt,newlatin}{ucdotalt,t1-f_f}{T1}{yvtw}{m}{it}{}
+		\installfont{yvtrcw8t}{t1alt-yvtrc,t1-yvtrc suffix .alt,t1-yvtr suffix lining,resetalt,newlatin}{lining,t1-dotalt-f_f}{T1}{yvtw}{m}{sc}{}
+		\installfont{yvtrciw8t}{t1alt-yvtrci,t1-yvtrci suffix .alt,t1-yvtri suffix lining,resetalt,newlatin}{lining,t1-dotalt-f_f}{T1}{yvtw}{m}{scit}{}
+		\installfont{yvtbw8t}{t1-yvtb,t1alt-yvtbc,t1-yvtb suffix .alt,resetalt,newlatin}{ucdotalt,t1-f_f}{T1}{yvtw}{b}{n}{}
+		\installfont{yvtbiw8t}{t1-yvtbi,t1alt-yvtbci,t1-yvtbi suffix .alt,resetalt,newlatin}{ucdotalt,t1-f_f}{T1}{yvtw}{b}{it}{}
+		\installfont{yvtbcw8t}{t1alt-yvtbc,t1-yvtbc suffix .alt,t1-yvtb suffix lining,resetalt,newlatin}{lining,t1-dotalt-f_f}{T1}{yvtw}{b}{sc}{}
+		\installfont{yvtbciw8t}{t1alt-yvtbci,t1-yvtbci suffix .alt,t1-yvtbi suffix lining,resetalt,newlatin}{lining,t1-dotalt-f_f}{T1}{yvtw}{b}{scit}{}
+		\installfont{yvtrw8tc}{t1-yvtr-c,t1alt-yvtrc-c,t1-yvtr-c suffix .alt,resetalt,newlatin}{ucdotalt,t1-f_f}{T1}{yvtw}{c}{n}{}
+		\installfont{yvtriw8tc}{t1-yvtri-c,t1alt-yvtrci-c,t1-yvtri-c suffix .alt,resetalt,newlatin}{ucdotalt,t1-f_f}{T1}{yvtw}{c}{it}{}
+		\installfont{yvtrcw8tc}{t1alt-yvtrc-c,t1-yvtrc-c suffix .alt,t1-yvtr-c suffix lining,resetalt,newlatin}{lining,t1-dotalt-f_f}{T1}{yvtw}{c}{sc}{}
+		\installfont{yvtrciw8tc}{t1alt-yvtrci-c,t1-yvtrci-c suffix .alt,t1-yvtri-c suffix lining,resetalt,newlatin}{lining,t1-dotalt-f_f}{T1}{yvtw}{c}{scit}{}
+		\installfont{yvtbw8tc}{t1-yvtb-c,t1alt-yvtbc-c,t1-yvtb-c suffix .alt,resetalt,newlatin}{ucdotalt,t1-f_f}{T1}{yvtw}{bc}{n}{}
+		\installfont{yvtbiw8tc}{t1-yvtbi-c,t1alt-yvtbci-c,t1-yvtbi-c suffix .alt,resetalt,newlatin}{ucdotalt,t1-f_f}{T1}{yvtw}{bc}{it}{}
+		\installfont{yvtbcw8tc}{t1alt-yvtbc-c,t1-yvtbc-c suffix .alt,t1-yvtb-c suffix lining,resetalt,newlatin}{lining,t1-dotalt-f_f}{T1}{yvtw}{bc}{sc}{}
+		\installfont{yvtbciw8tc}{t1alt-yvtbci-c,t1-yvtbci-c suffix .alt,t1-yvtbi-c suffix lining,resetalt,newlatin}{lining,t1-dotalt-f_f}{T1}{yvtw}{bc}{scit}{}
+		\installfamily{T1}{yvtaw}{}
+		\installfont{yvtraw8t}{vent-yvtr,t1alt-yvtrc,vent-yvtr suffix .alt,newlatin}{ucdotalt,t1-venturis}{T1}{yvtaw}{m}{n}{}
+		\installfontas{yvtrcw8t}{T1}{yvtaw}{m}{sc}{}
+		\installfontas{yvtrciw8t}{T1}{yvtaw}{m}{scit}{}
+		\installfontas{yvtriw8t}{T1}{yvtaw}{m}{it}{}
+		\installfontas{yvtbw8t}{T1}{yvtaw}{b}{n}{}
+		\installfontas{yvtbcw8t}{T1}{yvtaw}{b}{sc}{}
+		\installfontas{yvtbciw8t}{T1}{yvtaw}{b}{scit}{}
+		\installfontas{yvtbiw8t}{T1}{yvtaw}{b}{it}{}
+		\installfontas{yvtrw8tc}{T1}{yvtaw}{c}{n}{}
+		\installfontas{yvtrcw8tc}{T1}{yvtaw}{c}{sc}{}
+		\installfontas{yvtrciw8tc}{T1}{yvtaw}{c}{scit}{}
+		\installfontas{yvtriw8tc}{T1}{yvtaw}{c}{it}{}
+		\installfontas{yvtbw8tc}{T1}{yvtaw}{bc}{n}{}
+		\installfontas{yvtbcw8tc}{T1}{yvtaw}{bc}{sc}{}
+		\installfontas{yvtbciw8tc}{T1}{yvtaw}{bc}{scit}{}
+		\installfontas{yvtbiw8tc}{T1}{yvtaw}{bc}{it}{}
+		\installfamily{T1}{yvtjw}{}
+		\installfont{yvtrjw8t}{t1-yvtr,t1-yvtrc suffix oldstyle,t1alt-yvtrc,t1-yvtr suffix .alt,resetalt,newlatin}{oldstyle,ucdotalt,t1-f_f}{T1}{yvtjw}{m}{n}{}
+		\installfont{yvtrcjw8t}{t1alt-yvtrc,t1-yvtrc suffix .alt,resetalt,newlatin}{t1-dotalt-f_f}{T1}{yvtjw}{m}{sc}{}
+		\installfont{yvtrcijw8t}{t1alt-yvtrci,t1-yvtrci suffix .alt,resetalt,newlatin}{t1-dotalt-f_f}{T1}{yvtjw}{m}{scit}{}
+		\installfont{yvtrijw8t}{t1-yvtri,t1-yvtrci suffix oldstyle,t1alt-yvtrci,t1-yvtri suffix .alt,resetalt,newlatin}{oldstyle,ucdotalt,t1-f_f}{T1}{yvtjw}{m}{it}{}
+		\installfont{yvtbjw8t}{t1-yvtb,t1-yvtbc suffix oldstyle,t1alt-yvtbc,t1-yvtb suffix .alt,resetalt,newlatin}{oldstyle,ucdotalt,t1-f_f}{T1}{yvtjw}{b}{n}{}
+		\installfont{yvtbijw8t}{t1-yvtbi,t1-yvtbci suffix oldstyle,t1alt-yvtbci,t1-yvtbi suffix .alt,resetalt,newlatin}{oldstyle,ucdotalt,t1-f_f}{T1}{yvtjw}{b}{it}{}
+		\installfont{yvtbcjw8t}{t1alt-yvtbc,t1-yvtbc suffix .alt,resetalt,newlatin}{t1-dotalt-f_f}{T1}{yvtjw}{b}{sc}{}
+		\installfont{yvtbcijw8t}{t1alt-yvtbci,t1-yvtbci suffix .alt,resetalt,newlatin}{t1-dotalt-f_f}{T1}{yvtjw}{b}{scit}{}
+		\installfont{yvtrjw8tc}{t1-yvtr-c,t1-yvtrc-c suffix oldstyle,t1alt-yvtrc-c,t1-yvtr-c suffix .alt,resetalt,newlatin}{oldstyle,ucdotalt,t1-f_f}{T1}{yvtjw}{c}{n}{}
+		\installfont{yvtrcjw8tc}{t1alt-yvtrc-c,t1-yvtrc-c suffix .alt,resetalt,newlatin}{t1-dotalt-f_f}{T1}{yvtjw}{c}{sc}{}
+		\installfont{yvtrcijw8tc}{t1alt-yvtrci-c,t1-yvtrci-c suffix .alt,resetalt,newlatin}{t1-dotalt-f_f}{T1}{yvtjw}{c}{scit}{}
+		\installfont{yvtrijw8tc}{t1-yvtri-c,t1-yvtrci-c suffix oldstyle,t1alt-yvtrci-c,t1-yvtri-c suffix .alt,resetalt,newlatin}{oldstyle,ucdotalt,t1-f_f}{T1}{yvtjw}{c}{it}{}
+		\installfont{yvtbjw8tc}{t1-yvtb-c,t1-yvtbc-c suffix oldstyle,t1alt-yvtbc-c,t1-yvtb-c suffix .alt,resetalt,newlatin}{oldstyle,ucdotalt,t1-f_f}{T1}{yvtjw}{bc}{n}{}
+		\installfont{yvtbijw8tc}{t1-yvtbi-c,t1-yvtbci-c suffix oldstyle,t1alt-yvtbci-c,t1-yvtbi-c suffix .alt,resetalt,newlatin}{oldstyle,ucdotalt,t1-f_f}{T1}{yvtjw}{bc}{it}{}
+		\installfont{yvtbcjw8tc}{t1alt-yvtbc-c,t1-yvtbc-c suffix .alt,resetalt,newlatin}{t1-dotalt-f_f}{T1}{yvtjw}{bc}{sc}{}
+		\installfont{yvtbcijw8tc}{t1alt-yvtbci-c,t1-yvtbci-c suffix .alt,resetalt,newlatin}{t1-dotalt-f_f}{T1}{yvtjw}{bc}{scit}{}
+		\installfamily{T1}{yvtajw}{}
+		\installfont{yvtrajw8t}{vent-yvtr,t1-yvtrc suffix oldstyle,t1alt-yvtrc,vent-yvtr suffix .alt,newlatin}{ucdotalt,t1j-venturis}{T1}{yvtajw}{m}{n}{}
+		\installfontas{yvtrijw8t}{T1}{yvtajw}{m}{it}{}
+		\installfontas{yvtrcjw8t}{T1}{yvtajw}{m}{sc}{}
+		\installfontas{yvtrcijw8t}{T1}{yvtajw}{m}{scit}{}
+		\installfontas{yvtbjw8t}{T1}{yvtajw}{b}{n}{}
+		\installfontas{yvtbijw8t}{T1}{yvtajw}{b}{it}{}
+		\installfontas{yvtbcjw8t}{T1}{yvtajw}{b}{sc}{}
+		\installfontas{yvtbcijw8t}{T1}{yvtajw}{b}{scit}{}
+		\installfontas{yvtrjw8tc}{T1}{yvtajw}{c}{n}{}
+		\installfontas{yvtrijw8tc}{T1}{yvtajw}{c}{it}{}
+		\installfontas{yvtrcjw8tc}{T1}{yvtajw}{c}{sc}{}
+		\installfontas{yvtrcijw8tc}{T1}{yvtajw}{c}{scit}{}
+		\installfontas{yvtbjw8tc}{T1}{yvtajw}{bc}{n}{}
+		\installfontas{yvtbijw8tc}{T1}{yvtajw}{bc}{it}{}
+		\installfontas{yvtbcjw8tc}{T1}{yvtajw}{bc}{sc}{}
+		\installfontas{yvtbcijw8tc}{T1}{yvtajw}{bc}{scit}{}
+%    \end{macrocode}
+% Installation: install with TS1 encoding for extra glyphs through textcomp
+%    \begin{macrocode}
+		\installfamily{TS1}{yvt}{}
+		\installfont{yvtr8c}{t1-yvtr,ts1-yvtr,t1-yvtrc suffix oldstyle,textcomp}{ts1-euro}{TS1}{yvt}{m}{n}{}
+		\installfont{yvtrc8c}{t1-yvtrc,t1-yvtrc suffix oldstyle,ts1-yvtrc,textcomp}{ts1-euro}{TS1}{yvt}{m}{sc}{}
+		\installfont{yvtri8c}{t1-yvtri,ts1-yvtri,t1-yvtrci suffix oldstyle,ts1-yvtrci,textcomp}{ts1-euro}{TS1}{yvt}{m}{it}{}
+		\installfont{yvtrci8c}{t1-yvtrci,t1-yvtrci suffix oldstyle,ts1-yvtrci,textcomp}{ts1-euro}{TS1}{yvt}{m}{scit}{}
+%    \end{macrocode}
+% Installation: repeat for bold fonts
+%    \begin{macrocode}
+		\installfont{yvtb8c}{t1-yvtb,ts1-yvtb,t1-yvtbc suffix oldstyle,ts1-yvtbc,textcomp}{ts1-euro}{TS1}{yvt}{b}{n}{}
+		\installfont{yvtbc8c}{t1-yvtbc,t1-yvtbc suffix oldstyle,ts1-yvtbc,textcomp}{ts1-euro}{TS1}{yvt}{b}{sc}{}
+		\installfont{yvtbi8c}{t1-yvtbi,ts1-yvtbi,t1-yvtbci suffix oldstyle,ts1-yvtbci,textcomp}{ts1-euro}{TS1}{yvt}{b}{it}{}
+		\installfont{yvtbci8c}{t1-yvtbci,t1-yvtbci suffix oldstyle,ts1-yvtbci,textcomp}{ts1-euro}{TS1}{yvt}{b}{scit}{}
+%    \end{macrocode}
+% Installation: and heavy weights
+%    \begin{macrocode}
+		\installfont{yvth8c}{t1-yvth,ts1-yvth,textcomp}{ts1-euro}{TS1}{yvt}{eb}{n}{}
+		\installfont{yvthi8c}{t1-yvthi,ts1-yvthi,textcomp}{ts1-euro}{TS1}{yvt}{eb}{it}{}
+%    \end{macrocode}
+% Installation: and condensed widths
+%    \begin{macrocode}
+		\installfont{yvtr8cc}{t1-yvtr,ts1-yvtr-c,t1-yvtrc-c suffix oldstyle,ts1-yvtrc-c,textcomp}{ts1-euro}{TS1}{yvt}{c}{n}{}
+		\installfont{yvtrc8cc}{t1-yvtrc-c,t1-yvtrc-c suffix oldstyle,ts1-yvtrc-c,textcomp}{ts1-euro}{TS1}{yvt}{c}{sc}{}
+		\installfont{yvtri8cc}{t1-yvtri,ts1-yvtri-c,t1-yvtrci-c suffix oldstyle,ts1-yvtrci-c,textcomp}{ts1-euro}{TS1}{yvt}{c}{it}{}
+		\installfont{yvtrci8cc}{t1-yvtrci-c,t1-yvtrci-c suffix oldstyle,ts1-yvtrci-c,textcomp}{ts1-euro}{TS1}{yvt}{c}{scit}{}
+%    \end{macrocode}
+% Installation: and bold condensed
+%    \begin{macrocode}
+		\installfont{yvtb8cc}{t1-yvtb,ts1-yvtb-c,t1-yvtbc-c suffix oldstyle,ts1-yvtbc-c,textcomp}{ts1-euro}{TS1}{yvt}{bc}{n}{}
+		\installfont{yvtbc8cc}{t1-yvtbc-c,t1-yvtbc-c suffix oldstyle,ts1-yvtbc-c,textcomp}{ts1-euro}{TS1}{yvt}{bc}{sc}{}
+		\installfont{yvtbi8cc}{t1-yvtbi,ts1-yvtbi-c,t1-yvtbci-c suffix oldstyle,ts1-yvtbci-c,textcomp}{ts1-euro}{TS1}{yvt}{bc}{it}{}
+		\installfont{yvtbci8cc}{t1-yvtbci-c,t1-yvtbci-c suffix oldstyle,ts1-yvtbci-c,textcomp}{ts1-euro}{TS1}{yvt}{bc}{scit}{}
+%    \end{macrocode}
+% Installation: OSF
+%    \begin{macrocode}
+		\installfamily{TS1}{yvtj}{}
+		\installfontas{yvtr8c}{TS1}{yvtj}{m}{n}{}
+		\installfontas{yvtrc8c}{TS1}{yvtj}{m}{sc}{}
+		\installfontas{yvtri8c}{TS1}{yvtj}{m}{it}{}
+		\installfontas{yvtrci8c}{TS1}{yvtj}{m}{scit}{}
+		\installfontas{yvtb8c}{TS1}{yvtj}{b}{n}{}
+		\installfontas{yvtbc8c}{TS1}{yvtj}{b}{sc}{}
+		\installfontas{yvtbi8c}{TS1}{yvtj}{b}{it}{}
+		\installfontas{yvtbci8c}{TS1}{yvtj}{b}{scit}{}
+		\installfontas{yvtr8cc}{TS1}{yvtj}{c}{n}{}
+		\installfontas{yvtrc8cc}{TS1}{yvtj}{c}{sc}{}
+		\installfontas{yvtri8cc}{TS1}{yvtj}{c}{it}{}
+		\installfontas{yvtrci8cc}{TS1}{yvtj}{c}{scit}{}
+		\installfontas{yvtb8cc}{TS1}{yvtj}{bc}{n}{}
+		\installfontas{yvtbc8cc}{TS1}{yvtj}{bc}{sc}{}
+		\installfontas{yvtbi8cc}{TS1}{yvtj}{bc}{it}{}
+		\installfontas{yvtbci8cc}{TS1}{yvtj}{bc}{scit}{}
+		\installfamily{TS1}{yvtw}{}
+		\installfontas{yvtr8c}{TS1}{yvtw}{m}{n}{}
+		\installfontas{yvtrc8c}{TS1}{yvtw}{m}{sc}{}
+		\installfontas{yvtri8c}{TS1}{yvtw}{m}{it}{}
+		\installfontas{yvtrci8c}{TS1}{yvtw}{m}{scit}{}
+		\installfontas{yvtb8c}{TS1}{yvtw}{b}{n}{}
+		\installfontas{yvtbc8c}{TS1}{yvtw}{b}{sc}{}
+		\installfontas{yvtbi8c}{TS1}{yvtw}{b}{it}{}
+		\installfontas{yvtbci8c}{TS1}{yvtw}{b}{scit}{}
+		\installfontas{yvtr8cc}{TS1}{yvtw}{c}{n}{}
+		\installfontas{yvtrc8cc}{TS1}{yvtw}{c}{sc}{}
+		\installfontas{yvtri8cc}{TS1}{yvtw}{c}{it}{}
+		\installfontas{yvtrci8cc}{TS1}{yvtw}{c}{scit}{}
+		\installfontas{yvtb8cc}{TS1}{yvtw}{bc}{n}{}
+		\installfontas{yvtbc8cc}{TS1}{yvtw}{bc}{sc}{}
+		\installfontas{yvtbi8cc}{TS1}{yvtw}{bc}{it}{}
+		\installfontas{yvtbci8cc}{TS1}{yvtw}{bc}{scit}{}
+		\installfamily{TS1}{yvtaw}{}
+		\installfontas{yvtr8c}{TS1}{yvtaw}{m}{n}{}
+		\installfontas{yvtrc8c}{TS1}{yvtaw}{m}{sc}{}
+		\installfontas{yvtri8c}{TS1}{yvtaw}{m}{it}{}
+		\installfontas{yvtrci8c}{TS1}{yvtaw}{m}{scit}{}
+		\installfontas{yvtb8c}{TS1}{yvtaw}{b}{n}{}
+		\installfontas{yvtbc8c}{TS1}{yvtaw}{b}{sc}{}
+		\installfontas{yvtbi8c}{TS1}{yvtaw}{b}{it}{}
+		\installfontas{yvtbci8c}{TS1}{yvtaw}{b}{scit}{}
+		\installfontas{yvtr8cc}{TS1}{yvtaw}{c}{n}{}
+		\installfontas{yvtrc8cc}{TS1}{yvtaw}{c}{sc}{}
+		\installfontas{yvtri8cc}{TS1}{yvtaw}{c}{it}{}
+		\installfontas{yvtrci8cc}{TS1}{yvtaw}{c}{scit}{}
+		\installfontas{yvtb8cc}{TS1}{yvtaw}{bc}{n}{}
+		\installfontas{yvtbc8cc}{TS1}{yvtaw}{bc}{sc}{}
+		\installfontas{yvtbi8cc}{TS1}{yvtaw}{bc}{it}{}
+		\installfontas{yvtbci8cc}{TS1}{yvtaw}{bc}{scit}{}
+		\installfamily{TS1}{yvtjw}{}
+		\installfontas{yvtr8c}{TS1}{yvtjw}{m}{n}{}
+		\installfontas{yvtrc8c}{TS1}{yvtjw}{m}{sc}{}
+		\installfontas{yvtri8c}{TS1}{yvtjw}{m}{it}{}
+		\installfontas{yvtrci8c}{TS1}{yvtjw}{m}{scit}{}
+		\installfontas{yvtb8c}{TS1}{yvtjw}{b}{n}{}
+		\installfontas{yvtbc8c}{TS1}{yvtjw}{b}{sc}{}
+		\installfontas{yvtbi8c}{TS1}{yvtjw}{b}{it}{}
+		\installfontas{yvtbci8c}{TS1}{yvtjw}{b}{scit}{}
+		\installfontas{yvtr8cc}{TS1}{yvtjw}{c}{n}{}
+		\installfontas{yvtrc8cc}{TS1}{yvtjw}{c}{sc}{}
+		\installfontas{yvtri8cc}{TS1}{yvtjw}{c}{it}{}
+		\installfontas{yvtrci8cc}{TS1}{yvtjw}{c}{scit}{}
+		\installfontas{yvtb8cc}{TS1}{yvtjw}{bc}{n}{}
+		\installfontas{yvtbc8cc}{TS1}{yvtjw}{bc}{sc}{}
+		\installfontas{yvtbi8cc}{TS1}{yvtjw}{bc}{it}{}
+		\installfontas{yvtbci8cc}{TS1}{yvtjw}{bc}{scit}{}
+		\installfamily{TS1}{yvtajw}{}
+		\installfontas{yvtr8c}{TS1}{yvtajw}{m}{n}{}
+		\installfontas{yvtrc8c}{TS1}{yvtajw}{m}{sc}{}
+		\installfontas{yvtri8c}{TS1}{yvtajw}{m}{it}{}
+		\installfontas{yvtrci8c}{TS1}{yvtajw}{m}{scit}{}
+		\installfontas{yvtb8c}{TS1}{yvtajw}{b}{n}{}
+		\installfontas{yvtbc8c}{TS1}{yvtajw}{b}{sc}{}
+		\installfontas{yvtbi8c}{TS1}{yvtajw}{b}{it}{}
+		\installfontas{yvtbci8c}{TS1}{yvtajw}{b}{scit}{}
+		\installfontas{yvtr8cc}{TS1}{yvtajw}{c}{n}{}
+		\installfontas{yvtrc8cc}{TS1}{yvtajw}{c}{sc}{}
+		\installfontas{yvtri8cc}{TS1}{yvtajw}{c}{it}{}
+		\installfontas{yvtrci8cc}{TS1}{yvtajw}{c}{scit}{}
+		\installfontas{yvtb8cc}{TS1}{yvtajw}{bc}{n}{}
+		\installfontas{yvtbc8cc}{TS1}{yvtajw}{bc}{sc}{}
+		\installfontas{yvtbi8cc}{TS1}{yvtajw}{bc}{it}{}
+		\installfontas{yvtbci8cc}{TS1}{yvtajw}{bc}{scit}{}
+%    \end{macrocode}
+% Installation: and titling HOW to do this??
+%    \begin{macrocode}
+		\installfamily{TS1}{yvtd}{}
+		\installfont{yvtbd8cc}{t1-yvtbd-c,ts1-yvtbd-c,textcomp}{ts1-euro}{TS1}{yvtd}{bc}{sc}{}
+		\installfontas{yvtbd8cc}{TS1}{yvtd}{m}{sc}{}
+		\installfontas{yvtbd8cc}{TS1}{yvtd}{c}{sc}{}
+		\installfontas{yvtbd8cc}{TS1}{yvtd}{b}{sc}{}
+		\installfontas{yvtbd8cc}{TS1}{yvtd}{eb}{sc}{}
+		\installfont{yvtrdl8c}{t1-yvtrdl,ts1-yvtrdl,textcomp}{ts1-euro}{TS1}{yvtd}{m}{ol}{}
+		\installfontas{yvtrdl8c}{TS1}{yvtd}{c}{ol}{}
+		\installfontas{yvtrdl8c}{TS1}{yvtd}{bc}{ol}{}
+		\installfontas{yvtrdl8c}{TS1}{yvtd}{b}{ol}{}
+		\installfontas{yvtbd8cc}{TS1}{yvtd}{c}{n}{}
+		\installfontas{yvtbd8cc}{TS1}{yvtd}{m}{n}{}
+		\installfontas{yvtbd8cc}{TS1}{yvtd}{bc}{n}{}
+		\installfontas{yvtbd8cc}{TS1}{yvtd}{b}{n}{}
+		\installfontas{yvtbd8cc}{TS1}{yvtd}{eb}{n}{}
+%    \end{macrocode}
+% Finish up 
+%    \begin{macrocode}
+	\endinstallfonts
+\endrecordtransforms
+\bye
+%    \end{macrocode}
+% \iffalse
+%</drv>
+% \fi
+% \subsection{Map}
+% 
+% This file is compiled to produce the map file fragment \verb|updmap| needs to install the fonts.
+% It uses files recorded during compilation of the driver.
+% \iffalse
+%<*map>
+% \fi
+%    \begin{macrocode}
+\input finstmsc.sty
+\resetstr{PSfontsuffix}{.pfb}
+\adddriver{dvips}{yvt.map}
+\adddriver{pltotf}{yvt-pltotf.sh}
+\input yvt-rec.tex
+\donedrivers
+\bye
+%    \end{macrocode}
+% \iffalse
+%</map>
+% \fi
+% \subsection{Supplementary (raw)}
+% 
+% The initial encoding for Venturis ADF is straightforward and no supplementary encoding is needed to pick up misnamed or additional glyphs.
+% Instead, we just let our encodings do double duty for input/raw as well as output.
+%
+% Note that \verb|etx| files may specify raw and/or output encodings.
+% Those which are specific to \lpack{venturisadf} are included in \file{venturisadf-build.dtx}.
+% Those which are not are included as separate sources unless provided by \verb|fontinst|.
+% 
+%
+% \subsection{Reglyph}
+%
+% No reglyphing is required for the Venturis ADF collection --- yay!
+%
+%
+% \subsection{Encodings (output)}
+%
+% These files define variant T1 and TS1 font encodings.
+% They are included in \file{\pkgname-build.dtx}, itemized in \file{pkgname.pdf} and listed in \file{\pkgname-build.pdf}.
+%
+%
+% In addition to these encodings, we use encoding files supplied by \verb|fontinst| and some custom files not included in this package's \verb|dtx| as they are not specific to \lpack{venturisadf}.
+% They are, however, part of the package and are itemized in \file{pkgname.pdf}.
+%
+%
+% \subsection{MTX}
+%
+% \verb|mtx| files are used to build ‘fake’ glyphs where these are missing from the original fonts.
+% We do not fake small-caps or bold, but only glyphs which can be constructed without altering the original design.
+% They are also used to ‘reset’ or adjust glyphs and kerning pairs, for example.
+%
+% \lpack{\filebase} is the only subset of fonts supported by \lpack{\pkgname} to require a custom \textt{.mtx} file, \file{resetalt.mtx}.
+%
+%
+% In addition to this file, we use \verb|mtx| files supplied by \verb|fontinst| and some custom files not included in this package's \verb|dtx| as they are not specific to \lpack{venturisadf}.
+% The latter are, however, part of the package and are itemized in \file{venturisadf-build.pdf}.
+%
+%
+%\Finale
+%^^A vim: tw=0:

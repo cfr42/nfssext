@@ -1,0 +1,1264 @@
+% \iffalse meta-comment
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% venturisadf.dtx
+% Additions and changes Copyright (C) 2008-2024 Clea F. Rees.
+% Code from skeleton.dtx Copyright (C) 2015-2024 Scott Pakin (see below).
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   https://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status `maintained'.
+%
+% The Current Maintainer of this work is Clea F. Rees.
+%
+% This work consists of all files listed in manifest.txt.
+%
+% The file venturisadf.dtx is a derived work under the terms of the
+% LPPL. It is based on version 2.4 of skeleton.dtx which is part of 
+% dtxtut by Scott Pakin. A copy of dtxtut, including the 
+% unmodified version of skeleton.dtx is available from
+% https://www.ctan.org/pkg/dtxtut and released under the LPPL.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \fi
+%
+% \iffalse
+%<*driver>
+\RequirePackage{svn-prov}
+% ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
+\def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
+\ProvidesFileSVN{$Id: venturisadf.dtx 10248 2024-08-18 05:15:15Z cfrees $}[v0.0
+\revinfo][\filebase DTX: Venturis ADF collection for 8-bit engines]
+\DefineFileInfoSVN[venturisadf]
+\documentclass[11pt,british]{ltxdoc}
+% l3doc loads fancyvrb
+% fancyvrb overwrites svn-prov's macros without warning
+% restore \fileversion \filerev in case we're using l3doc
+\GetFileInfoSVN{venturisadf}
+\EnableCrossrefs
+\CodelineIndex
+\RecordChanges
+% \OnlyDescription
+\DoNotIndex{\verb,\ProvidesPackageSVN,\NeedsTeXFormat,\ProcessKeyOptions,\revinfo,\filebase,\filename,\filedate,\RequirePackage,\usepackage,\DefineFileInfoSVN,\GetFileInfoSVN,\ProvidesPackageSVN,\documentclass,\MakeAutoQuote,\parindent,\par,\smallskip,\setlength,\bigskip,\maketitle,\title,\author,\date,\ExplSyntaxOn,\ExplSyntaxOff}
+\usepackage{babel}
+\pdfmapfile{- yvt.map}
+\pdfmapfile{- yv1.map}
+\pdfmapfile{- yv2.map}
+\pdfmapfile{- yv3.map}
+\pdfmapfile{- yvo.map}
+\pdfmapfile{+ yvt.map}
+\pdfmapfile{+ yv1.map}
+\pdfmapfile{+ yv2.map}
+\pdfmapfile{+ yv3.map}
+\pdfmapfile{+ yvo.map}
+\usepackage[lf]{venturis}
+% The following commands are only necessary to enable access to all the fonts in the collection in the same document. 
+% Normally, one would load venturis2 or venturisold rather than defining things explicitly.
+% But those packages will overwrite the declarations in venturis so aren't an option in this peculiar context.
+% (It is assumed that in ordinary usage, only one of the serif/sans-serif combinations provided by venturis and venturis2 or the serif offered by venturisold will be wanted in a single document.)
+\DeclareRobustCommand{\venturistworm}{%
+  \fontencoding{T1}%
+  \fontfamily{yv2}%
+  \selectfont}
+\DeclareRobustCommand{\venturistwosf}{%
+  \fontencoding{T1}%
+  \fontfamily{yv3}%
+  \selectfont}
+\DeclareRobustCommand{\venturisold}{%
+  \fontencoding{T1}%
+  \fontfamily{yvo}%
+  \selectfont}
+\DeclareTextFontCommand{\vtworm}{\venturistworm}
+\DeclareTextFontCommand{\vtwosf}{\venturistwosf}
+\DeclareTextFontCommand{\vo}{\venturisold}
+\makeatletter
+\DeclareRobustCommand{\vostyle}[1][]{%
+  \not@math@alphabet\vostyle\relax
+  \fontfamily{yvod}\selectfont}
+\makeatother
+\DeclareTextFontCommand{\textvo}{\vostyle}
+\DeclareTextFontCommand{\textvol}{\vostyle}
+\DeclareRobustCommand{\lmrmfamily}{%
+  \fontencoding{T1}%
+  \fontfamily{lmr}%
+  \selectfont}
+\DeclareTextFontCommand{\lmrm}{\lmrmfamily}
+\renewcommand{\ttdefault}{lmvtt}
+\usepackage{fancyhdr}
+\usepackage{fancyref}
+\usepackage{array}
+\usepackage{metalogo}
+	\setlogokern{Te}{-0.065em}% default: -0.1667em
+	\setlogokern{eX}{-0.06em}% default: -0.125em
+	\setlogokern{La}{-0.265em}% default: -0.36em
+	\setlogokern{aT}{-.055em}% default: -0.15em
+%	\setlogokern{X2}{}% default: 0.15em
+	\setlogodrop[TeX]{0.355ex}% default: 0.5ex
+	\setLaTeXa{\scshape a}
+%	\setLaTeXee{<arg>}	
+\usepackage{fixfoot}
+\usepackage{enumitem}
+\usepackage[referable]{threeparttablex}
+\usepackage{enumitem}
+\makeatletter
+\def\TPT@measurement{% ateb David Carlisle: https://tex.stackexchange.com/a/370691/
+  \ifdim\wd\@tempboxb<\TPTminimum
+    \hsize \TPTminimum
+  \else
+    \hsize\wd\@tempboxb
+  \fi
+  \xdef\TPT@hsize{\hsize\the\hsize \noexpand\@parboxrestore}\TPT@hsize
+  \ifx\TPT@docapt\@undefined\else
+    \TPT@docapt \vskip.2\baselineskip
+  \fi \par
+  \dimen@\dp\@tempboxb % new
+  \box\@tempboxb
+  \ifvmode \prevdepth\dimen@ \fi% was \z@ not \dimen@
+}
+\renewlist{tablenotes}{enumerate}{1}
+\setlist[tablenotes]{label=\tnote{\alph*},ref=\alph*,itemsep=\z@,topsep=\z@skip,partopsep=\z@skip,parsep=\z@,itemindent=\z@,labelindent=\tabcolsep,labelsep=.2em,leftmargin=*,align=left,before={\unskip\medskip\footnotesize}}
+\makeatother
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{xurl}
+\urlstyle{sf}
+\usepackage{microtype}
+\usepackage[a4paper,headheight=14pt]{geometry}	% use 14pt for 11pt text, 15pt for 12pt text
+\usepackage{csquotes}
+\MakeAutoQuote{‘}{’}
+\MakeAutoQuote*{“}{”}
+\usepackage{caption}
+\DeclareCaptionFont{lf}{\lstyle}
+\captionsetup[table]{labelfont=lf}
+% sicrhau hyperindex=false: llwytho CYN bookmark
+\usepackage{hypdoc}% ateb Ulrike Fischer: https://tex.stackexchange.com/a/695555/
+\usepackage{bookmark}
+\hypersetup{%
+  colorlinks=true,
+  citecolor={moss},
+  extension=pdf,
+  linkcolor={strawberry},
+  linktocpage=true,
+  pdfcreator={TeX},
+  pdfproducer={pdfeTeX},
+  urlcolor={blueberry}%
+}
+\NewDocElement[%
+  idxtype=opt.,
+  idxgroup=options,
+  printtype=\textit{opt.},
+]{Opt}{option}
+\NewDocElement[%
+  idxtype=alt.,
+  idxgroup=alternates,
+  printtype=\textit{alt.},
+]{Alt}{alternate}
+\NewDocElement[%
+  idxtype=lig.,
+  idxgroup=ligatures,
+  printtype=\textit{lig.},
+]{Lig}{ligature}
+\NewDocElement[%
+  idxtype=sw.,
+  idxgroup=swashes,
+  printtype=\textit{sw.},
+]{Sw}{swash}
+\NewDocElement[%
+  idxtype=pkg.,
+  idxgroup=packages,
+  printtype=\textit{pkg.},
+]{Pkg}{package}
+\NewDocElement[%
+  printtype=\textdagger,
+  idxtype=,
+  macrolike,
+]{DMacro}{dmacro}
+\NewDocumentCommand \val { m }
+{%
+  {\ttfamily =\,\meta{#1}}%
+}
+\ExplSyntaxOn
+\NewDocumentCommand \vals { m }
+{
+  {
+    \ttfamily = \, 
+    \clist_use:nn { #1 } { \textbar }
+  }
+} 
+\ExplSyntaxOff
+\title{\filebase}
+\author{Clea F. Rees\thanks{%
+    Bug tracker:
+  \href{https://codeberg.org/cfr/nfssext/issues}{\url{codeberg.org/cfr/nfssext/issues}}
+  \textbar{} Code:
+  \href{https://codeberg.org/cfr/nfssext}{\url{codeberg.org/cfr/nfssext}}
+  \textbar{} Mirror:
+  \href{https://github.com/cfr42/nfssext}{\url{github.com/cfr42/nfssext}}% 
+}}
+%^^A \date{\fileversion~\filetoday}
+\date{\fileversion~\filedate}
+\pagestyle{fancy}
+\fancyhf[lh]{\itshape\filebase~\fileversion}
+%^^A \fancyhf[rh]{\itshape\filetoday}
+\fancyhf[rh]{\itshape\filedate}
+\fancyhf[ch]{}
+\fancyhf[lf]{}
+\fancyhf[rf]{}
+\fancyhf[cf]{\itshape--- \thepage~/~\lastpage{} ---}
+\ExplSyntaxOn
+\hook_gput_code:nnn {shipout/lastpage} {.}
+{
+  \property_record:nn {t:lastpage}{abspage,page,pagenum}
+}
+\cs_new_protected_nopar:Npn \lastpage 
+{
+  \property_ref:nn {t:lastpage}{page}
+}
+\ExplSyntaxOff
+\definecolor{strawberry}{rgb}{1.000,0.000,0.502}
+\definecolor{blueberry}{rgb}{0.000,0.000,1.000}
+\definecolor{moss}{rgb}{0.000,0.502,0.251}
+\begin{document}
+  \DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+%
+% \newcommand*{\adf}{\textsc{adf}}
+% \newcommand*{\lpack}[1]{\textsf{#1}}
+% \newcommand*{\fgroup}[1]{\textsf{#1}}
+% \newcommand*{\fname}[1]{\textsf{#1}}
+% \newcommand*{\file}[1]{\texttt{#1}}
+%
+% \changes{v??}{2008}{First public release.}
+% \changes{v??}{2010/07/06}{Update for VenturisADF PS 1.005.}
+% \changes{\fileversion}{\filedate}{Belated update for (New) NFSS and revised nfssext-cfr.
+%   Add package options to scale fonts.
+% Try switching to DTX/INS.}
+%
+% 
+% 
+% \maketitle\thispagestyle{empty}
+% \pdfinfo{%
+% 	/Creator		(TeX)
+% 	/Producer		(pdfTeX)
+% 	/Author			(Clea F. Rees)
+% 	/Title			(venturisadf)
+% 	/Subject		(TeX)
+% 	/Keywords		(TeX,LaTeX,font,fonts,tex,latex,Venturis,venturis,venturis2,venturissans,venturissans2,venturisold,Venturis ADF,venturisadf,VenturisADF,ADF,adf,Arkandis,Digital,Foundry,arkandis,digital,foundry,Hirwen,Harendal,Clea,Rees)}
+% \pdfcatalog{%
+% 	/URL				()
+% 	/PageMode	/UseOutlines}	
+% \setlength{\parindent}{0pt}
+% \setlength{\parskip}{0.5em}
+% 
+% 
+% 
+% \begin{abstract}
+% 	\noindent Hirwen Harendal, Arkandis Digital Foundry (\adf) has produced the Venturis \adf\ font collection.
+% This guide outlines the \TeX/\LaTeX\ support provided with version 1.005 of the fonts in postscript type 1 format.
+% \end{abstract}
+% 
+% \tableofcontents
+% 
+% \section{Introduction}
+% 
+% This document explains how to use the \TeX/\LaTeX\ support included with version 1.005 of the Venturis \adf\ font collection in postscript type 1 format.
+% The fonts were developed by Hirwen Harendal of the Arkandis Digital Foundry (\adf), and information about the fonts themselves, together with copies of the fonts in opentype format, can be found at \url{http://arkandis.tuxfamily.org/tugfonts.htm}.
+% The fonts are based on Adobe's Utopia and released under the same licence.
+% For details, see \textsc{readme} and \textsc{license-}utopia.txt. \textsc{list-v}enturis.txt includes a list of the fonts included in the collection.
+% 
+% The \TeX/\LaTeX\ support package consists of all files listed in \lpack{manifest.txt}\ and these files are released under the \LaTeX\ Project Public Licence as explained in the included licensing notices and \textsc{readme}.
+% Please let me know of any problems using the bugtracker so that I can solve them if I can.
+% If you can correct the problems and include the fix, that would be even better.
+% 
+% \section{The collection}
+% 
+% Venturis \adf\ currently includes 69 fonts in six groups.
+% The support package rearranges these into five basic groups and renames them according to the Karl Berry fontname scheme (\fref{tab:coll}.
+% 
+% \begin{table}
+% \centering
+% \caption{Mapping Arkandis to \TeX{} names}\label{tab:coll}
+% \begin{tabular}{llll}
+% 	\toprule
+% 	\textbf{Original grouping}		&	\textbf{Original} \textbf{name}	&	\textbf{\TeX\ directory/group}	& \textbf{\TeX\ name}\\\midrule
+% 	Venturis							&	VenturisADF--						&	venturis				&	yvt--\\
+% 	Venturis No2				&	VenturisADFNo2--				&	venturis2			&	yv2--\\
+% 	Venturis Old					&	VenturisOldADF--				&	venturisold		&	yvo--\\
+% 	Venturis Sans				&	VenturisSansADF--				&	venturissans		&	yv1--\\
+% 	Venturis Sans No2		&	VenturisSansADFNo2--		&	venturissans2	&	yv3--\\
+% 	Venturis Titling No1	&	VenturisADFTitlingNo1		&	venturissans		&	yv1dd8au\\
+% 	Venturis Titling No2	&	VenturisADFTitlingNo2		&	venturis				&	yvtbd8ac\\
+% 	Venturis Titling No3	&	VenturisADFTitlingNo3		&	venturissans		&	yv1bd8a\\
+% 	Venturis Titling No4	&	VenturisADFTitlingNo4		& venturis 				&	yvtrdl8a\\
+% 	Venturis Goth Titling &	VenturisADFGothTitling	&	venturisold		&	yvodd8a\\
+% \bottomrule
+% \end{tabular}
+% \end{table}
+% 
+% Venturis Titling is thus split according to style and intended usage.
+% The first four fonts in this group are intended for use with Venturis, Venturis No2, Venturis Sans and Venturis Sans No2.
+% For the purposes of installation for use with \TeX\ and \LaTeX\ they have been grouped with Venturis and Venturis Sans.
+% This is an arbitrary decision and users may also wish to use them with Venturis No2 and Venturis Sans No2.
+% To this end, the special titling commands provided by \lpack{venturis} are also available when \lpack{venturis2} is loaded. (See \fref{sec:titling}.)
+% 
+% Apart from Venturis Titling which is not designed as a general text font, all fonts come in at least an upright and either an italic or oblique shape.
+% Most fonts also include a variety of widths and weights.
+% In addition, condensed and standard-width Venturis regular and bold provide a choice of oldstyle and lining figures, upright and italic small capitals and alternate swash characters while the regular upright face also offers end-of-word swashes.
+% Venturis Old offers two additional ligatures and the long s while the bold upright face also includes two alternate characters.
+% All of these features are accessible in \LaTeX\ through the included package files as explained in \fref{sec:support} and \fref{sec:commands}. 
+% 
+ 
+% \section{The support package}\label{sec:support}
+% 
+% \subsection{Encodings}
+% 
+% The package supports the \textsc{ec}/\textsc{t1} and Text Companion (\textsc{ts1}) encodings.
+% Most characters in the \textsc{ec} encoding are available\footnote{The exceptions are the perthousandzero and the Sami characters Eng/Ng (\lmrm{\NG}) and eng/ng (\lmrm{\ng}) which the fonts do not provide and which fontinst cannot construct from other glyphs.} and the fonts provide a small number of characters from the \textsc{ts1} encoding as well, including the \texteuro.
+% The exceptions are: the virtual font which provides access to the end-of-word swashes available in the upright, regular Venturis font; and the virtual fonts for Venturis Old.
+% In former case, because additional slots are required to accommodate the end-of-word swashes, a number of characters normally available in the \textsc{ec} encoding are unavailable.
+% Attempting to access these characters while using this font will result in errors of various kinds and/or unexpected output and should be avoided.
+% For details, see the list of changes described at the top of \path{t1-venturis.etx}\ which lists the slots reassigned to end-of-word swashes.
+% In the latter case, the setup for Venturis Old uses two encodings: \path{t1-venturisold.etx} and \path{t1-venturisold-longs.etx}.
+% The first of these uses slots normally assigned to characters unavailable in this font\footnote{That is, the perthousand zero and the Sami characters.} for the two alternate characters and one of the extra ligatures.
+% In a sense, nothing is lost by this since the characters are unavailable anyway but attempting to typeset those characters will produce rather odd results.
+% The second encoding uses two additional slots for the long s and the second additional ligature\footnote{The ‘lost’ characters are dbar (\dj) and the ij ligature.}.
+% Although the slots used are for characters not provided by the font, these characters can be faked by \path{fontinst} so that the loss in this case is genuine.
+% Details of all reassignments are provided in the encoding files themselves.
+% 
+% \subsection{Package files}
+% 
+% Three \LaTeX\ packages are provided.
+% Each package provides a number of additional font selection commands for use in \LaTeX\footnote{Note that the provision of a command does not guarantee that it will have any effect.
+% If you are using Venturis Sans and try to switch to oldstyle figures, for example, nothing will happen except for a warning message output to the console to inform you that no suitable font is available.}.
+% 
+% Note that all packages substitute italic for oblique and \emph{vice-versa}.
+% If italic small-caps is unavailable, small-caps is substituted where possible.
+% Upright is substituted for small-caps when the latter are unavailable.
+% The titling families typically substitute a titling font in another weight or width if no font in the current weight or width is available, and small-caps is usually substituted for other shapes.
+% This means that if you switch to titling while using italic, extended bold, you should generally get what you expect i.e.\ a titling font even though this may be an upright small-caps font in another weight and width.
+% 
+% All packages support the following option, which may be used to scale the fonts.
+%
+% \DescribeOpt{scale}\val{scaling factor}
+%
+% Scale all fonts provided by the package by \meta{scaling factor}, which should be a positive integer or simple decimal such as \verb|2| or \verb|1.2|.
+% \textbf{This is the recommended option if scaling is required.}
+% This option is intended for cases where the fonts should be scaled to match other families used in the document e.g.~for consistency with the size of typewriter fonts.
+%
+% Initially empty, which is equivalent to \verb|1| but more efficient.
+%
+% In addition, \lpack{venturis} and \lpack{venturis2} support the following pair of options for scaling serif and sans-serif independently.
+% \textbf{These options should not be used in most cases} because you should not generally apply different scaling factors to fonts designed to work together.
+%
+% \DescribeOpt{scale rm}\val{scaling factor}
+%
+% Scale the roman families provided by the package by \meta{scaling factor}, which should be a positive integer or simple decimal such as \verb|2| or \verb|1.2|.
+%
+% Initially empty, which is equivalent to \verb|1| but more efficient.
+%
+% \DescribeOpt{scale sf}\val{scaling factor}
+%
+% Scale the sans-serif families provided by the package by \meta{scaling factor}, which should be a positive integer or simple decimal such as \verb|2| or \verb|1.2|.
+%
+% Initially empty, which is equivalent to \verb|1| but more efficient.
+%
+% \subsubsection{venturis}\label{sec:venturis}
+% 
+% \DescribePkg{venturis}
+% 	To load this package, use \verb|\usepackage{venturis}| in your document preamble.
+% The package enables the fonts in \fgroup{venturis}\ and \fgroup{venturissans} (\fref{tab:venturis}.
+% \begin{table}
+% \centering
+% \begin{threeparttable}
+% \caption{venturis}\label{tab:venturis}
+% \begin{tabular}{l>{\raggedright}p{.15\textwidth}l>{\raggedright}p{.125\textwidth}>{\raggedright}p{.15\textwidth}>{\raggedright}p{.2\textwidth}}
+% 		\toprule
+% 		\textbf{family}	&	\textbf{text}	& \textbf{figures}	&	\textbf{widths}	&	\textbf{weights}	&	 \textbf{shapes}\tabularnewline\midrule
+% 		yvt		&	serif			&	lining		&	standard	&	regular, bold		&	upright, italic,\\small-caps,\\italic small-caps\tabularnewline\cmidrule{5-6}
+% 					&						&					&						&	heavy					&	upright, italic\tabularnewline\cmidrule{4-6}
+% 					&						&					&	condensed	&	regular, bold		&	upright, italic,\\small-caps,\\italic small-caps\tabularnewline\midrule
+% 		yvtj		&	serif	& oldstyle	&	standard,\\condensed	&	regular, bold	&	upright, italic,\\small-caps,\\italic small-caps\tabularnewline\midrule
+% 		yvtw	&	serif, swash	&	lining	&	standard,\\condensed	&	regular, bold		&	upright, italic,\\small-caps,\\italic small-caps\tabularnewline\midrule
+% 		yvtjw	&	serif, swash	&	oldstyle	&	standard,\\condensed&	regular, bold	&	upright, italic,\\small-caps,\\italic small-caps\tabularnewline\midrule
+% 		yvtaw\tnotex{tn:subs-w}	&	serif, alternate swash	&	lining	&	standard	&	regular	&	upright\tabularnewline\midrule
+% 		yvtajw\tnotex{tn:subs-jw}&	serif, alternate swash	&	oldstyle	&	standard	&	regular	&	upright\tabularnewline\midrule
+% 		yvtd	&	serif, titling	&	lining	&	condensed				&	bold	&	small-caps\tnotex{tn:subs}\tabularnewline\cmidrule{4-6}
+% 					&							&							&	standard				&	regular				&	outline small-caps\tabularnewline\midrule
+% 		yv1		&	sans					&	lining				&	standard				&	regular, bold, light, demibold	&	upright, italic\tabularnewline\cmidrule{5-6}
+% 					&							&				&									&	heavy					&	upright, oblique\tabularnewline\cmidrule{4-6}
+% 					&							&				&	condensed				&	regular, bold		&	upright, italic\tabularnewline\cmidrule{4-6}
+% 					&							&				&	extended				&	regular, bold		&	upright, italic\tabularnewline\midrule
+% 		yv1d	&	sans, titling	& lining	&	standard				&	bold					& small-caps\tnotex{tn:subs}\tabularnewline\cmidrule{4-6}
+% 					&							&				&	ultra-condensed	&	demibold			&	small-caps\tnotex{tn:subs}\tabularnewline
+% \bottomrule
+% \end{tabular}
+% \begin{tablenotes}
+%   \item \label{tn:subs-w}yvtw substituted where applicable.
+%   \item \label{tn:subs-jw}yvtjw substituted where applicable.
+%   \item \label{tn:subs}Substituted for other weights and widths as applicable. 
+%   See \fref{sec:titling}.
+% \end{tablenotes}
+% \end{threeparttable}
+% \end{table}
+% By default, the package will use oldstyle figures where possible.
+%
+% \DescribeOpt{lf}
+% If you would prefer lining figures by default, use \verb|\usepackage[lf]{venturis}| instead.
+%
+% \DescribeOpt{osf}
+% \verb|\usepackage[osf]{venturis}| requests oldstyle figures explicitly .
+% 
+% 	The package will select \fname{yvtj}\ or \fname{yvt}\ as the default serif/roman family for the document, \fname{yv1}\ as the default sans-serif family, \fname{yvtd}\ as the default serif titling family and \fname{yv1d}\ as the default sans-serif titling family.
+% In addition, the package will enable access to the various alternate and swash characters available in \fname{yvtjw}, \fname{yvtajw}, \fname{yvtw}\ and \fname{yvtaw}.
+% The difference between the \fgroup{alternate swash}\ and \fgroup{swash}\ families is that the former enables end-of-word swashes in the regular-width regular-weight upright font whereas the latter does not.
+% 
+% 
+% \subsubsection{venturis2}
+% 
+% \DescribePkg{venturis2}
+% 	Use \verb|\usepackage{venturis2}| in your document preamble to load this package, which enables the fonts in \fgroup{venturis2}\ and \fgroup{venturissans2} and the titling fonts from \fgroup{venturis} and \fgroup{venturissans}.
+% The package will select \fname{yv2}\ as the default roman/serif family for the document and \fname{yv3}\ as the default sans-serif family (\fref{tab:venturis2}.
+% Although no titling family is enabled by default, the special titling commands explained in \fref{sec:titling} provide access to the serif titling family \fname{yvtd}\ and the sans-serif titling family\fname{yv1d} (see \fref{sec:venturis} for details of these families). 
+% 
+%	\begin{table}
+% \centering
+% \caption{venturis2}\label{tab:venturis2}
+% \begin{tabular}{l>{\raggedright}p{.15\textwidth}l>{\raggedright}p{.125\textwidth}>{\raggedright}p{.15\textwidth}>{\raggedright}p{.2\textwidth}}
+% 		\toprule
+% 		\textbf{family}	&	\textbf{text}	& \textbf{figures}	&	\textbf{widths}	&	\textbf{weights}	&	 \textbf{shapes}\tabularnewline\midrule
+% 		yv2	&	serif	&	lining	&	standard	&	regular, bold, medium, heavy	&	upright, italic\tabularnewline\cmidrule{4-6}
+% 				&				&				&	condensed	&	regular, bold									&	upright, italic\tabularnewline\midrule
+% 		yv3	&	sans		&	lining	&	standard	&	regular, bold 								&	upright, italic\tabularnewline\cmidrule{4-6}
+% 				&				&				&	condensed	&	regular, bold 								&	upright, italic\tabularnewline\cmidrule{4-6}
+% 				&				&				&	extended	&	regular, bold 								&	upright, italic\tabularnewline
+% \bottomrule
+% \end{tabular}
+% \end{table}
+% 
+% \subsubsection{venturisold}
+% 
+% \DescribePkg{venturisold}
+% To load this package, which enables the fonts in \fgroup{venturisold}, use \verb|\usepackage{venturisold}| in your document preamble.
+% Note that this package does not affect the default sans-serif font so that \verb|\textsf|, \verb|\sffamily| etc.\ will still use Computer Modern by default.
+% The package will select \fname{yvo}\ as the default roman/serif family for the document and \fname{yvod}\ as the default titling family (\fref{tab:venturisold}).
+% \begin{table}
+% \centering
+% \begin{threeparttable}
+% \caption{VenturisOld}\label{tab:venturisold}
+% \begin{tabular}{l>{\raggedright}p{.15\textwidth}l>{\raggedright}p{.125\textwidth}>{\raggedright}p{.15\textwidth}>{\raggedright}p{.2\textwidth}}
+% 		\toprule
+% 		\textbf{family}	&	\textbf{text}	& \textbf{figures}	&	\textbf{widths}	&	\textbf{weights}	&	 \textbf{shapes}\tabularnewline\midrule
+% 		yvo		&	serif															&	oldstyle		&	standard	&	regular, bold		&	upright, italic\tabularnewline\midrule
+% 		yvod	&	serif, titling												& lining			&	standard	&	demibold			&	small-caps\tabularnewline\midrule
+% 		yvoa	&	serif, alternate (includes the long s)	&	oldstyle		&	standard	&	regular, bold		&	upright, italic\tabularnewline\midrule
+% 		yvoad\tnotex{tn:yvo}
+% 					&	serif, titling												& lining			&	standard	&	demibold			&	small-caps\tabularnewline
+%   \bottomrule
+% \end{tabular}
+% \begin{tablenotes}
+%   \item \label{tn:yvo} yvoad is identical to yvod and is installed under this name as a convenience.
+% \end{tablenotes}
+% \end{threeparttable}
+% \end{table}
+% 
+% \fname{yvo} provides two alternate characters and one additional ligature.
+% \DescribeLig{st}
+% The additional ligature will automatically replace ‘\vo{s{}t}’ with ‘\vo{st}’.
+% \DescribeAlt{d*}
+% \DescribeAlt{s*}
+% The two alternate characters, ‘\vo{\textbf{d*}}’ and ‘\vo{\textbf{s*}}’, may be accessed by typing \verb|d*| and \verb|s*|.
+% These only exist in the bold upright face, but the encoding tries to approximate the expected output for the regular weight and italic shape by substituting the ordinary ‘\vo{d}’ or ‘\vo{s}’ for \verb|d*| and \verb|s*| when no alternates are available.
+% 
+% \DescribeAlt{s+}
+% \DescribeLig{s+t}
+% \fname{yvoa} provides in addition the long s, ‘\vo{\textalt{s+}}\,’, which may be accessed using \verb|s+|, and another ligature, ‘\vo{\textalt{s+t}}’, to replace ‘\vo{\textalt{s+{}t}}’.
+% 
+% 	Note that these characters are absent from the titling font, so you should not type a \verb|d| or an \verb|s| followed by an \verb|*| or \verb|+| when using this unless you literally want to see the sequence in your output.
+% Likewise, you should not type \verb|s+| except within the scope of a suitable command (\fref{sec:styles}) unless you actually want to see the plus-sign in your output.
+% 
+% \section{Additional font selection commands}\label{sec:commands}
+% 
+% \DescribePkg{nfssext-cfr}
+% 	The \LaTeX\ packages \lpack{venturis}, \lpack{venturis2}\ and \lpack{venturisold}\ load \lpack{nfssext-cfr}\ which is an extension of the package \lpack{nfssext}\ supplied by Philipp Lehman as part of The Font Installation Guide.
+% The file extends the font selection commands to facilitate access to various font features.
+% Both the original and the extension are designed for use with a wide range of fonts.
+% For this reason, only a subset of the additional commands are relevant to any particular font support package.
+% Those relevant to \lpack{venturisadf}\ are described below.
+% 
+% 	In addition, \lpack{venturis}\ and \lpack{venturisold}\ provide custom titling commands as explained later.
+% These provide alternatives to the titling commands provided by \lpack{nfssext} (see \fref{sec:styles} and \fref{sec:titling}).
+% 
+% \subsection{nfssext-cfr}
+% 
+% The commands explained in this section are available when \lpack{venturis}, \lpack{venturis2}\ or \lpack{venturisold} is loaded.
+% If for some reason you wish to use them at other times, include \verb|\usepackage{nfssext-cfr}| in your document preamble.
+% 
+% \subsubsection{Widths}
+% 
+% \begin{table}
+% \centering
+% \begin{threeparttable}
+% \caption{Widths}\label{tab:widths}
+% \begin{tabular}{lll}
+% 		\toprule
+% 		\textbf{width}	&	\textbf{width command}	&	\textbf{text command}\\\midrule
+% 		standard				&	\verb|\regwidth|					&	\verb|\textrw{}|\\
+% 		condensed				&	\verb|\cdwidth|					&	\verb|\textcd{}|\\
+% 		extended\tnotex{tn:ext}				&	\verb|\etwidth| 					&	\verb|\textet{}|\\
+% 		ultra-condensed	&	\verb|\ucwidth|					&	\verb|\textuc{}|\\
+% 		\bottomrule
+% \end{tabular}
+% \begin{tablenotes}
+%   \item \label{tn:ext}Note that because \LaTeX\ defines the default bold series as bold, extended by default, it makes no difference whether extended or standard width is used if the active weight is bold.
+% \end{tablenotes}
+% \end{threeparttable}
+% \end{table}
+% \DescribeMacro{\regwidth}
+% \DescribeMacro{\cdwidth}
+% \DescribeMacro{\etwidth}
+% \DescribeMacro{\ucwidth}
+% \DescribeMacro{\textrw} 
+% \DescribeMacro{\textcd} 
+% \DescribeMacro{\textet} 
+% \DescribeMacro{\textuc} 
+% The commands in \fref{tab:widths} may be used to alter the width of the current font (subject to the desired width's being available, of course).
+% These work in a similar way to \LaTeXe{}'s commands for changing series (e.g.~to bold) but, unlike those commands, these switch \emph{only} the width.
+% Whereas \cs{bfseries} selects bold \emph{and} extended, for example, \cs{cdwidth} tries to select a condensed font in the current weight.
+%
+% To switch to an extended width until further notice, for example, you could use \verb|\etwidth|.
+% Or use \verb|\textsf{\textcd{Hello, world!}}| to typeset just the text \textsf{\textcd{Hello, world!}} in a condensed width sans.
+% 
+% \subsubsection{Weights}
+% 
+% \begin{table}
+% \centering
+% \begin{threeparttable}
+% \caption{Weights}\label{tab:weights}
+% \begin{tabular}{lll}
+%   \toprule
+% 		\textbf{weight}		&	\textbf{weight command}	&	\textbf{text command}\\\midrule
+% 		light							&	\verb|\lgweight|						&	\verb|\textlg{}|\\
+% 		medium						&	\verb|\sbweight|					&	\verb|\textsb{}|\\
+% 		                  &	\color{gray}\verb|\mbweight|\tnotex{tn:dep-mb} &	\color{gray}\verb|\textmb{}|\tnotex{tn:dep-mb}\\
+% 		demibold					&	\verb|\dbweight|					&	\verb|\textdb{}|\\
+% 		heavy							&	\verb|\ebweight|					&	\verb|\texteb{}|\\
+%   \bottomrule
+% \end{tabular}
+% \begin{tablenotes}
+%   \item \label{tn:dep-mb}Deprecated.
+% \end{tablenotes}
+% \end{threeparttable}
+% \end{table}
+% 
+% \DescribeMacro{\lgweight}
+% \DescribeMacro{\sbweight}
+% \DescribeDMacro{\mbweight}
+% \DescribeMacro{\dbweight}
+% \DescribeMacro{\ebweight}
+% \DescribeMacro{\textlg} 
+% \DescribeMacro{\textsb} 
+% \DescribeDMacro{\textmb} 
+% \DescribeMacro{\textdb} 
+% \DescribeMacro{\texteb} 
+% The commands in \fref{tab:weights} work in the same way as the standard \LaTeX\ commands for switching to bold text, for example, and as the commands for selecting widths described above.
+% Note that if you are using \lpack{venturis}\ with oldstyle figures and you wish to use a heavy serif, for example, you need to switch temporarily to lining figures.
+% \verb|\textl{\texteb{Hello, world!}}| will produce \textl{\texteb{Hello, world!}}, for example, but \verb|\texteb{Hello, world!}| will produce only \texteb{Hello, world!}
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+  \textl{\texteb{Heavy and \textsl{heavy oblique} serif}}\\
+  \textsf{\textlg{Light sans}}\\
+  \textsf{\textdb{Demibold sans}}
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% 	produces:
+% 	\begin{center}
+% 		\textl{\texteb{Heavy and \textsl{heavy oblique} serif}}\\
+% 		\textsf{\textlg{Light sans}}\\
+% 		\textsf{\textdb{Demibold sans}}
+% 	\end{center}
+% 
+% \subsubsection{Shapes}
+% 
+% \DescribeDMacro{\sishape}
+% \DescribeMacro{\olshape}
+% \DescribeDMacro{\textsi} 
+% \DescribeMacro{\textol} 
+% Commands to change font shape which extend the default \LaTeXe{} functionality in relevant ways are listed in \fref{tab:shapes}.
+% \begin{table}
+% \centering
+% \begin{threeparttable}
+% \caption{Shapes}\label{tab:shapes}
+% \begin{tabular}{lll}
+%   \toprule
+%   \textbf{shape}			&	\textbf{shape command}	&	\textbf{text command}\\\midrule
+%   italic small-caps		&	\verb|\itshape\scshape|\tnotex{tn:all} &   \verb|\textit{\textsc{}}|\tnotex{tn:all} \\
+%   	&	\verb|\scshape\itshape|\tnotex{tn:all} &   \verb|\textsc{\textit{}}|\tnotex{tn:all} \\
+%     & \color{gray}\verb|\sishape|\tnotex{tn:dep} &	\color{gray}\verb|\textsi{}|\tnotex{tn:dep} \\
+% 		outline						&	\verb|\olshape|					&	\verb|\textol{}|\\		
+%   \bottomrule
+% \end{tabular}
+% \begin{tablenotes}
+%   \item \label{tn:all}Supported for all versions of \LaTeXe{}.
+%   \item \label{tn:dep}Deprecated.
+% \end{tablenotes}
+% \end{threeparttable}
+% \end{table}
+% 
+% 	For example, \verb|\textit{\scshape I always avoid a kangaroo.}| produces:
+% 		\begin{center}
+% 			\textit{\scshape I always avoid a kangaroo.}
+% 		\end{center}
+% 	if italic small-caps is available for the active font.
+% If it is not, the small-caps upright shape or, failing that, the ordinary upright shape will be substituted.
+% 
+% 	For example, \verb|\textsf{\textsc{\itshape The last example was from Lewis Carroll.}}| produces:
+% 		\begin{center}
+% 			\textsf{\textsc{\itshape The last example was from Lewis Carroll.}}
+% 		\end{center}
+% 
+% \subsubsection{Styles}\label{sec:styles}
+% 
+% \DescribeMacro{\swashstyle}
+% \DescribeMacro{\tistyle}
+% \DescribeMacro{\altstyle}
+% \DescribeMacro{\textswash}
+% \DescribeMacro{\textti}
+% \DescribeMacro{\textalt}
+% \Fref{tab:styles} lists commands provided for changing the current font style.
+% Commands provided by \LaTeXe{} are not included.
+% \begin{table}
+% \centering
+% \begin{threeparttable}
+% \caption{Styles}\label{tab:styles}
+% \begin{tabular}{llll}
+%   \toprule
+%   \textbf{style}			&	\textbf{style command}	&	\textbf{text command}	&	\textbf{effect}\\\midrule
+% 		swash\tnotex{tn:swash}	&	\verb|\swashstyle|				&	\verb|\textswash{}|\\
+% 		titling\tnotex{tn:tiyv2}%
+% 											&	\verb|\tistyle|						&	\verb|\textti{}|\\
+% 		alternate/long s		&	\verb|\altsytle|					&	\verb|\textalt{}|\\
+%   \bottomrule
+% \end{tabular}
+% \begin{tablenotes}
+%   \item \label{tn:swash}Swash is implemented \emph{\textbf{completely differently}} by \lpack{nfssext-cfr} from the newly developed kernel implementation.
+%   The new version of \lpack{nfssext-cfr} should be compatible with the kernel implementation but you \emph{\textbf{must}} use the macros provided by that package e.g.~\cs{swashstyle} or \cs{textswash}.
+%   You may, however, use these macros for fonts designed to work with the kernel implementation, since \lpack{nfssext-cfr} has been revised to work with these fonts, too.
+%   \item \label{tn:tiyv2}These commands \emph{\textbf{cannot}} be used to access titling fonts when \lpack{venturis2} is loaded.
+% Use the commands explained in \fref{sec:titling} instead.
+% \end{tablenotes}
+% \end{threeparttable}
+% \end{table}
+% 
+% For example, if \lpack{venturis}\ was loaded and the current font is of standard width and weight then:
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+  \textswash{\textsc{Kinky Querulous Rhinos X-Ray Exultant Risque Zebras}}\\
+  \textswash{\textsc{\itshape Kinky Querulous Rhinos X-Ray Exultant Risque Zebras}}\\
+  \textswash{Kinky Querulous Rhinos X-Ray Exultant Risque Zebras}\\
+  \textswash{\textit{Kinky Querulous Rhinos X-Ray Exultant Risque Zebras}}
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% produces:
+% \begin{center}
+%  	\textswash{\textsc{Kinky Querulous Rhinos X-Ray Exultant Risque Zebras}}\\
+%   \textswash{\textsc{\itshape Kinky Querulous Rhinos X-Ray Exultant Risque Zebras}}\\
+% 	\textswash{Kinky Querulous Rhinos X-Ray Exultant Risque Zebras}\\
+% 	\textswash{\textit{Kinky Querulous Rhinos X-Ray Exultant Risque Zebras}}
+% \end{center}
+% and:
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+  \textswash{\textalt{Kinky Querulous Rhinos X-Ray Exultant Risque Zebras\\
+  agoraphobia doddled essence giggling hashish\\
+   loll momentum nationalisation ontological\\orzo rarer tritest unanimous\\
+   mu zigzag oz}}
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% produces:
+% \begin{center}
+% 	 \textswash{\textalt{Kinky Querulous Rhinos X-Ray Exultant Risque Zebras\\
+% 	 agoraphobia doddled essence giggling hashish\\
+% 	 loll momentum nationalisation ontological\\orzo rarer tritest unanimous\\
+% 	 mu zigzag oz}}
+% \end{center}
+% If, \lpack{venturisold}\ was loaded, then:
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+  Pandas on scooters s*treaked* past fast.\\
+  \textalt{Pandas+ on s+cooters s*treaked* pas+t fast.}
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% produces:
+% \begin{center}	
+% 	\vo{Pandas on scooters s*treaked* past fast.\\
+% 	\textalt{Pandas+ on s+cooters s*treaked* pas+t fast.}}
+% \end{center}					
+% 
+% \subsubsection{Figures}
+% 
+% \DescribeMacro{\lstyle}
+% \DescribeMacro{\ostyle}
+% \DescribeMacro{\textl} 
+% \DescribeMacro{\texto} 
+% For fonts with both oldstyle (hanging) and lining figures, the stylw of figures may be changed locally using the commands in \fref{tab:figs}.
+% \begin{table}
+% \centering
+% \caption{Figures}\label{tab:figs}
+% \begin{tabular}{lll}
+%   \toprule
+%   \textbf{figure style}		&	\textbf{style command}	&	\textbf{text command}\\\midrule
+%   lining					&	\verb|\lstyle|			&	\verb|\textl{}|\\
+%   oldstyle					&	\verb|\ostyle|			&	\verb|\texto{}|\\
+%   \bottomrule
+% \end{tabular}
+% \end{table}
+% 
+% In this document, lining figures are used when available by default:
+% \begin{center}
+% 	0123456789
+% \end{center}
+% but oldstyle figures are also accessible. 
+% For example, \verb|\texto{0123456789}| produces:
+% \begin{center}
+% 	\texto{0123456789}
+% \end{center}
+% 
+% \subsection{Special titling commands}\label{sec:titling}
+% 
+% \DescribeMacro{\vtstyle}\oarg{style}
+% \DescribeMacro{\textvt} 
+% \DescribeMacro{\textvtl} 
+% The commands in \fref{tab:tit} are available when any of \lpack{venturis}, \lpack{venturis2}\ or \lpack{venturisold}\ is loaded although their affects are package and context dependent.
+% \begin{table}
+% \centering
+% \caption{Titling}\label{tab:tit}
+% \begin{tabular}{llll}
+%   \toprule
+% 		\textbf{style}			&	\textbf{shape}		&	\textbf{style command}	&	\textbf{text command}\\\midrule
+% 		titling							&	small-caps					&	\verb|\vtstyle|					&	\verb|\textvt{}|\\
+% 											&	outline small-caps	&	\verb|\vtstyle[ol]|				&	\verb|\textvtl{}|\\
+%   \bottomrule
+% \end{tabular}
+% \end{table}
+% When \lpack{venturisold}\ is loaded, \verb|\textvtl{}| and \verb|\textvt{}| are equivalent and the optional argument to \verb|\vtstyle| has no effect.
+% The single titling font available will be selected regardless of the current font shape, weight and width.
+% For example:
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+  \textbf{\textit{\textvtl{Venturis Old Titling}}}\\
+  \vtstyle[yddraiggoch]{\textsc{Venturis Old Titling}}
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% produces:
+% \begin{center}
+% 	\textbf{\textit{\textvol{Venturis Old Titling}}}\\
+% 	\vostyle[yddraiggoch]{\textsc{Venturis Old Titling}}
+% \end{center}
+% Note that the titling font does not include any provision for the alternate characters, additional ligatures or long s.
+% Unless you wish to produce a ‘d’ or ‘s’ followed by an asterisk or plus-sign, you should avoid these sequences in titling text.
+% 
+% When \lpack{venturis}\ or \lpack{venturis2}\ is loaded, \verb|\textvtl{}| and \verb|\vtstyle[ol]| will always select the outline small-caps font in regular width and weight.
+% The effect of \verb|\textvt{}| and \verb|\vtstyle|, however, will depend on the active font.
+% If the current font is the serif, the small-caps serif font in demibold will be loaded regardless of the current weight and width.
+% If the current font is the sans, then either the bold small-caps sans in regular width or the demibold small-caps sans in the ultra-condensed width will be loaded.
+% The selection will depend on the active font series i.e.\ the current weight and width.
+% For example:
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+  \textvtl{Outline Small-Caps Serif Titling}\\
+  \textvt{Small-Caps Serif Titling Condensed}\\
+  \textsf{\textvt{Small-Caps Sans Titling Demibold Ultra-Condensed}}\\
+  \textsf{\textbf{\textvt{Small-Caps Sans Titling Bold}}}
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% produces:
+% \begin{center}
+% 	\textvtl{Outline Small-Caps Serif Titling}\\
+% 	\textvt{Small-Caps Serif Titling Condensed}\\
+% 	\textsf{\textvt{Small-Caps Sans Titling Demibold Ultra-Condensed}}\\
+% 	\textsf{\textbf{\textvt{Small-Caps Sans Titling Bold}}}
+% \end{center}
+% 
+% \section{Mathematics}
+% 
+% The Venturis \adf\ Collection does not include fonts for mathematics and \lpack{venturis}, \lpack{venturis2}\ and \lpack{venturisold}\ do not touch the default settings for mathematical fonts.
+% This means that you will probably find mathematics typeset in Computer Modern by default and this is likely not what you want.
+% 
+% Assuming that you are using \lpack{venturis}\ for text, Hirwen Harendal, who designed the collection, advises that the best choice for mathematics is \fgroup{fourier}\ and the second best is \fgroup{mathdesign}.
+% 
+% I am grateful to G\"unter Milde, who tested an earlier version of the packages, was responsible for the correction of many errors on my part and offered advise regarding the use of fonts in the collection for documents containing mathematics.
+% He noted that combining \lpack{venturis}\ with Fourier Maths works quite nicely since \fgroup{venturis}, \fgroup{venturissans}\ and \fgroup{fourier}\ are all derived from Adobe's Utopia, but that neither \lpack{venturis2}\ (i.e.~\fgroup{venturis2} and \fgroup{venturissans2}) nor \lpack{venturisold}\ lend themselves to mathematical texts since no suitably complementary fonts for mathematics are available.
+% 
+% Milde suggests one of the following combinations:
+% \begin{itemize}
+% 	\item Venturis, Venturis Sans \& Fourier Maths:
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+  \usepackage{fourier}			% Fourier (sets text and math fonts)
+  \usepackage[lf]{venturis}	% Venturis with lining figures
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% 	\item Venturis, Venturis Sans \& Mathdesign:
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+  \usepackage[utopia,expert]{mathdesign}
+  \usepackage[lf]{venturis}  % Venturis with lining figures
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% \end{itemize}
+% 
+% Milde offers the following notes and suggestions:
+% \begin{itemize}
+% 	\item If oldstyle figures are used (the default when \lpack{venturis}\ is loaded without options), these are also used in equation numbering, witch looks out of place.
+% 	\item There are slight differences in both letters and figures, so you should take care to use text style figures and math figures as well as \verb|mathrm| and \verb|textrm| (for text-in-math) consistently.
+% \end{itemize}
+% 
+% Milde also suggested that the best match is achieved by choosing the extended width with the \verb|\etwidth| command but that even Venturis extended is narrower than Fourier normal.
+% If you are considering this, however, you should note that the command will only affect text in sans-serif as Venturis, unlike Venturis Sans, does not include an extended width.
+% 
+%
+%
+% 
+% \appendix
+% 
+% \DeclareFixedFootnote \fnupdmap {%
+%   See, for example, \href{https://tex.stackexchange.com/q/255709/}{Why shouldn't I use \texttt{getnonfreefonts} to install additional fonts? Why shouldn't I use \texttt{updmap} when installing or removing fonts?}.}
+% 
+% \section{Installation}
+% 
+% \textbf{The vast majority of users should IGNORE this section entirely.}
+% \lpack{venturisadf} is included in all major \TeX{} distributions and should be installed as part of your \TeX{} installation.
+% Installing the package yourself should be done only as a last resort or an educational exercise.
+% 
+% Note, in particular, that this version of \lpack{venturisadf} should \textbf{not} be installed on older \LaTeX{} kernels as it is designed to work with the (New) New Font Selection Scheme, as updated around 2020\footnote{%
+%   The package should\texttrademark{} work fine on older kernels, but the new version is bound to have some bugs and there is no reason to use it on these systems.
+%   The sole purpose of the update is to accommodate the breaking changes made to font selection.
+%   If you don't have those changes installed locally, nothing should be broken and the newer version of \lpack{venturisadf} offers no advantage at all.%
+% }.
+% Use the initial release of \lpack{venturisadf} if your installation of \LaTeX{} predates those changes.
+% 
+% Installation varies with \TeX\ distribution so you should consult the documentation which came with your system for details.
+% In most cases, you will need to perform three steps:
+% \begin{enumerate}
+%   \item move or copy the package files to appropriate locations on your system;
+%   \item refresh the \TeX\ database;
+%   \item incorporate the included map file fragments for the different engines your distribution supports.
+% \end{enumerate}
+% 
+% The following instructions assume you are using \TeX~Live\footnote{This includes Mac\TeX\ for OS X users.}. 
+% They should not be too difficult to adapt if you are using a different distribution.
+% 
+% \subsection{Install the files}
+% 
+% The files should be installed in one of two locations: \emph{either} the local system-wide \TeX\ tree \emph{or} your personal tree.
+% If the package is installed system-wide, all users will have access to it.
+% On the other hand, you may need privileges you do not have to do this in which case you must use your personal tree.
+% 
+% \textbf{There are serious disadvantages to installing the package into your personal tree.
+% In particular, these pertain to use of \verb|updmap --user| rather than \verb|updmap --sys|.
+% If you are not aware of these disadvantages, please ensure you are fully cognisant of them before proceeding\fnupdmap.
+% Merely removing the package from your personal tree at a later point will \emph{not} undo the effects.}
+% 
+% For \TeX~Live, \verb|kpsewhich -var-value TEXMFLOCAL| will return the path to the local tree and \verb|kpsewhich -var-value TEXMFHOME| the path to your personal tree. 
+% The package already includes a hierarchy of files to help you install them correctly.
+% Ignoring any symbolic link in the top directory, move or copy the files in \path{doc}, \path{fonts} and \path{tex} into the appropriate locations.
+% If the tree is initially empty, you can simply move or copy the directories in as they are.
+% If the tree already contains other packages, you may need to merge the package hierarchy with the pre-existing one.
+% For example, if you already have a \path{doc/fonts} directory, move or copy \path{doc/fonts/venturis*} into \path{doc/fonts/}.
+% If you have a \path{doc} directory but not a \path{doc/fonts}, move \path{doc/fonts} into \path{doc/}.
+% 
+% \subsection{Refresh the database}
+% 
+% Again, this depends on your distribution.
+% For \TeX~Live, \verb|mktexlsr <path to directory>| for the directory you used in the first step should do the trick.
+% Note that you \emph{may} be able to skip this step if you install into your personal tree.
+% Whether this is so depends on the details of your set-up.
+% As a test, move to a directory containing none of the package files and try \verb|kpsewhich venturis.sty|.
+% If the file is found, you don't need to refresh the database; otherwise use \verb|mktexlsr| and then try again.
+% 
+% \subsection{Install the map fragments}
+% 
+% For \TeX~Live, there are at least two ways of doing this. 
+% The second method varies according to the version of \TeX~Live and instructions are provided accordingly.
+% Both methods depend on whether you installed into \verb|TEXMFLOCAL| or \verb|TEXMFHOME|.
+% If you installed system-wide, the choice is relatively straightforward --- it obviously makes sense in that case to update the font maps system-wide as well.
+% 
+% If, on the other hand, you installed into your personal tree, the matter is more complex. 
+% On the one hand, updating the system-wide maps may create difficulties or confusion for other users because while the map files will list the fonts as available, they will not be able to access them.
+% On the other hand, maintaining personal font map files can produce difficulties and confusions of its own\fnupdmap.
+% Whether it is to be preferred or not is a complex issue and depends on the details of your \TeX\ distribution, local configuration and personal preference. 
+% The one clear case is that in which you install into your personal tree because you lack the privileges needed to install system-wide. 
+% In that case, you have no choice but to maintain personal font map files or forgo the use of all fonts not provided by your administrator.
+% Other cases are thankfully beyond the scope of this document.
+% 
+% \subsubsection{Method 1}
+% 
+% If you installed the package system-wide, use the command:
+% \iffalse
+%^^A ateb Heiko Oberdiek: https://tex.stackexchange.com/a/172896/
+%^^A dyw hwn ddim yn gweithio tu mewn i arg macro! 
+%^^A (*wrth gwrs* dyw e ddim yn weithio! wyt ti'n *hollol* dwp?)
+%<*verb>
+% \fi
+\begin{verbatim}
+	updmap-sys --enable Map=yvt.map
+	updmap-sys --enable Map=yv1.map
+	updmap-sys --enable Map=yv2.map
+	updmap-sys --enable Map=yv3.map
+	updmap-sys --enable Map=yvo.map
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+%
+% If you installed the package in your personal tree, you \emph{may} prefer\fnupdmap:
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+	updmap --enable Map=yvt.map
+	updmap --enable Map=yv1.map
+	updmap --enable Map=yv2.map
+	updmap --enable Map=yv3.map
+	updmap --enable Map=yvo.map
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% Either way, \verb|updmap| will output a good deal of information after each incantation.
+% This is normal.
+% Just check that it does not end with an error and that it found the new map file.
+% 
+% \subsubsection{Method 2: \TeX~Live 2008 (and probably earlier)}
+% 
+% If you installed the package system-wide, use \verb|updmap-sys --edit|.
+% 
+% If you installed into your personal tree, you \emph{may} prefer to use	\verb|updmap --edit|\fnupdmap.
+% 
+% Either way, a configuration file will be opened which you can edit.
+% Move to the end of the file and add the following line:
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+	# Maps for using PS version of VenturisADF fonts
+	Map yvt.map
+	Map yv2.map
+	Map yv1.map
+	Map yv3.map
+	Map yvo.map
+	# end maps for VenturisADF
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% When you are done, save the file.
+% \verb|updmap| or \verb|updmap-sys| will produce a great deal of output if all is well. 
+% Just check that it does not end with an error and that \path{XYZ.map} is found.
+% 
+% \subsubsection{Method 2: \TeX~Live 2009 (and possibly later)}
+% 
+% If you installed the package system-wide, edit or or create \path{TEXMFLOCAL/web2c/updmap-local.cfg} and add the following line to the end of the file:
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+	# Maps for using PS version of VenturisADF fonts
+	Map yvt.map
+	Map yv2.map
+	Map yv1.map
+	Map yv3.map
+	Map yvo.map
+	# end maps for VenturisADF
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% Save the file and tell \verb|tlmgr| to merge in your addition using the command:
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+  tlmgr generate updmap
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% \verb|tlmgr| will then tell you that you need to ensure the changes are propagated correctly by calling \verb|updmap-sys|. 
+% This should produce a great deal of output.
+% Check that it finds the new map file and does not end with an error.
+% 
+% If you installed into your personal tree, you \emph{may} prefer to use \verb|updmap --edit| as described above for \TeX~Live 2008\fnupdmap.
+% 
+% \subsubsection{Method 3: Current/Recent \TeX~Live}
+% 
+% If you installed the package system-wide, tell \cs{updmap} to enable the map file:
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+	updmap --sys --enable Map=yvt.map
+	updmap --sys --enable Map=yv1.map
+	updmap --sys --enable Map=yv2.map
+	updmap --sys --enable Map=yv3.map
+	updmap --sys --enable Map=yvo.map
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% This should produce a great deal of output.
+% Check that it finds the new map file and does not end with an error.
+% 
+% If you installed into your personal tree, you \emph{could} use \verb|updmap --user| in place of \verb|updmap --sys| as described above for \TeX~Live 2008, but this is \textbf{not} recommended\fnupdmap.
+% 
+% To test your installation and that the package works on your system, latex this file (\path{venturisadf.tex}).
+% The console output and/or log should tell you whether any fonts were not found. 
+% If you are careful not to overwrite it, you may also compare your output with \path{venturisadf.pdf}.%
+% 
+% 
+% \MaybeStop{%
+% \PrintChanges
+% \PrintIndex
+% }
+% 
+% \section{Implementation}
+%
+% You do not need to read the documents referenced in this section in order to install or use the fonts.
+%
+%
+% Note that creating the font files, as opposed to just the package and documentation files, \emph{requires} \texttt{l3build} and a set of custom \texttt{lua} scripts available on \texttt{codeberg}.
+% More specifically, if you want to build the font definition files (\texttt{.fd}) yourself, you \emph{must} use \texttt{l3build fnttarg} and this requires files available from the code repository, but not included in this package.
+%
+% The reason for this is that \lpack{fontinst} provides no way\footnote{Or no way I've yet discovered.} to enable variable scaling.
+% While it is entirely possible to scale a font by any factor you please, it is not, as far as I can tell, possible to enable scaling by any factor a user later pleases.
+% In particular, while it is possible to define shapes and families to use a variable factor, it is not possible to write a definition of that factor into the font definition file, which is the way variable scaling is usually configured.
+% 
+% In order to enable this functionality, \texttt{lua} is used to inject the relevant code into the \texttt{.fd} files after \lpack{fontinst} has generated them.
+% If you simply process the relevant \TeX{} files by hand, you will create broken definition files, since the code produced by \lpack{fontinst} assumes the relevant lines have been injected.
+%
+%
+% \subsection{Packages}
+%
+% Three \LaTeX{} packages:
+% \begin{itemize}
+%   \item \verb|venturis.sty|
+%   \item \verb|venturis2.sty|
+%   \item \verb|venturisold.sty|
+% \end{itemize}
+% 
+% The remaining files are not used directly, but are required to generate the files which allow \TeX{} and \LaTeX{} to use the fonts.
+% The sources use \verb|fontinst| as explained in the (sparse) comments.
+% While you can install these files into a \TeX{} tree, they are not required for typesetting.
+% 
+% \subsection{Driver}
+%
+% These files do all the initial setup of the fonts.
+% They organise the fonts into families, define shapes and reencode as required.
+% \begin{itemize}
+%   \item \verb|yvt-drv.tex|
+%   \item \verb|yv1-drv.tex|
+%   \item \verb|yv2-drv.tex|
+%   \item \verb|yv3-drv.tex|
+%   \item \verb|yvo-drv.tex|
+% \end{itemize}
+%
+% \subsection{Maps}
+% 
+% These files are compiled to produce the map file fragments \verb|updmap| needs to install the fonts.
+% They use files recorded during compilation of the drivers.
+% \begin{itemize}
+%   \item \verb|yvt-map.tex|
+%   \item \verb|yv1-map.tex|
+%   \item \verb|yv2-map.tex|
+%   \item \verb|yv3-map.tex|
+%   \item \verb|yvo-map.tex|
+% \end{itemize}
+% 
+% \subsection{Encodings (output)}
+% These files define variant T1 and TS1 font encodings.
+% Where required, the corresponding \verb|.enc| is also included in the package.
+% \begin{itemize}
+%   \item \verb|t1-venturis.etx| 
+%   \item \verb|t1j-venturis.etx|
+%   \item \verb|t1-venturisold.etx|
+%   \item \verb|t1-venturisold-longs.etx|
+% \end{itemize}
+%
+% In addition to these encodings, we use encoding files supplied by \verb|fontinst| and some custom files not included in this package's \verb|dtx| as they are not specific to MODULE-TC.
+% They are, however, part of the package:
+% \begin{itemize}
+%   \item \verb|lining.etx|
+%   \item \verb|oldstyle.etx|
+%   \item \verb|t1-dotalt-f_f.etx| (and \verb|t1-dotalt-f_f.enc|)
+%   \item \verb|t1-f_f.etx| (and \verb|t1-f_f.enc|)
+%   \item \verb|t1j-f_f.etx|
+%   \item \verb|ts1-euro.etx| (and \verb|ts1-euro.enc|)
+%   \item \verb|ucdotalt.etx|
+% \end{itemize}
+% The \verb|etx| files are not used directly by \LaTeX{} or \TeX.
+% Where needed, they are processed to produce \verb|enc| files.
+% In some cases, however, they are not themselves standalone encodings.
+% Instead, they change how some other encoding is interpreted.
+%
+% \subsection{MTX}
+% \verb|mtx| files are used to build ‘fake’ glyphs where these are missing from the original fonts.
+% We do not fake small-caps or bold, but only glyphs which can be constructed without altering the original design.
+% \begin{itemize}
+%   \item \file{resetalt.mtx}
+% \end{itemize}
+%
+% In addition to this file, we use \verb|mtx| files supplied by \verb|fontinst|.
+%
+%
+% \iffalse
+%<*list>
+VENTURIS COLLECTION LIST V1.005 (July 2010)
+
+Number of fonts: 69
+
+VENTURIS NORMAL
+VenturisADF-Regular: yvtr8a (pfb, pfm, afm), VenturisADF-Regular.otf 
+VenturisADF-Italic: yvtri8a (pfb, pfm, afm), VenturisADF-Italic.otf
+VenturisADF-Bold: yvtb8a (pfb, pfm, afm), VenturisADF-Bold.otf
+VenturisADF-BoldItalic: yvtbi8a (pfb, pfm, afm), VenturisADF-BoldItalic.otf
+VenturisADFHeavy: yvth8a (pfb, pfm, afm), VenturisADFHeavy.otf
+VenturisADFHeavy-Italic: yvthi8a (pfb, pfm, afm), VenturisADFHeavy-Italic.otf
+
+VENTURIS CONDENSED
+VenturisADFCd-Regular: yvtr8ac (pfb, pfm, afm), VenturisADFCd-Regular.otf
+VenturisADFCd-Italic: yvtri8ac (pfb, pfm, afm), VenturisADFCd-Italic.otf
+VenturisADFCd-Bold: yvtb8ac (pfb, pfm, afm), VenturisADFCd-Bold.otf
+VenturisADFCd-BoldItalic: yvtbi8ac (pfb, pfm, afm), VenturisADFCd-BoldItalic.otf
+
+VENTURIS STYLE
+VenturisADFStyle-Regular: yvtrc8a (pfb, pfm, afm), VenturisADFStyle-Regular.otf 
+VenturisADFStyle-Italic: yvtrci8a (pfb, pfm, afm), VenturisADFStyle-Italic.otf
+VenturisADFStyle-Bold: yvtbc8a (pfb, pfm, afm), VenturisADFStyle-Bold.otf
+VenturisADFStyle-BoldItalic: yvtbci8a (pfb, pfm, afm), VenturisADFStyle-BoldItalic.otf
+
+VENTURIS CONDENSED STYLE
+VenturisADFCdStyle-Regular: yvtrc8ac (pfb, pfm, afm), VenturisADFCdStyle-Regular.otf 
+VenturisADFCdStyle-Italic: yvtrci8ac (pfb, pfm, afm), VenturisADFCdStyle-Italic.otf
+VenturisADFCdStyle-Bold: yvtbc8ac (pfb, pfm, afm), VenturisADFCdStyle-Bold.otf
+VenturisADFCdStyle-BoldItalic: yvtbci8ac (pfb, pfm, afm), VenturisADFCdStyle-BoldItalic.otf
+_______________________________________________________
+VENTURIS No2
+VenturisADFNo2-Regular: yv2r8a (pfb, pfm, afm), VenturisADFNo2-Regular.otf
+VenturisADFNo2-Italic: yv2ri8a (pfb, pfm, afm), VenturisADFNo2-Italic.otf
+VenturisADFNo2-Bold: yv2b8a (pfb, pfm, afm), VenturisADFNo2-Bold.otf
+VenturisADFNo2-BoldItalic: yv2bi8a (pfb, pfm, afm), VenturisADFNo2-BoldItalic.otf
+
+VENTURIS No2 CONDENSED
+VenturisADFNo2Cd-Regular: yv2r8ac (pfb, pfm, afm), VenturisADFNo2Cd-Regular.otf
+VenturisADFNo2Cd-Italic: yv2ri8ac (pfb, pfm, afm), VenturisADFNo2Cd-Italic.otf 
+VenturisADFNo2Cd-Bold: yv2b8ac (pfb, pfm, afm), VenturisADFNo2Cd-Bold.otf
+VenturisADFNo2Cd-BoldItalic: yv2bi8ac (pfb, pfm, afm), VenturisADFNo2Cd-BoldItalic.otf
+
+VENTURIS No2 MEDIUM
+VenturisADFNo2Med-Regular: yv2m8a (pfb, pfm, afm), VenturisADFNo2Med-Regular.otf
+VenturisADFNo2Med-Italic: yv2mi8a (pfb, pfm, afm), VenturisADFNo2Med-Italic.otf
+VenturisADFNo2Med-Bold: yv2x8a (pfb, pfm, afm), VenturisADFNo2Med-Bold.otf
+VenturisADFNo2Med-BoldItalic: yv2xi8a (pfb, pfm, afm), VenturisADFNo2Med-BoldItalic.otf
+________________________________________________________
+VENTURIS SANS
+VenturisSansADF-Regular: yv1r8a (pfb, pfm, afm), VenturisSansADF-Regular.otf
+VenturisSansADF-Italic: yv1ri8a (pfb, pfm, afm), VenturisSansADF-Italic.otf
+VenturisSansADF-Bold: yv1b8a (pfb, pfm, afm), VenturisSansADF-Bold.otf
+VenturisSansADF-BoldItalic: yv1bi8a (pfb, pfm, afm), VenturisSansADF-BoldItalic.otf
+VenturisSansADF-Heavy: yv1h8a (pfb, pfm, afm), VenturisSansADF-Heavy.otf 
+VenturisSansADF-HeavyOblique: yv1ho8a (pfb, pfm, afm), VenturisSansADF-HeavyOblique.otf
+
+VENTURIS SANS CONDENSED
+VenturisSansADFCd-Regular: yv1r8ac (pfb, pfm, afm), VenturisSansADFCd-Regular.otf
+VenturisSansADFCd-Italic: yv1ri8ac (pfb, pfm, afm), VenturisSansADFCd-Italic.otf
+VenturisSansADFCd-Bold: yv1b8ac (pfb, pfm, afm), VenturisSansADFCd-Bold.otf
+VenturisSansADFCd-BoldItalic: yv1bi8ac (pfb, pfm, afm), VenturisSansADFCd-BoldItalic.otf
+
+VENTURIS SANS EXTENDED
+VenturisSansADFEx-Regular: yv1r8ax (pfb, pfm, afm), VenturisSansADFEx-Regular.otf
+VenturisSansADFEx-Italic: yv1ri8ax (pfb, pfm, afm), VenturisSansADFEx-Italic.otf
+VenturisSansADFEx-Bold: yv1b8ax (pfb, pfm, afm), VenturisSansADFEx-Bold.otf
+VenturisSansADFEx-BoldItalic: yv1bi8ax (pfb, pfm, afm), VenturisSansADFEx-BoldItalic.otf
+
+VENTURIS SANS LIGHT
+VenturisSansADFLight-Regular: yv1l8a (pfb, pfm, afm), VenturisSansADFLight-Regular.otf
+VenturisSansADFLight-Italic: yv1li8a (pfb, pfm, afm), VenturisSansADFLight-Italic.otf
+VenturisSansADFLight-Bold: yv1d8a (pfb, pfm, afm), VenturisSansADFLight-Bold.otf
+VenturisSansADFLight-BoldItalic: yv1di8a (pfb, pfm, afm), VenturisSansADFLight-BoldItalic.otf
+__________________________________________________________
+VENTURIS SANS No2
+VenturisSansADFNo2-Regular: yv3r8a (pfb, pfm, afm), VenturisSansADFNo2-Regular.otf
+VenturisSansADFNo2-Italic: yv3ri8a (pfb, pfm, afm), VenturisSansADFNo2-Italic.otf
+VenturisSansADFNo2-Bold: yv3b8a (pfb, pfm, afm), VenturisSansADFNo2-Bold.otf
+VenturisSansADFNo2-BoldItalic: yv3bi8a (pfb, pfm, afm), VenturisSansADFNo2-BoldItalic.otf
+
+VENTURIS SANS No2 CONDENSED
+VenturisSansADFNo2Cd-Regular: yv3r8ac (pfb, pfm, afm), VenturisSansADFNo2Cd-Regular.otf
+VenturisSansADFNo2Cd-Italic: yv3ri8ac (pfb, pfm, afm), VenturisSansADFNo2Cd-Italic.otf
+VenturisSansADFNo2Cd-Bold: yv3b8ac (pfb, pfm, afm), VenturisSansADFNo2Cd-Bold.otf
+VenturisSansADFNo2Cd-BoldItalic: yv3bi8ac (pfb, pfm, afm), VenturisSansADFNo2Cd-BoldItalic.otf
+
+VENTURIS SANS No2 EXTENDED
+VenturisSansADFNo2Ex-Regular: yv3r8ax (pfb, pfm, afm), VenturisSansADFNo2Ex-Regular.otf
+VenturisSansADFNo2Ex-Italic: yv3ri8ax (pfb, pfm, afm), VenturisSansADFNo2Ex-Italic.otf
+VenturisSansADFNo2Ex-Bold: yv3b8ax (pfb, pfm, afm), VenturisSansADFNo2Ex-Bold.otf
+VenturisSansADFNo2Ex-BoldItalic: yv3bi8ax (pfb, pfm, afm), VenturisSansADFNo2Ex-BoldItalic.otf
+__________________________________________________________
+VENTURIS TITLING
+VenturisADFGothTitling: yvodd8a (pfb, pfm, afm), VenturisADFGothTitling.otf
+VenturisADFTitlingNo1: yv1dd8au (pfb, pfm, afm), VenturisADFTitlingNo1.otf
+VenturisADFTitlingNo2: yvtbd8ac (pfb, pfm, afm), VenturisADFTitlingNo2.otf
+VenturisADFTitlingNo3: yv1bd8a (pfb, pfm, afm), VenturisADFTitlingNo3.otf
+VenturisADFTitlingNo4: yvtrdl8a (pfb, pfm, afm), VenturisADFTitlingNo4.otf
+___________________________________________________________
+VENTURIS OLD (test version)
+VenturisOldADF-Regular: yvor8a (pfb, pfm, afm), VenturisOldADF-Regular.otf
+VenturisOldADF-Italic: yvori8a (pfb, pfm, afm), VenturisOldADF-Italic.otf 
+VenturisOldADF-Bold: yvob8a (pfb, pfm, afm), VenturisOldADF-Bold.otf
+VenturisOldADF-BoldItalic: yvobi8a (pfb, pfm, afm), VenturisOldADF-BoldItalic.otf
+
+%</list>
+% \fi
+%
+%
+%\Finale
+%^^A vim: tw=0:

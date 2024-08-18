@@ -1,0 +1,203 @@
+%% $Id: venturisadf.ins 10239 2024-08-17 02:39:09Z cfrees $
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% venturisadf.ins
+%% Additions and changes Copyright (C) 2008-2024 Clea F. Rees.
+%% Code from skeleton.ins Copyright (C) 2015-2024 Scott Pakin (see below).
+%%
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%   https://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of LaTeX
+%% version 2005/12/01 or later.
+%%
+%% This work has the LPPL maintenance status `maintained'.
+%%
+%% The Current Maintainer of this work is Clea F. Rees.
+%%
+%% This work consists of all files listed in manifest.txt.
+%%
+%% The file venturisadf.ins is a derived work under the terms of the
+%% LPPL. It is based on version 2.4 of skeleton.ins which is part of 
+%% dtxtut by Scott Pakin. A copy of dtxtut, including the 
+%% unmodified version of skeleton.ins is available from
+%% https://www.ctan.org/pkg/dtxtut and released under the LPPL.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input docstrip.tex
+\keepsilent
+
+% \usedir{tex/latex/venturisadf}
+
+\declarepreamble\safonol
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Copyright (C) 2008-2024 Clea F. Rees.
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either version 1.3
+of this license or (at your option) any later version.
+The latest version of this license is in
+  https://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of LaTeX
+version 2005/12/01 or later.
+
+This work has the LPPL maintenance status `maintained'.
+
+The Current Maintainer of this work is Clea F. Rees.
+
+This file may only be distributed together with a copy of the package
+venturisadf. You may however distribute the package venturisadf without
+such generated files.
+
+This work consists of all files listed in manifest.txt.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\endpreamble
+
+\newcommand* \baseFileName{t1.etx}
+\newcommand* \encName{T1}
+\newcommand* \targFontName{fonts in the Venturis ADF collection}
+\newcommand* \preChanges{%
+  - The commentary in the original is deleted in this version. For 
+  information about the \encName{} etc., typeset the original \baseFileName{} 
+  included with fontinst.
+  - Slots are altered to accommodate characters which are named 
+  differently. For example, this encoding uses "endash" and "emdash" 
+  whereas \baseFileName{} called for "rangedash" and "punctdash".
+  - The original notices at the top of that file concerning authors,
+  maintenance etc. are replaced by this notice.
+  - The file is renamed.
+  - The encoding name is modified.
+  - The encoding has been modified for use with \targFontName.}
+\newcommand* \targType{The encoding }
+
+\declarepreamble\derfontinst
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Additions and changes Copyright (C) 2008-2024 Clea F. Rees.
+Code from t1.etx Copyright 2002 Alan Jeffrey and Sebastian 
+Rahtz and Ulrik Vieth and Lars Hellström (see below)
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either version 1.3
+of this license or (at your option) any later version.
+The latest version of this license is in
+  https://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of LaTeX
+version 2005/12/01 or later.
+
+This work has the LPPL maintenance status `maintained'.
+
+The Current Maintainer of this work is Clea F. Rees.
+
+This work consists of all files listed in manifest.txt.
+
+\targType\outFileName is a derived work under the terms of the 
+LPPL. The original file, \baseFileName, is supplied with fontinst. A copy 
+of fontinst including an unmodified copy of \baseFileName is available from
+https://tug.ctan.org/tex-archive/fonts/utilities/fontinst.
+The main modifications made to this file are as follows:
+\preChanges
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\endpreamble
+
+\declarepreamble\rhannu
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Copyright (C) 2008-2024 Hirwen Harendal and Clea F. Rees
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either version 1.3
+of this license or (at your option) any later version.
+The latest version of this license is in
+  https://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of LaTeX
+version 2005/12/01 or later.
+
+This work has the LPPL maintenance status `maintained'.
+
+The Current Maintainer of this work is Clea F. Rees.
+
+This work consists of all files listed in manifest.txt.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Note that the above licence notice applies to this file.
+It does NOT apply to the files listed therein. 
+See the README.md and LICENSE-utopia.txt.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\endpreamble
+
+\askonceonly
+
+\usepreamble\safonol
+
+\generate{%
+  % STY
+  \file{venturis.sty}{\from{venturis.dtx}{sty}}
+  \file{venturis2.sty}{\from{venturis2.dtx}{sty}}
+  \file{venturisold.sty}{\from{venturisold.dtx}{sty}}
+%
+  % DRV/MAP
+  % venturis
+  \file{yvt-drv.tex}{\from{venturis.dtx}{drv}}
+  \file{yvt-map.tex}{\from{venturis.dtx}{map}}
+%
+  % venturis2
+  \file{yv2-drv.tex}{\from{venturis2.dtx}{drv}}
+  \file{yv2-map.tex}{\from{venturis2.dtx}{map}}
+%
+  % venturissans
+  \file{yv1-drv.tex}{\from{venturissans.dtx}{drv}}
+  \file{yv1-map.tex}{\from{venturissans.dtx}{map}}
+%
+  % venturissans2
+  \file{yv3-drv.tex}{\from{venturissans2.dtx}{drv}}
+  \file{yv3-map.tex}{\from{venturissans2.dtx}{map}}
+%
+  % venturisold
+  \file{yvo-drv.tex}{\from{venturisold.dtx}{drv}}
+  \file{yvo-map.tex}{\from{venturisold.dtx}{map}}
+%
+  \usepreamble\rhannu
+  \file{LIST-Venturis.txt}{\from{venturisadf.dtx}{list}}
+%
+  % ETX
+  \file{t1j-venturis.etx}{\from{venturisadf-build.dtx}{t1j-venturis}}
+%
+  \usepreamble\derfontinst
+  % venturis/venturissans/venturis2/venturissans2
+  \def\targFontName{VENTURIS END}
+  \file{t1-venturis.etx}{\from{venturisadf-build.dtx}{t1-venturis}}
+  % venturisold
+  \def\targFontName{VENTURIS OLD}
+  \file{t1-venturisold.etx}{\from{venturisadf-build.dtx}{t1-venturisold}}
+  \def\targFontName{VENTURIS OLD LONGS}
+  \file{t1-venturisold-longs.etx}{\from{venturisadf-build.dtx}{t1-venturisold-longs}}
+%
+  % MTX
+  \usepreamble\safonol
+  \file{resetalt.mtx}{\from{venturisadf-build.dtx}{mtx}}
+}
+
+\obeyspaces
+\Msg{*************************************************************}
+\Msg{*                                                           *}
+\Msg{* To finish the installation you have to move the following *}
+\Msg{* files into a directory searched by TeX:                   *}
+\Msg{*                                                           *}
+\Msg{*     *.sty                                                 *}
+\Msg{*     *.fd                                                  *}
+\Msg{*     *.map                                                 *}
+\Msg{*     *.vf                                                  *}
+\Msg{*     *.pfb                                                 *}
+\Msg{*     *.tfm                                                 *}
+\Msg{*     *.enc                                                 *}
+\Msg{*                                                           *}
+\Msg{* update the filename database, if applicable, and install  *}
+\Msg{* the map file(s) with updmap-sys or similar.               *}
+\Msg{*                                                           *}
+\Msg{* To produce the documentation run the file venturisadf.dtx *}
+\Msg{* through LaTeX.                                            *}
+\Msg{*                                                           *}
+\Msg{* Happy TeXing!                                             *}
+\Msg{*                                                           *}
+\Msg{*************************************************************}
+
+\endbatchfile

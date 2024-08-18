@@ -1,4 +1,4 @@
--- $Id: build.lua 10234 2024-08-13 01:16:07Z cfrees $
+-- $Id: build.lua 10237 2024-08-16 04:16:49Z cfrees $
 -- Build configuration for romandeadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -14,7 +14,7 @@ os.setenv ("TEXMFHOME", ".")
 os.setenv ("TEXMFLOCAL", ".")
 os.setenv ("TEXMFARCH", ".")
 --
-ctanpkg = "romande"
+ctanpkg = "romandeadf"
 maindir = "../.."
 module = "romande"
 vendor = "arkandis"
@@ -29,10 +29,10 @@ uploadconfig = {
   -- announcement (don't include here?)
 	author     = "Hirwen Harendal; Clea F. Rees",
   -- email (don't include here!)
-	ctanPath   = "fonts/romande",
+	ctanPath   = "fonts/romandeadf",
 	license    = {"lppl1.3c","GPL 2 with font exception"},
 	pkg        = ctanpkg,
-	summary    = "Support for LibrisADF on 8-bit engines",
+	summary    = "Support for RomandeADF on 8-bit engines",
   uploader   = "Clea F. Rees",
 	version    = "v2.1",
   -- optional --
