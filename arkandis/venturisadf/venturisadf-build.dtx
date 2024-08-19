@@ -31,13 +31,13 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 %^^A \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: venturisadf-build.dtx 10244 2024-08-17 18:01:07Z cfrees $}[v0.0 \revinfo][\filebase DTX: Venturis ADF encodings for 8-bit engines]
-\DefineFileInfoSVN[venturisadf@build]
+\ProvidesFileSVN{$Id: venturisadf-build.dtx 10251 2024-08-19 05:49:24Z cfrees $}[v0.0 \revinfo][\filebase DTX: Venturis ADF encodings for 8-bit engines]
+\DefineFileInfoSVN[venturisadfbuild]
 \documentclass[11pt,british]{ltxdoc}
 % l3doc loads fancyvrb
 % fancyvrb overwrites svn-prov's macros without warning
 % restore \fileversion \filerev in case we're using l3doc
-\GetFileInfoSVN{venturisadf@build}
+\GetFileInfoSVN{venturisadfbuild}
 \EnableCrossrefs
 \CodelineIndex
 \RecordChanges
@@ -106,16 +106,6 @@
   urlcolor={blueberry}%
 }
 \usepackage{fancyref}
-\title{\filebase{}: Encodings}
-\author{Clea F. Rees\thanks{%
-    Bug tracker:
-  \href{https://codeberg.org/cfr/nfssext/issues}{\url{codeberg.org/cfr/nfssext/issues}}
-  \textbar{} Code:
-  \href{https://codeberg.org/cfr/nfssext}{\url{codeberg.org/cfr/nfssext}}
-  \textbar{} Mirror:
-  \href{https://github.com/cfr42/nfssext}{\url{github.com/cfr42/nfssext}}% 
-}}
-\date{\filetoday}
 \pagestyle{fancy}
 \fancyhf[rh]{\itshape\filetoday}
 \fancyhf[lh]{\itshape\filebase~\fileversion{}: Encodings}
@@ -141,6 +131,19 @@
 \end{document}
 %</driver>
 % \fi
+% \GetFileInfoSVN{venturisadfbuild}
+% 
+% \title{\pkgname{}: Encodings}
+% \author{Clea F. Rees\thanks{%
+%     Bug tracker:
+%   \href{https://codeberg.org/cfr/nfssext/issues}{\url{codeberg.org/cfr/nfssext/issues}}
+%   \textbar{} Code:
+%   \href{https://codeberg.org/cfr/nfssext}{\url{codeberg.org/cfr/nfssext}}
+%   \textbar{} Mirror:
+%   \href{https://github.com/cfr42/nfssext}{\url{github.com/cfr42/nfssext}}% 
+% }}
+% \date{\filetoday}
+%
 % \maketitle\thispagestyle{empty}
 % \pdfinfo{%
 % 	/Creator		(TeX)
@@ -152,16 +155,15 @@
 % 	(TeX,LaTeX,font,fonts,tex,latex,VenturisADF,venturis,venturis2,venturissans,venturissans2,venturisold,venturisadf,Venturis ADF,ADF,adf,Arkandis,Digital,Foundry,arkandis,digital,foundry,Hirwen,Harendal,Clea,Rees,encoding,encodings,etx)}
 % \pdfcatalog{%
 % 	/URL				()
-% 	/PageMode	/UseOutlines}	^^A other values: /UseNone, /UseOutlines, /UseThumbs, /FullScreen
-% 	^^A[openaction <actionspec>]
+% 	/PageMode	/UseOutlines}
 % \setlength{\parindent}{0pt}
 % \setlength{\parskip}{0.5em}
 %	
-% \newcommand*{\adf}{\textsc{adf}}
-% \newcommand*{\lpack}[1]{\textsf{#1}}
-% \newcommand*{\fgroup}[1]{\textsf{#1}}
-% \newcommand*{\fname}[1]{\textsf{#1}}
-% \newcommand*{\file}[1]{\texttt{#1}}
+% \providecommand*{\adf}{\textsc{adf}}
+% \providecommand*{\lpack}[1]{\textsf{#1}}
+% \providecommand*{\fgroup}[1]{\textsf{#1}}
+% \providecommand*{\fname}[1]{\textsf{#1}}
+% \providecommand*{\file}[1]{\texttt{#1}}
 %
 % \begin{abstract}
 %   This file contains listings for the encodings used by \lpack{venturisadf}.
@@ -174,12 +176,15 @@
 % \PrintIndex
 % }
 % 
-%
-%
-%
 % 
-% \section{Encodings (output)}
+% \section{Implementation}
 % 
+%
+% \subsection{ETX}\label{subsec:etx}
+%
+% These files define variant T1 and TS1 font encodings.
+% They are included in \file{\pkgname-build.dtx}, itemized in \file{pkgname.pdf} and listed in \file{\pkgname-build.pdf}.
+%
 % \begin{itemize}
 %   \item \file{t1-venturis.etx} 
 %   \item \file{t1j-venturis.etx}
@@ -187,6 +192,13 @@
 %   \item \file{t1-venturisold-longs.etx}
 % \end{itemize}
 %
+%
+% In addition to these encodings, we use encoding files supplied by \verb|fontinst| and some custom files not included in this package's \verb|dtx| as they are not specific to \lpack{venturisadf}.
+% They are, however, part of the package and are itemized in \file{pkgname.pdf}.
+%
+% We also use \verb|mtx| files, as explained in \fref{subsec:mtx}.
+%
+% \subsubsection{t1-venturis}
 %
 % \iffalse
 %<*t1-venturis>
@@ -1442,6 +1454,9 @@
 % \fi
 %
 %
+% \subsubsection{t1j-venturis}
+%
+%
 % \iffalse
 %<*t1j-venturis>
 % \fi
@@ -1459,6 +1474,9 @@
 % \iffalse
 %</t1j-venturis>
 % \fi
+%
+%
+% \subsubsection{t1-venturisold}
 %
 %
 % \iffalse
@@ -2749,6 +2767,9 @@
 % \fi
 %
 %
+% \subsubsection{t1-venturisold-longs}
+%
+%
 % \iffalse
 %<*t1-venturisold-longs>
 % \fi
@@ -4037,13 +4058,34 @@
 %</t1-venturisold-longs>
 % \fi
 %
-% \subsection{MTX}
+% \subsection{Supplementary (raw)}
+% 
+% The initial encoding for Venturis ADF is straightforward and no supplementary encoding is needed to pick up misnamed or additional glyphs.
+% Instead, we just let our encodings do double duty for input/raw as well as output.
+%
+% Note that \verb|etx| files may specify raw and/or output encodings.
+% Those which are specific to \lpack{venturisadf} are included in \file{venturisadf-build.dtx}.
+% Those which are not are included as separate sources unless provided by \verb|fontinst|.
+% 
+%
+% \subsection{Reglyph}
+%
+% No reglyphing is required for the Venturis ADF collection --- yay!
+%
+% \subsection{MTX}\label{subsec:mtx}
+%
 % \verb|mtx| files are used to build ‘fake’ glyphs where these are missing from the original fonts.
 % We do not fake small-caps or bold, but only glyphs which can be constructed without altering the original design.
-% \begin{itemize}
-%   \item \file{resetalt.mtx}
-% \end{itemize}
+% They are also used to ‘reset’ or adjust glyphs and kerning pairs, for example.
 %
+% \lpack{venturis} is the only subset of fonts supported by \lpack{\pkgname} to require a custom \textt{.mtx} file, \file{resetalt.mtx}.
+%
+%
+% In addition to this file, we use \verb|mtx| files supplied by \verb|fontinst| and some custom files not included in this package's \verb|dtx| as they are not specific to \lpack{venturisadf}.
+% The latter are, however, part of the package and are itemized in \file{venturisadf-build.pdf}.
+%
+% \subsubsection{resetalt.mtx}
+% 
 % \iffalse
 %<*mtx>
 % \fi
@@ -4085,4 +4127,4 @@
 % \fi
 %
 %\Finale
-%^^A vim: tw=80:
+%^^A vim: tw=0:

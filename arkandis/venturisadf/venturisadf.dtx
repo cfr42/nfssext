@@ -31,8 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: venturisadf.dtx 10248 2024-08-18 05:15:15Z cfrees $}[v0.0
-\revinfo][\filebase DTX: Venturis ADF collection for 8-bit engines]
+\ProvidesFileSVN{$Id: venturisadf.dtx 10251 2024-08-19 05:49:24Z cfrees $}[v0.0 \revinfo][\filebase DTX: Venturis ADF collection for 8-bit engines]
 \DefineFileInfoSVN[venturisadf]
 \documentclass[11pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -42,8 +41,8 @@
 \EnableCrossrefs
 \CodelineIndex
 \RecordChanges
-% \OnlyDescription
-\DoNotIndex{\verb,\ProvidesPackageSVN,\NeedsTeXFormat,\ProcessKeyOptions,\revinfo,\filebase,\filename,\filedate,\RequirePackage,\usepackage,\DefineFileInfoSVN,\GetFileInfoSVN,\ProvidesPackageSVN,\documentclass,\MakeAutoQuote,\parindent,\par,\smallskip,\setlength,\bigskip,\maketitle,\title,\author,\date,\ExplSyntaxOn,\ExplSyntaxOff}
+\OnlyDescription
+\DoNotIndex{\verb,\ProvidesPackageSVN,\NeedsTeXFormat,\ProcessKeyOptions,\revinfo,\filebase,\filename,\filedate,\RequirePackage,\usepackage,\DefineFileInfoSVN,\GetFileInfoSVN,\ProvidesPackageSVN,\documentclass,\MakeAutoQuote,\parindent,\par,\smallskip,\setlength,\bigskip,\maketitle,\title,\author,\date,\ExplSyntaxOn,\ExplSyntaxOff,\renewcommand,\def,\gdef,\xdef,\tempf,\tempo,\tempr,\temps,\bye,\relax,\edef}
 \usepackage{babel}
 \pdfmapfile{- yvt.map}
 \pdfmapfile{- yv1.map}
@@ -103,7 +102,6 @@
 \usepackage{fixfoot}
 \usepackage{enumitem}
 \usepackage[referable]{threeparttablex}
-\usepackage{enumitem}
 \makeatletter
 \def\TPT@measurement{% ateb David Carlisle: https://tex.stackexchange.com/a/370691/
   \ifdim\wd\@tempboxb<\TPTminimum
@@ -190,6 +188,7 @@
     \clist_use:nn { #1 } { \textbar }
   }
 } 
+\cs_new_eq:NN \pkgname \filebase
 \ExplSyntaxOff
 \title{\filebase}
 \author{Clea F. Rees\thanks{%
@@ -223,23 +222,26 @@
 \definecolor{strawberry}{rgb}{1.000,0.000,0.502}
 \definecolor{blueberry}{rgb}{0.000,0.000,1.000}
 \definecolor{moss}{rgb}{0.000,0.502,0.251}
+\newcommand*{\adf}{\textsc{adf}}
+\newcommand*{\lpack}[1]{\textsf{#1}}
+\newcommand*{\fgroup}[1]{\textsf{#1}}
+\newcommand*{\fname}[1]{\textsf{#1}}
+\newcommand*{\file}[1]{\texttt{#1}}
 \begin{document}
   \DocInput{\filename}
 \end{document}
 %</driver>
 % \fi
 %
-% \newcommand*{\adf}{\textsc{adf}}
-% \newcommand*{\lpack}[1]{\textsf{#1}}
-% \newcommand*{\fgroup}[1]{\textsf{#1}}
-% \newcommand*{\fname}[1]{\textsf{#1}}
-% \newcommand*{\file}[1]{\texttt{#1}}
+% \GetFileInfoSVN{venturisadf}
 %
 % \changes{v??}{2008}{First public release.}
-% \changes{v??}{2010/07/06}{Update for VenturisADF PS 1.005.}
+% \changes{VenturisADF PS 1.005}{2010/07/06}{Update for VenturisADF PS 1.005.}
 % \changes{\fileversion}{\filedate}{Belated update for (New) NFSS and revised nfssext-cfr.
 %   Add package options to scale fonts.
-% Try switching to DTX/INS.}
+%   Add aardvarks?
+%   Try switching to DTX/INS.%
+% }
 %
 % 
 % 
@@ -281,6 +283,7 @@
 % 
 % Venturis \adf\ currently includes 69 fonts in six groups.
 % The support package rearranges these into five basic groups and renames them according to the Karl Berry fontname scheme (\fref{tab:coll}.
+% A demonstration of the fonts in each group is provided with both the source, \file{\meta{group name}-example.tex}, and the typeset result, \file{\meta{group name}-example.pdf}, included in the package\footnote{The sources are also included in \file{\pkgname-imp.pdf}.}.
 % 
 % \begin{table}
 % \centering
@@ -288,15 +291,15 @@
 % \begin{tabular}{llll}
 % 	\toprule
 % 	\textbf{Original grouping}		&	\textbf{Original} \textbf{name}	&	\textbf{\TeX\ directory/group}	& \textbf{\TeX\ name}\\\midrule
-% 	Venturis							&	VenturisADF--						&	venturis				&	yvt--\\
-% 	Venturis No2				&	VenturisADFNo2--				&	venturis2			&	yv2--\\
+% 	Venturis							&	VenturisADF--						&	venturis			&	yvt--\\
+% 	Venturis No2				  &	VenturisADFNo2--				&	venturis2			&	yv2--\\
 % 	Venturis Old					&	VenturisOldADF--				&	venturisold		&	yvo--\\
-% 	Venturis Sans				&	VenturisSansADF--				&	venturissans		&	yv1--\\
-% 	Venturis Sans No2		&	VenturisSansADFNo2--		&	venturissans2	&	yv3--\\
-% 	Venturis Titling No1	&	VenturisADFTitlingNo1		&	venturissans		&	yv1dd8au\\
-% 	Venturis Titling No2	&	VenturisADFTitlingNo2		&	venturis				&	yvtbd8ac\\
-% 	Venturis Titling No3	&	VenturisADFTitlingNo3		&	venturissans		&	yv1bd8a\\
-% 	Venturis Titling No4	&	VenturisADFTitlingNo4		& venturis 				&	yvtrdl8a\\
+% 	Venturis Sans				  &	VenturisSansADF--				&	venturissans	&	yv1--\\
+% 	Venturis Sans No2		  &	VenturisSansADFNo2--		&	venturissans2	&	yv3--\\
+% 	Venturis Titling No1	&	VenturisADFTitlingNo1		&	venturissans	&	yv1dd8au\\
+% 	Venturis Titling No2	&	VenturisADFTitlingNo2		&	venturis			&	yvtbd8ac\\
+% 	Venturis Titling No3	&	VenturisADFTitlingNo3		&	venturissans	&	yv1bd8a\\
+% 	Venturis Titling No4	&	VenturisADFTitlingNo4		& venturis 			&	yvtrdl8a\\
 % 	Venturis Goth Titling &	VenturisADFGothTitling	&	venturisold		&	yvodd8a\\
 % \bottomrule
 % \end{tabular}
@@ -1060,94 +1063,6 @@
 % \PrintIndex
 % }
 % 
-% \section{Implementation}
-%
-% You do not need to read the documents referenced in this section in order to install or use the fonts.
-%
-%
-% Note that creating the font files, as opposed to just the package and documentation files, \emph{requires} \texttt{l3build} and a set of custom \texttt{lua} scripts available on \texttt{codeberg}.
-% More specifically, if you want to build the font definition files (\texttt{.fd}) yourself, you \emph{must} use \texttt{l3build fnttarg} and this requires files available from the code repository, but not included in this package.
-%
-% The reason for this is that \lpack{fontinst} provides no way\footnote{Or no way I've yet discovered.} to enable variable scaling.
-% While it is entirely possible to scale a font by any factor you please, it is not, as far as I can tell, possible to enable scaling by any factor a user later pleases.
-% In particular, while it is possible to define shapes and families to use a variable factor, it is not possible to write a definition of that factor into the font definition file, which is the way variable scaling is usually configured.
-% 
-% In order to enable this functionality, \texttt{lua} is used to inject the relevant code into the \texttt{.fd} files after \lpack{fontinst} has generated them.
-% If you simply process the relevant \TeX{} files by hand, you will create broken definition files, since the code produced by \lpack{fontinst} assumes the relevant lines have been injected.
-%
-%
-% \subsection{Packages}
-%
-% Three \LaTeX{} packages:
-% \begin{itemize}
-%   \item \verb|venturis.sty|
-%   \item \verb|venturis2.sty|
-%   \item \verb|venturisold.sty|
-% \end{itemize}
-% 
-% The remaining files are not used directly, but are required to generate the files which allow \TeX{} and \LaTeX{} to use the fonts.
-% The sources use \verb|fontinst| as explained in the (sparse) comments.
-% While you can install these files into a \TeX{} tree, they are not required for typesetting.
-% 
-% \subsection{Driver}
-%
-% These files do all the initial setup of the fonts.
-% They organise the fonts into families, define shapes and reencode as required.
-% \begin{itemize}
-%   \item \verb|yvt-drv.tex|
-%   \item \verb|yv1-drv.tex|
-%   \item \verb|yv2-drv.tex|
-%   \item \verb|yv3-drv.tex|
-%   \item \verb|yvo-drv.tex|
-% \end{itemize}
-%
-% \subsection{Maps}
-% 
-% These files are compiled to produce the map file fragments \verb|updmap| needs to install the fonts.
-% They use files recorded during compilation of the drivers.
-% \begin{itemize}
-%   \item \verb|yvt-map.tex|
-%   \item \verb|yv1-map.tex|
-%   \item \verb|yv2-map.tex|
-%   \item \verb|yv3-map.tex|
-%   \item \verb|yvo-map.tex|
-% \end{itemize}
-% 
-% \subsection{Encodings (output)}
-% These files define variant T1 and TS1 font encodings.
-% Where required, the corresponding \verb|.enc| is also included in the package.
-% \begin{itemize}
-%   \item \verb|t1-venturis.etx| 
-%   \item \verb|t1j-venturis.etx|
-%   \item \verb|t1-venturisold.etx|
-%   \item \verb|t1-venturisold-longs.etx|
-% \end{itemize}
-%
-% In addition to these encodings, we use encoding files supplied by \verb|fontinst| and some custom files not included in this package's \verb|dtx| as they are not specific to MODULE-TC.
-% They are, however, part of the package:
-% \begin{itemize}
-%   \item \verb|lining.etx|
-%   \item \verb|oldstyle.etx|
-%   \item \verb|t1-dotalt-f_f.etx| (and \verb|t1-dotalt-f_f.enc|)
-%   \item \verb|t1-f_f.etx| (and \verb|t1-f_f.enc|)
-%   \item \verb|t1j-f_f.etx|
-%   \item \verb|ts1-euro.etx| (and \verb|ts1-euro.enc|)
-%   \item \verb|ucdotalt.etx|
-% \end{itemize}
-% The \verb|etx| files are not used directly by \LaTeX{} or \TeX.
-% Where needed, they are processed to produce \verb|enc| files.
-% In some cases, however, they are not themselves standalone encodings.
-% Instead, they change how some other encoding is interpreted.
-%
-% \subsection{MTX}
-% \verb|mtx| files are used to build ‘fake’ glyphs where these are missing from the original fonts.
-% We do not fake small-caps or bold, but only glyphs which can be constructed without altering the original design.
-% \begin{itemize}
-%   \item \file{resetalt.mtx}
-% \end{itemize}
-%
-% In addition to this file, we use \verb|mtx| files supplied by \verb|fontinst|.
-%
 %
 % \iffalse
 %<*list>

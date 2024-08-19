@@ -1,0 +1,387 @@
+% \iffalse meta-comment
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% venturisadf-build.dtx
+% Additions and changes Copyright (C) 2008-2024 Clea F. Rees.
+% Code from skeleton.dtx Copyright (C) 2015-2024 Scott Pakin (see below).
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   https://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status `maintained'.
+%
+% The Current Maintainer of this work is Clea F. Rees.
+%
+% This work consists of all files listed in manifest.txt.
+%
+% The file venturisadf-build.dtx is a derived work under the terms of the
+% LPPL. It is based on version 2.4 of skeleton.dtx which is part of 
+% dtxtut by Scott Pakin. A copy of dtxtut, including the 
+% unmodified version of skeleton.dtx is available from
+% https://www.ctan.org/pkg/dtxtut and released under the LPPL.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \fi
+%
+% \iffalse
+%<*driver>
+\RequirePackage{svn-prov}
+% ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
+\def\MyMakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
+\ProvidesFileSVN{$Id: venturisadf-imp.dtx 10251 2024-08-19 05:49:24Z cfrees $}[v0.0 \revinfo][\filebase DTX: Venturis ADF encodings for 8-bit engines]
+\DefineFileInfoSVN[venturisadfimp]
+\documentclass[11pt,british]{ltxdoc}
+% l3doc loads fancyvrb
+% fancyvrb overwrites svn-prov's macros without warning
+% restore \fileversion \filerev in case we're using l3doc
+\GetFileInfoSVN{venturisadfimp}
+\newcommand*\pkgname{venturisadf}
+\EnableCrossrefs
+\CodelineIndex
+\RecordChanges
+\DoNotIndex{\verb,\ProvidesPackageSVN,\NeedsTeXFormat,\ProcessKeyOptions,\revinfo,\filebase,\filename,\filedate,\RequirePackage,\usepackage,\DefineFileInfoSVN,\GetFileInfoSVN,\ProvidesPackageSVN,\documentclass,\MakeAutoQuote,\parindent,\par,\smallskip,\setlength,\bigskip,\maketitle,\title,\author,\date,\ExplSyntaxOn,\ExplSyntaxOff,\renewcommand,\def,\gdef,\xdef,\tempf,\tempo,\tempr,\temps,\bye,\relax,\edef}
+\usepackage{babel}
+\pdfmapfile{- yvt.map}
+\pdfmapfile{- yv1.map}
+\pdfmapfile{- yv2.map}
+\pdfmapfile{- yv3.map}
+\pdfmapfile{- yvo.map}
+\pdfmapfile{+ yvt.map}
+\pdfmapfile{+ yv1.map}
+\pdfmapfile{+ yv2.map}
+\pdfmapfile{+ yv3.map}
+\pdfmapfile{+ yvo.map}
+\usepackage[lf]{venturis}
+\DeclareRobustCommand{\venturistworm}{%
+  \fontencoding{T1}%
+  \fontfamily{yv2}%
+  \selectfont}
+\DeclareRobustCommand{\venturistwosf}{%
+  \fontencoding{T1}%
+  \fontfamily{yv3}%
+  \selectfont}
+\DeclareRobustCommand{\venturisold}{%
+  \fontencoding{T1}%
+  \fontfamily{yvo}%
+  \selectfont}
+\DeclareTextFontCommand{\vtworm}{\venturistworm}
+\DeclareTextFontCommand{\vtwosf}{\venturistwosf}
+\DeclareTextFontCommand{\vo}{\venturisold}
+\makeatletter
+\DeclareRobustCommand{\vostyle}[1][]{%
+  \not@math@alphabet\vostyle\relax
+  \fontfamily{yvod}\selectfont}
+\makeatother
+\DeclareTextFontCommand{\textvo}{\vostyle}
+\DeclareTextFontCommand{\textvol}{\vostyle}
+\DeclareRobustCommand{\lmrmfamily}{%
+  \fontencoding{T1}%
+  \fontfamily{lmr}%
+  \selectfont}
+\DeclareTextFontCommand{\lmrm}{\lmrmfamily}
+\renewcommand{\ttdefault}{lmtt}
+\usepackage{fancyhdr}
+\usepackage{array}
+\usepackage{metalogo}
+	\setlogokern{Te}{-0.065em}% default: -0.1667em
+	\setlogokern{eX}{-0.06em}% default: -0.125em
+	\setlogokern{La}{-0.265em}% default: -0.36em
+	\setlogokern{aT}{-.055em}% default: -0.15em
+%	\setlogokern{X2}{}% default: 0.15em
+	\setlogodrop[TeX]{0.355ex}% default: 0.5ex
+	\setLaTeXa{\scshape a}
+%	\setLaTeXee{<arg>}	
+\usepackage{fixfoot}
+\usepackage{enumitem}
+\usepackage[referable]{threeparttablex}
+\makeatletter
+\def\TPT@measurement{% ateb David Carlisle: https://tex.stackexchange.com/a/370691/
+  \ifdim\wd\@tempboxb<\TPTminimum
+    \hsize \TPTminimum
+  \else
+    \hsize\wd\@tempboxb
+  \fi
+  \xdef\TPT@hsize{\hsize\the\hsize \noexpand\@parboxrestore}\TPT@hsize
+  \ifx\TPT@docapt\@undefined\else
+    \TPT@docapt \vskip.2\baselineskip
+  \fi \par
+  \dimen@\dp\@tempboxb % new
+  \box\@tempboxb
+  \ifvmode \prevdepth\dimen@ \fi% was \z@ not \dimen@
+}
+\renewlist{tablenotes}{enumerate}{1}
+\setlist[tablenotes]{label=\tnote{\alph*},ref=\alph*,itemsep=\z@,topsep=\z@skip,partopsep=\z@skip,parsep=\z@,itemindent=\z@,labelindent=\tabcolsep,labelsep=.2em,leftmargin=*,align=left,before={\unskip\medskip\footnotesize}}
+\makeatother
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{xurl}
+\urlstyle{sf}
+\usepackage{microtype}
+\usepackage[a4paper,headheight=14pt]{geometry}	% use 14pt for 11pt text, 15pt for 12pt text
+\usepackage{csquotes}
+\MakeAutoQuote{‘}{’}
+\MakeAutoQuote*{“}{”}
+\usepackage{caption}
+\DeclareCaptionFont{lf}{\lstyle}
+\captionsetup[table]{labelfont=lf}
+% sicrhau hyperindex=false: llwytho CYN bookmark
+\usepackage{hypdoc}% ateb Ulrike Fischer: https://tex.stackexchange.com/a/695555/
+\usepackage{bookmark}
+\hypersetup{%
+  colorlinks=true,
+  citecolor={moss},
+  extension=pdf,
+  linkcolor={strawberry},
+  linktocpage=true,
+  pdfcreator={TeX},
+  pdfproducer={pdfeTeX},
+  urlcolor={blueberry}%
+}
+\usepackage{cleveref}
+\let\fref\cref
+\NewDocElement[%
+  idxtype=opt.,
+  idxgroup=options,
+  printtype=\textit{opt.},
+]{Opt}{option}
+\NewDocElement[%
+  idxtype=alt.,
+  idxgroup=alternates,
+  printtype=\textit{alt.},
+]{Alt}{alternate}
+\NewDocElement[%
+  idxtype=lig.,
+  idxgroup=ligatures,
+  printtype=\textit{lig.},
+]{Lig}{ligature}
+\NewDocElement[%
+  idxtype=sw.,
+  idxgroup=swashes,
+  printtype=\textit{sw.},
+]{Sw}{swash}
+\NewDocElement[%
+  idxtype=pkg.,
+  idxgroup=packages,
+  printtype=\textit{pkg.},
+]{Pkg}{package}
+\NewDocElement[%
+  printtype=\textdagger,
+  idxtype=,
+  macrolike,
+]{DMacro}{dmacro}
+\NewDocElement[%
+  printtype=\textit{font fam.},
+  idxtype=font fam.,
+  idxgroup=font families,
+]{Fam}{family}
+\NewDocumentCommand \val { m }
+{%
+  {\ttfamily =\,\meta{#1}}%
+}
+\ExplSyntaxOn
+\NewDocumentCommand \vals { m }
+{
+  {
+    \ttfamily = \, 
+    \clist_use:nn { #1 } { \textbar }
+  }
+} 
+\hook_gput_code:nnn { enddocument } { . }
+{
+  \PrintChanges
+  \PrintIndex
+}
+\ExplSyntaxOff
+\pagestyle{fancy}
+\fancyhf[rh]{\itshape\filetoday}
+\fancyhf[lh]{\itshape\filebase~\fileversion{}: Encodings}
+\fancyhf[ch]{}
+\fancyhf[lf]{}
+\fancyhf[rf]{}
+\fancyhf[cf]{\itshape--- \thepage~/~\lastpage{} ---}
+\ExplSyntaxOn
+\hook_gput_code:nnn {shipout/lastpage} {.}
+{
+  \property_record:nn {t:lastpage}{abspage,page,pagenum}
+}
+\cs_new_protected_nopar:Npn \lastpage 
+{
+  \property_ref:nn {t:lastpage}{page}
+}
+\ExplSyntaxOff
+\definecolor{strawberry}{rgb}{1.000,0.000,0.502}
+\definecolor{blueberry}{rgb}{0.000,0.000,1.000}
+\definecolor{moss}{rgb}{0.000,0.502,0.251}
+\newcommand*{\adf}{\textsc{adf}}
+\newcommand*{\lpack}[1]{\textsf{#1}}
+\newcommand*{\fgroup}[1]{\textsf{#1}}
+\newcommand*{\fname}[1]{\textsf{#1}}
+\newcommand*{\file}[1]{\texttt{#1}}
+\let\OrigMakePrivateLetters\MakePrivateLetters
+\begin{document}
+  \DocInput{\filename}
+  \let\MakePrivateLetters\MyMakePrivateLetters
+  \addcontentsline{toc}{section}{venturis}
+  \DocInput{venturis.dtx}
+  \addcontentsline{toc}{section}{venturissans}
+  \DocInput{venturissans.dtx}
+  \addcontentsline{toc}{section}{venturis2}
+  \DocInput{venturis2.dtx}
+  \addcontentsline{toc}{section}{venturissans2}
+  \DocInput{venturissans2.dtx}
+  \addcontentsline{toc}{section}{venturisold}
+  \DocInput{venturisold.dtx}
+  \let\MakePrivateLetters\OrigMakePrivateLetters
+  \addcontentsline{toc}{section}{Font Encodings}
+  \DocInput{\pkgname-build.dtx}
+\end{document}
+%</driver>
+% \fi
+% \GetFileInfoSVN{venturisadfimp}
+%
+% \title{\pkgname{}: Implementation}
+% \author{Clea F. Rees\thanks{%
+%     Bug tracker:
+%   \href{https://codeberg.org/cfr/nfssext/issues}{\url{codeberg.org/cfr/nfssext/issues}}
+%   \textbar{} Code:
+%   \href{https://codeberg.org/cfr/nfssext}{\url{codeberg.org/cfr/nfssext}}
+%   \textbar{} Mirror:
+%   \href{https://github.com/cfr42/nfssext}{\url{github.com/cfr42/nfssext}}% 
+% }}
+% \date{\filetoday}
+% 
+% \maketitle\thispagestyle{empty}
+% \pdfinfo{%
+% 	/Creator		(TeX)
+% 	/Producer		(pdfTeX)
+% 	/Author			(Clea F. Rees)
+% 	/Title			(venturisadf: Implementation)
+% 	/Subject		(TeX)
+% 	/Keywords
+% 	(TeX,LaTeX,font,fonts,tex,latex,VenturisADF,venturis,venturis2,venturissans,venturissans2,venturisold,venturisadf,Venturis ADF,ADF,adf,Arkandis,Digital,Foundry,arkandis,digital,foundry,Hirwen,Harendal,Clea,Rees,encoding,encodings,etx)}
+% \pdfcatalog{%
+% 	/URL				()
+% 	/PageMode	/UseOutlines}
+% \gdef\pdfinfo#1{\relax}
+% \setlength{\parindent}{0pt}
+% \setlength{\parskip}{0.5em}
+%	
+% \begin{abstract}
+%   \noindent
+%   This file contains the implementation of \lpack{venturisadf} with a smidgen of commentary.
+%   For user documentation, usage examples and changes, see \texttt{venturisadf.pdf}.
+%   You do not need to read the implementation or the documents referenced therein in order to install or use the fonts.
+% \end{abstract}
+%	
+%
+% \tableofcontents
+% \let\tableofcontents\relax 
+% 
+% 
+% \MaybeStop{%
+% ^^A \PrintChanges
+% ^^A \PrintIndex
+% }
+% 
+% \section{Introduction}
+%
+% This file (sparsely) documents code for the
+% \begin{itemize}
+%   \item packages';
+%   \item demonstration files;
+%   \item various file used to generate the \TeX{} fonts used by the packages.
+% \end{itemize}
+% 
+% Note that creating the font files, as opposed to just the package and documentation files, \emph{requires} \texttt{l3build} and a set of custom \texttt{lua} scripts available on \texttt{codeberg}.
+% More specifically, if you want to build the font definition files (\texttt{.fd}) yourself, you \emph{must} use \texttt{l3build fnttarg} and this requires files available from the code repository, but not included in this package\footnote{%
+%   They are not included because I understand that CTAN does not want development files such as Lua build scripts.
+%   If this is a problem --- especially, but not only, if you repackage \TeX{} Live (or are Karl Berry) --- please raise the issue on the bugtracker.
+%   If necessary, I can probably customise \lpack{fontinst} to do the same job, but it wasn't immediately obvious quite how to do that, so I used Lua instead.%
+% }.
+%
+% The reason for this is that \lpack{fontinst} provides no way\footnote{Or no way I've yet discovered.} to enable variable scaling.
+% While it is entirely possible to scale a font by any factor you please, it is not, as far as I can tell, possible to enable scaling by any factor a user later pleases.
+% In particular, while it is possible to define shapes and families to use a variable factor, it is not possible to write a definition of that factor into the font definition file, which is the way variable scaling is usually configured.
+% 
+% In order to enable this functionality, \texttt{lua} is used to inject the relevant code into the \texttt{.fd} files after \lpack{fontinst} has generated them.
+% If you simply process the relevant \TeX{} files by hand, you will create broken definition files, since the code produced by \lpack{fontinst} assumes the relevant lines have been injected.
+%
+%
+% \subsection{Packages}
+%
+% Three \LaTeX{} packages:
+% \begin{itemize}
+%   \item \verb|venturis.sty|
+%   \item \verb|venturis2.sty|
+%   \item \verb|venturisold.sty|
+% \end{itemize}
+% 
+% The remaining files are not used directly, but are required to generate the files which allow \TeX{} and \LaTeX{} to use the fonts.
+% The sources use \verb|fontinst| as explained in the (sparse) comments.
+% While you can install these files into a \TeX{} tree, they are not required for typesetting.
+% 
+% \subsection{Driver}
+%
+% These files do all the initial setup of the fonts.
+% They organise the fonts into families, define shapes and reencode as required.
+% \begin{itemize}
+%   \item \verb|yvt-drv.tex|
+%   \item \verb|yv1-drv.tex|
+%   \item \verb|yv2-drv.tex|
+%   \item \verb|yv3-drv.tex|
+%   \item \verb|yvo-drv.tex|
+% \end{itemize}
+%
+% \subsection{Maps}
+% 
+% These files are compiled to produce the map file fragments \verb|updmap| needs to install the fonts.
+% They use files recorded during compilation of the drivers.
+% \begin{itemize}
+%   \item \verb|yvt-map.tex|
+%   \item \verb|yv1-map.tex|
+%   \item \verb|yv2-map.tex|
+%   \item \verb|yv3-map.tex|
+%   \item \verb|yvo-map.tex|
+% \end{itemize}
+% 
+% \subsection{Encodings (output)}
+% These files define variant T1 and TS1 font encodings.
+% Where required, the corresponding \verb|.enc| is also included in the package.
+% \begin{itemize}
+%   \item \verb|t1-venturis.etx| 
+%   \item \verb|t1j-venturis.etx|
+%   \item \verb|t1-venturisold.etx|
+%   \item \verb|t1-venturisold-longs.etx|
+% \end{itemize}
+%
+% In addition to these encodings, we use encoding files supplied by \verb|fontinst| and some custom files not included in this package's \verb|dtx| as they are not specific to MODULE-TC.
+% They are, however, part of the package:
+% \begin{itemize}
+%   \item \verb|lining.etx|
+%   \item \verb|oldstyle.etx|
+%   \item \verb|t1-dotalt-f_f.etx| (and \verb|t1-dotalt-f_f.enc|)
+%   \item \verb|t1-f_f.etx| (and \verb|t1-f_f.enc|)
+%   \item \verb|t1j-f_f.etx|
+%   \item \verb|ts1-euro.etx| (and \verb|ts1-euro.enc|)
+%   \item \verb|ucdotalt.etx|
+% \end{itemize}
+% The \verb|etx| files are not used directly by \LaTeX{} or \TeX.
+% Where needed, they are processed to produce \verb|enc| files.
+% In some cases, however, they are not themselves standalone encodings.
+% Instead, they change how some other encoding is interpreted.
+%
+% \subsection{MTX}
+% \verb|mtx| files are used to build ‘fake’ glyphs where these are missing from the original fonts.
+% We do not fake small-caps or bold, but only glyphs which can be constructed without altering the original design.
+% \begin{itemize}
+%   \item \file{resetalt.mtx}
+% \end{itemize}
+%
+% In addition to this file, we use \verb|mtx| files supplied by \verb|fontinst|.
+%
+%
+%\Finale
+%^^A vim: tw=0:

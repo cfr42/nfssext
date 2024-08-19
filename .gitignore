@@ -350,6 +350,7 @@ TSWLatexianTemp*
 build
 keep
 keeptemp
+arkandis/*/*-example.pdf
 arkandis/*/*-tables.pdf
 arkandis/*/*-tables.tex
 arkandis/baskervaldadf/baskervaldadf.pdf
@@ -367,6 +368,7 @@ arkandis/romandeadf/romandeadf-build.pdf
 arkandis/romandeadf/romandeadf-example.pdf
 arkandis/venturisadf/venturisadf.pdf
 arkandis/venturisadf/venturisadf-build.pdf
+arkandis/venturisadf/venturisadf-imp.pdf
 arkandis/venturisadf/venturisadf-example.pdf
 arkandis/venturisadf/venturis.pdf
 arkandis/venturisadf/venturis2.pdf

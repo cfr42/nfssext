@@ -31,8 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: venturis.dtx 10246 2024-08-18 01:29:07Z cfrees $}[v0.0
-\revinfo][\filebase DTX: Venturis ADF for 8-bit engines]
+\ProvidesFileSVN{$Id: venturis.dtx 10251 2024-08-19 05:49:24Z cfrees $}[v0.0 \revinfo][\filebase DTX: Venturis ADF for 8-bit engines]
 \DefineFileInfoSVN[venturis]
 \documentclass[11pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -167,17 +166,6 @@
   }
 } 
 \ExplSyntaxOff
-\title{\filebase}
-\author{Clea F. Rees\thanks{%
-    Bug tracker:
-  \href{https://codeberg.org/cfr/nfssext/issues}{\url{codeberg.org/cfr/nfssext/issues}}
-  \textbar{} Code:
-  \href{https://codeberg.org/cfr/nfssext}{\url{codeberg.org/cfr/nfssext}}
-  \textbar{} Mirror:
-  \href{https://github.com/cfr42/nfssext}{\url{github.com/cfr42/nfssext}}% 
-}}
-%^^A \date{\fileversion~\filetoday}
-\date{\fileversion~\filedate}
 \pagestyle{fancy}
 \fancyhf[lh]{\itshape\filebase~\fileversion}
 %^^A \fancyhf[rh]{\itshape\filetoday}
@@ -204,15 +192,26 @@
 \end{document}
 %</driver>
 % \fi
-%
-% \newcommand*{\adf}{\textsc{adf}}
-% \newcommand*{\lpack}[1]{\textsf{#1}}
-% \newcommand*{\fgroup}[1]{\textsf{#1}}
-% \newcommand*{\fname}[1]{\textsf{#1}}
-% \newcommand*{\file}[1]{\texttt{#1}}
-%
-% \changes{\fileversion}{\filedate}{See \file{\pkgname.pdf} for revision history.}
 % 
+% 
+% \title{\pkgname: venturis}
+% \author{Clea F. Rees\thanks{%
+%     Bug tracker:
+%   \href{https://codeberg.org/cfr/nfssext/issues}{\url{codeberg.org/cfr/nfssext/issues}}
+%   \textbar{} Code:
+%   \href{https://codeberg.org/cfr/nfssext}{\url{codeberg.org/cfr/nfssext}}
+%   \textbar{} Mirror:
+%   \href{https://github.com/cfr42/nfssext}{\url{github.com/cfr42/nfssext}}% 
+% }}
+%^^A \date{\fileversion~\filetoday}
+% \date{\fileversion ~ \filedate}
+% 
+% \providecommand*{\adf}{\textsc{adf}}
+% \providecommand*{\lpack}[1]{\textsf{#1}}
+% \providecommand*{\fgroup}[1]{\textsf{#1}}
+% \providecommand*{\fname}[1]{\textsf{#1}}
+% \providecommand*{\file}[1]{\texttt{#1}}
+%
 % 
 % \maketitle\thispagestyle{empty}
 % \pdfinfo{%
@@ -237,6 +236,176 @@
 % 
 % \tableofcontents
 % 
+% \section{Example}
+%
+% \iffalse
+%<*ee>
+% \fi
+%    \begin{macrocode}
+
+\documentclass[12pt]{article}
+\title{\textvt{Venturis Example}}
+\author{\swashstyle\altstyle\scshape Querulously quacked by Rapunzel, Rumpelstiltskin \& Xenophon}
+
+\providecommand{\zeroslash}{}
+\providecommand{\textsi}[1]{}
+\newcommand{\alphaline}{ABCDEFGHIJKLMNOPQRSTUVWXYZ\\abcdefghijklmnopqrstuvwxyz\\0123456789\\
+	f{}f ff f{}i fi f{}l fl f{}f{}i ffi f{}f{}l ffl \& \texteuro \texttrademark \textcopyright \textohm \textmu\\
+	sphinx of black quartz, judge my vow}%\textcelsius \textnumero \textservicemark}
+\newcommand{\abc}{ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz}
+\newcommand{\digits}{0123456789}
+\newcommand{\alphatest}{%
+  \begin{flushleft}
+    \textup{upright:\\\alphaline}\\[\smallskipamount]
+    \textsc{small-caps:\\\alphaline}\\[\smallskipamount]
+    \textit{italics:\\\alphaline}\\[\smallskipamount]
+    \textsc{\itshape italic small-caps:\\\alphaline}\\[\smallskipamount]
+    % \textsi{} is deprecated on newer kernels.
+    \textsi{\color{gray}italic small-caps:\\\alphaline}\\
+  \end{flushleft}%
+}
+
+% alternates list: uc: K Q R X Z; sc: k q r x z germandbls
+% swash endings: a n d o u h r e z l t g m
+
+\pdfmapfile{- yvt.map}
+\pdfmapfile{+ yvt.map}
+\usepackage{venturis}
+\usepackage{xcolor}
+
+\begin{document}
+\maketitle
+\setlength{\parindent}{0pt}
+
+\section*{family: yvtj}
+
+This is a serif family with oldstyle figures and optical upright and italic small-caps.
+
+\subsection*{Regular weight, regular width}
+
+\alphatest
+
+\subsection*{Bold weight, regular width (no extended available)}
+
+\textbf{\alphatest}
+
+\subsection*{Regular weight, condensed width}
+
+\cdwidth
+\alphatest
+\regwidth
+
+\subsection*{Bold weight, condensed width}
+
+\cdwidth
+\textbf{\alphatest}
+\regwidth
+
+\section*{family: yvtjw}
+
+{\swashstyle
+  This is essentially the same family with the addition of swashes.
+  \medskip
+
+  \alphatest
+
+  \textbf{\alphatest}
+
+  \cdwidth\alphatest
+
+  \textbf{\alphatest}%
+}
+
+\section*{family: yvtajw}
+
+{\swashstyle\altstyle
+  This is just like yvtjw except that the upright shape in regular weight features end-of-word swashes.
+  \medskip
+
+  \alphatest
+
+  academia doddered essence goggling hashish loll momentum nationalisation ontological indigo rarer titration saint uranium Bantu zigzag oz
+  \medskip
+
+  \textbf{\alphatest}
+
+  \cdwidth\alphatest
+
+  \textbf{\alphatest}%
+}
+
+\lstyle
+
+\section*{family: yvt}
+
+This is essentially the same family as yvtj but with lining figures. Additional weights are available in this family, but the additional weights lack small-caps.
+
+\subsection*{Regular weight, regular width}
+
+\alphatest
+
+\subsection*{Bold weight, regular width (no extended available)}
+
+\textbf{\alphatest}
+
+\subsection*{Heavy weight, regular width}
+
+\texteb{\alphatest}
+
+\subsection*{Regular and bold weights, condensed}
+
+{\cdwidth
+  \alphatest
+
+  \textbf{\cdwidth \alphatest}%
+}
+
+\section*{family: yvtw}
+
+{\swashstyle
+  This is essentially the same family with the addition of swashes.
+  \medskip
+
+  \alphatest
+
+  \textbf{\alphatest}
+
+  \cdwidth\alphatest
+
+  \textbf{\alphatest}%
+}
+
+\section*{family: yvtaw}
+
+{\swashstyle\altstyle
+  This is just like yvtw except that the upright shape in regular weight features end-of-word swashes.
+  \medskip
+
+  \alphatest
+
+  academia doddered essence goggling hashish loll momentum nationalisation ontological indigo rarer titration saint uranium Bantu zigzag oz
+  \medskip
+
+  \textbf{\alphatest}
+
+  \cdwidth\alphatest
+
+  \textbf{\alphatest}%
+}
+
+\section*{family:yvtd}
+
+\textvt{\alphaline}
+\smallskip
+
+\textvtl{\alphaline}
+
+\end{document} 
+%    \end{macrocode}
+% \iffalse
+%</ee>
+% \fi
+%
 % \MaybeStop{%
 % \PrintChanges
 % \PrintIndex
@@ -244,13 +413,17 @@
 % 
 % \section{Implementation}
 %
+% \subsection{venturis.sty}
+%
 % \iffalse
 %<*sty>
 % \fi
+% \begin{package}{venturis}
+% This package uses font groups \fgroup{venturis} and \fgroup{venturissans}.
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: venturis.dtx 10246 2024-08-18 01:29:07Z cfrees $}[\filebase v1.1 \revinfo for VenturisADF PS 1.005]
+\ProvidesPackageSVN[\filebase.sty]{$Id: venturis.dtx 10251 2024-08-19 05:49:24Z cfrees $}[\filebase v1.1 \revinfo for VenturisADF PS 1.005]
 \DefineFileInfoSVN[venturis]
 \RequirePackage[T1]{fontenc}
 \RequirePackage{nfssext-cfr}
@@ -286,6 +459,8 @@
 \keys_define:nn { venturis }
 {
 %    \end{macrocode}
+% \begin{option}{lf,osf}
+% \begin{macro}{\l__venturis_osf_bool}
 % boolkeys for roman osf/lf
 %    \begin{macrocode}
   lf .bool_set_inverse:N = \l__venturis_osf_bool,
@@ -293,6 +468,13 @@
   osf .bool_set:N = \l__venturis_osf_bool,
   osf .default:n = true,
   osf .initial:n = true,
+%    \end{macrocode}
+% \end{macro}
+% \end{option}
+% \begin{option}{scale,scale ~ rm,scale ~ sf}
+% \begin{macro}{\yvt@scale,\yvi@scale}
+% Options for scaling rm/sf or both
+%    \begin{macrocode}
   scale ~ rm .tl_set:N = \yvt@scale,
   scale ~ rm .initial:V = \@empty,
   scale ~ sf .tl_set:N = \yvi@scale,
@@ -301,6 +483,10 @@
     \gdef\yvt@scale{#1}
     \gdef\yvi@scale{#1}
   },
+%    \end{macrocode}
+% \end{macro}
+% \end{option}
+%    \begin{macrocode}
 }
 \ProcessKeyOptions[venturis]
 %    \end{macrocode}
@@ -318,6 +504,7 @@
 %    \begin{macrocode}
 \renewcommand{\sfdefault}{yv1}
 %    \end{macrocode}
+% \begin{macro}{\vtstyle}
 % introduce special titling commands
 %    \begin{macrocode}
 \DeclareRobustCommand{\vtstyle}[1][]{%
@@ -327,7 +514,8 @@
 	\def\tempr{yvt}%
 	\not@math@alphabet\vtstyle\relax
 %    \end{macrocode}
-% because the titling fonts have limited availability, don't use the \tistyle set-up, but choose the family explicitly in case we're currently using sans or typewriter - note, though, that some are also called as small-caps commands in certain sans-serif variants (though the seriffed variant seems not to match anything...)
+% because the titling fonts have limited availability, don't use the \cs{tistyle} set-up, but choose the family explicitly in case we're currently using sans or typewriter
+% note, though, that some are also called as small-caps commands in certain sans-serif variants (though the seriffed variant seems not to match anything...)
 %    \begin{macrocode}
 	\ifx\vt@shape\tempo
 		\fontfamily{yvtd}\fontshape{ol}\selectfont
@@ -348,19 +536,23 @@
 			\fi
 		\fi
 	\fi
-	}
+}
 %    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\textvt,\textvtl}
 % Text font commands
 %    \begin{macrocode}
 \DeclareTextFontCommand{\textvt}{\vtstyle}
 \DeclareTextFontCommand{\textvtl}{\vtstyle[ol]}
 %    \end{macrocode}
+% \end{macro}
 %^^A paid â chynnwys \endinput - docstrip yn chwilio amddo fe yn arbennigol
 %^^A & bydd doctrip yn ei ychwanegu fe beth bynnag
 %^^A (Martin Scharrer: https://tex.stackexchange.com/a/28997/)
 %    \begin{macrocode}
 %% end venturis.sty
 %    \end{macrocode}
+% \end{package}
 % \iffalse
 %</sty>
 % \fi
@@ -464,6 +656,10 @@
 % Installation: creation of virtual fonts
 %    \begin{macrocode}
 	\installfonts
+%    \end{macrocode}
+% \begin{family}{T1/yvt}
+% Venturis T1
+%    \begin{macrocode}
 		\installfamily{T1}{yvt}{}
 		\installfont{yvtr8t}{t1-yvtr,newlatin}{t1-f_f}{T1}{yvt}{m}{n}{}
 		\installfont{yvtrc8t}{t1-yvtrc,t1-yvtr suffix lining,newlatin}{lining,t1-f_f}{T1}{yvt}{m}{sc}{}
@@ -496,6 +692,10 @@
 		\installfont{yvtbci8tc}{t1-yvtbci-c,t1-yvtbi-c suffix lining,newlatin}{lining,t1-f_f}{T1}{yvt}{bc}{scit}{}
 		\installfont{yvtbi8tc}{t1-yvtbi-c,newlatin}{t1-f_f}{T1}{yvt}{bc}{it}{}
 %    \end{macrocode}
+% \end{family}
+% \begin{family}{T1/yvtd}
+% Titling T1
+%
 % Installation: titling HOW to do this??
 %    \begin{macrocode}
 		\installfamily{T1}{yvtd}{}
@@ -516,6 +716,8 @@
 		\installfontas{yvtbd8tc}{T1}{yvtd}{b}{n}{}
 		\installfontas{yvtbd8tc}{T1}{yvtd}{eb}{n}{}
 %    \end{macrocode}
+% \end{family}
+% \begin{family}{T1/yvtj}
 % Installation: OSF
 %    \begin{macrocode}
 		\installfamily{T1}{yvtj}{}
@@ -535,6 +737,11 @@
 		\installfont{yvtbcj8tc}{t1-yvtbc-c,newlatin}{t1-f_f}{T1}{yvtj}{bc}{sc}{}
 		\installfont{yvtbcij8tc}{t1-yvtbci-c,newlatin}{t1-f_f}{T1}{yvtj}{bc}{scit}{}
 		\installfont{yvtbij8tc}{t1-yvtbi-c,t1-yvtbci-c suffix oldstyle,t1-yvtbci-c,newlatin}{t1j-f_f}{T1}{yvtj}{bc}{it}{}
+%    \end{macrocode}
+% \end{family}
+% \begin{family}{T1/yvtw}
+% swash
+%    \begin{macrocode}
 		\installfamily{T1}{yvtw}{}
 		\installfont{yvtrw8t}{t1-yvtr,t1alt-yvtrc,t1-yvtr suffix .alt,resetalt,newlatin}{ucdotalt,t1-f_f}{T1}{yvtw}{m}{n}{}
 		\installfont{yvtriw8t}{t1-yvtri,t1alt-yvtrci,t1-yvtri suffix .alt,resetalt,newlatin}{ucdotalt,t1-f_f}{T1}{yvtw}{m}{it}{}
@@ -552,6 +759,11 @@
 		\installfont{yvtbiw8tc}{t1-yvtbi-c,t1alt-yvtbci-c,t1-yvtbi-c suffix .alt,resetalt,newlatin}{ucdotalt,t1-f_f}{T1}{yvtw}{bc}{it}{}
 		\installfont{yvtbcw8tc}{t1alt-yvtbc-c,t1-yvtbc-c suffix .alt,t1-yvtb-c suffix lining,resetalt,newlatin}{lining,t1-dotalt-f_f}{T1}{yvtw}{bc}{sc}{}
 		\installfont{yvtbciw8tc}{t1alt-yvtbci-c,t1-yvtbci-c suffix .alt,t1-yvtbi-c suffix lining,resetalt,newlatin}{lining,t1-dotalt-f_f}{T1}{yvtw}{bc}{scit}{}
+%    \end{macrocode}
+% \end{family}
+% \begin{family}{T1/yvtaw}
+% alternate swash
+%    \begin{macrocode}
 		\installfamily{T1}{yvtaw}{}
 		\installfont{yvtraw8t}{vent-yvtr,t1alt-yvtrc,vent-yvtr suffix .alt,newlatin}{ucdotalt,t1-venturis}{T1}{yvtaw}{m}{n}{}
 		\installfontas{yvtrcw8t}{T1}{yvtaw}{m}{sc}{}
@@ -569,6 +781,11 @@
 		\installfontas{yvtbcw8tc}{T1}{yvtaw}{bc}{sc}{}
 		\installfontas{yvtbciw8tc}{T1}{yvtaw}{bc}{scit}{}
 		\installfontas{yvtbiw8tc}{T1}{yvtaw}{bc}{it}{}
+%    \end{macrocode}
+% \end{family}
+% \begin{family}{T1/yvtjw}
+% OSF swash
+%    \begin{macrocode}
 		\installfamily{T1}{yvtjw}{}
 		\installfont{yvtrjw8t}{t1-yvtr,t1-yvtrc suffix oldstyle,t1alt-yvtrc,t1-yvtr suffix .alt,resetalt,newlatin}{oldstyle,ucdotalt,t1-f_f}{T1}{yvtjw}{m}{n}{}
 		\installfont{yvtrcjw8t}{t1alt-yvtrc,t1-yvtrc suffix .alt,resetalt,newlatin}{t1-dotalt-f_f}{T1}{yvtjw}{m}{sc}{}
@@ -586,6 +803,11 @@
 		\installfont{yvtbijw8tc}{t1-yvtbi-c,t1-yvtbci-c suffix oldstyle,t1alt-yvtbci-c,t1-yvtbi-c suffix .alt,resetalt,newlatin}{oldstyle,ucdotalt,t1-f_f}{T1}{yvtjw}{bc}{it}{}
 		\installfont{yvtbcjw8tc}{t1alt-yvtbc-c,t1-yvtbc-c suffix .alt,resetalt,newlatin}{t1-dotalt-f_f}{T1}{yvtjw}{bc}{sc}{}
 		\installfont{yvtbcijw8tc}{t1alt-yvtbci-c,t1-yvtbci-c suffix .alt,resetalt,newlatin}{t1-dotalt-f_f}{T1}{yvtjw}{bc}{scit}{}
+%    \end{macrocode}
+% \end{family}
+% \begin{family}{T1/yvtajw}
+% OSF alternate swash
+%    \begin{macrocode}
 		\installfamily{T1}{yvtajw}{}
 		\installfont{yvtrajw8t}{vent-yvtr,t1-yvtrc suffix oldstyle,t1alt-yvtrc,vent-yvtr suffix .alt,newlatin}{ucdotalt,t1j-venturis}{T1}{yvtajw}{m}{n}{}
 		\installfontas{yvtrijw8t}{T1}{yvtajw}{m}{it}{}
@@ -604,6 +826,8 @@
 		\installfontas{yvtbcjw8tc}{T1}{yvtajw}{bc}{sc}{}
 		\installfontas{yvtbcijw8tc}{T1}{yvtajw}{bc}{scit}{}
 %    \end{macrocode}
+% \end{family}
+% \begin{family}{TS1/yvt}
 % Installation: install with TS1 encoding for extra glyphs through textcomp
 %    \begin{macrocode}
 		\installfamily{TS1}{yvt}{}
@@ -638,6 +862,8 @@
 		\installfont{yvtbi8cc}{t1-yvtbi,ts1-yvtbi-c,t1-yvtbci-c suffix oldstyle,ts1-yvtbci-c,textcomp}{ts1-euro}{TS1}{yvt}{bc}{it}{}
 		\installfont{yvtbci8cc}{t1-yvtbci-c,t1-yvtbci-c suffix oldstyle,ts1-yvtbci-c,textcomp}{ts1-euro}{TS1}{yvt}{bc}{scit}{}
 %    \end{macrocode}
+% \end{family}
+% \begin{family}{TS1/yvtj}
 % Installation: OSF
 %    \begin{macrocode}
 		\installfamily{TS1}{yvtj}{}
@@ -657,6 +883,11 @@
 		\installfontas{yvtbc8cc}{TS1}{yvtj}{bc}{sc}{}
 		\installfontas{yvtbi8cc}{TS1}{yvtj}{bc}{it}{}
 		\installfontas{yvtbci8cc}{TS1}{yvtj}{bc}{scit}{}
+%    \end{macrocode}
+% \end{family}
+% \begin{family}{TS1/yvtw}
+% swash
+%    \begin{macrocode}
 		\installfamily{TS1}{yvtw}{}
 		\installfontas{yvtr8c}{TS1}{yvtw}{m}{n}{}
 		\installfontas{yvtrc8c}{TS1}{yvtw}{m}{sc}{}
@@ -674,6 +905,11 @@
 		\installfontas{yvtbc8cc}{TS1}{yvtw}{bc}{sc}{}
 		\installfontas{yvtbi8cc}{TS1}{yvtw}{bc}{it}{}
 		\installfontas{yvtbci8cc}{TS1}{yvtw}{bc}{scit}{}
+%    \end{macrocode}
+% \end{family}
+% \begin{family}{TS1/yvtaw}
+% alternate swash
+%    \begin{macrocode}
 		\installfamily{TS1}{yvtaw}{}
 		\installfontas{yvtr8c}{TS1}{yvtaw}{m}{n}{}
 		\installfontas{yvtrc8c}{TS1}{yvtaw}{m}{sc}{}
@@ -691,6 +927,11 @@
 		\installfontas{yvtbc8cc}{TS1}{yvtaw}{bc}{sc}{}
 		\installfontas{yvtbi8cc}{TS1}{yvtaw}{bc}{it}{}
 		\installfontas{yvtbci8cc}{TS1}{yvtaw}{bc}{scit}{}
+%    \end{macrocode}
+% \end{family}
+% \begin{family}{TS1/yvtjw}
+% OSF swash
+%    \begin{macrocode}
 		\installfamily{TS1}{yvtjw}{}
 		\installfontas{yvtr8c}{TS1}{yvtjw}{m}{n}{}
 		\installfontas{yvtrc8c}{TS1}{yvtjw}{m}{sc}{}
@@ -708,6 +949,11 @@
 		\installfontas{yvtbc8cc}{TS1}{yvtjw}{bc}{sc}{}
 		\installfontas{yvtbi8cc}{TS1}{yvtjw}{bc}{it}{}
 		\installfontas{yvtbci8cc}{TS1}{yvtjw}{bc}{scit}{}
+%    \end{macrocode}
+% \end{family}
+% \begin{family}{TS1/yvtajw}
+% OSF alternate swash
+%    \begin{macrocode}
 		\installfamily{TS1}{yvtajw}{}
 		\installfontas{yvtr8c}{TS1}{yvtajw}{m}{n}{}
 		\installfontas{yvtrc8c}{TS1}{yvtajw}{m}{sc}{}
@@ -726,6 +972,8 @@
 		\installfontas{yvtbi8cc}{TS1}{yvtajw}{bc}{it}{}
 		\installfontas{yvtbci8cc}{TS1}{yvtajw}{bc}{scit}{}
 %    \end{macrocode}
+% \end{family}
+% \begin{family}{TS1/yvtd}
 % Installation: and titling HOW to do this??
 %    \begin{macrocode}
 		\installfamily{TS1}{yvtd}{}
@@ -744,6 +992,7 @@
 		\installfontas{yvtbd8cc}{TS1}{yvtd}{b}{n}{}
 		\installfontas{yvtbd8cc}{TS1}{yvtd}{eb}{n}{}
 %    \end{macrocode}
+% \end{family}
 % Finish up 
 %    \begin{macrocode}
 	\endinstallfonts
@@ -772,43 +1021,6 @@
 % \iffalse
 %</map>
 % \fi
-% \subsection{Supplementary (raw)}
-% 
-% The initial encoding for Venturis ADF is straightforward and no supplementary encoding is needed to pick up misnamed or additional glyphs.
-% Instead, we just let our encodings do double duty for input/raw as well as output.
-%
-% Note that \verb|etx| files may specify raw and/or output encodings.
-% Those which are specific to \lpack{venturisadf} are included in \file{venturisadf-build.dtx}.
-% Those which are not are included as separate sources unless provided by \verb|fontinst|.
-% 
-%
-% \subsection{Reglyph}
-%
-% No reglyphing is required for the Venturis ADF collection --- yay!
-%
-%
-% \subsection{Encodings (output)}
-%
-% These files define variant T1 and TS1 font encodings.
-% They are included in \file{\pkgname-build.dtx}, itemized in \file{pkgname.pdf} and listed in \file{\pkgname-build.pdf}.
-%
-%
-% In addition to these encodings, we use encoding files supplied by \verb|fontinst| and some custom files not included in this package's \verb|dtx| as they are not specific to \lpack{venturisadf}.
-% They are, however, part of the package and are itemized in \file{pkgname.pdf}.
-%
-%
-% \subsection{MTX}
-%
-% \verb|mtx| files are used to build ‘fake’ glyphs where these are missing from the original fonts.
-% We do not fake small-caps or bold, but only glyphs which can be constructed without altering the original design.
-% They are also used to ‘reset’ or adjust glyphs and kerning pairs, for example.
-%
-% \lpack{\filebase} is the only subset of fonts supported by \lpack{\pkgname} to require a custom \textt{.mtx} file, \file{resetalt.mtx}.
-%
-%
-% In addition to this file, we use \verb|mtx| files supplied by \verb|fontinst| and some custom files not included in this package's \verb|dtx| as they are not specific to \lpack{venturisadf}.
-% The latter are, however, part of the package and are itemized in \file{venturisadf-build.pdf}.
-%
 %
 %\Finale
 %^^A vim: tw=0:

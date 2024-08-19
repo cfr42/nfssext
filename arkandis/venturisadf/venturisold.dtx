@@ -31,8 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: venturisold.dtx 10246 2024-08-18 01:29:07Z cfrees $}[v0.0
-\revinfo][\filebase DTX: Venturis ADF for 8-bit engines]
+\ProvidesFileSVN{$Id: venturisold.dtx 10251 2024-08-19 05:49:24Z cfrees $}[v0.0 \revinfo][\filebase DTX: Venturis ADF for 8-bit engines]
 \DefineFileInfoSVN[venturisold]
 \documentclass[11pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -167,17 +166,6 @@
   }
 } 
 \ExplSyntaxOff
-\title{\filebase}
-\author{Clea F. Rees\thanks{%
-    Bug tracker:
-  \href{https://codeberg.org/cfr/nfssext/issues}{\url{codeberg.org/cfr/nfssext/issues}}
-  \textbar{} Code:
-  \href{https://codeberg.org/cfr/nfssext}{\url{codeberg.org/cfr/nfssext}}
-  \textbar{} Mirror:
-  \href{https://github.com/cfr42/nfssext}{\url{github.com/cfr42/nfssext}}% 
-}}
-%^^A \date{\fileversion~\filetoday}
-\date{\fileversion~\filedate}
 \pagestyle{fancy}
 \fancyhf[lh]{\itshape\filebase~\fileversion}
 %^^A \fancyhf[rh]{\itshape\filetoday}
@@ -205,14 +193,25 @@
 %</driver>
 % \fi
 %
-% \newcommand*{\adf}{\textsc{adf}}
-% \newcommand*{\lpack}[1]{\textsf{#1}}
-% \newcommand*{\fgroup}[1]{\textsf{#1}}
-% \newcommand*{\fname}[1]{\textsf{#1}}
-% \newcommand*{\file}[1]{\texttt{#1}}
 %
-% \changes{\fileversion}{\filedate}{See \file{\pkgname.pdf} for revision history.}
-% 
+% \title{\pkgname: venturisold}
+% \author{Clea F. Rees\thanks{%
+%     Bug tracker:
+%   \href{https://codeberg.org/cfr/nfssext/issues}{\url{codeberg.org/cfr/nfssext/issues}}
+%   \textbar{} Code:
+%   \href{https://codeberg.org/cfr/nfssext}{\url{codeberg.org/cfr/nfssext}}
+%   \textbar{} Mirror:
+%   \href{https://github.com/cfr42/nfssext}{\url{github.com/cfr42/nfssext}}% 
+% }}
+%^^A \date{\fileversion~\filetoday}
+% \date{\fileversion~\filedate}
+%
+% \providecommand*{\adf}{\textsc{adf}}
+% \providecommand*{\lpack}[1]{\textsf{#1}}
+% \providecommand*{\fgroup}[1]{\textsf{#1}}
+% \providecommand*{\fname}[1]{\textsf{#1}}
+% \providecommand*{\file}[1]{\texttt{#1}}
+%
 % 
 % \maketitle\thispagestyle{empty}
 % \pdfinfo{%
@@ -237,6 +236,66 @@
 % 
 % \tableofcontents
 % 
+% \section{Example}
+%
+% \iffalse
+%<*ee>
+% \fi
+%    \begin{macrocode}
+\documentclass[12pt]{article}
+\title{Venturis Old Example}
+\author{Postman Pat (\textit{sans} black-and-white cat)}
+
+\newcommand{\alphaline}{ABCDEFGHIJKLMNOPQRSTUVWXYZ\\abcdefghijklmnopqrs{}tuvwxyz\\0123456789\\
+	f{}f ff f{}i fi f{}l fl f{}f{}i ffi f{}f{}l ffl s{}t st \& \texteuro \texttrademark \textcopyright \textmu\\
+	d d* s s* s+ s+{}t s+t\\
+	sphinx of black quartz, judge my vow}% \textcelsius \textnumero \textservicemark}
+\newcommand{\abc}{ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz}
+\newcommand{\digits}{0123456789}
+\newcommand{\alphatest}{%
+  \begin{flushleft}
+    \textup{upright shape:\\\alphaline}\\[\smallskipamount]
+    \textit{italics:\\\alphaline}\\
+  \end{flushleft}%
+}
+
+\pdfmapfile{- yvo.map}
+\pdfmapfile{+ yvo.map}
+\usepackage{venturisold}
+
+\begin{document}
+\maketitle
+\setlength{\parindent}{0pt}
+
+\section*{family: yvo}
+
+A serif family with oldstyle figures.
+\medskip
+
+\alphatest
+
+\textbf{\alphatest}
+
+\section*{family: yvod}
+
+\textvt{\alphaline}
+
+\section*{family: yvoa}
+
+\textalt{\alphatest}
+
+\textalt{\textbf{\alphatest}}
+
+\section*{family: yvoad}
+
+\textalt{\textvt{\alphaline}}
+
+\end{document} 
+%    \end{macrocode}
+% \iffalse
+%</ee>
+% \fi
+%
 % \MaybeStop{%
 % \PrintChanges
 % \PrintIndex
@@ -244,13 +303,18 @@
 % 
 % \section{Implementation}
 %
+%
+% \subsection{venturisold.sty}
+%
 % \iffalse
 %<*sty>
 % \fi
+% \begin{package}{venturisold.sty}
+% This package uses font group \fgroup{venturisold}.
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: venturisold.dtx 10246 2024-08-18 01:29:07Z cfrees $}[\filebase v1.1 \revinfo (for VenturisOldADF PS 1.005)]
+\ProvidesPackageSVN[\filebase.sty]{$Id: venturisold.dtx 10251 2024-08-19 05:49:24Z cfrees $}[\filebase v1.1 \revinfo (for VenturisOldADF PS 1.005)]
 \DefineFileInfoSVN[venturisold]
 \RequirePackage[T1]{fontenc}
 \RequirePackage{nfssext-cfr}
@@ -277,8 +341,17 @@
 %    \begin{macrocode}
 \keys_define:nn { venturisold }
 {
+%    \end{macrocode}
+% \begin{option}{scale}
+% \begin{macro}{\yvo@scale}
+% Option for scaling 
+%    \begin{macrocode}
   scale .tl_set:N = \yvo@scale,
   scale .initial:V = \@empty,
+%    \end{macrocode}
+% \end{macro}
+% \end{option}
+%    \begin{macrocode}
 }
 \ProcessKeyOptions[venturisold]
 \ExplSyntaxOff
@@ -287,6 +360,7 @@
 %    \begin{macrocode}
 \renewcommand{\rmdefault}{yvo}
 %    \end{macrocode}
+% \begin{macro}{\vtstyle}
 % Introduce special titling commands
 %    \begin{macrocode}
 \DeclareRobustCommand{\vtstyle}[1][]{% 
@@ -296,15 +370,21 @@
 	\not@math@alphabet\vtstyle\relax
 	\fontfamily{yvod}\selectfont}
 %    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\textvt,\textvtl}
 % Text font commands
 %    \begin{macrocode}
 \DeclareTextFontCommand{\textvt}{\vtstyle}
 \DeclareTextFontCommand{\textvtl}{\vtstyle}
+%    \end{macrocode}
+% \end{macro}
 %^^A paid â chynnwys \endinput - docstrip yn chwilio amddo fe yn arbennigol
 %^^A & bydd doctrip yn ei ychwanegu fe beth bynnag
 %^^A (Martin Scharrer: https://tex.stackexchange.com/a/28997/)
-%% end venturisold.sty
+%    \begin{macrocode}
+%% end venturis.sty
 %    \end{macrocode}
+% \end{package}
 % \iffalse
 %</sty>
 % \fi
@@ -377,12 +457,18 @@
 % Installation: creation of virtual fonts
 %    \begin{macrocode}
 	\installfonts
+%    \end{macrocode}
+% \begin{family}{T1/yvo}
+% venturisold
+%    \begin{macrocode}
 		\installfamily{T1}{yvo}{}
 		\installfont{yvor8t}{t1-yvor,newlatin}{t1-venturisold}{T1}{yvo}{m}{n}{}
 		\installfont{yvori8t}{t1-yvori,newlatin}{t1-venturisold}{T1}{yvo}{m}{it}{}
 		\installfont{yvob8t}{t1-yvob,newlatin}{t1-venturisold}{T1}{yvo}{b}{n}{}
 		\installfont{yvobi8t}{t1-yvobi,newlatin}{t1-venturisold}{T1}{yvo}{b}{it}{}
 %    \end{macrocode}
+% \end{family}
+% \begin{family}{T1/yvoa}
 % Installation: alternates (T1)
 %    \begin{macrocode}
 		\installfamily{T1}{yvoa}{}
@@ -391,6 +477,8 @@
 		\installfont{yvoab8t}{t1-yvob,newlatin}{t1-venturisold-longs}{T1}{yvoa}{b}{n}{}
 		\installfont{yvoabi8t}{t1-yvobi,newlatin}{t1-venturisold-longs}{T1}{yvoa}{b}{it}{}
 %    \end{macrocode}
+% \end{family}
+% \begin{family}{TS1/yvo}
 % Installation: install with TS1 encoding for extra glyphs through textcomp
 %    \begin{macrocode}
 		\installfamily{TS1}{yvo}{}
@@ -399,6 +487,8 @@
 		\installfont{yvob8c}{t1-yvob,ts1-yvob,t1-yvob suffix oldstyle,textcomp}{ts1-euro}{TS1}{yvo}{b}{n}{}
 		\installfont{yvobi8c}{t1-yvobi,ts1-yvobi,t1-yvobi suffix oldstyle,textcomp}{ts1-euro}{TS1}{yvo}{b}{it}{}
 %    \end{macrocode}
+% \end{family}
+% \begin{family}{TS1/yvoa}
 % Installation: alternates (TS1)
 %    \begin{macrocode}
 		\installfamily{TS1}{yvoa}{}
@@ -407,30 +497,39 @@
 		\installfontas{yvob8c}{TS1}{yvoa}{b}{n}{}
 		\installfontas{yvobi8c}{TS1}{yvoa}{b}{it}{}
 %    \end{macrocode}
+% \end{family}
+% \begin{family}{T1/yvod}
 % Installation: titling 
 %    \begin{macrocode}
 		\installfamily{T1}{yvod}{}
 		\installfont{yvodd8t}{t1-yvodd,newlatin}{t1-f_f}{T1}{yvod}{db}{sc}{}
 		\installfontas{yvodd8t}{T1}{yvod}{db}{n}{}
 %    \end{macrocode}
+% \end{family}
+% \begin{family}{T1/yvoad}
 % Installation: titling for alternate case
 %    \begin{macrocode}
 		\installfamily{T1}{yvoad}{}
 		\installfontas{yvodd8t}{T1}{yvoad}{db}{sc}{}
 		\installfontas{yvodd8t}{T1}{yvoad}{db}{n}{}
 %    \end{macrocode}
+% \end{family}
+% \begin{family}{TS1/yvod}
 % Installation: install with TS1 encoding for extra glyphs through textcomp
 %    \begin{macrocode}
 		\installfamily{TS1}{yvod}{}
 		\installfont{yvodd8c}{t1-yvodd,ts1-yvodd,textcomp}{ts1-euro}{TS1}{yvod}{db}{sc}{}
 		\installfontas{yvodd8c}{TS1}{yvod}{db}{n}{}
 %    \end{macrocode}
+% \end{family}
+% \begin{family}{TS1/yvoad}
 % Installation: for alternate case
 %    \begin{macrocode}
 		\installfamily{TS1}{yvoad}{}
 		\installfontas{yvodd8c}{TS1}{yvoad}{db}{sc}{}
 		\installfontas{yvodd8c}{TS1}{yvoad}{db}{n}{}
 %    \end{macrocode}
+% \end{family}
 % Finish up 
 %    \begin{macrocode}
 	\endinstallfonts
@@ -459,12 +558,6 @@
 % \iffalse
 %</map>
 % \fi
-% \subsection{Encodings (output)}
-%
-% These files define variant T1 and TS1 font encodings.
-% Note that these files may --- and, in the case of \lpack{venturisadf}, are --- also used as raw/input encodings.
-% See \file{\pkgname.pdf} and \file{venturis.pdf} for commentary and \file{\pkgname-build.pdf} for listings.
-% 
 % 
 %\Finale
 %^^A vim: tw=0:

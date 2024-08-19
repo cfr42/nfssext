@@ -31,8 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: venturissans.dtx 10246 2024-08-18 01:29:07Z cfrees $}[v0.0
-\revinfo][\filebase DTX: Venturis ADF for 8-bit engines]
+\ProvidesFileSVN{$Id: venturissans.dtx 10251 2024-08-19 05:49:24Z cfrees $}[v0.0 \revinfo][\filebase DTX: Venturis ADF for 8-bit engines]
 \DefineFileInfoSVN[venturissans]
 \documentclass[11pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -167,17 +166,6 @@
   }
 } 
 \ExplSyntaxOff
-\title{\filebase}
-\author{Clea F. Rees\thanks{%
-    Bug tracker:
-  \href{https://codeberg.org/cfr/nfssext/issues}{\url{codeberg.org/cfr/nfssext/issues}}
-  \textbar{} Code:
-  \href{https://codeberg.org/cfr/nfssext}{\url{codeberg.org/cfr/nfssext}}
-  \textbar{} Mirror:
-  \href{https://github.com/cfr42/nfssext}{\url{github.com/cfr42/nfssext}}% 
-}}
-%^^A \date{\fileversion~\filetoday}
-\date{\fileversion~\filedate}
 \pagestyle{fancy}
 \fancyhf[lh]{\itshape\filebase~\fileversion}
 %^^A \fancyhf[rh]{\itshape\filetoday}
@@ -205,13 +193,24 @@
 %</driver>
 % \fi
 %
-% \newcommand*{\adf}{\textsc{adf}}
-% \newcommand*{\lpack}[1]{\textsf{#1}}
-% \newcommand*{\fgroup}[1]{\textsf{#1}}
-% \newcommand*{\fname}[1]{\textsf{#1}}
-% \newcommand*{\file}[1]{\texttt{#1}}
 %
-% \changes{\fileversion}{\filedate}{See \file{\pkgname.pdf} for revision history.}
+% \title{\pkgname: venturissans}
+% \author{Clea F. Rees\thanks{%
+%     Bug tracker:
+%   \href{https://codeberg.org/cfr/nfssext/issues}{\url{codeberg.org/cfr/nfssext/issues}}
+%   \textbar{} Code:
+%   \href{https://codeberg.org/cfr/nfssext}{\url{codeberg.org/cfr/nfssext}}
+%   \textbar{} Mirror:
+%   \href{https://github.com/cfr42/nfssext}{\url{github.com/cfr42/nfssext}}% 
+% }}
+%^^A \date{\fileversion~\filetoday}
+% \date{\fileversion~\filedate}
+%
+% \providecommand*{\adf}{\textsc{adf}}
+% \providecommand*{\lpack}[1]{\textsf{#1}}
+% \providecommand*{\fgroup}[1]{\textsf{#1}}
+% \providecommand*{\fname}[1]{\textsf{#1}}
+% \providecommand*{\file}[1]{\texttt{#1}}
 % 
 % 
 % \maketitle\thispagestyle{empty}
@@ -237,6 +236,97 @@
 % 
 % \tableofcontents
 % 
+% \section{Example}
+%
+% \iffalse
+%<*ee>
+% \fi
+%    \begin{macrocode}
+\documentclass[12pt]{article}
+\title{Venturis Sans Example}
+\author{Spot}
+
+\newcommand{\alphaline}{ABCDEFGHIJKLMNOPQRSTUVWXYZ\\abcdefghijklmnopqrstuvwxyz\\0123456789\\
+	f{}f ff f{}i fi f{}l fl f{}f{}i ffi f{}f{}l ffl \& \texteuro \texttrademark \textcopyright \textmu\\
+	sphinx of black quartz, judge my vow}%\textcelsius \textnumero \textservicemark}
+\newcommand{\abc}{ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz}
+\newcommand{\digits}{0123456789}
+\newcommand{\alphatest}{%
+  \begin{flushleft}
+    \textup{upright:\\\alphaline}\\[\smallskipamount]
+    \textit{italics/oblique:\\\alphaline}\\
+  \end{flushleft}%
+}
+
+\pdfmapfile{- yv1.map}
+\pdfmapfile{+ yv1.map}
+\usepackage{venturis}
+
+\begin{document}
+\maketitle
+\setlength{\parindent}{0pt}
+
+\sffamily
+
+\section*{family: yv1}
+
+\subsection*{Light weight, regular width}
+
+\textlg{\alphatest}
+
+\subsection*{Regular weight, regular width}
+
+\alphatest
+
+\subsection*{Demibold weight, regular width}
+
+\textdb{\alphatest}
+
+\subsection*{Bold series (i.e.\ bold weight, extended)}
+
+\textbf{\alphatest}
+
+\subsection*{Bold weight, regular width (selected directly)}
+
+{\fontseries{b}\selectfont\alphatest}
+
+\subsection*{Heavy weight, regular width}
+
+\texteb{\alphatest}
+
+\subsection*{Regular and bold weights, condensed}
+
+{\cdwidth
+  \alphatest
+
+  \textbf{\cdwidth \alphatest}%
+}
+
+\subsection*{Regular and bold weights, extended}
+
+{\etwidth
+  \alphatest
+
+  \textbf{\etwidth\alphatest}%
+}
+
+\section*{family: yv1d}
+
+The fonts include uppercase, small-caps and lining figures.
+\medskip
+
+\textvt{\alphaline}
+\medskip
+
+\textbf{\textvt{\alphaline}}
+
+\end{document} 
+
+%    \end{macrocode}
+% \iffalse
+%</ee>
+% \fi
+%
 % \MaybeStop{%
 % \PrintChanges
 % \PrintIndex
@@ -341,6 +431,10 @@
 % Installation: creation of virtual fonts
 %    \begin{macrocode}
 	\installfonts
+%    \end{macrocode}
+% \begin{family}{T1/yv1}
+% venturissans 
+%    \begin{macrocode}
 		\installfamily{T1}{yv1}{}
 		\installfont{yv1r8t}{t1-yv1r,newlatin}{t1-f_f}{T1}{yv1}{m}{n}{}
 		\installfont{yv1ri8t}{t1-yv1ri,newlatin}{t1-f_f}{T1}{yv1}{m}{it}{}
@@ -389,6 +483,8 @@
 		\installfont{yv1d8t}{t1-yv1d,newlatin}{t1-f_f}{T1}{yv1}{db}{n}{}
 		\installfont{yv1di8t}{t1-yv1di,newlatin}{t1-f_f}{T1}{yv1}{db}{it}{}
 %    \end{macrocode}
+% \end{family}
+% \begin{family}{T1/yv1d}
 % Installation:titling
 %    \begin{macrocode}
 		\installfamily{T1}{yv1d}{}
@@ -413,6 +509,8 @@
 		\installfontas{yv1dd8tu}{T1}{yv1d}{uc}{n}{}
 		\installfontas{yv1dd8tu}{T1}{yv1d}{l}{n}{}
 %    \end{macrocode}
+% \end{family}
+% \begin{family}{TS1/yv1}
 % Installation:install with TS1 encoding for extra glyphs through textcomp
 %    \begin{macrocode}
 		\installfamily{TS1}{yv1}{}
@@ -460,6 +558,8 @@
 		\installfont{yv1d8c}{t1-yv1d,ts1-yv1d,textcomp}{ts1-euro}{TS1}{yv1}{db}{n}{}
 		\installfont{yv1di8c}{t1-yv1di,ts1-yv1di,textcomp}{ts1-euro}{TS1}{yv1}{db}{it}{}
 %    \end{macrocode}
+% \end{family}
+% \begin{family}{TS1/yv1d}
 % Installation:titling
 %    \begin{macrocode}
 		\installfamily{TS1}{yv1d}{}
@@ -483,6 +583,9 @@
 		\installfontas{yv1dd8cu}{TS1}{yv1d}{c}{n}{}
 		\installfontas{yv1dd8cu}{TS1}{yv1d}{uc}{n}{}
 		\installfontas{yv1dd8cu}{TS1}{yv1d}{l}{n}{}
+%    \end{macrocode}
+% \end{family}
+%    \begin{macrocode}
 	\endinstallfonts
 \endrecordtransforms
 \bye
@@ -509,12 +612,6 @@
 % \iffalse
 %</map>
 % \fi
-% \subsection{Encodings (output)}
-%
-% These files define variant T1 and TS1 font encodings.
-% Note that these files may --- and, in the case of \lpack{venturisadf}, are --- also used as raw/input encodings.
-% See \file{\pkgname.pdf} and \file{venturis.pdf} for commentary and \file{\pkgname-build.pdf} for listings.
-% 
 % 
 %\Finale
 %^^A vim: tw=0:
