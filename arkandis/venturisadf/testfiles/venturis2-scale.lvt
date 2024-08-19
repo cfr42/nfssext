@@ -1,11 +1,11 @@
 % !TEX TS-program = pdflatex
 % !TEX encoding = UTF-8 Unicode
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: venturis2-scale.lvt 10253 2024-08-19 15:41:16Z cfrees $}[v1.1 \revinfo][\filebase: scale test]
-\pdfmapfile{- yv2.map}
-\pdfmapfile{- yv3.map}
-\pdfmapfile{+ yv2.map}
-\pdfmapfile{+ yv3.map}
+\ProvidesFileSVN{$Id: venturis2-scale.lvt 10255 2024-08-19 15:58:36Z cfrees $}[v1.1 \revinfo][\filebase: scale test]
+\pdfmapfile{-yv2.map}
+\pdfmapfile{-yv3.map}
+\pdfmapfile{+yv2.map}
+\pdfmapfile{+yv3.map}
 \input regression-test.tex\relax
 \documentclass{article}
 	
