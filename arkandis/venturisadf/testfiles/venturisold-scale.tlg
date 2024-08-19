@@ -1,0 +1,15 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+============================================================
+TEST 1: venturisold-scale-test
+============================================================
+> \box...=
+\hbox(142.49992+45.49998)x352.80017
+.\T1/yvo/m/n/10 p
+.\T1/yvo/m/n/10 o
+.\T1/yvo/m/n/10 b
+.\T1/yvo/m/n/10 l
+! OK.
+<argument> \l_tmpa_box 
+l. ...}
+============================================================

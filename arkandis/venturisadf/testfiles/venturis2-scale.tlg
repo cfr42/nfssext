@@ -1,0 +1,31 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+============================================================
+TEST 1: venturis2-scale-test
+============================================================
+> \box...=
+\hbox(142.0+43.79997)x334.0
+.\T1/yv2/m/n/10 p
+.\T1/yv2/m/n/10 o
+.\T1/yv2/m/n/10 b
+.\T1/yv2/m/n/10 l
+! OK.
+<argument> \l_tmpa_box 
+l. ...}
+============================================================
+============================================================
+TEST 2: venturissans2-scale-test
+============================================================
+LaTeX Font Info:    Trying to load font information for T1+yv3 on input line ....
+LaTeX Font Info:    Font shape `T1/yv3/m/n' will be
+(Font)              scaled to size 200.0pt on input line ....
+> \box...=
+\hbox(140.69995+43.89992)x318.1999
+.\T1/yv3/m/n/10 p
+.\T1/yv3/m/n/10 o
+.\T1/yv3/m/n/10 b
+.\T1/yv3/m/n/10 l
+! OK.
+<argument> \l_tmpa_box 
+l. ...}
+============================================================
