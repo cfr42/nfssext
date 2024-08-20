@@ -1,4 +1,4 @@
--- $Id: build.lua 10250 2024-08-19 00:52:13Z cfrees $
+-- $Id: build.lua 10258 2024-08-20 01:43:21Z cfrees $
 -- Build configuration for venturisadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -18,7 +18,10 @@ ctanpkg = "venturisadf"
 maindir = "../.."
 module = "venturisadf"
 vendor = "arkandis"
-autotestfds = { "t1yvt.fd", "t1yvtajw.fd", "t1yvtaw.fd", "t1yvtd.fd", "t1yvtj.fd", "t1yvtjw.fd", "t1yvtw.fd", "t1yv2.fd", "t1yvo.fd", "t1yvoa.fd", "t1yvoad.fd", "t1yvod.fd", "t1yv1.fd", "t1yv1d.fd", "t1yv3.fd" }
+fnttestfds = {}
+fnttestfds.venturis = { "t1yvt.fd", "t1yvtajw.fd", "t1yvtaw.fd", "t1yvtd.fd", "t1yvtj.fd", "t1yvtjw.fd", "t1yvtw.fd" , "t1yv1.fd", "t1yv1d.fd" } 
+fnttestfds.venturis2 = { "t1yv2.fd" , "t1yv3.fd" } 
+fnttestfds.venturisold = { "t1yvo.fd", "t1yvoa.fd", "t1yvoad.fd", "t1yvod.fd" } 
 typesetfiles = { module .. ".dtx", "*-imp.dtx", "*-example.tex", "*-tables.tex" }
 dofile(maindir .. "/fontinst.lua")
 local srcfiles = { "lining.etx", "oldstyle.etx", "t1-dotalt-f_f.enc", "t1-dotalt-f_f.etx", "t1-f_f.enc", "t1-f_f.etx", "t1j-f_f.etx", "ts1-euro.enc", "ts1-euro.etx", "ucdotalt.etx" }
