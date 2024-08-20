@@ -1,4 +1,4 @@
-$Id: README.md 10262 2024-08-20 02:44:30Z cfrees $
+$Id: README.md 10263 2024-08-20 05:00:55Z cfrees $
 
 Copyright (C) 2008-2024 Hirwen Harendal and Clea F. Rees
 
@@ -218,5 +218,5 @@ Code for the LaTeX support package is hosted at
 For convenience, the repository is mirrored at
   https://github.com/cfr42/nfssext
 
-2010/06/05
-Version 0.0
+Version 2.0
+2024/08/18
