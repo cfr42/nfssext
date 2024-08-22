@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10257 2024-08-20 01:39:40Z cfrees $
+-- $Id: fontinst.lua 10274 2024-08-22 03:23:34Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -56,6 +56,21 @@ function fontinst (dir,mode)
     print("Unpacking ...\n")
     local errorlevel = unpack() 
   -- end
+  local tfmfiles = filelist(dir,"*.tfm")
+  for i,j in ipairs(tfmfiles) do
+    local plname = string.gsub(j, "%.tfm$", ".pl")
+    if fileexists(unpackdir .. "/" .. plname) then
+      print(plname .. " already exists!")
+      return 1
+    else
+      local cmd = "tftopl " .. j .. " " .. plname
+      local errorlevel = runcmd(cmd,dir)
+      gwall("Conversion to pl from tfm ",j,errorlevel)
+      -- remove tfm to reduce pollution of package later
+      rm(unpackdir,j)
+      gwall("Deletion of tfm ", j, errorlevel)
+    end
+  end
   for i,j in ipairs(familymakers) do
     local errorlevel = finst(j,dir,mode)
     gwall("Compilation of driver ", j, errorlevel)
@@ -345,7 +360,7 @@ manifestfile = "manifest.txt"
 mapmakers = {"*-map.tex"}
 packtdszip = true
 -- need module test or default?
-sourcefiles = {"*.afm", "afm/*.afm", "*.pfb", "*.dtx", "*.ins", "opentype/*.otf", "*.otf", "truetype/*.ttf", "*.ttf", "type1/*.pfb"}
+sourcefiles = {"*.afm", "afm/*.afm", "*.pfb", "*.dtx", "*.ins", "opentype/*.otf", "*.otf", "tfm/*.tfm", "truetype/*.ttf", "*.ttf", "type1/*.pfb"}
 tagfiles = {"*.dtx", "*.ins", "manifest.txt", "MANIFEST.txt", "README", "README.md"}
 -- vendor and module must be specified before tdslocations
 vendor = vendor or "public"

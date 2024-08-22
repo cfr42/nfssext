@@ -1,4 +1,4 @@
--- $Id: build.lua 10258 2024-08-20 01:43:21Z cfrees $
+-- $Id: build.lua 10264 2024-08-20 05:29:02Z cfrees $
 -- Build configuration for venturisadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -91,6 +91,7 @@ typesetruns = 5
 uploadconfig = {
   -- *required* --
   -- announcement (don't include here?)
+  announcement = "Belated update for (N)NFSS; add scaling options; switch to dtx/ins; includes OTF.",
 	author     = "Hirwen Harendal; Clea F. Rees",
   -- email (don't include here!)
 	ctanPath   = "fonts/venturisadf",
@@ -98,17 +99,18 @@ uploadconfig = {
 	pkg        = ctanpkg,
 	summary    = "Support for VenturisADF on 8-bit engines",
   uploader   = "Clea F. Rees",
-	version    = "v1.1",
+	version    = "v2.0",
   -- optional --
 	bugtracker = {"https://codeberg.org/cfr/nfssext/issues"},
   -- description
   -- development {}
   -- home {}
-	-- repository = {"https://codeberg.org/cfr/nfssext", "https://github.com/cfr42/nfssext"},
-	note = "Repository mirrored at https://github.com/cfr42/nfssext",
+	repository = {"https://codeberg.org/cfr/nfssext", "https://github.com/cfr42/nfssext"},
+	-- note = "Repository mirrored at https://github.com/cfr42/nfssext",
+  note       = "Creation of font definition files REQUIRES custom l3build target. I understand the lua scripts should not be included.",
 	repository = "https://codeberg.org/cfr/nfssext",
   -- support {}
-	topic      = {"font", "font-type1"},
+	topic      = {"font", "font-type1", "font-otf"},
 	update     = true,
   -- files --
   -- announcement_file
