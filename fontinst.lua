@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10274 2024-08-22 03:23:34Z cfrees $
+-- $Id: fontinst.lua 10275 2024-08-22 04:05:53Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -116,13 +116,15 @@ function fontinst (dir,mode)
     local content = f:read("*all")
     f:close()
     local csscaleaux = string.match(content, "%<%-%> *\\([%a%d][%a%d]*@@scale)") 
-    local csscale = string.gsub(csscaleaux, "@(@)", "%1")
-    if csscale ~= nil then
-      local new_content = string.gsub(content, "(\\DeclareFontFamily{)", "%% addaswyd o t1phv.fd (dyddiad y ffeil fd: 2020-03-25)\n\\expandafter\\ifx\\csname " .. csscale .. "\\endcsname\\relax\n  \\let\\" .. csscaleaux .. "\\@empty\n\\else\n  \\edef\\" .. csscaleaux .. "{s*[\\csname " .. csscale .. "\\endcsname]}%%\n\\fi\n\n%1")
-      local f = assert(io.open(unpackdir .. "/" .. j,"w"))
-      -- this somehow removes the second value returned by string.gsub??
-      f:write((string.gsub(new_content,"\n",os_newline_cp)))
-      f:close()
+    if csscaleaux ~= nil then
+      local csscale = string.gsub(csscaleaux, "@(@)", "%1")
+      if csscale ~= nil then
+        local new_content = string.gsub(content, "(\\DeclareFontFamily{)", "%% addaswyd o t1phv.fd (dyddiad y ffeil fd: 2020-03-25)\n\\expandafter\\ifx\\csname " .. csscale .. "\\endcsname\\relax\n  \\let\\" .. csscaleaux .. "\\@empty\n\\else\n  \\edef\\" .. csscaleaux .. "{s*[\\csname " .. csscale .. "\\endcsname]}%%\n\\fi\n\n%1")
+        local f = assert(io.open(unpackdir .. "/" .. j,"w"))
+        -- this somehow removes the second value returned by string.gsub??
+        f:write((string.gsub(new_content,"\n",os_newline_cp)))
+        f:close()
+      end
     end
   end
   local rtn = direxists(keepdir)
