@@ -31,39 +31,33 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 %^^A \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: cfr-lm-build.dtx 10270 2024-08-22 00:36:13Z cfrees $}[v0.0 \revinfo][\filebase DTX: Latin Modern for 8-bit engines]
+\ProvidesFileSVN{$Id: cfr-lm-build.dtx 10281 2024-08-24 13:08:02Z cfrees $}[v0.0 \revinfo][\filebase DTX: Latin Modern for 8-bit engines]
 \DefineFileInfoSVN[cfr-lm@build]
 \documentclass[11pt,british]{ltxdoc}
 % l3doc loads fancyvrb
 % fancyvrb overwrites svn-prov's macros without warning
 % restore \fileversion \filerev in case we're using l3doc
 \GetFileInfoSVN{cfr-lm@build}
+\NewDocumentCommand \pkgname {} {cfr-lm}
 \EnableCrossrefs
 \CodelineIndex
 \RecordChanges
 \DoNotIndex{\verb,\ProvidesPackageSVN,\NeedsTeXFormat,\ProcessKeyOptions}
 \usepackage{babel}
-\usepackage{lmodern}
-\renewcommand{\ttdefault}{lmvtt}
-\let\origrmdefault\rmdefault
-\DeclareRobustCommand{\origrmfamily}{%
-  \fontencoding{T1}%
-  \fontfamily{\origrmdefault}%
-  \selectfont}
-\DeclareTextFontCommand{\textorigrm}{\origrmfamily}
-\usepackage[]{cfr-lm}
-\pdfmapfile{clm.map}	% not necessary for installed package
-\pdfmapfile{+pdftex.map}	% not necessary for installed package
+\usepackage[rm={lining,prop},sf={lining,prop},tt={mono,lining,tab}]{cfr-lm}
+\pdfmapfile{-clm.map}	% not necessary for installed package
+\pdfmapfile{+clm.map}	% not necessary for installed package
 \usepackage{fancyhdr}
 \usepackage{enumitem}
 \usepackage{xcolor}
 \usepackage{xurl}
-\urlstyle{tt}
+\urlstyle{sf}
 \usepackage{microtype}
 \usepackage[a4paper,headheight=14pt]{geometry}	% use 14pt for 11pt text, 15pt for 12pt text
 \usepackage{csquotes}
 \MakeAutoQuote{‘}{’}
 \MakeAutoQuote*{“}{”}
+\usepackage{fancyref}
 % sicrhau hyperindex=false: llwytho CYN bookmark
 \usepackage{hypdoc}% ateb Ulrike Fischer: https://tex.stackexchange.com/a/695555/
 \usepackage{bookmark}
@@ -77,8 +71,12 @@
   pdfproducer={pdfeTeX},
   urlcolor={blueberry}%
 }
-\usepackage{fancyref}
-\title{\filebase{}: Encodings}
+\newcommand*{\gust}{\textsc{Gust}}
+\newcommand*{\lpack}[1]{\textsf{#1}}
+\newcommand*{\fgroup}[1]{\textsf{#1}}
+\newcommand*{\fname}[1]{\textsf{#1}}
+\newcommand*{\file}[1]{\texttt{#1}}
+\title{\pkgname{}: encodings}
 \author{Clea F. Rees\thanks{%
     Bug tracker:
   \href{https://codeberg.org/cfr/nfssext/issues}{\url{codeberg.org/cfr/nfssext/issues}}
@@ -89,11 +87,9 @@
 }}
 \date{\filetoday}
 \pagestyle{fancy}
-\fancyhf[rh]{\itshape\filetoday}
-\fancyhf[lh]{\itshape\filebase~\fileversion{}: Encodings}
-\fancyhf[ch]{}
-\fancyhf[lf]{}
-\fancyhf[rf]{}
+\fancyhf{}
+\fancyhf[rh]{\itshape\fileversion}
+\fancyhf[lh]{\itshape\pkgname:~encodings}
 \fancyhf[cf]{--- \thepage~/~\lastpage{} ---}
 \ExplSyntaxOn
 \hook_gput_code:nnn {shipout/lastpage} {.}
@@ -108,6 +104,10 @@
 \definecolor{strawberry}{rgb}{1.000,0.000,0.502}
 \definecolor{blueberry}{rgb}{0.000,0.000,1.000}
 \definecolor{moss}{rgb}{0.000,0.502,0.251}
+% ^^A break long code lines
+\makeatletter
+\def\@xobeysp{\leavevmode\penalty100\ }
+\makeatother
 \begin{document}
   \DocInput{\filename}
 \end{document}
@@ -124,19 +124,13 @@
 % 	(TeX,LaTeX,font,fonts,tex,latex,Latin Modern,cfr-lm,cfr-lm,Latin Modern,Gust,gust,Digital,Foundry,digital,foundry,Clea,Rees,encoding,encodings,etx)}
 % \pdfcatalog{%
 % 	/URL				()
-% 	/PageMode	/UseOutlines}	^^A other values: /UseNone, /UseOutlines, /UseThumbs, /FullScreen
-% 	^^A[openaction <actionspec>]
+% 	/PageMode	/UseOutlines}	
 % \setlength{\parindent}{0pt}
 % \setlength{\parskip}{0.5em}
-%	
-% \newcommand*{\gust}{gust}
-% \newcommand*{\lpack}[1]{\textsf{#1}}
-% \newcommand*{\fgroup}[1]{\textsf{#1}}
-% \newcommand*{\fname}[1]{\textsf{#1}}
 %
 % \begin{abstract}
 %   This file contains listings for the encodings used by \lpack{cfr-lm}.
-%   For commentary and documentation, see \texttt{cfr-lm.pdf}.
+%   For commentary and documentation, see \file{cfr-lm.pdf}.
 % \end{abstract}
 %
 % \tableofcontents
@@ -145,51 +139,19 @@
 % \PrintIndex
 % }
 % 
-% \section{Supplementary (raw)}
+% 
+% \section{Supplementary Encodings (Raw)}
 % 
 % \begin{itemize} 
-%   \item \texttt{supp-clm.etx}
-% \end{itemize}
-%
-% \iffalse
-%<*supp-clm>
-% \fi
-%    \begin{macrocode}
-SUPP
-%    \end{macrocode}
-% \iffalse
-%</supp-clm>
-% \fi
-%
-% \section{Reglyph}
-% 
-% \begin{itemize}
-%   \item \texttt{reglyph-clm.etx}
-% \end{itemize}
-%
-% \iffalse
-%<*reglyph>
-% \fi
-%    \begin{macrocode}
-REGLYPH
-     \end{macrocode}
-% \iffalse
-%</reglyph>
-% \fi
-% 
-% \section{Encodings (output)}
-% 
-% \begin{itemize}
 %   \item \file{dotdigits.etx}
-%   \item \file{dotoldstyle.etx}
-%   \item \file{dotprop.etx}
-%   \item \file{dottaboldstyle.etx}
-%   \item \file{t1-clm.etx}
 % \end{itemize}
+%
+% \subsection{\file{dotdigits.etx}}
 %
 % \iffalse
 %<*dotdigits>
 % \fi
+%    \begin{macrocode}
 \relax
 \encoding
 	\setslot{zero.prop}\endsetslot
@@ -275,43 +237,67 @@ REGLYPH
 	\nextslot{250}
 	\setslot{zero.slash}\endsetslot
 \endencoding
+%    \end{macrocode}
 % \iffalse
 %</dotdigits>
 % \fi
 %
+% \section{Output Encodings}
+% 
+% \begin{itemize}
+%   \item \file{dotoldstyle.etx}
+%   \item \file{dotprop.etx}
+%   \item \file{dottaboldstyle.etx}
+%   \item \file{t1-clm.etx}
+% \end{itemize}
+%
+% \subsection{\file{dotoldstyle.etx}}
+%
 % \iffalse
 %<*dotoldstyle>
 % \fi
+%    \begin{macrocode}
 \relax
 \encoding
 	\setcommand\digit#1{#1.oldstyle}
 \endencoding
+%    \end{macrocode}
 % \iffalse
 %</dotoldstyle>
 % \fi
 %
+% \subsection{\file{dotprop.etx}}
+%
 % \iffalse
 %<*dotprop>
 % \fi
+%    \begin{macrocode}
 \relax
 \encoding
 	\setcommand\digit#1{#1.prop}
 \endencoding
+%    \end{macrocode}
 % \iffalse
 %</dotprop>
 % \fi
 %
+% \subsection{\file{dottaboldstyle.etx}}
+%
 % \iffalse
 %<*dottaboldstyle>
 % \fi
+%    \begin{macrocode}
 \relax
 \encoding
 	\setcommand\digit#1{#1.taboldstyle}
 \endencoding
+%    \end{macrocode}
 % \iffalse
 %</dottaboldstyle>
 % \fi
 %
+%
+% \subsection{\file{t1-clm.etx}}
 %
 % \iffalse
 %<*t1-clm>

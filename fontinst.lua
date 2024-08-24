@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10275 2024-08-22 04:05:53Z cfrees $
+-- $Id: fontinst.lua 10281 2024-08-24 13:08:02Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -115,16 +115,24 @@ function fontinst (dir,mode)
     local f = assert(io.open(unpackdir .. "/" .. j,"rb"))
     local content = f:read("*all")
     f:close()
+    local new_content = content
     local csscaleaux = string.match(content, "%<%-%> *\\([%a%d][%a%d]*@@scale)") 
     if csscaleaux ~= nil then
       local csscale = string.gsub(csscaleaux, "@(@)", "%1")
       if csscale ~= nil then
-        local new_content = string.gsub(content, "(\\DeclareFontFamily{)", "%% addaswyd o t1phv.fd (dyddiad y ffeil fd: 2020-03-25)\n\\expandafter\\ifx\\csname " .. csscale .. "\\endcsname\\relax\n  \\let\\" .. csscaleaux .. "\\@empty\n\\else\n  \\edef\\" .. csscaleaux .. "{s*[\\csname " .. csscale .. "\\endcsname]}%%\n\\fi\n\n%1")
-        local f = assert(io.open(unpackdir .. "/" .. j,"w"))
-        -- this somehow removes the second value returned by string.gsub??
-        f:write((string.gsub(new_content,"\n",os_newline_cp)))
-        f:close()
+        new_content = string.gsub(content, "(\\DeclareFontFamily{)", "%% addaswyd o t1phv.fd (dyddiad y ffeil fd: 2020-03-25)\n\\expandafter\\ifx\\csname " .. csscale .. "\\endcsname\\relax\n  \\let\\" .. csscaleaux .. "\\@empty\n\\else\n  \\edef\\" .. csscaleaux .. "{s*[\\csname " .. csscale .. "\\endcsname]}%%\n\\fi\n\n%1")
       end
+    end
+    csscaleaux = string.match(content, "\\DeclareFontFamily{[^}]*}{[^}]*}{[^}]*\\hyphenchar *\\font *=[^}\n]*}") 
+    if csscaleaux ~= nil then
+      content = new_content
+      new_content = string.gsub(content, "(\\DeclareFontFamily{[^}]*}{[^}]*}{\\hyphenchar) *(\\font) *(=[^ }\n]*) *([^ }\n]* *})", "%1%2%3%4")
+    end
+    if new_content ~= content then
+      local f = assert(io.open(unpackdir .. "/" .. j,"w"))
+      -- this somehow removes the second value returned by string.gsub??
+      f:write((string.gsub(new_content,"\n",os_newline_cp)))
+      f:close()
     end
   end
   local rtn = direxists(keepdir)
@@ -167,7 +175,7 @@ function fnt_test (fntpkgname,fds,content,maps)
   local coll = ""
   local targname = fntpkgname .. "-auto-test.lvt"
   local targfile = unpackdir .. "/" .. targname
-  print("Creating text file for " .. fntpkgname .. " with fds: ")
+  print("Creating test file for " .. fntpkgname .. " with fds: ")
   for i, j in ipairs(fds) do print("fd: " .. j) end
   -- l3build-tagging.lua
   for i, j in ipairs(fds) do
@@ -221,7 +229,13 @@ function checkinit_hook ()
   -- if fntestfds.<package name> has been specified, use that (should be a table)
   -- o/w assign the autotestfds table to fntestfds.<package name>
   for i, j in ipairs(fntpkgnames) do
-    fnttestfds.j = fnttestfds[j] or autotestfds
+    if fnttestfds.j == nil then
+      -- fnttestfds.j = {}
+      fnttestfds.j = autotestfds
+      -- for k, l in ipairs(autotestfds) do
+        -- table.insert (fnttestfds.j, l)
+      -- end
+    end
   end
   -------
   for i, j in ipairs(mapfiles) do
@@ -250,7 +264,7 @@ function checkinit_hook ()
       content = string.gsub(content, "\\RequirePackage%{svn%-prov%}\n\\ProvidesFileSVN%{[^%}]*%}%[[^%]]*%]%[[^%]]*%]\n", "")
       for i, j in ipairs(fntpkgnames) do
         -- create the test file for each package
-        errorlevel = fnt_test(j,fnttestfds[j],content,maps)
+        errorlevel = fnt_test(j,fnttestfds.j,content,maps)
         if errorlevel ~= 0 then
           gwall("Font test creation ", j, errorlevel)
           return errorlevel

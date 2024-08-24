@@ -124,11 +124,11 @@ acs-*.bib
 *.lox
 
 # feynmf/feynmp
-*.mf
-*.mp
+# *.mf
+# *.mp
 *.t[1-9]
 *.t[1-9][0-9]
-*.tfm
+# *.tfm
 
 #(r)(e)ledmac/(r)(e)ledpar
 *.end
@@ -375,3 +375,11 @@ arkandis/venturisadf/venturis2.pdf
 arkandis/venturisadf/venturissans.pdf
 arkandis/venturisadf/venturissans2.pdf
 arkandis/venturisadf/venturisold.pdf
+cfr-lm/*-example.pdf
+cfr-lm/*-tables.pdf
+cfr-lm/*-tables.tex
+cfr-lm/cfr-lm-build.pdf
+cfr-lm/cfr-lm.pdf
+cfr-lm/type1
+cfr-lm/afm
+cfr-lm/tfm
