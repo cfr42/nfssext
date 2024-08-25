@@ -32,7 +32,7 @@
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
 % ^^A\def\MyMakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: cfr-lm.dtx 10281 2024-08-24 13:08:02Z cfrees $}[v0.0
+\ProvidesFileSVN{$Id: cfr-lm.dtx 10282 2024-08-24 21:13:56Z cfrees $}[v0.0
 \revinfo][\filebase DTX: Latin Modern for 8-bit engines]
 \DefineFileInfoSVN[cfr-lm]
 \documentclass[11pt,british]{ltxdoc}
@@ -209,10 +209,29 @@
 % \fi
 %
 %
-% \changes{v??}{????/??/??}{First public release.}
-% \changes{v1.5}{2015/02/01}{}
-% \changes{v1.6}{2020/2024}{%
-%   Belated update for (New) NFSS and revised nfssext-cfr.
+% \changes{v0.9? 2008-10-26}{2008/10/26}{%
+%   First public release.}
+% \changes{v1.0? 2008-12-22}{2008/12/22}{}
+% \changes{v1.1? 2010-05-27}{2010/05/27}{%
+%   Update for Latin Modern 2.004.
+%   Revise package file for more robust and flexible option handling.
+%   Tweak generation of virtual fonts to improve accent placement by adjusting for peculiarities in \lpack{lm} distribution.}
+% \changes{v1.2}{??}{%
+%   Unpublished.}
+% \changes{v1.3 2010-05-31}{2010/05/31}{%
+%   Now with added documentation\!}
+% \changes{v1.3 2010-07-14}{2010/07/14}{%
+%   Very minor update to ensure encoding files are unique. 
+%   Change map file and \file{manifest.txt} accordingly.}
+% \changes{v1.4 2014-03-04}{2014/03/04}{%
+%   Add experimental support for family-specific settings if \lpack{microtype} is used.}
+% \changes{v1.5 2015-02-01}{2015/02/01}{%
+%   Correct two typos in \file{.fd} files.
+%   Make corresponding changes to typos in source \file{-drv.tex} files. 
+%   In most cases, the changes will have no effect.
+%   However, in some cases, the errors might have caused inappropriate font substitutions and could cause compilation failures in unusual circumstances.}
+% \changes{v1.6 2020-2024}{2020/2024}{%
+%   Belated update for (New) NFSS and revised \lpack{nfssext-cfr}.
 %   Remove dependency on \lpack{xkeyval}.%
 % }
 % \changes{\fileversion}{\filedate}{%
@@ -258,7 +277,7 @@
 % The package also supports using e.g.\ different styles of digits within a document so it is possible to use proportional oldstyle digits by default, say, but tabular lining digits within a particular table.
 % Finally, a command to access the zeroslash character is provided.
 % 
-% \changes{v1.3}{??}{%
+% \changes{v1.3}{2010/05/27?}{%
 %   Update for version 2.004 of Latin Modern.%
 % }
 % \lpack{cfr-lm} version 1.3 requires version 2.004 of \textsc{gust}'s Latin Modern fonts, including the support package provided for \TeX.
@@ -266,10 +285,10 @@
 % 
 % \lpack{cfr-lm} consists of all files listed in \lpack{manifest.txt}\ and these files are released under the \LaTeX\ Project Public Licence as explained in the included licensing notices.
 %
-% \changes{v1.3}{??}{%
+% \changes{v1.3}{2010/05/27?}{%
 %   Improved option handling mostly due to Enrico Gregorio's efforts.%
 % }
-% \changes{v1.3}{??}{%
+% \changes{v1.3}{2010/05/27?}{%
 %   Improved accent placement for faked glyphs thanks in considerable part to Lars Hellström's patience.
 %   Ignore all font dimensions in the \textsc{afm} files and take them from the \textsc{tfm}s released with Latin Modern instead.%
 % }
@@ -279,7 +298,7 @@
 % The exception to this is the value of \verb|acccapheight| which is set to zero in the \textsc{tfm}s.
 % The current virtual font setup uses \lpack{fontinst}'s default value in this case.
 % 
-% \changes{v1.4}{2005/02/01}{%
+% \changes{v1.4 2005-02-01}{2005/02/01}{%
 %   Use family-specific settings for \lpack{microtype}.%
 % }
 % If you load \lpack{microtype}, version 1.4 \emph{should} automatically figure out the family-specific settings to use.
@@ -1009,7 +1028,7 @@ tt={var=false}
 % 
 % \section{Microtype}\label{sec:mt}
 % 
-% \changes{v1.4}{}{Support for \lpack{microtype}.}
+% \changes{v1.4 2014-03-04}{2014/03/04}{Support for \lpack{microtype}.}
 % Version 1.4 adds support for family-specific microtypographical features supported by \lpack{microtype}.
 % This code will do nothing if you do not load \lpack{microtype}.
 % If you do use these features, all regular roman and sans families, together with the sans quotation font, will use the settings for Computer Modern Roman.
@@ -1208,7 +1227,7 @@ updmap --sys --enable Map=clm.map
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: cfr-lm.dtx 10281 2024-08-24 13:08:02Z cfrees $}[\filebase v1.6 \revinfo][Extended support for Latin Modern 2.004]
+\ProvidesPackageSVN[\filebase.sty]{$Id: cfr-lm.dtx 10282 2024-08-24 21:13:56Z cfrees $}[\filebase v1.6 \revinfo][Extended support for Latin Modern 2.004]
 \DefineFileInfoSVN[clm]
 \RequirePackage[T1]{fontenc}
 \RequirePackage{nfssext-cfr}
@@ -1236,21 +1255,27 @@ updmap --sys --enable Map=clm.map
 % the Latin Modern fonts released by GUST and available from
 % http://www.gust.org.pl/projects/e-foundry/latin-modern.
 %
-% \changes{v1.2}{??}{%
+% \changes{v1.2 2010-05-??}{2010/05/??}{%
 %   Improvements to this file in v1.2 (unpublished) and v1.3 owe almost everything to Enrico Gregorio.}
-% \changes{v1.3}{??}{%
+% \changes{v1.3 2010-05-31}{2010/05/31}{%
 %   Ditto.}
 %
-% \changes{v1.4}{??}{%
-%   v1.4 adds family-specific support for microtype.
-%   This draws also on the documentation for the microtype package and MinionPro.sty.
-%   MinionPro.sty is available as part of the minionpro package and can be obtain from http://mirror.ctan.org/fonts/minionpro.
-%   MinionPro.sty is in the public domain.
-%   The documentation for microtype is available in English and German from http://ctan.org/pkg/microtype.
-%   It is part of the microtype package which is itself licensed under the LPPL.}
+% v1.4 2014/03/04
+%   Add family-specific support for \lpack{microtype}.
+%   This draws also on the documentation for the \lpack{microtype} package and \file{MinionPro.sty}.
+%   \file{MinionPro.sty} is available as part of the \lpack{minionpro} package and can be obtain from \url{http://mirror.ctan.org/fonts/minionpro}.
+%   \file{MinionPro.sty} is in the public domain.
+%   The documentation for \lpack{microtype} is available in English and German from \href{https://ctan.org/pkg/microtype}{\lpack{microtype}}.
+%   It is part of the \lpack{microtype} package which is itself licensed under the LPPL.
 %
-% \changes{v1.5}{??}{%
-%   v1.5 fixes an undeclared dependency and reimplements key-processing in expl3.}
+% \changes{v1.4 2014-03-04}{2014-03-04}{%
+%   Add family-specific support for \lpack{microtype}.}
+%
+% Since removed?
+% \changes{v1.6 2015-2020}{2015/2020}{%
+%   Fix an undeclared dependency.}
+% \changes{v1.6 2020-2024}{2020/2024}{%
+%   Reimplement key-processing in \lpack{expl3}.}
 %%
 % BEGIN bools 
 %    \begin{macrocode}
@@ -1281,6 +1306,9 @@ updmap --sys --enable Map=clm.map
 %    \end{macrocode}
 % \begin{option}{rm/oldstyle,rm/osf,rm/lining}
 % boolkeys for roman osf/lf
+% \changes{v1.6 2020-2024}{2020/2024}{%
+%   Reimplement in \lpack{expl3}.%
+% }
 %    \begin{macrocode}
   rm / oldstyle .bool_set:N = \l__clm_rm_osf_bool,
   rm / oldstyle .default:n = true,
@@ -1293,6 +1321,9 @@ updmap --sys --enable Map=clm.map
 % \end{option}
 % \begin{option}{rm/proportional,rm/prop,rm/tabular,rm/tab}
 % boolkeys for roman prop/tab figures
+% \changes{v1.6 2020-2024}{2020/2024}{%
+%   Reimplement in \lpack{expl3}.%
+% }
 %    \begin{macrocode}
   rm / proportional .bool_set:N = \l__clm_rm_prop_bool,
   rm / proportional .default:n = true,
@@ -1307,6 +1338,9 @@ updmap --sys --enable Map=clm.map
 % \end{option}
 % \begin{option}{sf/oldstyle,sf/osf,sf/lining}
 % boolkeys for sans osf/lf
+% \changes{v1.6 2020-2024}{2020/2024}{%
+%   Reimplement in \lpack{expl3}.%
+% }
 %    \begin{macrocode}
   sf / oldstyle .bool_set:N = \l__clm_sf_osf_bool,
   sf / oldstyle .default:n = true,
@@ -1319,6 +1353,9 @@ updmap --sys --enable Map=clm.map
 % \end{option}
 % \begin{option}{sf/proportional,sf/prop,sf/tabular,sf/tab}
 % boolkeys for sans prop/tab figures
+% \changes{v1.6 2020-2024}{2020/2024}{%
+%   Reimplement in \lpack{expl3}.%
+% }
 %    \begin{macrocode}
   sf / proportional .bool_set:N = \l__clm_sf_prop_bool,
   sf / proportional .default:n = true,
@@ -1333,6 +1370,9 @@ updmap --sys --enable Map=clm.map
 % \end{option}
 % \begin{option}{tt/oldstyle,tt/osf,tt/lining}
 % boolkeys for typewriter osf/lf
+% \changes{v1.6 2020-2024}{2020/2024}{%
+%   Reimplement in \lpack{expl3}.%
+% }
 %    \begin{macrocode}
   tt / oldstyle .bool_set:N = \l__clm_tt_osf_bool,
   tt / oldstyle .default:n = true,
@@ -1345,6 +1385,9 @@ updmap --sys --enable Map=clm.map
 % \end{option}
 % \begin{option}{tt/proportional,tt/prop,tt/tabular,tt/tab}
 % boolkeys for typewriter prop/tab figures
+% \changes{v1.6 2020-2024}{2020/2024}{%
+%   Reimplement in \lpack{expl3}.%
+% }
 %    \begin{macrocode}
   tt / proportional .bool_set:N = \l__clm_tt_prop_bool,
   tt / proportional .default:n = true,
@@ -1359,6 +1402,9 @@ updmap --sys --enable Map=clm.map
 % \end{option}
 % \begin{option}{tt/monowidth,tt/mono,tt/variable,tt/var}
 % boolkeys for typewriter mono/variable width
+% \changes{v1.6 2020-2024}{2020/2024}{%
+%   Reimplement in \lpack{expl3}.%
+% }
 %    \begin{macrocode}
   tt / monowidth .bool_set:N = \l__clm_tt_mono_bool,
   tt / monowidth .default:n = true,
@@ -1373,6 +1419,9 @@ updmap --sys --enable Map=clm.map
 % \end{option}
 % \begin{option}{rm}
 % options for roman
+% \changes{v1.6 2020-2024}{2020/2024}{%
+%   Reimplement in \lpack{expl3}.%
+% }
 %    \begin{macrocode}
   rm .code:n ={
     \keys_set:nn { clm / rm } { #1 }
@@ -1383,6 +1432,9 @@ updmap --sys --enable Map=clm.map
 % \end{option}
 % \begin{option}{sf}
 % options for sans
+% \changes{v1.6 2020-2024}{2020/2024}{%
+%   Reimplement in \lpack{expl3}.%
+% }
 %    \begin{macrocode}
   sf .code:n ={
     \keys_set:nn { clm / sf } { #1 }
@@ -1393,6 +1445,9 @@ updmap --sys --enable Map=clm.map
 % \end{option}
 % \begin{option}{tt}
 % options for typewriter
+% \changes{v1.6 2020-2024}{2020/2024}{%
+%   Reimplement in \lpack{expl3}.%
+% }
 %    \begin{macrocode}
   tt .code:n ={
     \keys_set:nn { clm / tt } { #1 }
@@ -1403,6 +1458,9 @@ updmap --sys --enable Map=clm.map
 % \end{option}
 % \begin{option}{qt}
 % note that this option does nothing unless \cs{qtfont} is defined appropriately
+% \changes{v1.6 2020-2024}{2020/2024}{%
+%   Reimplement in \lpack{expl3}.%
+% }
 %    \begin{macrocode}
   qt .bool_set:N = \l__clm_qt_bool,
   qt .default:n = true,
@@ -1477,13 +1535,16 @@ updmap --sys --enable Map=clm.map
 }
 %
 %    \end{macrocode}
+% \begin{macro}{\rmdefault,\sfdefault,\ttdefault}
 % Make LM default for all families, implementing options for each
 %    \begin{macrocode}
 \renewcommand{\rmdefault}{clm \l__clm_rm_prop_tl \l__clm_rm_osf_tl }
 \renewcommand{\sfdefault}{clm \l__clm_sf_prop_tl \l__clm_sf_osf_tl s }
 \renewcommand{\ttdefault}{clm \l__clm_tt_prop_tl \l__clm_tt_osf_tl \l__clm_tt_mono_tl }
 %    \end{macrocode}
+% \end{macro}
 %
+% \begin{macro}{\qtfont}
 % Handle the qt option, failing gracefully if somebody has enabled the option without defining \cs{qtfont} appropriately.
 % We do this in a hook at the start of the document so we can respond if the required macro is defined after \lpack{\filebase} is loaded.
 % It would be nice if there was a more satisfactory approach, but I can't think of one a font package has any business implementing.
@@ -1496,7 +1557,7 @@ updmap --sys --enable Map=clm.map
     {
       \qtfont{\qtstyle}
     }{
-      \PackageWarning{clm}{Option ~ 'qt' ~ cannot ~ be ~ implemented ~ unless\MessageBreak
+      \PackageWarning{cfr-lm}{Option ~ 'qt' ~ cannot ~ be ~ implemented ~ unless\MessageBreak
         the ~ command ~ qtfont ~ is ~ defined ~ appropriately. ~ This ~ is ~ not\MessageBreak
         done ~ automatically ~ to ~ maximise ~ compatibility ~ with ~ other\MessageBreak
         classes ~ and ~ packages. ~ The ~ suggested ~ use ~ is ~ to ~ have ~ qtfont\MessageBreak
@@ -1511,6 +1572,7 @@ updmap --sys --enable Map=clm.map
 %
 \ExplSyntaxOff
 %    \end{macrocode}
+% \end{macro}
 % Maths setup is ‘based on’ (i.e.~filched from) lmodern.sty
 %    \begin{macrocode}
 \SetSymbolFont{operators}   {normal}{OT1}{lmr} {m}{n}
@@ -1548,14 +1610,21 @@ updmap --sys --enable Map=clm.map
 \def\mathsterling{\mathit{\mathchar"70BF}}
 %    \end{macrocode}
 % \end{macro}
-% \changes{v1.1}{}{New macros: \cs{dotdigitenc}, \cs{\textdde}, \cs{\zeroslash}.}
-% \begin{macro}{\dotdigitenc,\textdde,\zeroslash}
-% The slashed zero.
+% \begin{macro}{\dotdigitenc,\textdde}
+% \changes{v1.1}{2010/05/27?}{%
+%   New macros required to define \cs{zeroslash}.}
 %    \begin{macrocode}
 \DeclareRobustCommand{\dotdigitenc}{%
   \not@math@alphabet\dotdigitenc\relax
   \fontencoding{U}\selectfont}
 \DeclareTextFontCommand{\textdde}{\dotdigitenc}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\zeroslash}
+% \changes{v1.1}{2010/05/02?}{%
+%   \cs{zeroslash} is provided to access the slashed zero.}
+% The slashed zero.
+%    \begin{macrocode}
 \newcommand*{\zeroslash}{\textdde{\char 250}}
 %    \end{macrocode}
 % \end{macro}
@@ -1575,10 +1644,16 @@ updmap --sys --enable Map=clm.map
 %    \begin{macrocode}
 \ExplSyntaxOn
 %    \end{macrocode}
-% ^^A \begin{macro}{\__clm_microtype_aliases:,\l__clm_microtype_hook:}
-% aliases for \lpack{microtype} so fonts get the same custom treatment they do with \lpack{lm}
+% ^^A \begin{macro}{\__clm_microtype_hook:}
+% \changes{v1.4 2014-03-04}{2014/03/04}{New macro to hold \lpack{microtype} aliases.}
+% \changes{v1.6 2020-2024}{2020/2024}{Switch to \lpack{expl3}.}
+% Aliases for \lpack{microtype} so fonts get the same custom treatment they do with \lpack{lm}.
+% Why not just define the hook?
+% Why define the alias cs and then set the hook equal to it?
+% We need something which isn't \cs{Microtype@Hook}, obviously, but why two somethings where only one seems needed?
+% \changes{\fileversion}{\filedate}{Remove alias cs and just define the hook.}
 %    \begin{macrocode}
-\cs_new_nopar:Nn \__clm_microtype_aliases:
+\cs_new_nopar:Nn \__clm_microtype_hook:
 {
   \clist_map_inline:nn 
   { 
@@ -1592,7 +1667,6 @@ updmap --sys --enable Map=clm.map
     \DeclareMicrotypeAlias { ##1 } { cmr }
   }
 }
-\cs_new_eq:NN \__clm_microtype_hook: \__clm_microtype_aliases:
 %    \end{macrocode}
 % ^^A \end{macro}
 % If \cs{Microtype@Hook} exists, add our material to it; if not, create it.

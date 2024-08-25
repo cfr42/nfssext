@@ -29,7 +29,10 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: testadf.dtx 10168 2024-07-21 14:04:13Z cfrees $}[v0.0 \revinfo][testadf DTX: test for 8-bit engines]
+^^A sylwad1A
+% sylwad2A
+%^^A sylwad3A
+\ProvidesFileSVN{$Id: testadf.dtx 10281 2024-08-24 13:08:02Z cfrees $}[v0.0 \revinfo][testadf DTX: test for 8-bit engines]
 \DefineFileInfoSVN
 \GetFileInfoSVN*
 \documentclass[11pt,british]{ltxdoc}
@@ -45,6 +48,9 @@
 \end{document}
 %</driver>
 % \fi
+% ^^A sylwad1B
+% sylwad2B
+%^^A sylwad3B
 %
 % \changes{v1.0}{2010/07/17}{First public release.}
 % \changes{\fileversion}{\filedate}{Belated update for (New) NFSS and revised nfssext-cfr.
@@ -56,6 +62,9 @@
 % \PrintChanges
 % \PrintIndex
 % }
+% ^^A sylwad1C
+% sylwad2C
+%^^A sylwad3C
 % 
 % \section{Implementation}
 %
@@ -65,10 +74,16 @@
 % \iffalse
 %<*sty>
 % \fi
+% ^^A sylwad1D
+% sylwad2D
+%^^A sylwad3D
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[test.sty]{$Id: testadf.dtx 10168 2024-07-21 14:04:13Z cfrees $}[\filebase v1.1 \revinfo]
+% ^^A sylwad1E
+% sylwad2E
+%^^A sylwad3E
+\ProvidesPackageSVN[test.sty]{$Id: testadf.dtx 10281 2024-08-24 13:08:02Z cfrees $}[\filebase v1.1 \revinfo]
 \DefineFileInfoSVN[test]
 \RequirePackage[T1]{fontenc}
 \RequirePackage{nfssext-cfr}
@@ -140,8 +155,14 @@
   \transformfont{xxxr8s}{\reencodefont{supp-xxx}{\fromafm{xxxr8a}}}
   \input reglyph-xxx.tex
   \installfonts
-    \installfamily{T1}{xxx}{}
+    \fontinstcc
+    \installfamily{T1}{xxx}{\hyphenchar\font=\m@ne}
+    \normalcc
     \installfont{xxxr8t}{xxxr8r,xxxr8sr,newlatin option nosc}{t1-xxx}{T1}{xxx}{m}{n}{}
+    \fontinstcc
+    \installfamily{T1}{yyy}{\hyphenchar\font=45}
+    \normalcc
+    \installfont{yyyr8t}{xxxr8r,xxxr8sr,newlatin option nosc}{t1-xxx}{T1}{yyy}{m}{n}{}
   \endinstallfonts
 \endrecordtransforms
 \bye
