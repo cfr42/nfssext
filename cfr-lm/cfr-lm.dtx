@@ -30,12 +30,22 @@
 %<*driver>
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
-\def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-% ^^A\def\MyMakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: cfr-lm.dtx 10282 2024-08-24 21:13:56Z cfrees $}[v0.0
+% ^^A \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
+% ^^A \def\MyMakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
+\ExplSyntaxOn
+% ^^A sylwad yannisl: https://tex.stackexchange.com/questions/723293/how-can-i-get-automatic-code-indexing-of-expl3-in-ltxdoc/723294#comment1799661_723294
+% ^^A \ExplSyntaxOn \cs_gset:Npn \MakePrivateLetters { \char_set_catcode_letter:N \@ \char_set_catcode_letter:N _ \char_set_catcode_letter:N \: } \ExplSyntaxOff`
+\cs_new_nopar:Npn \MyMakePrivateLetters
+{
+  \char_set_catcode_letter:N \@
+  \char_set_catcode_letter:N _
+  \char_set_catcode_letter:N \:
+}
+\ExplSyntaxOff
+\ProvidesFileSVN{$Id: cfr-lm.dtx 10287 2024-08-27 07:23:52Z cfrees $}[v0.0
 \revinfo][\filebase DTX: Latin Modern for 8-bit engines]
 \DefineFileInfoSVN[cfr-lm]
-\documentclass[11pt,british]{ltxdoc}
+\documentclass[10pt,british]{ltxdoc}
 % l3doc loads fancyvrb
 % fancyvrb overwrites svn-prov's macros without warning
 % restore \fileversion \filerev in case we're using l3doc
@@ -81,7 +91,15 @@
 % \urlstyle{tt}
 \urlstyle{sf}
 \usepackage{microtype}
-\usepackage[a4paper,headheight=14pt]{geometry}	% use 14pt for 11pt text, 15pt for 12pt text
+\usepackage[a4paper,headheight=14pt,marginparwidth=45mm,hmarginratio=4:1,vscale=.8,hscale=.7,verbose]{geometry}	% use 14pt for 11pt text, 15pt for 12pt text
+% addaswyd o chronos.tex
+\newlength\tewadjust
+\newlength\chronosdoctemplgth
+\AddToHook {begindocument/after}[.]
+{%
+  \setlength\tewadjust{\marginparwidth+\marginparsep-\paperwidth+\textwidth+\oddsidemargin+1in}%
+  \setlength\chronosdoctemplgth{0pt}%
+}
 \usepackage{csquotes}
 \MakeAutoQuote{‘}{’}
 \MakeAutoQuote*{“}{”}
@@ -123,14 +141,35 @@
 ]{Sw}{swash}
 \NewDocElement[%
   idxtype=pkg.,
-  idxgroup=packages,
+  idxgroup=,
   printtype=\textit{pkg.},
 ]{Pkg}{package}
 \NewDocElement[%
   printtype=\textdagger,
   idxtype=,
+  idxgroup=,
   macrolike,
 ]{DMacro}{dmacro}
+\NewDocElement[%
+  idxtype=fd.,
+  idxgroup=fds,
+  printtype=\textit{fd.},
+]{Fd}{fdfile}
+\NewDocElement[%
+  idxtype=drv.,
+  idxgroup=drivers,
+  printtype=\textit{drv.},
+]{Drv}{driver}
+\NewDocElement[%
+  idxtype=map,
+  idxgroup=map files,
+  printtype=\textit{map},
+]{Map}{mapfile}
+\NewDocElement[%
+  idxtype=etx,
+  idxgroup=font encodings,
+  printtype=\textit{etx},
+]{Etx}{encoding}
 \NewDocumentCommand \val { m }
 {%
   {\ttfamily =\,\meta{#1}}%
@@ -197,12 +236,13 @@
 {
   \property_ref:nn {t:lastpage}{page}
 }
+\cs_new_eq:NN \OrigMakePrivateLetters \MakePrivateLetters
 \ExplSyntaxOff
 \definecolor{strawberry}{rgb}{1.000,0.000,0.502}
 \definecolor{blueberry}{rgb}{0.000,0.000,1.000}
 \definecolor{moss}{rgb}{0.000,0.502,0.251}
-% ^^A\let\OrigMakePrivateLetters\MakePrivateLetters
 \begin{document}
+\let\MakePrivateLetters\MyMakePrivateLetters
 \DocInput{\filename}
 \end{document}
 %</driver>
@@ -214,25 +254,19 @@
 % \changes{v1.0? 2008-12-22}{2008/12/22}{}
 % \changes{v1.1? 2010-05-27}{2010/05/27}{%
 %   Update for Latin Modern 2.004.
-%   Revise package file for more robust and flexible option handling.
 %   Tweak generation of virtual fonts to improve accent placement by adjusting for peculiarities in \lpack{lm} distribution.}
-% \changes{v1.2}{??}{%
-%   Unpublished.}
 % \changes{v1.3 2010-05-31}{2010/05/31}{%
 %   Now with added documentation\!}
 % \changes{v1.3 2010-07-14}{2010/07/14}{%
 %   Very minor update to ensure encoding files are unique. 
 %   Change map file and \file{manifest.txt} accordingly.}
-% \changes{v1.4 2014-03-04}{2014/03/04}{%
-%   Add experimental support for family-specific settings if \lpack{microtype} is used.}
 % \changes{v1.5 2015-02-01}{2015/02/01}{%
 %   Correct two typos in \file{.fd} files.
 %   Make corresponding changes to typos in source \file{-drv.tex} files. 
 %   In most cases, the changes will have no effect.
 %   However, in some cases, the errors might have caused inappropriate font substitutions and could cause compilation failures in unusual circumstances.}
-% \changes{v1.6 2020-2024}{2020/2024}{%
-%   Belated update for (New) NFSS and revised \lpack{nfssext-cfr}.
-%   Remove dependency on \lpack{xkeyval}.%
+% \changes{v1.6 2020-2024 (unpublished)}{2020/2024}{%
+%   Belated update for (New) NFSS.%
 % }
 % \changes{\fileversion}{\filedate}{%
 %   Try switching to DTX/INS.
@@ -258,12 +292,14 @@
 % 
 % 
 % \begin{abstract}
-% 	\noindent\lpack{cfr-lm} is an \emph{experimental} package offering enhanced support for the Latin Modern fonts in \TeX/\LaTeX.
+% 	\noindent\lpack{cfr-lm} offers enhanced support for Latin Modern 2.004 in \TeX/\LaTeX{} on 8-bit engines\footnote{%
+%   It is not required, does not support and should not be loaded with Unicode engines.
+%   Indeed, it was largely written because I wanted to use features easily accessible on Unicode engines while continuing to compile with pdf\TeX{}, which was significantly more reliable at the time and is still considerably faster.%
+% }.
 % A number of features of the Latin Modern fonts are not easily accessible via the default \TeX/\LaTeX\ support provided in the official distribution.
 % This package aims to provide \TeX/\LaTeX\ support for a number of these features including various styles of digits, upright italic and oblique small-caps shapes, and alternative weights and widths.
 % It also supports the variable width typewriter, ‘dunhill’ and ‘quotation’ fonts.
-% Version 1.3 supports version 2.004 of the Latin Modern fonts.
-% Version 1.4 adds experimental support for (but does not require) \lpack{microtype}.
+% If \lpack{microtype} is loaded, the package ensures the custom settings designed for Computer and Latin Modern are loaded.
 % \end{abstract}
 % 
 % \tableofcontents
@@ -277,7 +313,7 @@
 % The package also supports using e.g.\ different styles of digits within a document so it is possible to use proportional oldstyle digits by default, say, but tabular lining digits within a particular table.
 % Finally, a command to access the zeroslash character is provided.
 % 
-% \changes{v1.3}{2010/05/27?}{%
+% \changes{v1.3}{2010/05/27}{%
 %   Update for version 2.004 of Latin Modern.%
 % }
 % \lpack{cfr-lm} version 1.3 requires version 2.004 of \textsc{gust}'s Latin Modern fonts, including the support package provided for \TeX.
@@ -285,28 +321,23 @@
 % 
 % \lpack{cfr-lm} consists of all files listed in \lpack{manifest.txt}\ and these files are released under the \LaTeX\ Project Public Licence as explained in the included licensing notices.
 %
-% \changes{v1.3}{2010/05/27?}{%
-%   Improved option handling mostly due to Enrico Gregorio's efforts.%
-% }
-% \changes{v1.3}{2010/05/27?}{%
+% \changes{v1.3}{2010/05/27}{%
+%   Improved option handling due almost entirely to Enrico Gregorio.
 %   Improved accent placement for faked glyphs thanks in considerable part to Lars Hellström's patience.
 %   Ignore all font dimensions in the \textsc{afm} files and take them from the \textsc{tfm}s released with Latin Modern instead.%
 % }
-% Version 1.3 of the package benefited greatly from feedback provided by Enrico Gregorio, who essentially rewrote the style file using keyval to show me how I ought to be setting the various options up, and Lars Hellström who demonstrated considerable patience in answering my many questions about using fontinst and some peculiarities of the Latin Modern fonts.
+% Version 1.3 of the package benefited greatly from feedback provided by Enrico Gregorio, who essentially rewrote the style file using \lpack{keyval} to show me how I ought to be setting the various options up, and Lars Hellström who demonstrated considerable patience in answering my many questions about using \lpack{fontinst} and some peculiarities of the Latin Modern fonts.
 % I hope the changes in the production of the virtual fonts will improve accent placement in ‘faked’ glyphs (i.e.\ in the case of characters not included in the \textsc{ec}/\textsc{t1} font encoding which \TeX\ therefore creates by combining glyphs which are included).
 % The changes involve ignoring all font dimensions given in the \textsc{afm} files and taking them from the relevant \textsc{tfm} files supplied with Latin Modern instead.
 % The exception to this is the value of \verb|acccapheight| which is set to zero in the \textsc{tfm}s.
 % The current virtual font setup uses \lpack{fontinst}'s default value in this case.
 % 
-% \changes{v1.4 2005-02-01}{2005/02/01}{%
+% \changes{v1.4}{2014/03/04}{%
 %   Use family-specific settings for \lpack{microtype}.%
 % }
-% If you load \lpack{microtype}, version 1.4 \emph{should} automatically figure out the family-specific settings to use.
+% If you load \lpack{microtype}, version 1.4 and later will automatically figure out the family-specific settings to use.
 % This is done using aliases which tell \lpack{microtype} to treat the virtual fonts provided by this package in the same way it treats Latin Modern and Computer Modern Roman.
 % See \fref{sec:mt} for details.
-% This \emph{seems} to work for me but please let me know if it does not work for you.
-% In the worst case, the output should be no worse with version 1.4 of this package than it was with version 1.3.
-% That is, at worst \lpack{microtype} should just use generic settings as it did before.
 % 
 % \section{Requirements}\label{sec:require}
 % 
@@ -446,16 +477,16 @@
 %     \begin{tabular} {>{\ttfamily}llll}
 %       \toprule
 % 		\textbf{key}	&	\textbf{affects}	&	\textbf{option}	&	 \textbf{possible values} \tabularnewline\midrule
-% 		rm	&	\texttt{oldstyle}/\texttt{osf}				&	\texttt{true}, \texttt{false}			& default roman/serif figure style \tabularnewline
-% 				&	\texttt{lining}					&				& \tabularnewline
+% 		rm	&	\texttt{oldstyle}/\texttt{osf}\tnotex{tn:lo}				&	\texttt{true}, \texttt{false}			& default roman/serif figure style \tabularnewline
+% 				&	\texttt{lining}\tnotex{tn:lo}					&				& \tabularnewline
 % 				&	\texttt{proportional}/\texttt{prop}		&				& \tabularnewline
 % 				&	\texttt{tabular}/\texttt{tab}				&				& \tabularnewline\midrule
-% 		sf		&	\texttt{oldstyle}/\texttt{osf}				&	\texttt{true}, \texttt{false}			& default sans figure style \tabularnewline
-% 				&	\texttt{lining}					&				& \tabularnewline
+% 		sf		&	\texttt{oldstyle}/\texttt{osf}\tnotex{tn:lo}				&	\texttt{true}, \texttt{false}			& default sans figure style \tabularnewline
+% 				&	\texttt{lining}\tnotex{tn:lo}					&				& \tabularnewline
 % 				&	\texttt{proportional}/\texttt{prop}		&				& \tabularnewline
 % 				&	\texttt{tabular}/\texttt{tab}		&			& \tabularnewline\midrule
-% 		tt		&	\texttt{oldstyle}/\texttt{osf}				&	\texttt{true}, \texttt{false}			& default typewriter figure style \tabularnewline
-% 				&	\texttt{lining}					&				& \tabularnewline
+% 		tt		&	\texttt{oldstyle}/\texttt{osf}\tnotex{tn:lo}				&	\texttt{true}, \texttt{false}			& default typewriter figure style \tabularnewline
+% 				&	\texttt{lining}\tnotex{tn:lo}					&				& \tabularnewline
 % 				&	\texttt{proportional}/\texttt{prop}		&				& \tabularnewline
 % 				&	\texttt{tabular}/\texttt{tab}				&				& \tabularnewline\cmidrule{2-4}
 % 				&	\texttt{monowidth}/\texttt{mono}			&	\texttt{true}, \texttt{false}			&	default typewriter family \tabularnewline
@@ -464,7 +495,12 @@
 %       \bottomrule
 %     \end{tabular}
 %     \begin{tablenotes}
-%       \item\label{tn:xxx}xxx
+%       \item\label{tn:lo}Lining figures have zero depth i.e.~they stand with their bottoms on the current baseline.
+%         Oldstyle (‘hanging’) figures may have depth as well as height i.e.~they sit on the baseline with their bottoms hanging over the edge.
+%         These options are mutually exclusive and exhaustive.
+%       \item\label{tn:pt}Proportional figures have variable widths, depending on the widths of the digits e.g.~‘1’ is typically narrower than ‘6’.
+%         Tabular figures have standard, constant width i.e.~‘1’ is as wide as ‘6’, so there is typically more space on each side of ‘1’ than ‘6’.
+%         These options are mutually exclusive and exhaustive.
 %     \end{tablenotes}
 %   \end{threeparttable}
 % \end{table}
@@ -531,48 +567,65 @@ rm={prop=false}
 %
 % Set default figure style for sans serif.
 %
+% The available keys and values are identical to those for serif explained above.
+%
 % \DescribeOpt{sf/oldstyle}\vals{true,false}
 % \DescribeOpt{sf/osf}
 %
+% Whether to use oldstyle/hanging figures by default.
+%
 % \DescribeOpt{sf/lining}\vals{true,false}
+%
+% Whether to use lining figures by default.
 %
 % \DescribeOpt{sf/proportional}\vals{true,false}
 % \DescribeOpt{sf/prop}
 %
+% Whether to use proportional figures by default.
+%
 % \DescribeOpt{sf/tabular}\vals{true,false}
 % \DescribeOpt{sf/tab}
+%
+% Whether to use tabular figures by default.
 %
 % The available keys and values are identical to those for serif explained above.
 %
 % \DescribeOpt{tt}\val{key-value list}
 %
-% Set default figure style for typewriter.
+% Set defaults for typewriter.
+% These determine not only the default figure style, but also the default style of other characters.
 %
-% The available keys and values for figure styles are identical to those for serif explained above.
+% The available keys and values for setting the default figure style are identical to those for serif explained above.
+% The additional keys for choosing between variable- and mono-width typewriter are explained below.
 %
 % \DescribeOpt{tt/oldstyle}\vals{true,false}
 % \DescribeOpt{tt/osf}
 %
+% Whether to use oldstyle/hanging figures by default.
+%
 % \DescribeOpt{tt/lining}\vals{true,false}
+%
+% Whether to use lining figures by default.
 %
 % \DescribeOpt{tt/proportional}\vals{true,false}
 % \DescribeOpt{tt/prop}
 %
+% Whether to use proportional figures by default.
+%
 % \DescribeOpt{tt/tabular}\vals{true,false}
 % \DescribeOpt{tt/tab}
 %
-% The available keys and values are identical to those for serif explained above.
+% Whether to use tabular figures by default.
 %
 % \DescribeOpt{tt/monowidth}\vals{true,false}
 % \DescribeOpt{tt/mono}
 %
-% Use mono-width typewriter by default.
+% Whether to use mono-width typewriter by default.
 %
 % \DescribeOpt{tt/variable}\vals{true,false}
 % \DescribeOpt{tt/var}
 %
-% Use variable-width typewriter by default.
-%
+% Whether to use variable-width typewriter by default.
 %
 % Note that \texttt{variable} and \texttt{var} are equivalent, while \texttt{monowidth} or \texttt{mono} set the same option but inverted.
 % That is, the following are equivalent:
@@ -646,10 +699,6 @@ tt={var=false}
 % For this reason, only a subset of the additional commands are relevant to any particular font support package.
 % Those relevant to \lpack{cfr-lm}\ are described below.
 % 
-% I consider my additions to \lpack{nfssext-cfr}\ to be \emph{highly experimental}.
-% If things don't work as advertised, apart from letting me know about the problem, you may be able to access the features you need by issuing a \verb|\normalfont| and then selecting features from there.
-% This command will return you to the default document text font --- typically the relevant serif in regular weight, standard width and upright shape with the style of figures determined by the package and options loaded.
-% 
 % \subsection{nfssext-cfr}
 % 
 % These commands are available when \lpack{cfr-lm}\ is loaded.
@@ -669,19 +718,14 @@ tt={var=false}
 % 
 % \begin{table}
 %   \centering
-%   \begin{threeparttable}
-%     \caption{Width macros}\label{tab:widths}
-%     \begin{tabular}{lll}
-%       \toprule
+%   \caption{Width macros}\label{tab:widths}
+%   \begin{tabular}{lll}
+%     \toprule
 % 		\textbf{width}	&	\textbf{width command}	&	\textbf{text command}\\\midrule
 % 		standard				&	\verb|\regwidth|					&	\verb|\textrw{}|\\
 % 		condensed				&	\verb|\cdwidth|					&	\verb|\textcd{}|\\
-%       \bottomrule
-%     \end{tabular}
-%     \begin{tablenotes}
-%       \item\label{tn:xxx}xxx
-%     \end{tablenotes}
-%   \end{threeparttable}
+%    \bottomrule
+%   \end{tabular}
 % \end{table}
 % \DescribeMacro{\regwidth}
 % \DescribeMacro{\textrw}
@@ -689,7 +733,7 @@ tt={var=false}
 % \DescribeMacro{\textcd}
 % Additional macros for changing width are listed in \fref{tab:widths}.
 % To switch to an condensed width until further notice, for example, you could use \verb|\cdwidth|.
-% Or use \verb|\texttm{\textlg{\textcd{Hello, world!}}}| to typeset just the text \texttm{\textlg{\textcd{Hello, world!}}} in a light-weight condensed monowidth typewriter.
+% Or use \texttt{\cs{texttm}\{\cs{textlg}\{\cs{textcd}\{Hello, world!\}\}\}} to typeset just the text \texttm{\textlg{\textcd{Hello, world!}}} in light-weight condensed monowidth typewriter.
 % 
 % Note that the easiest way to switch to semi-bold condensed sans is to resort to using \verb|\fontseries| directly.
 % \iffalse
@@ -705,32 +749,50 @@ tt={var=false}
 % \begin{center}
 % 	\textsf{\fontseries{sbc}\selectfont Semi-bold condensed sans}
 % \end{center}
-% The problem with using the commands provided by \lpack{nfssext-cfr} is that they are designed, like standard commands such as \verb|\bfseries| and \verb|\scshape|, to change \emph{one} aspect of the font at a time.
+% The problem with using the commands provided by \lpack{nfssext-cfr} is that they are designed, like standard commands such as \verb|\scshape|, to change \emph{one} aspect of the font at a time\footnote{%
+%   This is, of course, by design.
+%   The problem with using standard commands such as \cs{bfseries} is that they are designed to change \emph{two} aspects of the font at a time i.e.~width and weight.%
+% }.
 % Issuing \verb|\textsf{\textcd{\textsb{}}}| and \verb|\textsf{\textsb{\textcd{}}}| are equivalent to \verb|\textsf{}| because neither standard-width semi-bold nor condensed normal-weight sans is available.
 % The problem is that each command is processed independently, so both switches fail.
 % 
 % Similar considerations in the case of light condensed monowidth typewriter mean that the \emph{order} in which commands are issued is critical.
 % In this case, a light-weight standard-width font is available, but no normal-weight condensed font is provided.
-% Consequently, \verb|\texttm{\textlg{\textcd{a successful switch}}}| will produce \texttm{\textlg{\textcd{a successful switch}}} while \verb|\texttm{\textcd{\textlg{an unsuccessful switch}}}| will result in \texttm{\textcd{\textlg{an unsuccessful switch}}} and a warning in the log.
+% Consequently,
+% \iffalse
+%<*verb>
+% \fi
+%    \begin{verbatim}
+\texttm{\textlg{\textcd{a successful switch}}}
+%    \end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% will produce \texttm{\textlg{\textcd{a successful switch}}} while
+% \iffalse
+%<*verb>
+% \fi
+%    \begin{verbatim}
+\texttm{\textcd{\textlg{an unsuccessful switch}}}
+%    \end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% will result in \texttm{\textcd{\textlg{an unsuccessful switch}}} and a warning in the log.
 % In this case, the latter command is equivalent to \verb|\texttm{\textlg{}}| because \verb|\textcd{}| can only succeed \emph{after} \verb|\textlg{}|.
 % 
 % \subsubsection{Weights}
 % 
 % \begin{table}
 %   \centering
-%   \begin{threeparttable}
-%     \caption{Weight macros}\label{tab:weights}
-%     \begin{tabular}{lll}
-%       \toprule
+%  \caption{Weight macros}\label{tab:weights}
+%  \begin{tabular}{lll}
+%    \toprule
 % 		  \textbf{weight}		&	\textbf{weight command}	&	\textbf{text command}\\\midrule
 % 		  light							&	\verb|\lgweight|				&	\verb|\textlg{}|\\
 % 		  semi-bold					&	\verb|\sbweight|				&	\verb|\textsb{}|\\
-%       \bottomrule
-%     \end{tabular}
-%     \begin{tablenotes}
-%       \item\label{tn:xxx}xxx
-%     \end{tablenotes}
-%   \end{threeparttable}
+%    \bottomrule
+%  \end{tabular}
 % \end{table}
 % Additional macros for changing the font weight are given in \fref{tab:weights}.
 % \iffalse
@@ -760,18 +822,17 @@ tt={var=false}
 % 		  \textbf{shape}		&	\textbf{shape command}	&	\textbf{text command}\\\midrule
 %       oblique small-caps		&	\verb|\slshape\scshape|\tnotex{tn:all} &   \verb|\textsl{\textsc{}}|\tnotex{tn:all} \\
 %   	  &	\verb|\scshape\slshape|\tnotex{tn:all} &   \verb|\textsc{\textsl{}}|\tnotex{tn:all} \\
+%   	  &	\verb|\itshape\scshape|\tnotex{tn:all}\tnotex{tn:scsl} &   \verb|\textit{\textsc{}}|\tnotex{tn:all}\tnotex{tn:scsl} \\
+%   	  &	\verb|\scshape\itshape|\tnotex{tn:all}\tnotex{tn:scsl} &   \verb|\textsc{\textit{}}|\tnotex{tn:all}\tnotex{tn:scsl} \\
 %       & \color{gray}\verb|\sishape|\tnotex{tn:dep}\tnotex{tn:scsl} &	\color{gray}\verb|\textsi{}|\tnotex{tn:dep}\tnotex{tn:scsl} \\
 % 		  upright italic			&	\verb|\uishape|					&	\verb|\textui{}|\\
 %       \bottomrule
 %     \end{tabular}
 %     \begin{tablenotes}
 %       \item \label{tn:all}Supported for all versions of \LaTeXe{}.
-%         \cs{itshape} and \cs{textit} may be substituted for \cs{slshape} and \cs{textsl}.
-%         Since the fonts lack italic small-caps, oblique small-caps are silently substituted as appropriated.
-%         (Whether these shapes are dubbed ‘italic’ or ‘oblique’ seems largely a matter of preference.
-%         Unlike their upper/lower-case cousins, small-caps generally look the same whether the font designer calls them ‘italic small-caps’ or ‘pblique small-caps’, so the substitution is in no way second-best in this case.)
 %       \item \label{tn:dep}Deprecated.
 %       \item\label{tn:scsl} Actually the command switches to \emph{italic} small-caps but since LM does not offer this, oblique small-caps are substituted.
+%         Unlike their upper/lower-case cousins, small-caps generally look the same whether the font designer calls them ‘italic small-caps’ or ‘pblique small-caps’, so the substitution is in no way second-best in this case.
 %     \end{tablenotes}
 %   \end{threeparttable}
 % \end{table}
@@ -832,44 +893,49 @@ tt={var=false}
 %     \begin{tabular}{lll}
 %       \toprule
 %    		\textbf{figure style}			&	\textbf{style command}	&	\textbf{text command}\\\midrule
-%  		  lining										&	\verb|\lstyle|						&	\verb|\textl{}|\\
-% 		  oldstyle									&	\verb|\ostyle|						&	\verb|\texto{}|\\
-% 		  proportional							&	\verb|\pstyle|						&	\verb|\textp{}|\\
-% 		  tabular									&	\verb|\tstyle|						&	\verb|\textt{}|\\
-% 		  proportional, lining				&	\verb|\plstyle|						&	\verb|\textpl{}|\\
-% 		  proportional, oldstyle			&	\verb|\postyle|					&	\verb|\textpo{}|\\
-% 		  tabular, lining						&	\verb|\tlstyle|						&	\verb|\texttl{}|\\
-% 		  tabular, oldstyle					&	\verb|\tostyle|					&	\verb|\textto{}|\\
+%  		  lining\tnotex{tn:l}				&	\verb|\lstyle|					&	\verb|\textl{}|\\
+% 		  oldstyle\tnotex{tn:o}			&	\verb|\ostyle|					&	\verb|\texto{}|\\
+% 		  proportional\tnotex{tn:p}	&	\verb|\pstyle|					&	\verb|\textp{}|\\
+% 		  tabular\tnotex{tn:t} 			&	\verb|\tstyle|					&	\verb|\textt{}|\\
+% 		  proportional\tnotex{tn:p}, lining\tnotex{tn:l} &	\verb|\plstyle|	&	\verb|\textpl{}|\\
+% 		  proportional\tnotex{tn:p}, oldstyle\tnotex{tn:o} &	\verb|\postyle|	&	\verb|\textpo{}|\\
+% 		  tabular\tnotex{tn:t}, lining\tnotex{tn:l}	&	\verb|\tlstyle|	&	\verb|\texttl{}|\\
+% 		  tabular\tnotex{tn:t}, oldstyle\tnotex{tn:o}	&	\verb|\tostyle| &	\verb|\textto{}|\\
 %       \bottomrule
 %     \end{tabular}
 %     \begin{tablenotes}
-%       \item\label{tn:xxx}xxx
+%       \item\label{tn:l}\emph{l}ining figures stand on the current baseline: \textl{0123456789}.
+%         They are generally preferable for use in tabulars, mathematics, code listings, diagrams etc.
+%         Contemporary usage also favours them in text, even though traditional typography would frown on this.
+%       \item\label{tn:o}\emph{o}ldstyle figures sit on or hang from the current baseline: \texto{0123456789}.
+%         They are generally considered more suitable for use in text than lining figure.
+%       \item\label{tn:p}\emph{p}roportional figures take up space in proportion to the actual width of the digit: \textp{0123456789}.
+%         These are generally preferable in most non-specialised contexts.
+%       \item\label{tn:t}\emph{t}abular figures each take up a standard width, regardless of the width of the digit: \textt{0123456789}.
+%         These are better in tabulars where columns of digits should be aligned, code listings set in monowidth typewriter (as is usual) etc.
 %     \end{tablenotes}
 %   \end{threeparttable}
 % \end{table}
 %
-% \DescribeMacro{\lstyle}
-% \DescribeMacro{\textl}
-% \DescribeMacro{\ostyle}
-% \DescribeMacro{\texto}
-% \DescribeMacro{\pstyle}
-% \DescribeMacro{\textp}
-% \DescribeMacro{\tstyle}
-% \DescribeMacro{\textt}
-% \DescribeMacro{\plstyle}
-% \DescribeMacro{\textpl}
-% \DescribeMacro{\postyle}
-% \DescribeMacro{\textpo}
-% \DescribeMacro{\tlstyle}
-% \DescribeMacro{\texttl}
-% \DescribeMacro{\tostyle}
-% \DescribeMacro{\textto}
 % Commands are provided to change either one or both aspects of digits' style (\fref{tab:figs}.
+% \DescribeMacro{\lstyle}
+% \DescribeMacro{\ostyle}
+% \DescribeMacro{\pstyle}
+% \DescribeMacro{\tstyle}
+% The macros all use standard abbreviations and have predictable forms.
+% Any macro of the form \verb|\|\meta{$\theta$}\verb|style| switches a single aspect of the current digits' style.
+% \meta{$\theta$} may be one of \verb|l|, \verb|o|, \verb|p| or \verb|t| which represent \emph{l}ining, \emph{o}ldstyle, \emph{p}roportional and \emph{tabular} respectively.
+% 
+% \DescribeMacro{\textl}
+% \DescribeMacro{\texto}
+% \DescribeMacro{\textp}
+% \DescribeMacro{\textt}
+% The corresponding text commands have the format \verb|\text|\meta{$\theta$}, where \meta{$\theta$} may take the same values as before.
 % 
 % In this document, proportional lining figures are used by default for roman/serif and sans, while tabular lining are used for typewriter:
 % 		\begin{center}
 % 			0123456789\\
-% 			\textsc{0123456789}\\
+% 			\textsf{0123456789}\\
 % 			\texttt{0123456789}
 % 		\end{center}
 % but oldstyle figures are also accessible.
@@ -898,6 +964,21 @@ tt={var=false}
 % Because proportional figures were already active for serif and sans, the command switched to proportional oldstyle figures in the first two cases.
 % Contrariwise, since tabular figures were active for typewriter, the same command switched to tabular oldstyle figures in the third case.
 %
+% In many cases, it is convenient to switch or ensure both aspects of digits together e.g.~to ensure tabular lining figures are used in tabulars.
+% \DescribeMacro{\plstyle}
+% \DescribeMacro{\postyle}
+% \DescribeMacro{\tlstyle}
+% \DescribeMacro{\tostyle}
+% Four macros are provided for this purpose.
+% These have the form \verb|\|\meta{$\theta$}\meta{$\beta$}\verb|style|, where \meta{$\theta$} may be either \verb|p| or \verb|t| and \meta{$\beta$} may be either \verb|l| or \verb|o|.
+% 
+% \DescribeMacro{\textpl}
+% \DescribeMacro{\textpo}
+% \DescribeMacro{\texttl}
+% \DescribeMacro{\textto}
+% The corresponding text commands have the format \verb|\text|\meta{$\theta$}\meta{$\beta$}.
+% 
+
 % Taking roman as an example, tabular oldstyle digits may be accessed in several ways:
 % \iffalse
 %<*verb>
@@ -921,19 +1002,14 @@ tt={var=false}
 % 
 % \begin{table}
 %   \centering
-%   \begin{threeparttable}
-%     \caption{Macros for switching to mono-/variable-width typewriter}\label{tab:mvtt}
-%     \begin{tabular}{lll}
-%       \toprule
-%    		\textbf{typewriter font}	&	\textbf{style command}	&	\textbf{text command}\\\midrule
+%  \caption{Macros for switching to mono-/variable-width typewriter}\label{tab:mvtt}
+%  \begin{tabular}{lll}
+%    \toprule
+% 		\textbf{typewriter font}	&	\textbf{style command}	&	\textbf{text command}\\\midrule
 % 	  	variable typewriter				&	\verb|\tvstyle|					&	\verb|\texttv{}|\\
 % 	  	monowidth typewriter		&	\verb|\tmstyle|					&	\verb|\texttm{}|\\
-%       \bottomrule
-%     \end{tabular}
-%     \begin{tablenotes}
-%       \item\label{tn:xxx}xxx
-%     \end{tablenotes}
-%   \end{threeparttable}
+%    \bottomrule
+%  \end{tabular}
 % \end{table}
 % \DescribeMacro{\texttv}
 % \DescribeMacro{\tvstyle}
@@ -962,17 +1038,12 @@ tt={var=false}
 % 
 % \begin{table}
 %   \centering
-%   \begin{threeparttable}
-%     \caption{LM Sans Quotation}\label{tab:qt}
-%     \begin{tabular}{lll}
-%       \toprule
-%    		sans quotation			&	\verb|\qtstyle|					&	\verb|\textqt{}|\\
-%       \bottomrule
-%     \end{tabular}
-%     \begin{tablenotes}
-%       \item\label{tn:xxx}xxx
-%     \end{tablenotes}
-%   \end{threeparttable}
+%   \caption{LM Sans Quotation}\label{tab:qt}
+%   \begin{tabular}{lll}
+%     \toprule
+%  		sans quotation			&	\verb|\qtstyle|					&	\verb|\textqt{}|\\
+%     \bottomrule
+%   \end{tabular}
 % \end{table}
 % \DescribeMacro{\textqt}
 % \DescribeMacro{\qtstyle}
@@ -984,18 +1055,13 @@ tt={var=false}
 % 
 % \begin{table}
 %   \centering
-%   \begin{threeparttable}
-%     \caption{Latin Modern Roman Dunhill}\label{tab:dunhill}
-%     \begin{tabular}{lll}
-%       \toprule
-%       \textbf{style}			&	\textbf{style command}	&	\textbf{text command}	\\\midrule
+%  \caption{Latin Modern Roman Dunhill}\label{tab:dunhill}
+%  \begin{tabular}{lll}
+%    \toprule
+%    \textbf{style}			&	\textbf{style command}	&	\textbf{text command}	\\\midrule
 % 		  titling							&	\verb|\tistyle|						&	\verb|\textti{}|\\
-%       \bottomrule
-%     \end{tabular}
-%     \begin{tablenotes}
-%       \item\label{tn:xxx}xxx
-%     \end{tablenotes}
-%   \end{threeparttable}
+%    \bottomrule
+%  \end{tabular}
 % \end{table}
 % 
 % \DescribeMacro{\textti}
@@ -1028,8 +1094,8 @@ tt={var=false}
 % 
 % \section{Microtype}\label{sec:mt}
 % 
-% \changes{v1.4 2014-03-04}{2014/03/04}{Support for \lpack{microtype}.}
-% Version 1.4 adds support for family-specific microtypographical features supported by \lpack{microtype}.
+% \changes{v1.4}{2014/03/04}{Use family-specific settings for \lpack{microtype}.}
+% Support for family-specific microtypographical features supported by \lpack{microtype}.
 % This code will do nothing if you do not load \lpack{microtype}.
 % If you do use these features, all regular roman and sans families, together with the sans quotation font, will use the settings for Computer Modern Roman.
 % The fallback generic settings will continue to be applied to the typewriter and ‘dunhill’ families.
@@ -1207,13 +1273,14 @@ updmap --sys --enable Map=clm.map
 % If you are careful not to overwrite it, you may also compare your output with \path{cfr-lm.pdf}.%
 % 
 % \MaybeStop{%
+% \def\glossaryname{Change History}%
 % \PrintChanges
 % \PrintIndex
 % }
 % 
-% \makeatletter
-% \def\@xobeysp{\leavevmode\penalty100\ }
-% \makeatother
+% ^^A \makeatletter
+% ^^A \def\@xobeysp{\leavevmode\penalty100\ }
+% ^^A \makeatother
 % 
 % \section{Implementation}
 %
@@ -1224,10 +1291,14 @@ updmap --sys --enable Map=clm.map
 % \iffalse
 %<*sty>
 % \fi
+% \begin{package}{cfr-lm.sty}
+% The \LaTeX{} user interface.
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: cfr-lm.dtx 10282 2024-08-24 21:13:56Z cfrees $}[\filebase v1.6 \revinfo][Extended support for Latin Modern 2.004]
+\ProvidesPackageSVN[\filebase.sty]{%
+  $Id: cfr-lm.dtx 10287 2024-08-27 07:23:52Z cfrees $%
+}[\filebase v1.6 \revinfo][Extended support for Latin Modern 2.004]
 \DefineFileInfoSVN[clm]
 \RequirePackage[T1]{fontenc}
 \RequirePackage{nfssext-cfr}
@@ -1251,30 +1322,32 @@ updmap --sys --enable Map=clm.map
 \ExplSyntaxOn
 %    \end{macrocode}
 %
-% Parts of this file are based on lmodern.sty which is included with
-% the Latin Modern fonts released by GUST and available from
-% http://www.gust.org.pl/projects/e-foundry/latin-modern.
+% Parts of this file are based on \file{lmodern.sty} which is included with
+% the Latin Modern fonts released by \gust{} and available from
+% \url{http://www.gust.org.pl/projects/e-foundry/latin-modern}.
 %
-% \changes{v1.2 2010-05-??}{2010/05/??}{%
-%   Improvements to this file in v1.2 (unpublished) and v1.3 owe almost everything to Enrico Gregorio.}
-% \changes{v1.3 2010-05-31}{2010/05/31}{%
-%   Ditto.}
+% \changes{v1.1? 2010-05-27}{2010/05/27}{%
+%   Revise package file for more robust and flexible option handling.}
 %
-% v1.4 2014/03/04
-%   Add family-specific support for \lpack{microtype}.
+% \changes{v1.2 2010-05-?? (unpublished)}{2010/05/??}{%
+%   See v1.3.}
+%
+% \changes{v1.3}{2010/05/27}{%
+%   Improved option handling in v1.2 and v1.3 owes almost everything to Enrico Gregorio.}
+%
+% \changes{v1.4}{2014-03-04}{%
+%   Add family-specific support for \lpack{microtype}.}
 %   This draws also on the documentation for the \lpack{microtype} package and \file{MinionPro.sty}.
 %   \file{MinionPro.sty} is available as part of the \lpack{minionpro} package and can be obtain from \url{http://mirror.ctan.org/fonts/minionpro}.
 %   \file{MinionPro.sty} is in the public domain.
 %   The documentation for \lpack{microtype} is available in English and German from \href{https://ctan.org/pkg/microtype}{\lpack{microtype}}.
 %   It is part of the \lpack{microtype} package which is itself licensed under the LPPL.
 %
-% \changes{v1.4 2014-03-04}{2014-03-04}{%
-%   Add family-specific support for \lpack{microtype}.}
-%
 % Since removed?
-% \changes{v1.6 2015-2020}{2015/2020}{%
+% \changes{v1.6 2015-2020 (unpublished)}{2015/2020}{%
 %   Fix an undeclared dependency.}
-% \changes{v1.6 2020-2024}{2020/2024}{%
+% \changes{v1.6 2020-2024 (unpublished)}{2020/2024}{%
+%   Remove dependency on \lpack{xkeyval}.
 %   Reimplement key-processing in \lpack{expl3}.}
 %%
 % BEGIN bools 
@@ -1304,122 +1377,266 @@ updmap --sys --enable Map=clm.map
 \keys_define:nn { clm }
 {
 %    \end{macrocode}
-% \begin{option}{rm/oldstyle,rm/osf,rm/lining}
-% boolkeys for roman osf/lf
-% \changes{v1.6 2020-2024}{2020/2024}{%
+% \begin{option}{rm/oldstyle}
+% boolkey for roman osf/lf
+% \changes{v1.6 2020-2024 (unpublished)}{2020/2024}{%
 %   Reimplement in \lpack{expl3}.%
 % }
 %    \begin{macrocode}
   rm / oldstyle .bool_set:N = \l__clm_rm_osf_bool,
   rm / oldstyle .default:n = true,
   rm / oldstyle .initial:n = true,
+%    \end{macrocode}
+% \end{option}
+% \begin{option}{rm/osf}
+% Shorthand
+% \changes{v0.0}{0000/00/00}{%
+%   New shorthand for key.%
+% }
+%    \begin{macrocode}
   rm / osf .bool_set:N = \l__clm_rm_osf_bool,
   rm / osf .default:n = true,
+%    \end{macrocode}
+% \end{option}
+% \begin{option}{rm/lining}
+% Inverse
+% \changes{v1.6 2020-2024 (unpublished)}{2020/2024}{%
+%   Reimplement in \lpack{expl3}.%
+% }
+%    \begin{macrocode}
   rm / lining .bool_set_inverse:N = \l__clm_rm_osf_bool,
   rm / lining .default:n = true,
 %    \end{macrocode}
 % \end{option}
-% \begin{option}{rm/proportional,rm/prop,rm/tabular,rm/tab}
-% boolkeys for roman prop/tab figures
-% \changes{v1.6 2020-2024}{2020/2024}{%
+% \begin{option}{rm/proportional}
+% boolkey for roman prop/tab figures
+% \changes{v1.6 2020-2024 (unpublished)}{2020/2024}{%
 %   Reimplement in \lpack{expl3}.%
 % }
 %    \begin{macrocode}
   rm / proportional .bool_set:N = \l__clm_rm_prop_bool,
   rm / proportional .default:n = true,
   rm / proportional .initial:n = true,
+%    \end{macrocode}
+% \end{option}
+% \begin{option}{rm/prop}
+% Shorthand
+% \changes{v0.0}{0000/00/00}{%
+%   New shorthand for key.%
+% }
+%    \begin{macrocode}
   rm / prop .bool_set:N = \l__clm_rm_prop_bool,
   rm / prop .default:n = true,
+%    \end{macrocode}
+% \end{option}
+% \begin{option}{rm/tabular}
+% Inverse
+% \changes{v1.6 2020-2024 (unpublished)}{2020/2024}{%
+%   Reimplement in \lpack{expl3}.%
+% }
+%    \begin{macrocode}
   rm / tabular .bool_set_inverse:N = \l__clm_rm_prop_bool,
   rm / tabular .default:n = true,
+%    \end{macrocode}
+% \end{option}
+% \begin{option}{rm/tab}
+% Shorthand
+% \changes{v0.0}{0000/00/00}{%
+%   New shorthand for key.%
+% }
+%    \begin{macrocode}
   rm / tab .bool_set_inverse:N = \l__clm_rm_prop_bool,
   rm / tab .default:n = true,
 %    \end{macrocode}
 % \end{option}
-% \begin{option}{sf/oldstyle,sf/osf,sf/lining}
+% \begin{option}{sf/oldstyle}
 % boolkeys for sans osf/lf
-% \changes{v1.6 2020-2024}{2020/2024}{%
+% \changes{v1.6 2020-2024 (unpublished)}{2020/2024}{%
 %   Reimplement in \lpack{expl3}.%
 % }
 %    \begin{macrocode}
   sf / oldstyle .bool_set:N = \l__clm_sf_osf_bool,
   sf / oldstyle .default:n = true,
   sf / oldstyle .initial:n = true,
+%    \end{macrocode}
+% \end{option}
+% \begin{option}{sf/osf}
+% Shorthand
+% \changes{v0.0}{0000/00/00}{%
+%   New shorthand for key.%
+% }
+%    \begin{macrocode}
   sf / osf .bool_set:N = \l__clm_sf_osf_bool,
   sf / osf .default:n = true,
+%    \end{macrocode}
+% \end{option}
+% \begin{option}{sf/lining}
+% \changes{v1.6 2020-2024 (unpublished)}{2020/2024}{%
+%   Reimplement in \lpack{expl3}.%
+% }
+% Inverse
+%    \begin{macrocode}
   sf / lining .bool_set_inverse:N = \l__clm_sf_osf_bool,
   sf / lining .default:n = true,
 %    \end{macrocode}
 % \end{option}
-% \begin{option}{sf/proportional,sf/prop,sf/tabular,sf/tab}
+% \begin{option}{sf/proportional}
 % boolkeys for sans prop/tab figures
-% \changes{v1.6 2020-2024}{2020/2024}{%
+% \changes{v1.6 2020-2024 (unpublished)}{2020/2024}{%
 %   Reimplement in \lpack{expl3}.%
 % }
 %    \begin{macrocode}
   sf / proportional .bool_set:N = \l__clm_sf_prop_bool,
   sf / proportional .default:n = true,
   sf / proportional .initial:n = true,
+%    \end{macrocode}
+% \end{option}
+% \begin{option}{sf/prop}
+% Shorthand
+% \changes{v0.0}{0000/00/00}{%
+%   New shorthand for key.%
+% }
+%    \begin{macrocode}
   sf / prop .bool_set:N = \l__clm_sf_prop_bool,
   sf / prop .default:n = true,
+%    \end{macrocode}
+% \end{option}
+% \begin{option}{sf/tabular}
+% \changes{v1.6 2020-2024 (unpublished)}{2020/2024}{%
+%   Reimplement in \lpack{expl3}.%
+% }
+% Inverse
+%    \begin{macrocode}
   sf / tabular .bool_set_inverse:N = \l__clm_sf_prop_bool,
   sf / tabular .default:n = true,
+%    \end{macrocode}
+% \end{option}
+% \begin{option}{sf/tab}
+% Shorthand
+% \changes{v0.0}{0000/00/00}{%
+%   New shorthand for key.%
+% }
+%    \begin{macrocode}
   sf / tab .bool_set_inverse:N = \l__clm_sf_prop_bool,
   sf / tab .default:n = true,
 %    \end{macrocode}
 % \end{option}
-% \begin{option}{tt/oldstyle,tt/osf,tt/lining}
+% \begin{option}{tt/oldstyle}
 % boolkeys for typewriter osf/lf
-% \changes{v1.6 2020-2024}{2020/2024}{%
+% \changes{v1.6 2020-2024 (unpublished)}{2020/2024}{%
 %   Reimplement in \lpack{expl3}.%
 % }
 %    \begin{macrocode}
   tt / oldstyle .bool_set:N = \l__clm_tt_osf_bool,
   tt / oldstyle .default:n = true,
   tt / oldstyle .initial:n = true,
+%    \end{macrocode}
+% \end{option}
+% \begin{option}{tt/osf}
+% Shorthand
+% \changes{v0.0}{0000/00/00}{%
+%   New shorthand for key.%
+% }
+%    \begin{macrocode}
   tt / osf .bool_set:N = \l__clm_tt_osf_bool,
   tt / osf .default:n = true,
+%    \end{macrocode}
+% \end{option}
+% \begin{option}{tt/lining}
+% Inverse
+% \changes{v1.6 2020-2024 (unpublished)}{2020/2024}{%
+%   Reimplement in \lpack{expl3}.%
+% }
+%    \begin{macrocode}
   tt / lining .bool_set_inverse:N = \l__clm_tt_osf_bool,
   tt / lining .default:n = true,
 %    \end{macrocode}
 % \end{option}
-% \begin{option}{tt/proportional,tt/prop,tt/tabular,tt/tab}
+% \begin{option}{tt/proportional}
 % boolkeys for typewriter prop/tab figures
-% \changes{v1.6 2020-2024}{2020/2024}{%
+% \changes{v1.6 2020-2024 (unpublished)}{2020/2024}{%
 %   Reimplement in \lpack{expl3}.%
 % }
 %    \begin{macrocode}
   tt / proportional .bool_set:N = \l__clm_tt_prop_bool,
   tt / proportional .default:n = true,
   tt / proportional .initial:n = true,
+%    \end{macrocode}
+% \end{option}
+% \begin{option}{tt/prop}
+% Shorthand
+% \changes{v0.0}{0000/00/00}{%
+%   New shorthand for key.%
+% }
+%    \begin{macrocode}
   tt / prop .bool_set:N = \l__clm_tt_prop_bool,
   tt / prop .default:n = true,
+%    \end{macrocode}
+% \end{option}
+% \begin{option}{tt/tabular}
+% Inverse
+% \changes{v1.6 2020-2024 (unpublished)}{2020/2024}{%
+%   Reimplement in \lpack{expl3}.%
+% }
+%    \begin{macrocode}
   tt / tabular .bool_set_inverse:N = \l__clm_tt_prop_bool,
   tt / tabular .default:n = true,
+%    \end{macrocode}
+% \end{option}
+% \begin{option}{tt/tab}
+% Shorthand
+% \changes{v0.0}{0000/00/00}{%
+%   New shorthand for key.%
+% }
+%    \begin{macrocode}
   tt / tab .bool_set_inverse:N = \l__clm_tt_prop_bool,
   tt / tab .default:n = true,
 %    \end{macrocode}
 % \end{option}
-% \begin{option}{tt/monowidth,tt/mono,tt/variable,tt/var}
+% \begin{option}{tt/monowidth}
 % boolkeys for typewriter mono/variable width
-% \changes{v1.6 2020-2024}{2020/2024}{%
+% \changes{v1.6 2020-2024 (unpublished)}{2020/2024}{%
 %   Reimplement in \lpack{expl3}.%
 % }
 %    \begin{macrocode}
   tt / monowidth .bool_set:N = \l__clm_tt_mono_bool,
   tt / monowidth .default:n = true,
   tt / monowidth .initial:n = false,
+%    \end{macrocode}
+% \end{option}
+% \begin{option}{tt/mono}
+% Shorthand
+% \changes{v0.0}{0000/00/00}{%
+%   New shorthand for key.%
+% }
+%    \begin{macrocode}
   tt / mono .bool_set:N = \l__clm_tt_mono_bool,
   tt / mono .default:n = true,
+%    \end{macrocode}
+% \end{option}
+% \begin{option}{tt/variable}
+% Inverse
+% \changes{v1.6 2020-2024 (unpublished)}{2020/2024}{%
+%   Reimplement in \lpack{expl3}.%
+% }
+%    \begin{macrocode}
   tt / variable .bool_set_inverse:N = \l__clm_tt_mono_bool,
   tt / variable .default:n = true,
+%    \end{macrocode}
+% \end{option}
+% \begin{option}{tt/var}
+% Shorthand
+% \changes{v0.0}{0000/00/00}{%
+%   New shorthand for key.%
+% }
+%    \begin{macrocode}
   tt / var .bool_set_inverse:N = \l__clm_tt_mono_bool,
   tt / var .default:n = true,
 %    \end{macrocode}
 % \end{option}
 % \begin{option}{rm}
 % options for roman
-% \changes{v1.6 2020-2024}{2020/2024}{%
+% \changes{v1.6 2020-2024 (unpublished)}{2020/2024}{%
 %   Reimplement in \lpack{expl3}.%
 % }
 %    \begin{macrocode}
@@ -1432,7 +1649,7 @@ updmap --sys --enable Map=clm.map
 % \end{option}
 % \begin{option}{sf}
 % options for sans
-% \changes{v1.6 2020-2024}{2020/2024}{%
+% \changes{v1.6 2020-2024 (unpublished)}{2020/2024}{%
 %   Reimplement in \lpack{expl3}.%
 % }
 %    \begin{macrocode}
@@ -1445,7 +1662,7 @@ updmap --sys --enable Map=clm.map
 % \end{option}
 % \begin{option}{tt}
 % options for typewriter
-% \changes{v1.6 2020-2024}{2020/2024}{%
+% \changes{v1.6 2020-2024 (unpublished)}{2020/2024}{%
 %   Reimplement in \lpack{expl3}.%
 % }
 %    \begin{macrocode}
@@ -1458,7 +1675,7 @@ updmap --sys --enable Map=clm.map
 % \end{option}
 % \begin{option}{qt}
 % note that this option does nothing unless \cs{qtfont} is defined appropriately
-% \changes{v1.6 2020-2024}{2020/2024}{%
+% \changes{v1.6 2020-2024 (unpublished)}{2020/2024}{%
 %   Reimplement in \lpack{expl3}.%
 % }
 %    \begin{macrocode}
@@ -1538,9 +1755,18 @@ updmap --sys --enable Map=clm.map
 % \begin{macro}{\rmdefault,\sfdefault,\ttdefault}
 % Make LM default for all families, implementing options for each
 %    \begin{macrocode}
-\renewcommand{\rmdefault}{clm \l__clm_rm_prop_tl \l__clm_rm_osf_tl }
-\renewcommand{\sfdefault}{clm \l__clm_sf_prop_tl \l__clm_sf_osf_tl s }
-\renewcommand{\ttdefault}{clm \l__clm_tt_prop_tl \l__clm_tt_osf_tl \l__clm_tt_mono_tl }
+\cs_set:Npn \rmdefault
+{
+  clm \l__clm_rm_prop_tl \l__clm_rm_osf_tl 
+}
+\cs_set:Npn \sfdefault
+{
+  clm \l__clm_sf_prop_tl \l__clm_sf_osf_tl s 
+}
+\cs_set:Npn \ttdefault
+{
+  clm \l__clm_tt_prop_tl \l__clm_tt_osf_tl \l__clm_tt_mono_tl 
+}
 %    \end{macrocode}
 % \end{macro}
 %
@@ -1629,28 +1855,25 @@ updmap --sys --enable Map=clm.map
 %    \end{macrocode}
 % \end{macro}
 %
-% Partly from microtype docs; partly from MinionPro package
+% Partly from \lpack{microtype} docs; partly from \lpack{MinionPro} package
 %
-% We need to set up aliases for the font families created by cfr-lm so that
-% microtype recognises them as similar to Computer Modern Roman.
+% We need to set up aliases for the font families created by \lpack{cfr-lm} so that
+% \lpack{microtype} recognises them as similar to Computer Modern Roman.
 %
 % T1 families in cfr-lm: clm clm2 clm2d clm2dj clm2j clm2jqs clm2js clm2jt 
 % clm2jv clm2qs clm2s clm2t clm2v clmd clmdj clmj clmjqs clmjs clmjt clmjv 
 % clmqs clms clmt clmv
 %
-% See variants set in nfssext-cfr
+% See variants set in \lpack{nfssext-cfr}
 %
-% Ref: https://tex.stackexchange.com/a/75440
+% Ref: \url{https://tex.stackexchange.com/a/75440}
 %    \begin{macrocode}
 \ExplSyntaxOn
 %    \end{macrocode}
 % ^^A \begin{macro}{\__clm_microtype_hook:}
 % \changes{v1.4 2014-03-04}{2014/03/04}{New macro to hold \lpack{microtype} aliases.}
-% \changes{v1.6 2020-2024}{2020/2024}{Switch to \lpack{expl3}.}
+% \changes{v1.6 2020-2024 (unpublished)}{2020/2024}{Switch to \lpack{expl3}.}
 % Aliases for \lpack{microtype} so fonts get the same custom treatment they do with \lpack{lm}.
-% Why not just define the hook?
-% Why define the alias cs and then set the hook equal to it?
-% We need something which isn't \cs{Microtype@Hook}, obviously, but why two somethings where only one seems needed?
 % \changes{\fileversion}{\filedate}{Remove alias cs and just define the hook.}
 %    \begin{macrocode}
 \cs_new_nopar:Nn \__clm_microtype_hook:
@@ -1683,1519 +1906,22 @@ updmap --sys --enable Map=clm.map
   }
 }
 \ExplSyntaxOff
+%    \end{macrocode}
 % ^^A paid â chynnwys \endinput - docstrip yn chwilio amddo fe yn arbennigol
 % ^^A & bydd doctrip yn ei ychwanegu fe beth bynnag
 % ^^A (Martin Scharrer: https://tex.stackexchange.com/a/28997/)
+%    \begin{macrocode}
 %% end cfr-lm.sty
 %    \end{macrocode}
+% \end{package}
 % \iffalse
 %</sty>
 % \fi
 % 
 % The remaining files are not used directly, but are required to generate the files which allow \TeX{} and \LaTeX{} to use the fonts.
-% The sources use \verb|fontinst| as explained in the (sparse) comments.
+% The sources use \verb|fontinst| and are documented in \file{\filebase-build.dtx} with (sometimes sparse) comments.
 % While you can install these files into a \TeX{} tree, they are not required for typesetting.
 % 
-% \subsection{Drivers}
-%
-% The driver does all the initial setup of the fonts.
-% It organises the fonts into families, defines shapes and reencodes as required.
-% For \lpack{\filebase}, the driver is split into \file{clm-t1-drv.tex} and \file{clm-ts1-drv.tex}.
-%
-% \subsubsection{T1 Driver}
-%
-% \iffalse
-%<*drv-t1>
-% \fi
-%    \begin{macrocode}
-\input fontinst.sty
-\needsfontinstversion{1.926}
-%    \end{macrocode}
-% Substitutions
-%    \begin{macrocode}
-\substitutesilent{scit}{scsl}
-\substitutesilent{si}{scit}
-\substitutesilent{ui}{it}
-\substitutesilent{sl}{ui}
-\substitutesilent{it}{sl}
-\substitutesilent{sc}{n}
-%    \end{macrocode}
-% Bold extended for bold 
-%
-% This *really* shouldn't be necessary!!
-% But on newer kernels, it is.
-% nfssext-cfr contains a fix, but maybe this will help if they change the code again
-% The basic problem is that virtual fonts are ignored by code which now treats CM/LM as special cases.
-% It doesn't break, but it makes a mess.
-%    \begin{macrocode}
-\substitutesilent{b}{bx}
-%    \end{macrocode}
-% Record transformations for later map file creation
-%    \begin{macrocode}
-\recordtransforms{clm-rec.tex}
-%    \end{macrocode}
-% Don't allow fonts to be scaled via variable in fd files as we have optical sizes.
-%
-% Transformations : reencode fonts
-%
-% Reencode for standard T1 encoding - tabular, lining digits
-%    \begin{macrocode}
-	\transformfont{lmb8ttl10}{\reencodefont{t1-clm}{\fromafm{lmb10}}}
-	\transformfont{lmbo8ttl10}{\reencodefont{t1-clm}{\fromafm{lmbo10}}}
-	\transformfont{lmbx8ttl10}{\reencodefont{t1-clm}{\fromafm{lmbx10}}}
-	\transformfont{lmbx8ttl12}{\reencodefont{t1-clm}{\fromafm{lmbx12}}}
-	\transformfont{lmbx8ttl5}{\reencodefont{t1-clm}{\fromafm{lmbx5}}}
-	\transformfont{lmbx8ttl6}{\reencodefont{t1-clm}{\fromafm{lmbx6}}}
-	\transformfont{lmbx8ttl7}{\reencodefont{t1-clm}{\fromafm{lmbx7}}}
-	\transformfont{lmbx8ttl8}{\reencodefont{t1-clm}{\fromafm{lmbx8}}}
-	\transformfont{lmbx8ttl9}{\reencodefont{t1-clm}{\fromafm{lmbx9}}}
-	\transformfont{lmbxi8ttl10}{\reencodefont{t1-clm}{\fromafm{lmbxi10}}}
-	\transformfont{lmbxo8ttl10}{\reencodefont{t1-clm}{\fromafm{lmbxo10}}}
-	\transformfont{lmcsc8ttl10}{\reencodefont{t1-clm}{\fromafm{lmcsc10}}}
-	\transformfont{lmcsco8ttl10}{\reencodefont{t1-clm}{\fromafm{lmcsco10}}}
-	\transformfont{lmr8ttl10}{\reencodefont{t1-clm}{\fromafm{lmr10}}}
-	\transformfont{lmr8ttl12}{\reencodefont{t1-clm}{\fromafm{lmr12}}}
-	\transformfont{lmr8ttl17}{\reencodefont{t1-clm}{\fromafm{lmr17}}}
-	\transformfont{lmr8ttl5}{\reencodefont{t1-clm}{\fromafm{lmr5}}}
-	\transformfont{lmr8ttl6}{\reencodefont{t1-clm}{\fromafm{lmr6}}}
-	\transformfont{lmr8ttl7}{\reencodefont{t1-clm}{\fromafm{lmr7}}}
-	\transformfont{lmr8ttl8}{\reencodefont{t1-clm}{\fromafm{lmr8}}}
-	\transformfont{lmr8ttl9}{\reencodefont{t1-clm}{\fromafm{lmr9}}}
-	\transformfont{lmri8ttl10}{\reencodefont{t1-clm}{\fromafm{lmri10}}}
-	\transformfont{lmri8ttl12}{\reencodefont{t1-clm}{\fromafm{lmri12}}}
-	\transformfont{lmri8ttl7}{\reencodefont{t1-clm}{\fromafm{lmri7}}}
-	\transformfont{lmri8ttl8}{\reencodefont{t1-clm}{\fromafm{lmri8}}}
-	\transformfont{lmri8ttl9}{\reencodefont{t1-clm}{\fromafm{lmri9}}}
-	\transformfont{lmro8ttl10}{\reencodefont{t1-clm}{\fromafm{lmro10}}}
-	\transformfont{lmro8ttl12}{\reencodefont{t1-clm}{\fromafm{lmro12}}}
-	\transformfont{lmro8ttl17}{\reencodefont{t1-clm}{\fromafm{lmro17}}}
-	\transformfont{lmro8ttl8}{\reencodefont{t1-clm}{\fromafm{lmro8}}}
-	\transformfont{lmro8ttl9}{\reencodefont{t1-clm}{\fromafm{lmro9}}}
-	\transformfont{lmu8ttl10}{\reencodefont{t1-clm}{\fromafm{lmu10}}}
-	\transformfont{lmss8ttl10}{\reencodefont{t1-clm}{\fromafm{lmss10}}}
-	\transformfont{lmss8ttl12}{\reencodefont{t1-clm}{\fromafm{lmss12}}}
-	\transformfont{lmss8ttl17}{\reencodefont{t1-clm}{\fromafm{lmss17}}}
-	\transformfont{lmss8ttl8}{\reencodefont{t1-clm}{\fromafm{lmss8}}}
-	\transformfont{lmss8ttl9}{\reencodefont{t1-clm}{\fromafm{lmss9}}}
-	\transformfont{lmssbo8ttl10}{\reencodefont{t1-clm}{\fromafm{lmssbo10}}}
-	\transformfont{lmssbx8ttl10}{\reencodefont{t1-clm}{\fromafm{lmssbx10}}}
-	\transformfont{lmssdc8ttl10}{\reencodefont{t1-clm}{\fromafm{lmssdc10}}}
-	\transformfont{lmssdo8ttl10}{\reencodefont{t1-clm}{\fromafm{lmssdo10}}}
-	\transformfont{lmsso8ttl10}{\reencodefont{t1-clm}{\fromafm{lmsso10}}}
-	\transformfont{lmsso8ttl12}{\reencodefont{t1-clm}{\fromafm{lmsso12}}}
-	\transformfont{lmsso8ttl17}{\reencodefont{t1-clm}{\fromafm{lmsso17}}}
-	\transformfont{lmsso8ttl8}{\reencodefont{t1-clm}{\fromafm{lmsso8}}}
-	\transformfont{lmsso8ttl9}{\reencodefont{t1-clm}{\fromafm{lmsso9}}}
-	\transformfont{lmssq8ttl8}{\reencodefont{t1-clm}{\fromafm{lmssq8}}}
-	\transformfont{lmssqbo8ttl8}{\reencodefont{t1-clm}{\fromafm{lmssqbo8}}}
-	\transformfont{lmssqbx8ttl8}{\reencodefont{t1-clm}{\fromafm{lmssqbx8}}}
-	\transformfont{lmssqo8ttl8}{\reencodefont{t1-clm}{\fromafm{lmssqo8}}}
-	\transformfont{lmtcsc8ttl10}{\reencodefont{t1-clm}{\fromafm{lmtcsc10}}}
-	\transformfont{lmtcso8ttl10}{\reencodefont{t1-clm}{\fromafm{lmtcso10}}}
-	\transformfont{lmtk8ttl10}{\reencodefont{t1-clm}{\fromafm{lmtk10}}}
-	\transformfont{lmtko8ttl10}{\reencodefont{t1-clm}{\fromafm{lmtko10}}}
-	\transformfont{lmtl8ttl10}{\reencodefont{t1-clm}{\fromafm{lmtl10}}}
-	\transformfont{lmtlc8ttl10}{\reencodefont{t1-clm}{\fromafm{lmtlc10}}}
-	\transformfont{lmtlco8ttl10}{\reencodefont{t1-clm}{\fromafm{lmtlco10}}}
-	\transformfont{lmtlo8ttl10}{\reencodefont{t1-clm}{\fromafm{lmtlo10}}}
-	\transformfont{lmtt8ttl10}{\reencodefont{t1-clm}{\fromafm{lmtt10}}}
-	\transformfont{lmtt8ttl12}{\reencodefont{t1-clm}{\fromafm{lmtt12}}}
-	\transformfont{lmtt8ttl8}{\reencodefont{t1-clm}{\fromafm{lmtt8}}}
-	\transformfont{lmtt8ttl9}{\reencodefont{t1-clm}{\fromafm{lmtt9}}}
-	\transformfont{lmtti8ttl10}{\reencodefont{t1-clm}{\fromafm{lmtti10}}}
-	\transformfont{lmtto8ttl10}{\reencodefont{t1-clm}{\fromafm{lmtto10}}}
-	\transformfont{lmvtk8ttl10}{\reencodefont{t1-clm}{\fromafm{lmvtk10}}}
-	\transformfont{lmvtko8ttl10}{\reencodefont{t1-clm}{\fromafm{lmvtko10}}}
-	\transformfont{lmvtl8ttl10}{\reencodefont{t1-clm}{\fromafm{lmvtl10}}}
-	\transformfont{lmvtlo8ttl10}{\reencodefont{t1-clm}{\fromafm{lmvtlo10}}}
-	\transformfont{lmvtt8ttl10}{\reencodefont{t1-clm}{\fromafm{lmvtt10}}}
-	\transformfont{lmvtto8ttl10}{\reencodefont{t1-clm}{\fromafm{lmvtto10}}}
-	\transformfont{lmdunh8ttl10}{\reencodefont{t1-clm}{\fromafm{lmdunh10}}}
-	\transformfont{lmduno8ttl10}{\reencodefont{t1-clm}{\fromafm{lmduno10}}}
-%    \end{macrocode}
-% Reencode alternative digits (proportional, proportional osf, tabular osf, zero.slash)
-%    \begin{macrocode}
-	\transformfont{dd-lmb10}{\reencodefont{dotdigits}{\fromafm{lmb10}}}
-	\transformfont{dd-lmbo10}{\reencodefont{dotdigits}{\fromafm{lmbo10}}}
-	\transformfont{dd-lmbx10}{\reencodefont{dotdigits}{\fromafm{lmbx10}}}
-	\transformfont{dd-lmbx12}{\reencodefont{dotdigits}{\fromafm{lmbx12}}}
-	\transformfont{dd-lmbx5}{\reencodefont{dotdigits}{\fromafm{lmbx5}}}
-	\transformfont{dd-lmbx6}{\reencodefont{dotdigits}{\fromafm{lmbx6}}}
-	\transformfont{dd-lmbx7}{\reencodefont{dotdigits}{\fromafm{lmbx7}}}
-	\transformfont{dd-lmbx8}{\reencodefont{dotdigits}{\fromafm{lmbx8}}}
-	\transformfont{dd-lmbx9}{\reencodefont{dotdigits}{\fromafm{lmbx9}}}
-	\transformfont{dd-lmbxi10}{\reencodefont{dotdigits}{\fromafm{lmbxi10}}}
-	\transformfont{dd-lmbxo10}{\reencodefont{dotdigits}{\fromafm{lmbxo10}}}
-	\transformfont{dd-lmcsc10}{\reencodefont{dotdigits}{\fromafm{lmcsc10}}}
-	\transformfont{dd-lmcsco10}{\reencodefont{dotdigits}{\fromafm{lmcsco10}}}
-	\transformfont{dd-lmr10}{\reencodefont{dotdigits}{\fromafm{lmr10}}}
-	\transformfont{dd-lmr12}{\reencodefont{dotdigits}{\fromafm{lmr12}}}
-	\transformfont{dd-lmr17}{\reencodefont{dotdigits}{\fromafm{lmr17}}}
-	\transformfont{dd-lmr5}{\reencodefont{dotdigits}{\fromafm{lmr5}}}
-	\transformfont{dd-lmr6}{\reencodefont{dotdigits}{\fromafm{lmr6}}}
-	\transformfont{dd-lmr7}{\reencodefont{dotdigits}{\fromafm{lmr7}}}
-	\transformfont{dd-lmr8}{\reencodefont{dotdigits}{\fromafm{lmr8}}}
-	\transformfont{dd-lmr9}{\reencodefont{dotdigits}{\fromafm{lmr9}}}
-	\transformfont{dd-lmri10}{\reencodefont{dotdigits}{\fromafm{lmri10}}}
-	\transformfont{dd-lmri12}{\reencodefont{dotdigits}{\fromafm{lmri12}}}
-	\transformfont{dd-lmri7}{\reencodefont{dotdigits}{\fromafm{lmri7}}}
-	\transformfont{dd-lmri8}{\reencodefont{dotdigits}{\fromafm{lmri8}}}
-	\transformfont{dd-lmri9}{\reencodefont{dotdigits}{\fromafm{lmri9}}}
-	\transformfont{dd-lmro10}{\reencodefont{dotdigits}{\fromafm{lmro10}}}
-	\transformfont{dd-lmro12}{\reencodefont{dotdigits}{\fromafm{lmro12}}}
-	\transformfont{dd-lmro17}{\reencodefont{dotdigits}{\fromafm{lmro17}}}
-	\transformfont{dd-lmro8}{\reencodefont{dotdigits}{\fromafm{lmro8}}}
-	\transformfont{dd-lmro9}{\reencodefont{dotdigits}{\fromafm{lmro9}}}
-	\transformfont{dd-lmu10}{\reencodefont{dotdigits}{\fromafm{lmu10}}}
-	\transformfont{dd-lmss10}{\reencodefont{dotdigits}{\fromafm{lmss10}}}
-	\transformfont{dd-lmss12}{\reencodefont{dotdigits}{\fromafm{lmss12}}}
-	\transformfont{dd-lmss17}{\reencodefont{dotdigits}{\fromafm{lmss17}}}
-	\transformfont{dd-lmss8}{\reencodefont{dotdigits}{\fromafm{lmss8}}}
-	\transformfont{dd-lmss9}{\reencodefont{dotdigits}{\fromafm{lmss9}}}
-	\transformfont{dd-lmssbo10}{\reencodefont{dotdigits}{\fromafm{lmssbo10}}}
-	\transformfont{dd-lmssbx10}{\reencodefont{dotdigits}{\fromafm{lmssbx10}}}
-	\transformfont{dd-lmssdc10}{\reencodefont{dotdigits}{\fromafm{lmssdc10}}}
-	\transformfont{dd-lmssdo10}{\reencodefont{dotdigits}{\fromafm{lmssdo10}}}
-	\transformfont{dd-lmsso10}{\reencodefont{dotdigits}{\fromafm{lmsso10}}}
-	\transformfont{dd-lmsso12}{\reencodefont{dotdigits}{\fromafm{lmsso12}}}
-	\transformfont{dd-lmsso17}{\reencodefont{dotdigits}{\fromafm{lmsso17}}}
-	\transformfont{dd-lmsso8}{\reencodefont{dotdigits}{\fromafm{lmsso8}}}
-	\transformfont{dd-lmsso9}{\reencodefont{dotdigits}{\fromafm{lmsso9}}}
-	\transformfont{dd-lmssq8}{\reencodefont{dotdigits}{\fromafm{lmssq8}}}
-	\transformfont{dd-lmssqbo8}{\reencodefont{dotdigits}{\fromafm{lmssqbo8}}}
-	\transformfont{dd-lmssqbx8}{\reencodefont{dotdigits}{\fromafm{lmssqbx8}}}
-	\transformfont{dd-lmssqo8}{\reencodefont{dotdigits}{\fromafm{lmssqo8}}}
-	\transformfont{dd-lmtcsc10}{\reencodefont{dotdigits}{\fromafm{lmtcsc10}}}
-	\transformfont{dd-lmtcso10}{\reencodefont{dotdigits}{\fromafm{lmtcso10}}}
-	\transformfont{dd-lmtk10}{\reencodefont{dotdigits}{\fromafm{lmtk10}}}
-	\transformfont{dd-lmtko10}{\reencodefont{dotdigits}{\fromafm{lmtko10}}}
-	\transformfont{dd-lmtl10}{\reencodefont{dotdigits}{\fromafm{lmtl10}}}
-	\transformfont{dd-lmtlc10}{\reencodefont{dotdigits}{\fromafm{lmtlc10}}}
-	\transformfont{dd-lmtlco10}{\reencodefont{dotdigits}{\fromafm{lmtlco10}}}
-	\transformfont{dd-lmtlo10}{\reencodefont{dotdigits}{\fromafm{lmtlo10}}}
-	\transformfont{dd-lmtt10}{\reencodefont{dotdigits}{\fromafm{lmtt10}}}
-	\transformfont{dd-lmtt12}{\reencodefont{dotdigits}{\fromafm{lmtt12}}}
-	\transformfont{dd-lmtt8}{\reencodefont{dotdigits}{\fromafm{lmtt8}}}
-	\transformfont{dd-lmtt9}{\reencodefont{dotdigits}{\fromafm{lmtt9}}}
-	\transformfont{dd-lmtti10}{\reencodefont{dotdigits}{\fromafm{lmtti10}}}
-	\transformfont{dd-lmtto10}{\reencodefont{dotdigits}{\fromafm{lmtto10}}}
-	\transformfont{dd-lmvtk10}{\reencodefont{dotdigits}{\fromafm{lmvtk10}}}
-	\transformfont{dd-lmvtko10}{\reencodefont{dotdigits}{\fromafm{lmvtko10}}}
-	\transformfont{dd-lmvtl10}{\reencodefont{dotdigits}{\fromafm{lmvtl10}}}
-	\transformfont{dd-lmvtlo10}{\reencodefont{dotdigits}{\fromafm{lmvtlo10}}}
-	\transformfont{dd-lmvtt10}{\reencodefont{dotdigits}{\fromafm{lmvtt10}}}
-	\transformfont{dd-lmvtto10}{\reencodefont{dotdigits}{\fromafm{lmvtto10}}}
-	\transformfont{dd-lmdunh10}{\reencodefont{dotdigits}{\fromafm{lmdunh10}}}
-	\transformfont{dd-lmduno10}{\reencodefont{dotdigits}{\fromafm{lmduno10}}}
-%    \end{macrocode}
-% Installation: creation of virtual fonts
-%    \begin{macrocode}
-	\installfonts
-%    \end{macrocode}
-% clm: serif; tabular, lining digits
-%    \begin{macrocode}
-		\installfamily{T1}{clm}{}
-		\installfont{clmr8t5}{ec-lmr5 encoding txtfdmns,lmr8ttl5,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clm}{m}{n}{<-5.5>}
-		\installfont{clmr8t6}{ec-lmr6 encoding txtfdmns,lmr8ttl6,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clm}{m}{n}{<5.5-6.5>}
-		\installfont{clmr8t7}{ec-lmr7 encoding txtfdmns,lmr8ttl7,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clm}{m}{n}{<6.5-7.5>}
-		\installfont{clmr8t8}{ec-lmr8 encoding txtfdmns,lmr8ttl8,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clm}{m}{n}{<7.5-8.5>}
-		\installfont{clmr8t9}{ec-lmr9 encoding txtfdmns,lmr8ttl9,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clm}{m}{n}{<8.5-9.5>}
-		\installfont{clmr8t10}{ec-lmr10 encoding txtfdmns,lmr8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clm}{m}{n}{<9.5-11>}
-		\installfont{clmr8t12}{ec-lmr12 encoding txtfdmns,lmr8ttl12,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clm}{m}{n}{<11-15>}
-		\installfont{clmr8t17}{ec-lmr17 encoding txtfdmns,lmr8ttl17,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clm}{m}{n}{<15->}
-		\installfont{clmro8t8}{ec-lmro8 encoding txtfdmns,lmro8ttl8,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clm}{m}{sl}{<-8.5>}
-		\installfont{clmro8t9}{ec-lmro9 encoding txtfdmns,lmro8ttl9,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clm}{m}{sl}{<8.5-9.5>}
-		\installfont{clmro8t10}{ec-lmro10 encoding txtfdmns,lmro8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clm}{m}{sl}{<9.5-11>}
-		\installfont{clmro8t12}{ec-lmro12 encoding txtfdmns,lmro8ttl12,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clm}{m}{sl}{<11-15>}
-		\installfont{clmro8t17}{ec-lmro17 encoding txtfdmns,lmro8ttl17,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clm}{m}{sl}{<15->}
-		\installfont{clmri8t7}{ec-lmri7 encoding txtfdmns,lmri8ttl7,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clm}{m}{it}{<-7.5>}
-		\installfont{clmri8t8}{ec-lmri8 encoding txtfdmns,lmri8ttl8,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clm}{m}{it}{<7.5-8.5>}
-		\installfont{clmri8t9}{ec-lmri9 encoding txtfdmns,lmri8ttl9,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clm}{m}{it}{<8.5-9.5>}
-		\installfont{clmri8t10}{ec-lmri10 encoding txtfdmns,lmri8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clm}{m}{it}{<9.5-11>}
-		\installfont{clmri8t12}{ec-lmri12 encoding txtfdmns,lmri8ttl12,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clm}{m}{it}{<11->}
-		\installfont{clmu8t10}{ec-lmu10 encoding txtfdmns,lmu8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clm}{m}{ui}{}
-		\installfont{clmcsc8t10}{ec-lmcsc10 encoding txtfdmns,lmcsc8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clm}{m}{sc}{}
-		\installfont{clmcsco8t10}{ec-lmcsco10 encoding txtfdmns,lmcsco8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clm}{m}{scsl}{}
-%    \end{macrocode}
-% Repeat for bold fonts
-%    \begin{macrocode}
-		\installfont{clmbx8t5}{ec-lmbx5 encoding txtfdmns,lmbx8ttl5,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clm}{bx}{n}{<-5.5>}
-		\installfont{clmbx8t6}{ec-lmbx6 encoding txtfdmns,lmbx8ttl6,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clm}{bx}{n}{<5.5-6.5>}
-		\installfont{clmbx8t7}{ec-lmbx7 encoding txtfdmns,lmbx8ttl7,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clm}{bx}{n}{<6.5-7.5>}
-		\installfont{clmbx8t8}{ec-lmbx8 encoding txtfdmns,lmbx8ttl8,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clm}{bx}{n}{<7.5-8.5>}
-		\installfont{clmbx8t9}{ec-lmbx9 encoding txtfdmns,lmbx8ttl9,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clm}{bx}{n}{<8.5-9.5>}
-		\installfont{clmbx8t10}{ec-lmbx10 encoding txtfdmns,lmbx8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clm}{bx}{n}{<9.5-11>}
-		\installfont{clmbx8t12}{ec-lmbx12 encoding txtfdmns,lmbx8ttl12,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clm}{bx}{n}{<11->}
-		\installfont{clmbxo8t10}{ec-lmbxo10 encoding txtfdmns,lmbxo8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clm}{bx}{sl}{}
-		\installfont{clmbxi8t10}{ec-lmbxi10 encoding txtfdmns,lmbxi8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clm}{bx}{it}{}
-%    \end{macrocode}
-% Latin Modern default has these installed as bold, but the weight given in the font is demi and the demi weights in the sans-condensed are installed as demi, so I'm going for the same series - sb - here as they choose for those		
-%    \begin{macrocode}
-		\installfont{clmb8t10}{ec-lmb10 encoding txtfdmns,lmb8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clm}{sb}{n}{}
-		\installfont{clmbo8t10}{ec-lmbo10 encoding txtfdmns,lmbo8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clm}{sb}{sl}{}
-%    \end{macrocode}
-% clms: sans; tabular, lining digits
-%    \begin{macrocode}
-		\installfamily{T1}{clms}{}
-		\installfont{clmss8t8}{ec-lmss8 encoding txtfdmns,lmss8ttl8,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clms}{m}{n}{<-8.5>}
-		\installfont{clmss8t9}{ec-lmss9 encoding txtfdmns,lmss8ttl9,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clms}{m}{n}{<8.5-9.5>}
-		\installfont{clmss8t10}{ec-lmss10 encoding txtfdmns,lmss8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clms}{m}{n}{<9.5-11>}
-		\installfont{clmss8t12}{ec-lmss12 encoding txtfdmns,lmss8ttl12,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clms}{m}{n}{<11-15>}
-		\installfont{clmss8t17}{ec-lmss17 encoding txtfdmns,lmss8ttl17,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clms}{m}{n}{<15->}
-		\installfont{clmsso8t8}{ec-lmsso8 encoding txtfdmns,lmsso8ttl8,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clms}{m}{sl}{<-8.5>}
-		\installfont{clmsso8t9}{ec-lmsso9 encoding txtfdmns,lmsso8ttl9,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clms}{m}{sl}{<8.5-9.5>}
-		\installfont{clmsso8t10}{ec-lmsso10 encoding txtfdmns,lmsso8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clms}{m}{sl}{<9.5-11>}
-		\installfont{clmsso8t12}{ec-lmsso12 encoding txtfdmns,lmsso8ttl12,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clms}{m}{sl}{<11-15>}
-		\installfont{clmsso8t17}{ec-lmsso17 encoding txtfdmns,lmsso8ttl17,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clms}{m}{sl}{<15->}
-		\installfont{clmssbx8t10}{ec-lmssbx10 encoding txtfdmns,lmssbx8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clms}{bx}{n}{}
-		\installfont{clmssbo8t10}{ec-lmssbo10 encoding txtfdmns,lmssbo8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clms}{bx}{sl}{}
-		\installfont{clmssdc8t10}{ec-lmssdc10 encoding txtfdmns,lmssdc8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clms}{sbc}{n}{}
-		\installfont{clmssdo8t10}{ec-lmssdo10 encoding txtfdmns,lmssdo8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clms}{sbc}{sl}{}
-%    \end{macrocode}
-% clmqs: sans; tabular, lining digits
-%    \begin{macrocode}
-		\fontinstcc
-		\installfamily{T1}{clmqs}{\hyphenchar\font=\m@ne}
-		\normalcc
-		\installfont{clmssq8t8}{ec-lmssq8 encoding txtfdmns,lmssq8ttl8,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clmqs}{m}{n}{}
-		\installfont{clmssqo8t8}{ec-lmssqo8 encoding txtfdmns,lmssqo8ttl8,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clmqs}{m}{sl}{}
-		\installfont{clmssqbx8t8}{ec-lmssqbx8 encoding txtfdmns,lmssqbx8ttl8,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clmqs}{bx}{n}{}
-		\installfont{clmssqbo8t8}{ec-lmssqbo8 encoding txtfdmns,lmssqbo8ttl8,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clmqs}{bx}{sl}{}
-%    \end{macrocode}
-% clmt: mono/typewriter; tabular, lining digits
-%    \begin{macrocode}
-		\fontinstcc
-		\installfamily{T1}{clmt}{\hyphenchar\font=\m@ne}
-		\normalcc
-		\installfont{clmtt8t8}{ec-lmtt8 encoding txtfdmns,lmtt8ttl8,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clmt}{m}{n}{<-8.5>}
-		\installfont{clmtt8t9}{ec-lmtt9 encoding txtfdmns,lmtt8ttl9,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clmt}{m}{n}{<8.5-9.5>}
-		\installfont{clmtt8t10}{ec-lmtt10 encoding txtfdmns,lmtt8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clmt}{m}{n}{<9.5-11>}
-		\installfont{clmtt8t12}{ec-lmtt12 encoding txtfdmns,lmtt8ttl12,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clmt}{m}{n}{<11->}
-		\installfont{clmtto8t10}{ec-lmtto10 encoding txtfdmns,lmtto8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clmt}{m}{sl}{}
-		\installfont{clmtti8t10}{ec-lmtti10 encoding txtfdmns,lmtti8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clmt}{m}{it}{}
-		\installfont{clmtcsc8t10}{ec-lmtcsc10 encoding txtfdmns,lmtcsc8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clmt}{m}{sc}{}
-		\installfont{clmtcso8t10}{ec-lmtcso10 encoding txtfdmns,lmtcso8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clmt}{m}{scsl}{}
-		\installfont{clmtk8t10}{ec-lmtk10 encoding txtfdmns,lmtk8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clmt}{bx}{n}{}
-		\installfont{clmtko8t10}{ec-lmtko10 encoding txtfdmns,lmtko8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clmt}{bx}{sl}{}
-		\installfont{clmtl8t10}{ec-lmtl10 encoding txtfdmns,lmtl8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clmt}{l}{n}{}
-		\installfont{clmtlo8t10}{ec-lmtlo10 encoding txtfdmns,lmtlo8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clmt}{l}{sl}{}
-		\installfont{clmtlc8t10}{ec-lmtlc10 encoding txtfdmns,lmtlc8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clmt}{lc}{n}{}
-		\installfont{clmtlco8t10}{ec-lmtlco10 encoding txtfdmns,lmtlco8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clmt}{lc}{sl}{}
-%    \end{macrocode}
-% clmv: variable typewriter; tabular, lining digits
-%    \begin{macrocode}
-		\fontinstcc
-		\installfamily{T1}{clmv}{\hyphenchar\font=\m@ne}
-		\normalcc
-		\installfont{clmvtt8t10}{ec-lmvtt10 encoding txtfdmns,lmvtt8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clmv}{m}{n}{}
-		\installfont{clmvtto8t10}{ec-lmvtto10 encoding txtfdmns,lmvtto8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clmv}{m}{sl}{}
-		\installfont{clmvtk8t10}{ec-lmvtk10 encoding txtfdmns,lmvtk8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clmv}{bx}{n}{}
-		\installfont{clmvtko8t10}{ec-lmvtko10 encoding txtfdmns,lmvtko8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clmv}{bx}{sl}{}
-		\installfont{clmvtl8t10}{ec-lmvtl10 encoding txtfdmns,lmvtl8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clmv}{l}{n}{}
-		\installfont{clmvtlo8t10}{ec-lmvtlo10 encoding txtfdmns,lmvtlo8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clmv}{l}{sl}{}
-%    \end{macrocode}
-% clmd: dunh; tabular, lining digits 
-%    \begin{macrocode}
-		\fontinstcc
-		\installfamily{T1}{clmd}{\hyphenchar\font=45}
-		\normalcc
-		\installfont{clmdunh8t10}{ec-lmdunh10 encoding txtfdmns,lmdunh8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clmd}{m}{n}{}
-		\installfont{clmduno8t10}{ec-lmduno10 encoding txtfdmns,lmduno8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clmd}{m}{sl}{}
-%    \end{macrocode}
-% Now create families with (tabular) oldstyle figures by default
-% 
-% clmj		
-%    \begin{macrocode}
-		\installfamily{T1}{clmj}{}
-		\installfont{clmrj8t5}{ec-lmr5 encoding txtfdmns,lmr8ttl5,dd-lmr5,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmj}{m}{n}{<-5.5>}
-		\installfont{clmrj8t6}{ec-lmr6 encoding txtfdmns,lmr8ttl6,dd-lmr6,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmj}{m}{n}{<5.5-6.5>}
-		\installfont{clmrj8t7}{ec-lmr7 encoding txtfdmns,lmr8ttl7,dd-lmr7,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmj}{m}{n}{<6.5-7.5>}
-		\installfont{clmrj8t8}{ec-lmr8 encoding txtfdmns,lmr8ttl8,dd-lmr8,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmj}{m}{n}{<7.5-8.5>}
-		\installfont{clmrj8t9}{ec-lmr9 encoding txtfdmns,lmr8ttl9,dd-lmr9,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmj}{m}{n}{<8.5-9.5>}
-		\installfont{clmrj8t10}{ec-lmr10 encoding txtfdmns,lmr8ttl10,dd-lmr10,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmj}{m}{n}{<9.5-11>}
-		\installfont{clmrj8t12}{ec-lmr12 encoding txtfdmns,lmr8ttl12,dd-lmr12,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmj}{m}{n}{<11-15>}
-		\installfont{clmrj8t17}{ec-lmr17 encoding txtfdmns,lmr8ttl17,dd-lmr17,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmj}{m}{n}{<15->}
-		\installfont{clmrjo8t8}{ec-lmro8 encoding txtfdmns,lmro8ttl8,dd-lmro8,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmj}{m}{sl}{<-8.5>}
-		\installfont{clmrjo8t9}{ec-lmro9 encoding txtfdmns,lmro8ttl9,dd-lmro9,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmj}{m}{sl}{<8.5-9.5>}
-		\installfont{clmrjo8t10}{ec-lmro10 encoding txtfdmns,lmro8ttl10,dd-lmro10,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmj}{m}{sl}{<9.5-11>}
-		\installfont{clmrjo8t12}{ec-lmro12 encoding txtfdmns,lmro8ttl12,dd-lmro12,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmj}{m}{sl}{<11-15>}
-		\installfont{clmrjo8t17}{ec-lmro17 encoding txtfdmns,lmro8ttl17,dd-lmro17,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmj}{m}{sl}{<15->}
-		\installfont{clmrji8t7}{ec-lmri7 encoding txtfdmns,lmri8ttl7,dd-lmri7,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmj}{m}{it}{<-7.5>}
-		\installfont{clmrji8t8}{ec-lmri8 encoding txtfdmns,lmri8ttl8,dd-lmri8,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmj}{m}{it}{<7.5-8.5>}
-		\installfont{clmrji8t9}{ec-lmri9 encoding txtfdmns,lmri8ttl9,dd-lmri9,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmj}{m}{it}{<8.5-9.5>}
-		\installfont{clmrji8t10}{ec-lmri10 encoding txtfdmns,lmri8ttl10,dd-lmri10,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmj}{m}{it}{<9.5-11>}
-		\installfont{clmrji8t12}{ec-lmri12 encoding txtfdmns,lmri8ttl12,dd-lmri12,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmj}{m}{it}{<11->}
-		\installfont{clmuj8t10}{ec-lmu10 encoding txtfdmns,lmu8ttl10,dd-lmu10,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmj}{m}{ui}{}
-		\installfont{clmcscj8t10}{ec-lmcsc10 encoding txtfdmns,lmcsc8ttl10,dd-lmcsc10,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmj}{m}{sc}{}
-		\installfont{clmcscjo8t10}{ec-lmcsco10 encoding txtfdmns,lmcsco8ttl10,dd-lmcsco10,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmj}{m}{scsl}{}
-%    \end{macrocode}
-% Repeat for bold fonts
-%    \begin{macrocode}
-		\installfont{clmbxj8t5}{ec-lmbx5 encoding txtfdmns,lmbx8ttl5,dd-lmbx5,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmj}{bx}{n}{<-5.5>}
-		\installfont{clmbxj8t6}{ec-lmbx6 encoding txtfdmns,lmbx8ttl6,dd-lmbx6,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmj}{bx}{n}{<5.5-6.5>}
-		\installfont{clmbxj8t7}{ec-lmbx7 encoding txtfdmns,lmbx8ttl7,dd-lmbx7,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmj}{bx}{n}{<6.5-7.5>}
-		\installfont{clmbxj8t8}{ec-lmbx8 encoding txtfdmns,lmbx8ttl8,dd-lmbx8,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmj}{bx}{n}{<7.5-8.5>}
-		\installfont{clmbxj8t9}{ec-lmbx9 encoding txtfdmns,lmbx8ttl9,dd-lmbx9,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmj}{bx}{n}{<8.5-9.5>}
-		\installfont{clmbxj8t10}{ec-lmbx10 encoding txtfdmns,lmbx8ttl10,dd-lmbx10,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmj}{bx}{n}{<9.5-11>}
-		\installfont{clmbxj8t12}{ec-lmbx12 encoding txtfdmns,lmbx8ttl12,dd-lmbx12,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmj}{bx}{n}{<11->}
-		\installfont{clmbxjo8t10}{ec-lmbxo10 encoding txtfdmns,lmbxo8ttl10,dd-lmbxo10,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmj}{bx}{sl}{}
-		\installfont{clmbxji8t10}{ec-lmbxi10 encoding txtfdmns,lmbxi8ttl10,dd-lmbxi10,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmj}{bx}{it}{}
-%    \end{macrocode}
-% Latin Modern default has these installed as bold, but the weight given in the font is demi and the demi weights in the sans-condensed are installed as demi, so I'm going for the same series - sb - here as they choose for those		
-%    \begin{macrocode}
-		\installfont{clmbj8t10}{ec-lmb10 encoding txtfdmns,lmb8ttl10,dd-lmb10,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmj}{sb}{n}{}
-		\installfont{clmbjo8t10}{ec-lmbo10 encoding txtfdmns,lmbo8ttl10,dd-lmbo10,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmj}{sb}{sl}{}
-%    \end{macrocode}
-% clmjs		 
-%    \begin{macrocode}
-		\installfamily{T1}{clmjs}{}
-		\installfont{clmssj8t8}{ec-lmss8 encoding txtfdmns,lmss8ttl8,dd-lmss8,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjs}{m}{n}{<-8.5>}
-		\installfont{clmssj8t9}{ec-lmss9 encoding txtfdmns,lmss8ttl9,dd-lmss9,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjs}{m}{n}{<8.5-9.5>}
-		\installfont{clmssj8t10}{ec-lmss10 encoding txtfdmns,lmss8ttl10,dd-lmss10,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjs}{m}{n}{<9.5-11>}
-		\installfont{clmssj8t12}{ec-lmss12 encoding txtfdmns,lmss8ttl12,dd-lmss12,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjs}{m}{n}{<11-15>}
-		\installfont{clmssj8t17}{ec-lmss17 encoding txtfdmns,lmss8ttl17,dd-lmss17,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjs}{m}{n}{<15->}
-		\installfont{clmssjo8t8}{ec-lmsso8 encoding txtfdmns,lmsso8ttl8,dd-lmsso8,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjs}{m}{sl}{<-8.5>}
-		\installfont{clmssjo8t9}{ec-lmsso9 encoding txtfdmns,lmsso8ttl9,dd-lmsso9,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjs}{m}{sl}{<8.5-9.5>}
-		\installfont{clmssjo8t10}{ec-lmsso10 encoding txtfdmns,lmsso8ttl10,dd-lmsso10,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjs}{m}{sl}{<9.5-11>}
-		\installfont{clmssjo8t12}{ec-lmsso12 encoding txtfdmns,lmsso8ttl12,dd-lmsso12,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjs}{m}{sl}{<11-15>}
-		\installfont{clmssjo8t17}{ec-lmsso17 encoding txtfdmns,lmsso8ttl17,dd-lmsso17,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjs}{m}{sl}{<15->}
-		\installfont{clmssbxj8t10}{ec-lmssbx10 encoding txtfdmns,lmssbx8ttl10,dd-lmssbx10,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjs}{bx}{n}{}
-		\installfont{clmssbjo8t10}{ec-lmssbo10 encoding txtfdmns,lmssbo8ttl10,dd-lmssbo10,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjs}{bx}{sl}{}
-		\installfont{clmssdcj8t10}{ec-lmssdc10 encoding txtfdmns,lmssdc8ttl10,dd-lmssdc10,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjs}{sbc}{n}{}
-		\installfont{clmssdjo8t10}{ec-lmssdo10 encoding txtfdmns,lmssdo8ttl10,dd-lmssdo10,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjs}{sbc}{sl}{}
-%    \end{macrocode}
-% clmjqs		
-%    \begin{macrocode}
-		\fontinstcc
-		\installfamily{T1}{clmjqs}{\hyphenchar\font=\m@ne}
-		\normalcc
-		\installfont{clmssqj8t8}{ec-lmssq8 encoding txtfdmns,lmssq8ttl8,dd-lmssq8,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjqs}{m}{n}{}
-		\installfont{clmssqjo8t8}{ec-lmssqo8 encoding txtfdmns,lmssqo8ttl8,dd-lmssqo8,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjqs}{m}{sl}{}
-		\installfont{clmssqbxj8t8}{ec-lmssqbx8 encoding txtfdmns,lmssqbx8ttl8,dd-lmssqbx8,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjqs}{bx}{n}{}
-		\installfont{clmssqbjo8t8}{ec-lmssqbo8 encoding txtfdmns,lmssqbo8ttl8,dd-lmssqbo8,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjqs}{bx}{sl}{}
-%    \end{macrocode}
-% clmjt		
-%    \begin{macrocode}
-		\fontinstcc
-		\installfamily{T1}{clmjt}{\hyphenchar\font=\m@ne}
-		\normalcc
-		\installfont{clmttj8t8}{ec-lmtt8 encoding txtfdmns,lmtt8ttl8,dd-lmtt8,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjt}{m}{n}{<-8.5>}
-		\installfont{clmttj8t9}{ec-lmtt9 encoding txtfdmns,lmtt8ttl9,dd-lmtt9,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjt}{m}{n}{<8.5-9.5>}
-		\installfont{clmttj8t10}{ec-lmtt10 encoding txtfdmns,lmtt8ttl10,dd-lmtt10,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjt}{m}{n}{<9.5-11>}
-		\installfont{clmttj8t12}{ec-lmtt12 encoding txtfdmns,lmtt8ttl12,dd-lmtt12,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjt}{m}{n}{<11->}
-		\installfont{clmttjo8t10}{ec-lmtto10 encoding txtfdmns,lmtto8ttl10,dd-lmtto10,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjt}{m}{sl}{}
-		\installfont{clmttij8t10}{ec-lmtti10 encoding txtfdmns,lmtti8ttl10,dd-lmtti10,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjt}{m}{it}{}
-		\installfont{clmtcscj8t10}{ec-lmtcsc10 encoding txtfdmns,lmtcsc8ttl10,dd-lmtcsc10,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjt}{m}{sc}{}
-		\installfont{clmtcsjo8t10}{ec-lmtcso10 encoding txtfdmns,lmtcso8ttl10,dd-lmtcso10,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjt}{m}{scsl}{}
-		\installfont{clmtkj8t10}{ec-lmtk10 encoding txtfdmns,lmtk8ttl10,dd-lmtk10,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjt}{bx}{n}{}
-		\installfont{clmtkjo8t10}{ec-lmtko10 encoding txtfdmns,lmtko8ttl10,dd-lmtko10,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjt}{bx}{sl}{}
-		\installfont{clmtlj8t10}{ec-lmtl10 encoding txtfdmns,lmtl8ttl10,dd-lmtl10,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjt}{l}{n}{}
-		\installfont{clmtljo8t10}{ec-lmtlo10 encoding txtfdmns,lmtlo8ttl10,dd-lmtlo10,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjt}{l}{sl}{}
-		\installfont{clmtlcj8t10}{ec-lmtlc10 encoding txtfdmns,lmtlc8ttl10,dd-lmtlc10,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjt}{lc}{n}{}
-		\installfont{clmtlcjo8t10}{ec-lmtlco10 encoding txtfdmns,lmtlco8ttl10,dd-lmtlco10,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjt}{lc}{sl}{}
-%    \end{macrocode}
-% clmjv		
-%    \begin{macrocode}
-		\fontinstcc
-		\installfamily{T1}{clmjv}{\hyphenchar\font=\m@ne}
-		\normalcc
-		\installfont{clmvttj8t10}{ec-lmvtt10 encoding txtfdmns,lmvtt8ttl10,dd-lmvtt10,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjv}{m}{n}{}
-		\installfont{clmvttjo8t10}{ec-lmvtto10 encoding txtfdmns,lmvtto8ttl10,dd-lmvtto10,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjv}{m}{sl}{}
-		\installfont{clmvtkj8t10}{ec-lmvtk10 encoding txtfdmns,lmvtk8ttl10,dd-lmvtk10,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjv}{bx}{n}{}
-		\installfont{clmvtkjo8t10}{ec-lmvtko10 encoding txtfdmns,lmvtko8ttl10,dd-lmvtko10,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjv}{bx}{sl}{}
-		\installfont{clmvtlj8t10}{ec-lmvtl10 encoding txtfdmns,lmvtl8ttl10,dd-lmvtl10,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjv}{l}{n}{}
-		\installfont{clmvtljo8t10}{ec-lmvtlo10 encoding txtfdmns,lmvtlo8ttl10,dd-lmvtlo10,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmjv}{l}{sl}{}
-%    \end{macrocode}
-% clmdj		
-%    \begin{macrocode}
-		\fontinstcc
-		\installfamily{T1}{clmdj}{\hyphenchar\font=45}
-		\normalcc
-		\installfont{clmdunhj8t10}{ec-lmdunh10 encoding txtfdmns,lmdunh8ttl10,dd-lmdunh10,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmdj}{m}{n}{}
-		\installfont{clmdunjo8t10}{ec-lmduno10 encoding txtfdmns,lmduno8ttl10,dd-lmduno10,\metrics\unsetint{acccapheight},newlatin}{dottaboldstyle,t1-clm}{T1}{clmdj}{m}{sl}{}
-%    \end{macrocode}
-% Proportional, lining digits
-% 
-% clm2		
-%    \begin{macrocode}
-		\installfamily{T1}{clm2}{}
-		\installfont{clmr28t5}{ec-lmr5 encoding txtfdmns,lmr8ttl5,dd-lmr5,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2}{m}{n}{<-5.5>}
-		\installfont{clmr28t6}{ec-lmr6 encoding txtfdmns,lmr8ttl6,dd-lmr6,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2}{m}{n}{<5.5-6.5>}
-		\installfont{clmr28t7}{ec-lmr7 encoding txtfdmns,lmr8ttl7,dd-lmr7,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2}{m}{n}{<6.5-7.5>}
-		\installfont{clmr28t8}{ec-lmr8 encoding txtfdmns,lmr8ttl8,dd-lmr8,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2}{m}{n}{<7.5-8.5>}
-		\installfont{clmr28t9}{ec-lmr9 encoding txtfdmns,lmr8ttl9,dd-lmr9,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2}{m}{n}{<8.5-9.5>}
-		\installfont{clmr28t10}{ec-lmr10 encoding txtfdmns,lmr8ttl10,dd-lmr10,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2}{m}{n}{<9.5-11>}
-		\installfont{clmr28t12}{ec-lmr12 encoding txtfdmns,lmr8ttl12,dd-lmr12,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2}{m}{n}{<11-15>}
-		\installfont{clmr28t17}{ec-lmr17 encoding txtfdmns,lmr8ttl17,dd-lmr17,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2}{m}{n}{<15->}
-		\installfont{clmr2o8t8}{ec-lmro8 encoding txtfdmns,lmro8ttl8,dd-lmro8,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2}{m}{sl}{<-8.5>}
-		\installfont{clmr2o8t9}{ec-lmro9 encoding txtfdmns,lmro8ttl9,dd-lmro9,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2}{m}{sl}{<8.5-9.5>}
-		\installfont{clmr2o8t10}{ec-lmro10 encoding txtfdmns,lmro8ttl10,dd-lmro10,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2}{m}{sl}{<9.5-11>}
-		\installfont{clmr2o8t12}{ec-lmro12 encoding txtfdmns,lmro8ttl12,dd-lmro12,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2}{m}{sl}{<11-15>}
-		\installfont{clmr2o8t17}{ec-lmro17 encoding txtfdmns,lmro8ttl17,dd-lmro17,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2}{m}{sl}{<15->}
-		\installfont{clmr2i8t7}{ec-lmri7 encoding txtfdmns,lmri8ttl7,dd-lmri7,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2}{m}{it}{<-7.5>}
-		\installfont{clmr2i8t8}{ec-lmri8 encoding txtfdmns,lmri8ttl8,dd-lmri8,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2}{m}{it}{<7.5-8.5>}
-		\installfont{clmr2i8t9}{ec-lmri9 encoding txtfdmns,lmri8ttl9,dd-lmri9,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2}{m}{it}{<8.5-9.5>}
-		\installfont{clmr2i8t10}{ec-lmri10 encoding txtfdmns,lmri8ttl10,dd-lmri10,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2}{m}{it}{<9.5-11>}
-		\installfont{clmr2i8t12}{ec-lmri12 encoding txtfdmns,lmri8ttl12,dd-lmri12,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2}{m}{it}{<11->}
-		\installfont{clmu28t10}{ec-lmu10 encoding txtfdmns,lmu8ttl10,dd-lmu10,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2}{m}{ui}{}
-		\installfont{clmcsc28t10}{ec-lmcsc10 encoding txtfdmns,lmcsc8ttl10,dd-lmcsc10,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2}{m}{sc}{}
-		\installfont{clmcsc2o8t10}{ec-lmcsco10 encoding txtfdmns,lmcsco8ttl10,dd-lmcsco10,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2}{m}{scsl}{}
-%    \end{macrocode}
-% Repeat for bold fonts
-%    \begin{macrocode}
-		\installfont{clmbx28t5}{ec-lmbx5 encoding txtfdmns,lmbx8ttl5,dd-lmbx5,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2}{bx}{n}{<-5.5>}
-		\installfont{clmbx28t6}{ec-lmbx6 encoding txtfdmns,lmbx8ttl6,dd-lmbx6,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2}{bx}{n}{<5.5-6.5>}
-		\installfont{clmbx28t7}{ec-lmbx7 encoding txtfdmns,lmbx8ttl7,dd-lmbx7,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2}{bx}{n}{<6.5-7.5>}
-		\installfont{clmbx28t8}{ec-lmbx8 encoding txtfdmns,lmbx8ttl8,dd-lmbx8,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2}{bx}{n}{<-8.5>}
-		\installfont{clmbx28t9}{ec-lmbx9 encoding txtfdmns,lmbx8ttl9,dd-lmbx9,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2}{bx}{n}{<8.5-9.5>}
-		\installfont{clmbx28t10}{ec-lmbx10 encoding txtfdmns,lmbx8ttl10,dd-lmbx10,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2}{bx}{n}{<9.5-11>}
-		\installfont{clmbx28t12}{ec-lmbx12 encoding txtfdmns,lmbx8ttl12,dd-lmbx12,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2}{bx}{n}{<11->}
-		\installfont{clmbx2o8t10}{ec-lmbxo10 encoding txtfdmns,lmbxo8ttl10,dd-lmbxo10,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2}{bx}{sl}{}
-		\installfont{clmbx2i8t10}{ec-lmbxi10 encoding txtfdmns,lmbxi8ttl10,dd-lmbxi10,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2}{bx}{it}{}
-%    \end{macrocode}
-% Latin Modern default has these installed as bold, but the weight given in the font is demi and the demi weights in the sans-condensed are installed as demi, so I'm going for the same series - sb - here as they choose for those		 
-%    \begin{macrocode}
-		\installfont{clmb28t10}{ec-lmb10 encoding txtfdmns,lmb8ttl10,dd-lmb10,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2}{sb}{n}{}
-		\installfont{clmb2o8t10}{ec-lmbo10 encoding txtfdmns,lmbo8ttl10,dd-lmbo10,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2}{sb}{sl}{}
-%    \end{macrocode}
-% clm2s		 
-%    \begin{macrocode}
-		\installfamily{T1}{clm2s}{}
-		\installfont{clmss28t8}{ec-lmss8 encoding txtfdmns,lmss8ttl8,dd-lmss8,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2s}{m}{n}{<-8.5>}
-		\installfont{clmss28t9}{ec-lmss9 encoding txtfdmns,lmss8ttl9,dd-lmss9,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2s}{m}{n}{<8.5-9.5>}
-		\installfont{clmss28t10}{ec-lmss10 encoding txtfdmns,lmss8ttl10,dd-lmss10,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2s}{m}{n}{<9.5-11>}
-		\installfont{clmss28t12}{ec-lmss12 encoding txtfdmns,lmss8ttl12,dd-lmss12,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2s}{m}{n}{<11-15>}
-		\installfont{clmss28t17}{ec-lmss17 encoding txtfdmns,lmss8ttl17,dd-lmss17,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2s}{m}{n}{<15->}
-		\installfont{clmsso28t8}{ec-lmsso8 encoding txtfdmns,lmsso8ttl8,dd-lmsso8,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2s}{m}{sl}{<-8.5>}
-		\installfont{clmsso28t9}{ec-lmsso9 encoding txtfdmns,lmsso8ttl9,dd-lmsso9,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2s}{m}{sl}{<8.5-9.5>}
-		\installfont{clmsso28t10}{ec-lmsso10 encoding txtfdmns,lmsso8ttl10,dd-lmsso10,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2s}{m}{sl}{<9.5-11>}
-		\installfont{clmsso28t12}{ec-lmsso12 encoding txtfdmns,lmsso8ttl12,dd-lmsso12,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2s}{m}{sl}{<11-15>}
-		\installfont{clmsso28t17}{ec-lmsso17 encoding txtfdmns,lmsso8ttl17,dd-lmsso17,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2s}{m}{sl}{<15->}
-		\installfont{clmssbx28t10}{ec-lmssbx10 encoding txtfdmns,lmssbx8ttl10,dd-lmssbx10,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2s}{bx}{n}{}
-		\installfont{clmssb2o8t10}{ec-lmssbo10 encoding txtfdmns,lmssbo8ttl10,dd-lmssbo10,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2s}{bx}{sl}{}
-		\installfont{clmssdc28t10}{ec-lmssdc10 encoding txtfdmns,lmssdc8ttl10,dd-lmssdc10,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2s}{sbc}{n}{}
-		\installfont{clmssd2o8t10}{ec-lmssdo10 encoding txtfdmns,lmssdo8ttl10,dd-lmssdo10,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2s}{sbc}{sl}{}
-%    \end{macrocode}
-% clm2qs		
-%    \begin{macrocode}
-		\fontinstcc
-		\installfamily{T1}{clm2qs}{\hyphenchar\font=\m@ne}
-		\normalcc
-		\installfont{clmssq28t8}{ec-lmssq8 encoding txtfdmns,lmssq8ttl8,dd-lmssq8,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2qs}{m}{n}{}
-		\installfont{clmssq2o8t8}{ec-lmssqo8 encoding txtfdmns,lmssqo8ttl8,dd-lmssqo8,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2qs}{m}{sl}{}
-		\installfont{clmssqbx28t8}{ec-lmssqbx8 encoding txtfdmns,lmssqbx8ttl8,dd-lmssqbx8,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2qs}{bx}{n}{}
-		\installfont{clmssqb2o8t8}{ec-lmssqbo8 encoding txtfdmns,lmssqbo8ttl8,dd-lmssqbo8,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2qs}{bx}{sl}{}
-%    \end{macrocode}
-% clm2v		
-%    \begin{macrocode}
-		\fontinstcc
-		\installfamily{T1}{clm2v}{\hyphenchar\font=\m@ne}
-		\normalcc
-		\installfont{clmvtt28t10}{ec-lmvtt10 encoding txtfdmns,lmvtt8ttl10,dd-lmvtt10,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2v}{m}{n}{}
-		\installfont{clmvtt2o8t10}{ec-lmvtto10 encoding txtfdmns,lmvtto8ttl10,dd-lmvtto10,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2v}{m}{sl}{}
-		\installfont{clmvtk28t10}{ec-lmvtk10 encoding txtfdmns,lmvtk8ttl10,dd-lmvtk10,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2v}{bx}{n}{}
-		\installfont{clmvtk2o8t10}{ec-lmvtko10 encoding txtfdmns,lmvtko8ttl10,dd-lmvtko10,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2v}{bx}{sl}{}
-		\installfont{clmvtl28t10}{ec-lmvtl10 encoding txtfdmns,lmvtl8ttl10,dd-lmvtl10,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2v}{l}{n}{}
-		\installfont{clmvtl2o8t10}{ec-lmvtlo10 encoding txtfdmns,lmvtlo8ttl10,dd-lmvtlo10,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2v}{l}{sl}{}
-%    \end{macrocode}
-% clm2t
-%    \begin{macrocode}
-		\fontinstcc
-		\installfamily{T1}{clm2t}{\hyphenchar\font=\m@ne}
-		\normalcc
-		\installfontas{clmtt8t8}{T1}{clm2t}{m}{n}{<-8.5>}
-		\installfontas{clmtt8t9}{T1}{clm2t}{m}{n}{<8.5-9.5>}
-		\installfontas{clmtt8t10}{T1}{clm2t}{m}{n}{<9.5-11>}
-		\installfontas{clmtt8t12}{T1}{clm2t}{m}{n}{<11->}
-		\installfontas{clmtto8t10}{T1}{clm2t}{m}{sl}{}
-		\installfontas{clmtti8t10}{T1}{clm2t}{m}{it}{}
-		\installfontas{clmtcsc8t10}{T1}{clm2t}{m}{sc}{}
-		\installfontas{clmtcso8t10}{T1}{clm2t}{m}{scsl}{}
-		\installfontas{clmtk8t10}{T1}{clm2t}{bx}{n}{}
-		\installfontas{clmtko8t10}{T1}{clm2t}{bx}{sl}{}
-		\installfontas{clmtl8t10}{T1}{clm2t}{l}{n}{}
-		\installfontas{clmtlo8t10}{T1}{clm2t}{l}{sl}{}
-		\installfontas{clmtlc8t10}{T1}{clm2t}{lc}{n}{}
-		\installfontas{clmtlco8t10}{T1}{clm2t}{lc}{sl}{}
-%    \end{macrocode}
-% clm2d		
-%    \begin{macrocode}
-		\fontinstcc
-		\installfamily{T1}{clm2d}{\hyphenchar\font=45}
-		\normalcc
-		\installfont{clmdunh28t10}{ec-lmdunh10 encoding txtfdmns,lmdunh8ttl10,dd-lmdunh10,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2d}{m}{n}{}
-		\installfont{clmdun2o8t10}{ec-lmduno10 encoding txtfdmns,lmduno8ttl10,dd-lmduno10,\metrics\unsetint{acccapheight},newlatin}{dotprop,t1-clm}{T1}{clm2d}{m}{sl}{}
-%    \end{macrocode}
-% Proportional, oldstyle digits 
-% 
-% clm2j		
-%    \begin{macrocode}
-		\installfamily{T1}{clm2j}{}
-		\installfont{clmr2j8t5}{ec-lmr5 encoding txtfdmns,lmr8ttl5,dd-lmr5,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2j}{m}{n}{<-5.5>}
-		\installfont{clmr2j8t6}{ec-lmr6 encoding txtfdmns,lmr8ttl6,dd-lmr6,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2j}{m}{n}{<5.5-6.5>}
-		\installfont{clmr2j8t7}{ec-lmr7 encoding txtfdmns,lmr8ttl7,dd-lmr7,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2j}{m}{n}{<6.5-7.5>}
-		\installfont{clmr2j8t8}{ec-lmr8 encoding txtfdmns,lmr8ttl8,dd-lmr8,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2j}{m}{n}{<7.5-8.5>}
-		\installfont{clmr2j8t9}{ec-lmr9 encoding txtfdmns,lmr8ttl9,dd-lmr9,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2j}{m}{n}{<8.5-9.5>}
-		\installfont{clmr2j8t10}{ec-lmr10 encoding txtfdmns,lmr8ttl10,dd-lmr10,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2j}{m}{n}{<9.5-11>}
-		\installfont{clmr2j8t12}{ec-lmr12 encoding txtfdmns,lmr8ttl12,dd-lmr12,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2j}{m}{n}{<11-15>}
-		\installfont{clmr2j8t17}{ec-lmr17 encoding txtfdmns,lmr8ttl17,dd-lmr17,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2j}{m}{n}{<15->}
-		\installfont{clmr2jo8t8}{ec-lmro8 encoding txtfdmns,lmro8ttl8,dd-lmro8,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2j}{m}{sl}{<-8.5>}
-		\installfont{clmr2jo8t9}{ec-lmro9 encoding txtfdmns,lmro8ttl9,dd-lmro9,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2j}{m}{sl}{<8.5-9.5>}
-		\installfont{clmr2jo8t10}{ec-lmro10 encoding txtfdmns,lmro8ttl10,dd-lmro10,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2j}{m}{sl}{<9.5-11>}
-		\installfont{clmr2jo8t12}{ec-lmro12 encoding txtfdmns,lmro8ttl12,dd-lmro12,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2j}{m}{sl}{<11-15>}
-		\installfont{clmr2jo8t17}{ec-lmro17 encoding txtfdmns,lmro8ttl17,dd-lmro17,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2j}{m}{sl}{<15->}
-		\installfont{clmr2ij8t7}{ec-lmri7 encoding txtfdmns,lmri8ttl7,dd-lmri7,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2j}{m}{it}{<-7.5>}
-		\installfont{clmr2ij8t8}{ec-lmri8 encoding txtfdmns,lmri8ttl8,dd-lmri8,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2j}{m}{it}{<7.5-8.5>}
-		\installfont{clmr2ij8t9}{ec-lmri9 encoding txtfdmns,lmri8ttl9,dd-lmri9,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2j}{m}{it}{<8.5-9.5>}
-		\installfont{clmr2ij8t10}{ec-lmri10 encoding txtfdmns,lmri8ttl10,dd-lmri10,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2j}{m}{it}{<9.5-11>}
-		\installfont{clmr2ij8t12}{ec-lmri12 encoding txtfdmns,lmri8ttl12,dd-lmri12,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2j}{m}{it}{<11->}
-		\installfont{clmu2j8t10}{ec-lmu10 encoding txtfdmns,lmu8ttl10,dd-lmu10,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2j}{m}{ui}{}
-		\installfont{clmcsc2j8t10}{ec-lmcsc10 encoding txtfdmns,lmcsc8ttl10,dd-lmcsc10,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2j}{m}{sc}{}
-		\installfont{clmcsc2jo8t10}{ec-lmcsco10 encoding txtfdmns,lmcsco8ttl10,dd-lmcsco10,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2j}{m}{scsl}{}
-%    \end{macrocode}
-% Repeat for bold fonts
-%    \begin{macrocode}
-		\installfont{clmbx2j8t5}{ec-lmbx5 encoding txtfdmns,lmbx8ttl5,dd-lmbx5,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2j}{bx}{n}{<-5.5>}
-		\installfont{clmbx2j8t6}{ec-lmbx6 encoding txtfdmns,lmbx8ttl6,dd-lmbx6,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2j}{bx}{n}{<5.5-6.5>}
-		\installfont{clmbx2j8t7}{ec-lmbx7 encoding txtfdmns,lmbx8ttl7,dd-lmbx7,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2j}{bx}{n}{<6.5-7.5>}
-		\installfont{clmbx2j8t8}{ec-lmbx8 encoding txtfdmns,lmbx8ttl8,dd-lmbx8,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2j}{bx}{n}{<7.5-8.5>}
-		\installfont{clmbx2j8t9}{ec-lmbx9 encoding txtfdmns,lmbx8ttl9,dd-lmbx9,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2j}{bx}{n}{<8.5-9.5>}
-		\installfont{clmbx2j8t10}{ec-lmbx10 encoding txtfdmns,lmbx8ttl10,dd-lmbx10,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2j}{bx}{n}{<9.5-11>}
-		\installfont{clmbx2j8t12}{ec-lmbx12 encoding txtfdmns,lmbx8ttl12,dd-lmbx12,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2j}{bx}{n}{<11->}
-		\installfont{clmbx2jo8t10}{ec-lmbxo10 encoding txtfdmns,lmbxo8ttl10,dd-lmbxo10,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2j}{bx}{sl}{}
-		\installfont{clmbx2ij8t10}{ec-lmbxi10 encoding txtfdmns,lmbxi8ttl10,dd-lmbxi10,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2j}{bx}{it}{}
-%    \end{macrocode}
-% Latin Modern default has these installed as bold, but the weight given in the font is demi and the demi weights in the sans-condensed are installed as demi, so I'm going for the same series - sb - here as they choose for those		 
-%    \begin{macrocode}
-		\installfont{clmb2j8t10}{ec-lmb10 encoding txtfdmns,lmb8ttl10,dd-lmb10,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2j}{sb}{n}{}
-		\installfont{clmb2jo8t10}{ec-lmbo10 encoding txtfdmns,lmbo8ttl10,dd-lmbo10,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2j}{sb}{sl}{}
-%    \end{macrocode}
-% clm2js		 
-%    \begin{macrocode}
-		\installfamily{T1}{clm2js}{}
-		\installfont{clmss2j8t8}{ec-lmss8 encoding txtfdmns,lmss8ttl8,dd-lmss8,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2js}{m}{n}{<-8.5>}
-		\installfont{clmss2j8t9}{ec-lmss9 encoding txtfdmns,lmss8ttl9,dd-lmss9,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2js}{m}{n}{<8.5-9.5>}
-		\installfont{clmss2j8t10}{ec-lmss10 encoding txtfdmns,lmss8ttl10,dd-lmss10,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2js}{m}{n}{<9.5-11>}
-		\installfont{clmss2j8t12}{ec-lmss12 encoding txtfdmns,lmss8ttl12,dd-lmss12,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2js}{m}{n}{<11-15>}
-		\installfont{clmss2j8t17}{ec-lmss17 encoding txtfdmns,lmss8ttl17,dd-lmss17,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2js}{m}{n}{<15->}
-		\installfont{clmss2jo8t8}{ec-lmsso8 encoding txtfdmns,lmsso8ttl8,dd-lmsso8,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2js}{m}{sl}{<-8.5>}
-		\installfont{clmss2jo8t9}{ec-lmsso9 encoding txtfdmns,lmsso8ttl9,dd-lmsso9,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2js}{m}{sl}{<8.5-9.5>}
-		\installfont{clmss2jo8t10}{ec-lmsso10 encoding txtfdmns,lmsso8ttl10,dd-lmsso10,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2js}{m}{sl}{<9.5-11>}
-		\installfont{clmss2jo8t12}{ec-lmsso12 encoding txtfdmns,lmsso8ttl12,dd-lmsso12,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2js}{m}{sl}{<11-15>}
-		\installfont{clmss2jo8t17}{ec-lmsso17 encoding txtfdmns,lmsso8ttl17,dd-lmsso17,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2js}{m}{sl}{<15->}
-		\installfont{clmssbx2j8t10}{ec-lmssbx10 encoding txtfdmns,lmssbx8ttl10,dd-lmssbx10,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2js}{bx}{n}{}
-		\installfont{clmssb2jo8t10}{ec-lmssbo10 encoding txtfdmns,lmssbo8ttl10,dd-lmssbo10,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2js}{bx}{sl}{}
-		\installfont{clmssdc2j8t10}{ec-lmssdc10 encoding txtfdmns,lmssdc8ttl10,dd-lmssdc10,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2js}{sbc}{n}{}
-		\installfont{clmssd2jo8t10}{ec-lmssdo10 encoding txtfdmns,lmssdo8ttl10,dd-lmssdo10,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2js}{sbc}{sl}{}
-%    \end{macrocode}
-% clm2jqs		
-%    \begin{macrocode}
-		\fontinstcc
-		\installfamily{T1}{clm2jqs}{\hyphenchar\font=\m@ne}
-		\normalcc
-		\installfont{clmssq2j8t8}{ec-lmssq8 encoding txtfdmns,lmssq8ttl8,dd-lmssq8,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2jqs}{m}{n}{}
-		\installfont{clmssq2jo8t8}{ec-lmssqo8 encoding txtfdmns,lmssqo8ttl8,dd-lmssqo8,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2jqs}{m}{sl}{}
-		\installfont{clmssqbx2j8t8}{ec-lmssqbx8 encoding txtfdmns,lmssqbx8ttl8,dd-lmssqbx8,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2jqs}{bx}{n}{}
-		\installfont{clmssqb2jo8t8}{ec-lmssqbo8 encoding txtfdmns,lmssqbo8ttl8,dd-lmssqbo8,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2jqs}{bx}{sl}{}
-%    \end{macrocode}
-% clm2jt		
-%    \begin{macrocode}
-		\fontinstcc
-		\installfamily{T1}{clm2jt}{\hyphenchar\font=\m@ne}
-		\normalcc
-		\installfontas{clmttj8t8}{T1}{clm2jt}{m}{n}{<-8.5>}
-		\installfontas{clmttj8t9}{T1}{clm2jt}{m}{n}{<8.5-9.5>}
-		\installfontas{clmttj8t10}{T1}{clm2jt}{m}{n}{<9.5-11>}
-		\installfontas{clmttj8t12}{T1}{clm2jt}{m}{n}{<11->}
-		\installfontas{clmttjo8t10}{T1}{clm2jt}{m}{sl}{}
-		\installfontas{clmttij8t10}{T1}{clm2jt}{m}{it}{}
-		\installfontas{clmtcscj8t10}{T1}{clm2jt}{m}{sc}{}
-		\installfontas{clmtcsjo8t10}{T1}{clm2jt}{m}{scsl}{}
-		\installfontas{clmtkj8t10}{T1}{clm2jt}{bx}{n}{}
-		\installfontas{clmtkjo8t10}{T1}{clm2jt}{bx}{sl}{}
-		\installfontas{clmtlj8t10}{T1}{clm2jt}{l}{n}{}
-		\installfontas{clmtljo8t10}{T1}{clm2jt}{l}{sl}{}
-		\installfontas{clmtlcj8t10}{T1}{clm2jt}{lc}{n}{}
-		\installfontas{clmtlcjo8t10}{T1}{clm2jt}{lc}{sl}{}
-%    \end{macrocode}
-% clm2jv		
-%    \begin{macrocode}
-		\fontinstcc
-		\installfamily{T1}{clm2jv}{\hyphenchar\font=\m@ne}
-		\normalcc
-		\installfont{clmvtt2j8t10}{ec-lmvtt10 encoding txtfdmns,lmvtt8ttl10,dd-lmvtt10,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2jv}{m}{n}{}
-		\installfont{clmvtt2jo8t10}{ec-lmvtto10 encoding txtfdmns,lmvtto8ttl10,dd-lmvtto10,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2jv}{m}{sl}{}
-		\installfont{clmvtk2j8t10}{ec-lmvtk10 encoding txtfdmns,lmvtk8ttl10,dd-lmvtk10,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2jv}{bx}{n}{}
-		\installfont{clmvtk2jo8t10}{ec-lmvtko10 encoding txtfdmns,lmvtko8ttl10,dd-lmvtko10,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2jv}{bx}{sl}{}
-		\installfont{clmvtl2j8t10}{ec-lmvtl10 encoding txtfdmns,lmvtl8ttl10,dd-lmvtl10,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2jv}{l}{n}{}
-		\installfont{clmvtl2jo8t10}{ec-lmvtlo10 encoding txtfdmns,lmvtlo8ttl10,dd-lmvtlo10,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2jv}{l}{sl}{}
-%    \end{macrocode}
-% clm2dj		
-%    \begin{macrocode}
-		\fontinstcc
-		\installfamily{T1}{clm2dj}{\hyphenchar\font=45}
-		\normalcc
-		\installfont{clmdunh2j8t10}{ec-lmdunh10 encoding txtfdmns,lmdunh8ttl10,dd-lmdunh10,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2dj}{m}{n}{}
-		\installfont{clmdun2jo8t10}{ec-lmduno10 encoding txtfdmns,lmduno8ttl10,dd-lmduno10,\metrics\unsetint{acccapheight},newlatin}{dotoldstyle,t1-clm}{T1}{clm2dj}{m}{sl}{}
-%    \end{macrocode}
-% OTHER
-%    \begin{macrocode}
-		\installfamily{U}{clm}{}
-		\installfont{u-clmr5}{dd-lmr5}{txtfdmns,dotdigits}{U}{clm}{m}{n}{<-5.5>}
-		\installfont{u-clmr6}{dd-lmr6}{txtfdmns,dotdigits}{U}{clm}{m}{n}{<5.5-6.5>}
-		\installfont{u-clmr7}{dd-lmr7}{txtfdmns,dotdigits}{U}{clm}{m}{n}{<6.5-7.5>}
-		\installfont{u-clmr8}{dd-lmr8}{txtfdmns,dotdigits}{U}{clm}{m}{n}{<7.5-8.5>}
-		\installfont{u-clmr9}{dd-lmr9}{txtfdmns,dotdigits}{U}{clm}{m}{n}{<8.5-9.5>}
-		\installfont{u-clmr10}{dd-lmr10}{txtfdmns,dotdigits}{U}{clm}{m}{n}{<9.5-11>}
-		\installfont{u-clmr12}{dd-lmr12}{txtfdmns,dotdigits}{U}{clm}{m}{n}{<11-15>}
-		\installfont{u-clmr17}{dd-lmr17}{txtfdmns,dotdigits}{U}{clm}{m}{n}{<15->}
-		\installfont{u-clmro8}{dd-lmro8}{txtfdmns,dotdigits}{U}{clm}{m}{sl}{<-8.5>}
-		\installfont{u-clmro9}{dd-lmro9}{txtfdmns,dotdigits}{U}{clm}{m}{sl}{<8.5-9.5>}
-		\installfont{u-clmro10}{dd-lmro10}{txtfdmns,dotdigits}{U}{clm}{m}{sl}{<9.5-11>}
-		\installfont{u-clmro12}{dd-lmro12}{txtfdmns,dotdigits}{U}{clm}{m}{sl}{<11-15>}
-		\installfont{u-clmro17}{dd-lmro17}{txtfdmns,dotdigits}{U}{clm}{m}{sl}{<15->}
-		\installfont{u-clmri7}{dd-lmri7}{txtfdmns,dotdigits}{U}{clm}{m}{it}{<-7.5>}
-		\installfont{u-clmri8}{dd-lmri8}{txtfdmns,dotdigits}{U}{clm}{m}{it}{<7.5-8.5>}
-		\installfont{u-clmri9}{dd-lmri9}{txtfdmns,dotdigits}{U}{clm}{m}{it}{<8.5-9.5>}
-		\installfont{u-clmri10}{dd-lmri10}{txtfdmns,dotdigits}{U}{clm}{m}{it}{<9.5-11>}
-		\installfont{u-clmri12}{dd-lmri12}{txtfdmns,dotdigits}{U}{clm}{m}{it}{<11->}
-		\installfont{u-clmu10}{dd-lmu10}{txtfdmns,dotdigits}{U}{clm}{m}{ui}{}
-		\installfont{u-clmcsc10}{dd-lmcsc10}{txtfdmns,dotdigits}{U}{clm}{m}{sc}{}
-		\installfont{u-clmcsco10}{dd-lmcsco10}{txtfdmns,dotdigits}{U}{clm}{m}{scsl}{}
-%    \end{macrocode}
-% Repeat for bold fonts
-%    \begin{macrocode}
-		\installfont{u-clmbx5}{dd-lmbx5}{txtfdmns,dotdigits}{U}{clm}{bx}{n}{<-5.5>}
-		\installfont{u-clmbx6}{dd-lmbx6}{txtfdmns,dotdigits}{U}{clm}{bx}{n}{<5.5-6.5>}
-		\installfont{u-clmbx7}{dd-lmbx7}{txtfdmns,dotdigits}{U}{clm}{bx}{n}{<6.5-7.5>}
-		\installfont{u-clmbx8}{dd-lmbx8}{txtfdmns,dotdigits}{U}{clm}{bx}{n}{<7.5-8.5>}
-		\installfont{u-clmbx9}{dd-lmbx9}{txtfdmns,dotdigits}{U}{clm}{bx}{n}{<8.5-9.5>}
-		\installfont{u-clmbx10}{dd-lmbx10}{txtfdmns,dotdigits}{U}{clm}{bx}{n}{<9.5-11>}
-		\installfont{u-clmbx12}{dd-lmbx12}{txtfdmns,dotdigits}{U}{clm}{bx}{n}{<11->}
-		\installfont{u-clmbxo10}{dd-lmbxo10}{txtfdmns,dotdigits}{U}{clm}{bx}{sl}{}
-		\installfont{u-clmbxi10}{dd-lmbxi10}{txtfdmns,dotdigits}{U}{clm}{bx}{it}{}
-%    \end{macrocode}
-% Latin Modern default has these installed as bold, but the weight given in the font is demi and the demi weights in the sans-condensed are installed as demi, so I'm going for the same series - sb - here as they choose for those		 
-%    \begin{macrocode}
-		\installfont{u-clmb10}{dd-lmb10}{txtfdmns,dotdigits}{U}{clm}{sb}{n}{}
-		\installfont{u-clmbo10}{dd-lmbo10}{txtfdmns,dotdigits}{U}{clm}{sb}{sl}{}
-		\installfamily{U}{clms}{}
-		\installfont{u-clmss8}{dd-lmss8}{txtfdmns,dotdigits}{U}{clms}{m}{n}{<-8.5>}
-		\installfont{u-clmss9}{dd-lmss9}{txtfdmns,dotdigits}{U}{clms}{m}{n}{<8.5-9.5>}
-		\installfont{u-clmss10}{dd-lmss10}{txtfdmns,dotdigits}{U}{clms}{m}{n}{<9.5-11>}
-		\installfont{u-clmss12}{dd-lmss12}{txtfdmns,dotdigits}{U}{clms}{m}{n}{<11-15>}
-		\installfont{u-clmss17}{dd-lmss17}{txtfdmns,dotdigits}{U}{clms}{m}{n}{<15->}
-		\installfont{u-clmsso8}{dd-lmsso8}{txtfdmns,dotdigits}{U}{clms}{m}{sl}{<-8.5>}
-		\installfont{u-clmsso9}{dd-lmsso9}{txtfdmns,dotdigits}{U}{clms}{m}{sl}{<8.5-9.5>}
-		\installfont{u-clmsso10}{dd-lmsso10}{txtfdmns,dotdigits}{U}{clms}{m}{sl}{<9.5-11>}
-		\installfont{u-clmsso12}{dd-lmsso12}{txtfdmns,dotdigits}{U}{clms}{m}{sl}{<11-15>}
-		\installfont{u-clmsso17}{dd-lmsso17}{txtfdmns,dotdigits}{U}{clms}{m}{sl}{<15->}
-		\installfont{u-clmssbx10}{dd-lmssbx10}{txtfdmns,dotdigits}{U}{clms}{bx}{n}{}
-		\installfont{u-clmssbo10}{dd-lmssbo10}{txtfdmns,dotdigits}{U}{clms}{bx}{sl}{}
-		\installfont{u-clmssdc10}{dd-lmssdc10}{txtfdmns,dotdigits}{U}{clms}{sbc}{n}{}
-		\installfont{u-clmssdo10}{dd-lmssdo10}{txtfdmns,dotdigits}{U}{clms}{sbc}{sl}{}
-		\installfamily{U}{clmqs}{}
-		\installfont{u-clmssq8}{dd-lmssq8}{txtfdmns,dotdigits}{U}{clmqs}{m}{n}{}
-		\installfont{u-clmssqo8}{dd-lmssqo8}{txtfdmns,dotdigits}{U}{clmqs}{m}{sl}{}
-		\installfont{u-clmssqbx8}{dd-lmssqbx8}{txtfdmns,dotdigits}{U}{clmqs}{bx}{n}{}
-		\installfont{u-clmssqbo8}{dd-lmssqbo8}{txtfdmns,dotdigits}{U}{clmqs}{bx}{sl}{}
-		\installfamily{U}{clmt}{}
-		\installfont{u-clmtt8}{dd-lmtt8}{txtfdmns,dotdigits}{U}{clmt}{m}{n}{<-8.5>}
-		\installfont{u-clmtt9}{dd-lmtt9}{txtfdmns,dotdigits}{U}{clmt}{m}{n}{<8.5-9.5>}
-		\installfont{u-clmtt10}{dd-lmtt10}{txtfdmns,dotdigits}{U}{clmt}{m}{n}{<9.5-11>}
-		\installfont{u-clmtt12}{dd-lmtt12}{txtfdmns,dotdigits}{U}{clmt}{m}{n}{<11->}
-		\installfont{u-clmtto10}{dd-lmtto10}{txtfdmns,dotdigits}{U}{clmt}{m}{sl}{}
-		\installfont{u-clmtti10}{dd-lmtti10}{txtfdmns,dotdigits}{U}{clmt}{m}{it}{}
-		\installfont{u-clmtcsc10}{dd-lmtcsc10}{txtfdmns,dotdigits}{U}{clmt}{m}{sc}{}
-		\installfont{u-clmtcso10}{dd-lmtcso10}{txtfdmns,dotdigits}{U}{clmt}{m}{scsl}{}
-		\installfont{u-clmtk10}{dd-lmtk10}{txtfdmns,dotdigits}{U}{clmt}{bx}{n}{}
-		\installfont{u-clmtko10}{dd-lmtko10}{txtfdmns,dotdigits}{U}{clmt}{bx}{sl}{}
-		\installfont{u-clmtl10}{dd-lmtl10}{txtfdmns,dotdigits}{U}{clmt}{l}{n}{}
-		\installfont{u-clmtlo10}{dd-lmtlo10}{txtfdmns,dotdigits}{U}{clmt}{l}{sl}{}
-		\installfont{u-clmtlc10}{dd-lmtlc10}{txtfdmns,dotdigits}{U}{clmt}{lc}{n}{}
-		\installfont{u-clmtlco10}{dd-lmtlco10}{txtfdmns,dotdigits}{U}{clmt}{lc}{sl}{}
-		\installfamily{U}{clmv}{}
-		\installfont{u-clmvtt10}{dd-lmvtt10}{txtfdmns,dotdigits}{U}{clmv}{m}{n}{}
-		\installfont{u-clmvtto10}{dd-lmvtto10}{txtfdmns,dotdigits}{U}{clmv}{m}{sl}{}
-		\installfont{u-clmvtk10}{dd-lmvtk10}{txtfdmns,dotdigits}{U}{clmv}{bx}{n}{}
-		\installfont{u-clmvtko10}{dd-lmvtko10}{txtfdmns,dotdigits}{U}{clmv}{bx}{sl}{}
-		\installfont{u-clmvtl10}{dd-lmvtl10}{txtfdmns,dotdigits}{U}{clmv}{l}{n}{}
-		\installfont{u-clmvtlo10}{dd-lmvtlo10}{txtfdmns,dotdigits}{U}{clmv}{l}{sl}{}
-		\installfamily{U}{clmd}{}
-		\installfont{u-clmdunh10}{dd-lmdunh10}{txtfdmns,dotdigits}{U}{clmd}{m}{n}{}
-		\installfont{u-clmduno10}{dd-lmduno10}{txtfdmns,dotdigits}{U}{clmd}{m}{sl}{}
-		\installfamily{U}{clm2}{}
-		\installfontas{u-clmr5}{U}{clm2}{m}{n}{<-5.5>}
-		\installfontas{u-clmr6}{U}{clm2}{m}{n}{<5.5-6.5>}
-		\installfontas{u-clmr7}{U}{clm2}{m}{n}{<6.5-7.5>}
-		\installfontas{u-clmr8}{U}{clm2}{m}{n}{<7.5-8.5>}
-		\installfontas{u-clmr9}{U}{clm2}{m}{n}{<8.5-9.5>}
-		\installfontas{u-clmr10}{U}{clm2}{m}{n}{<9.5-11>}
-		\installfontas{u-clmr12}{U}{clm2}{m}{n}{<11-15>}
-		\installfontas{u-clmr17}{U}{clm2}{m}{n}{<15->}
-		\installfontas{u-clmro8}{U}{clm2}{m}{sl}{<-8.5>}
-		\installfontas{u-clmro9}{U}{clm2}{m}{sl}{<8.5-9.5>}
-		\installfontas{u-clmro10}{U}{clm2}{m}{sl}{<9.5-11>}
-		\installfontas{u-clmro12}{U}{clm2}{m}{sl}{<11-15>}
-		\installfontas{u-clmro17}{U}{clm2}{m}{sl}{<15->}
-		\installfontas{u-clmri7}{U}{clm2}{m}{it}{<-7.5>}
-		\installfontas{u-clmri8}{U}{clm2}{m}{it}{<7.5-8.5>}
-		\installfontas{u-clmri9}{U}{clm2}{m}{it}{<8.5-9.5>}
-		\installfontas{u-clmri10}{U}{clm2}{m}{it}{<9.5-11>}
-		\installfontas{u-clmri12}{U}{clm2}{m}{it}{<11->}
-		\installfontas{u-clmu10}{U}{clm2}{m}{ui}{}
-		\installfontas{u-clmcsc10}{U}{clm2}{m}{sc}{}
-		\installfontas{u-clmcsco10}{U}{clm2}{m}{scsl}{}
-%    \end{macrocode}
-% Repeat for bold fonts
-%    \begin{macrocode}
-		\installfontas{u-clmbx5}{U}{clm2}{bx}{n}{<-5.5>}
-		\installfontas{u-clmbx6}{U}{clm2}{bx}{n}{<5.5-6.5>}
-		\installfontas{u-clmbx7}{U}{clm2}{bx}{n}{<6.5-7.5>}
-		\installfontas{u-clmbx8}{U}{clm2}{bx}{n}{<7.5-8.5>}
-		\installfontas{u-clmbx9}{U}{clm2}{bx}{n}{<8.5-9.5>}
-		\installfontas{u-clmbx10}{U}{clm2}{bx}{n}{<9.5-11>}
-		\installfontas{u-clmbx12}{U}{clm2}{bx}{n}{<11->}
-		\installfontas{u-clmbxo10}{U}{clm2}{bx}{sl}{}
-		\installfontas{u-clmbxi10}{U}{clm2}{bx}{it}{}
-%    \end{macrocode}
-% Latin Modern default has these installed as bold, but the weight given in the font is demi and the demi weights in the sans-condensed are installed as demi, so I'm going for the same series - sb - here as they choose for those		
-%    \begin{macrocode}
-		\installfontas{u-clmb10}{U}{clm2}{sb}{n}{}
-		\installfontas{u-clmbo10}{U}{clm2}{sb}{sl}{}
-		\installfamily{U}{clm2s}{}
-		\installfontas{u-clmss8}{U}{clm2s}{m}{n}{<-8.5>}
-		\installfontas{u-clmss9}{U}{clm2s}{m}{n}{<8.5-9.5>}
-		\installfontas{u-clmss10}{U}{clm2s}{m}{n}{<9.5-11>}
-		\installfontas{u-clmss12}{U}{clm2s}{m}{n}{<11-15>}
-		\installfontas{u-clmss17}{U}{clm2s}{m}{n}{<15->}
-		\installfontas{u-clmsso8}{U}{clm2s}{m}{sl}{<-8.5>}
-		\installfontas{u-clmsso9}{U}{clm2s}{m}{sl}{<8.5-9.5>}
-		\installfontas{u-clmsso10}{U}{clm2s}{m}{sl}{<9.5-11>}
-		\installfontas{u-clmsso12}{U}{clm2s}{m}{sl}{<11-15>}
-		\installfontas{u-clmsso17}{U}{clm2s}{m}{sl}{<15->}
-		\installfontas{u-clmssbx10}{U}{clm2s}{bx}{n}{}
-		\installfontas{u-clmssbo10}{U}{clm2s}{bx}{sl}{}
-		\installfontas{u-clmssdc10}{U}{clm2s}{sbc}{n}{}
-		\installfontas{u-clmssdo10}{U}{clm2s}{sbc}{sl}{}
-		\installfamily{U}{clm2qs}{}
-		\installfontas{u-clmssq8}{U}{clm2qs}{m}{n}{}
-		\installfontas{u-clmssqo8}{U}{clm2qs}{m}{sl}{}
-		\installfontas{u-clmssqbx8}{U}{clm2qs}{bx}{n}{}
-		\installfontas{u-clmssqbo8}{U}{clm2qs}{bx}{sl}{}
-		\installfamily{U}{clm2t}{}
-		\installfontas{u-clmtt8}{U}{clm2t}{m}{n}{<-8.5>}
-		\installfontas{u-clmtt9}{U}{clm2t}{m}{n}{<8.5-9.5>}
-		\installfontas{u-clmtt10}{U}{clm2t}{m}{n}{<9.5-11>}
-		\installfontas{u-clmtt12}{U}{clm2t}{m}{n}{<11->}
-		\installfontas{u-clmtto10}{U}{clm2t}{m}{sl}{}
-		\installfontas{u-clmtti10}{U}{clm2t}{m}{it}{}
-		\installfontas{u-clmtcsc10}{U}{clm2t}{m}{sc}{}
-		\installfontas{u-clmtcso10}{U}{clm2t}{m}{scsl}{}
-		\installfontas{u-clmtk10}{U}{clm2t}{bx}{n}{}
-		\installfontas{u-clmtko10}{U}{clm2t}{bx}{sl}{}
-		\installfontas{u-clmtl10}{U}{clm2t}{l}{n}{}
-		\installfontas{u-clmtlo10}{U}{clm2t}{l}{sl}{}
-		\installfontas{u-clmtlc10}{U}{clm2t}{lc}{n}{}
-		\installfontas{u-clmtlco10}{U}{clm2t}{lc}{sl}{}
-		\installfamily{U}{clm2v}{}
-		\installfontas{u-clmvtt10}{U}{clm2v}{m}{n}{}
-		\installfontas{u-clmvtto10}{U}{clm2v}{m}{sl}{}
-		\installfontas{u-clmvtk10}{U}{clm2v}{bx}{n}{}
-		\installfontas{u-clmvtko10}{U}{clm2v}{bx}{sl}{}
-		\installfontas{u-clmvtl10}{U}{clm2v}{l}{n}{}
-		\installfontas{u-clmvtlo10}{U}{clm2v}{l}{sl}{}
-		\installfamily{U}{clm2d}{}
-		\installfontas{u-clmdunh10}{U}{clm2d}{m}{n}{}
-		\installfontas{u-clmduno10}{U}{clm2d}{m}{sl}{}
-		\installfamily{U}{clm2j}{}
-		\installfontas{u-clmr5}{U}{clm2j}{m}{n}{<-5.5>}
-		\installfontas{u-clmr6}{U}{clm2j}{m}{n}{<5.5-6.5>}
-		\installfontas{u-clmr7}{U}{clm2j}{m}{n}{<6.5-7.5>}
-		\installfontas{u-clmr8}{U}{clm2j}{m}{n}{<7.5-8.5>}
-		\installfontas{u-clmr9}{U}{clm2j}{m}{n}{<8.5-9.5>}
-		\installfontas{u-clmr10}{U}{clm2j}{m}{n}{<9.5-11>}
-		\installfontas{u-clmr12}{U}{clm2j}{m}{n}{<11-15>}
-		\installfontas{u-clmr17}{U}{clm2j}{m}{n}{<15->}
-		\installfontas{u-clmro8}{U}{clm2j}{m}{sl}{<-8.5>}
-		\installfontas{u-clmro9}{U}{clm2j}{m}{sl}{<8.5-9.5>}
-		\installfontas{u-clmro10}{U}{clm2j}{m}{sl}{<9.5-11>}
-		\installfontas{u-clmro12}{U}{clm2j}{m}{sl}{<11-15>}
-		\installfontas{u-clmro17}{U}{clm2j}{m}{sl}{<15->}
-		\installfontas{u-clmri7}{U}{clm2j}{m}{it}{<-7.5>}
-		\installfontas{u-clmri8}{U}{clm2j}{m}{it}{<7.5-8.5>}
-		\installfontas{u-clmri9}{U}{clm2j}{m}{it}{<8.5-9.5>}
-		\installfontas{u-clmri10}{U}{clm2j}{m}{it}{<9.5-11>}
-		\installfontas{u-clmri12}{U}{clm2j}{m}{it}{<11->}
-		\installfontas{u-clmu10}{U}{clm2j}{m}{ui}{}
-		\installfontas{u-clmcsc10}{U}{clm2j}{m}{sc}{}
-		\installfontas{u-clmcsco10}{U}{clm2j}{m}{scsl}{}
-%    \end{macrocode}
-% Repeat for bold fonts
-%    \begin{macrocode}
-		\installfontas{u-clmbx5}{U}{clm2j}{bx}{n}{<-5.5>}
-		\installfontas{u-clmbx6}{U}{clm2j}{bx}{n}{<5.5-6.5>}
-		\installfontas{u-clmbx7}{U}{clm2j}{bx}{n}{<6.5-7.5>}
-		\installfontas{u-clmbx8}{U}{clm2j}{bx}{n}{<7.5-8.5>}
-		\installfontas{u-clmbx9}{U}{clm2j}{bx}{n}{<8.5-9.5>}
-		\installfontas{u-clmbx10}{U}{clm2j}{bx}{n}{<9.5-11>}
-		\installfontas{u-clmbx12}{U}{clm2j}{bx}{n}{<11->}
-		\installfontas{u-clmbxo10}{U}{clm2j}{bx}{sl}{}
-		\installfontas{u-clmbxi10}{U}{clm2j}{bx}{it}{}
-%    \end{macrocode}
-% Latin Modern default has these installed as bold, but the weight given in the font is demi and the demi weights in the sans-condensed are installed as demi, so I'm going for the same series - sb - here as they choose for those		
-%    \begin{macrocode}
-		\installfontas{u-clmb10}{U}{clm2j}{sb}{n}{}
-		\installfontas{u-clmbo10}{U}{clm2j}{sb}{sl}{}
-		\installfamily{U}{clm2js}{}
-		\installfontas{u-clmss8}{U}{clm2js}{m}{n}{<-8.5>}
-		\installfontas{u-clmss9}{U}{clm2js}{m}{n}{<8.5-9.5>}
-		\installfontas{u-clmss10}{U}{clm2js}{m}{n}{<9.5-11>}
-		\installfontas{u-clmss12}{U}{clm2js}{m}{n}{<11-15>}
-		\installfontas{u-clmss17}{U}{clm2js}{m}{n}{<15->}
-		\installfontas{u-clmsso8}{U}{clm2js}{m}{sl}{<-8.5>}
-		\installfontas{u-clmsso9}{U}{clm2js}{m}{sl}{<8.5-9.5>}
-		\installfontas{u-clmsso10}{U}{clm2js}{m}{sl}{<9.5-11>}
-		\installfontas{u-clmsso12}{U}{clm2js}{m}{sl}{<11-15>}
-		\installfontas{u-clmsso17}{U}{clm2js}{m}{sl}{<15->}
-		\installfontas{u-clmssbx10}{U}{clm2js}{bx}{n}{}
-		\installfontas{u-clmssbo10}{U}{clm2js}{bx}{sl}{}
-		\installfontas{u-clmssdc10}{U}{clm2js}{sbc}{n}{}
-		\installfontas{u-clmssdo10}{U}{clm2js}{sbc}{sl}{}
-		\installfamily{U}{clm2jqs}{}
-		\installfontas{u-clmssq8}{U}{clm2jqs}{m}{n}{}
-		\installfontas{u-clmssqo8}{U}{clm2jqs}{m}{sl}{}
-		\installfontas{u-clmssqbx8}{U}{clm2jqs}{bx}{n}{}
-		\installfontas{u-clmssqbo8}{U}{clm2jqs}{bx}{sl}{}
-		\installfamily{U}{clm2jt}{}
-		\installfontas{u-clmtt8}{U}{clm2jt}{m}{n}{<-8.5>}
-		\installfontas{u-clmtt9}{U}{clm2jt}{m}{n}{<8.5-9.5>}
-		\installfontas{u-clmtt10}{U}{clm2jt}{m}{n}{<9.5-11>}
-		\installfontas{u-clmtt12}{U}{clm2jt}{m}{n}{<11->}
-		\installfontas{u-clmtto10}{U}{clm2jt}{m}{sl}{}
-		\installfontas{u-clmtti10}{U}{clm2jt}{m}{it}{}
-		\installfontas{u-clmtcsc10}{U}{clm2jt}{m}{sc}{}
-		\installfontas{u-clmtcso10}{U}{clm2jt}{m}{scsl}{}
-		\installfontas{u-clmtk10}{U}{clm2jt}{bx}{n}{}
-		\installfontas{u-clmtko10}{U}{clm2jt}{bx}{sl}{}
-		\installfontas{u-clmtl10}{U}{clm2jt}{l}{n}{}
-		\installfontas{u-clmtlo10}{U}{clm2jt}{l}{sl}{}
-		\installfontas{u-clmtlc10}{U}{clm2jt}{lc}{n}{}
-		\installfontas{u-clmtlco10}{U}{clm2jt}{lc}{sl}{}
-		\installfamily{U}{clm2jv}{}
-		\installfontas{u-clmvtt10}{U}{clm2jv}{m}{n}{}
-		\installfontas{u-clmvtto10}{U}{clm2jv}{m}{sl}{}
-		\installfontas{u-clmvtk10}{U}{clm2jv}{bx}{n}{}
-		\installfontas{u-clmvtko10}{U}{clm2jv}{bx}{sl}{}
-		\installfontas{u-clmvtl10}{U}{clm2jv}{l}{n}{}
-		\installfontas{u-clmvtlo10}{U}{clm2jv}{l}{sl}{}
-		\installfamily{U}{clm2dj}{}
-		\installfontas{u-clmdunh10}{U}{clm2dj}{m}{n}{}
-		\installfontas{u-clmduno10}{U}{clm2dj}{m}{sl}{}
-		\installfamily{U}{clmj}{}
-		\installfontas{u-clmr5}{U}{clmj}{m}{n}{<-5.5>}
-		\installfontas{u-clmr6}{U}{clmj}{m}{n}{<5.5-6.5>}
-		\installfontas{u-clmr7}{U}{clmj}{m}{n}{<6.5-7.5>}
-		\installfontas{u-clmr8}{U}{clmj}{m}{n}{<7.5-8.5>}
-		\installfontas{u-clmr9}{U}{clmj}{m}{n}{<8.5-9.5>}
-		\installfontas{u-clmr10}{U}{clmj}{m}{n}{<9.5-11>}
-		\installfontas{u-clmr12}{U}{clmj}{m}{n}{<11-15>}
-		\installfontas{u-clmr17}{U}{clmj}{m}{n}{<15->}
-		\installfontas{u-clmro8}{U}{clmj}{m}{sl}{<-8.5>}
-		\installfontas{u-clmro9}{U}{clmj}{m}{sl}{<8.5-9.5>}
-		\installfontas{u-clmro10}{U}{clmj}{m}{sl}{<9.5-11>}
-		\installfontas{u-clmro12}{U}{clmj}{m}{sl}{<11-15>}
-		\installfontas{u-clmro17}{U}{clmj}{m}{sl}{<15->}
-		\installfontas{u-clmri7}{U}{clmj}{m}{it}{<-7.5>}
-		\installfontas{u-clmri8}{U}{clmj}{m}{it}{<7.5-8.5>}
-		\installfontas{u-clmri9}{U}{clmj}{m}{it}{<8.5-9.5>}
-		\installfontas{u-clmri10}{U}{clmj}{m}{it}{<9.5-11>}
-		\installfontas{u-clmri12}{U}{clmj}{m}{it}{<11->}
-		\installfontas{u-clmu10}{U}{clmj}{m}{ui}{}
-		\installfontas{u-clmcsc10}{U}{clmj}{m}{sc}{}
-		\installfontas{u-clmcsco10}{U}{clmj}{m}{scsl}{}
-%    \end{macrocode}
-% Repeat for bold fonts
-%    \begin{macrocode}
-		\installfontas{u-clmbx5}{U}{clmj}{bx}{n}{<-5.5>}
-		\installfontas{u-clmbx6}{U}{clmj}{bx}{n}{<5.5-6.5>}
-		\installfontas{u-clmbx7}{U}{clmj}{bx}{n}{<6.5-7.5>}
-		\installfontas{u-clmbx8}{U}{clmj}{bx}{n}{<7.5-8.5>}
-		\installfontas{u-clmbx9}{U}{clmj}{bx}{n}{<8.5-9.5>}
-		\installfontas{u-clmbx10}{U}{clmj}{bx}{n}{<9.5-11>}
-		\installfontas{u-clmbx12}{U}{clmj}{bx}{n}{<11->}
-		\installfontas{u-clmbxo10}{U}{clmj}{bx}{sl}{}
-		\installfontas{u-clmbxi10}{U}{clmj}{bx}{it}{}
-%    \end{macrocode}
-% Latin Modern default has these installed as bold, but the weight given in the font is demi and the demi weights in the sans-condensed are installed as demi, so I'm going for the same series - sb - here as they choose for those		
-%    \begin{macrocode}
-		\installfontas{u-clmb10}{U}{clmj}{sb}{n}{}
-		\installfontas{u-clmbo10}{U}{clmj}{sb}{sl}{}
-		\installfamily{U}{clmjs}{}
-		\installfontas{u-clmss8}{U}{clmjs}{m}{n}{<-8.5>}
-		\installfontas{u-clmss9}{U}{clmjs}{m}{n}{<8.5-9.5>}
-		\installfontas{u-clmss10}{U}{clmjs}{m}{n}{<9.5-11>}
-		\installfontas{u-clmss12}{U}{clmjs}{m}{n}{<11-15>}
-		\installfontas{u-clmss17}{U}{clmjs}{m}{n}{<15->}
-		\installfontas{u-clmsso8}{U}{clmjs}{m}{sl}{<-8.5>}
-		\installfontas{u-clmsso9}{U}{clmjs}{m}{sl}{<8.5-9.5>}
-		\installfontas{u-clmsso10}{U}{clmjs}{m}{sl}{<9.5-11>}
-		\installfontas{u-clmsso12}{U}{clmjs}{m}{sl}{<11-15>}
-		\installfontas{u-clmsso17}{U}{clmjs}{m}{sl}{<15->}
-		\installfontas{u-clmssbx10}{U}{clmjs}{bx}{n}{}
-		\installfontas{u-clmssbo10}{U}{clmjs}{bx}{sl}{}
-		\installfontas{u-clmssdc10}{U}{clmjs}{sbc}{n}{}
-		\installfontas{u-clmssdo10}{U}{clmjs}{sbc}{sl}{}
-		\installfamily{U}{clmjqs}{}
-		\installfontas{u-clmssq8}{U}{clmjqs}{m}{n}{}
-		\installfontas{u-clmssqo8}{U}{clmjqs}{m}{sl}{}
-		\installfontas{u-clmssqbx8}{U}{clmjqs}{bx}{n}{}
-		\installfontas{u-clmssqbo8}{U}{clmjqs}{bx}{sl}{}
-		\installfamily{U}{clmjt}{}
-		\installfontas{u-clmtt8}{U}{clmjt}{m}{n}{<-8.5>}
-		\installfontas{u-clmtt9}{U}{clmjt}{m}{n}{<8.5-9.5>}
-		\installfontas{u-clmtt10}{U}{clmjt}{m}{n}{<9.5-11>}
-		\installfontas{u-clmtt12}{U}{clmjt}{m}{n}{<11->}
-		\installfontas{u-clmtto10}{U}{clmjt}{m}{sl}{}
-		\installfontas{u-clmtti10}{U}{clmjt}{m}{it}{}
-		\installfontas{u-clmtcsc10}{U}{clmjt}{m}{sc}{}
-		\installfontas{u-clmtcso10}{U}{clmjt}{m}{scsl}{}
-		\installfontas{u-clmtk10}{U}{clmjt}{bx}{n}{}
-		\installfontas{u-clmtko10}{U}{clmjt}{bx}{sl}{}
-		\installfontas{u-clmtl10}{U}{clmjt}{l}{n}{}
-		\installfontas{u-clmtlo10}{U}{clmjt}{l}{sl}{}
-		\installfontas{u-clmtlc10}{U}{clmjt}{lc}{n}{}
-		\installfontas{u-clmtlco10}{U}{clmjt}{lc}{sl}{}
-		\installfamily{U}{clmjv}{}
-		\installfontas{u-clmvtt10}{U}{clmjv}{m}{n}{}
-		\installfontas{u-clmvtto10}{U}{clmjv}{m}{sl}{}
-		\installfontas{u-clmvtk10}{U}{clmjv}{bx}{n}{}
-		\installfontas{u-clmvtko10}{U}{clmjv}{bx}{sl}{}
-		\installfontas{u-clmvtl10}{U}{clmjv}{l}{n}{}
-		\installfontas{u-clmvtlo10}{U}{clmjv}{l}{sl}{}
-		\installfamily{U}{clmdj}{}
-		\installfontas{u-clmdunh10}{U}{clmdj}{m}{n}{}
-		\installfontas{u-clmduno10}{U}{clmdj}{m}{sl}{}
-	\endinstallfonts
-\endrecordtransforms
-\bye
-% vim: set nospell: 
-%    \end{macrocode}
-% \iffalse
-%</drv-t1>
-% \fi
-% 
-%
-% \subsubsection{TS1 Driver}
-%
-% This driver does very little.
-% It's sole purpose is to install \TeX{} fonts provided by \lpack{lmodern} under the family names used by \lpack{\filebase} so that symbols from the \texttt{TS1} encoding work as expected.
-%
-% \iffalse
-%<*drv-ts1>
-% \fi
-%    \begin{macrocode}
-\input fontinst.sty
-\needsfontinstversion{1.926}
-%    \end{macrocode}
-% Substitutions
-%    \begin{macrocode}
-\substitutesilent{scit}{scsl}
-\substitutesilent{si}{scit}
-\substitutesilent{ui}{it}
-\substitutesilent{sl}{ui}
-\substitutesilent{it}{sl}
-\substitutesilent{sc}{n}
-%    \end{macrocode}
-% Bold extended for bold 
-%    \begin{macrocode}
-\substitutesilent{b}{bx}
-%    \end{macrocode}
-% Record transformations for later map file creation
-%    \begin{macrocode}
-\recordtransforms{clm-ts1-rec.tex}
-%    \end{macrocode}
-% Installation: creation of virtual fonts
-%
-% Install with TS1 encoding for extra glyphs through textcomp-dotted
-%
-% clm
-%    \begin{macrocode}
-	\installfonts
-		\installfamily{TS1}{clm}{}
-		\installfontas{ts1-lmr5}{TS1}{clm}{m}{n}{<-5.5>}
-		\installfontas{ts1-lmr6}{TS1}{clm}{m}{n}{<5.5-6.5>}
-		\installfontas{ts1-lmr7}{TS1}{clm}{m}{n}{<6.5-7.5>}
-		\installfontas{ts1-lmr8}{TS1}{clm}{m}{n}{<7.5-8.5>}
-		\installfontas{ts1-lmr9}{TS1}{clm}{m}{n}{<8.5-9.5>}
-		\installfontas{ts1-lmr10}{TS1}{clm}{m}{n}{<9.5-11>}
-		\installfontas{ts1-lmr12}{TS1}{clm}{m}{n}{<11-15>}
-		\installfontas{ts1-lmr17}{TS1}{clm}{m}{n}{<15->}
-		\installfontas{ts1-lmro8}{TS1}{clm}{m}{sl}{<-8.5>}
-		\installfontas{ts1-lmro9}{TS1}{clm}{m}{sl}{<8.5-9.5>}
-		\installfontas{ts1-lmro10}{TS1}{clm}{m}{sl}{<9.5-11>}
-		\installfontas{ts1-lmro12}{TS1}{clm}{m}{sl}{<11-15>}
-		\installfontas{ts1-lmro17}{TS1}{clm}{m}{sl}{<15->}
-		\installfontas{ts1-lmri7}{TS1}{clm}{m}{it}{<-7.5>}
-		\installfontas{ts1-lmri8}{TS1}{clm}{m}{it}{<7.5-8.5>}
-		\installfontas{ts1-lmri9}{TS1}{clm}{m}{it}{<8.5-9.5>}
-		\installfontas{ts1-lmri10}{TS1}{clm}{m}{it}{<9.5-11>}
-		\installfontas{ts1-lmri12}{TS1}{clm}{m}{it}{<11->}
-		\installfontas{ts1-lmu10}{TS1}{clm}{m}{ui}{}
-		\installfontas{ts1-lmcsc10}{TS1}{clm}{m}{sc}{}
-		\installfontas{ts1-lmcsco10}{TS1}{clm}{m}{scsl}{}
-%    \end{macrocode}
-% Repeat for bold fonts
-%    \begin{macrocode}
-		\installfontas{ts1-lmbx5}{TS1}{clm}{bx}{n}{<-5.5>}
-		\installfontas{ts1-lmbx6}{TS1}{clm}{bx}{n}{<5.5-6.5>}
-		\installfontas{ts1-lmbx7}{TS1}{clm}{bx}{n}{<6.5-7.5>}
-		\installfontas{ts1-lmbx8}{TS1}{clm}{bx}{n}{<7.5-8.5>}
-		\installfontas{ts1-lmbx9}{TS1}{clm}{bx}{n}{<8.5-9.5>}
-		\installfontas{ts1-lmbx10}{TS1}{clm}{bx}{n}{<9.5-11>}
-		\installfontas{ts1-lmbx12}{TS1}{clm}{bx}{n}{<11->}
-		\installfontas{ts1-lmbxo10}{TS1}{clm}{bx}{sl}{}
-		\installfontas{ts1-lmbxi10}{TS1}{clm}{bx}{it}{}
-%    \end{macrocode}
-% Latin Modern default has these installed as bold, but the weight given in the font is demi and the demi weights in the sans-condensed are installed as demi, so I'm going for the same series - sb - here as they choose for those		
-%    \begin{macrocode}
-		\installfontas{ts1-lmb10}{TS1}{clm}{sb}{n}{}
-		\installfontas{ts1-lmbo10}{TS1}{clm}{sb}{sl}{}
-%    \end{macrocode}
-% clms
-%    \begin{macrocode}
-		\installfamily{TS1}{clms}{}
-		\installfontas{ts1-lmss8}{TS1}{clms}{m}{n}{<-8.5>}
-		\installfontas{ts1-lmss9}{TS1}{clms}{m}{n}{<8.5-9.5>}
-		\installfontas{ts1-lmss10}{TS1}{clms}{m}{n}{<9.5-11>}
-		\installfontas{ts1-lmss12}{TS1}{clms}{m}{n}{<11-15>}
-		\installfontas{ts1-lmss17}{TS1}{clms}{m}{n}{<15->}
-		\installfontas{ts1-lmsso8}{TS1}{clms}{m}{sl}{<-8.5>}
-		\installfontas{ts1-lmsso9}{TS1}{clms}{m}{sl}{<8.5-9.5>}
-		\installfontas{ts1-lmsso10}{TS1}{clms}{m}{sl}{<9.5-11>}
-		\installfontas{ts1-lmsso12}{TS1}{clms}{m}{sl}{<11-15>}
-		\installfontas{ts1-lmsso17}{TS1}{clms}{m}{sl}{<15->}
-		\installfontas{ts1-lmssbx10}{TS1}{clms}{bx}{n}{}
-		\installfontas{ts1-lmssbo10}{TS1}{clms}{bx}{sl}{}
-		\installfontas{ts1-lmssdc10}{TS1}{clms}{sbc}{n}{}
-		\installfontas{ts1-lmssdo10}{TS1}{clms}{sbc}{sl}{}
-%    \end{macrocode}
-% clmqs
-%    \begin{macrocode}
-		\installfamily{TS1}{clmqs}{}
-		\installfontas{ts1-lmssq8}{TS1}{clmqs}{m}{n}{}
-		\installfontas{ts1-lmssqo8}{TS1}{clmqs}{m}{sl}{}
-		\installfontas{ts1-lmssqbx8}{TS1}{clmqs}{bx}{n}{}
-		\installfontas{ts1-lmssqbo8}{TS1}{clmqs}{bx}{sl}{}
-%    \end{macrocode}
-% clmt
-%    \begin{macrocode}
-		\installfamily{TS1}{clmt}{}
-		\installfontas{ts1-lmtt8}{TS1}{clmt}{m}{n}{<-8.5>}
-		\installfontas{ts1-lmtt9}{TS1}{clmt}{m}{n}{<8.5-9.5>}
-		\installfontas{ts1-lmtt10}{TS1}{clmt}{m}{n}{<9.5-11>}
-		\installfontas{ts1-lmtt12}{TS1}{clmt}{m}{n}{<11->}
-		\installfontas{ts1-lmtto10}{TS1}{clmt}{m}{sl}{}
-		\installfontas{ts1-lmtti10}{TS1}{clmt}{m}{it}{}
-		\installfontas{ts1-lmtcsc10}{TS1}{clmt}{m}{sc}{}
-		\installfontas{ts1-lmtcso10}{TS1}{clmt}{m}{scsl}{}
-		\installfontas{ts1-lmtk10}{TS1}{clmt}{bx}{n}{}
-		\installfontas{ts1-lmtko10}{TS1}{clmt}{bx}{sl}{}
-		\installfontas{ts1-lmtl10}{TS1}{clmt}{l}{n}{}
-		\installfontas{ts1-lmtlo10}{TS1}{clmt}{l}{sl}{}
-		\installfontas{ts1-lmtlc10}{TS1}{clmt}{lc}{n}{}
-		\installfontas{ts1-lmtlco10}{TS1}{clmt}{lc}{sl}{}
-%    \end{macrocode}
-% clmv		
-%    \begin{macrocode}
-		\installfamily{TS1}{clmv}{}
-		\installfontas{ts1-lmvtt10}{TS1}{clmv}{m}{n}{}
-		\installfontas{ts1-lmvtto10}{TS1}{clmv}{m}{sl}{}
-		\installfontas{ts1-lmvtk10}{TS1}{clmv}{bx}{n}{}
-		\installfontas{ts1-lmvtko10}{TS1}{clmv}{bx}{sl}{}
-		\installfontas{ts1-lmvtl10}{TS1}{clmv}{l}{n}{}
-		\installfontas{ts1-lmvtlo10}{TS1}{clmv}{l}{sl}{}
-%    \end{macrocode}
-% clmd		
-%    \begin{macrocode}
-		\installfamily{TS1}{clmd}{}
-		\installfontas{ts1-lmdunh10}{TS1}{clmd}{m}{n}{}
-		\installfontas{ts1-lmduno10}{TS1}{clmd}{m}{sl}{}
-%    \end{macrocode}
-% TS1 for the families with tabular, oldstyle figures
-%
-% clmj
-%    \begin{macrocode}
-		\installfamily{TS1}{clmj}{}
-		\installfontas{ts1-lmr5}{TS1}{clmj}{m}{n}{<-5.5>}
-		\installfontas{ts1-lmr6}{TS1}{clmj}{m}{n}{<5.5-6.5>}
-		\installfontas{ts1-lmr7}{TS1}{clmj}{m}{n}{<6.5-7.5>}
-		\installfontas{ts1-lmr8}{TS1}{clmj}{m}{n}{<7.5-8.5>}
-		\installfontas{ts1-lmr9}{TS1}{clmj}{m}{n}{<8.5-9.5>}
-		\installfontas{ts1-lmr10}{TS1}{clmj}{m}{n}{<9.5-11>}
-		\installfontas{ts1-lmr12}{TS1}{clmj}{m}{n}{<11-15>}
-		\installfontas{ts1-lmr17}{TS1}{clmj}{m}{n}{<15->}
-		\installfontas{ts1-lmro8}{TS1}{clmj}{m}{sl}{<-8.5>}
-		\installfontas{ts1-lmro9}{TS1}{clmj}{m}{sl}{<8.5-9.5>}
-		\installfontas{ts1-lmro10}{TS1}{clmj}{m}{sl}{<9.5-11>}
-		\installfontas{ts1-lmro12}{TS1}{clmj}{m}{sl}{<11-15>}
-		\installfontas{ts1-lmro17}{TS1}{clmj}{m}{sl}{<15->}
-		\installfontas{ts1-lmri7}{TS1}{clmj}{m}{it}{<-7.5>}
-		\installfontas{ts1-lmri8}{TS1}{clmj}{m}{it}{<7.5-8.5>}
-		\installfontas{ts1-lmri9}{TS1}{clmj}{m}{it}{<8.5-9.5>}
-		\installfontas{ts1-lmri10}{TS1}{clmj}{m}{it}{<9.5-11>}
-		\installfontas{ts1-lmri12}{TS1}{clmj}{m}{it}{<11->}
-		\installfontas{ts1-lmu10}{TS1}{clmj}{m}{ui}{}
-		\installfontas{ts1-lmcsc10}{TS1}{clmj}{m}{sc}{}
-		\installfontas{ts1-lmcsco10}{TS1}{clmj}{m}{scsl}{}
-%    \end{macrocode}
-% Repeat for bold fonts
-%    \begin{macrocode}
-		\installfontas{ts1-lmbx5}{TS1}{clmj}{bx}{n}{<-5.5>}
-		\installfontas{ts1-lmbx6}{TS1}{clmj}{bx}{n}{<5.5-6.5>}
-		\installfontas{ts1-lmbx7}{TS1}{clmj}{bx}{n}{<6.5-7.5>}
-		\installfontas{ts1-lmbx8}{TS1}{clmj}{bx}{n}{<7.5-8.5>}
-		\installfontas{ts1-lmbx9}{TS1}{clmj}{bx}{n}{<8.5-9.5>}
-		\installfontas{ts1-lmbx10}{TS1}{clmj}{bx}{n}{<9.5-11>}
-		\installfontas{ts1-lmbx12}{TS1}{clmj}{bx}{n}{<11->}
-		\installfontas{ts1-lmbxo10}{TS1}{clmj}{bx}{sl}{}
-		\installfontas{ts1-lmbxi10}{TS1}{clmj}{bx}{it}{}
-%    \end{macrocode}
-% Latin Modern default has these installed as bold, but the weight given in the font is demi and the demi weights in the sans-condensed are installed as demi, so I'm going for the same series - sb - here as they choose for those		
-%    \begin{macrocode}
-		\installfontas{ts1-lmb10}{TS1}{clmj}{sb}{n}{}
-		\installfontas{ts1-lmbo10}{TS1}{clmj}{sb}{sl}{}
-%    \end{macrocode}
-% clmjs		
-%    \begin{macrocode}
-		\installfamily{TS1}{clmjs}{}
-		\installfontas{ts1-lmss8}{TS1}{clmjs}{m}{n}{<-8.5>}
-		\installfontas{ts1-lmss9}{TS1}{clmjs}{m}{n}{<8.5-9.5>}
-		\installfontas{ts1-lmss10}{TS1}{clmjs}{m}{n}{<9.5-11>}
-		\installfontas{ts1-lmss12}{TS1}{clmjs}{m}{n}{<11-15>}
-		\installfontas{ts1-lmss17}{TS1}{clmjs}{m}{n}{<15->}
-		\installfontas{ts1-lmsso8}{TS1}{clmjs}{m}{sl}{<-8.5>}
-		\installfontas{ts1-lmsso9}{TS1}{clmjs}{m}{sl}{<8.5-9.5>}
-		\installfontas{ts1-lmsso10}{TS1}{clmjs}{m}{sl}{<9.5-11>}
-		\installfontas{ts1-lmsso12}{TS1}{clmjs}{m}{sl}{<11-15>}
-		\installfontas{ts1-lmsso17}{TS1}{clmjs}{m}{sl}{<15->}
-		\installfontas{ts1-lmssbx10}{TS1}{clmjs}{bx}{n}{}
-		\installfontas{ts1-lmssbo10}{TS1}{clmjs}{bx}{sl}{}
-		\installfontas{ts1-lmssdc10}{TS1}{clmjs}{sbc}{n}{}
-		\installfontas{ts1-lmssdo10}{TS1}{clmjs}{sbc}{sl}{}
-%    \end{macrocode}
-% clmjqs		
-%    \begin{macrocode}
-		\installfamily{TS1}{clmjqs}{}
-		\installfontas{ts1-lmssq8}{TS1}{clmjqs}{m}{n}{}
-		\installfontas{ts1-lmssqo8}{TS1}{clmjqs}{m}{sl}{}
-		\installfontas{ts1-lmssqbx8}{TS1}{clmjqs}{bx}{n}{}
-		\installfontas{ts1-lmssqbo8}{TS1}{clmjqs}{bx}{sl}{}
-%    \end{macrocode}
-% clmjt		
-%    \begin{macrocode}
-		\installfamily{TS1}{clmjt}{}
-		\installfontas{ts1-lmtt8}{TS1}{clmjt}{m}{n}{<-8.5>}
-		\installfontas{ts1-lmtt9}{TS1}{clmjt}{m}{n}{<8.5-9.5>}
-		\installfontas{ts1-lmtt10}{TS1}{clmjt}{m}{n}{<9.5-11>}
-		\installfontas{ts1-lmtt12}{TS1}{clmjt}{m}{n}{<11->}
-		\installfontas{ts1-lmtto10}{TS1}{clmjt}{m}{sl}{}
-		\installfontas{ts1-lmtti10}{TS1}{clmjt}{m}{it}{}
-		\installfontas{ts1-lmtcsc10}{TS1}{clmjt}{m}{sc}{}
-		\installfontas{ts1-lmtcso10}{TS1}{clmjt}{m}{scsl}{}
-		\installfontas{ts1-lmtk10}{TS1}{clmjt}{bx}{n}{}
-		\installfontas{ts1-lmtko10}{TS1}{clmjt}{bx}{sl}{}
-		\installfontas{ts1-lmtl10}{TS1}{clmjt}{l}{n}{}
-		\installfontas{ts1-lmtlo10}{TS1}{clmjt}{l}{sl}{}
-		\installfontas{ts1-lmtlc10}{TS1}{clmjt}{lc}{n}{}
-		\installfontas{ts1-lmtlco10}{TS1}{clmjt}{lc}{sl}{}
-%    \end{macrocode}
-% clmjv		
-%    \begin{macrocode}
-		\installfamily{TS1}{clmjv}{}
-		\installfontas{ts1-lmvtt10}{TS1}{clmjv}{m}{n}{}
-		\installfontas{ts1-lmvtto10}{TS1}{clmjv}{m}{sl}{}
-		\installfontas{ts1-lmvtk10}{TS1}{clmjv}{bx}{n}{}
-		\installfontas{ts1-lmvtko10}{TS1}{clmjv}{bx}{sl}{}
-		\installfontas{ts1-lmvtl10}{TS1}{clmjv}{l}{n}{}
-		\installfontas{ts1-lmvtlo10}{TS1}{clmjv}{l}{sl}{}
-%    \end{macrocode}
-% clmdj		
-%    \begin{macrocode}
-		\installfamily{TS1}{clmdj}{}
-		\installfontas{ts1-lmdunh10}{TS1}{clmdj}{m}{n}{}
-		\installfontas{ts1-lmduno10}{TS1}{clmdj}{m}{sl}{}
-%    \end{macrocode}
-% TS1
-%    \begin{macrocode}
-%    \end{macrocode}
-% clm2
-%    \begin{macrocode}
-		\installfamily{TS1}{clm2}{}
-		\installfontas{ts1-lmr5}{TS1}{clm2}{m}{n}{<-5.5>}
-		\installfontas{ts1-lmr6}{TS1}{clm2}{m}{n}{<5.5-6.5>}
-		\installfontas{ts1-lmr7}{TS1}{clm2}{m}{n}{<6.5-7.5>}
-		\installfontas{ts1-lmr8}{TS1}{clm2}{m}{n}{<7.5-8.5>}
-		\installfontas{ts1-lmr9}{TS1}{clm2}{m}{n}{<8.5-9.5>}
-		\installfontas{ts1-lmr10}{TS1}{clm2}{m}{n}{<9.5-11>}
-		\installfontas{ts1-lmr12}{TS1}{clm2}{m}{n}{<11-15>}
-		\installfontas{ts1-lmr17}{TS1}{clm2}{m}{n}{<15->}
-		\installfontas{ts1-lmro8}{TS1}{clm2}{m}{sl}{<-8.5>}
-		\installfontas{ts1-lmro9}{TS1}{clm2}{m}{sl}{<8.5-9.5>}
-		\installfontas{ts1-lmro10}{TS1}{clm2}{m}{sl}{<9.5-11>}
-		\installfontas{ts1-lmro12}{TS1}{clm2}{m}{sl}{<11-15>}
-		\installfontas{ts1-lmro17}{TS1}{clm2}{m}{sl}{<15->}
-		\installfontas{ts1-lmri7}{TS1}{clm2}{m}{it}{<-7.5>}
-		\installfontas{ts1-lmri8}{TS1}{clm2}{m}{it}{<7.5-8.5>}
-		\installfontas{ts1-lmri9}{TS1}{clm2}{m}{it}{<8.5-9.5>}
-		\installfontas{ts1-lmri10}{TS1}{clm2}{m}{it}{<9.5-11>}
-		\installfontas{ts1-lmri12}{TS1}{clm2}{m}{it}{<11->}
-		\installfontas{ts1-lmu10}{TS1}{clm2}{m}{ui}{}
-		\installfontas{ts1-lmcsc10}{TS1}{clm2}{m}{sc}{}
-		\installfontas{ts1-lmcsco10}{TS1}{clm2}{m}{scsl}{}
-%    \end{macrocode}
-% Repeat for bold fonts
-%    \begin{macrocode}
-		\installfontas{ts1-lmbx5}{TS1}{clm2}{bx}{n}{<-5.5>}
-		\installfontas{ts1-lmbx6}{TS1}{clm2}{bx}{n}{<5.5-6.5>}
-		\installfontas{ts1-lmbx7}{TS1}{clm2}{bx}{n}{<6.5-7.5>}
-		\installfontas{ts1-lmbx8}{TS1}{clm2}{bx}{n}{<7.5-8.5>}
-		\installfontas{ts1-lmbx9}{TS1}{clm2}{bx}{n}{<8.5-9.5>}
-		\installfontas{ts1-lmbx10}{TS1}{clm2}{bx}{n}{<9.5-11>}
-		\installfontas{ts1-lmbx12}{TS1}{clm2}{bx}{n}{<11->}
-		\installfontas{ts1-lmbxo10}{TS1}{clm2}{bx}{sl}{}
-		\installfontas{ts1-lmbxi10}{TS1}{clm2}{bx}{it}{}
-%    \end{macrocode}
-% Latin Modern default has these installed as bold, but the weight given in the font is demi and the demi weights in the sans-condensed are installed as demi, so I'm going for the same series - sb - here as they choose for those		
-%    \begin{macrocode}
-		\installfontas{ts1-lmb10}{TS1}{clm2}{sb}{n}{}
-		\installfontas{ts1-lmbo10}{TS1}{clm2}{sb}{sl}{}
-%    \end{macrocode}
-% clm2s		
-%    \begin{macrocode}
-		\installfamily{TS1}{clm2s}{}
-		\installfontas{ts1-lmss8}{TS1}{clm2s}{m}{n}{<-8.5>}
-		\installfontas{ts1-lmss9}{TS1}{clm2s}{m}{n}{<8.5-9.5>}
-		\installfontas{ts1-lmss10}{TS1}{clm2s}{m}{n}{<9.5-11>}
-		\installfontas{ts1-lmss12}{TS1}{clm2s}{m}{n}{<11-15>}
-		\installfontas{ts1-lmss17}{TS1}{clm2s}{m}{n}{<15->}
-		\installfontas{ts1-lmsso8}{TS1}{clm2s}{m}{sl}{<-8.5>}
-		\installfontas{ts1-lmsso9}{TS1}{clm2s}{m}{sl}{<8.5-9.5>}
-		\installfontas{ts1-lmsso10}{TS1}{clm2s}{m}{sl}{<9.5-11>}
-		\installfontas{ts1-lmsso12}{TS1}{clm2s}{m}{sl}{<11-15>}
-		\installfontas{ts1-lmsso17}{TS1}{clm2s}{m}{sl}{<15->}
-		\installfontas{ts1-lmssbx10}{TS1}{clm2s}{bx}{n}{}
-		\installfontas{ts1-lmssbo10}{TS1}{clm2s}{bx}{sl}{}
-		\installfontas{ts1-lmssdc10}{TS1}{clm2s}{sbc}{n}{}
-		\installfontas{ts1-lmssdo10}{TS1}{clm2s}{sbc}{sl}{}
-%    \end{macrocode}
-% clm2qs		
-%    \begin{macrocode}
-		\installfamily{TS1}{clm2qs}{}
-		\installfontas{ts1-lmssq8}{TS1}{clm2qs}{m}{n}{}
-		\installfontas{ts1-lmssqo8}{TS1}{clm2qs}{m}{sl}{}
-		\installfontas{ts1-lmssqbx8}{TS1}{clm2qs}{bx}{n}{}
-		\installfontas{ts1-lmssqbo8}{TS1}{clm2qs}{bx}{sl}{}
-%    \end{macrocode}
-% clm2v		
-%    \begin{macrocode}
-		\installfamily{TS1}{clm2v}{}
-		\installfontas{ts1-lmvtt10}{TS1}{clm2v}{m}{n}{}
-		\installfontas{ts1-lmvtto10}{TS1}{clm2v}{m}{sl}{}
-		\installfontas{ts1-lmvtk10}{TS1}{clm2v}{bx}{n}{}
-		\installfontas{ts1-lmvtko10}{TS1}{clm2v}{bx}{sl}{}
-		\installfontas{ts1-lmvtl10}{TS1}{clm2v}{l}{n}{}
-		\installfontas{ts1-lmvtlo10}{TS1}{clm2v}{l}{sl}{}
-%    \end{macrocode}
-% clm2t
-%    \begin{macrocode}
-		\installfamily{TS1}{clm2t}{}
-		\installfontas{ts1-lmtt8}{TS1}{clm2t}{m}{n}{<-8.5>}
-		\installfontas{ts1-lmtt9}{TS1}{clm2t}{m}{n}{<8.5-9.5>}
-		\installfontas{ts1-lmtt10}{TS1}{clm2t}{m}{n}{<9.5-11>}
-		\installfontas{ts1-lmtt12}{TS1}{clm2t}{m}{n}{<11->}
-		\installfontas{ts1-lmtto10}{TS1}{clm2t}{m}{sl}{}
-		\installfontas{ts1-lmtti10}{TS1}{clm2t}{m}{it}{}
-		\installfontas{ts1-lmtcsc10}{TS1}{clm2t}{m}{sc}{}
-		\installfontas{ts1-lmtcso10}{TS1}{clm2t}{m}{scsl}{}
-		\installfontas{ts1-lmtk10}{TS1}{clm2t}{bx}{n}{}
-		\installfontas{ts1-lmtko10}{TS1}{clm2t}{bx}{sl}{}
-		\installfontas{ts1-lmtl10}{TS1}{clm2t}{l}{n}{}
-		\installfontas{ts1-lmtlo10}{TS1}{clm2t}{l}{sl}{}
-		\installfontas{ts1-lmtlc10}{TS1}{clm2t}{lc}{n}{}
-		\installfontas{ts1-lmtlco10}{TS1}{clm2t}{lc}{sl}{}
-%    \end{macrocode}
-% clm2d		
-%
-% See note under T1 section
-%    \begin{macrocode}
-		\installfamily{TS1}{clm2d}{}
-		\installfontas{ts1-lmdunh10}{TS1}{clm2d}{m}{n}{}
-		\installfontas{ts1-lmduno10}{TS1}{clm2d}{m}{sl}{}
-%    \end{macrocode}
-% TS1
-%    \begin{macrocode}
-%    \end{macrocode}
-% clm2j
-%    \begin{macrocode}
-		\installfamily{TS1}{clm2j}{}
-		\installfontas{ts1-lmr5}{TS1}{clm2j}{m}{n}{<-5.5>}
-		\installfontas{ts1-lmr6}{TS1}{clm2j}{m}{n}{<5.5-6.5>}
-		\installfontas{ts1-lmr7}{TS1}{clm2j}{m}{n}{<6.5-7.5>}
-		\installfontas{ts1-lmr8}{TS1}{clm2j}{m}{n}{<7.5-8.5>}
-		\installfontas{ts1-lmr9}{TS1}{clm2j}{m}{n}{<8.5-9.5>}
-		\installfontas{ts1-lmr10}{TS1}{clm2j}{m}{n}{<9.5-11>}
-		\installfontas{ts1-lmr12}{TS1}{clm2j}{m}{n}{<11-15>}
-		\installfontas{ts1-lmr17}{TS1}{clm2j}{m}{n}{<15->}
-		\installfontas{ts1-lmro8}{TS1}{clm2j}{m}{sl}{<-8.5>}
-		\installfontas{ts1-lmro9}{TS1}{clm2j}{m}{sl}{<8.5-9.5>}
-		\installfontas{ts1-lmro10}{TS1}{clm2j}{m}{sl}{<9.5-11>}
-		\installfontas{ts1-lmro12}{TS1}{clm2j}{m}{sl}{<11-15>}
-		\installfontas{ts1-lmro17}{TS1}{clm2j}{m}{sl}{<15->}
-		\installfontas{ts1-lmri7}{TS1}{clm2j}{m}{it}{<-7.5>}
-		\installfontas{ts1-lmri8}{TS1}{clm2j}{m}{it}{<7.5-8.5>}
-		\installfontas{ts1-lmri9}{TS1}{clm2j}{m}{it}{<8.5-9.5>}
-		\installfontas{ts1-lmri10}{TS1}{clm2j}{m}{it}{<9.5-11>}
-		\installfontas{ts1-lmri12}{TS1}{clm2j}{m}{it}{<11->}
-		\installfontas{ts1-lmu10}{TS1}{clm2j}{m}{ui}{}
-		\installfontas{ts1-lmcsc10}{TS1}{clm2j}{m}{sc}{}
-		\installfontas{ts1-lmcsco10}{TS1}{clm2j}{m}{scsl}{}
-%    \end{macrocode}
-% Repeat for bold fonts
-%    \begin{macrocode}
-		\installfontas{ts1-lmbx5}{TS1}{clm2j}{bx}{n}{<-5.5>}
-		\installfontas{ts1-lmbx6}{TS1}{clm2j}{bx}{n}{<5.5-6.5>}
-		\installfontas{ts1-lmbx7}{TS1}{clm2j}{bx}{n}{<6.5-7.5>}
-		\installfontas{ts1-lmbx8}{TS1}{clm2j}{bx}{n}{<7.5-8.5>}
-		\installfontas{ts1-lmbx9}{TS1}{clm2j}{bx}{n}{<8.5-9.5>}
-		\installfontas{ts1-lmbx10}{TS1}{clm2j}{bx}{n}{<9.5-11>}
-		\installfontas{ts1-lmbx12}{TS1}{clm2j}{bx}{n}{<11->}
-		\installfontas{ts1-lmbxo10}{TS1}{clm2j}{bx}{sl}{}
-		\installfontas{ts1-lmbxi10}{TS1}{clm2j}{bx}{it}{}
-%    \end{macrocode}
-% Latin Modern default has these installed as bold, but the weight given in the font is demi and the demi weights in the sans-condensed are installed as demi, so I'm going for the same series - sb - here as they choose for those		
-%    \begin{macrocode}
-		\installfontas{ts1-lmb10}{TS1}{clm2j}{sb}{n}{}
-		\installfontas{ts1-lmbo10}{TS1}{clm2j}{sb}{sl}{}
-%    \end{macrocode}
-% clm2js		
-%    \begin{macrocode}
-		\installfamily{TS1}{clm2js}{}
-		\installfontas{ts1-lmss8}{TS1}{clm2js}{m}{n}{<-8.5>}
-		\installfontas{ts1-lmss9}{TS1}{clm2js}{m}{n}{<8.5-9.5>}
-		\installfontas{ts1-lmss10}{TS1}{clm2js}{m}{n}{<9.5-11>}
-		\installfontas{ts1-lmss12}{TS1}{clm2js}{m}{n}{<11-15>}
-		\installfontas{ts1-lmss17}{TS1}{clm2js}{m}{n}{<15->}
-		\installfontas{ts1-lmsso8}{TS1}{clm2js}{m}{sl}{<-8.5>}
-		\installfontas{ts1-lmsso9}{TS1}{clm2js}{m}{sl}{<8.5-9.5>}
-		\installfontas{ts1-lmsso10}{TS1}{clm2js}{m}{sl}{<9.5-11>}
-		\installfontas{ts1-lmsso12}{TS1}{clm2js}{m}{sl}{<11-15>}
-		\installfontas{ts1-lmsso17}{TS1}{clm2js}{m}{sl}{<15->}
-		\installfontas{ts1-lmssbx10}{TS1}{clm2js}{bx}{n}{}
-		\installfontas{ts1-lmssbo10}{TS1}{clm2js}{bx}{sl}{}
-		\installfontas{ts1-lmssdc10}{TS1}{clm2js}{sbc}{n}{}
-		\installfontas{ts1-lmssdo10}{TS1}{clm2js}{sbc}{sl}{}
-%    \end{macrocode}
-% clm2jqs		
-%    \begin{macrocode}
-		\installfamily{TS1}{clm2jqs}{}
-		\installfontas{ts1-lmssq8}{TS1}{clm2jqs}{m}{n}{}
-		\installfontas{ts1-lmssqo8}{TS1}{clm2jqs}{m}{sl}{}
-		\installfontas{ts1-lmssqbx8}{TS1}{clm2jqs}{bx}{n}{}
-		\installfontas{ts1-lmssqbo8}{TS1}{clm2jqs}{bx}{sl}{}
-%    \end{macrocode}
-% clm2jt		
-%    \begin{macrocode}
-		\installfamily{TS1}{clm2jt}{}
-		\installfontas{ts1-lmtt8}{TS1}{clm2jt}{m}{n}{<-8.5>}
-		\installfontas{ts1-lmtt9}{TS1}{clm2jt}{m}{n}{<8.5-9.5>}
-		\installfontas{ts1-lmtt10}{TS1}{clm2jt}{m}{n}{<9.5-11>}
-		\installfontas{ts1-lmtt12}{TS1}{clm2jt}{m}{n}{<11->}
-		\installfontas{ts1-lmtto10}{TS1}{clm2jt}{m}{sl}{}
-		\installfontas{ts1-lmtti10}{TS1}{clm2jt}{m}{it}{}
-		\installfontas{ts1-lmtcsc10}{TS1}{clm2jt}{m}{sc}{}
-		\installfontas{ts1-lmtcso10}{TS1}{clm2jt}{m}{scsl}{}
-		\installfontas{ts1-lmtk10}{TS1}{clm2jt}{bx}{n}{}
-		\installfontas{ts1-lmtko10}{TS1}{clm2jt}{bx}{sl}{}
-		\installfontas{ts1-lmtl10}{TS1}{clm2jt}{l}{n}{}
-		\installfontas{ts1-lmtlo10}{TS1}{clm2jt}{l}{sl}{}
-		\installfontas{ts1-lmtlc10}{TS1}{clm2jt}{lc}{n}{}
-		\installfontas{ts1-lmtlco10}{TS1}{clm2jt}{lc}{sl}{}
-%    \end{macrocode}
-% clm2jv		
-%    \begin{macrocode}
-		\installfamily{TS1}{clm2jv}{}
-		\installfontas{ts1-lmvtt10}{TS1}{clm2jv}{m}{n}{}
-		\installfontas{ts1-lmvtto10}{TS1}{clm2jv}{m}{sl}{}
-		\installfontas{ts1-lmvtk10}{TS1}{clm2jv}{bx}{n}{}
-		\installfontas{ts1-lmvtko10}{TS1}{clm2jv}{bx}{sl}{}
-		\installfontas{ts1-lmvtl10}{TS1}{clm2jv}{l}{n}{}
-		\installfontas{ts1-lmvtlo10}{TS1}{clm2jv}{l}{sl}{}
-%    \end{macrocode}
-% clm2dj		
-%    \begin{macrocode}
-		\installfamily{TS1}{clm2dj}{}
-		\installfontas{ts1-lmdunh10}{TS1}{clm2dj}{m}{n}{}
-		\installfontas{ts1-lmduno10}{TS1}{clm2dj}{m}{sl}{}
-	\endinstallfonts
-\endrecordtransforms
-\bye
-%    \end{macrocode}
-% \iffalse
-%</drv-ts1>
-% \fi
-% 
-% \subsection{Map}
-% 
-% This file is compiled to produce the map file fragment \verb|updmap| needs to install the fonts.
-% It uses files recorded during compilation of the driver.
-% \iffalse
-%<*map>
-% \fi
-%    \begin{macrocode}
-\input finstmsc.sty
-\resetstr{PSfontsuffix}{.pfb}
-\adddriver{dvips}{clm.map}
-\adddriver{pltotf}{clm-pltotf.sh}
-\input clm-rec.tex
-\donedrivers
-\bye
-%    \end{macrocode}
-% \iffalse
-%</map>
-% \fi
-%
-% \subsection{Encodings}
-%
-% \verb|etx| files may specify raw and/or output encodings.
-% Those which are specific to \lpack{cfr-lm} are described below and included in \file{cfr-lm-build.pdf}.
-% Those which are not are included as separate sources unless provided by \verb|fontinst|.
-% 
-% \subsubsection{Supplementary Encodings (Raw)}
-% 
-% We need an additional ‘raw’ encoding to pick up characters otherwise missed.
-% Many of these are here just because they are named differently, but this also covers fancy ligatures, alternate styles of digits etc.
-%
-% \begin{itemize}
-%   \item \file{dotdigits.etx}
-% \end{itemize}
-%
-%
-% \subsubsection{Output Encodings}
-%
-% These files either define variant T1 and TS1 font encodings define modified T1 or TS1 encodings.
-% For details and somehwat sparse commentary, see \file{cfr-lm-build.pdf} or the source \file{cfr-lm-build.dtx}.
-% \begin{itemize}
-%   \item \file{t1-clm.etx}
-%   \item \file{dotoldstyle.etx}
-%   \item \file{dotprop.etx}
-%   \item \file{dottaboldstyle.etx}
-% \end{itemize}
-%
-% The \verb|etx| files are not used directly by \LaTeX{} or \TeX.
-% Where needed, they are processed to produce \verb|enc| files.
-% In some cases, however, they are not themselves standalone encodings.
-% Instead, they change how some other encoding is interpreted.
 % 
 %\Finale
 % ^^A vim: tw=0:

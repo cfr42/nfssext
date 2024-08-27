@@ -1,4 +1,4 @@
-%% $Id: cfr-lm.ins 10268 2024-08-21 06:57:28Z cfrees $
+%% $Id: cfr-lm.ins 10285 2024-08-26 20:15:17Z cfrees $
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% cfr-lm.ins
 %% Additions and changes Copyright (C) 2008-2024 Clea F. Rees.
@@ -30,8 +30,11 @@
 
 \usedir{tex/latex/cfr-lm}
 
-\declarepreamble\safonol
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% lines of comments in preambles are just discarded
+% but I wish docstrip added one before and one after
+% two after is ugly!
+\declarepreamble\safonol
 Copyright (C) 2008-2024 Clea F. Rees.
 
 This work may be distributed and/or modified under the
@@ -51,29 +54,22 @@ cfr-lm. You may however distribute the package cfr-lm without
 such generated files.
 
 This work consists of all files listed in manifest.txt.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \endpreamble
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newcommand* \baseFileName{t1.etx}
 \newcommand* \encName{T1}
 \newcommand* \targFontName{Latin Modern}
-\newcommand* \preChanges{%
-  - The commentary in the original is deleted in this version. For 
-  information about the \encName{} etc., typeset the original \baseFileName{} 
-  included with fontinst.
-  - Slots are altered to accommodate characters which are named 
-  differently. For example, this encoding uses "endash" and "emdash" 
-  whereas \baseFileName{} called for "rangedash" and "punctdash".
-  - The original notices at the top of that file concerning authors,
-  maintenance etc. are replaced by this notice.
-  - The file is renamed.
-  - The encoding name is modified.
-  - f_f, f_f_i and f_f_l replace ff, ffi and ffl.
-  - The encoding has been modified for use with \targFontName.}
+% line breaks/paragraphs don't work in \preChanges
+% either everything ends up on one line
+% or, with ^^J, I get line breaks but no %% at the start
+% of subsequent lines
+\newcommand* \preChanges{}
+ 
 \newcommand* \targType{The encoding }
 
-\declarepreamble\derfontinst
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\declarepreamble\derfontinst
 Additions and changes Copyright (C) 2008-2024 Clea F. Rees.
 Code from t1.etx Copyright 2002 Alan Jeffrey and Sebastian 
 Rahtz and Ulrik Vieth and Lars Hellström (see below)
@@ -96,19 +92,33 @@ This work consists of all files listed in manifest.txt.
 LPPL. The original file, \baseFileName, is supplied with fontinst. A copy 
 of fontinst including an unmodified copy of \baseFileName is available from
 https://tug.ctan.org/tex-archive/fonts/utilities/fontinst.
+
 The main modifications made to this file are as follows:
+- The commentary in the original is deleted in this version. For 
+information about the T1 etc., typeset the original t1.etx 
+included with fontinst.
+- Slots are altered to accommodate the glyph names used by the Latin
+Modern fonts. For example, Latin Modern has a glyph named "cwm" 
+whereas t1.etx called for "compwordmark". 
+- The original notices at the top of that file concerning authors,
+maintenance etc. are replaced by this notice.
+- The file is renamed.
+- The encoding name is modified.
+
+To accommodate changes in glyph names in version 2.004 of the fonts:
+- "uni2423" replaces "visiblespace".
 \preChanges
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \endpreamble
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \askonceonly
 
 \usepreamble\safonol
 
 \generate{\file{cfr-lm.sty}{\from{cfr-lm.dtx}{sty}}
-  \file{clm-t1-drv.tex}{\from{cfr-lm.dtx}{drv-t1}}
-  \file{clm-ts1-drv.tex}{\from{cfr-lm.dtx}{drv-ts1}}
-  \file{clm-map.tex}{\from{cfr-lm.dtx}{map}}
+  \file{clm-t1-drv.tex}{\from{cfr-lm-build.dtx}{drv-t1}}
+  \file{clm-ts1-drv.tex}{\from{cfr-lm-build.dtx}{drv-ts1}}
+  \file{clm-map.tex}{\from{cfr-lm-build.dtx}{map}}
   \file{dotdigits.etx}{\from{cfr-lm-build.dtx}{dotdigits}}
   \file{dotoldstyle.etx}{\from{cfr-lm-build.dtx}{dotoldstyle}}
   \file{dotprop.etx}{\from{cfr-lm-build.dtx}{dotprop}}
