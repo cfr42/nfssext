@@ -2,21 +2,33 @@
 % !TEX encoding = UTF-8 Unicode
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fnt-tests.tex 10159 2024-07-15 08:04:28Z cfrees $}[v0.0 \revinfo][fnt-tests]
+\ProvidesFileSVN{$Id: fnt-tests.tex 10289 2024-08-28 00:15:45Z cfrees $}[v0.0 \revinfo][fnt-tests]
 \documentclass[10pt,a4paper]{article}
 \usepackage{fonttable}
 \usepackage{tracefnt}% infoshow is default; debugshow traces maths fonts, too
 \PassOptionsToPackage{nfssext-cfr}{debug}
+\newcounter{tccharcnt}
 \NewDocumentCommand \tcfnttest { o m }
 {%
-  \iftctest\texttt{\textbackslash #2}\IfValueT{#1}{ (#1)}: \csname #2\endcsname\par\fi
+  \iftctest
+    \stepcounter{tccharcnt}{\normalfont\thetccharcnt:~}%
+    % \texttt{\textbackslash #2}:
+    \IfValueTF{#1}{%
+      \csname #2\endcsname {#1}%
+    }{%
+      \csname #2\endcsname
+    }%
+  \fi
 }
 \newif\iftctest
-\fctesttrue
+\tctesttrue
 \makeatletter
 \newcommand\sampler{}
 \def\sampler#1#2#3#4{%
+  \setcounter{tccharcnt}{0}%
   % \tracingoutput=1
+  #1 / #2 / #3 / #4 :
+
   \tracinglostchars\thr@@
   % \tracingonline\thr@@
   \showoutput
@@ -32,143 +44,151 @@
   \knutext
 
   Ææ Ŵŵ Ŷŷ Šš € 
-  \vfil\break
 
-  percent: \%\par
-  \tcfnttest{S}
-  \tcfnttest{capitalacute{}}}
-  \tcfnttest{capitalbreve{}}
-  \tcfnttest{capitalcaron{}}
-  \tcfnttest{capitalcedilla{}}
-  \tcfnttest{capitalcircumflex{}}
-  \tcfnttest{capitaldieresis{}}
-  \tcfnttest{capitaldotaccent{}}
-  \tcfnttest{capitalgrave{}}
-  \tcfnttest{capitalhungarumlaut{}}
-  \tcfnttest{capitalnewtie{}}
-  \tcfnttest{capitalogonek{}}
-  \tcfnttest{capitalring{}}
-  \tcfnttest{capitaltie{}}
-  \tcfnttest{capitaltilde{}}
-  \tcfnttest{textacutedbl}
-  \tcfnttest{textasciiacute}
-  \tcfnttest{textasciibreve}
-  \tcfnttest{textasciicaron}
-  \tcfnttest{textasciicircum }
-  \tcfnttest{textasciidieresis}
-  \tcfnttest{textasciigrave}
-  \tcfnttest{textasciimacron}
-  \tcfnttest{textasciitilde}
-  \tcfnttest{textasteriskcentered}
-  \tcfnttest{textbackslash}
-  \tcfnttest{textbaht}
-  \tcfnttest{textbar}
-  \tcfnttest{textbardbl}
-  \tcfnttest{textbigcircle}
-  \tcfnttest{textblank}
-  \tcfnttest{textborn}
-  \tcfnttest{textbraceleft}
-  \tcfnttest{textbraceright}
-  \tcfnttest{textbrokenbar}
-  \tcfnttest{textbullet}
-  \tcfnttest{textcelsius}
-  \tcfnttest{textcent}
-  \tcfnttest{textcentoldstyle}
-  \tcfnttest{textcircledP}
-  \tcfnttest{textcolonmonetary}
-  \tcfnttest{textcompwordmark}
-  \tcfnttest{textcopyleft}
-  \tcfnttest{textcopyright}
-  \tcfnttest{textcurrency}
-  \tcfnttest{textdagger}
-  \tcfnttest{textdaggerdbl}
-  \tcfnttest{textdblhyphen}
-  \tcfnttest{textdblhyphenchar}
-  \tcfnttest{textdegree}
-  \tcfnttest{textdied}
-  \tcfnttest{textdiscount}
-  \tcfnttest{textdiv}
-  \tcfnttest{textdivorced}
-  \tcfnttest{textdollar}
-  \tcfnttest{textdollaroldstyle}
-  \tcfnttest{textdong}
-  \tcfnttest{textdownarrow}
-  \tcfnttest{texteightoldstyle}
-  \tcfnttest{textestimated}
-  \tcfnttest{texteuro}
-  \tcfnttest{textfiveoldstyle}
-  \tcfnttest{textflorin}
-  \tcfnttest{textfouroldstyle}
-  \tcfnttest{textfractionsolidus}
-  \tcfnttest{textgravedbl}
-  \tcfnttest{textguarani}
-  \tcfnttest{textinterrobang}
-  \tcfnttest{textinterrobangdown}
-  \tcfnttest{textlangle}
-  \tcfnttest{textlbrackdbl}
-  \tcfnttest{textleaf}
-  \tcfnttest{textleftarrow}
-  \tcfnttest{textlira}
-  \tcfnttest{textlnot}
-  \tcfnttest{textlquill}
-  \tcfnttest{textmarried}
-  \tcfnttest{textmho}
-  \tcfnttest{textminus}
-  \tcfnttest{textmu}
-  \tcfnttest{textmusicalnote}
-  \tcfnttest{textnaira}
-  \tcfnttest{textnaira}
-  \tcfnttest{textnineoldstyle}
-  \tcfnttest{textnumero}
-  \tcfnttest{textohm}
-  \tcfnttest{textonehalf}
-  \tcfnttest{textoneoldstyle}
-  \tcfnttest{textonequarter}
-  \tcfnttest{textonesuperior}
-  \tcfnttest{textopenbullet}
-  \tcfnttest{textordfeminine}
-  \tcfnttest{textordmasculine}
-  \tcfnttest{textparagraph}
-  \tcfnttest{textperiodcentered}
-  \tcfnttest{textpertenthousand}
-  \tcfnttest{textperthousand}
-  \tcfnttest{textpeso}
-  \tcfnttest{textpilcrow}
-  \tcfnttest{textpm}
-  \tcfnttest{textquotedblleft}
-  \tcfnttest{textquotedblright}
-  \tcfnttest{textquoteleft}
-  \tcfnttest{textquoteright}
-  \tcfnttest{textquotesingle}
-  \tcfnttest{textquotestraightbase}
-  \tcfnttest{textquotestraightdblbase}
-  \tcfnttest{textrangle}
-  \tcfnttest{textrbrackdbl}
-  \tcfnttest{textrecipe}
-  \tcfnttest{textreferencemark}
-  \tcfnttest{textregistered}
-  \tcfnttest{textrightarrow}
-  \tcfnttest{textrquill}
-  \tcfnttest{textsection}
-  \tcfnttest{textservicemark}
-  \tcfnttest{textsevenoldstyle}
-  \tcfnttest{textsixoldstyle}
-  \tcfnttest{textsterling}
-  \tcfnttest{textsurd}
-  \tcfnttest{textthreeoldstyle}
-  \tcfnttest{textthreequarters}
-  \tcfnttest{textthreequartersemdash}
-  \tcfnttest{textthreesuperior}
-  \tcfnttest{texttildelow}
-  \tcfnttest{texttimes}
-  \tcfnttest{texttrademark}
-  \tcfnttest{texttwelveudash}
-  \tcfnttest{texttwooldstyle}
-  \tcfnttest{texttwosuperior}
-  \tcfnttest{textuparrow}
-  \tcfnttest{textwon}
-  \tcfnttest{textyen}
-  \tcfnttest{textzerooldstyle}
+  percent: \%
+
+  \begin{tabular}{llllllllll}
+    \tcfnttest{S} & 
+    \tcfnttest[I]{capitalacute} & 
+    \tcfnttest[I]{capitalbreve} & 
+    \tcfnttest[I]{capitalcaron} & 
+    \tcfnttest[I]{capitalcedilla} & 
+    \tcfnttest[I]{capitalcircumflex} & 
+    \tcfnttest[I]{capitaldieresis} & 
+    \tcfnttest[I]{capitaldotaccent} & 
+    \tcfnttest[I]{capitalgrave} & 
+    \tcfnttest[I]{capitalhungarumlaut} \\
+    \tcfnttest[I]{capitalnewtie} & 
+    \tcfnttest[I]{capitalogonek} & 
+    \tcfnttest[I]{capitalring} & 
+    \tcfnttest[I]{capitaltie} & 
+    \tcfnttest[I]{capitaltilde} & 
+    \tcfnttest{textacutedbl} & 
+    \tcfnttest{textasciiacute} & 
+    \tcfnttest{textasciibreve} & 
+    \tcfnttest{textasciicaron} & 
+    \tcfnttest{textasciicircum} \\
+    \tcfnttest{textasciidieresis} & 
+    \tcfnttest{textasciigrave} & 
+    \tcfnttest{textasciimacron} & 
+    \tcfnttest{textasciitilde} & 
+    \tcfnttest{textasteriskcentered} & 
+    \tcfnttest{textbackslash} & 
+    \tcfnttest{textbaht} & 
+    \tcfnttest{textbar} & 
+    \tcfnttest{textbardbl} & 
+    \tcfnttest{textbigcircle} \\
+    \tcfnttest{textblank} & 
+    \tcfnttest{textborn} & 
+    \tcfnttest{textbraceleft} & 
+    \tcfnttest{textbraceright} & 
+    \tcfnttest{textbrokenbar} & 
+    \tcfnttest{textbullet} & 
+    \tcfnttest{textcelsius} & 
+    \tcfnttest{textcent} & 
+    \tcfnttest{textcentoldstyle} & 
+    \tcfnttest{textcircledP} \\
+    \tcfnttest{textcolonmonetary} & 
+    \tcfnttest{textcompwordmark} & 
+    \tcfnttest{textcopyleft} & 
+    \tcfnttest{textcopyright} & 
+    \tcfnttest{textcurrency} & 
+    \tcfnttest{textdagger} & 
+    \tcfnttest{textdaggerdbl} & 
+    \tcfnttest{textdblhyphen} & 
+    \tcfnttest{textdblhyphenchar} & 
+    \tcfnttest{textdegree} \\
+    \tcfnttest{textdied} & 
+    \tcfnttest{textdiscount} & 
+    \tcfnttest{textdiv} & 
+    \tcfnttest{textdivorced} & 
+    \tcfnttest{textdollar} & 
+    \tcfnttest{textdollaroldstyle} & 
+    \tcfnttest{textdong} & 
+    \tcfnttest{textdownarrow} & 
+    \tcfnttest{texteightoldstyle} & 
+    \tcfnttest{textestimated} \\
+    \tcfnttest{texteuro} & 
+    \tcfnttest{textfiveoldstyle} & 
+    \tcfnttest{textflorin} & 
+    \tcfnttest{textfouroldstyle} & 
+    \tcfnttest{textfractionsolidus} & 
+    \tcfnttest{textgravedbl} & 
+    \tcfnttest{textguarani} & 
+    \tcfnttest{textinterrobang} & 
+    \tcfnttest{textinterrobangdown} & 
+    \tcfnttest{textlangle} \\
+    \tcfnttest{textlbrackdbl} & 
+    \tcfnttest{textleaf} & 
+    \tcfnttest{textleftarrow} & 
+    \tcfnttest{textlira} & 
+    \tcfnttest{textlnot} & 
+    \tcfnttest{textlquill} & 
+    \tcfnttest{textmarried} & 
+    \tcfnttest{textmho} & 
+    \tcfnttest{textminus} & 
+    \tcfnttest{textmu} \\
+    \tcfnttest{textmusicalnote} & 
+    \tcfnttest{textnaira} & 
+    \tcfnttest{textnaira} & 
+    \tcfnttest{textnineoldstyle} & 
+    \tcfnttest{textnumero} & 
+    \tcfnttest{textohm} & 
+    \tcfnttest{textonehalf} & 
+    \tcfnttest{textoneoldstyle} & 
+    \tcfnttest{textonequarter} & 
+    \tcfnttest{textonesuperior} \\
+    \tcfnttest{textopenbullet} & 
+    \tcfnttest{textordfeminine} & 
+    \tcfnttest{textordmasculine} & 
+    \tcfnttest{textparagraph} & 
+    \tcfnttest{textperiodcentered} & 
+    \tcfnttest{textpertenthousand} & 
+    \tcfnttest{textperthousand} & 
+    \tcfnttest{textpeso} & 
+    \tcfnttest{textpilcrow} & 
+    \tcfnttest{textpm} \\
+    \tcfnttest{textquotedblleft} & 
+    \tcfnttest{textquotedblright} & 
+    \tcfnttest{textquoteleft} & 
+    \tcfnttest{textquoteright} & 
+    \tcfnttest{textquotesingle} & 
+    \tcfnttest{textquotestraightbase} & 
+    \tcfnttest{textquotestraightdblbase} & 
+    \tcfnttest{textrangle} & 
+    \tcfnttest{textrbrackdbl} & 
+    \tcfnttest{textrecipe} \\
+    \tcfnttest{textreferencemark} & 
+    \tcfnttest{textregistered} & 
+    \tcfnttest{textrightarrow} & 
+    \tcfnttest{textrquill} & 
+    \tcfnttest{textsection} & 
+    \tcfnttest{textservicemark} & 
+    \tcfnttest{textsevenoldstyle} & 
+    \tcfnttest{textsixoldstyle} & 
+    \tcfnttest{textsterling} & 
+    \tcfnttest{textsurd} \\
+    \tcfnttest{textthreeoldstyle} & 
+    \tcfnttest{textthreequarters} & 
+    \tcfnttest{textthreequartersemdash} & 
+    \tcfnttest{textthreesuperior} & 
+    \tcfnttest{texttildelow} & 
+    \tcfnttest{texttimes} & 
+    \tcfnttest{texttrademark} & 
+    \tcfnttest{texttwelveudash} & 
+    \tcfnttest{texttwooldstyle} & 
+    \tcfnttest{texttwosuperior} \\
+    \tcfnttest{textuparrow} & 
+    \tcfnttest{textwon} & 
+    \tcfnttest{textyen} & 
+    \tcfnttest{textzerooldstyle} & 
+                                 &
+                                 &
+                                 &
+                                 &
+                                 &
+                                 \\
+  \end{tabular}
   
   \vfil\break
 }
