@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10281 2024-08-24 13:08:02Z cfrees $
+-- $Id: fontinst.lua 10297 2024-08-29 15:56:59Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -229,7 +229,10 @@ function checkinit_hook ()
   -- if fntestfds.<package name> has been specified, use that (should be a table)
   -- o/w assign the autotestfds table to fntestfds.<package name>
   for i, j in ipairs(fntpkgnames) do
-    if fnttestfds.j == nil then
+    -- I really don't understand tables (and I know this is very, very basic)
+    -- table.element = value -> assignment ??
+    -- table[element] -> retrieval ??
+    if fnttestfds[j] == nil then
       -- fnttestfds.j = {}
       fnttestfds.j = autotestfds
       -- for k, l in ipairs(autotestfds) do
@@ -264,7 +267,7 @@ function checkinit_hook ()
       content = string.gsub(content, "\\RequirePackage%{svn%-prov%}\n\\ProvidesFileSVN%{[^%}]*%}%[[^%]]*%]%[[^%]]*%]\n", "")
       for i, j in ipairs(fntpkgnames) do
         -- create the test file for each package
-        errorlevel = fnt_test(j,fnttestfds.j,content,maps)
+        errorlevel = fnt_test(j,fnttestfds[j],content,maps)
         if errorlevel ~= 0 then
           gwall("Font test creation ", j, errorlevel)
           return errorlevel
