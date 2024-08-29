@@ -1,4 +1,4 @@
--- $Id: build.lua 10281 2024-08-24 13:08:02Z cfrees $
+-- $Id: build.lua 10295 2024-08-29 03:07:34Z cfrees $
 -- Build configuration for cfr-lm
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -16,7 +16,7 @@ os.setenv ("TEXMFARCH", ".")
 --
 ctanpkg = "cfr-lm"
 -- exclude tfms from lm we used just to correct erroneous font dimens in the afms 
-excludefiles =  {"*~","build.lua","config-*.lua","ec-*.tfm"}
+excludefiles =  {"*~","*.afm","build.lua","config-*.lua","ec-*.tfm","*.otf","*.pfm","*.pfb"}
 maindir = ".."
 module = "cfr-lm"
 vendor = "public"
@@ -54,6 +54,6 @@ uploadconfig = {
   -- curlopt_file
 }
 --
--- dofile(maindir .. "/arkandis/arkandis-manifest.lua")
+dofile(maindir .. "/fnt-manifest.lua")
 -- os.execute ("printenv")
 -- vim: ts=2:sw=2:tw=0:nospell
