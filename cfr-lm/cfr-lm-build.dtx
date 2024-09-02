@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: cfr-lm-build.dtx 10287 2024-08-27 07:23:52Z cfrees $}[v0.0 \revinfo][\filebase DTX: Latin Modern for 8-bit engines]
+\ProvidesFileSVN{$Id: cfr-lm-build.dtx 10295 2024-08-29 03:07:34Z cfrees $}[v1.7 \revinfo][\filebase DTX: Latin Modern for 8-bit engines]
 \DefineFileInfoSVN[cfr-lm@build]
 \documentclass[10pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -211,7 +211,7 @@
 \needsfontinstversion{1.926}
 %    \end{macrocode}
 % Substitutions
-% \changes{v0.0}{0000/00/00}{Change order of substitutions for \texttt{scsl}.}
+% \changes{v1.7}{2024-08-28}{Change order of substitutions for \texttt{scsl}.}
 %    \begin{macrocode}
 \substitutesilent{scit}{scsl}
 \substitutesilent{si}{scit}
@@ -221,7 +221,7 @@
 \substitutesilent{sc}{n}
 %    \end{macrocode}
 % Bold extended for bold 
-% \changes{v0.0}{0000/00/00}{Substitute bold extended for bold in case later kernels break \lpack{nfssext-cfr} patch.}
+% \changes{v1.7}{2024-08-28}{Substitute bold extended for bold in case later kernels break \lpack{nfssext-cfr} patch.}
 %
 % This *really* shouldn't be necessary!!
 % But on newer kernels, it is.
@@ -454,7 +454,7 @@
 		\installfont{clmssdo8t10}{ec-lmssdo10 encoding txtfdmns,lmssdo8ttl10,\metrics\unsetint{acccapheight},newlatin}{t1-clm}{T1}{clms}{sbc}{sl}{}
 %    \end{macrocode}
 % clmqs: sans; tabular, lining digits
-% \changes{v0.0}{0000/00/00}{\cs{fontinstcc} and \cs{normalcc} required to ensure \texttt{@} treated correctly.}
+% \changes{v1.7}{2024-08-28}{\cs{fontinstcc} and \cs{normalcc} required to ensure \texttt{@} treated correctly.}
 %    \cs{fontinstcc} and \cs{normalcc} ensure \texttt{@} is treated correctly when writing out font definition files.
 %    (This is not necessary in scaling factors since we treat those as strings.)
 %    \begin{macrocode}

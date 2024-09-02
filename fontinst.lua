@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10297 2024-08-29 15:56:59Z cfrees $
+-- $Id: fontinst.lua 10305 2024-09-01 19:00:42Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -47,6 +47,44 @@ function finst (patt,dir,mode)
     local errorlevel = tex(j,dir,cmd)
     gwall("Compilation of ", j, errorlevel)
   end
+end
+function fntkeeper ()
+  local dir = dir or unpackdir
+  local rtn = direxists(keepdir)
+  if rtn ~= 0 then
+    local errorlevel = mkdir(keepdir)
+    if errorlevel ~= 0 then
+      print("DO NOT BUILD STANDARD TARGETS WITHOUT RESOLVING!!\n")
+      gwall("Attempt to create directory ", keepdir, errorlevel)
+    end
+  end
+  if keepfiles ~= {} then
+    for i,j in ipairs(keepfiles) do
+      local rtn = cp(j, unpackdir, keepdir)
+      if rtn ~= 0 then
+        gwall("Copy ", j, errorlevel)
+        print("DO NOT BUILD STANDARD TARGETS WITHOUT RESOLVING!\n")
+      end
+    end
+  else
+    print("ARE YOU SURE YOU DON'T WANT TO KEEP THE FONTS??!!\n")
+  end
+  if keeptempfiles ~= {} then
+    rtn = direxists(keeptempdir)
+    if rtn ~= 0 then
+      local errorlevel = mkdir(keeptempdir)
+      if errorlevel ~= 0 then
+        gwall("Attempt to create directory ", keeptempdir, errorlevel)
+      end
+    end
+    for i,j in ipairs(keeptempfiles) do 
+      local errorlevel = cp(j,unpackdir,keeptempdir)
+      if errorlevel ~= 0 then
+        gwall("Copy ", j, errorlevel)
+      end
+    end
+  end	
+  return nifergwall
 end
 function fontinst (dir,mode)
   dir = dir or unpackdir
@@ -135,38 +173,42 @@ function fontinst (dir,mode)
       f:close()
     end
   end
-  local rtn = direxists(keepdir)
-  if rtn ~= 0 then
-    local errorlevel = mkdir(keepdir)
-    if errorlevel ~= 0 then
-      print("DO NOT BUILD STANDARD TARGETS WITHOUT RESOLVING!!\n")
-      gwall("Attempt to create directory ", keepdir, errorlevel)
-    else
-      for i,j in ipairs(keepfiles) do
-        local rtn = cp(j, unpackdir, keepdir)
-        if rtn ~= 0 then
-          gwall("Copy ", j, errorlevel)
-          print("DO NOT BUILD STANDARD TARGETS WITHOUT RESOLVING!\n")
-        end
-      end
-      if keeptempfiles ~= {} then
-        local rtn = direxists(keeptempdir)
-        if rtn ~= 0 then
-          local errorlevel = mkdir(keeptempdir)
-          if errorlevel ~= 0 then
-            gwall("Attempt to create directory ", keeptempdir, errorlevel)
-          else
-            for i,j in ipairs(keeptempfiles) do 
-              local errorlevel = cp(j,unpackdir,keeptempdir)
-              if errorlevel ~= 0 then
-                gwall("Copy ", j, errorlevel)
-              end
-            end
-          end
-        end
-      end
-    end
-  end	
+  -- local rtn = direxists(keepdir)
+  -- if rtn ~= 0 then
+  --   local errorlevel = mkdir(keepdir)
+  --   if errorlevel ~= 0 then
+  --     print("DO NOT BUILD STANDARD TARGETS WITHOUT RESOLVING!!\n")
+  --     gwall("Attempt to create directory ", keepdir, errorlevel)
+  --   else
+  --     for i,j in ipairs(keepfiles) do
+  --       local rtn = cp(j, unpackdir, keepdir)
+  --       if rtn ~= 0 then
+  --         gwall("Copy ", j, errorlevel)
+  --         print("DO NOT BUILD STANDARD TARGETS WITHOUT RESOLVING!\n")
+  --       end
+  --     end
+  --     if keeptempfiles ~= {} then
+  --       local rtn = direxists(keeptempdir)
+  --       if rtn ~= 0 then
+  --         local errorlevel = mkdir(keeptempdir)
+  --         if errorlevel ~= 0 then
+  --           gwall("Attempt to create directory ", keeptempdir, errorlevel)
+  --         else
+  --           for i,j in ipairs(keeptempfiles) do 
+  --             local errorlevel = cp(j,unpackdir,keeptempdir)
+  --             if errorlevel ~= 0 then
+  --               gwall("Copy ", j, errorlevel)
+  --             end
+  --           end
+  --         end
+  --       end
+  --     end
+  --   end
+  -- end	
+  local errorlevel = fntkeeper()
+  if errorlevel ~= 0 then
+    gwall("FONT KEEPER FAILED! DO NOT MAKE STANDARD TARGETS WITHOUT RESOLVING!! ", unpackdir, errorlevel)
+  end
   return nifergwall
 end
 dofile(maindir .. "/tag.lua")
