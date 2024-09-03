@@ -31,7 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\ModMakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: berenisadf.dtx 10307 2024-09-02 06:26:58Z cfrees $}[v0.0
+\ProvidesFileSVN{$Id: berenisadf.dtx 10314 2024-09-03 07:07:16Z cfrees $}[v0.0
 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[berenisadf]
 \documentclass[11pt,british]{ltxdoc}
@@ -77,7 +77,7 @@
 \usepackage{xurl}
 \urlstyle{tt}
 \usepackage{microtype}
-\usepackage[a4paper,headheight=14pt,marginparwidth=45mm,hmarginratio=4:1,vscale=.8,hscale=.7,verbose]{geometry}  % use 14pt for 11pt text, 15pt for 12pt text
+\usepackage[a4paper,headheight=14pt,vscale=.8,includemp=true,reversemp=true,hscale=0.9,marginparwidth=45mm,verbose]{geometry}  % use 14pt for 11pt text, 15pt for 12pt text
 \usepackage{csquotes}
 \MakeAutoQuote{‘}{’}
 \MakeAutoQuote*{“}{”}
@@ -85,6 +85,7 @@
 \usepackage{caption}
 \DeclareCaptionFont{lf}{\lstyle}
 \captionsetup[table]{labelfont=lf}
+\usepackage{changepage}
 % sicrhau hyperindex=false: llwytho CYN bookmark
 \usepackage{hypdoc}% ateb Ulrike Fischer: https://tex.stackexchange.com/a/695555/
 \usepackage{bookmark}
@@ -160,7 +161,7 @@
 \date{\fileversion~\filedate}
 \pagestyle{fancy}
 \fancyhf[lh]{\itshape\filebase~\fileversion}
-% \fancyhf[rh]{\itshape\filetoday}
+%^^A \fancyhf[rh]{\itshape\filetoday}
 \fancyhf[rh]{\itshape\filedate}
 \fancyhf[ch]{}
 \fancyhf[lf]{}
@@ -188,6 +189,10 @@
 {
   \keys_set:nn { clm / doc } { #1 }
 }
+\dim_new:N \savedfancyoffset
+\dim_new:N \savedtextwidth
+\dim_new:N \savedoddsidemargin
+\dim_new:N \newfancyoffset
 \ExplSyntaxOff
 \clmdocset{%
   bug={\href{https://codeberg.org/cfr/nfssext/issues}{\textsc{bugtracker}}},
@@ -224,6 +229,9 @@
 \definecolor{strawberry}{rgb}{1.000,0.000,0.502}
 \definecolor{blueberry}{rgb}{0.000,0.000,1.000}
 \definecolor{moss}{rgb}{0.000,0.502,0.251}
+\makeatletter
+\def\@xobeysp{\leavevmode\penalty100\ }
+\makeatother
 \let\OrigMakePrivateLetters\MakePrivateLetters
 \begin{document}
   \DocInput{\filename}
@@ -232,6 +240,11 @@
 % \fi
 %
 % \savegeometry{safonol}
+% \savedfancyoffset=\dimexpr\marginparwidth+\marginparsep
+% \savedtextwidth=\textwidth
+% \savedoddsidemargin=\oddsidemargin
+% \fancyheadoffset[lh]{\savedfancyoffset}
+% \fancyhf[lh]{\hbox to \savedfancyoffset{\itshape\fileversion\hfil}\itshape\filebase}
 %
 % \newcommand*{\adf}{\textsc{adf}}
 % \newcommand*{\gnu}{\textsc{gnu}}
@@ -684,16 +697,15 @@
 % \caption{Figures}\label{tab:figs}
 % \begin{tabular}{llll}
 %   \toprule
-%   \textbf{figure style}   & \textbf{style command}  & \textbf{text command}\\\midrule
-%   \textbf{figure style}     & \textbf{style command}  & \textbf{text command} & \textbf{effect}\\\midrule
+%   \textbf{figure style}     & \textbf{style command}  & \textbf{text command} & \textbf{effect}\\ \midrule
 %     lining                    & \verb|\lstyle|            & \verb|\textl{}|       & \textl{0123456789}\\
 %     oldstyle                  & \verb|\ostyle|            & \verb|\texto{}|       & \texto{0123456789}\\
 %     tabular                 & \verb|\tstyle|            & \verb|\textt{}|       & \textt{0123456789}\\
-%     proportional              & \verb|\pstyle|            & \verb|\textp{}|       & \textp{0123456789}\\\midrule
+%     proportional              & \verb|\pstyle|            & \verb|\textp{}|       & \textp{0123456789}\\ \midrule
 %     tabular lining            & \verb|\tlstyle|         & \verb|\texttl{}|        & \texttl{0123456789}\\
 %     tabular oldstyle          & \verb|\tostyle|         & \verb|\textto{}|        & \textto{0123456789}\\
 %     proportional lining     & \verb|\plstyle|         & \verb|\textpl{}|        & \textpl{0123456789}\\
-%     proportional oldstyle   & \verb|\postyle|         & \verb|\textpo{}|        & \textpo{0123456789}\\\midrule
+%     proportional oldstyle   & \verb|\postyle|         & \verb|\textpo{}|        & \textpo{0123456789}\\ \midrule
 %     inferior/subscript        & \verb|\infstyle|         & \verb|\textinf{}|        & \textinf{0123456789}\\
 %     superior/superscript      & \verb|\sustyle|         & \verb|\textsu{}|        & \textsu{0123456789}\\
 %   \bottomrule
@@ -947,6 +959,7 @@
 % 
 % \MaybeStop{%
 % \PrintChanges
+% \clearpage
 % \PrintIndex
 % }
 % 
@@ -961,7 +974,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[berenis.sty]{$Id: berenisadf.dtx 10307 2024-09-02 06:26:58Z cfrees $}[\filebase v1.1 \revinfo]
+\ProvidesPackageSVN[berenis.sty]{$Id: berenisadf.dtx 10314 2024-09-03 07:07:16Z cfrees $}[\filebase v1.1 \revinfo]
 \DefineFileInfoSVN[berenis]
 %    \end{macrocode}
 % Load \lpack{nfssext-cfr}.  
@@ -9418,14 +9431,17 @@
 % 
 % The remaining files are not needed to use the fonts, but only to generate them.
 %
-% \newgeometry{marginparwidth=15mm,hmarginratio=1:1,vscale=.8,hscale=.85,verbose,headheight=14pt}
-%
 % \subsection{Scripts}
 % 
 % The scripts in this section are not used to typeset the documentation or recreate the encoding files. 
 % The latter are modified by hand for each encoding from a few base encodings, so regenerating them would merely overwrite the customisations.
 % The former can be generated using the \texttt{Makefile} and, in earlier versions of the package, that's how we produced the documentation.
 % Now we use \lpack{l3build}, we generate the documentation that way, but the relevant targets remain in the \texttt{Makefile} in case anybody wants them.
+%
+% \textbf{Copying these scripts will NOT result in usable code.}
+% For all files, the first and last lines, beginning with \texttt{\%} must be deleted.
+% Even then, \file{Makefile.make} will \textbf{not} be usable because \TeX{} removes essential tab characters.
+% Compile the \file{.ins} to generate the scripts instead.
 %
 % \subsubsection{Makefile}
 %
@@ -9439,17 +9455,24 @@
 % We now use \lpack{l3build} to run \texttt{make}, which partially defeats the raison d'être of both programmes.
 %
 % David Carlisle says \TeX{} demands a dot because Windows can't tell the difference\footnote{%
-%   OK, so this maybe not \emph{quite} what he said.%
+%   OK, so this may not be \emph{quite} what he said.%
 % }.
 % Since a terminal dot looks weird, we add something and have Lua tell \texttt{make} to treat the file as a Makefile.
 %
+% \newgeometry{marginparwidth=15mm,includemp=true,hscale=0.7}
+% \newfancyoffset=\dimexpr\oddsidemargin-\savedoddsidemargin+\savedfancyoffset
+% \fancyheadoffset[lh]{\newfancyoffset}
+% \fancyheadoffset[rh]{\dimexpr\savedtextwidth-\textwidth-\oddsidemargin+\savedoddsidemargin}
+% \fancyhf[lh]{\hbox to \newfancyoffset{\itshape\fileversion\hfil}\itshape\filebase}
+%
+% \begin{ffeil}{Makefile.make}
+% Note that \TeX{} destroys the spacing essential to \gnu{} \texttt{make}, even in verbatim mode\footnote{%
+%   But thanks to David Carlisle for telling me to prevent \lpack{docstrip} destroying the actual \file{Makefile.make}: \sechat{66210359\#66210359}; \texsepost{a/453323/}.%
+% }.
+% You can \textbf{NOT}, therefore, copy this and expect it to work; use the generated file instead.
 % \iffalse
 %<*make>
 % \fi
-% \begin{ffeil}{Makefile.make}
-% Thanks to David Carlisle for the trick which preserves the tab characters essential here.
-% David Carlisle: \sechat{66210359\#66210359}
-% David Carlisle: \texsepost{a/453323/}
 %    \begin{macrocode}
 %<<MAKE
 SHELL=/bin/sh
@@ -9694,10 +9717,15 @@ $(tfms) : %.tfm : %.pl
 
 %MAKE
 %    \end{macrocode}
-% \end{ffeil}
 % \iffalse
 %</make>
 % \fi
+% \end{ffeil}
+% 
+% \restoregeometry
+% \fancyheadoffset[lh]{\savedfancyoffset}
+% \fancyheadoffset[rh]{0pt}
+% \fancyhf[lh]{\hbox to \savedfancyoffset{\itshape\fileversion\hfil}\itshape\filebase}
 % 
 % \subsubsection{FontForge}
 %

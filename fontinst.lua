@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10305 2024-09-01 19:00:42Z cfrees $
+-- $Id: fontinst.lua 10311 2024-09-02 19:44:16Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -213,27 +213,36 @@ function fontinst (dir,mode)
 end
 dofile(maindir .. "/tag.lua")
 -- fnt_test
-function fnt_test (fntpkgname,fds,content,maps)
+function fnt_test (fntpkgname,fds,content,maps,fdsdir)
   local coll = ""
   local targname = fntpkgname .. "-auto-test.lvt"
   local targfile = unpackdir .. "/" .. targname
+  local yy = 0
   print("Creating test file for " .. fntpkgname .. " with fds: ")
   for i, j in ipairs(fds) do print("fd: " .. j) end
   -- l3build-tagging.lua
   for i, j in ipairs(fds) do
-    local errorlevel = cp(j, keepdir, unpackdir)
-    if errorlevel ~= 0 then
-      gwall("Copy ", j, errorlevel)
-      return errorlevel
-    else
-      j = unpackdir .. "/" .. j
-      for line in io.lines(j) do
-        -- it would be much better to filter the file list ...
-        if string.match(line,"^\\DeclareFontShape%{[^%}]*%}%{[^%}]*%}%{[^%}]*%}%{[^%}]*%}%{$") then
-          coll = (coll .. string.gsub(string.gsub(line,"%{$","%%%%"),"^\\DeclareFontShape%{([^%}]*)%}%{([^%}]*)%}%{([^%}]*)%}%{([^%}]*)%}","\n\\TEST{test-%1-%2-%3-%4}{%%%%\n  \\sampler{%1}{%2}{%3}{%4}%%%%\n}"))
-        end
+    -- local errorlevel = cp(j, keepdir, unpackdir)
+    if string.match(j,"^ly1") then
+      yy = 1
+    end
+    if fdsdir ~= unpackdir then
+      local errorlevel = cp(j, fdsdir, unpackdir)
+      if errorlevel ~= 0 then
+        gwall("Copy ", j, errorlevel)
+        return errorlevel
       end
     end
+    j = unpackdir .. "/" .. j
+    for line in io.lines(j) do
+      -- it would be much better to filter the file list ...
+      if string.match(line,"^\\DeclareFontShape%{[^%}]*%}%{[^%}]*%}%{[^%}]*%}%{[^%}]*%}%{$") then
+        coll = (coll .. string.gsub(string.gsub(line,"%{$","%%%%"),"^\\DeclareFontShape%{([^%}]*)%}%{([^%}]*)%}%{([^%}]*)%}%{([^%}]*)%}","\n\\TEST{test-%1-%2-%3-%4}{%%%%\n  \\sampler{%1}{%2}{%3}{%4}%%%%\n}"))
+      end
+    end
+  end
+  if yy == 1 then
+    maps = "\\input{ly1enc.def}\n" .. maps
   end
   coll = maps .. "\n\\usepackage{" .. fntpkgname .. "}\n\\begin{document}\n\\START\n" .. coll .. "\n\\END\n\\end{document}\n"
   -- coll = maps .. "\n\\begin{document}\n\\START\n" .. coll .. "\n\\END\n\\end{document}\n"
@@ -254,6 +263,19 @@ function checkinit_hook ()
   local fnttestdir = maindir .. "/fnt-tests"
   local maps = ""
   local mapfiles=filelist(keepdir, "*.map")
+  local mapsdir = ""
+  local fdsdir = ""
+  if #mapfiles == 0 then
+    mapfiles=filelist(unpackdir, "*.map")
+    if #mapfiles == 0 then
+      gwall("Attempt to find map files ", ".map", 1)
+      return 1
+    else
+      mapsdir = unpackdir
+    end
+  else
+    mapsdir = keepdir
+  end
   local fntpkgnames = fntpkgnames or filelist(unpackdir,"*.sty")
   for i, j in ipairs(fntpkgnames) do
     fntpkgnames[i] = string.gsub(j,"%.sty","")
@@ -261,9 +283,25 @@ function checkinit_hook ()
   -------
   if #autotestfds == 0 then
     local autotestfdstmp = filelist(keepdir, "*.fd")
-    for i, j in ipairs(autotestfdstmp) do
-      if not string.match(j,"^ts1") then
-        table.insert (autotestfds, j)
+    -- if they're not kept, they may be source (e.g. berenisadf)
+    if #autotestfdstmp == 0 then
+      autotestfdstmp = filelist(unpackdir, "*.fd")
+      if #autotestfdstemp == 0 then
+        gwall("Attempt to find fd files ", ".fd", 1)
+        return 1
+      else
+        fdsdir = unpackdir
+      end
+    else
+      fdsdir = keepdir
+    end
+    if #autotestfdstmp == 0 then
+      print("No fds automatically found.\n")
+    else
+      for i, j in ipairs(autotestfdstmp) do
+        if not string.match(j,"^ts1") then
+          table.insert (autotestfds, j)
+        end
       end
     end
   end
@@ -272,8 +310,6 @@ function checkinit_hook ()
   -- o/w assign the autotestfds table to fntestfds.<package name>
   for i, j in ipairs(fntpkgnames) do
     -- I really don't understand tables (and I know this is very, very basic)
-    -- table.element = value -> assignment ??
-    -- table[element] -> retrieval ??
     if fnttestfds[j] == nil then
       -- fnttestfds.j = {}
       fnttestfds.j = autotestfds
@@ -309,7 +345,8 @@ function checkinit_hook ()
       content = string.gsub(content, "\\RequirePackage%{svn%-prov%}\n\\ProvidesFileSVN%{[^%}]*%}%[[^%]]*%]%[[^%]]*%]\n", "")
       for i, j in ipairs(fntpkgnames) do
         -- create the test file for each package
-        errorlevel = fnt_test(j,fnttestfds[j],content,maps)
+        -- errorlevel = fnt_test(j,fnttestfds[j],content,maps)
+        errorlevel = fnt_test(j,fnttestfds.j,content,maps,fdsdir)
         if errorlevel ~= 0 then
           gwall("Font test creation ", j, errorlevel)
           return errorlevel
@@ -322,7 +359,8 @@ function checkinit_hook ()
 end
 -- doc_init
 function docinit_hook ()
-  local fdfiles = filelist(keepdir, "*.fd")
+  -- local fdfiles = filelist(keepdir, "*.fd")
+  local fdfiles = filelist(unpackdir, "*.fd")
   local filename = "fnt-tables.tex"
   local targname = ctanpkg .. "-tables.tex"
   local file = unpackdir .. "/" .. filename
@@ -331,10 +369,10 @@ function docinit_hook ()
   local fnttestdir = maindir .. "/fnt-tests"
   local maps = ""
   local mapfiles=filelist(unpackdir, "*.map")
+  local yy = 0
   for i, j in ipairs(mapfiles) do
-    maps = maps .. "\n\\pdfmapfile{" .. j .. "}"
+    maps = maps .. "\n\\pdfmapfile{-" .. j .. "}\n\\pdfmapfile{+" .. j .. "}"
   end
-  maps = maps .. "\n\\pdfmapfile{+pdftex.map}"
   if not fileexists(fnttestdir .. "/" .. filename) then
     print("Skipping font tables.\n")
   else
@@ -357,12 +395,18 @@ function docinit_hook ()
       content = string.gsub(content, "\\RequirePackage%{svn%-prov%}\n\\ProvidesFileSVN%{[^%}]*%}%[[^%]]*%]%[[^%]]*%]\n", "")
       -- l3build-tagging.lua
       for i, j in ipairs(fdfiles) do
+        if string.match(j,"^ly1") then
+          yy = 1
+        end
         j = unpackdir .. "/" .. j
         for line in io.lines(j) do
           if string.match(line,"^\\DeclareFontShape%{[^%}]*%}%{[^%}]*%}%{[^%}]*%}%{[^%}]*%}%{$") then
             coll = (coll .. string.gsub(string.gsub(line,"%{$","%%%%"),"^\\DeclareFontShape","\n\\sampletable"))
           end
         end
+      end
+      if yy == 1 then
+        maps = "\n\\input{ly1enc.def}\n" .. maps
       end
       coll = maps .. "\n\\begin{document}\n" .. coll .. "\n\\end{document}\n"
       local new_content =  "%% Do not edit this file. It is generated by l3build and changes will be overwritten.\n" .. string.gsub(content, "\n\\endinput *\n", coll)
