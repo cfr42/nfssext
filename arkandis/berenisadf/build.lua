@@ -19,47 +19,9 @@ maindir = "../.."
 module = "berenis"
 vendor = "arkandis"
 autotestfds = {  "ly1ybd.fd", "ly1ybd0.fd", "ly1ybd1.fd", "ly1ybd2.fd", "ly1ybd2j.fd", "ly1ybd2jw.fd", "ly1ybd2w.fd", "ly1ybdj.fd", "ly1ybdjw.fd", "ly1ybdw.fd", "t1ybd.fd", "t1ybd0.fd", "t1ybd1.fd", "t1ybd2.fd", "t1ybd2j.fd", "t1ybdj.fd" }
-keepfiles = { "ybd.map", "*.pfb", "*.tfm" }
+keepfiles = { "ybd.map", "*.afm", "*.pfb", "*.tfm" }
 keeptempfiles = { "*.pl" }
 dofile(maindir .. "/fontinst.lua")
-function fntkeeper ()
-  local dir = dir or unpackdir
-  local rtn = direxists(keepdir)
-  if rtn ~= 0 then
-    local errorlevel = mkdir(keepdir)
-    if errorlevel ~= 0 then
-      print("DO NOT BUILD STANDARD TARGETS WITHOUT RESOLVING!!\n")
-      gwall("Attempt to create directory ", keepdir, errorlevel)
-    end
-  end
-  if keepfiles ~= {} then
-    for i,j in ipairs(keepfiles) do
-      local rtn = cp(j, unpackdir, keepdir)
-      if rtn ~= 0 then
-        gwall("Copy ", j, errorlevel)
-        print("DO NOT BUILD STANDARD TARGETS WITHOUT RESOLVING!\n")
-      end
-    end
-  else
-    print("ARE YOU SURE YOU DON'T WANT TO KEEP THE FONTS??!!\n")
-  end
-  if keeptempfiles ~= {} then
-    rtn = direxists(keeptempdir)
-    if rtn ~= 0 then
-      local errorlevel = mkdir(keeptempdir)
-      if errorlevel ~= 0 then
-        gwall("Attempt to create directory ", keeptempdir, errorlevel)
-      end
-    end
-    for i,j in ipairs(keeptempfiles) do 
-      local errorlevel = cp(j,unpackdir,keeptempdir)
-      if errorlevel ~= 0 then
-        gwall("Copy ", j, errorlevel)
-      end
-    end
-  end	
-  return nifergwall
-end
 function fntmake (dir,mode)
   dir = dir or unpackdir
   mode = mode or "errorstopmode --halt-on-error"
@@ -96,7 +58,7 @@ target_list[ntarg] = {
   end
 }
 -- docfiles = { "dotoldstyle.etx", "dottaboldstyle.etx", "t1-cfr.etx", "t1-dotinferior.etx", "t1-dotsuperior.etx", "ybd-encs.tex" }
-local srcfiles = { "dotoldstyle.etx", "dottaboldstyle.etx", "t1-cfr.etx", "t1-dotinferior.etx", "t1-dotsuperior.etx", "ybd-encs.tex" }
+local srcfiles = { "dotoldstyle.etx", "dottaboldstyle.etx", "t1-cfr.etx", "t1-dotinferior.etx", "t1-dotsuperior.etx" }
 for i,j in ipairs(srcfiles) do table.insert(sourcefiles,j) end
 typesetruns = 5
 --
