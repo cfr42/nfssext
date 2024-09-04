@@ -1,0 +1,28 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+\RequirePackage{svn-prov}
+\ProvidesFileSVN{$Id: berenis-scale.lvt 10317 2024-09-04 07:40:12Z cfrees $}[v1.1 \revinfo][\filebase: scale test]
+\pdfmapfile{-ybd.map}
+\pdfmapfile{+ybd.map}
+\input regression-test.tex\relax
+\documentclass{article}
+	
+\usepackage[scale=20]{berenis}
+
+\begin{document}
+\START
+% RHAID ddefnyddio'r llinell isod tu allan i'r \TEST
+\ExplSyntaxOn
+\TEST{berenisadf-scale-test}{
+  \hbox_set:Nn \l_tmpa_box 
+  {
+    \normalfont\normalsize
+    pobl
+  }
+  \box_show:N \l_tmpa_box
+}
+\ExplSyntaxOff
+\END
+
+\end{document} 
+% vim: ts=2:sw=2:

@@ -31,7 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\ModMakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: berenisadf.dtx 10316 2024-09-04 03:34:28Z cfrees $}[v0.0
+\ProvidesFileSVN{$Id: berenisadf.dtx 10317 2024-09-04 07:40:12Z cfrees $}[v0.0
 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[berenisadf]
 \documentclass[11pt,british]{ltxdoc}
@@ -1034,7 +1034,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[berenis.sty]{$Id: berenisadf.dtx 10316 2024-09-04 03:34:28Z cfrees $}[\filebase v1.1 \revinfo]
+\ProvidesPackageSVN[berenis.sty]{$Id: berenisadf.dtx 10317 2024-09-04 07:40:12Z cfrees $}[\filebase v1.1 \revinfo]
 \DefineFileInfoSVN[berenis]
 %    \end{macrocode}
 % Load \lpack{nfssext-cfr}.  
@@ -1290,24 +1290,24 @@
     \char13
   }
 } {
-  \IfFormatAtLeastTF {2020-02-02}{%
+}
+\IfFormatAtLeastTF {2020-02-02}{%
 %    \end{macrocode}
 % \let\MakePrivateLetters\ModMakePrivateLetters
 % \end{macro}
 % To get the oldstyle numbers etc.\ used from TS1, we need to set the subset to 0 or 1.
 % Unfortunately, this means characters missing from the fonts will not use default symbols as fallback, but this seems to be unavoidable.
 %    \begin{macrocode}
-    \DeclareEncodingSubset{TS1}{ybd}{1}%
-    \DeclareEncodingSubset{TS1}{ybd2}{1}%
-    \DeclareEncodingSubset{TS1}{ybd2j}{1}%
-    \DeclareEncodingSubset{TS1}{ybdj}{1}%
-    \DeclareEncodingSubset{TS1}{ybd0}{1}%
-    \DeclareEncodingSubset{TS1}{ybd1}{1}%
-  }{
-    \RequirePackage{textcomp}
-  }
-  \UndeclareTextCommand{\textperthousand}{T1}
+  \DeclareEncodingSubset{TS1}{ybd}{1}%
+  \DeclareEncodingSubset{TS1}{ybd2}{1}%
+  \DeclareEncodingSubset{TS1}{ybd2j}{1}%
+  \DeclareEncodingSubset{TS1}{ybdj}{1}%
+  \DeclareEncodingSubset{TS1}{ybd0}{1}%
+  \DeclareEncodingSubset{TS1}{ybd1}{1}%
+}{
+  \RequirePackage{textcomp}
 }
+\UndeclareTextCommand{\textperthousand}{T1}
 %    \end{macrocode}
 % \begin{macro}{\sfdefault,\ttdefault}
 % Load LM if requested.

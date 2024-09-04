@@ -1,0 +1,15 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+============================================================
+TEST 1: berenisadf-scale-test
+============================================================
+> \box...=
+\hbox(149.20006+40.8001)x344.19994
+.\LY1/ybd2j/m/n/10 p
+.\LY1/ybd2j/m/n/10 o
+.\LY1/ybd2j/m/n/10 b
+.\LY1/ybd2j/m/n/10 l
+! OK.
+<argument> \l_tmpa_box 
+l. ...}
+============================================================

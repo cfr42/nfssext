@@ -1,4 +1,4 @@
--- $Id: build.lua 10315 2024-09-03 07:23:46Z cfrees $
+-- $Id: build.lua 10317 2024-09-04 07:40:12Z cfrees $
 -- Build configuration for berenisadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -18,7 +18,7 @@ ctanpkg = "berenisadf"
 maindir = "../.."
 module = "berenis"
 vendor = "arkandis"
-autotestfds = {  "ly1ybd.fd", "ly1ybd0.fd", "ly1ybd1.fd", "ly1ybd2.fd", "ly1ybd2j.fd", "ly1ybd2jw.fd", "ly1ybd2w.fd", "ly1ybdj.fd", "ly1ybdjw.fd", "ly1ybdw.fd", "t1ybd.fd", "t1ybd0.fd", "t1ybd1.fd", "t1ybd2.fd", "t1ybd2j.fd", "t1ybdj.fd" }
+autotestfds = {  "ly1ybd.fd", "ly1ybd2.fd", "ly1ybd2j.fd", "ly1ybd2jw.fd", "ly1ybd2w.fd", "ly1ybdj.fd", "ly1ybdjw.fd", "ly1ybdw.fd", "t1ybd.fd", "t1ybd2.fd", "t1ybd2j.fd", "t1ybdj.fd" }
 keepfiles = { "ybd.map", "*.afm", "*.pfb", "*.tfm" }
 keeptempfiles = { "*.pl" }
 dofile(maindir .. "/fontinst.lua")
