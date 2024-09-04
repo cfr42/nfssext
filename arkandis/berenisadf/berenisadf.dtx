@@ -31,7 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\ModMakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: berenisadf.dtx 10314 2024-09-03 07:07:16Z cfrees $}[v0.0
+\ProvidesFileSVN{$Id: berenisadf.dtx 10316 2024-09-04 03:34:28Z cfrees $}[v0.0
 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[berenisadf]
 \documentclass[11pt,british]{ltxdoc}
@@ -46,7 +46,7 @@
 \usepackage{babel}
 \pdfmapfile{-ybd.map} % not necessary for installed package
 \pdfmapfile{+ybd.map} % not necessary for installed package
-\usepackage[lf]{berenis}
+\usepackage{berenis}
 \usepackage{fancyhdr}
 \usepackage{fixfoot}
 \usepackage{array,tabularx}
@@ -147,7 +147,7 @@
   }
 } 
 \ExplSyntaxOff
-\usepackage{cleveref}
+%^^A \usepackage{cleveref}
 \title{\filebase}
 \author{Clea F. Rees\thanks{%
     Bug tracker:
@@ -176,7 +176,11 @@
 {
   \property_ref:nn {t:lastpage}{page}
 }
-\keys_define:nn { clm / doc }
+\hook_gput_code:nnn { env/tabular/begin } {.}
+{
+  \tlstyle
+}
+\keys_define:nn { berenis / doc }
 {
   unknown .code:n = {
     \cs_if_free:cT { \l_keys_key_str }
@@ -185,16 +189,16 @@
     }
   },
 }
-\NewDocumentCommand \clmdocset { +m }
+\NewDocumentCommand \berenisdocset { +m }
 {
-  \keys_set:nn { clm / doc } { #1 }
+  \keys_set:nn { berenis / doc } { #1 }
 }
 \dim_new:N \savedfancyoffset
 \dim_new:N \savedtextwidth
 \dim_new:N \savedoddsidemargin
 \dim_new:N \newfancyoffset
 \ExplSyntaxOff
-\clmdocset{%
+\berenisdocset{%
   bug={\href{https://codeberg.org/cfr/nfssext/issues}{\textsc{bugtracker}}},
   codeberg={\href{https://codeberg.org/cfr/nfssext}{\textsc{codeberg}}},
   github={\href{https://github.com/cfr42/nfssext}{\textsc{github}}},
@@ -231,6 +235,32 @@
 \definecolor{moss}{rgb}{0.000,0.502,0.251}
 \makeatletter
 \def\@xobeysp{\leavevmode\penalty100\ }
+%^^A addaswyd o article.cls
+\renewcommand\section{\@startsection {section}{1}{\z@}%
+  {-3.5ex \@plus -1ex \@minus -.2ex}%
+  {2.3ex \@plus.2ex}%
+  {\normalfont\Large\bfseries\lstyle}% lining figures
+}
+\renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
+  {-3.25ex\@plus -1ex \@minus -.2ex}%
+  {1.5ex \@plus .2ex}%
+  {\normalfont\large\bfseries\lstyle}%
+}
+\renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
+  {-3.25ex\@plus -1ex \@minus -.2ex}%
+  {1.5ex \@plus .2ex}%
+  {\normalfont\normalsize\bfseries\lstyle}%
+}
+\renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
+  {3.25ex \@plus1ex \@minus.2ex}%
+  {-1em}%
+  {\normalfont\normalsize\bfseries\lstyle}%
+}
+\renewcommand\subparagraph{\@startsection{subparagraph}{5}{\parindent}%
+  {3.25ex \@plus1ex \@minus .2ex}%
+  {-1em}%
+  {\normalfont\normalsize\bfseries\lstyle}%
+}
 \makeatother
 \let\OrigMakePrivateLetters\MakePrivateLetters
 \begin{document}
@@ -255,7 +285,6 @@
 % \newcommand*{\file}[1]{\texttt{#1}}
 %
 % \changes{v1.004}{2010/09/19}{First public release.}
-% \changes{v1.004/2.0}{2013/11/25}{}
 % \changes{\fileversion}{\filedate}{Belated update for (New) NFSS and revised nfssext-cfr.
 % Try switching to DTX/INS.}
 %
@@ -290,10 +319,8 @@
 % The fonts are released under the \textsc{gnu} General Public License as published by the Free Software Foundation; either version 2 of the License, or any later version, with font exception.
 % For details, see \textsc{notice}.txt and \textsc{copying}.
 % 
-% The \TeX/\LaTeX\ support package consists of all files listed in \path{manifest.txt}\ and these files are released under the \LaTeX\ Project Public License as explained in the included licensing notices.
-% Please let me know of any problems so that I can solve them if I can.
-% If you can correct the problems and send me the fix, that would be even better.
-% Unlike the fonts themselves, the \TeX/\LaTeX\ support is somewhat experimental.
+% The \TeX/\LaTeX\ support package consists of all files listed in \path{manifest.txt} and these files are released under the \LaTeX\ Project Public License as explained in the included licensing notices.
+% Please report any issues using the \bug{}.
 % 
 % \section{The collection}
 % 
@@ -301,25 +328,36 @@
 % The family currently includes upright, italic, small-caps and italic small-caps shapes in each of regular and bold weights.
 % Six sets of digits are provided: proportional oldstyle and lining; tabular oldstyle and lining; inferior; and superior\footnote{In fact, the fonts also include denominator and numerator figures.
 % Since there is currently no use for these in TeX, however, the support package ignores them.}.
-% The support package renames the fonts according to the Karl Berry fontname scheme and defines ten families.
-% Four of these primarily provide access to the ‘standard’ or default characters while the four ‘ligature’ or ‘swash’ families support additional non-standard ligatures, alternate glyphs, the slashed zero and additional pre-composed accented characters\footnote{\Fref{sec:encs} describes the encodings used to create these families.
+% The support package renames the fonts according to the Karl Berry fontname scheme and defines 22 families.
+% Together, these provide support for the \textsc{t1} and two versions of the \textsc{ly1} font encoding\footnote{The initial version of the package did not support \textsc{t1} and \textsc{ly1} remains the default to ensure backwards compatibility.}.
+% Whether to use \textsc{ly1} or \textsc{t1} depends on the features of the fonts required in any particular document.
+% For example, Welsh should be typeset using \textsc{ly1}\footnote{%
+%   This is true specifically for \lpack{berenisadf}.
+%   For most fonts, it makes no difference which encoding is chosen as Welsh is equally poorly supported by all of them and most postscript fonts don't provide the relevant characters anyway.%
+% }, but Polish requires \textsc{t1} and only \textsc{ly1} provides extended ligatures and ‘swash’ variants. 
+% 
+% Eight families primarily provide access to the ‘standard’ or default characters while the four ‘ligature’ or ‘swash’ families support additional non-standard ligatures, alternate glyphs, the slashed zero and additional pre-composed accented characters\footnote{\Fref{sec:encs} describes the encodings used to create these families.
 % For further details see the encoding (\path{.enc}) and kerning/ligaturing (\path{.lig}) files.}.
-% The remaining two families families include the inferior and superior figures, together with any other complementary characters included in the fonts.
+% Four further families include the inferior and superior figures, together with any other complementary characters included in the fonts.
+% The remaining six families provide the ‘Text Companion’ encoding for use with the \textsc{t1} encoding.
 % The included package files provide access to these features in \LaTeX\ as explained in \fref{sec:support} and \fref{sec:commands}.
 % 
-% \changes{v1.0}{}{Provide support for the \textsc{ly1} encoding.}
-% \changes{v2.0}{}{Add support for \textsc{t1} and \textsc{ts1}, and include some changes to the \textsc{ly1} encoding used.}
+% \changes{v1.0}{2010/09/19}{Provide support for the \textsc{ly1} encoding.}
+% \changes{v2.0}{2013/11/25}{Add support for \textsc{t1} and \textsc{ts1}, and include some changes to the \textsc{ly1} encoding used.}
+% \changes{v2.0}{2013/11/25}{Addresses issues typesetting Polish, as discussed at \url{https://tex.stackexchange.com/questions/134989/recode-ly1-encoding-to-t1-berenis-font-and-polish-letters/145938}.}
+% \changes{v2.0}{2013/11/25}{Change to recommended configuration for Welsh.}
 % The ‘ligature’ or ‘swash’ families are supported only for \textsc{ly1}.
 % In addition, Welsh should be typeset in \textsc{ly1} since the customised encodings better support it, especially in version 2.0.
-% 
+% Polish should be typeset (from version 2.0) with \texttt{enc}\val{t1} and either no \texttt{lig} or \texttt{lig}\val{false}. 
 % 
 % \begin{table}
+% \begin{adjustwidth}{-\savedfancyoffset}{0pt}
 % \centering
-% \caption{Mapping Arkandis to \TeX{} names}\label{tab:coll}
-% \begin{tabular}{llll}
+% \caption{Mapping Arkandis to \TeX{} Berry Names}\label{tab:coll}
+% \begin{tabularx}\linewidth{>{\ttfamily}lXl>{\ttfamily\arraybackslash}l}
 %   \toprule
-%   \textbf{Original grouping}    & \textbf{Original} \textbf{name} & \textbf{\TeX\ directory/group}  & \textbf{\TeX\ name}\\\midrule
-%   \multirow{8}*{berenis}  & \multirow{8}{.2\textwidth}{ybd, ybdj, ybdjw, ybdw, \textl{ybd2, ybd2j, ybd2jw, ybd2w, ybd0, ybd1} } & BerenisADFPro-Regular & ybdr\\
+%   \normalfont\textbf{\TeX{} Directory}    & \normalfont\textbf{Font Families} & \normalfont\textbf{Original Name}  & \normalfont\textbf{Berry Name}\\\midrule
+%   berenis  & \multirow[t]{8}{=}{\ttfamily ybd, ybdj, ybdjw, ybdw, ybd2, ybd2j, ybd2jw, ybd2w, ybd0, ybd1} & BerenisADFPro-Regular & ybdr \\
 %     & & BerenisADFPro-Italic        & ybdri\\
 %     & & BerenisADFPro-Bold          & ybdb\\
 %     & & BerenisADFPro-BoldItalic    & ybdbi\\
@@ -327,8 +365,9 @@
 %     & & BerenisADFProSC-Italic      & ybdrci\\
 %     & & BerenisADFProSC-Bold        & ybdbc\\
 %     & & BerenisADFProSC-BoldItalic  & ybdbci\\
-% \bottomrule
-% \end{tabular}
+%   \bottomrule
+% \end{tabularx}
+% \end{adjustwidth}
 % \end{table}
 % 
 % 
@@ -345,44 +384,48 @@
 % 
 % \subsection{Encodings}\label{sec:encs}
 % 
-% The package supports modified TeXnANSI/\textsc{ly1} encodings.
+% The package supports modified TeXnANSI/\textsc{ly1} encodings, as shown in \fref{tab:berenis}.
+% \changes{v1.004/2.0}{2013/11/25}{Limited support for \textsc{t1} and \textsc{ts1}.}
 % Version 2.0 provides limited support for \textsc{t1} and \textsc{ts1}.
-% Most characters in the TeXnANSI encoding are available, including the \texteuro.
+% Most characters in the \TeX{}nANSI encoding are available, including the \texteuro.
 % Six of the families use encodings based on \path{texnansi.enc}; four use encodings based on \path{texnansx.enc}.
 % These bases are reflected in the file names as shown below.
 % All encodings make certain changes to accommodate differences in glyph names.
 % For example, the slots for \path{onesuperior}, \path{twosuperior} and \path{threesuperior} are used for \path{one.superior}, \path{two.superior} and \path{three.superior} in all encodings.
 % 
 % \begin{table}
+% \begin{adjustwidth}{-\savedfancyoffset}{0pt}
 % \centering
 % \caption{berenis}\label{tab:berenis}
-% \begin{tabular}{llp{.2\textwidth}p{.175\textwidth}}
+% \begin{tabularx}\linewidth{>{\ttfamily}l>{\ttfamily\arraybackslash}lXX}
 %   \toprule
-%   \textbf{encoding file}  & \textbf{provides} & \textbf{figures}    & \textbf{empty slots $\rightarrow$}  \\
-%     texnansi-ybd.enc      & TeXnANSIEncoding-ybd      & tabular lining          & \multirow{4}{0.175\textwidth}{fj, ffj, \^W, \^w, \^Y, \^y}\\
-%     texnansi-ybd2.enc   & TeXnANSIEncoding-ybd2   & proportional lining   & \\
-%     texnansi-ybd2j.enc    & TeXnANSIEncoding-ybd2j    & proportional oldstyle & \\
-%     texnansi-ybdj.enc   & TeXnANSIEncoding-ybdj   & tabular oldstyle        & \\\midrule
-%     texnansx-ybd2jw.enc & TeXnANSIEncoding-ybd2jw & proportional oldstyle & \multirow{4}{0.175\textwidth}{fj, ffj, ft, fft, tt,\\\textswash{ch, ck, cl, ct,\\sh, sk, sl, sp, st,\\\textl{\zeroslash}, Q*, \^W, \^w, \^Y, \^y}}\\
-%     texnansx-ybd2w.enc    & TeXnANSIEncoding-ybd2w    & proportional lining\\
-%     texnansx-ybdjw.enc    & TeXnANSIEncoding-ybdjw    & tabular oldstyle\\
-%     texnansx-ybdw.enc   & TeXnANSIEncoding-ybdw   & tabular lining\\\midrule
-%     texnansi-ybd0.enc   & TeXnANSIEncoding-ybd0   & \multicolumn{2}{c}{inferiors, as available}\\\midrule
-%     texnansi-ybd1.enc   & TeXnANSIEncoding-ybd1   & \multicolumn{2}{c}{superiors, as available}\\\midrule
-%     t1-ybd.enc    & T1-ybd    & tabular lining      & \multirow{4}{0.175\textwidth}{None}\\
+%   \normalfont\textbf{encoding file}  & \normalfont\textbf{provides} & \normalfont\textbf{figures}    & \normalfont\textbf{empty slots $\rightarrow$}  \\
+%   \midrule
+%     texnansi-ybd.enc      & \TeX{}nANSIEncoding-ybd      & tabular lining          & fj, ffj, \^W, \^w, \^Y, \^y \\
+%     texnansi-ybd2.enc   & \TeX{}nANSIEncoding-ybd2   & proportional lining   & \\
+%     texnansi-ybd2j.enc    & \TeX{}nANSIEncoding-ybd2j    & proportional oldstyle & \\
+%     texnansi-ybdj.enc   & \TeX{}nANSIEncoding-ybdj   & tabular oldstyle        & \\\cmidrule(lr){1-4}
+%     texnansx-ybd2jw.enc & \TeX{}nANSIEncoding-ybd2jw & proportional oldstyle & \multirow{4}{0.175\textwidth}{fj, ffj, ft, fft, tt,\\\textswash{ch, ck, cl, ct,\\sh, sk, sl, sp, st,\\\textl{\zeroslash}, Q*, \^W, \^w, \^Y, \^y}}\\
+%     texnansx-ybd2w.enc    & \TeX{}nANSIEncoding-ybd2w    & proportional lining & \\
+%     texnansx-ybdjw.enc    & \TeX{}nANSIEncoding-ybdjw    & tabular oldstyle & \\
+%     texnansx-ybdw.enc   & \TeX{}nANSIEncoding-ybdw   & tabular lining & \\\cmidrule(lr){1-4}
+%     texnansi-ybd0.enc   & \TeX{}nANSIEncoding-ybd0   & inferiors, as available & N/A \\
+%     texnansi-ybd1.enc   & \TeX{}nANSIEncoding-ybd1   & superiors, as available & \\\cmidrule(lr){1-4}
+%     t1-ybd.enc    & T1-ybd    & tabular lining      & None\\
 %     t1-ybd2.enc   & T1-ybd2   & proportional lining   & \\
 %     t1-ybd2j.enc  & T1-ybd2j  & proportional oldstyle & \\
-%     t1-ybdj.enc   & T1-ybdj   & tabular oldstyle    & \\\midrule
-%     t1-ybd0.enc   & T1-ybd0   & \multicolumn{2}{c}{inferiors, as available}\\\midrule
-%     t1-ybd1.enc   & T1-ybd1   & \multicolumn{2}{c}{superiors, as available}\\\midrule
-%     ts1-ybd.enc   & TS1-ybd   & tabular lining      & \multirow{4}{0.175\textwidth}{N/A}\\
+%     t1-ybdj.enc   & T1-ybdj   & tabular oldstyle    & \\
+%     t1-ybd0.enc   & T1-ybd0   & inferiors, as available & \\
+%     t1-ybd1.enc   & T1-ybd1   & superiors, as available & \\\cmidrule(lr){1-4}
+%     ts1-ybd.enc   & TS1-ybd   & tabular lining      & N/A\\
 %     ts1-ybd2.enc  & TS1-ybd2  & proportional lining   & \\
 %     ts1-ybd2j.enc & TS1-ybd2j & proportional oldstyle & \\
-%     ts1-ybdj.enc  & TS1-ybdj  & tabular oldstyle    & \\\midrule
-%     ts1-ybd0.enc  & TS1-ybd0  & \multicolumn{2}{c}{inferiors, as available}\\\midrule
-%     ts1-ybd1.enc  & TS1-ybd1  & \multicolumn{2}{c}{superiors, as available}\\
+%     ts1-ybdj.enc  & TS1-ybdj  & tabular oldstyle    & \\
+%     ts1-ybd0.enc  & TS1-ybd0  & inferiors, as available & \\
+%     ts1-ybd1.enc  & TS1-ybd1  & superiors, as available & \\
 % \bottomrule
-% \end{tabular}
+% \end{tabularx}
+% \end{adjustwidth}
 % \end{table}
 % 
 % By default, \path{texnansx.enc} does not work correctly with \path{ly1def.enc} which is needed by \lpack{fontenc} to implement the \textsc{ly1} encoding.
@@ -592,8 +635,9 @@
 % \end{tabular}
 % \begin{tablenotes}
 %   \item \label{tn:swash}Swash is implemented \emph{\textbf{completely differently}} by \lpack{nfssext-cfr} from the newly developed kernel implementation.
-%   The new version of \lpack{nfssext-cfr} should be compatible with the kernel implementation but you \emph{\textbf{must}} use the macros provided by that package e.g.~\cs{swashstyle} or \cs{textswash}.
-%   You may, however, use these macros for fonts designed to work with the kernel implementation, since \lpack{nfssext-cfr} has been revised to work with these fonts, too.
+%   The new version of \lpack{nfssext-cfr} should be compatible with the kernel implementation but you \emph{\textbf{must}} use the macros provided by that package (e.g.~\cs{swashstyle} or \cs{textswash}) to access the swash variants provided by \lpack{berenisadf}.
+%   That is, you \textbf{cannot} use the kernel's methods to access these features.
+%   You may, however, use the macros provided by \lpack{nfssext-cfr} for fonts designed to work with the kernel implementation, since that package has been revised to work with these fonts, too.
 % \end{tablenotes}
 % \end{threeparttable}
 % \end{table}
@@ -694,6 +738,7 @@
 % Two sets of commands are available for choosing tabular or proportional and oldstyle or lining digits.
 % \begin{table}
 % \centering
+% \begin{threeparttable}
 % \caption{Figures}\label{tab:figs}
 % \begin{tabular}{llll}
 %   \toprule
@@ -707,10 +752,19 @@
 %     proportional lining     & \verb|\plstyle|         & \verb|\textpl{}|        & \textpl{0123456789}\\
 %     proportional oldstyle   & \verb|\postyle|         & \verb|\textpo{}|        & \textpo{0123456789}\\ \midrule
 %     inferior/subscript        & \verb|\infstyle|         & \verb|\textinf{}|        & \textinf{0123456789}\\
+%                               & \color{gray}\verb|\instyle|\tnotex{tn:indep1} & \color{gray}\verb|\textin{}|\tnotex{tn:indep2} \\
 %     superior/superscript      & \verb|\sustyle|         & \verb|\textsu{}|        & \textsu{0123456789}\\
 %   \bottomrule
 % \end{tabular}
+% \begin{tablenotes}
+%   \item \label{tn:indep1} This macro is deprecated.
+%   \item \label{tn:indep2} This macro is deprecated due to an incompatibility with \lpack{hyperref}.
+%   If \lpack{hyperref} is \textbf{not} loaded, the command is provided for backwards compatibility only, but should be replaced.
+%   If \lpack{hyperref} \textbf{is} loaded, the command will not switch to inferiors and will give an (extremely confusing) error.
+% \end{tablenotes}
+% \end{threeparttable}
 % \end{table}
+%
 % \DescribeMacro{\lstyle}
 % \DescribeMacro{\ostyle}
 % \DescribeMacro{\textl} 
@@ -721,9 +775,9 @@
 % \DescribeMacro{\textt} 
 % The commands in the first four rows of \fref{tab:figs} affect \emph{one} aspect of the figure style.
 % Their effect therefore depends partly on the style of figures in use at the time they are issued.
-% Since this document uses proportional oldstyle figures by default, \verb|\textl{}| gives \emph{proportional} lining figures and \verb|\textt{}| gives tabular \emph{oldstyle} digits.
-% If lining figures had been in use, \verb|\textt{}| would have switched to tabular \emph{lining} figures rather than to tabular oldstyle digits.
-% Likewise, if tabular figures had been in use, \verb|\textl{}| would have changed to \emph{tabular} lining figures.
+% Since this document uses proportional oldstyle figures by default (0123456789), \verb|\textl{}| gives \emph{proportional} lining figures (\textl{0123456789}) and \verb|\textt{}| gives tabular \emph{oldstyle} digits (\textt{0123456789}).
+% If lining figures had been in use {\lstyle(0123456789), \verb|\textt{}| would have switched to tabular \emph{lining} figures (\textt{0123456789}) rather than to tabular oldstyle digits}.
+% Likewise, if tabular figures had been in use {\tstyle(0123456789), \verb|\textl{}| would have changed to \emph{tabular} lining figures (\textl{0123456789})}.
 % 
 % \DescribeMacro{\plstyle}
 % \DescribeMacro{\postyle}
@@ -733,12 +787,18 @@
 % \DescribeMacro{\textpo} 
 % \DescribeMacro{\texttl} 
 % \DescribeMacro{\textto} 
-% The commands in the next four rows of the tabpe, on the other hand, affect \emph{two} aspects of the figure style --- whether digits are proportional or tabular \emph{and} whether they are oldstyle or lining.
+% The commands in the next four rows of the table, on the other hand, affect \emph{two} aspects of the figure style --- whether digits are proportional or tabular \emph{and} whether they are oldstyle or lining.
 % If you are not sure which style of figures will be active when the command is issued and you wish to ensure a particular result, choose one of these commands or combine two commands from the first four rows.
-% For example, to ensure tabular lining figures, use \verb|\texttl{}|, \verb|\textt{\textl{}}| or \verb|\textl{\textt{}}|.
+% For example, to ensure tabular lining figures(\texttl{0123456789}), use \verb|\texttl{}|, \verb|\textt{\textl{}}| or \verb|\textl{\textt{}}|.
 % 
 % The final two rows list commands for accessing superiors and inferiors.
 % 
+% \DescribeMacro{\infstyle}
+% \DescribeMacro{\sustyle}
+% \DescribeMacro{\textinf}
+% \DescribeMacro{\textsu}
+% \DescribeDMacro{\instyle}
+% \DescribeDMacro{\textin}
 % In addition to modifying the figure style, these commands affect the style of certain complementary characters in the \textsc{ly1}, \textsc{t1} and \textsc{ts1} encodings as explained in \fref{sec:encs}.
 % This means that:
 % \iffalse
@@ -974,7 +1034,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[berenis.sty]{$Id: berenisadf.dtx 10314 2024-09-03 07:07:16Z cfrees $}[\filebase v1.1 \revinfo]
+\ProvidesPackageSVN[berenis.sty]{$Id: berenisadf.dtx 10316 2024-09-04 03:34:28Z cfrees $}[\filebase v1.1 \revinfo]
 \DefineFileInfoSVN[berenis]
 %    \end{macrocode}
 % Load \lpack{nfssext-cfr}.  
@@ -3006,7 +3066,7 @@
 % \fi
 %
 %
-% \subsection{Encodings (output)}
+% \subsection{Font Encodings}
 % These files define variant LY1, T1 and TS1 font encodings.
 %
 % \subsubsection{\file{t1-ybd.enc}}
@@ -3017,6 +3077,9 @@
 % Font encoding t1-ybd.
 %    \begin{macrocode}
 %%BeginResource: encoding fontinst-autoenc-t1-cfr
+%    \end{macrocode}
+% \begin{multicols}{3}
+%    \begin{macrocode}
 /t1-ybd [
 % 0
 /grave
@@ -3311,6 +3374,7 @@
 % 
 % End of file t1-ybd.enc.
 %    \end{macrocode}
+% \end{multicols}
 % \end{ffeil}
 % \iffalse
 %</enc-t1-ybd>
@@ -3325,6 +3389,9 @@
 % Should probably be \texttt{fontinst-autoenc-t1-dotinferior}
 %    \begin{macrocode}
 %%BeginResource: encoding fontinst-autoenc-t1-ybd0
+%    \end{macrocode}
+% \begin{multicols}{2}
+%    \begin{macrocode}
 /t1-ybd0 [
 % 0
 /grave.inferior
@@ -3619,6 +3686,7 @@
 % 
 % End of file t1-ybd0.enc.
 %    \end{macrocode}
+% \end{multicols}
 % \end{ffeil}
 % \iffalse
 %</enc-t1-ybd0>
@@ -3633,6 +3701,9 @@
 % Should probably be \texttt{fontinst-autoenc-t1-dotsuperior}
 %    \begin{macrocode}
 %%BeginResource: encoding fontinst-autoenc-t1-ybd1
+%    \end{macrocode}
+% \begin{multicols}{2}
+%    \begin{macrocode}
 /t1-ybd1 [
 % 0
 /grave.superior
@@ -3927,6 +3998,7 @@
 % 
 % End of file t1-ybd1.enc.
 %    \end{macrocode}
+% \end{multicols}
 % \end{ffeil}
 % \iffalse
 %</enc-t1-ybd1>
@@ -3941,6 +4013,9 @@
 % Should probably be \texttt{fontinst-autoenc-t1-cfr}
 %    \begin{macrocode}
 %%BeginResource: encoding fontinst-autoenc-t1-ybd2
+%    \end{macrocode}
+% \begin{multicols}{3}
+%    \begin{macrocode}
 /t1-ybd2 [
 % 0
 /grave
@@ -4235,6 +4310,7 @@
 % 
 % End of file t1-ybd2.enc.
 %    \end{macrocode}
+% \end{multicols}
 % \end{ffeil}
 % \iffalse
 %</enc-t1-ybd2>
@@ -4248,6 +4324,9 @@
 % Font encoding t1-ybd2j.
 %    \begin{macrocode}
 %%BeginResource: encoding fontinst-autoenc-t1-cfr
+%    \end{macrocode}
+% \begin{multicols}{3}
+%    \begin{macrocode}
 /t1-ybd2j [
 % 0
 /grave
@@ -4542,6 +4621,7 @@
 % 
 % End of file t1-ybd2j.enc.
 %    \end{macrocode}
+% \end{multicols}
 % \end{ffeil}
 % \iffalse
 %</enc-t1-ybd2j>
@@ -4555,6 +4635,9 @@
 % Font encoding t1-ybdj.
 %    \begin{macrocode}
 %%BeginResource: encoding fontinst-autoenc-t1-cfr
+%    \end{macrocode}
+% \begin{multicols}{2}
+%    \begin{macrocode}
 /t1-ybdj [
 % 0
 /grave
@@ -4849,6 +4932,7 @@
 % 
 % End of file t1-ybdj.enc.
 %    \end{macrocode}
+% \end{multicols}
 % \end{ffeil}
 % \iffalse
 %</enc-t1-ybdj>
@@ -4863,19 +4947,19 @@
 %    \begin{macrocode}
 /TeXnANSIEncoding-ybd [     % now 256 chars follow
 /fj                         % 0x00 0 .notdef in texnansi
-/Euro.fitted                       % 0x01 1 /uni20AC
+/Euro.fitted                % 0x01 1 /uni20AC
 /ffj                        % 0x02 2 .notdef in texnansi
-/wcircumflex                         % 0x03 3 .notdef in texnansi
+/wcircumflex                % 0x03 3 .notdef in texnansi
 /fraction                   % 0x04 4
 /dotaccent                  % 0x05 5
 /hungarumlaut               % 0x06 6
 /ogonek                     % 0x07 7
 /fl                         % 0x08 8
-/Wcircumflex                        % 0x09 9 /fraction at 4, backward compatibility only; .notdef in texnansi
-/Ycircumflex                        % 0x0A 10 not used, except boundary char internally
+/Wcircumflex                % 0x09 9 /fraction at 4, backward compatibility only; .notdef in texnansi
+/Ycircumflex                % 0x0A 10 not used, except boundary char internally
 /ff                         % 0x0B 11
 /fi                         % 0x0C 12
-/ycircumflex                         % 0x0D 13 /fl at 8, backward compatibility only; .notdef in texnansi
+/ycircumflex                % 0x0D 13 /fl at 8, backward compatibility only; .notdef in texnansi
 /ffi                        % 0x0E 14
 /ffl                        % 0x0F 15
 /dotlessi                   % 0x10 16
@@ -4897,9 +4981,9 @@
 /space                      % 0x20 32 /suppress in TeX text
 /exclam                     % 0x21 33
 /quotedbl                   % 0x22 34 /quotedblright in TeX text
-/numbersign.fitted                 % 0x23 35
-/dollar.fitted                     % 0x24 36
-/percent.fitted                    % 0x25 37
+/numbersign.fitted          % 0x23 35
+/dollar.fitted              % 0x24 36
+/percent.fitted             % 0x25 37
 /ampersand                  % 0x26 38
 /quoteright                 % 0x27 39 /quotesingle in ANSI
 /parenleft                  % 0x28 40
@@ -4910,16 +4994,16 @@
 /hyphen                     % 0x2D 45
 /period                     % 0x2E 46
 /slash                      % 0x2F 47
-/zero.fitted                       % 0x30 48
-/one.fitted                        % 0x31 49
-/two.fitted                        % 0x32 50
-/three.fitted                      % 0x33 51
-/four.fitted                       % 0x34 52
-/five.fitted                       % 0x35 53
-/six.fitted                        % 0x36 54
-/seven.fitted                      % 0x37 55
-/eight.fitted                      % 0x38 56
-/nine.fitted                       % 0x39 57
+/zero.fitted                % 0x30 48
+/one.fitted                 % 0x31 49
+/two.fitted                 % 0x32 50
+/three.fitted               % 0x33 51
+/four.fitted                % 0x34 52
+/five.fitted                % 0x35 53
+/six.fitted                 % 0x36 54
+/seven.fitted               % 0x37 55
+/eight.fitted               % 0x38 56
+/nine.fitted                % 0x39 57
 /colon                      % 0x3A 58
 /semicolon                  % 0x3B 59
 /less                       % 0x3C 60 /exclamdown in Tex text
@@ -5024,10 +5108,10 @@
 /Ydieresis                  % 0x9F 159
 /nbspace                    % 0xA0 160 no break space
 /exclamdown                 % 0xA1 161
-/cent.fitted                       % 0xA2 162
-/sterling.fitted                   % 0xA3 163
+/cent.fitted                % 0xA2 162
+/sterling.fitted            % 0xA3 163
 /currency                   % 0xA4 164
-/yen.fitted                        % 0xA5 165
+/yen.fitted                 % 0xA5 165
 /brokenbar                  % 0xA6 166
 /section                    % 0xA7 167
 /dieresis                   % 0xA8 168
@@ -5040,14 +5124,14 @@
 /macron                     % 0xAF 175
 /degree                     % 0xB0 176
 /plusminus                  % 0xB1 177
-/two.superior                % 0xB2 178
-/three.superior              % 0xB3 179
+/two.superior               % 0xB2 178
+/three.superior             % 0xB3 179
 /acute                      % 0xB4 180
 /mu                         % 0xB5 181
 /paragraph                  % 0xB6 182
 /periodcentered             % 0xB7 183
 /cedilla                    % 0xB8 184
-/one.superior                % 0xB9 185
+/one.superior               % 0xB9 185
 /ordmasculine               % 0xBA 186
 /guillemotright             % 0xBB 187
 /onequarter                 % 0xBC 188
@@ -5136,17 +5220,17 @@
 /fj.inferior                         % 0x00 0 .notdef in texnansi
 /Euro.inferior                       % 0x01 1 /uni20AC
 /ffj.inferior                        % 0x02 2 .notdef in texnansi
-/wcircumflex.inferior                         % 0x03 3 .notdef in texnansi
+/wcircumflex.inferior                % 0x03 3 .notdef in texnansi
 /fraction.inferior                   % 0x04 4
 /dotaccent.inferior                  % 0x05 5
 /hungarumlaut.inferior               % 0x06 6
 /ogonek.inferior                     % 0x07 7
 /fl.inferior                         % 0x08 8
-/Wcircumflex.inferior                        % 0x09 9 /fraction at 4, backward compatibility only; .notdef in texnansi
-/Ycircumflex                        % 0x0A 10 not used, except boundary char internally
+/Wcircumflex.inferior                % 0x09 9 /fraction at 4, backward compatibility only; .notdef in texnansi
+/Ycircumflex                         % 0x0A 10 not used, except boundary char internally
 /ff.inferior                         % 0x0B 11
 /fi.inferior                         % 0x0C 12
-/ycircumflex.inferior                         % 0x0D 13 /fl at 8, backward compatibility only; .notdef in texnansi
+/ycircumflex.inferior                % 0x0D 13 /fl at 8, backward compatibility only; .notdef in texnansi
 /ffi.inferior                        % 0x0E 14
 /ffl.inferior                        % 0x0F 15
 /dotlessi.inferior                   % 0x10 16
@@ -5311,14 +5395,14 @@
 /macron.inferior                     % 0xAF 175
 /degree.inferior                     % 0xB0 176
 /plusminus.inferior                  % 0xB1 177
-/two.superior                % 0xB2 178
-/three.superior              % 0xB3 179
+/two.superior                        % 0xB2 178
+/three.superior                      % 0xB3 179
 /acute.inferior                      % 0xB4 180
 /mu.inferior                         % 0xB5 181
 /paragraph.inferior                  % 0xB6 182
 /periodcentered.inferior             % 0xB7 183
 /cedilla.inferior                    % 0xB8 184
-/one.superior                % 0xB9 185
+/one.superior                        % 0xB9 185
 /ordmasculine.inferior               % 0xBA 186
 /guillemotright.inferior             % 0xBB 187
 /onequarter.inferior                 % 0xBC 188
@@ -5407,17 +5491,17 @@
 /fj.superior                         % 0x00 0 .notdef in texnansi
 /Euro.superior                       % 0x01 1 /uni20AC
 /ffj.superior                        % 0x02 2 .notdef in texnansi
-/wcircumflex.superior                         % 0x03 3 .notdef in texnansi
+/wcircumflex.superior                % 0x03 3 .notdef in texnansi
 /fraction.superior                   % 0x04 4
 /dotaccent.superior                  % 0x05 5
 /hungarumlaut.superior               % 0x06 6
 /ogonek.superior                     % 0x07 7
 /fl.superior                         % 0x08 8
-/Wcircumflex.superior                        % 0x09 9 /fraction at 4, backward compatibility only; .notdef in texnansi
-/Ycircumflex                        % 0x0A 10 not used, except boundary char internally
+/Wcircumflex.superior                % 0x09 9 /fraction at 4, backward compatibility only; .notdef in texnansi
+/Ycircumflex                         % 0x0A 10 not used, except boundary char internally
 /ff.superior                         % 0x0B 11
 /fi.superior                         % 0x0C 12
-/ycircumflex.superior                         % 0x0D 13 /fl at 8, backward compatibility only; .notdef in texnansi
+/ycircumflex.superior                % 0x0D 13 /fl at 8, backward compatibility only; .notdef in texnansi
 /ffi.superior                        % 0x0E 14
 /ffl.superior                        % 0x0F 15
 /dotlessi.superior                   % 0x10 16
@@ -5582,14 +5666,14 @@
 /macron.superior                     % 0xAF 175
 /degree.superior                     % 0xB0 176
 /plusminus.superior                  % 0xB1 177
-/two.superior                % 0xB2 178
-/three.superior              % 0xB3 179
+/two.superior                        % 0xB2 178
+/three.superior                      % 0xB3 179
 /acute.superior                      % 0xB4 180
 /mu.superior                         % 0xB5 181
 /paragraph.superior                  % 0xB6 182
 /periodcentered.superior             % 0xB7 183
 /cedilla.superior                    % 0xB8 184
-/one.superior                % 0xB9 185
+/one.superior                        % 0xB9 185
 /ordmasculine.superior               % 0xBA 186
 /guillemotright.superior             % 0xBB 187
 /onequarter.superior                 % 0xBC 188
@@ -5678,17 +5762,17 @@
 /fj                         % 0x00 0 .notdef in texnansi
 /Euro                       % 0x01 1 /uni20AC
 /ffj                        % 0x02 2 .notdef in texnansi
-/wcircumflex                         % 0x03 3 .notdef in texnansi
+/wcircumflex                % 0x03 3 .notdef in texnansi
 /fraction                   % 0x04 4
 /dotaccent                  % 0x05 5
 /hungarumlaut               % 0x06 6
 /ogonek                     % 0x07 7
 /fl                         % 0x08 8
-/Wcircumflex                        % 0x09 9 /fraction at 4, backward compatibility only; .notdef in texnansi
-/Ycircumflex                        % 0x0A 10 not used, except boundary char internally
+/Wcircumflex                % 0x09 9 /fraction at 4, backward compatibility only; .notdef in texnansi
+/Ycircumflex                % 0x0A 10 not used, except boundary char internally
 /ff                         % 0x0B 11
 /fi                         % 0x0C 12
-/ycircumflex                         % 0x0D 13 /fl at 8, backward compatibility only; .notdef in texnansi
+/ycircumflex                % 0x0D 13 /fl at 8, backward compatibility only; .notdef in texnansi
 /ffi                        % 0x0E 14
 /ffl                        % 0x0F 15
 /dotlessi                   % 0x10 16
@@ -5853,14 +5937,14 @@
 /macron                     % 0xAF 175
 /degree                     % 0xB0 176
 /plusminus                  % 0xB1 177
-/two.superior                % 0xB2 178
-/three.superior              % 0xB3 179
+/two.superior               % 0xB2 178
+/three.superior             % 0xB3 179
 /acute                      % 0xB4 180
 /mu                         % 0xB5 181
 /paragraph                  % 0xB6 182
 /periodcentered             % 0xB7 183
 /cedilla                    % 0xB8 184
-/one.superior                % 0xB9 185
+/one.superior               % 0xB9 185
 /ordmasculine               % 0xBA 186
 /guillemotright             % 0xBB 187
 /onequarter                 % 0xBC 188
@@ -5947,19 +6031,19 @@
 %    \begin{macrocode}
 /TeXnANSIEncoding-ybd2j [     % now 256 chars follow
 /fj                         % 0x00 0 .notdef in texnansi
-/Euro.oldstyle                       % 0x01 1 /uni20AC
+/Euro.oldstyle              % 0x01 1 /uni20AC
 /ffj                        % 0x02 2 .notdef in texnansi
-/wcircumflex                         % 0x03 3 .notdef in texnansi
+/wcircumflex                % 0x03 3 .notdef in texnansi
 /fraction                   % 0x04 4
 /dotaccent                  % 0x05 5
 /hungarumlaut               % 0x06 6
 /ogonek                     % 0x07 7
 /fl                         % 0x08 8
-/Wcircumflex                        % 0x09 9 /fraction at 4, backward compatibility only; .notdef in texnansi
-/Ycircumflex                        % 0x0A 10 not used, except boundary char internally
+/Wcircumflex                % 0x09 9 /fraction at 4, backward compatibility only; .notdef in texnansi
+/Ycircumflex                % 0x0A 10 not used, except boundary char internally
 /ff                         % 0x0B 11
 /fi                         % 0x0C 12
-/ycircumflex                         % 0x0D 13 /fl at 8, backward compatibility only; .notdef in texnansi
+/ycircumflex                % 0x0D 13 /fl at 8, backward compatibility only; .notdef in texnansi
 /ffi                        % 0x0E 14
 /ffl                        % 0x0F 15
 /dotlessi                   % 0x10 16
@@ -5981,9 +6065,9 @@
 /space                      % 0x20 32 /suppress in TeX text
 /exclam                     % 0x21 33
 /quotedbl                   % 0x22 34 /quotedblright in TeX text
-/numbersign.oldstyle                 % 0x23 35
-/dollar.oldstyle                     % 0x24 36
-/percent.oldstyle                    % 0x25 37
+/numbersign.oldstyle        % 0x23 35
+/dollar.oldstyle            % 0x24 36
+/percent.oldstyle           % 0x25 37
 /ampersand                  % 0x26 38
 /quoteright                 % 0x27 39 /quotesingle in ANSI
 /parenleft                  % 0x28 40
@@ -5994,16 +6078,16 @@
 /hyphen                     % 0x2D 45
 /period                     % 0x2E 46
 /slash                      % 0x2F 47
-/zero.oldstyle                       % 0x30 48
-/one.oldstyle                        % 0x31 49
-/two.oldstyle                        % 0x32 50
-/three.oldstyle                      % 0x33 51
-/four.oldstyle                       % 0x34 52
-/five.oldstyle                       % 0x35 53
-/six.oldstyle                        % 0x36 54
-/seven.oldstyle                      % 0x37 55
-/eight.oldstyle                      % 0x38 56
-/nine.oldstyle                       % 0x39 57
+/zero.oldstyle              % 0x30 48
+/one.oldstyle               % 0x31 49
+/two.oldstyle               % 0x32 50
+/three.oldstyle             % 0x33 51
+/four.oldstyle              % 0x34 52
+/five.oldstyle              % 0x35 53
+/six.oldstyle               % 0x36 54
+/seven.oldstyle             % 0x37 55
+/eight.oldstyle             % 0x38 56
+/nine.oldstyle              % 0x39 57
 /colon                      % 0x3A 58
 /semicolon                  % 0x3B 59
 /less                       % 0x3C 60 /exclamdown in Tex text
@@ -6083,7 +6167,7 @@
 /dagger                     % 0x86 134
 /daggerdbl                  % 0x87 135
 /circumflex                 % 0x88 136
-/perthousand.oldstyle                % 0x89 137
+/perthousand.oldstyle       % 0x89 137
 /Scaron                     % 0x8A 138
 /guilsinglleft              % 0x8B 139
 /OE                         % 0x8C 140
@@ -6108,10 +6192,10 @@
 /Ydieresis                  % 0x9F 159
 /nbspace                    % 0xA0 160 no break space
 /exclamdown                 % 0xA1 161
-/cent.oldstyle                       % 0xA2 162
-/sterling.oldstyle                   % 0xA3 163
+/cent.oldstyle              % 0xA2 162
+/sterling.oldstyle          % 0xA3 163
 /currency                   % 0xA4 164
-/yen.oldstyle                        % 0xA5 165
+/yen.oldstyle               % 0xA5 165
 /brokenbar                  % 0xA6 166
 /section                    % 0xA7 167
 /dieresis                   % 0xA8 168
@@ -6124,14 +6208,14 @@
 /macron                     % 0xAF 175
 /degree                     % 0xB0 176
 /plusminus                  % 0xB1 177
-/two.superior                % 0xB2 178
-/three.superior              % 0xB3 179
+/two.superior               % 0xB2 178
+/three.superior             % 0xB3 179
 /acute                      % 0xB4 180
 /mu                         % 0xB5 181
 /paragraph                  % 0xB6 182
 /periodcentered             % 0xB7 183
 /cedilla                    % 0xB8 184
-/one.superior                % 0xB9 185
+/one.superior               % 0xB9 185
 /ordmasculine               % 0xBA 186
 /guillemotright             % 0xBB 187
 /onequarter                 % 0xBC 188
@@ -6218,19 +6302,19 @@
 %    \begin{macrocode}
 /TeXnANSIEncoding-ybdj [     % now 256 chars follow
 /fj                         % 0x00 0 .notdef in texnansi
-/Euro.taboldstyle                       % 0x01 1 /uni20AC
+/Euro.taboldstyle           % 0x01 1 /uni20AC
 /ffj                        % 0x02 2 .notdef in texnansi
-/wcircumflex                         % 0x03 3 .notdef in texnansi
+/wcircumflex                % 0x03 3 .notdef in texnansi
 /fraction                   % 0x04 4
 /dotaccent                  % 0x05 5
 /hungarumlaut               % 0x06 6
 /ogonek                     % 0x07 7
 /fl                         % 0x08 8
-/Wcircumflex                        % 0x09 9 /fraction at 4, backward compatibility only; .notdef in texnansi
-/Ycircumflex                        % 0x0A 10 not used, except boundary char internally
+/Wcircumflex                % 0x09 9 /fraction at 4, backward compatibility only; .notdef in texnansi
+/Ycircumflex                % 0x0A 10 not used, except boundary char internally
 /ff                         % 0x0B 11
 /fi                         % 0x0C 12
-/ycircumflex                         % 0x0D 13 /fl at 8, backward compatibility only; .notdef in texnansi
+/ycircumflex                % 0x0D 13 /fl at 8, backward compatibility only; .notdef in texnansi
 /ffi                        % 0x0E 14
 /ffl                        % 0x0F 15
 /dotlessi                   % 0x10 16
@@ -6252,9 +6336,9 @@
 /space                      % 0x20 32 /suppress in TeX text
 /exclam                     % 0x21 33
 /quotedbl                   % 0x22 34 /quotedblright in TeX text
-/numbersign.taboldstyle                 % 0x23 35
-/dollar.taboldstyle                     % 0x24 36
-/percent.taboldstyle                    % 0x25 37
+/numbersign.taboldstyle     % 0x23 35
+/dollar.taboldstyle         % 0x24 36
+/percent.taboldstyle        % 0x25 37
 /ampersand                  % 0x26 38
 /quoteright                 % 0x27 39 /quotesingle in ANSI
 /parenleft                  % 0x28 40
@@ -6265,16 +6349,16 @@
 /hyphen                     % 0x2D 45
 /period                     % 0x2E 46
 /slash                      % 0x2F 47
-/zero.taboldstyle                       % 0x30 48
-/one.taboldstyle                        % 0x31 49
-/two.taboldstyle                        % 0x32 50
-/three.taboldstyle                      % 0x33 51
-/four.taboldstyle                       % 0x34 52
-/five.taboldstyle                       % 0x35 53
-/six.taboldstyle                        % 0x36 54
-/seven.taboldstyle                      % 0x37 55
-/eight.taboldstyle                      % 0x38 56
-/nine.taboldstyle                       % 0x39 57
+/zero.taboldstyle           % 0x30 48
+/one.taboldstyle            % 0x31 49
+/two.taboldstyle            % 0x32 50
+/three.taboldstyle          % 0x33 51
+/four.taboldstyle           % 0x34 52
+/five.taboldstyle           % 0x35 53
+/six.taboldstyle            % 0x36 54
+/seven.taboldstyle          % 0x37 55
+/eight.taboldstyle          % 0x38 56
+/nine.taboldstyle           % 0x39 57
 /colon                      % 0x3A 58
 /semicolon                  % 0x3B 59
 /less                       % 0x3C 60 /exclamdown in Tex text
@@ -6354,7 +6438,7 @@
 /dagger                     % 0x86 134
 /daggerdbl                  % 0x87 135
 /circumflex                 % 0x88 136
-/perthousand.taboldstyle                % 0x89 137
+/perthousand.taboldstyle    % 0x89 137
 /Scaron                     % 0x8A 138
 /guilsinglleft              % 0x8B 139
 /OE                         % 0x8C 140
@@ -6379,10 +6463,10 @@
 /Ydieresis                  % 0x9F 159
 /nbspace                    % 0xA0 160 no break space
 /exclamdown                 % 0xA1 161
-/cent.taboldstyle                       % 0xA2 162
-/sterling.taboldstyle                   % 0xA3 163
+/cent.taboldstyle           % 0xA2 162
+/sterling.taboldstyle       % 0xA3 163
 /currency                   % 0xA4 164
-/yen.taboldstyle                        % 0xA5 165
+/yen.taboldstyle            % 0xA5 165
 /brokenbar                  % 0xA6 166
 /section                    % 0xA7 167
 /dieresis                   % 0xA8 168
@@ -6395,14 +6479,14 @@
 /macron                     % 0xAF 175
 /degree                     % 0xB0 176
 /plusminus                  % 0xB1 177
-/two.superior                % 0xB2 178
-/three.superior              % 0xB3 179
+/two.superior               % 0xB2 178
+/three.superior             % 0xB3 179
 /acute                      % 0xB4 180
 /mu                         % 0xB5 181
 /paragraph                  % 0xB6 182
 /periodcentered             % 0xB7 183
 /cedilla                    % 0xB8 184
-/one.superior                % 0xB9 185
+/one.superior               % 0xB9 185
 /ordmasculine               % 0xBA 186
 /guillemotright             % 0xBB 187
 /onequarter                 % 0xBC 188
@@ -6489,19 +6573,19 @@
 %    \begin{macrocode}
 /TeXnANSIEncoding-ybd2jw [
 /fj                         % 0x00 0 .notdef in texnansx
-/Euro.oldstyle % /uni20AC 1
+/Euro.oldstyle              % /uni20AC 1
 /ffj                        % 0x02 2 .notdef in texnansx
-/wcircumflex                         % 0x03 3 .notdef in texnansx
+/wcircumflex                % 0x03 3 .notdef in texnansx
 /fraction % 4
 /dotaccent %  5
 /hungarumlaut % 6
 /ogonek % 7
 /fl % 8
-/Wcircumflex                        % 0x09 9 /fraction at 4, backward compatibility only; .notdef in texnansx
+/Wcircumflex                % 0x09 9 /fraction at 4, backward compatibility only; .notdef in texnansx
 /Ycircumflex  % 10  not used, except boundary char internally maybe
 /ff    %  11
 /fi    %  12
-/ycircumflex                         % 0x0D 13 /fl at 8, backward compatibility only; .notdef in texnansx
+/ycircumflex                 % 0x0D 13 /fl at 8, backward compatibility only; .notdef in texnansx
 /ffi   %  14
 /ffl   %  15
 /dotlessi % 16
@@ -6762,17 +6846,17 @@
 /fj                         % 0x00 0 .notdef in texnansx
 /Euro % /uni20AC 1
 /ffj                        % 0x02 2 .notdef in texnansx
-/wcircumflex                         % 0x03 3 .notdef in texnansx
+/wcircumflex                % 0x03 3 .notdef in texnansx
 /fraction % 4
 /dotaccent %  5
 /hungarumlaut % 6
 /ogonek % 7
 /fl % 8
-/Wcircumflex                        % 0x09 9 /fraction at 4, backward compatibility only; .notdef in texnansx
+/Wcircumflex                % 0x09 9 /fraction at 4, backward compatibility only; .notdef in texnansx
 /Ycircumflex  % 10  not used, except boundary char internally maybe
 /ff    %  11
 /fi    %  12
-/ycircumflex                         % 0x0D 13 /fl at 8, backward compatibility only; .notdef in texnansx
+/ycircumflex                 % 0x0D 13 /fl at 8, backward compatibility only; .notdef in texnansx
 /ffi   %  14
 /ffl   %  15
 /dotlessi % 16
@@ -7033,17 +7117,17 @@
 /fj                         % 0x00 0 .notdef in texnansx
 /Euro.taboldstyle % /uni20AC 1
 /ffj                        % 0x02 2 .notdef in texnansx
-/wcircumflex                         % 0x03 3 .notdef in texnansx
+/wcircumflex                % 0x03 3 .notdef in texnansx
 /fraction % 4
 /dotaccent %  5
 /hungarumlaut % 6
 /ogonek % 7
 /fl % 8
-/Wcircumflex                        % 0x09 9 /fraction at 4, backward compatibility only; .notdef in texnansx
+/Wcircumflex               % 0x09 9 /fraction at 4, backward compatibility only; .notdef in texnansx
 /Ycircumflex  % 10  not used, except boundary char internally maybe
 /ff    %  11
 /fi    %  12
-/ycircumflex                         % 0x0D 13 /fl at 8, backward compatibility only; .notdef in texnansx
+/ycircumflex                % 0x0D 13 /fl at 8, backward compatibility only; .notdef in texnansx
 /ffi   %  14
 /ffl   %  15
 /dotlessi % 16
@@ -7304,17 +7388,17 @@
 /fj                         % 0x00 0 .notdef in texnansx
 /Euro.fitted % /uni20AC 1
 /ffj                        % 0x02 2 .notdef in texnansx
-/wcircumflex                         % 0x03 3 .notdef in texnansx
+/wcircumflex                % 0x03 3 .notdef in texnansx
 /fraction % 4
 /dotaccent %  5
 /hungarumlaut % 6
 /ogonek % 7
 /fl % 8
-/Wcircumflex                        % 0x09 9 /fraction at 4, backward compatibility only; .notdef in texnansx
+/Wcircumflex               % 0x09 9 /fraction at 4, backward compatibility only; .notdef in texnansx
 /Ycircumflex  % 10  not used, except boundary char internally maybe
 /ff    %  11
 /fi    %  12
-/ycircumflex                         % 0x0D 13 /fl at 8, backward compatibility only; .notdef in texnansx
+/ycircumflex                % 0x0D 13 /fl at 8, backward compatibility only; .notdef in texnansx
 /ffi   %  14
 /ffl   %  15
 /dotlessi % 16
@@ -7572,6 +7656,9 @@
 % Font encoding ts1-ybd.
 %    \begin{macrocode}
 %%BeginResource: encoding fontinst-autoenc-ts1-dotoldstyle
+%    \end{macrocode}
+% \begin{multicols}{3}
+%    \begin{macrocode}
 /ts1-ybd [
 % 0
 /capitalgrave
@@ -7866,6 +7953,7 @@
 % 
 % End of file ts1-ybd.enc.
 %    \end{macrocode}
+% \end{multicols}
 % \end{ffeil}
 % \iffalse
 %</enc-ts1-ybd>
@@ -7879,6 +7967,9 @@
 % Font encoding ts1-ybd0.
 %    \begin{macrocode}
 %%BeginResource: encoding fontinst-autoenc-ts1-dotinferior
+%    \end{macrocode}
+% \begin{multicols}{2}
+%    \begin{macrocode}
 /ts1-ybd0 [
 % 0
 /capitalgrave.inferior
@@ -8173,6 +8264,7 @@
 % 
 % End of file ts1-ybd0.enc.
 %    \end{macrocode}
+% \end{multicols}
 % \end{ffeil}
 % \iffalse
 %</enc-ts1-ybd0>
@@ -8186,6 +8278,9 @@
 % Font encoding ts1-ybd1.
 %    \begin{macrocode}
 %%BeginResource: encoding fontinst-autoenc-ts1-dotsuperior
+%    \end{macrocode}
+% \begin{multicols}{2}
+%    \begin{macrocode}
 /ts1-ybd1 [
 % 0
 /capitalgrave.superior
@@ -8480,6 +8575,7 @@
 % 
 % End of file ts1-ybd1.enc.
 %    \end{macrocode}
+% \end{multicols}
 % \end{ffeil}
 % \iffalse
 %</enc-ts1-ybd1>
@@ -8493,6 +8589,9 @@
 % Font encoding ts1-ybd2.
 %    \begin{macrocode}
 %%BeginResource: encoding fontinst-autoenc-ts1-dotoldstyle
+%    \end{macrocode}
+% \begin{multicols}{3}
+%    \begin{macrocode}
 /ts1-ybd2 [
 % 0
 /capitalgrave
@@ -8787,6 +8886,7 @@
 % 
 % End of file ts1-ybd2.enc.
 %    \end{macrocode}
+% \end{multicols}
 % \end{ffeil}
 % \iffalse
 %</enc-ts1-ybd2>
@@ -8800,6 +8900,9 @@
 % Font encoding ts1-ybd2j.
 %    \begin{macrocode}
 %%BeginResource: encoding fontinst-autoenc-ts1-dotoldstyle
+%    \end{macrocode}
+% \begin{multicols}{3}
+%    \begin{macrocode}
 /ts1-ybd2j [
 % 0
 /capitalgrave
@@ -9094,6 +9197,7 @@
 % 
 % End of file ts1-ybd2j.enc.
 %    \end{macrocode}
+% \end{multicols}
 % \end{ffeil}
 % \iffalse
 %</enc-ts1-ybd2j>
@@ -9107,6 +9211,9 @@
 % Font encoding ts1-ybdj.
 %    \begin{macrocode}
 %%BeginResource: encoding fontinst-autoenc-ts1-dotoldstyle
+%    \end{macrocode}
+% \begin{multicols}{2}
+%    \begin{macrocode}
 /ts1-ybdj [
 % 0
 /capitalgrave
@@ -9401,6 +9508,7 @@
 % 
 % End of file ts1-ybdj.enc.
 %    \end{macrocode}
+% \end{multicols}
 % \end{ffeil}
 % \iffalse
 %</enc-ts1-ybdj>
@@ -9929,6 +10037,7 @@ Q asterisk =: Qalt ;
 % \fi
 % \begin{ffeil}{ybd.nam}
 % Names for \texttt{FontForge}.
+% \begin{multicols}{2}
 %    \begin{macrocode}
 %<<NAM
 0x0020 space
@@ -10501,6 +10610,7 @@ Q asterisk =: Qalt ;
 0xE000 nbspace
 %NAM
 %    \end{macrocode}
+% \end{multicols}
 % \end{ffeil}
 % \iffalse
 %</nam-ybd>

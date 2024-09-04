@@ -1,4 +1,4 @@
--- $Id: build.lua 10306 2024-09-01 19:01:55Z cfrees $
+-- $Id: build.lua 10315 2024-09-03 07:23:46Z cfrees $
 -- Build configuration for berenisadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
