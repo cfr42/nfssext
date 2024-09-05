@@ -31,7 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\ModMakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: berenisadf.dtx 10317 2024-09-04 07:40:12Z cfrees $}[v0.0
+\ProvidesFileSVN{$Id: berenisadf.dtx 10319 2024-09-05 04:37:10Z cfrees $}[v0.0
 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[berenisadf]
 \documentclass[11pt,british]{ltxdoc}
@@ -1034,7 +1034,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[berenis.sty]{$Id: berenisadf.dtx 10317 2024-09-04 07:40:12Z cfrees $}[\filebase v1.1 \revinfo]
+\ProvidesPackageSVN[berenis.sty]{$Id: berenisadf.dtx 10319 2024-09-05 04:37:10Z cfrees $}[\filebase v1.1 \revinfo]
 \DefineFileInfoSVN[berenis]
 %    \end{macrocode}
 % Load \lpack{nfssext-cfr}.  
@@ -1222,6 +1222,7 @@
 % Token list to hold Berry name as we construct it.
 %    \begin{macrocode}
 \tl_new:N \g__berenis_rm_tl
+\tl_new:N \g__berenis_rm_subst_tl
 \tl_gset:Nn \g__berenis_rm_tl {ybd}
 %    \end{macrocode}
 % Implement requested options by adjusting default family name.
@@ -1240,6 +1241,10 @@
 {
   \tl_gput_right:Nn \g__berenis_rm_tl {j}
 }
+%    \end{macrocode}
+% Save the non-swash result\footnote{Easy because ‘w’!}
+%    \begin{macrocode}
+\tl_gset_eq:NN \g__berenis_rm_subst_tl \g__berenis_rm_tl
 %    \end{macrocode}
 % Add indicator for ligature/swash encoding as default
 %    \begin{macrocode}
@@ -1271,7 +1276,7 @@
 % \changes{v2.0}{????/??/??}{Tai bach work for any LY1 encoding.}
 % The cost is some of the non-fancy non-standard ligatures and the boundary character in the non-swash variants.
 %    \begin{macrocode}
-\tl_if_eq:NnTF \g__berenis_enc_tl { LY1 }
+\tl_if_eq:NnT \g__berenis_enc_tl { LY1 }
 {
 %    \end{macrocode}
 %^^A pam??
@@ -1289,8 +1294,7 @@
   \DeclareTextCompositeCommand{\^}{LY1}{y}{
     \char13
   }
-} {
-}
+} 
 \IfFormatAtLeastTF {2020-02-02}{%
 %    \end{macrocode}
 % \let\MakePrivateLetters\ModMakePrivateLetters
@@ -1304,6 +1308,10 @@
   \DeclareEncodingSubset{TS1}{ybdj}{1}%
   \DeclareEncodingSubset{TS1}{ybd0}{1}%
   \DeclareEncodingSubset{TS1}{ybd1}{1}%
+  \DeclareEncodingSubset{TS1}{ybdw}{1}%
+  \DeclareEncodingSubset{TS1}{ybd2w}{1}%
+  \DeclareEncodingSubset{TS1}{ybd2jw}{1}%
+  \DeclareEncodingSubset{TS1}{ybdjw}{1}%
 }{
   \RequirePackage{textcomp}
 }
@@ -7647,13 +7655,14 @@
 % \iffalse
 %</enc-texnansx-ybdw>
 % \fi
-% 
+%
 % \subsubsection{\file{ts1-ybd.enc}}
 % \iffalse
 %<*enc-ts1-ybd>
 % \fi
 % \begin{ffeil}{ts1-ybd.enc}
 % Font encoding ts1-ybd.
+% \changes{v0.0}{0000/00/00}{Correct to get superiors and oldstyle figures.}
 %    \begin{macrocode}
 %%BeginResource: encoding fontinst-autoenc-ts1-dotoldstyle
 %    \end{macrocode}
@@ -7715,17 +7724,17 @@
 /period
 /fraction
 % 48
-/zero.fitted
-/one.fitted
-/two.fitted
-/three.fitted
-/four.fitted
-/five.fitted
-/six.fitted
-/seven.fitted
+/zero.taboldstyle
+/one.taboldstyle
+/two.taboldstyle
+/three.taboldstyle
+/four.taboldstyle
+/five.taboldstyle
+/six.taboldstyle
+/seven.taboldstyle
 % 56
-/eight.fitted
-/nine.fitted
+/eight.taboldstyle
+/nine.taboldstyle
 /.notdef
 /.notdef
 /angbracketleft
@@ -7861,15 +7870,15 @@
 % 176
 /degree
 /plusminus
-/twosuperior
-/threesuperior
+/two.superior
+/three.superior
 /asciiacute
 /mu
 /paragraph
 /periodcentered
 % 184
 /referencemark
-/onesuperior
+/one.superior
 /ordmasculine
 /radical
 /onequarter
@@ -8587,6 +8596,7 @@
 % \fi
 % \begin{ffeil}{ts1-ybd2.enc}
 % Font encoding ts1-ybd2.
+% \changes{v0.0}{0000/00/00}{Correct to get superiors and oldstyle figures.}
 %    \begin{macrocode}
 %%BeginResource: encoding fontinst-autoenc-ts1-dotoldstyle
 %    \end{macrocode}
@@ -8648,17 +8658,17 @@
 /period
 /fraction
 % 48
-/zero
-/one
-/two
-/three
-/four
-/five
-/six
-/seven
+/zero.oldstyle
+/one.oldstyle
+/two.oldstyle
+/three.oldstyle
+/four.oldstyle
+/five.oldstyle
+/six.oldstyle
+/seven.oldstyle
 % 56
-/eight
-/nine
+/eight.oldstyle
+/nine.oldstyle
 /.notdef
 /.notdef
 /angbracketleft
@@ -8794,15 +8804,15 @@
 % 176
 /degree
 /plusminus
-/twosuperior
-/threesuperior
+/two.superior
+/three.superior
 /asciiacute
 /mu
 /paragraph
 /periodcentered
 % 184
 /referencemark
-/onesuperior
+/one.superior
 /ordmasculine
 /radical
 /onequarter
@@ -8898,6 +8908,7 @@
 % \fi
 % \begin{ffeil}{ts1-ybd2j.enc}
 % Font encoding ts1-ybd2j.
+% \changes{v0.0}{0000/00/00}{Correct to get superiors.}
 %    \begin{macrocode}
 %%BeginResource: encoding fontinst-autoenc-ts1-dotoldstyle
 %    \end{macrocode}
@@ -9105,15 +9116,15 @@
 % 176
 /degree
 /plusminus
-/twosuperior
-/threesuperior
+/two.superior
+/three.superior
 /asciiacute
 /mu
 /paragraph
 /periodcentered
 % 184
 /referencemark
-/onesuperior
+/one.superior
 /ordmasculine
 /radical
 /onequarter
@@ -9209,6 +9220,7 @@
 % \fi
 % \begin{ffeil}{ts1-ybdj.enc}
 % Font encoding ts1-ybdj.
+% \changes{v0.0}{0000/00/00}{Correct to get superiors.}
 %    \begin{macrocode}
 %%BeginResource: encoding fontinst-autoenc-ts1-dotoldstyle
 %    \end{macrocode}
@@ -9416,15 +9428,15 @@
 % 176
 /degree
 /plusminus
-/twosuperior
-/threesuperior
+/two.superior
+/three.superior
 /asciiacute
 /mu
 /paragraph
 /periodcentered
 % 184
 /referencemark
-/onesuperior
+/one.superior
 /ordmasculine
 /radical
 /onequarter
