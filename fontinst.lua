@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10329 2024-09-08 05:44:15Z cfrees $
+-- $Id: fontinst.lua 10330 2024-09-08 07:08:50Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -105,10 +105,29 @@ end
 function uniquify (tag)
   local dir = ""
   tag = tag or encodingtag or ""
+  local pkgbase = pkgbase or ""
   if standalone then
     dir = keepdir
+    if pkgbase == "" then
+      print("pkgbase unspecified. Trying to guess ... ")
+      if ctanpkg ~= module and module ~= "" and module ~= nil then
+        print("Guessing " .. module)
+        pkgbase = module
+      else
+        pkgbase = string.gsub(ctanpkg, "adf$", "")
+        if pkgbase ~= "" then
+          print("Guessing " .. pkgbase)
+        end
+      end
+    end
   else
     dir = unpackdir
+    if pkgbase == "" then 
+      local pkglist = filelist(dir,"*.sty")
+      if #pkglist ~= 0 then
+        pkgbase = pkglist[1]
+      end
+    end
   end
   local encs = encs or filelist(dir,"*.enc")
   local maps = maps or filelist(dir,"*.map")
@@ -120,13 +139,18 @@ function uniquify (tag)
         if #maps == 1 then
           tag = string.gsub(maps[1],"%.map$","")
         else
-          local t = {}
+          local t = "" 
           local tt = ""
           for i,j in ipairs(maps) do
-            tt = string.gsub(j,"[a-z0-9]%.map$","")
-            t[tt]=true
+            if tt == t then 
+              tt = string.gsub(j,"%w%.map$","")
+            else
+              if t == "" then
+                t = string.gsub(j,"%w%.map$","")
+              end
+            end
           end
-          if #t == 1 then
+          if t == tt then
             tag = tt
           else
             gwall("Attempt to find tag ","",1)
@@ -136,7 +160,7 @@ function uniquify (tag)
     end
     if tag ~= "" then  
       for i, j in ipairs(encs) do
-        if string.match(j,"-" .. tag .. "%.enc$") or  string.match(j, module) or string.match(j,ctanpkg) then
+        if string.match(j,"-" .. tag .. "%.enc$") or  string.match(j, module) or string.match(j,ctanpkg) or string.match(j,pkgbase) then
           print(j .. " ... OK\n")
         else
           local targenc = (string.gsub(j,"%.enc$","-" .. tag .. ".enc"))
