@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10327 2024-09-08 00:58:16Z cfrees $
+-- $Id: fontinst.lua 10329 2024-09-08 05:44:15Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -136,7 +136,7 @@ function uniquify (tag)
     end
     if tag ~= "" then  
       for i, j in ipairs(encs) do
-        if string.match(j,"-" .. tag .. "%.enc$") then
+        if string.match(j,"-" .. tag .. "%.enc$") or  string.match(j, module) or string.match(j,ctanpkg) then
           print(j .. " ... OK\n")
         else
           local targenc = (string.gsub(j,"%.enc$","-" .. tag .. ".enc"))
@@ -148,7 +148,6 @@ function uniquify (tag)
             local f = assert(io.open(dir .. "/" .. j,"rb"))
             local content = f:read("*all")
             f:close()
-            -- local new_content = (string.gsub(content,"(\n%%%%BeginResource: encoding fontinst-autoenc-[^\n]*)(\n%/fontinst-autoenc-[^ %[]*)( %[ *)" , "%1-" .. tag .. "%2-" .. tag .. "%3"))
             local new_content = (string.gsub(content,"(\n%%%%BeginResource: encoding fontinst%-autoenc[^\n ]*)( *\n/fontinst%-autoenc[^ %[]*)( %[)","%1-" .. tag .. "%2-" .. tag .. "%3"))
             if new_content ~= content then
               print("Writing unique encoding to " .. targenc)
@@ -161,12 +160,16 @@ function uniquify (tag)
                 if errorlevel ~= 0 then
                   gwall("Attempt to rm old encoding ",j,errorlevel)
                 end
-                if maps ~= nil then
+                if #maps ~= 0 then
+                  local jpatt = string.gsub(j,"%-","%%-")
+                  jpatt = string.gsub(jpatt,"%.","%%.")
                   for k,m in ipairs(maps) do
                     f = assert(io.open(dir .. "/" .. m,"rb"))
                     local mcontent = f:read("*all")
                     f:close()
-                    local new_mcontent = (string.gsub(mcontent,"(%<%[*)" .. j .. "( %<[a-z0-9]+%.pfb [^a-zA-Z0-9%-] fontinst%-autoenc[^ ]*)( ReEncodeFont)", "%1" .. targenc .. "%2-" .. tag .. "%3"))
+                    -- pam mae'r gwahaniaeth yn bwysig?
+                    -- local new_mcontent = (string.gsub(mcontent,"(%<%[?)" .. jpatt .. "( %<%w+%.pfb \" fontinst%-autoenc[%w%-_]*)( ReEncodeFont)", "%1" .. targenc .. "%2-" .. tag .. "%3"))
+                    local new_mcontent = (string.gsub(mcontent,"(%<%[?)" .. jpatt .. "( %<%w*%.pfb \" fontinst%-autoenc[%w%-_]*)( ReEncodeFont)", "%1" .. targenc .. "%2-" .. tag .. "%3"))
                     if new_mcontent ~= mcontent then 
                       print("Writing adjusted map lines to " .. m)
                       f = assert(io.open(dir .. "/" .. m,"w"))
@@ -174,8 +177,7 @@ function uniquify (tag)
                       f:write((string.gsub(new_mcontent,"\n",os_newline_cp)))
                       f:close()
                     else
-                      gwall("Failed to adjust map ",m,1)
-                      return 1
+                      gwall("Amending map ",m,1)
                     end
                   end
                 else
@@ -183,11 +185,9 @@ function uniquify (tag)
                 end
               else
                 gwall("Attempt to write ",targenc,1)
-                return 1
               end
             else
               gwall("Attempt to uniquify " .. j .. " as ",targenc,1)
-              return 1
             end
           end
         end
