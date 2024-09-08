@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10317 2024-09-04 07:40:12Z cfrees $
+-- $Id: fontinst.lua 10327 2024-09-08 00:58:16Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -26,6 +26,7 @@ end
 -------------------------------------------------
 nifergwall = 0
 ntarg = "fnttarg"
+utarg = "uniquifyencs"
 function gwall (msg,file,rtn)
   file = file or "current file"
   msg = msg or "Error: "
@@ -50,12 +51,19 @@ function finst (patt,dir,mode)
 end
 function fntkeeper ()
   local dir = dir or unpackdir
+  local keepdir = abspath(keepdir)
   local rtn = direxists(keepdir)
-  if rtn ~= 0 then
+  if not rtn then
     local errorlevel = mkdir(keepdir)
     if errorlevel ~= 0 then
       print("DO NOT BUILD STANDARD TARGETS WITHOUT RESOLVING!!\n")
       gwall("Attempt to create directory ", keepdir, errorlevel)
+    end
+  else
+    local errorlevel = cleandir(keepdir)
+    if errorlevel ~= 0 then
+      print("KEEP CONTAMINATED!\n")
+      gwall("Attempt to clean directory ",keepdir,errorlevel)
     end
   end
   if keepfiles ~= {} then
@@ -71,10 +79,16 @@ function fntkeeper ()
   end
   if keeptempfiles ~= {} then
     rtn = direxists(keeptempdir)
-    if rtn ~= 0 then
+    if not rtn then
       local errorlevel = mkdir(keeptempdir)
       if errorlevel ~= 0 then
         gwall("Attempt to create directory ", keeptempdir, errorlevel)
+      end
+    else
+      local errorlevel = cleandir(keeptempdir)
+      if errorlevel ~= 0 then
+        print("keeptemp contaminated!\n")
+        gwall("Attempt to clean directory ",keeptempdir,errorlevel)
       end
     end
     for i,j in ipairs(keeptempfiles) do 
@@ -86,13 +100,113 @@ function fntkeeper ()
   end	
   return nifergwall
 end
+-- oherwydd fy mod i bron ag anfon pob un ac mae'n amlwg fy mod i wedi anfon bacedi heb ei wneud hwn yn y gorffennol, well i mi wneud rhywbeth (scriptiau gwneud-cyhoeddus a make-public yn argraffu rhybudd os encs yn y cymysg
+-- (cymraeg yn ofnadwy hefyd)
+function uniquify (tag)
+  local dir = ""
+  tag = tag or encodingtag or ""
+  if standalone then
+    dir = keepdir
+  else
+    dir = unpackdir
+  end
+  local encs = encs or filelist(dir,"*.enc")
+  local maps = maps or filelist(dir,"*.map")
+  if #encs == 0 then
+    return 0
+  else
+    if tag == "" then 
+      if #maps ~= 0  then
+        if #maps == 1 then
+          tag = string.gsub(maps[1],"%.map$","")
+        else
+          local t = {}
+          local tt = ""
+          for i,j in ipairs(maps) do
+            tt = string.gsub(j,"[a-z0-9]%.map$","")
+            t[tt]=true
+          end
+          if #t == 1 then
+            tag = tt
+          else
+            gwall("Attempt to find tag ","",1)
+          end
+        end
+      end
+    end
+    if tag ~= "" then  
+      for i, j in ipairs(encs) do
+        if string.match(j,"-" .. tag .. "%.enc$") then
+          print(j .. " ... OK\n")
+        else
+          local targenc = (string.gsub(j,"%.enc$","-" .. tag .. ".enc"))
+          print("Target encoding is " .. targenc .. "\n")
+          if fileexists(dir .. "/" .. targenc) then
+            gwall("Target encoding exists !! ", targenc, 1)
+            return 1
+          else
+            local f = assert(io.open(dir .. "/" .. j,"rb"))
+            local content = f:read("*all")
+            f:close()
+            -- local new_content = (string.gsub(content,"(\n%%%%BeginResource: encoding fontinst-autoenc-[^\n]*)(\n%/fontinst-autoenc-[^ %[]*)( %[ *)" , "%1-" .. tag .. "%2-" .. tag .. "%3"))
+            local new_content = (string.gsub(content,"(\n%%%%BeginResource: encoding fontinst%-autoenc[^\n ]*)( *\n/fontinst%-autoenc[^ %[]*)( %[)","%1-" .. tag .. "%2-" .. tag .. "%3"))
+            if new_content ~= content then
+              print("Writing unique encoding to " .. targenc)
+              f = assert(io.open(dir .. "/" .. targenc,"w"))
+              -- this somehow removes the second value returned by string.gsub??
+              f:write((string.gsub(new_content,"\n",os_newline_cp)))
+              f:close()
+              if fileexists(dir .. "/" .. targenc) then
+                local errorlevel = rm(dir,j)
+                if errorlevel ~= 0 then
+                  gwall("Attempt to rm old encoding ",j,errorlevel)
+                end
+                if maps ~= nil then
+                  for k,m in ipairs(maps) do
+                    f = assert(io.open(dir .. "/" .. m,"rb"))
+                    local mcontent = f:read("*all")
+                    f:close()
+                    local new_mcontent = (string.gsub(mcontent,"(%<%[*)" .. j .. "( %<[a-z0-9]+%.pfb [^a-zA-Z0-9%-] fontinst%-autoenc[^ ]*)( ReEncodeFont)", "%1" .. targenc .. "%2-" .. tag .. "%3"))
+                    if new_mcontent ~= mcontent then 
+                      print("Writing adjusted map lines to " .. m)
+                      f = assert(io.open(dir .. "/" .. m,"w"))
+                      -- this somehow removes the second value returned by string.gsub??
+                      f:write((string.gsub(new_mcontent,"\n",os_newline_cp)))
+                      f:close()
+                    else
+                      gwall("Failed to adjust map ",m,1)
+                      return 1
+                    end
+                  end
+                else
+                  print("FOUND NO MAPS??\n")
+                end
+              else
+                gwall("Attempt to write ",targenc,1)
+                return 1
+              end
+            else
+              gwall("Attempt to uniquify " .. j .. " as ",targenc,1)
+              return 1
+            end
+          end
+        end
+      end
+    end
+    return nifergwall
+  end
+  print("Something weird happened.\n")
+  return 1
+end
 function fontinst (dir,mode)
   dir = dir or unpackdir
   mode = mode or "errorstopmode --halt-on-error"
+  standalone = false
+  encodingtag = encodingtag or ""
   -- if not direxists(dir) then
-    -- print("Missing directory. Unpacking first.\n")
-    print("Unpacking ...\n")
-    local errorlevel = unpack() 
+  -- print("Missing directory. Unpacking first.\n")
+  print("Unpacking ...\n")
+  local errorlevel = unpack() 
   -- end
   local tfmfiles = filelist(dir,"*.tfm")
   for i,j in ipairs(tfmfiles) do
@@ -173,41 +287,13 @@ function fontinst (dir,mode)
       f:close()
     end
   end
-  -- local rtn = direxists(keepdir)
-  -- if rtn ~= 0 then
-  --   local errorlevel = mkdir(keepdir)
-  --   if errorlevel ~= 0 then
-  --     print("DO NOT BUILD STANDARD TARGETS WITHOUT RESOLVING!!\n")
-  --     gwall("Attempt to create directory ", keepdir, errorlevel)
-  --   else
-  --     for i,j in ipairs(keepfiles) do
-  --       local rtn = cp(j, unpackdir, keepdir)
-  --       if rtn ~= 0 then
-  --         gwall("Copy ", j, errorlevel)
-  --         print("DO NOT BUILD STANDARD TARGETS WITHOUT RESOLVING!\n")
-  --       end
-  --     end
-  --     if keeptempfiles ~= {} then
-  --       local rtn = direxists(keeptempdir)
-  --       if rtn ~= 0 then
-  --         local errorlevel = mkdir(keeptempdir)
-  --         if errorlevel ~= 0 then
-  --           gwall("Attempt to create directory ", keeptempdir, errorlevel)
-  --         else
-  --           for i,j in ipairs(keeptempfiles) do 
-  --             local errorlevel = cp(j,unpackdir,keeptempdir)
-  --             if errorlevel ~= 0 then
-  --               gwall("Copy ", j, errorlevel)
-  --             end
-  --           end
-  --         end
-  --       end
-  --     end
-  --   end
-  -- end	
-  local errorlevel = fntkeeper()
+  local errorlevel = uniquify(encodingtag)
   if errorlevel ~= 0 then
-    gwall("FONT KEEPER FAILED! DO NOT MAKE STANDARD TARGETS WITHOUT RESOLVING!! ", unpackdir, errorlevel)
+    gwall("Encodings not uniquified! Do not submit to CTAN! uniquify(" .. encodingtag .. ")","",errorlevel)
+  end
+  errorlevel = fntkeeper()
+  if errorlevel ~= 0 then
+    gwall("FONT KEEPER FAILED! DO NOT MAKE STANDARD TARGETS WITHOUT RESOLVING!! fntkeeper() ", unpackdir, errorlevel)
   end
   return nifergwall
 end
@@ -472,6 +558,21 @@ target_list[ntarg] = {
       print("fontinst does not need names\n")
       help()
       exit(1)
+    end
+    return 0
+  end
+}
+target_list[utarg] = {
+  func = uniquify,
+  desc = "Uniquifies encodings ONLY",
+  pre = function(names)
+    standalone = true
+    if names and #names > 1 then
+      print("Too many encoding tags specified; no more than one allowed")
+      help()
+      exit(1)
+    else
+      names = names or encodingtag or ""
     end
     return 0
   end
