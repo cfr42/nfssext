@@ -1,4 +1,5 @@
--- $Id: arkandis-manifest.lua 10325 2024-09-07 02:03:33Z cfrees $
+-- $Id: arkandis-manifest.lua 10332 2024-09-09 05:09:30Z cfrees $
+---------------------------------------------------------------------
 ---------------------------------------------------------------------
 -- local derivedfiles = derivedfiles or {"*.cls","*.enc","*.fd","*.map","*.sty","*.tfm","*.vf"}
 -- local arkandisfiles = arkandisfiles or {"*.afm","*.otf","*.pfb",".pfm","*.ttf","NOTICE.txt","COPYING"}
@@ -6,14 +7,18 @@
 -- local buildscripts = buildscripts or  {"*.lua", "Makefile", "../arkandis/*.lua", "../../fontinst.lua"}
 -- local fnttestdir = fnttestdir or maindir .. "/fnt-tests"
 -- local testfiles = testfiles or {"*.lvt","*.pvt","*.tlg","*.lve","*.tpf"}
-local fnttestfiles = fnttestfiles or "* fnt-tests.tex\n* fnt-test.lvt"
-local fnttablestemplate = fnttablestemplate or "\n* fnt-tables.tex"
 -- local addetx = addetx or filelist(sourcefiledir,"*.etx")      
 -- local addmtx = addmtx or filelist(sourcefiledir,"*.mtx")      
 -- local fntmkfiles = fntmkfiles or {}
 -- local fntmksrc = fntmksrc or {} 
-
-
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+-- This is WAY too complicated for what is essentially a failed attempt to list 
+-- a few files!!
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+local fnttestfiles = fnttestfiles or "* fnt-tests.tex\n* fnt-test.lvt"
+local fnttablestemplate = fnttablestemplate or "\n* fnt-tables.tex"
 local sourcefiledir = sourcefiledir or "."
 local builddir = builddir or maindir .. "/build"
 local unpackdir = unpackdir or builddir .. "/unpacked"
@@ -21,7 +26,8 @@ local arkandisfiles = arkandisfiles or {"*.afm","COPYING","NOTICE","*.otf","*.pf
 local arkandisders = arkandisders or {}
 local derivedfiles = derivedfiles or {}
 table.insert(derivedfiles,"*-tables.tex")
-
+----------------------------------------------------------------------
+----------------------------------------------------------------------
 function idxfiles(dir,globs)
   local m_files = {}
   globs = globs or {"*.*"}
@@ -38,7 +44,7 @@ function idxfiles(dir,globs)
     end
   end
   for i,j in ipairs(t) do
-    for k,l in ipairs(filelist(dir,j)) do
+    for k,l in ipairs(ordered_filelist(dir,j)) do
       m_files[l] = true
     end
   end
@@ -46,6 +52,7 @@ function idxfiles(dir,globs)
   m_files[".."] = nil
   return m_files
 end
+----------------------------------------------------------------------
 function idxexcl(dir,files,exclfiles)
   local m_files = idxfiles(dir,files)
   local tmpt = {}
@@ -62,7 +69,7 @@ function idxexcl(dir,files,exclfiles)
       end
     end
     for i,j in ipairs(tmpt) do
-      jfiles = filelist(dir,j)
+      jfiles = ordered_filelist(dir,j)
       if jfiles ~= nil then
         for k,l in ipairs(jfiles) do
           m_files[l] = nil
@@ -72,7 +79,16 @@ function idxexcl(dir,files,exclfiles)
   end
   return m_files
 end
-  
+----------------------------------------------------------------------
+function idxtable(tble)
+  local t = {}
+  for i,j in pairs(tble) do
+    table.insert(t,i)
+  end
+  return t
+end
+----------------------------------------------------------------------
+----------------------------------------------------------------------
 -- concatenating strings is slow
 -- concatenating tables is fast
 -- https://www.lua.org/pil/11.6.html
@@ -102,26 +118,8 @@ function bullets(items,idx)
   end
   return table.concat(bulleted,"\n* ")
 end
-
-function idxtable(tble)
-  local t = {}
-  for i,j in pairs(tble) do
-    table.insert(t,i)
-  end
-  return t
-end
-
-
--- if fntmkfiles == "" then
---   for m,k in ipairs({addetx, addmtx}) do
---     if k ~= nil then
---       for i,j in ipairs(k) do
---         fntmkfiles = fntmkfiles .. "\n* " .. j
---         fntmksrc = fntmksrc .. j .. ","
---       end
---     end
---   end
--- end
+----------------------------------------------------------------------
+----------------------------------------------------------------------
 function populatescripts()
   local arkandisdir = arkandisdir or maindir .. "/arkandis"
   local sourcefiledir = sourcefiledir or "."
@@ -140,98 +138,7 @@ function populatescripts()
     return buildscripts
   end
 end
--- function populatederscripts()
---   if derscripts == nil then
---     local derscrpts = ""
---     local scriptdirs = scriptdirs or { sourcefiledir, unpackdir }
---     local possscripts = { "Makefile", "Makefile.*", "*.pe" }
---     for k, l in ipairs(possscripts) do
---       local tmpscripts = filelist(unpackdir,l)
---       if tmpscripts ~= nil then
---         for m, n in ipairs(tmpscripts) do
---           if fileexists(sourcefiledir,basename(n)) then
---             derscrpts = derscrpts .. "\n* " ..  n
---           end
---         end
---       end
---     end
---     return derscrpts
---   else
---     return derscripts
---   end
--- end
--- function populatefontsupp()
---   local sourcefiledir = sourcefiledir or "."
---   local fontsupport = ""
---   local fontsupporttemp = filelist(keepdir, "*.*")
---   local bagpuss = 0
---   if fontsupp == nil then
---     -- local fontsupport = {}
---     for i,j in ipairs(fontsupporttemp) do
---       if not ( j == "." or j == ".." ) then
---         if arkandisders ~= nil then
---           bagpuss = 0
---           for k, l in ipairs(arkandisders) do
---             -- not glob!
---             if string.match(j,l) then
---               bagpuss = 1
---             end -- end if match
---           end -- end for k, l
---           if bagpuss == 0 then
---             fontsupport = fontsupport .. "\n* " .. j 
---           end
---         else
---           fontsupport = fontsupport .. "\n* " .. j 
---         end -- end if arkandisders nil
---       end -- end if not current/parent
---       -- table.insert(fontsupport, basename(j))
---     end -- end for i, j
---     return fontsupport
---   else
---     return fontsupp
---   end
--- end
--- function populatedoc()
---   local docs = docs  or {typesetfiles,typesetdemofiles}
---   local tmpdocs = ""
---   for i,j in ipairs(docs) do
---     for k,l in ipairs(j) do
---       for m,n in ipairs(filelist(unpackdir,l)) do
---         tmpdocs = tmpdocs .. "\n *" .. string.gsub(n, "%.[a-zA-Z0-9]+$", ".pdf")
---       end
---     end
---   end
---   return tmpdocs
--- end
--- function populatetxt()
---   local txts = textfiles or {}
---   local tmptxts = ""
---   for i,j in ipairs(txts) do
---     local tmptexts = filelist(sourcefiledir,j)
---     for k,l in ipairs(tmptexts) do
---       if not ( l == "." or l == ".." or string.match(l, "NOTICE") or string.match(l, "COPYING") ) then
---         tmptxts = tmptxts .. "\n* " .. l
---       end
---     end
---   end
---   if not string.match(tmptxts, ctanreadme) then
---     if fileexists(sourcefiledir, ctanreadme) then
---       local tmptexts = filelist(sourcefiledir, ctanreadme)
---       for i,j in ipairs(tmptexts) do
---         tmptxts = tmptxts .. "\n* " .. j
---       end
---     end
---   end
---   if not string.match(tmptxts, manifestfile) then
---     if fileexists(sourcefiledir, manifestfile) then
---       local tmptexts = filelist(sourcefiledir, manifestfile)
---       for i,j in ipairs(tmptexts) do
---         tmptxts = tmptxts .. "\n* " .. j
---       end
---     end
---   end
---   return tmptxts
--- end
+----------------------------------------------------------------------
 ----------------------------------------------------------------------
 function manifest_write_opening(filehandle)
   local date  = date or os.date()
@@ -256,6 +163,13 @@ included in the package. See README for further details.
 This file was automatically generated by `l3build manifest`.]]
   )
 end
+---------------------------------------------------------------------
+-- maniwl t 36
+-- manifest_sort_within_group = function(files)
+--   local f = files
+--   table.sort(f)
+--   return f
+-- end
 ---------------------------------------------------------------------
 function manifest_setup ()
   if not ( fileexists(unpackdir .. "/" .. module .. ".sty") or fileexists(unpackdir .. "/" .. ctanpkg .. ".sty") ) then
@@ -297,20 +211,17 @@ function manifest_setup ()
   local m_txtfiles = idxexcl(sourcefiledir,{"README","*.md","*.txt"},arkandisfiles)
   local txtfiles = bullets(m_txtfiles,1)
   -- derived fnt makers
-  local m_derfntmk = idxexcl(unpackdir,fntmkglobs,fntmklist)
+  -- why is it necessary to exclude derlist? w/o, I get .enc files - not all,
+  -- mind, but some - but they don't match any of the patterns
+  local m_derfntmk = idxexcl(unpackdir,fntmkglobs,{fntmklist,derlist})
   local derfntmklist = idxtable(m_derfntmk)
+  ---------------------------------------------------------------------
   -- populate
+  -- we did do more this way, but it took forever not to work
+  -- the current method doesn't work a bit quicker
   local buildscripts = populatescripts()
-  -- print("buildscripts: \n" .. buildscripts)
-  -- local derscripts = populatederscripts()
-  -- print("derscripts: \n" .. derscripts)
-  -- local derfntfiles = populatefontsupp()
-  -- print("derfntfiles: \n" .. derfntfiles)
-  -- local docfiles = populatedoc()
-  -- print("docfiles: \n" .. docfiles)
-  -- local txtfiles = populatetxt() 
-  -- print("txtfiles: \n" .. txtfiles)
-  -- print(fntmksrc)
+  ---------------------------------------------------------------------
+  -- I have no idea how to sort them (without gnu, that is)
   local groups = {
     {
       subheading = "Source files",
@@ -375,5 +286,6 @@ function manifest_setup ()
   }
   return groups
 end
+----------------------------------------------------------------------
 ---------------------------------------------------------------------
 -- vim: ts=2:sw=2:tw=80:nospell:
