@@ -1,4 +1,4 @@
--- $Id: build.lua 10295 2024-08-29 03:07:34Z cfrees $
+-- $Id: build.lua 10333 2024-09-09 07:38:39Z cfrees $
 -- Build configuration for cfr-lm
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -54,6 +54,7 @@ uploadconfig = {
   -- curlopt_file
 }
 --
+date = "2010-2024"
 dofile(maindir .. "/fnt-manifest.lua")
 -- os.execute ("printenv")
 -- vim: ts=2:sw=2:tw=0:nospell

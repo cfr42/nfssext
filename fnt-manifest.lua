@@ -1,4 +1,4 @@
--- $Id: fnt-manifest.lua 10295 2024-08-29 03:07:34Z cfrees $
+-- $Id: fnt-manifest.lua 10333 2024-09-09 07:38:39Z cfrees $
 ---------------------------------------------------------------------
 -- local derivedfiles = derivedfiles or {"*.cls","*.enc","*.fd","*.map","*.sty","*.tfm","*.vf"}
 -- local origfntfiles = origfntfiles or {"*.afm","*.otf","*.pfb",".pfm","*.ttf","NOTICE.txt","COPYING"}
@@ -196,9 +196,9 @@ function manifest_setup ()
     },
     {
       name = "Typeset documentation",
-      files = {typesetfiles,typesetdemofiles,textfiles},
+      files = {typesetfiles,typesetdemofiles},
       excludefiles = {".",".."},
-      dir = typesetdir,
+      dir = sourcefiledir,
       rename = {"%.%w+$",".pdf"},
     },
   }
