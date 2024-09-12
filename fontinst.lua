@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10330 2024-09-08 07:08:50Z cfrees $
+-- $Id: fontinst.lua 10331 2024-09-08 16:41:32Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -191,9 +191,7 @@ function uniquify (tag)
                     f = assert(io.open(dir .. "/" .. m,"rb"))
                     local mcontent = f:read("*all")
                     f:close()
-                    -- pam mae'r gwahaniaeth yn bwysig?
-                    -- local new_mcontent = (string.gsub(mcontent,"(%<%[?)" .. jpatt .. "( %<%w+%.pfb \" fontinst%-autoenc[%w%-_]*)( ReEncodeFont)", "%1" .. targenc .. "%2-" .. tag .. "%3"))
-                    local new_mcontent = (string.gsub(mcontent,"(%<%[?)" .. jpatt .. "( %<%w*%.pfb \" fontinst%-autoenc[%w%-_]*)( ReEncodeFont)", "%1" .. targenc .. "%2-" .. tag .. "%3"))
+                    local new_mcontent = (string.gsub(mcontent,"(%<%[?)" .. jpatt .. "( %<%w+%.pfb \" fontinst%-autoenc[%w%-_]*)( ReEncodeFont)", "%1" .. targenc .. "%2-" .. tag .. "%3"))
                     if new_mcontent ~= mcontent then 
                       print("Writing adjusted map lines to " .. m)
                       f = assert(io.open(dir .. "/" .. m,"w"))

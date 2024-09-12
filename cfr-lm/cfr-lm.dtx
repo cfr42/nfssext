@@ -42,7 +42,7 @@
   \char_set_catcode_letter:N \:
 }
 \ExplSyntaxOff
-\ProvidesFileSVN{$Id: cfr-lm.dtx 10295 2024-08-29 03:07:34Z cfrees $}[v0.0
+\ProvidesFileSVN{$Id: cfr-lm.dtx 10340 2024-09-12 05:26:02Z cfrees $}[v0.0
 \revinfo][\filebase DTX: Latin Modern for 8-bit engines]
 \DefineFileInfoSVN[cfr-lm]
 \documentclass[10pt,british]{ltxdoc}
@@ -478,15 +478,15 @@
 %       \toprule
 % 		\textbf{key}	&	\textbf{affects}	&	\textbf{option}	&	 \textbf{possible values} \tabularnewline\midrule
 % 		rm	&	\texttt{oldstyle}/\texttt{osf}\tnotex{tn:lo}				&	\texttt{true}, \texttt{false}			& default roman/serif figure style \tabularnewline
-% 				&	\texttt{lining}\tnotex{tn:lo}					&				& \tabularnewline
+% 				&	\texttt{lining}/\texttt{lf}\tnotex{tn:lo}					&				& \tabularnewline
 % 				&	\texttt{proportional}/\texttt{prop}		&				& \tabularnewline
 % 				&	\texttt{tabular}/\texttt{tab}				&				& \tabularnewline\midrule
 % 		sf		&	\texttt{oldstyle}/\texttt{osf}\tnotex{tn:lo}				&	\texttt{true}, \texttt{false}			& default sans figure style \tabularnewline
-% 				&	\texttt{lining}\tnotex{tn:lo}					&				& \tabularnewline
+% 				&	\texttt{lining}/\texttt{lf}\tnotex{tn:lo}					&				& \tabularnewline
 % 				&	\texttt{proportional}/\texttt{prop}		&				& \tabularnewline
 % 				&	\texttt{tabular}/\texttt{tab}		&			& \tabularnewline\midrule
 % 		tt		&	\texttt{oldstyle}/\texttt{osf}\tnotex{tn:lo}				&	\texttt{true}, \texttt{false}			& default typewriter figure style \tabularnewline
-% 				&	\texttt{lining}\tnotex{tn:lo}					&				& \tabularnewline
+% 				&	\texttt{lining}/\texttt{lf}\tnotex{tn:lo}					&				& \tabularnewline
 % 				&	\texttt{proportional}/\texttt{prop}		&				& \tabularnewline
 % 				&	\texttt{tabular}/\texttt{tab}				&				& \tabularnewline\cmidrule{2-4}
 % 				&	\texttt{monowidth}/\texttt{mono}			&	\texttt{true}, \texttt{false}			&	default typewriter family \tabularnewline
@@ -518,10 +518,11 @@
 % Whether to use oldstyle/hanging figures by default.
 %
 % \DescribeOpt{rm/lining}\vals{true,false}
+% \DescribeOpt{rm/lf}
 % 
 % Whether to use lining figures by default.
 %
-% Note that \texttt{oldstyle} and \texttt{osf} are equivalent, while \texttt{lining} sets the same option but inverted.
+% Note that \texttt{oldstyle} and \texttt{osf} are equivalent, while \texttt{lining} or \texttt{lf} sets the same option but inverted.
 % That is, the following are equivalent:
 % \iffalse
 %<*verb>
@@ -575,6 +576,7 @@ rm={prop=false}
 % Whether to use oldstyle/hanging figures by default.
 %
 % \DescribeOpt{sf/lining}\vals{true,false}
+% \DescribeOpt{sf/lf}
 %
 % Whether to use lining figures by default.
 %
@@ -604,6 +606,7 @@ rm={prop=false}
 % Whether to use oldstyle/hanging figures by default.
 %
 % \DescribeOpt{tt/lining}\vals{true,false}
+% \DescribeOpt{tt/lf}
 %
 % Whether to use lining figures by default.
 %
@@ -1297,7 +1300,7 @@ updmap --sys --enable Map=clm.map
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
 \ProvidesPackageSVN[\filebase.sty]{%
-  $Id: cfr-lm.dtx 10295 2024-08-29 03:07:34Z cfrees $%
+  $Id: cfr-lm.dtx 10340 2024-09-12 05:26:02Z cfrees $%
 }[\filebase v1.6 \revinfo][Extended support for Latin Modern 2.004]
 \DefineFileInfoSVN[clm]
 \RequirePackage[T1]{fontenc}
@@ -1311,11 +1314,29 @@ updmap --sys --enable Map=clm.map
 % We follow the kernel's handling of Latin Modern and eschew the builtin circle.
 %    \begin{macrocode}
   \DeclareEncodingSubset{TS1}{clm}{1}%
+  \DeclareEncodingSubset{TS1}{clm2}{1}%
+  \DeclareEncodingSubset{TS1}{clm2d}{1}%
+  \DeclareEncodingSubset{TS1}{clm2dj}{1}%
+  \DeclareEncodingSubset{TS1}{clm2j}{1}%
+  \DeclareEncodingSubset{TS1}{clm2jqs}{1}%
+  \DeclareEncodingSubset{TS1}{clm2js}{1}%
+  \DeclareEncodingSubset{TS1}{clm2jt}{1}%
+  \DeclareEncodingSubset{TS1}{clm2jv}{1}%
+  \DeclareEncodingSubset{TS1}{clm2qs}{1}%
+  \DeclareEncodingSubset{TS1}{clm2s}{1}%
+  \DeclareEncodingSubset{TS1}{clm2t}{1}%
+  \DeclareEncodingSubset{TS1}{clm2v}{1}%
+  \DeclareEncodingSubset{TS1}{clmd}{1}%
+  \DeclareEncodingSubset{TS1}{clmdj}{1}%
   \DeclareEncodingSubset{TS1}{clmj}{1}%
-  \DeclareEncodingSubset{TS1}{clmw}{1}%
-  \DeclareEncodingSubset{TS1}{clmjw}{1}%
-  \DeclareEncodingSubset{TS1}{clm0}{1}%
-  \DeclareEncodingSubset{TS1}{clm1}{1}%
+  \DeclareEncodingSubset{TS1}{clmjqs}{1}%
+  \DeclareEncodingSubset{TS1}{clmjs}{1}%
+  \DeclareEncodingSubset{TS1}{clmjt}{1}%
+  \DeclareEncodingSubset{TS1}{clmjv}{1}%
+  \DeclareEncodingSubset{TS1}{clmqs}{1}%
+  \DeclareEncodingSubset{TS1}{clms}{1}%
+  \DeclareEncodingSubset{TS1}{clmt}{1}%
+  \DeclareEncodingSubset{TS1}{clmv}{1}%
 }{%
   \RequirePackage{textcomp}}
 \UndeclareTextCommand{\textperthousand}{T1}
@@ -1362,17 +1383,6 @@ updmap --sys --enable Map=clm.map
 \bool_new:N \l__clm_qt_bool
 %    \end{macrocode}
 % END bools
-% BEGIN tls
-%    \begin{macrocode}
-\tl_new:N \l__clm_rm_osf_tl
-\tl_new:N \l__clm_rm_prop_tl
-\tl_new:N \l__clm_sf_osf_tl
-\tl_new:N \l__clm_sf_prop_tl
-\tl_new:N \l__clm_tt_osf_tl
-\tl_new:N \l__clm_tt_prop_tl
-\tl_new:N \l__clm_tt_mono_tl
-%    \end{macrocode}
-% END tls
 %    \begin{macrocode}
 \keys_define:nn { clm }
 {
@@ -1406,6 +1416,16 @@ updmap --sys --enable Map=clm.map
 %    \begin{macrocode}
   rm / lining .bool_set_inverse:N = \l__clm_rm_osf_bool,
   rm / lining .default:n = true,
+%    \end{macrocode}
+% \end{option}
+% \begin{option}{rm/lf}
+% Shorthand
+% \changes{v1.7}{2024-09-10}{%
+%   New shorthand for key.%
+% }
+%    \begin{macrocode}
+  rm / lf .bool_set_inverse:N = \l__clm_rm_osf_bool,
+  rm / lf .default:n = true,
 %    \end{macrocode}
 % \end{option}
 % \begin{option}{rm/proportional}
@@ -1480,6 +1500,16 @@ updmap --sys --enable Map=clm.map
   sf / lining .default:n = true,
 %    \end{macrocode}
 % \end{option}
+% \begin{option}{sf/lf}
+% Shorthand
+% \changes{v1.7}{2024-09-10}{%
+%   New shorthand for key.%
+% }
+%    \begin{macrocode}
+  sf / lf .bool_set_inverse:N = \l__clm_sf_osf_bool,
+  sf / lf .default:n = true,
+%    \end{macrocode}
+% \end{option}
 % \begin{option}{sf/proportional}
 % boolkeys for sans prop/tab figures
 % \changes{v1.6 2020-2024 (unpublished)}{2020/2024}{%
@@ -1550,6 +1580,16 @@ updmap --sys --enable Map=clm.map
 %    \begin{macrocode}
   tt / lining .bool_set_inverse:N = \l__clm_tt_osf_bool,
   tt / lining .default:n = true,
+%    \end{macrocode}
+% \end{option}
+% \begin{option}{tt/lf}
+% Shorthand
+% \changes{v1.7}{2024-09-10}{%
+%   New shorthand for key.%
+% }
+%    \begin{macrocode}
+  tt / lf .bool_set_inverse:N = \l__clm_tt_osf_bool,
+  tt / lf .default:n = true,
 %    \end{macrocode}
 % \end{option}
 % \begin{option}{tt/proportional}
@@ -1706,66 +1746,25 @@ updmap --sys --enable Map=clm.map
   { \cs_if_exist_use:c { exp_args:N #1 } }
 }
 %    \end{macrocode}
-% translate user/default settings into bits of Berry names
-%    \begin{macrocode}
-\bool_if:NTF \l__clm_rm_osf_bool
-{
-  \tl_set:Nn \l__clm_rm_osf_tl { j }
-}{
-  \tl_clear:N \l__clm_rm_osf_tl 
-}
-\bool_if:NTF \l__clm_rm_prop_bool
-{
-  \tl_set:Nn \l__clm_rm_prop_tl { 2 }
-}{
-  \tl_clear:N \l__clm_rm_prop_tl 
-}
-\bool_if:NTF \l__clm_sf_osf_bool
-{
-  \tl_set:Nn \l__clm_sf_osf_tl { j }
-}{
-  \tl_clear:N \l__clm_sf_osf_tl 
-}
-\bool_if:NTF \l__clm_sf_prop_bool
-{
-  \tl_set:Nn \l__clm_sf_prop_tl { 2 }
-}{
-  \tl_clear:N \l__clm_sf_prop_tl 
-}
-\bool_if:NTF \l__clm_tt_osf_bool
-{
-  \tl_set:Nn \l__clm_tt_osf_tl { j }
-}{
-  \tl_clear:N \l__clm_tt_osf_tl 
-}
-\bool_if:NTF \l__clm_tt_prop_bool
-{
-  \tl_set:Nn \l__clm_tt_prop_tl { 2 }
-}{
-  \tl_clear:N \l__clm_tt_prop_tl 
-}
-\bool_if:NTF \l__clm_tt_mono_bool
-{
-  \tl_set:Nn \l__clm_tt_mono_tl { t }
-}{
-  \tl_set:Nn \l__clm_tt_mono_tl { v }
-}
-%
-%    \end{macrocode}
+% Translate user/default settings into bits of Berry names.
 % \begin{macro}{\rmdefault,\sfdefault,\ttdefault}
 % Make LM default for all families, implementing options for each
+% \changes{v1.7}{2024-09-11}{%
+%   Need these to be expanded for \cs{init@series@setup} to recognise families.
+%   Only need \texttt{tl}s here (not functions).
+%   Scrap the component \texttt{tl}s, since we're expanding the lot anyhow.}
 %    \begin{macrocode}
-\cs_set:Npn \rmdefault
+\tl_gset:Ne \rmdefault
 {
-  clm \l__clm_rm_prop_tl \l__clm_rm_osf_tl 
+  clm \bool_if:NT \l__clm_rm_prop_bool { 2 } \bool_if:NT \l__clm_rm_osf_bool { j }
 }
-\cs_set:Npn \sfdefault
+\tl_gset:Ne \sfdefault
 {
-  clm \l__clm_sf_prop_tl \l__clm_sf_osf_tl s 
+  clm \bool_if:NT \l__clm_sf_prop_bool { 2 } \bool_if:NT \l__clm_sf_osf_bool { j } s
 }
-\cs_set:Npn \ttdefault
+\tl_gset:Ne \ttdefault
 {
-  clm \l__clm_tt_prop_tl \l__clm_tt_osf_tl \l__clm_tt_mono_tl 
+  clm \bool_if:NT \l__clm_tt_prop_bool { 2 } \bool_if:NT \l__clm_tt_osf_bool { j } \bool_if:NTF \l__clm_tt_mono_bool { t } { v }
 }
 %    \end{macrocode}
 % \end{macro}
