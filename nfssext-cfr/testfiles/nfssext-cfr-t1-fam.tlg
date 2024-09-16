@@ -1,0 +1,334 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+============================================================
+TEST 1: styles (cmr (m/n) ->)
+============================================================
+set is alt,emboss,in,inf,ln,l,lt,of,ornamental,os,o,pl,po,p,qt,reg,sh,su,swash,sw,ti,tl,tm,to,t,tv
+cmr -> alt
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \altstyle 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+cmr -> emboss
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \embossstyle 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+cmr -> in
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \instyle 
+Result: OT1/cmr0/m/n: OT1/cmr0/m/n
+cmr -> inf
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \infstyle 
+Result: OT1/cmr0/m/n: OT1/cmr0/m/n
+cmr -> ln
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \lnstyle 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+cmr -> l
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \lstyle 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+cmr -> lt
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \ltstyle 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+cmr -> of
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \ofstyle 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+cmr -> ornamental
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \ornamentalstyle 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+cmr -> os
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \osstyle 
+Result: OT1/cmrj/m/n: OT1/cmrj/m/n
+cmr -> o
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \ostyle 
+Result: OT1/cmrj/m/n: OT1/cmrj/m/n
+cmr -> pl
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \plstyle 
+Result: OT1/cmr2/m/n: OT1/cmr2/m/n
+cmr -> po
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \postyle 
+Result: OT1/cmr2j/m/n: OT1/cmr2j/m/n
+cmr -> p
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \pstyle 
+Result: OT1/cmr2/m/n: OT1/cmr2/m/n
+cmr -> qt
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \qtstyle 
+Result: OT1/cmss/m/n: OT1/cmss/m/n
+cmr -> reg
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \regstyle 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+cmr -> sh
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \shstyle 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+cmr -> su
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \sustyle 
+Result: OT1/cmr1/m/n: OT1/cmr1/m/n
+cmr -> swash
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \swashstyle 
+Result: OT1/cmrw/m/n: OT1/cmrw/m/n
+cmr -> sw
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \swstyle 
+Result: OT1/cmrw/m/n: OT1/cmrw/m/n
+cmr -> ti
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \tistyle 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+cmr -> tl
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \tlstyle 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+cmr -> tm
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \tmstyle 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+cmr -> to
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \tostyle 
+Result: OT1/cmrj/m/n: OT1/cmrj/m/n
+cmr -> t
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \tstyle 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+cmr -> tv
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \tvstyle 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+============================================================
+============================================================
+TEST 2: styles (cmrj (m/n) ->)
+============================================================
+set is alt,emboss,in,inf,ln,l,lt,of,ornamental,os,o,pl,po,p,qt,reg,sh,su,swash,sw,ti,tl,tm,to,t,tv
+cmrj -> alt
+Initial: OT1/cmrj/m/n: OT1/cmrj/m/n: \altstyle 
+Result: OT1/cmrj/m/n: OT1/cmrj/m/n
+cmrj -> emboss
+Initial: OT1/cmrj/m/n: OT1/cmrj/m/n: \embossstyle 
+Result: OT1/cmrj/m/n: OT1/cmrj/m/n
+cmrj -> in
+Initial: OT1/cmrj/m/n: OT1/cmrj/m/n: \instyle 
+Result: OT1/cmr0/m/n: OT1/cmr0/m/n
+cmrj -> inf
+Initial: OT1/cmrj/m/n: OT1/cmrj/m/n: \infstyle 
+Result: OT1/cmr0/m/n: OT1/cmr0/m/n
+cmrj -> ln
+Initial: OT1/cmrj/m/n: OT1/cmrj/m/n: \lnstyle 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+cmrj -> l
+Initial: OT1/cmrj/m/n: OT1/cmrj/m/n: \lstyle 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+cmrj -> lt
+Initial: OT1/cmrj/m/n: OT1/cmrj/m/n: \ltstyle 
+Result: OT1/cmrj/m/n: OT1/cmrj/m/n
+cmrj -> of
+Initial: OT1/cmrj/m/n: OT1/cmrj/m/n: \ofstyle 
+Result: OT1/cmrj/m/n: OT1/cmrj/m/n
+cmrj -> ornamental
+Initial: OT1/cmrj/m/n: OT1/cmrj/m/n: \ornamentalstyle 
+Result: OT1/cmrj/m/n: OT1/cmrj/m/n
+cmrj -> os
+Initial: OT1/cmrj/m/n: OT1/cmrj/m/n: \osstyle 
+Result: OT1/cmrj/m/n: OT1/cmrj/m/n
+cmrj -> o
+Initial: OT1/cmrj/m/n: OT1/cmrj/m/n: \ostyle 
+Result: OT1/cmrj/m/n: OT1/cmrj/m/n
+cmrj -> pl
+Initial: OT1/cmrj/m/n: OT1/cmrj/m/n: \plstyle 
+Result: OT1/cmr2/m/n: OT1/cmr2/m/n
+cmrj -> po
+Initial: OT1/cmrj/m/n: OT1/cmrj/m/n: \postyle 
+Result: OT1/cmr2j/m/n: OT1/cmr2j/m/n
+cmrj -> p
+Initial: OT1/cmrj/m/n: OT1/cmrj/m/n: \pstyle 
+Result: OT1/cmr2j/m/n: OT1/cmr2j/m/n
+cmrj -> qt
+Initial: OT1/cmrj/m/n: OT1/cmrj/m/n: \qtstyle 
+Result: OT1/cmss/m/n: OT1/cmss/m/n
+cmrj -> reg
+Initial: OT1/cmrj/m/n: OT1/cmrj/m/n: \regstyle 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+cmrj -> sh
+Initial: OT1/cmrj/m/n: OT1/cmrj/m/n: \shstyle 
+Result: OT1/cmrj/m/n: OT1/cmrj/m/n
+cmrj -> su
+Initial: OT1/cmrj/m/n: OT1/cmrj/m/n: \sustyle 
+Result: OT1/cmr1/m/n: OT1/cmr1/m/n
+cmrj -> swash
+Initial: OT1/cmrj/m/n: OT1/cmrj/m/n: \swashstyle 
+Result: OT1/cmrj/m/n: OT1/cmrj/m/n
+cmrj -> sw
+Initial: OT1/cmrj/m/n: OT1/cmrj/m/n: \swstyle 
+Result: OT1/cmrw/m/n: OT1/cmrw/m/n
+cmrj -> ti
+Initial: OT1/cmrj/m/n: OT1/cmrj/m/n: \tistyle 
+Result: OT1/cmrj/m/n: OT1/cmrj/m/n
+cmrj -> tl
+Initial: OT1/cmrj/m/n: OT1/cmrj/m/n: \tlstyle 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+cmrj -> tm
+Initial: OT1/cmrj/m/n: OT1/cmrj/m/n: \tmstyle 
+Result: OT1/cmrj/m/n: OT1/cmrj/m/n
+cmrj -> to
+Initial: OT1/cmrj/m/n: OT1/cmrj/m/n: \tostyle 
+Result: OT1/cmrj/m/n: OT1/cmrj/m/n
+cmrj -> t
+Initial: OT1/cmrj/m/n: OT1/cmrj/m/n: \tstyle 
+Result: OT1/cmrj/m/n: OT1/cmrj/m/n
+cmrj -> tv
+Initial: OT1/cmrj/m/n: OT1/cmrj/m/n: \tvstyle 
+Result: OT1/cmrj/m/n: OT1/cmrj/m/n
+============================================================
+============================================================
+TEST 3: styles (cmr2j (m/n) ->)
+============================================================
+set is alt,emboss,in,inf,ln,l,lt,of,ornamental,os,o,pl,po,p,qt,reg,sh,su,swash,sw,ti,tl,tm,to,t,tv
+cmr2j -> alt
+Initial: OT1/cmr2j/m/n: OT1/cmr2j/m/n: \altstyle 
+Result: OT1/cmr2j/m/n: OT1/cmr2j/m/n
+cmr2j -> emboss
+Initial: OT1/cmr2j/m/n: OT1/cmr2j/m/n: \embossstyle 
+Result: OT1/cmr2j/m/n: OT1/cmr2j/m/n
+cmr2j -> in
+Initial: OT1/cmr2j/m/n: OT1/cmr2j/m/n: \instyle 
+Result: OT1/cmr0/m/n: OT1/cmr0/m/n
+cmr2j -> inf
+Initial: OT1/cmr2j/m/n: OT1/cmr2j/m/n: \infstyle 
+Result: OT1/cmr0/m/n: OT1/cmr0/m/n
+cmr2j -> ln
+Initial: OT1/cmr2j/m/n: OT1/cmr2j/m/n: \lnstyle 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+cmr2j -> l
+Initial: OT1/cmr2j/m/n: OT1/cmr2j/m/n: \lstyle 
+Result: OT1/cmr2/m/n: OT1/cmr2/m/n
+cmr2j -> lt
+Initial: OT1/cmr2j/m/n: OT1/cmr2j/m/n: \ltstyle 
+Result: OT1/cmr2j/m/n: OT1/cmr2j/m/n
+cmr2j -> of
+Initial: OT1/cmr2j/m/n: OT1/cmr2j/m/n: \ofstyle 
+Result: OT1/cmr2j/m/n: OT1/cmr2j/m/n
+cmr2j -> ornamental
+Initial: OT1/cmr2j/m/n: OT1/cmr2j/m/n: \ornamentalstyle 
+Result: OT1/cmr2j/m/n: OT1/cmr2j/m/n
+cmr2j -> os
+Initial: OT1/cmr2j/m/n: OT1/cmr2j/m/n: \osstyle 
+Result: OT1/cmrj/m/n: OT1/cmrj/m/n
+cmr2j -> o
+Initial: OT1/cmr2j/m/n: OT1/cmr2j/m/n: \ostyle 
+Result: OT1/cmr2j/m/n: OT1/cmr2j/m/n
+cmr2j -> pl
+Initial: OT1/cmr2j/m/n: OT1/cmr2j/m/n: \plstyle 
+Result: OT1/cmr2/m/n: OT1/cmr2/m/n
+cmr2j -> po
+Initial: OT1/cmr2j/m/n: OT1/cmr2j/m/n: \postyle 
+Result: OT1/cmr2j/m/n: OT1/cmr2j/m/n
+cmr2j -> p
+Initial: OT1/cmr2j/m/n: OT1/cmr2j/m/n: \pstyle 
+Result: OT1/cmr2j/m/n: OT1/cmr2j/m/n
+cmr2j -> qt
+Initial: OT1/cmr2j/m/n: OT1/cmr2j/m/n: \qtstyle 
+Result: OT1/cmss/m/n: OT1/cmss/m/n
+cmr2j -> reg
+Initial: OT1/cmr2j/m/n: OT1/cmr2j/m/n: \regstyle 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+cmr2j -> sh
+Initial: OT1/cmr2j/m/n: OT1/cmr2j/m/n: \shstyle 
+Result: OT1/cmr2j/m/n: OT1/cmr2j/m/n
+cmr2j -> su
+Initial: OT1/cmr2j/m/n: OT1/cmr2j/m/n: \sustyle 
+Result: OT1/cmr1/m/n: OT1/cmr1/m/n
+cmr2j -> swash
+Initial: OT1/cmr2j/m/n: OT1/cmr2j/m/n: \swashstyle 
+Result: OT1/cmr2j/m/n: OT1/cmr2j/m/n
+cmr2j -> sw
+Initial: OT1/cmr2j/m/n: OT1/cmr2j/m/n: \swstyle 
+Result: OT1/cmrw/m/n: OT1/cmrw/m/n
+cmr2j -> ti
+Initial: OT1/cmr2j/m/n: OT1/cmr2j/m/n: \tistyle 
+Result: OT1/cmr2dj/m/n: OT1/cmr2dj/m/n
+cmr2j -> tl
+Initial: OT1/cmr2j/m/n: OT1/cmr2j/m/n: \tlstyle 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+cmr2j -> tm
+Initial: OT1/cmr2j/m/n: OT1/cmr2j/m/n: \tmstyle 
+Result: OT1/cmr2j/m/n: OT1/cmr2j/m/n
+cmr2j -> to
+Initial: OT1/cmr2j/m/n: OT1/cmr2j/m/n: \tostyle 
+Result: OT1/cmrj/m/n: OT1/cmrj/m/n
+cmr2j -> t
+Initial: OT1/cmr2j/m/n: OT1/cmr2j/m/n: \tstyle 
+Result: OT1/cmrj/m/n: OT1/cmrj/m/n
+cmr2j -> tv
+Initial: OT1/cmr2j/m/n: OT1/cmr2j/m/n: \tvstyle 
+Result: OT1/cmr2j/m/n: OT1/cmr2j/m/n
+============================================================
+============================================================
+TEST 4: styles (cmr2 (m/n) ->)
+============================================================
+set is alt,emboss,in,inf,ln,l,lt,of,ornamental,os,o,pl,po,p,qt,reg,sh,su,swash,sw,ti,tl,tm,to,t,tv
+cmr2 -> alt
+Initial: OT1/cmr2/m/n: OT1/cmr2/m/n: \altstyle 
+Result: OT1/cmr2/m/n: OT1/cmr2/m/n
+cmr2 -> emboss
+Initial: OT1/cmr2/m/n: OT1/cmr2/m/n: \embossstyle 
+Result: OT1/cmr2/m/n: OT1/cmr2/m/n
+cmr2 -> in
+Initial: OT1/cmr2/m/n: OT1/cmr2/m/n: \instyle 
+Result: OT1/cmr0/m/n: OT1/cmr0/m/n
+cmr2 -> inf
+Initial: OT1/cmr2/m/n: OT1/cmr2/m/n: \infstyle 
+Result: OT1/cmr0/m/n: OT1/cmr0/m/n
+cmr2 -> ln
+Initial: OT1/cmr2/m/n: OT1/cmr2/m/n: \lnstyle 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+cmr2 -> l
+Initial: OT1/cmr2/m/n: OT1/cmr2/m/n: \lstyle 
+Result: OT1/cmr2/m/n: OT1/cmr2/m/n
+cmr2 -> lt
+Initial: OT1/cmr2/m/n: OT1/cmr2/m/n: \ltstyle 
+Result: OT1/cmr2/m/n: OT1/cmr2/m/n
+cmr2 -> of
+Initial: OT1/cmr2/m/n: OT1/cmr2/m/n: \ofstyle 
+Result: OT1/cmr2/m/n: OT1/cmr2/m/n
+cmr2 -> ornamental
+Initial: OT1/cmr2/m/n: OT1/cmr2/m/n: \ornamentalstyle 
+Result: OT1/cmr2/m/n: OT1/cmr2/m/n
+cmr2 -> os
+Initial: OT1/cmr2/m/n: OT1/cmr2/m/n: \osstyle 
+Result: OT1/cmrj/m/n: OT1/cmrj/m/n
+cmr2 -> o
+Initial: OT1/cmr2/m/n: OT1/cmr2/m/n: \ostyle 
+Result: OT1/cmr2j/m/n: OT1/cmr2j/m/n
+cmr2 -> pl
+Initial: OT1/cmr2/m/n: OT1/cmr2/m/n: \plstyle 
+Result: OT1/cmr2/m/n: OT1/cmr2/m/n
+cmr2 -> po
+Initial: OT1/cmr2/m/n: OT1/cmr2/m/n: \postyle 
+Result: OT1/cmr2j/m/n: OT1/cmr2j/m/n
+cmr2 -> p
+Initial: OT1/cmr2/m/n: OT1/cmr2/m/n: \pstyle 
+Result: OT1/cmr2/m/n: OT1/cmr2/m/n
+cmr2 -> qt
+Initial: OT1/cmr2/m/n: OT1/cmr2/m/n: \qtstyle 
+Result: OT1/cmss/m/n: OT1/cmss/m/n
+cmr2 -> reg
+Initial: OT1/cmr2/m/n: OT1/cmr2/m/n: \regstyle 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+cmr2 -> sh
+Initial: OT1/cmr2/m/n: OT1/cmr2/m/n: \shstyle 
+Result: OT1/cmr2/m/n: OT1/cmr2/m/n
+cmr2 -> su
+Initial: OT1/cmr2/m/n: OT1/cmr2/m/n: \sustyle 
+Result: OT1/cmr1/m/n: OT1/cmr1/m/n
+cmr2 -> swash
+Initial: OT1/cmr2/m/n: OT1/cmr2/m/n: \swashstyle 
+Result: OT1/cmr2/m/n: OT1/cmr2/m/n
+cmr2 -> sw
+Initial: OT1/cmr2/m/n: OT1/cmr2/m/n: \swstyle 
+Result: OT1/cmrw/m/n: OT1/cmrw/m/n
+cmr2 -> ti
+Initial: OT1/cmr2/m/n: OT1/cmr2/m/n: \tistyle 
+Result: OT1/cmr2/m/n: OT1/cmr2/m/n
+cmr2 -> tl
+Initial: OT1/cmr2/m/n: OT1/cmr2/m/n: \tlstyle 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+cmr2 -> tm
+Initial: OT1/cmr2/m/n: OT1/cmr2/m/n: \tmstyle 
+Result: OT1/cmr2/m/n: OT1/cmr2/m/n
+cmr2 -> to
+Initial: OT1/cmr2/m/n: OT1/cmr2/m/n: \tostyle 
+Result: OT1/cmrj/m/n: OT1/cmrj/m/n
+cmr2 -> t
+Initial: OT1/cmr2/m/n: OT1/cmr2/m/n: \tstyle 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+cmr2 -> tv
+Initial: OT1/cmr2/m/n: OT1/cmr2/m/n: \tvstyle 
+Result: OT1/cmr2/m/n: OT1/cmr2/m/n
+============================================================

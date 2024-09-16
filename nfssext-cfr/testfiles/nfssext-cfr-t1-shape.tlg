@@ -1,0 +1,398 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+============================================================
+TEST 1: shapes ((md) n->)
+============================================================
+set is df,it,normal,ol,ri,scol,sc,scu,si,sw,ui,up,u
+n -> df
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \dfshape 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+n -> it
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \itshape 
+Result: OT1/cmr/m/it: OT1/cmr/m/it
+n -> normal
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \normalshape 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+n -> ol
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \olshape 
+Result: OT1/cmr/m/ol: OT1/cmr/m/ol
+n -> ri
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \rishape 
+Result: OT1/cmr/m/ri: OT1/cmr/m/ri
+n -> scol
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \scolshape 
+Result: OT1/cmr/m/scol: OT1/cmr/m/scol
+n -> sc
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \scshape 
+Result: OT1/cmr/m/sc: OT1/cmr/m/sc
+n -> scu
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \scushape 
+Result: OT1/cmr/m/su: OT1/cmr/m/su
+n -> si
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \sishape 
+Result: OT1/cmr/m/scit: OT1/cmr/m/scit
+n -> sw
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \swshape 
+Result: OT1/cmr/m/sw: OT1/cmr/m/sw
+n -> ui
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \uishape 
+Result: OT1/cmr/m/ui: OT1/cmr/m/ui
+n -> up
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \upshape 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+n -> u
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \ushape 
+Result: OT1/cmr/m/u: OT1/cmr/m/u
+============================================================
+============================================================
+TEST 2: shape ((md) it->)
+============================================================
+set is df,it,normal,ol,ri,scol,sc,scu,si,sw,ui,up,u
+it -> df
+Initial: OT1/cmr/m/it: OT1/cmr/m/it: \dfshape 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+it -> it
+Initial: OT1/cmr/m/it: OT1/cmr/m/it: \itshape 
+Result: OT1/cmr/m/it: OT1/cmr/m/it
+it -> normal
+Initial: OT1/cmr/m/it: OT1/cmr/m/it: \normalshape 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+it -> ol
+Initial: OT1/cmr/m/it: OT1/cmr/m/it: \olshape 
+Result: OT1/cmr/m/ol: OT1/cmr/m/ol
+it -> ri
+Initial: OT1/cmr/m/it: OT1/cmr/m/it: \rishape 
+Result: OT1/cmr/m/ri: OT1/cmr/m/ri
+it -> scol
+Initial: OT1/cmr/m/it: OT1/cmr/m/it: \scolshape 
+Result: OT1/cmr/m/scol: OT1/cmr/m/scol
+it -> sc
+Initial: OT1/cmr/m/it: OT1/cmr/m/it: \scshape 
+Result: OT1/cmr/m/scit: OT1/cmr/m/scit
+it -> scu
+Initial: OT1/cmr/m/it: OT1/cmr/m/it: \scushape 
+Result: OT1/cmr/m/su: OT1/cmr/m/su
+it -> si
+Initial: OT1/cmr/m/it: OT1/cmr/m/it: \sishape 
+Result: OT1/cmr/m/scit: OT1/cmr/m/scit
+it -> sw
+Initial: OT1/cmr/m/it: OT1/cmr/m/it: \swshape 
+Result: OT1/cmr/m/sw: OT1/cmr/m/sw
+it -> ui
+Initial: OT1/cmr/m/it: OT1/cmr/m/it: \uishape 
+Result: OT1/cmr/m/ui: OT1/cmr/m/ui
+it -> up
+Initial: OT1/cmr/m/it: OT1/cmr/m/it: \upshape 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+it -> u
+Initial: OT1/cmr/m/it: OT1/cmr/m/it: \ushape 
+Result: OT1/cmr/m/u: OT1/cmr/m/u
+============================================================
+============================================================
+TEST 3: shape ((md) sc->)
+============================================================
+set is df,it,normal,ol,ri,scol,sc,scu,si,sw,ui,up,u
+sc -> df
+Initial: OT1/cmr/m/sc: OT1/cmr/m/sc: \dfshape 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+sc -> it
+Initial: OT1/cmr/m/sc: OT1/cmr/m/sc: \itshape 
+Result: OT1/cmr/m/scit: OT1/cmr/m/scit
+sc -> normal
+Initial: OT1/cmr/m/sc: OT1/cmr/m/sc: \normalshape 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+sc -> ol
+Initial: OT1/cmr/m/sc: OT1/cmr/m/sc: \olshape 
+Result: OT1/cmr/m/ol: OT1/cmr/m/ol
+sc -> ri
+Initial: OT1/cmr/m/sc: OT1/cmr/m/sc: \rishape 
+Result: OT1/cmr/m/ri: OT1/cmr/m/ri
+sc -> scol
+Initial: OT1/cmr/m/sc: OT1/cmr/m/sc: \scolshape 
+Result: OT1/cmr/m/scol: OT1/cmr/m/scol
+sc -> sc
+Initial: OT1/cmr/m/sc: OT1/cmr/m/sc: \scshape 
+Result: OT1/cmr/m/sc: OT1/cmr/m/sc
+sc -> scu
+Initial: OT1/cmr/m/sc: OT1/cmr/m/sc: \scushape 
+Result: OT1/cmr/m/su: OT1/cmr/m/su
+sc -> si
+Initial: OT1/cmr/m/sc: OT1/cmr/m/sc: \sishape 
+Result: OT1/cmr/m/scit: OT1/cmr/m/scit
+sc -> sw
+Initial: OT1/cmr/m/sc: OT1/cmr/m/sc: \swshape 
+Result: OT1/cmr/m/scsw: OT1/cmr/m/scsw
+sc -> ui
+Initial: OT1/cmr/m/sc: OT1/cmr/m/sc: \uishape 
+Result: OT1/cmr/m/ui: OT1/cmr/m/ui
+sc -> up
+Initial: OT1/cmr/m/sc: OT1/cmr/m/sc: \upshape 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+sc -> u
+Initial: OT1/cmr/m/sc: OT1/cmr/m/sc: \ushape 
+Result: OT1/cmr/m/su: OT1/cmr/m/su
+============================================================
+============================================================
+TEST 4: shapes ((b) n->)
+============================================================
+set is df,it,normal,ol,ri,scol,sc,scu,si,sw,ui,up,u
+n -> df
+Initial: OT1/cmr/b/n: OT1/cmr/b/n: \dfshape 
+Result: OT1/cmr/b/n: OT1/cmr/b/n
+n -> it
+Initial: OT1/cmr/b/n: OT1/cmr/b/n: \itshape 
+Result: OT1/cmr/b/it: OT1/cmr/b/it
+n -> normal
+Initial: OT1/cmr/b/n: OT1/cmr/b/n: \normalshape 
+Result: OT1/cmr/b/n: OT1/cmr/b/n
+n -> ol
+Initial: OT1/cmr/b/n: OT1/cmr/b/n: \olshape 
+Result: OT1/cmr/b/ol: OT1/cmr/b/ol
+n -> ri
+Initial: OT1/cmr/b/n: OT1/cmr/b/n: \rishape 
+Result: OT1/cmr/b/ri: OT1/cmr/b/ri
+n -> scol
+Initial: OT1/cmr/b/n: OT1/cmr/b/n: \scolshape 
+Result: OT1/cmr/b/scol: OT1/cmr/b/scol
+n -> sc
+Initial: OT1/cmr/b/n: OT1/cmr/b/n: \scshape 
+Result: OT1/cmr/b/sc: OT1/cmr/b/sc
+n -> scu
+Initial: OT1/cmr/b/n: OT1/cmr/b/n: \scushape 
+Result: OT1/cmr/b/su: OT1/cmr/b/su
+n -> si
+Initial: OT1/cmr/b/n: OT1/cmr/b/n: \sishape 
+Result: OT1/cmr/b/si: OT1/cmr/b/si
+n -> sw
+Initial: OT1/cmr/b/n: OT1/cmr/b/n: \swshape 
+Result: OT1/cmr/b/n: OT1/cmr/b/n
+n -> ui
+Initial: OT1/cmr/b/n: OT1/cmr/b/n: \uishape 
+Result: OT1/cmr/b/ui: OT1/cmr/b/ui
+n -> up
+Initial: OT1/cmr/b/n: OT1/cmr/b/n: \upshape 
+Result: OT1/cmr/b/n: OT1/cmr/b/n
+n -> u
+Initial: OT1/cmr/b/n: OT1/cmr/b/n: \ushape 
+Result: OT1/cmr/b/u: OT1/cmr/b/u
+============================================================
+============================================================
+TEST 5: shape ((b) it->)
+============================================================
+set is df,it,normal,ol,ri,scol,sc,scu,si,sw,ui,up,u
+it -> df
+Initial: OT1/cmr/b/it: OT1/cmr/b/it: \dfshape 
+Result: OT1/cmr/b/n: OT1/cmr/b/n
+it -> it
+Initial: OT1/cmr/b/it: OT1/cmr/b/it: \itshape 
+Result: OT1/cmr/b/it: OT1/cmr/b/it
+it -> normal
+Initial: OT1/cmr/b/it: OT1/cmr/b/it: \normalshape 
+Result: OT1/cmr/b/n: OT1/cmr/b/n
+it -> ol
+Initial: OT1/cmr/b/it: OT1/cmr/b/it: \olshape 
+Result: OT1/cmr/b/ol: OT1/cmr/b/ol
+it -> ri
+Initial: OT1/cmr/b/it: OT1/cmr/b/it: \rishape 
+Result: OT1/cmr/b/ri: OT1/cmr/b/ri
+it -> scol
+Initial: OT1/cmr/b/it: OT1/cmr/b/it: \scolshape 
+Result: OT1/cmr/b/scol: OT1/cmr/b/scol
+it -> sc
+Initial: OT1/cmr/b/it: OT1/cmr/b/it: \scshape 
+Result: OT1/cmr/b/sc: OT1/cmr/b/sc
+it -> scu
+Initial: OT1/cmr/b/it: OT1/cmr/b/it: \scushape 
+Result: OT1/cmr/b/su: OT1/cmr/b/su
+it -> si
+Initial: OT1/cmr/b/it: OT1/cmr/b/it: \sishape 
+Result: OT1/cmr/b/si: OT1/cmr/b/si
+it -> sw
+Initial: OT1/cmr/b/it: OT1/cmr/b/it: \swshape 
+Result: OT1/cmr/b/it: OT1/cmr/b/it
+it -> ui
+Initial: OT1/cmr/b/it: OT1/cmr/b/it: \uishape 
+Result: OT1/cmr/b/ui: OT1/cmr/b/ui
+it -> up
+Initial: OT1/cmr/b/it: OT1/cmr/b/it: \upshape 
+Result: OT1/cmr/b/n: OT1/cmr/b/n
+it -> u
+Initial: OT1/cmr/b/it: OT1/cmr/b/it: \ushape 
+Result: OT1/cmr/b/u: OT1/cmr/b/u
+============================================================
+============================================================
+TEST 6: shape ((b) sc->)
+============================================================
+set is df,it,normal,ol,ri,scol,sc,scu,si,sw,ui,up,u
+sc -> df
+Initial: OT1/cmr/b/sc: OT1/cmr/b/sc: \dfshape 
+Result: OT1/cmr/b/n: OT1/cmr/b/n
+sc -> it
+Initial: OT1/cmr/b/sc: OT1/cmr/b/sc: \itshape 
+Result: OT1/cmr/b/it: OT1/cmr/b/it
+sc -> normal
+Initial: OT1/cmr/b/sc: OT1/cmr/b/sc: \normalshape 
+Result: OT1/cmr/b/n: OT1/cmr/b/n
+sc -> ol
+Initial: OT1/cmr/b/sc: OT1/cmr/b/sc: \olshape 
+Result: OT1/cmr/b/ol: OT1/cmr/b/ol
+sc -> ri
+Initial: OT1/cmr/b/sc: OT1/cmr/b/sc: \rishape 
+Result: OT1/cmr/b/ri: OT1/cmr/b/ri
+sc -> scol
+Initial: OT1/cmr/b/sc: OT1/cmr/b/sc: \scolshape 
+Result: OT1/cmr/b/scol: OT1/cmr/b/scol
+sc -> sc
+Initial: OT1/cmr/b/sc: OT1/cmr/b/sc: \scshape 
+Result: OT1/cmr/b/sc: OT1/cmr/b/sc
+sc -> scu
+Initial: OT1/cmr/b/sc: OT1/cmr/b/sc: \scushape 
+Result: OT1/cmr/b/su: OT1/cmr/b/su
+sc -> si
+Initial: OT1/cmr/b/sc: OT1/cmr/b/sc: \sishape 
+Result: OT1/cmr/b/si: OT1/cmr/b/si
+sc -> sw
+Initial: OT1/cmr/b/sc: OT1/cmr/b/sc: \swshape 
+Result: OT1/cmr/b/sc: OT1/cmr/b/sc
+sc -> ui
+Initial: OT1/cmr/b/sc: OT1/cmr/b/sc: \uishape 
+Result: OT1/cmr/b/ui: OT1/cmr/b/ui
+sc -> up
+Initial: OT1/cmr/b/sc: OT1/cmr/b/sc: \upshape 
+Result: OT1/cmr/b/n: OT1/cmr/b/n
+sc -> u
+Initial: OT1/cmr/b/sc: OT1/cmr/b/sc: \ushape 
+Result: OT1/cmr/b/su: OT1/cmr/b/su
+============================================================
+============================================================
+TEST 7: shapes ((bf(x)) n->)
+============================================================
+set is df,it,normal,ol,ri,scol,sc,scu,si,sw,ui,up,u
+n -> df
+Initial: OT1/cmr/bx/n: OT1/cmr/bx/n: \dfshape 
+Result: OT1/cmr/bx/n: OT1/cmr/bx/n
+n -> it
+Initial: OT1/cmr/bx/n: OT1/cmr/bx/n: \itshape 
+Result: OT1/cmr/bx/it: OT1/cmr/bx/it
+n -> normal
+Initial: OT1/cmr/bx/n: OT1/cmr/bx/n: \normalshape 
+Result: OT1/cmr/bx/n: OT1/cmr/bx/n
+n -> ol
+Initial: OT1/cmr/bx/n: OT1/cmr/bx/n: \olshape 
+Result: OT1/cmr/bx/ol: OT1/cmr/bx/ol
+n -> ri
+Initial: OT1/cmr/bx/n: OT1/cmr/bx/n: \rishape 
+Result: OT1/cmr/bx/ri: OT1/cmr/bx/ri
+n -> scol
+Initial: OT1/cmr/bx/n: OT1/cmr/bx/n: \scolshape 
+Result: OT1/cmr/bx/scol: OT1/cmr/bx/scol
+n -> sc
+Initial: OT1/cmr/bx/n: OT1/cmr/bx/n: \scshape 
+Result: OT1/cmr/bx/sc: OT1/cmr/bx/sc
+n -> scu
+Initial: OT1/cmr/bx/n: OT1/cmr/bx/n: \scushape 
+Result: OT1/cmr/bx/su: OT1/cmr/bx/su
+n -> si
+Initial: OT1/cmr/bx/n: OT1/cmr/bx/n: \sishape 
+Result: OT1/cmr/bx/scit: OT1/cmr/bx/scit
+n -> sw
+Initial: OT1/cmr/bx/n: OT1/cmr/bx/n: \swshape 
+Result: OT1/cmrw/bx/n: OT1/cmrw/bx/n
+n -> ui
+Initial: OT1/cmr/bx/n: OT1/cmr/bx/n: \uishape 
+Result: OT1/cmr/bx/ui: OT1/cmr/bx/ui
+n -> up
+Initial: OT1/cmr/bx/n: OT1/cmr/bx/n: \upshape 
+Result: OT1/cmr/bx/n: OT1/cmr/bx/n
+n -> u
+Initial: OT1/cmr/bx/n: OT1/cmr/bx/n: \ushape 
+Result: OT1/cmr/bx/u: OT1/cmr/bx/u
+============================================================
+============================================================
+TEST 8: shape ((bf(x)) it->)
+============================================================
+set is df,it,normal,ol,ri,scol,sc,scu,si,sw,ui,up,u
+it -> df
+Initial: OT1/cmr/bx/it: OT1/cmr/bx/it: \dfshape 
+Result: OT1/cmr/bx/n: OT1/cmr/bx/n
+it -> it
+Initial: OT1/cmr/bx/it: OT1/cmr/bx/it: \itshape 
+Result: OT1/cmr/bx/it: OT1/cmr/bx/it
+it -> normal
+Initial: OT1/cmr/bx/it: OT1/cmr/bx/it: \normalshape 
+Result: OT1/cmr/bx/n: OT1/cmr/bx/n
+it -> ol
+Initial: OT1/cmr/bx/it: OT1/cmr/bx/it: \olshape 
+Result: OT1/cmr/bx/ol: OT1/cmr/bx/ol
+it -> ri
+Initial: OT1/cmr/bx/it: OT1/cmr/bx/it: \rishape 
+Result: OT1/cmr/bx/ri: OT1/cmr/bx/ri
+it -> scol
+Initial: OT1/cmr/bx/it: OT1/cmr/bx/it: \scolshape 
+Result: OT1/cmr/bx/scol: OT1/cmr/bx/scol
+it -> sc
+Initial: OT1/cmr/bx/it: OT1/cmr/bx/it: \scshape 
+Result: OT1/cmr/bx/scit: OT1/cmr/bx/scit
+it -> scu
+Initial: OT1/cmr/bx/it: OT1/cmr/bx/it: \scushape 
+Result: OT1/cmr/bx/su: OT1/cmr/bx/su
+it -> si
+Initial: OT1/cmr/bx/it: OT1/cmr/bx/it: \sishape 
+Result: OT1/cmr/bx/scit: OT1/cmr/bx/scit
+it -> sw
+Initial: OT1/cmr/bx/it: OT1/cmr/bx/it: \swshape 
+Result: OT1/cmrw/bx/it: OT1/cmrw/bx/it
+it -> ui
+Initial: OT1/cmr/bx/it: OT1/cmr/bx/it: \uishape 
+Result: OT1/cmr/bx/ui: OT1/cmr/bx/ui
+it -> up
+Initial: OT1/cmr/bx/it: OT1/cmr/bx/it: \upshape 
+Result: OT1/cmr/bx/n: OT1/cmr/bx/n
+it -> u
+Initial: OT1/cmr/bx/it: OT1/cmr/bx/it: \ushape 
+Result: OT1/cmr/bx/u: OT1/cmr/bx/u
+============================================================
+============================================================
+TEST 9: shape ((bf(x)) sc->)
+============================================================
+set is df,it,normal,ol,ri,scol,sc,scu,si,sw,ui,up,u
+sc -> df
+Initial: OT1/cmr/bx/sc: OT1/cmr/bx/sc: \dfshape 
+Result: OT1/cmr/bx/n: OT1/cmr/bx/n
+sc -> it
+Initial: OT1/cmr/bx/sc: OT1/cmr/bx/sc: \itshape 
+Result: OT1/cmr/bx/scit: OT1/cmr/bx/scit
+sc -> normal
+Initial: OT1/cmr/bx/sc: OT1/cmr/bx/sc: \normalshape 
+Result: OT1/cmr/bx/n: OT1/cmr/bx/n
+sc -> ol
+Initial: OT1/cmr/bx/sc: OT1/cmr/bx/sc: \olshape 
+Result: OT1/cmr/bx/ol: OT1/cmr/bx/ol
+sc -> ri
+Initial: OT1/cmr/bx/sc: OT1/cmr/bx/sc: \rishape 
+Result: OT1/cmr/bx/ri: OT1/cmr/bx/ri
+sc -> scol
+Initial: OT1/cmr/bx/sc: OT1/cmr/bx/sc: \scolshape 
+Result: OT1/cmr/bx/scol: OT1/cmr/bx/scol
+sc -> sc
+Initial: OT1/cmr/bx/sc: OT1/cmr/bx/sc: \scshape 
+Result: OT1/cmr/bx/sc: OT1/cmr/bx/sc
+sc -> scu
+Initial: OT1/cmr/bx/sc: OT1/cmr/bx/sc: \scushape 
+Result: OT1/cmr/bx/su: OT1/cmr/bx/su
+sc -> si
+Initial: OT1/cmr/bx/sc: OT1/cmr/bx/sc: \sishape 
+Result: OT1/cmr/bx/scit: OT1/cmr/bx/scit
+sc -> sw
+Initial: OT1/cmr/bx/sc: OT1/cmr/bx/sc: \swshape 
+Result: OT1/cmr/bx/sc: OT1/cmr/bx/sc
+sc -> ui
+Initial: OT1/cmr/bx/sc: OT1/cmr/bx/sc: \uishape 
+Result: OT1/cmr/bx/ui: OT1/cmr/bx/ui
+sc -> up
+Initial: OT1/cmr/bx/sc: OT1/cmr/bx/sc: \upshape 
+Result: OT1/cmr/bx/n: OT1/cmr/bx/n
+sc -> u
+Initial: OT1/cmr/bx/sc: OT1/cmr/bx/sc: \ushape 
+Result: OT1/cmr/bx/su: OT1/cmr/bx/su
+============================================================

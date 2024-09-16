@@ -1,0 +1,3333 @@
+% \iffalse meta-comment
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% nfssext-cfr.dtx
+% Additions and changes Copyright (C) 2010-2024 Clea F. Rees.
+% Code from skeleton.dtx Copyright (C) 2015-2024 Scott Pakin (see below).
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   https://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2008-05-04 or later.
+%
+% This work has the LPPL maintenance status 'muaintained'.
+%
+% The Current Maintainer of this work is Clea F. Rees.
+%
+% This work consists of all files listed in manifest.txt.
+%
+% The file nfssext-cfr.dtx is a derived work under the terms of the
+% LPPL. It is based on version 2.4 of skeleton.dtx which is part of
+% dtxtut by Scott Pakin. A copy of dtxtut, including the
+% unmodified version of skeleton.dtx is available from
+% https://www.ctan.org/pkg/dtxtut and released under the LPPL.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \fi
+%
+% \iffalse
+%<*driver>
+\RequirePackage{svn-prov}
+% ^^A \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
+% ^^A \def\MyMakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
+\ExplSyntaxOn
+% ^^A sylwad yannisl: https://tex.stackexchange.com/questions/723293/how-can-i-get-automatic-code-indexing-of-expl3-in-ltxdoc/723294#comment1799661_723294
+% ^^A \ExplSyntaxOn \cs_gset:Npn \MakePrivateLetters { \char_set_catcode_letter:N \@ \char_set_catcode_letter:N _ \char_set_catcode_letter:N \: } \ExplSyntaxOff`
+\cs_new_nopar:Npn \MyMakePrivateLetters
+{
+  \char_set_catcode_letter:N \@
+  \char_set_catcode_letter:N _
+  \char_set_catcode_letter:N \:
+}
+\ExplSyntaxOff
+\ProvidesFileSVN{$Id: nfssext-cfr.dtx 10344 2024-09-13 20:17:16Z cfrees $}[v0.0 \revinfo][\filebase DTX: ]
+\DefineFileInfoSVN[nfssext-cfr]
+\documentclass[10pt,british]{ltxdoc}
+% l3doc loads fancyvrb
+% fancyvrb overwrites svn-prov's macros without warning
+% restore \fileversion \filerev in case we're using l3doc
+\GetFileInfoSVN{nfssext-cfr}
+\usepackage[debug]{nfssext-cfr}
+\usepackage[rm={prop,osf},sf={prop,osf},tt={mono,tab,lf}]{cfr-lm}
+\EnableCrossrefs
+\CodelineIndex
+\RecordChanges
+\DoNotIndex{\verb,\ProvidesPackageSVN,\NeedsTeXFormat,\ProcessKeyOptions}
+\usepackage{babel}
+\usepackage{fancyhdr}
+% \usepackage[plain]{fancyref}
+\usepackage{fixfoot}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage[inline]{enumitem}
+\usepackage[referable]{threeparttablex}
+\makeatletter
+\def\TPT@measurement{% ateb David Carlisle: https://tex.stackexchange.com/a/370691/
+  \ifdim\wd\@tempboxb<\TPTminimum
+    \hsize \TPTminimum
+  \else
+    \hsize\wd\@tempboxb
+  \fi
+  \xdef\TPT@hsize{\hsize\the\hsize \noexpand\@parboxrestore}\TPT@hsize
+  \ifx\TPT@docapt\@undefined\else
+    \TPT@docapt \vskip.2\baselineskip
+  \fi \par
+  \dimen@\dp\@tempboxb % new
+  \box\@tempboxb
+  \ifvmode \prevdepth\dimen@ \fi% was \z@ not \dimen@
+}
+\renewlist{tablenotes}{enumerate}{1}
+\setlist[tablenotes]{label=\tnote{\sffamily\alph*},ref=\alph*,itemsep=\z@,topsep=\z@skip,partopsep=\z@skip,parsep=\z@,itemindent=\z@,labelindent=\tabcolsep,labelsep=.2em,leftmargin=*,align=left,before={\unskip\medskip\rmfamily\lstyle\footnotesize}}
+\makeatother
+\usepackage{xcolor}
+\usepackage{xurl}
+\urlstyle{sf}
+\usepackage{microtype}
+%^^A \usepackage[a4paper,headheight=14pt,marginparwidth=45mm,hmarginratio=4:1,vscale=.8,hscale=.7,verbose]{geometry}	% use 14pt for 11pt text, 15pt for 12pt text
+%^^A \usepackage[a4paper,headheight=14pt,vscale=.8,hscale=.7,verbose,showframe]{geometry}	% use 14pt for 11pt text, 15pt for 12pt text
+%^^A \usepackage[verbose,showframe,marginparwidth=130pt,a4paper,includemp,hscale=0.8]{geometry}
+% addaswyd o chronos.tex
+\newlength\tewadjust
+\newlength\chronosdoctemplgth
+\AddToHook {begindocument/after}[.]
+{%
+  \setlength\tewadjust{\marginparwidth+\marginparsep-\paperwidth+\textwidth+\oddsidemargin+1in}%
+  \setlength\chronosdoctemplgth{0pt}%
+}
+\usepackage{csquotes}
+\MakeAutoQuote{‘}{’}
+\MakeAutoQuote*{“}{”}
+\usepackage{caption}
+\DeclareCaptionFont{lf}{\sffamily\lstyle}
+\captionsetup[table]{labelfont=lf}
+% sicrhau hyperindex=false: llwytho CYN bookmark
+\usepackage{hypdoc}% ateb Ulrike Fischer: https://tex.stackexchange.com/a/695555/
+\usepackage{bookmark}
+\hypersetup{%
+  colorlinks=true,
+  citecolor={moss},
+  extension=pdf,
+  linkcolor={strawberry},
+  linktocpage=true,
+  pdfcreator={TeX},
+  pdfproducer={pdfeTeX},
+  urlcolor={blueberry}%
+}
+\NewDocElement[%
+  idxtype=opt.,
+  idxgroup=options,
+  printtype=\textit{opt.},
+]{Opt}{option}
+\NewDocElement[%
+  idxtype=pkg.,
+  idxgroup=,
+  printtype=\textit{pkg.},
+]{Pkg}{package}
+\NewDocElement[%
+  printtype=\textdagger,
+  idxtype=,
+  idxgroup=,
+  macrolike,
+]{DMacro}{dmacro}
+\NewDocumentCommand \val { m }
+{%
+  {\ttfamily =\,\meta{#1}}%
+}
+\ExplSyntaxOn
+\NewDocumentCommand \vals { m }
+{
+  {
+    \ttfamily = \, 
+    \clist_use:nn { #1 } { \textbar }
+  }
+} 
+\keys_define:nn { clm / doc }
+{
+  unknown .code:n = {
+    \cs_if_free:cT { \l_keys_key_str }
+    {
+      \tl_gset:cn { \l_keys_key_str } { #1 }
+    }
+  },
+}
+\NewDocumentCommand \clmdocset { +m }
+{
+  \keys_set:nn { clm / doc } { #1 }
+}
+\ExplSyntaxOff
+\clmdocset{%
+  bug={\href{https://codeberg.org/cfr/nfssext/issues}{\textsc{bugtracker}}},
+  codeberg={\href{https://codeberg.org/cfr/nfssext}{\textsc{codeberg}}},
+  github={\href{https://github.com/cfr42/nfssext}{\textsc{github}}},
+  ctan={\href{https://ctan.org/}{\textsc{ctan}}},
+}
+\AddToHook {env/threeparttable/begin} {\typeout{Bagpuss}\sffamily}
+\usepackage{cleveref}
+\newcommand*{\gust}{\textsc{Gust}}
+\newcommand*{\lpack}[1]{\textsf{#1}}
+\newcommand*{\fgroup}[1]{\textsf{#1}}
+\newcommand*{\fname}[1]{\textsf{#1}}
+\newcommand*{\file}[1]{\texttt{#1}}
+\newcommand*{\mail}[1]{\texttt{#1}}
+% \newcommand*{\pkg}[1]{\mbox{\textsf{#1}}}
+\newcommand* \nfss {\textsc{nfss}}
+\newcommand* \nnfss {\textsc{nnfss}}
+\newcommand* \svn {\textsc{svn}}
+\title{\filebase}
+\author{Clea F. Rees\thanks{%
+    Bug tracker:
+    \href{https://codeberg.org/cfr/nfssext/issues}{\url{codeberg.org/cfr/nfssext/issues}}
+    \textbar{} Code:
+    \href{https://codeberg.org/cfr/nfssext}{\url{codeberg.org/cfr/nfssext}}
+    \textbar{} Mirror:
+    \href{https://github.com/cfr42/nfssext}{\url{github.com/cfr42/nfssext}}% 
+}}
+% \date{\fileversion~\filetoday}
+\date{\fileversion~\filedate}
+\pagestyle{fancy}
+\fancyhf{}
+\def\exfsdocffont{\itshape\plstyle\footnotesize}
+\def\exfsdochfont{\itshape\plstyle}
+%^^A \fancyhf[rh]{\itshape\plstyle\leftmark}
+%^^A \fancyhf[lh]{\sffamily\plstyle\leftmark}
+\fancyhf[rh]{\exfsdochfont\thepage}
+\fancyhf[rf]{\exfsdocffont\fileversion}
+% ^^A \fancyhf[rh]{\itshape\filetoday}
+% ^^A \fancyhf[ch]{\itshape Support for Latin Modern}
+% ^^A\fancyhf[lf]{\itshape\fileversion}
+%^^A \fancyhf[cf]{\itshape\plstyle--- \thepage~/~\lastpage{} ---}
+% ref. fancyhdr (or see tc3 ref'd there?)
+\renewcommand \sectionmark[1]{\markboth{\thesection{} #1}{}}
+\renewcommand \subsectionmark[1]{\markright{\arabic{subsection} #1}}
+\ExplSyntaxOn
+\fancyhf[lh]{\exfsdochfont\rlap{\nouppercase{\leftmark}}\skip_horizontal:n { \g__exfs_doc_offset_dim }\nouppercase{\rightmark}}
+%^^A \fancyhf[lf]{\exfsdocffont\rlap{\filebase}\skip_horizontal:n { \g__exfs_doc_offset_dim }\fileversion }
+\fancyhf[lf]{\exfsdocffont\filebase }
+\hook_gput_code:nnn {shipout/lastpage} {.}
+{
+  \property_record:nn {t:lastpage}{abspage,page,pagenum}
+}
+\cs_new_protected_nopar:Npn \lastpage 
+{
+  \property_ref:nn {t:lastpage}{page}
+}
+\cs_new_eq:NN \OrigMakePrivateLetters \MakePrivateLetters
+\dim_new:N \g__exfs_doc_offset_dim
+\hook_gput_code:nnn { begindocument } {.}
+{
+  \dim_gset:Nn \g__exfs_doc_offset_dim { \marginparwidth + \marginparsep }
+  \fancyheadoffset[lh,lf]{ \g__exfs_doc_offset_dim }
+}
+\ExplSyntaxOff
+\makeatletter
+\def\@xobeysp{\leavevmode\penalty100\ }
+\makeatother
+\definecolor{strawberry}{rgb}{1.000,0.000,0.502}
+\definecolor{blueberry}{rgb}{0.000,0.000,1.000}
+\definecolor{moss}{rgb}{0.000,0.502,0.251}
+\begin{document}
+\let\MakePrivateLetters\MyMakePrivateLetters
+\DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+%
+% \changes{v??}{2008/10/26}{First public release as part of \lpack{cfr-lm}.}
+% \changes{}{2008/12/22}{Updated version released standalone.}
+% \changes{\svn 6140}{2017/03/28}{%
+%   Fixes a bug which prevented \cs{tmstyle} and \cs{tvstyle} working correctly if the current font was not a serif family.
+%   (Especially problematic in Beamer where \cs{normalfont} cannot be used as a workaround, but annoying elsewhere.)}
+%
+% \changes{\svn 6140}{2017/03/28}{%
+%   Provides something a bit closer to real documentation.%
+% }
+% \changes{v0.0}{0000/00/00}{}
+% 
+% \maketitle\thispagestyle{empty}
+% \pdfinfo{%
+% 	/Creator		(TeX)
+% 	/Producer		(pdfTeX)
+% 	/Author			(Clea F.\ Rees)
+% 	/Title			(nfssext-cfr)
+% 	/Subject		(TeX)
+% 	/Keywords		(TeX,LaTeX,Clea,Rees)}
+% \pdfcatalog{%
+% 	/URL				()
+% 	/PageMode	/UseOutlines}	
+% \setlength{\parindent}{0pt}
+% \setlength{\parskip}{0.5em}
+% 
+% 
+% \begin{abstract}
+%
+%   \noindent \lpack{nfssext-cfr} is an extension and modification of Philipp Lehman's \lpack{nfssext} which provides extended font selection commands modelled on those provided by \LaTeXe{}.
+%   Given an appropriate font configuration, \lpack{nfssext-cfr} enables users to change the weight, width, shape and style of font as easily as they can select bold, italic or typewriter.
+%   For instance, the package makes it trivial to use proportional, hanging figures in the body of the text, proportional, lining figures in captions and headers and tabular, lining figures in tables.
+%   An extensive choice of commands are provided to access a wide variety of weights, widths, shapes and styles from the more common (e.g.~semi-bold or condensed) to the less common (e.g.~‘outline’ and right or upright italic).
+%   Comprehensive support is provided for ‘swash’ and ‘alternate’ styles.
+%   These are implemented as families rather than shapes to support fonts which offer multiple swash shapes (e.g.~small-caps, italic and upright) or alternate styles.
+%   These may be used to provide effective access to fancy ligatures, end-of-word swashes etc.\ without sacrificing the range of characters provided by \textsc{t1}.
+% 
+%   The package is not primarily intended for direct use by end-users, but is designed rather to facilitate the creation of more sophisticated font support packages.
+%   End-users may nonetheless find the package useful, subject to the constraints explained in this document.
+%   Moreover, end-users may wish to pass options to the package on newer kernels, if loading font support packages which have not been updated for changes to font selection\footnote{‘Kernel’ refers to the \LaTeX{} kernel in this context and should not be confused with your system kernel.}.
+% 
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \listoftables
+% 
+% \section{Introduction}\label{sec:intro}
+% 
+% 
+% The package was originally a fairly simple extension of Philipp Lehman's \lpack{nfssext}\@.
+% \lpack{nfssext} provides commands which enable one to specify font features not covered by the New Font Selection Scheme (\nfss).
+% The package developed according to the needs of particular fonts I configured for \LaTeX{} and, in a few cases, my dissatisfaction with the original commands.
+%
+% In adapting the package for the (New) New Font Selection Scheme\footnote{%
+%   Officially, there is no such designation, but I have to call it something.
+%   Throughout this document and packages which depend upon it, I use this term to refer to the font selection features introduced into \LaTeX{} in 2020.%
+% } (\nnfss), I have tried to balance \begin{enumerate*}[label=(\roman*)]\item backwards compatibility\footnote{%
+%   Note that 100\% backwards compatibility cannot be implemented on current \LaTeX{} kernels.%
+% } for users loading updated font support packages, \item backwards compatibility for users loading packages which haven't been updated and \item compatibility with the new features of \nnfss{}\end{enumerate*}.
+% I have also tried to account for the common case in which documents use combinations of fonts from different packages, each of which may or may not load \lpack{nfssext-cfr} and may or may not have been updated for \nnfss{}.
+% This has inevitably required some compromises and there are certainly places where I would do things differently if starting from scratch.
+%
+% While I don't recommend installing this version of \lpack{nfssext-cfr} on an older system, the package should continue to work more-or-less as it always did on older kernels.
+% To achieve this, the package is split into a main file, \file{nfssext-cfr.sty}, which provides common code and figures out whether to load code for \nfss{} (\file{nfssext-cfr-nfss.sty}) or \nnfss{} (\file{nfssext-sty-nnfss.sty}).
+% \file{nfssext-cfr-nfss.sty} is essentially what was \file{nfssext-cfr.sty} minus the code retained in the latter.
+%
+% Unfortunately, tt is impossible to ensure 100\% backwards compatibility with recent \LaTeX{} kernels.
+% By default, \lpack{nfssext-cfr} tries to interfere as little as possible with the kernel, even at the cost of backwards compatibility.
+% If \texttt{compat} is enabled, however, the package does its best to enable backwards compatible behaviour, at the cost of the new functionality provided by the kernel.
+%
+% \lpack{nfssext-cfr} does not eschew interference with the kernel at all costs.
+% Even without \texttt{compat} it patches or replaces some kernel code because some things just don't work sensibly\footnote{%
+%   This is true in two main places.
+%   The first is the kernel's initialisation of series at the start of the document.
+%   This overwrites the default \texttt{bf} series according to the font family name rather than the font name.
+%   This means that virtual fonts which depend on Computer or Latin Modern are not handled correctly and, because this code is delayed, the problem cannot be corrected by setting things up appropriately earlier.
+%
+%   The second is the implementation of ‘swash’ which is by far the most problematic of the changes and one of the most difficult to navigate.
+%   It isn't clear to me how seriously the kernel's definition is intended to be, but I have chosen to overwrite the kernel code here.}.
+%   
+% \begin{center}
+% \fbox{%
+%   \begin{minipage}{.9\linewidth}
+%     \textbf{All font-support code should be updated to use \texttt{compat=false} when loading \lpack{nfssext-cfr}.}
+%     The changes in \nnfss{} \textbf{require} changes to code based on Philipp Lehman's Font Installation Guide.
+%   \end{minipage}}
+% \end{center}
+%
+% \section{Macros}\label{sec:macros}
+% 
+% \Cref{tab:smr,tab:srr,tab:wds,tab:wghts,tab:figs,tab:gen,tab:shapes} include macros supplied by the original \lpack{nfssext} and additions available with \lpack{nfssext-cfr}.
+% Macros in \cref{tab:wds,tab:wghts,tab:shapes} should work with any font definition files which more-or-less adhere to \nfss/\nnfss.
+% This should, theoretically, be all font packages but, in practice, things are rarely so simple.
+% Macros in \cref{tab:figs,tab:gen} will work only with fonts named strictly according to the Berry naming scheme.
+% 
+% In \cref{tab:wghts,tab:wds,tab:gen,tab:figs,tab:shapes}, the third column lists the default letter codes for various font features.
+% If the defaults are changed, the macros will try to do something different.
+% 
+% A \texttt{+} indicates that the macro will attempt to merge the addition into the current font's family name, series or shape.
+% For example, if the current font uses oldstyle figures, the \texttt{+2} indicates that \cs{pstyle} will attempt to select a font with figures which are both proportional and oldstyle.
+% 
+% A \texttt{-} indicates that the macro will attempt to subtract from the current font's family name, series or shape.
+% For example, if the current font uses oldstyle figures, the \texttt{-2} indicates that \cs{tstyle} will attempt to select a font with figures which are both tabular and oldstyle.
+% 
+% A comma-separated list indicates consecutive additions and/or subtraction.
+% 
+% If no \texttt{+-} is used, the macro tries to select a font with the given feature without merging.
+% For example \cs{sistyle} tries to switch to \texttt{si} shape regardless of the current font shape.
+% 
+% A \texttt{--} indicates that the macro will try to clear all relevant letter codes from the current font's family name, series or shape.
+% For example, \cs{regwidth} tries to switch to a series with no letter codes indicating non-standard widths in its name.
+% 
+% Additions, subtractions and clearances operate on font family names, series or shapes, as appropriate.
+% In general, macros with \texttt{style} in their names operate on family names; those with \texttt{shape} operate on shape codes\footnote{But \textbf{not} \cs{swshape}!}; and those with \texttt{width} or \texttt{weight} operate on series codes.
+% 
+% The letter codes correspond to those specified by the \nfss{} specification, unless the specification does not include the relevant feature.
+% In the latter case, I tried to choose something sensible i.e.~something which made sense to me at the time.
+% These choices are not always those specified by the \nnfss{} specification, since sense and sensibility are sometimes in the eye of the encoder.
+%
+% \newcolumntype{T}{>{\ttfamily\tlstyle\arraybackslash}l}
+% \newcolumntype{F}{>{\rmfamily\arraybackslash}l}
+% \newcolumntype{R}{>{\rmfamily\arraybackslash}X}
+% \begin{table}
+%   \centering
+%   \begin{threeparttable}
+%    \caption{Standard (kernel) macros (re)defined}\label{tab:smr}
+%     \begin{tabular}{lF}
+%       \toprule
+%       \cs{swshape}\tnotex{tn:sw-exists}\tnotex{tn:swshape-refs}\DescribeMacro[noprint]{\swshape} & redefined on new kernels\tnotex{tn:sw} \\
+%         & defined on old kernels \\
+%       \cs{itshape}\DescribeMacro[noprint]{\itshape} & old kernels only\\
+%       \cs{scshape}\DescribeMacro[noprint]{\scshape} & old kernels only\\
+%       \cs{upshape}\DescribeMacro[noprint]{\upshape} & old kernels only\\
+%       \bottomrule
+%     \end{tabular}
+%     \begin{tablenotes}
+%       \item\label{tn:sw-exists}Defined only by newer kernels.
+%       \item\label{tn:swshape-refs}See \cref{tab:gen,tab:shapes} and text.
+%       \item\label{tn:sw}Definition depends on kernel, \texttt{force} and \texttt{compat}.
+%     \end{tablenotes}
+%   \end{threeparttable}
+% \end{table}
+% \begin{table}
+%   \centering
+%    \caption{Standard (kernel) font change rules redefined}\label{tab:srr}
+%     \begin{tabular}{TTF}
+%       \toprule
+%       \multicolumn{2}{c}{Shape} & \\
+%       \multicolumn{1}{c}{Current} & \multicolumn{1}{c}{Requested} & \multicolumn{1}{c}{\sffamily Applied when?} \\
+%       \midrule
+%       it & sc & \texttt{compat} \& \nnfss{} only \\
+%       sl & sc & \texttt{compat} \& \nnfss{} only \\
+%       sc & it & \texttt{compat} \& \nnfss{} only \\
+%       sc & sl & \texttt{compat} \& \nnfss{} only \\
+%       scsl & it & \texttt{compat} \& \nnfss{} only \\
+%       \bottomrule
+%     \end{tabular}
+% \end{table}
+% \begin{table}
+%   \centering
+%   \begin{threeparttable}
+%     \caption{Family switches: general}\label{tab:gen}
+%     \begin{tabularx}\linewidth{llTR}
+%       \toprule
+%       \multicolumn{2}{c}{Macros} & \multicolumn{1}{c}{} & \\
+%       \multicolumn{1}{c}{Text Command} & \multicolumn{1}{c}{Switch} & \multicolumn{1}{c}{Family Code} & \sffamily Style \\
+%       \midrule
+%       \cs{textti}\DescribeMacro[noprint]{\textti} & \cs{tistyle}\DescribeMacro[noprint]{\tistyle} & +d & titling/display\\
+%       \cs{textlt}\tnotex{tn:cf-textlg}\DescribeMacro[noprint]{\textlt} & \cs{ltstyle}\tnotex{tn:cf-lgweight}\DescribeMacro[noprint]{\ltstyle} & +l & light if separate family \\
+%       \cs{textof}\DescribeMacro[noprint]{\textof} & \cs{ofstyle}\DescribeMacro[noprint]{\ofstyle} & +l &  open-face (or outline or blank) style\\
+%       \cs{textalt}\DescribeMacro[noprint]{\textalt} & \cs{altstyle}\DescribeMacro[noprint]{\altstyle} & +a &  alternative style\\
+%       \cs{textreg}\DescribeMacro[noprint]{\textreg} & \cs{regstyle}\DescribeMacro[noprint]{\regstyle} & -- &  regular style\\
+%       \cs{emboss}\DescribeMacro[noprint]{\emboss} & \cs{embossstyle}\DescribeMacro[noprint]{\embossstyle} & +e & ‘embossed’ style \\
+%       \cs{textorn}\DescribeMacro[noprint]{\textorn} & \cs{ornamentalstyle}\DescribeMacro[noprint]{\ornamentalstyle} & +p & decorative initials etc.\\
+%       \cs{ornament}\DescribeMacro[noprint]{\ornament} & \\
+%       \cs{textqt}\DescribeMacro[noprint]{\textqt} & \cs{qtstyle}\DescribeMacro[noprint]{\qtstyle} & +q & quotation style\\
+%       \cs{textsh}\DescribeMacro[noprint]{\textsh} & \cs{shstyle}\DescribeMacro[noprint]{\shstyle} & +h & shadowed style\\
+%       \cs{texttm}\DescribeMacro[noprint]{\texttm} & \cs{tmstyle}\DescribeMacro[noprint]{\tmstyle} & -s,-v,+t & monowidth typewriter\\
+%       \cs{texttv}\DescribeMacro[noprint]{\texttv} & \cs{tvstyle}\DescribeMacro[noprint]{\tvstyle} & -s,-t,+v & variable width typewriter\\
+%       \cs{textswash}\DescribeMacro[noprint]{\textswash} & \cs{swashstyle}\tnotex{tn:cf-swstyle}\DescribeMacro[noprint]{\swashstyle} & +w & swash \\
+%       \cs{textsw}\tnotex{tn:swshape-not}\DescribeMacro[noprint]{\textsw} & \cs{swshape}\tnotex{tn:swshape-not}\DescribeMacro[noprint]{\swshape} && ‘find a route to swash’ \\
+%       \bottomrule
+%     \end{tabularx}
+%     \begin{tablenotes}
+%       \item\label{tn:cf-textlg}Cf.\ \cs{textlg} in \cref{tab:wghts}.
+%       \item\label{tn:cf-lgweight}Cf.\ \cs{lgweight} in \cref{tab:wghts}.
+%       \item\label{tn:cf-swstyle}Cf.\ \cs{swstyle} in \cref{tab:shapes}.
+%       \item\label{tn:swshape-not}Effect is kernel and option dependent, but potentially changes family and/or shape.
+%       ‘Tries to find a route to swash.’ 
+%       See text for an explanation of what, why and when.
+%       See \cref{sec:imp} for details of how.
+%     \end{tablenotes}
+%   \end{threeparttable}
+% \end{table}
+% \begin{table}
+%   \centering
+%   \begin{threeparttable}
+%    \caption{Family switches: figures}\label{tab:figs}
+%     \begin{tabular}{llTF}
+%       \toprule
+%       \multicolumn{2}{c}{Macros} & \multicolumn{1}{c}{} & \\
+%       \multicolumn{1}{c}{Text Command} & \multicolumn{1}{c}{Switch} & \multicolumn{1}{c}{Family Code} & \sffamily Style of Figures \\
+%       \midrule
+%       \cs{textln}\tnotex{tn:orig}\DescribeMacro[noprint]{\textln} & \cs{lnstyle}\tnotex{tn:orig}\DescribeMacro[noprint]{\lnstyle} & -- &  lining  (cf.~\cs{lstyle} below)\\
+%       \cs{textos}\tnotex{tn:orig}\DescribeMacro[noprint]{\textos} & \cs{osstyle}\tnotex{tn:orig}\DescribeMacro[noprint]{\osstyle} & j &  oldstyle  (cf.~\cs{ostyle} below)\\
+%       \cs{textinf}\DescribeMacro[noprint]{\textinf} & \cs{infstyle}\DescribeMacro[noprint]{\infstyle} & 0 &  inferior \\
+%       & \cs{instyle}\DescribeMacro[noprint]{\instyle} & & \\
+%       \textcolor{gray}{\cs{textin}\tnotex{tn:textin-dep}}\DescribeDMacro[noprint]{\textin} & & & \textcolor{gray}{if \lpack{hyperref} is not loaded} \\
+%       \cs{textsu}\DescribeMacro[noprint]{\textsu} & \cs{sustyle}\DescribeMacro[noprint]{\sustyle} & 1 &  superior \\
+%       \cs{textl}\tnotex{tn:new}\DescribeMacro[noprint]{\textl} & \cs{lstyle}\tnotex{tn:new}\DescribeMacro[noprint]{\lstyle} & -j &  lining  (cf.~\cs{lnstyle} above)\\
+%       \cs{texto}\tnotex{tn:new}\DescribeMacro[noprint]{\texto} & \cs{ostyle}\tnotex{tn:new}\DescribeMacro[noprint]{\ostyle} & +j &  oldstyle  (cf.~\cs{osstyle} above)\\
+%       \cs{textp}\tnotex{tn:new}\DescribeMacro[noprint]{\textp} & \cs{pstyle}\tnotex{tn:new}\DescribeMacro[noprint]{\pstyle} & +2 &  proportional \\
+%       \cs{textt}\tnotex{tn:new}\DescribeMacro[noprint]{\textt} & \cs{tstyle}\tnotex{tn:new}\DescribeMacro[noprint]{\tstyle} & -2 &   tabular \\
+%       \cs{textpl}\tnotex{tn:both}\DescribeMacro[noprint]{\textpl} & \cs{plstyle}\tnotex{tn:both}\DescribeMacro[noprint]{\plstyle} & -j,+2 & proportional lining  \\
+%       \cs{textpo}\tnotex{tn:both}\DescribeMacro[noprint]{\textpo} & \cs{postyle}\tnotex{tn:both}\DescribeMacro[noprint]{\postyle} & +2j & proportional oldstyle  \\
+%       \cs{texttl}\tnotex{tn:both}\DescribeMacro[noprint]{\texttl} & \cs{tlstyle}\tnotex{tn:both}\DescribeMacro[noprint]{\tlstyle} & -j,-2 & tabular lining \\
+%       \cs{textto}\tnotex{tn:both}\DescribeMacro[noprint]{\textto} & \cs{tostyle}\tnotex{tn:both}\DescribeMacro[noprint]{\tostyle} & +j,-2 & tabular oldstyle \\
+%       \bottomrule
+%     \end{tabular}
+%     \begin{tablenotes}
+%       \item\label{tn:orig}This macro is the original \lpack{nfssext} command.
+%       The result is independent of the current style of figures.
+%       \item\label{tn:textin-dep}Deprecated.
+%       \item\label{tn:new}This macro changes precisely one aspect of the current figure style.
+%       That is, the result depends on the current style of figures.
+%       \item\label{tn:both}This macro ensures a specific fully-specified figure style.
+%     \end{tablenotes}
+%   \end{threeparttable}
+% \end{table}
+% \begin{table}
+%   \centering
+%   \begin{threeparttable}
+%    \caption{Shape switches}\label{tab:shapes}
+%     \begin{tabular}{llTF}
+%       \toprule
+%       \multicolumn{2}{c}{Macros} & \multicolumn{1}{c}{} & \\
+%       \multicolumn{1}{c}{Text Command} & \multicolumn{1}{c}{Switch} & \multicolumn{1}{c}{Shape Code} & \sffamily Shape \\
+%       \midrule
+%       -- & \cs{scolshape}\DescribeMacro[noprint]{\scolshape}  & scol & outline small-caps \\
+%       \cs{textol}\DescribeMacro[noprint]{\textol} & \cs{olshape}\DescribeMacro[noprint]{\olshape} & ol & outline\\
+%       \cs{textsi}\DescribeMacro[noprint]{\textsi} & \cs{sishape}\DescribeMacro[noprint]{\sishape} & si & italic small-caps\\
+%       \cs{textu}\DescribeMacro[noprint]{\textu} & \cs{ushape}\DescribeMacro[noprint]{\ushape} & u & ?? \\
+%       \cs{textscu}\DescribeMacro[noprint]{\textscu} & \cs{scushape}\DescribeMacro[noprint]{\scushape} & su & ?? \\
+%       \cs{textui}\DescribeMacro[noprint]{\textui} & \cs{uishape}\DescribeMacro[noprint]{\uishape} & ui & upright italic\\
+%       \cs{textri}\DescribeMacro[noprint]{\textri} & \cs{rishape}\DescribeMacro[noprint]{\rishape} & ri & reverse italic\\
+%       \cs{textdf}\DescribeMacro[noprint]{\textdf} & \cs{dfshape}\DescribeMacro[noprint]{\dfshape} & n & default shape\\
+%       -- & \cs{swstyle}\tnotex{tn:cf-swashstyle}\DescribeMacro[noprint]{\swstyle} & +w,it & swash family \emph{and} shape \\
+%       \cs{textsw}\tnotex{tn:cf-textswash}\tnotex{tn:cf-swshape-not-shape}\DescribeMacro[noprint]{\textsw} & \cs{swshape}\tnotex{tn:cf-swshape-not-shape}\DescribeMacro[noprint]{\swshape} && ‘find a route to swash’ \\ 
+%       \bottomrule
+%     \end{tabular}
+%     \begin{tablenotes}
+%       \item\label{tn:cf-textswash}Cf.~\cs{textswash} in \cref{tab:gen}.
+%       \item\label{tn:cf-swashstyle}Cf.~\cs{swashstyle} in \cref{tab:gen}.
+%       \item\label{tn:cf-swshape-not-shape}Definition is kernel and option dependent, but probably doesn't (just) change shape.
+%       See \cref{tab:gen} for sketch and text for details.
+%     \end{tablenotes}
+%   \end{threeparttable}
+% \end{table}
+% \begin{table}
+%   \centering
+%    \caption{Series switches: widths}\label{tab:wds}
+%     \begin{tabular}{llTF}
+%       \toprule
+%       \multicolumn{2}{c}{Macros} & \multicolumn{1}{c}{} & \\
+%       \multicolumn{1}{c}{Text Command} & \multicolumn{1}{c}{Switch} & \multicolumn{1}{c}{Series Code} & \sffamily Width \\
+%       \midrule
+%       \cs{textnw}\DescribeMacro[noprint]{\textnw} & \cs{nwwidth}\DescribeMacro[noprint]{\nwwidth} & +c & narrow \\
+%       \cs{textcd}\DescribeMacro[noprint]{\textcd} & \cs{cdwidth}\DescribeMacro[noprint]{\cdwidth} & +c & compact \\
+%       \cs{textec}\DescribeMacro[noprint]{\textec} & \cs{ecwidth}\DescribeMacro[noprint]{\ecwidth} & +ec & extra compact \\
+%       \cs{textuc}\DescribeMacro[noprint]{\textuc} & \cs{ucwidth}\DescribeMacro[noprint]{\ucwidth} & +uc & ultra compact \\
+%       -- & \cs{mdwidth}\DescribeMacro[noprint]{\mdwidth} & +?m & medium \\
+%       \cs{textet}\DescribeMacro[noprint]{\textet} & \cs{etwidth}\DescribeMacro[noprint]{\etwidth} & +x & extended \\
+%       \cs{textep}\DescribeMacro[noprint]{\textep} & \cs{epwidth}\DescribeMacro[noprint]{\epwidth} & +x & expanded \\
+%       \cs{textex}\DescribeMacro[noprint]{\textex} & \cs{exwidth}\DescribeMacro[noprint]{\exwidth} & +ex & extra expanded \\
+%       \cs{textux}\DescribeMacro[noprint]{\textux} & \cs{uxwidth}\DescribeMacro[noprint]{\uxwidth} & +ux & ultra expanded \\
+%       \cs{textrw}\DescribeMacro[noprint]{\textrw} & \cs{regwidth}\DescribeMacro[noprint]{\regwidth} & -- & regular \\
+%       \bottomrule
+%     \end{tabular}
+% \end{table}
+% \begin{table}
+%   \centering
+%   \begin{threeparttable}
+%    \caption{Series switches: weights}\label{tab:wghts}
+%     \begin{tabular}{llTF}
+%       \toprule
+%       \multicolumn{2}{c}{Macros} & \multicolumn{1}{c}{} & \\
+%       \multicolumn{1}{c}{Text Command} & \multicolumn{1}{c}{Switch} & \multicolumn{1}{c}{Series Code} & Weight \\
+%       \midrule
+%       -- & \cs{mdweight}\DescribeMacro[noprint]{\mdweight} & +m? & medium \\
+%       \cs{textmb}\DescribeMacro[noprint]{\textmb} & \cs{mbweight}\DescribeMacro[noprint]{\mbweight} & +mb & medium-bold \\
+%       \cs{textdb}\DescribeMacro[noprint]{\textdb} & \cs{dbweight}\DescribeMacro[noprint]{\dbweight} & +db & demi-bold \\
+%       \cs{textsb}\DescribeMacro[noprint]{\textsb} & \cs{sbweight}\DescribeMacro[noprint]{\sbweight} & +sb & semi-bold \\
+%       \cs{textbd}\DescribeMacro[noprint]{\textbd} & \cs{bdweight}\DescribeMacro[noprint]{\bdweight} & +b & bold \\
+%       & \cs{bfweight}\DescribeMacro[noprint]{\bfweight} & & \\
+%       \cs{texteb}\DescribeMacro[noprint]{\texteb} & \cs{ebweight}\DescribeMacro[noprint]{\ebweight} & +eb & extra-bold \\
+%       \cs{textub}\DescribeMacro[noprint]{\textub} & \cs{ubweight}\DescribeMacro[noprint]{\ubweight} & +ub & ultra-bold \\
+%       \cs{textlg}\tnotex{tn:cf-textlt}\DescribeMacro[noprint]{\textlg} & \cs{lgweight}\tnotex{tn:cf-ltstyle}\DescribeMacro[noprint]{\lgweight} & +l & light when weight  \\
+%       \cs{textel}\DescribeMacro[noprint]{\textel} & \cs{elweight}\DescribeMacro[noprint]{\elweight} & +el & extra-light \\
+%       \cs{textul}\DescribeMacro[noprint]{\textul} & \cs{ulweight}\DescribeMacro[noprint]{\ulweight} & +ul & ultra-light \\
+%       \bottomrule
+%     \end{tabular}
+%     \begin{tablenotes}
+%       \item\label{tn:cf-textlt}Cf.\ \cs{textlt} in \cref{tab:gen}.
+%       \item\label{tn:cf-ltstyle}Cf.\ \cs{ltstyle} in \cref{tab:gen}.
+%     \end{tablenotes}
+%   \end{threeparttable}
+% \end{table}
+%
+% One further macro is available, though it has no effect on older kernels.
+%
+% \DescribeMacro{\nfssextset}\marg{key-value list}
+%
+% Package options (see \cref{sec:nkern} may also be specified after loading either in the preamble (\texttt{compat} and \texttt{force}) or at any time (\texttt{debug}).
+% This enables users to set options after some other package loads \lpack{nfssext-cfr} and allows additional information to be printed to the console and/or logged on local basis.
+%
+% \iffalse
+%^^A \section{Applications}
+%^^A
+%^^A \lpack{nfssext-cfr} may be used by any font support package which supports fonts named according to the Berry scheme and uses compatible settings in its font definition files.
+%^^A 
+%^^A In general, the package does little or nothing to extend support for arbitrary fonts.
+%^^A If your favourite font's support package doesn't do what you want, it is highly unlikely loading this package will help.
+%^^A There is usually no reason to load the package in documents, because any package requiring it should explicitly load it as a dependency.
+%^^A 
+%^^A However, due to complications resulting from recent changes to \LaTeX's \nfss{} in \nnfss, those using current (or even moderately recent) versions of \LaTeX{} \emph{may} need to pass the package options as explained below.
+%^^A
+%^^A Furthermore, \lpack{nfssext-cfr} may be useful if you are using a font support package which provides an option to load, say, light and semi-bold in place of regular/medium and bold.
+%^^A If the package does not allow you to use more than two weights in a single document, loading \lpack{nfssext-cfr} should allow you to access the otherwise inaccessible weights.
+%^^A
+%^^A The same principle works for widths: if the package allows you to choose between, say, condensed and regular width at load time, but doesn't provide commands to switch in the document itself, \lpack{nfssext-cfr} may enable you to access the full range of widths.
+%^^A
+%^^A The same would apply to a package which offered, say, a choice of standard, reverse and/or upright italics, but did not allow you to switch between them.
+%^^A I'm not aware of any such package, but \lpack{nfssext-cfr} could be useful if such exists.
+%^^A 
+%^^A However, this principle does \textbf{not} extend to the style of figures, use of swash or choice of alternate ligatures etc\@.
+%^^A If your preferred font support package offers you a choice of proportional/tabular and/or hanging/lining figures, but provides no means to switch between them, \lpack{nfssext-cfr} is unlikely to help unless the package happens to use Berry naming\footnote{%
+%^^A   Most packages don't.
+%^^A   In particular, packages which use \texttt{autoinst} do not generally use Berry names.}.
+%^^A 
+% \fi
+%
+% 
+% \section{Newer \LaTeX{} Kernels}\label{sec:nkern}
+% 
+% The package tests for the presence of \cs{init@series@setup}.
+% If this exists, it loads a newer version of the package.
+% \lpack{nfssext-cfr} supports three options, but these are only effective if the newer code (for \nnfss) is loaded.
+% All three are booleans, initially false and default to true if used without specifying a value\footnote{%
+%   ‘Default’ and ‘initial’ follow the usage in \file{l3interface.pdf}, \lpack{l3keys2e} and \file{clsguide.pdf}.
+%   If you are familiar with \lpack{pgfkeys}, the terms have the same meaning there.
+%   Basically, the ‘initial’ value is what you get if you don't specify the option at all when loading the package, while the ‘default’ is what you get if you specify the option without specifying a value.
+%   
+%   ‘Scope’ is used in the standard sense applicable to \LaTeXe{} class and package options.
+%   That is, it indicates whether the option may be used only when loading the package, at any point in the preamble or also in the document.%
+% }.
+% The third option is described in \cref{sec:trafferth}.
+%
+% \DescribeOpt{force}\vals{true,false}
+%
+% Default: \texttt{true}
+%
+% Initial: \texttt{false}
+%
+% Scope: preamble
+%
+% You can force the old code to be loaded using the package option \texttt{force} or \texttt{force=true}.
+% Note, however, that the old version will not work as advertised on newer kernels because \LaTeX{} will overwrite some of the package's definitions at the end of the preamble. 
+% 
+% \DescribeOpt{compat}\vals{true,false}
+%
+% Default: \texttt{true}
+%
+% Initial: \texttt{false}
+% 
+% Scope: preamble
+%
+% In contrast, \texttt{compat} or \texttt{compat=true} will activate code which tries to partially replicate the original \lpack{nfssext-cfr}'s behaviour.
+% This is far from unproblematic.
+% In particular, it will partly break features of the current \nfss{} for other fonts.
+%
+% If your document relies exclusively on text fonts supported by this package and none of the support for those fonts has been updated, compilation should produce a more satisfactory result than otherwise.
+% If, however, your document relies partly on text fonts not supported by this package or the support for those fonts has been updated in the ‘wrong’ way, compilation may produce a less satisfactory result.
+% There is no general rule here: whether the option helps or hinders things depends entirely on the fonts, the support for those fonts and the specific contents of your document.
+% 
+% The main areas known to be problematic are
+% \begin{enumerate}
+%   \item\label{enum:si} italic small-capitals (but oblique small-capitals should be mostly unaffected);
+%   \item\label{enum:swash} swash;
+%   \item\label{enum:it} transitions between small-caps, italic, oblique, italic small-caps, oblique small-caps, upright italic, right italic and upright;
+%   \item\label{enum:swshape} any transition involving swash where shape is involved; 
+%   \item\label{enum:m} medium weight fonts where width is non-standard e.g.~medium condensed, medium ultra condensed etc.;
+%   \item\label{enum:mb} medium bold weight in any context.
+% \end{enumerate}
+% \ref{enum:si}--\ref{enum:swshape} can be worked around at the document level, with some inconvenience.
+% Subject to the caveats above, the \texttt{compat} option may avoid at least some of these inconveniences.
+% 
+% \ref{enum:m} and \ref{enum:mb} cannot be worked around at the document level.
+% Nor does \lpack{nfssext-cfr} make any attempt to mitigate these two issues.
+% Doing so would involve too much interference with current \nnfss{}.
+% This means that \ref{enum:m} and \ref{enum:mb} can be addressed only in the support files for the fonts affected.
+% Neither \texttt{compat} nor \texttt{force} makes any attempt to change this.
+% 
+% Maximum backwards compatibility requires changes to the font support files \emph{and} \texttt{compat=false}, but some documents may still require (hopefully minor) changes.
+% 
+% \subsection{Required Changes to Font Support Files}\label{subsec:fsf}
+% 
+% \textbf{In all cases, additional changes to font substitution rules may be needed to prevent multiple substitutions by the same font, since these seem to cause problems.}
+% 
+% \begin{description}
+%   \item[italic small-caps] The problem here is that \lpack{nfssext} encoded italic small-caps as shape \texttt{si}, whereas the kernel has plumped for \texttt{scit}.
+%   It does support \texttt{scsl} (although it does not distinguish oblique from italic), but not \texttt{si}.
+%   This issue can be more-or-less dealt with by support files for fonts, but some issues arise at the document level concerning transitions (below).
+%   
+%   Ideally, \texttt{scit} should be substituted wherever font definition files specify the shape \texttt{si}.
+%   \texttt{scit} should then be defined as a (silent) substitution for \texttt{si}.
+%   However, it \emph{should} be sufficient to define \texttt{si} as a substitute for \texttt{scit}.
+%   
+%   Fonts which provide oblique small-caps, but not italic, should specify \texttt{scsl} as a (silent) substitution for \texttt{scit} and \texttt{scit} for \texttt{si} (or \emph{vice-versa}).
+%   The kernel supports \texttt{scsl} out-of-the-box, together with the substitution for \texttt{scit}, but the changes should make support for \cs{textsi} and \cs{sishape} more robust.
+%   \item[transitions] \textbf{No additional changes are recommended to support files which load \lpack{nfssext-cfr}.}
+%   Provided \texttt{fd} files are updated as explained above, no further adjustments should be required to enable correct font selection during transitions involving italic, oblique, small-caps, upright italic, reverse italic etc\@.
+%
+%   \item[swash] \textbf{No changes are recommended for swash to font definition files for packages which load \lpack{nfssext-cfr}.}
+%   If loading \lpack{nfssext-cfr}, the recommendation is to \textbf{ignore} the kernel's implementation because it cannot be made to work correctly with any family which provides swash for multiple shapes e.g.~both upright and italic or small-caps and upper/lower case\footnote{%
+%   The issue here is that the kernel considers swash to be a \emph{shape}, whereas \lpack{nfssext} only \emph{called} it a shape. 
+%   The underlying code treated it as a \emph{style} requiring a change of font \emph{family}.
+%   The shape was always (potentially switched to) italic (\texttt{it}).
+%   \lpack{nfssext-cfr} offered a second version of swash, which treats it as a family possibly requiring a change of shape, but the shape is typically italic or upright, as opposed to being specific to swash.
+%   
+%   To make things worse, not all fonts \emph{can} be setup in the way the kernel assumes because some fonts provide swash characters in a variety of shapes (upright and italic, for example).
+%   Moreover, it is common to encode additional ligatures, for example, as swash, even though this is not accurate, in order to provide \emph{some} mechanism for accessing them within a traditional 8-bit font setup.%
+% }.
+%
+%   \item[swshape] \textbf{No changes for swash are recommended for \texttt{sty} files in packages which load \lpack{nfssext-cfr}.}
+%
+%     \lpack{nfssext-cfr-nfss} contains the original \lpack{nfssext} definition of \cs{swshape} and \cs{textsw}.
+%     This is used on newer kernels only if \texttt{force} is used, in which case the code is largely broken.
+%
+%     \lpack{nfssext-cfr-nnfss} contains both the original definition and a replacement.
+%     The former is used only if \texttt{compat} is selected; otherwise, the latter is used on kernels supporting \nnfss.
+%     The new definition tries to figure out which of the three possible implementations, if any, to use and behaves accordingly.
+%     \textbf{The kernel definition is overwritten regardless.}
+%     \texttt{compat} determines only \emph{what} overwrites the kernel's.
+%   \item[medium] Any line of a font definition file which codes a series of two or more letters including \texttt{m} must be changed to delete the \texttt{m}.
+%   For example, \texttt{\{mc\}} \textrightarrow{} \texttt{\{c\}}, \texttt{\{muc\}} \textrightarrow{} \texttt{\{uc\}} etc\@.
+%   \textbf{It is NOT sufficient to substitute such series using rules.}
+%   The changes \textbf{must} be made in the primary definitions of the font families.
+%   \item[mb] I've chosen to make \cs{mbweight} an alias for \cs{sbweight}.
+%   Hopefully no font family supports both.
+%   Provided that's not the case, \texttt{mb} should be changed to \cs{sb} in all affected font definition files.
+%   \textbf{It is NOT sufficient to substitute \texttt{mb} for \texttt{sb} using a rule.}
+%   The change \textbf{must} be made in the definition of the family.
+% \end{description}
+% 
+%
+% \section{Older \LaTeX{} Kernels}\label{sec:okern}
+% 
+% This is the code base \lpack{nfssext} was written for.
+% \lpack{nfssext-cfr} extended that code.
+% 
+% To the best of my knowledge, the code used with older \LaTeX{} kernels works as expected.
+% This means it is fully compatible with the Font Installation Guide and that things like \texttt{\textbackslash scshape \textbackslash itshape} will produce italic small-caps, as expected.
+% This code is also --- again to the best of my knowledge --- fully compatible with all features of \nfss{} with the single exception of code supporting medium weight, condensed width fonts which erroneously uses \texttt{mc} rather than \texttt{c}.
+% 
+% Italic small-caps is assumed to be coded as \texttt{si}.
+% Oblique small-caps is assumed to be coded as \texttt{scsl}.
+% 
+% If a set of fonts provides a swash \emph{family}, it is assumed the fonts are named in accordance with the Berry scheme.
+% \cs{textswash}, \cs{swshape}, \cs{swashstyle} and/or \cs{swstyle} can then be used to access this family.
+% 
+% The difference between \cs{swashstyle} and \cs{swstyle} is that the former tries to merge any swash family with the current one, whereas the latter does not.
+% So, if a font set provides swash for two widths of font, say, and you've changed widths, \cs{swashstyle} will try to find a swash character without altering the width, whereas \cs{swstyle} will first switch to the base font, resetting the width.
+% On the other hand, if the font only provides swash in the standard width, say, and you've changed widths, \cs{swashstyle} will fail to switch to swash, whereas \cs{swstyle} will succeed.
+% Packages which include swash families should, therefore, advise users which command(s) to use.
+% 
+% \cs{textswash} is the text font command for \cs{swashstyle}.
+% \cs{textsw} is the text font command for \cs{swshape}.
+% 
+% \cs{swshape} first tries \cs{swstyle} before changing the shape to \cs{swshapedefault}. 
+% By default, this is \cs{itdefault} because swash families are often coded as italic, but this is obviously font-dependant.
+% 
+% \section{Bugs, Non-Bugs \& Debugging}\label{sec:trafferth}
+% 
+% The actual effect of any macro depends on any changes made to the defaults for various font features, the current font and, of course, what is available.
+% 
+%^^A For example, \cs{itdefault} is intended to be the name of italic shape and is used by the redefined \cs{itshape} supplied by this package for older kernels.
+%^^A By default, \cs{itdefault} is \texttt{it}.
+%^^A However, if you change that to, say, \texttt{sl}, then \cs{itshape} will use \texttt{sl} instead.
+%^^A Note that changing \cs{itdefault} will have no effect on newer kernels.
+%^^A 
+%^^A Moreover, if the current shape is small-caps, \cs{itshape} will attempt to merge the default italic shape with the small-caps on older kernels.
+%^^A That is, it will try to select small-caps italic, if possible, before resorting to plain italic.
+%^^A On newer kernels, this attempt is builtin for a limited range of shape and series changes.
+%^^A 
+% The macros operating on family names are almost entirely reliant on font names adhering strictly to the Karl Berry schema.
+% This includes the stipulation that multiple variants be listed in alphabetical order.
+% These macros cannot be used with fonts named in any other way.
+% 
+%^^A Although font definition files \emph{should} adhere to the series and shape codes specified by \nfss{}, some do not.
+%^^A In particular, some newer packages prepared with \texttt{autoinst} use descriptive, but non-standard, codes.
+%^^A While these work fine if the packages provide comprehensive access to the series and shapes they support, they otherwise require bespoke solutions if extensions are required.
+%^^A
+%^^A Provided font definition files do adhere to the standard encoding conventions, however, macros for changing weight, width and shape in \lpack{nfssext-cfr} should work fine on newer kernels (\nnfss).
+% On older kernels (\nfss), changes to weight and width should work and most shapes should be supported, but italic small-caps is assumed to be coded as \texttt{si} on these kernels, so you may need something like
+% \iffalse
+%<*verb>
+% \fi
+% \begin{verbatim}
+\renewcommand*{\sidefault}{scit}% or scsl or whatever
+% \end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% On newer kernels, italic small-caps should be encoded as explained above and \cs{sishape}/\cs{textsi} should work out-of-the-box with packages which use any of \texttt{si}, \texttt{scit} or \texttt{scsl}.
+% 
+% If a macro's attempt to enable or disable a font feature fails, a warning will generally be written to the console, but the code tries hard not to trigger errors.
+% If an attempt triggers an error, that's a bug, so please let me know.
+% If an attempt triggers a warning, please note that there may be no bug at all and, if there is a bug, it is probably not in this package\footnote{%
+%   To be clear, there certainly are bugs.
+%   It is just statistically unlikely that any given warning is caused by one.}
+%
+% \DescribeOpt{debug}\vals{true,false}
+%
+% Default: \texttt{true}
+%
+% Initial: \texttt{false}
+%
+% Scope: general
+%
+% You can get a bit more information printed to the console about what's happening using this option on newer kernels.
+% Some of the same information can also be found in the log.
+% 
+% \changes{v6140}{2017-03-28}{%
+%   Attempt to modify \cs{tmstyle} and \cs{tvstyle} to work as advertised.
+%   Extend documentation somewhat.}
+% 
+% \changes{v??}{2010}{%
+%   The 2010 update includes an attempt to improve the behaviour of \cs{ofstyle}, and to add support for \lpack{microtype}.
+%   I didn't publish this at the time because I wanted to test it first.
+%   I have just discovered that I am still using a local copy.
+%   Insofar as one person can test something, I figure that 5 years ought to be enough to pick up the most obvious problems.
+%   However, your kilometres may, as always, vary.}
+% 
+% \changes{v??}{2010}{%
+%   There should be no changes for the end user except that in certain cases it is possible that line-breaks may be altered if \lpack{microtype} is in use due to the enhanced support included for variant font families.}
+% 
+% \MaybeStop{%
+%   \PrintChanges
+%   \setcounter{IndexColumns}{2}%
+%   \PrintIndex
+% }
+% 
+% \section{Implementation}\label{sec:imp}
+%
+% You do not need to read the remainder of this document in order to install or use the package.
+%
+% \subsection{Main package file}\label{subsec:main}
+%
+% This used to be the complete package.
+% Now it is mostly responsible for processing options, figuring out which kernel we're on and implementing the small amount of code shared between the implementations for \nfss{} and \nnfss{}.
+%
+% \iffalse
+%<*sty>
+% \fi
+% \begin{package}{nfssext-cfr}
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}
+\RequirePackage{svn-prov}
+\ProvidesPackageSVN[\filebase.sty]{$Id: nfssext-cfr.dtx 10344 2024-09-13 20:17:16Z cfrees $}[\filebase v0.0 \revinfo{} extensions for NFSS and NNFSS; based on 2003/03/14 v1.2 Experimental NFSS Extensions]
+\DefineFileInfoSVN
+%    \end{macrocode}
+% ^^A Paid â defnyddio \GetFileInfoSVN*/\GetFileInfoSVN{} yn y fan hon!!
+% 
+% \changes{v6140}{2017-03-28}{modify \tmstyle and \tvstyle to unmerge sans and other typewriter before mergining appropriate variant}
+%
+% \changes{v0.0}{2020-2024}{Attempt to update for \nnfss.}
+%
+% \changes{v0.0}{0000/00/00}{%
+%   Make \cs{mbdefault} sb (duplicating \cs{sbdefault}) as I can't come up with anything better.}
+% \changes{v0.0}{0000/00/00}{%
+%   So nfssext-cfr merging is now limited to family, weight and width.}
+%^^A I *could* use font change rules for weight and width - this would make sense if I could be confident of catching all cases *and* it didn't cause problems ....
+%^^A  the real problem is, I don't know what I'm supposed to avoid ....
+% \changes{v0.0}{0000/00/00}{%
+%   Add options \texttt{compat} and \texttt{force}.
+%   Quite conservative/less compatible by default.
+%   More aggressive/backwards compatible with \texttt{compat}.
+%   Load old file/incompatible with \texttt{force}.
+%   Fully compatible on older kernels.}
+%
+% \changes{v0.0}{0000/00/00}{Split \file{nfssext-cfr.sty} into \file{nfssext-cfr\{,-nfss,-nnfss\}.sty}.}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \begin{macro}{\if@nfssextcfr@digonnew}
+% \mbox{ }
+%    \begin{macrocode}
+\newif\if@nfssextcfr@digonnew
+%    \end{macrocode}
+% \end{macro}
+%    \begin{macrocode}
+\@nfssextcfr@digonnewtrue
+%    \end{macrocode}
+% Copied verbatim, excepting format and modulo package/module name from Joseph Wright's \file{siunitx.sty} under LPPL
+%    \begin{macrocode}
+\@ifundefined{ExplLoaderFileDate}{%
+  \IfFileExists{expl3.sty}{%
+    \RequirePackage{expl3}%
+  }{%
+    \RequirePackage{nfssext-cfr-nfss}%
+    \@nfssextcfr@digonnewfalse
+  }%
+}{}
+\if@nfssextcfr@digonnew
+%    \end{macrocode}
+% Almost verbatim from \file{siunitx.sty}
+%    \begin{macrocode}
+  \@ifl@t@r\ExplLoaderFileDate{2022-02-24}{%
+  }{%
+    \RequirePackage{nfssext-cfr-nfss}%
+    \@nfssextcfr@digonnewfalse
+  }%
+\fi
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\if@nfssextcfr@digonnew
+%    \end{macrocode}
+% BEGIN expl pkg option setup
+%    \begin{macrocode}
+\newif\ifexfs@debug
+\ExplSyntaxOn
+\prop_gput:Nnn \g_msg_module_name_prop { nfssext-cfr } { exfs }
+\keys_define:nn { exfs }
+{
+%    \end{macrocode}
+% \begin{option}{compat} 
+% \begin{macro}{\g__exfs_compat_bool}
+%   Compatibility option.
+%    \begin{macrocode}
+  compat .bool_gset:N = \g__exfs_compat_bool,
+  compat .default:n = true,
+  compat .initial:n = false,
+  compat .usage:n = preamble,
+%    \end{macrocode}
+% \end{macro}
+% \end{option}
+% \begin{option}{debug} 
+%  Turns info messages into warnings for testing purposes and possibly provides additional information. 
+%    \begin{macrocode}
+  debug .legacy_if_gset:n = exfs@debug,
+  debug .initial:n = false,
+  debug .default:n = true,
+%    \end{macrocode}
+% \end{option}
+% \begin{option}{force} 
+% \begin{macro}{\g__exfs_force_bool}
+%  Force loading of code for \nfss{} even on newer kernels. 
+%    \begin{macrocode}
+  force .bool_gset:N = \g__exfs_force_bool,
+  force .default:n = true,
+  force .initial:n = false,
+  force .usage:n = preamble,
+%    \end{macrocode}
+% \end{macro}
+% \end{option}
+%    \begin{macrocode}
+}
+%    \end{macrocode}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Joseph Wright: from \file{siunitx.sty} ; \url{https://chat.stackexchange.com/transcript/message/64327823#64327823}
+%    \begin{macrocode}
+\providecommand \IfFormatAtLeastTF { \@ifl@t@r \fmtversion }
+\IfFormatAtLeastTF { 2022-06-01 }
+{
+  \ProcessKeyOptions [ exfs ] 
+}{
+  \RequirePackage { l3keys2e }
+  \ProcessKeysOptions { exfs }
+%    \end{macrocode}
+% \begin{macro}{\ProcessKeyOptions}
+% \mbox{ }
+%    \begin{macrocode}
+  \NewDocumentCommand \ProcessKeyOptions { o }
+  {
+    \IfValueTF { #1 } { \ProcessKeysOptions { #1 }  }
+    { \PackageError{nfssext-cfr}{
+        Optional~argument~mandatory~on~kernels~this~old.\MessageBreak
+        Please~specify~the~module~whose~keys~should~be~processed
+      }{
+        \protect\ProcessKeyOptions~only~passes~keys~to~
+        \protect\ProcessKeyOptions\MessageBreak
+        on~older~kernels~for~the~convenience~of~package~authors.~
+        Since~\protect\ProcessKeysOptions\MessageBreak
+        takes~an~argument,~the~optional~argument~to~
+        \protect\ProcessKeyOptions~is~required
+      } 
+    }
+  }
+%    \end{macrocode}
+% \end{macro}
+%    \begin{macrocode}
+}
+\IfFormatAtLeastTF { 2020-10-01 }{
+}{
+  \RequirePackage { xparse }
+%    \end{macrocode}
+% \begin{macro}{\ExpandArgs}
+% \mbox{ }
+%    \begin{macrocode}
+  \providecommand \ExpandArgs [1]
+  { \cs_if_exist_use:c { exp_args:N #1 } }
+%    \end{macrocode}
+% \end{macro}
+%    \begin{macrocode}
+}
+%    \end{macrocode}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% END expl pkg option setup
+%
+% BEGIN cfr-added: bifurcate
+%
+% We test for the presence of \cs{init@series@setup} in order to determine whether to load code for \nnfss{} or \nfss.
+% If \texttt{force} is set, we load for \nfss{} regardless.
+%    \begin{macrocode}
+\RequirePackage{etoolbox}
+\msg_new:nnn { nfssext-cfr } { compat } 
+{
+  You ~ or ~ a ~ font-support ~ package ~ have ~ loaded ~ me ~ ( line ~ \msg_line_number: ) ~ with ~ the ~ compat ~ option. ~
+  This ~ means ~ the ~ package ~ may ~ require ~ updating. ~
+  Update ~ the ~ package ~ if ~ necessary ~ and ~ use ~ compat=false ~ when ~ loading ~ me.
+}
+\msg_new:nnn { nfssext-cfr } { force } 
+{
+  You ~ or ~ a ~ font-support ~ package ~ have ~ loaded ~ me ~ ( line ~ \msg_line_number: ) ~ with ~ the ~ force ~ option. ~
+  This ~ is ~ a ~ desperate ~ measure ~ of ~ last ~ resort. ~
+  **Breakage ~ is ~ expected.**
+}
+\hook_gput_code:nnn { begindocument/before } { . }
+{
+  \cs_if_exist:NTF \init@series@setup
+  {
+    \bool_if:NTF \g__exfs_force_bool
+    {
+      \msg_warning:nn { nfssext-cfr } { force }
+      \RequirePackage {nfssext-cfr-nfss}
+    }{
+      \bool_if:NT \g__exfs_compat_bool
+      {
+        \msg_warning:nn { nfssext-cfr } { compat }
+      }
+      \RequirePackage {nfssext-cfr-nnfss}
+    }
+  }{% achosiad heb broblemau - diolch byth!
+    \RequirePackage {nfssext-cfr-nfss}
+  }
+}
+%    \end{macrocode}
+% \begin{macro}{\__exfs_set:n}
+%    \begin{macrocode}
+\cs_new_protected_nopar:Nn \__exfs_set:n
+{
+  \keys_set:nn { exfs } { #1 }
+}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\nfssextset}
+%   Allow setting of options later in preamble or in document.
+%   This is intended to enable debugging to be toggled locally.
+%    \begin{macrocode}
+\cs_set_eq:NN \nfssextset \__exfs_set:n 
+%    \end{macrocode}
+% \end{macro}
+%    \begin{macrocode}
+\ExplSyntaxOff
+%    \end{macrocode}
+% END added
+% \begin{macro}{\DeclareTextOrnament,\ornament}
+%   These are unmodified from \lpack{nfssext}.
+%   I'm not aware of any \ctan{} packages using these and they have not been tested for compatibility with \nnfss{}, though I can't see any patently obvious problems.
+%    \begin{macrocode}
+\newcommand*{\DeclareTextOrnament}[7]{%
+  \expandafter\def\csname#1@orn\@roman#2\endcsname{#3/#4/#5/#6/#7}}
+\begingroup
+  \catcode`\/=12
+  \gdef\exfs@split@orndef#1/#2/#3/#4/#5\@nil{%
+    \def\f@encoding{#1}%
+    \def\f@family{#2}%
+    \def\f@series{#3}%
+    \def\f@shape{#4}%
+    \def\exfs@tempa{#5}}
+\endgroup
+\def\exfs@base@family{\expandafter\exfs@get@base\f@family\@nil}
+\DeclareRobustCommand{\ornament}[1]{%
+  \expandafter\ifx\csname\exfs@base@family @orn\@roman#1\endcsname\relax
+    \PackageWarning{nfssext}{%
+      Ornament #1 undefined for font family '\exfs@base@family'\MessageBreak
+      Setting debug mark}%
+    \rule{1ex}{1ex}%
+  \else
+    \begingroup
+      \edef\exfs@tempb{\csname\exfs@base@family @orn\@roman#1\endcsname}%
+      \expandafter\expandafter\expandafter\exfs@split@orndef
+        \expandafter\string\exfs@tempb\@nil
+      \selectfont\char\exfs@tempa
+    \endgroup
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\nfssextcfr@MT@Hook,\Microtype@Hook}
+% BEGIN add \lpack{microtype} hooks
+% Partly from \lpack{microtype} docs; partly from \lpack{MinionPro} package
+%    \begin{macrocode}
+\def\nfssextcfr@MT@Hook{%
+%    \end{macrocode}
+%^^A	\DeclareMicrotypeVariants{x,j,w,a,d,0,1}% this is the default declaration according to the docs
+%^^A	\DeclareMicrotypeVariants*{2,e,h,l}% this should *append* the variants (what do I use 'f' for? better take it out...)
+%    \begin{macrocode}
+  \DeclareMicrotypeVariants*{2,2d,2dj,2j,dj,e,h,l}% is this necessary or would the previous line be enough?
+}
+\@ifpackageloaded{microtype}{%
+  \PackageWarning{nfssext-cfr}{%
+    You have loaded me (or a font support package which loads me)\MessageBreak
+    after loading microtype, but microtype should be loaded after\MessageBreak
+    all font defaults have been setup}%
+  \nfssextcfr@MT@Hook
+}{%
+  \@ifundefined{Microtype@Hook}{%
+    \let\Microtype@Hook\nfssextcfr@MT@Hook}{% MinionPro has \global before this
+    \g@addto@macro\Microtype@Hook{\nfssextcfr@MT@Hook}}}
+%    \end{macrocode}
+% \end{macro}
+% END
+% \end{package}
+% \iffalse
+%</sty>
+% \fi
+% 
+% \subsection{NNFSS}\label{subsec:sty-nnfss}
+%
+% 
+% This code was written for the \emph{current} (New) New Font Selection Scheme (2020--).
+% It should not generally be loaded on older kernels.
+%
+%
+% \iffalse
+%<*sty-nnfss>
+% \fi
+% \begin{package}{nfssext-cfr-nnfss}
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}
+\RequirePackage{svn-prov}
+\ProvidesPackageSVN[\filebase-nnfss.sty]{$Id: nfssext-cfr.dtx 10344 2024-09-13 20:17:16Z cfrees $}[\filebase v0.0 \revinfo{} extended New New Font Selection Scheme (NNFSS) based on 2003/03/14 v1.2 Experimental NFSS Extensions]
+\DefineFileInfoSVN
+%    \end{macrocode}
+% ^^A Paid â defnyddio \GetFileInfoSVN*/\GetFileInfoSVN{} yn y fan hon!!
+%  END added
+% \begin{macro}{\exfs@tempa,\exfs@tempb,\exfs@tempf}
+%   Scratch variables.
+%    \begin{macrocode}
+\newcommand*{\exfs@tempa}{}
+\newcommand*{\exfs@tempb}{}
+%    \end{macrocode}
+%:end-added
+% BEGIN added (cfr): extra variable (\cs{exfs@tempf})
+%    \begin{macrocode}
+\newcommand*{\exfs@tempf}{}
+%    \end{macrocode}
+% \end{macro}
+% We want to track cases where missing fonts get defined into existence. 
+% To do  this we define an additional macro each time \cs{wrong@fontshape} is called. 
+% This is based on two proposals by Max Chernoff, but the implementation is different.
+%    \begin{macrocode}
+\ExplSyntaxOn
+\hook_gput_code:nnn { cmd/wrong@fontshape/before } { . }
+{
+  \global\expandafter\expandafter\expandafter\let
+  \expandafter \csname exfs@fake@ \curr@fontshape\endcsname\relax
+}
+\ExplSyntaxOff
+%    \end{macrocode}
+% \begin{macro}{\exfs@info}
+% Custom logging
+%    \begin{macrocode}
+\newcommand \exfs@info[2][nfssext-cfr]{%
+  \ifexfs@debug
+    \PackageWarning{#1}{Info: #2}%
+  \else
+    \PackageInfo{#1}{#2}%
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+% END added
+%
+% \begin{macro}{\exfs@normalise}
+% BEGIN added (cfr): normalise
+%    \begin{macrocode}
+\newcommand* \exfs@normalise[1]{%
+  \ifcsname exfs@fake@\curr@fontshape\endcsname
+    \exfs@info{Current font '\curr@fontshape' is fake.\MessageBreak
+      Normalising}%
+    \expandafter\csname f@#1\endcsname{\csname #1default\endcsname}\selectfont
+    \ifcsname exfs@fake@\curr@fontshape\endcsname
+      \f@series{\seriesdefault}\f@shape{\shapedefault}\selectfont
+      \ifcsname exfs@fake@\curr@fontshape\endcsname
+%    \end{macrocode}
+% This might happen, I think, if we're in a swash family or specialist encoding
+% where the default series and shape aren't available. 
+% All bets are off here so try to bale out as gracefully as we can.
+%    \begin{macrocode}
+        \normalfont
+        \ifcsname exfs@fake@\curr@fontshape\endcsname
+%    \end{macrocode}
+% This definitely oughtn't to happen, though - things are really screwed up at
+% this point - so error.
+%    \begin{macrocode}
+          \PackageError{nfssext-cfr}{Default font appears to be fake!\MessageBreak
+            Switch \textbackslash normalfont yielded '\curr@fontshape'}
+          {This is highly unlikely, so the bug is probably in the phenomena\MessageBreak
+            rather than the noumena}%
+        \fi
+      \fi
+    \fi
+    \exfs@info{Normalised to '\curr@fontshape'}%
+  \else
+    \exfs@info{Current font '\curr@fontshape' appears real}%
+  \fi
+}
+%    \end{macrocode}
+% END added
+% \end{macro}
+%
+% \begin{macro}{\exfs@try@family}
+% Modified from \lpack{nfssext}?
+% Or modified from older \lpack{nfssext-cfr}?
+%    \begin{macrocode}
+\newcommand*{\exfs@try@family}[2][]{%
+  \let\exfs@tempa\relax
+%    \end{macrocode}
+% END added
+% 
+% trans: group is requisite here else \LaTeX{} thinks the family real regardless
+%    \begin{macrocode}
+  \begingroup % fel arall, bydd latex yn credu bod y family yn go iawn beth bynnag 
+%    \end{macrocode}
+%     (o leiaf bydd latex yn dweud felly)
+%    \begin{macrocode}
+    \exfs@info{Trying Font family '\f@encoding/#2'}%
+    \fontfamily{#2}\try@load@fontshape
+%    \end{macrocode}
+% \cs{curr@fontshape} holds the target shape - not the current one - after an unsuccessful attempt to load **family** with \cs{try@load@fontshape}. 
+% This won't work for series/shape as \cs{curr@fontshape} holds the current one in that case
+%    \begin{macrocode}
+    \expandafter\ifx\csname\curr@fontshape\endcsname\relax
+      \edef\exfs@tempa{#1}%
+      \ifx\exfs@tempa\@empty
+        \PackageWarning{nfssext}{%
+          Font family '\f@encoding/#2' not available\MessageBreak
+          Ignoring font switch}%
+      \else
+        \exfs@info[nfssext]{%
+          Font family '\f@encoding/#2' not available\MessageBreak
+          Font family '\f@encoding/#1' tried instead}%
+        \exfs@try@family{#1}%
+      \fi
+    \else
+      \exfs@info{Loading font family '\f@encoding/#2'}%
+      \gdef\exfs@tempa{\fontfamily{#2}\selectfont}%
+    \fi
+  \endgroup
+  \exfs@tempa}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\exfs@try@series}
+% BEGIN added (cfr) 
+%    \begin{macrocode}
+\newcommand*{\exfs@try@series}[2][]{%
+%    \end{macrocode}
+% We don't hand instructions to the kernel unless we know they'll succeed b/c the results are too unpredictable under \nnfss.
+%
+% Changing directly only produces usable results for series defined in the 'table' of font changes. 
+% But using higher level kernel interfaces for tests doesn't work because spurious fonts get defined, which only seem to exist.
+% Theoretically, we might as well use the existing kernel's macros since we're already damned by reliance on internals anyway. 
+% But then everything needs disentangling. 
+% So it's easier to just adapt previous tests, even though it partially duplicates what the kernel does.
+% (But it isn't the mess swash is \dots).
+%    \begin{macrocode}
+  \let\exfs@targetseries\relax 
+  \edef\exfs@tempa{#2}%
+  \ifx\f@series\exfs@tempa\relax
+  \exfs@info{Current (\f@series) matches target (#2) series.\MessageBreak
+    Ignoring font switch}%
+  \else
+    \begingroup
+      \exfs@normalise{series}%
+      \edef\exfs@tempa{\f@encoding/\f@family/#2/\f@shape}%
+      \ifcsname \exfs@tempa\endcsname
+        \exfs@info{Switching series: \f@series\space -> #2}%
+        \gdef\exfs@targetseries{\fontseries{#2}\selectfont}%
+      \else
+        \edef\exfs@reserved{#1}%
+        \ifx\exfs@reserved\@empty
+          \PackageWarning{nfssext-cfr}{%
+            Font series '\f@encoding/\f@family/#2/\f@shape' not available\MessageBreak
+            Ignoring font change}%  
+        \else
+          \PackageWarning{nfssext-cfr}{%
+            Font series '\f@encoding/\f@family/#2/\f@shape' not available\MessageBreak
+            Trying '\f@encoding/\f@family/#1/\f@shape'}%  
+            \exfs@try@series{#1}%
+        \fi
+      \fi
+    \endgroup
+    \exfs@targetseries
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+%^^A \newcommand*{\exfs@try@shape}[2][]{%
+%^^A Shapes are where the real problems start ....
+%^^A   \let\exfs@targetshape\relax 
+%^^A   \edef\exfs@tempa{#2}%
+%^^A   \ifx\f@shape\exfs@tempa\relax
+%^^A     \\exfs@info{Current (\f@shape) matches target (#2) shape.\MessageBreak
+%^^A       Ignoring font switch}%
+%^^A   \else
+%^^A     \begingroup
+%^^A       \edef\exfs@tempa{\f@encoding/\f@family/\f@series/#2}%
+%^^A       \ifcsname \exfs@tempa\endcsname
+%^^A         \exfs@info{Switching shape: \f@shape\space -> #2}%
+%^^A         \gdef\exfs@targetshape{\fontshape{#2}\selectfont}%
+%^^A       \else
+%^^A         \begingroup
+%^^A           \exfs@normalise{shape}%
+%^^A           \ifcsname \exfs@tempa\endcsname
+%^^A             \exfs@info{Switching shape: \f@shape\space -> #2}%
+%^^A             \gdef\exfs@targetshape{\exfs@normalise{shape}\fontshape{#2}\selectfont}%
+%^^A         \endgroup
+%^^A           \else
+%^^A             \edef\exfs@reserved{#1}%
+%^^A             \ifx\exfs@reserved\@empty
+%^^A               \PackageWarning{nfssext-cfr}{%
+%^^A                 Font shape '\f@encoding/\f@family/\f@series/#2' not available\MessageBreak
+%^^A                 Ignoring font change}%  
+%^^A             \else
+%^^A               \PackageWarning{nfssext-cfr}{%
+%^^A                 Font shape '\f@encoding/\f@family/\f@series/#2' not available\MessageBreak
+%^^A                 Trying '\f@encoding/\f@family/\f@series/#1'}%  
+%^^A               \exfs@try@shape{#1}%
+%^^A             \fi
+%^^A           \fi
+%^^A         \fi
+%^^A       \fi
+%^^A     \endgroup
+%^^A     \exfs@targetshape
+%^^A   \fi}
+% \begin{macro}{\exfs@try@shapeshift}
+% Attempt to leverage kernel's mechanism.
+%    \begin{macrocode}
+\def\exfs@try@shapeshift#1{%
+  \edef\exfs@targetshape{\csname #1default\endcsname}%
+  \ifx\f@shape\exfs@targetshape\relax
+    \exfs@info{Current (\f@shape) matches target (#1) shape.\MessageBreak
+      Ignoring font switch}%
+  \else
+    \not@math@alphabet\edef\exfs@targetshape\relax
+    \exfs@info{\f@shape\space -> \exfs@targetshape\MessageBreak
+      Trying \f@encoding/\f@family/\f@series/\exfs@targetshape}%
+%    \end{macrocode}
+% We \emph{do} want the kernel's substitution mechanism here?
+%    \begin{macrocode}
+    \fontshape{\exfs@targetshape}\selectfont
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\exfs@swshape}
+%   Switching to swash is now far more complicated with (I presume) the attendant overhead, but the kernel's approach just won't work here\footnote{%
+%     Implementing swash as a \emph{shape} isn't workable for fonts I've packaged, so I've made no attempt to follow the kernel here as I do for small-caps italic etc\@.
+%     We're back to the single axis/multiple aspect problem which \nfss{} created by ignoring small-caps/italic and width/weight combinations.
+%     It may, in fact, be wrong-headed to follow the kernel \emph{at all} here.
+%     Perhaps it would be better to just provide the original implementation and some compatibility option for people who also need swash shapes in the same document?%
+%   }.
+% This will become \cs{swshape} if \texttt{compat} isn't enabled.
+%    \begin{macrocode}
+\newcommand* \exfs@swshape{%
+  \let\exfs@targetsw\relax
+  \begingroup % angen neu beidio? angen - bendant!
+%    \end{macrocode}
+% Try kernel or configured default first so we get swash from current family etc.\ if available
+%    \begin{macrocode}
+    \edef\exfs@tempa{\f@encoding/\f@family/\f@series/\swdefault}%
+    \edef\exfs@tempa@fake{exfs@fake@\exfs@tempa}%
+    \ifcsname \exfs@tempa\endcsname
+      \ifcsname exfs@fake@\exfs@tempa\endcsname
+        \exfs@swfamily
+      \else
+        \gdef\exfs@targetsw{\fontshape{\swdefault}\selectfont}% kernel
+      \fi
+    \else
+      \exfs@swfamily
+    \fi
+  \endgroup
+  \ifx\exfs@targetsw\relax
+    \PackageWarning{nfssext-cfr}{%
+      Cannot find any route to swash.\MessageBreak
+      Are you sure one is available?}%
+  \else
+    \exfs@targetsw
+    \exfs@info{Switch to swash resulted in '\curr@fontshape'}%
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\exfs@swfamily}
+%   This is the guts of \cs{exfs@swshape}.
+%    \begin{macrocode}
+\newcommand* \exfs@swfamily{%
+  \let\exfs@targetsw\relax
+  \begingroup 
+%    \end{macrocode}
+% ^^A       \expandafter\ifx\csname\curr@fontshape\endcsname\relax
+% Try \lpack{nfssext-cfr} family switch \& our default or configured
+%    \begin{macrocode}
+    \let\exfs@tempa\f@family
+    \exfs@merge@families{w}%
+    \ifx\exfs@tempa\f@family % try merge with current shape
+%    \end{macrocode}
+% Try switching to upright etc.\ first
+%    \begin{macrocode}
+      \fontshape{n}%
+      \exfs@merge@families{w}% up & merge
+      \if\exfs@tempa\f@family
+%    \end{macrocode}
+% Try switching to \cs{swshapedefault}{} first
+%    \begin{macrocode}
+        \fontshape\swshapedefault
+        \exfs@merge@families{w}% up & nfssext-cfr default/configured
+        \if\exfs@tempa\f@family
+%    \end{macrocode}
+% Use \lpack{nfssext} family switch \& default or configured
+%    \begin{macrocode}
+          \exf@try@family{\expandafter\exfs@get@base\f@family\@nil w}% nfssext switch
+          \if\exfs@tempa\f@family % nfssext switch
+            \fontshape\swshapedefault\exfs@try@family{%
+            \expandafter\exfs@get@base\f@family\@nil w}% nfssext switch & shape
+            \if\exfs@tempa\f@family
+              \relax % rhodd y ffidl yn y to (give up)
+            \else
+              \gdef\exfs@targetsw{%
+                \fontshape\swshapedefault\expandafter\fontfamily{%
+                \exfs@get@base\f@family\@nil w}\selectfont
+              }% nfssext switch & shape
+            \fi % nfssext switch & shape
+          \else
+            \gdef\exfs@targetsw{\expandafter\fontfamily{%
+              \exfs@get@base\f@family\@nil w}\selectfont
+            }% nfssext switch  
+          \fi % nfssext switch
+        \else
+          \gdef\exfs@targetsw{%
+            \fontshape\swshapedefault\exfs@merge@families{w}%
+          }%  up & nfssext-cfr default/configured
+        \fi % up & nfssext-cfr default/configured
+      \else
+        \gdef\exfs@targetsw{%
+          \fontshape{n}\exfs@merge@families{w}%
+        }% up & merge
+      \fi % up & merge
+    \else
+      \gdef\exfs@targetsw{\exfs@merge@families{w}}% merge with current shape
+    \fi % merge with current shape
+  \endgroup
+}
+%    \end{macrocode}
+% \end{macro}
+% END added
+%
+% \begin{macro}{\exfs@get@base,\exfs@get@variants,\exfs@next,\exfs@shift,\exfs@first,\exfs@part,\exfs@second}
+% Utlities
+%    \begin{macrocode}
+\def\exfs@get@base#1#2#3#4\@nil{#1#2#3}
+%    \end{macrocode}
+% BEGIN added (cfr): more \cs{exfs@} commands (\texttt{get@variants}, \texttt{next}, \texttt{shift}, \texttt{first}, \texttt{part}, \texttt{second})
+%    \begin{macrocode}
+\def\exfs@get@variants#1#2#3#4\@nil{#4}
+\def\exfs@next#1#2\@nil{#1}
+\def\exfs@shift#1#2\@nil{#2}
+\def\exfs@first#1#2\@nil{#1}
+\def\exfs@part#1#2\@nil{#2}
+\def\exfs@second#1#2#3\@nil{#2}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\exfs@series@splitter}
+% Common method for dealing with weight and width.
+% \changes{v0.0}{0000/00/00}{%
+%   Rewritten as kernel no longer supports erroneous \texttt{m}.}
+%    \begin{macrocode}
+\def\exfs@series@splitter#1{%
+  \edef\exfs@weight{\expandafter\exfs@first#1\@nil}%
+  \edef\exfs@width{\expandafter\exfs@shift#1\@nil}%
+%    \end{macrocode}
+% Two char width only or two char weight
+%    \begin{macrocode}
+  \if\exfs@weight u\exfs@check@cx{u}%
+    \else\if\exfs@weight e\exfs@check@cx{e}%
+      \else\if\exfs@weight s\exfs@check@cx{s}%
+        \else\if\exfs@weight d\exfs@check@cx{d}%
+          \else\ifx\exfs@width\@empty % m dealt with elsewhere
+%    \end{macrocode}
+% Single character width
+%    \begin{macrocode}
+            \if\exfs@weight c\def\exfs@width{c}\let\exfs@weight\@empty
+            \else\if\exfs@weight x\def\exfs@width{x}\let\exfs@weight\@empty
+          \fi\fi
+  \fi\fi\fi\fi\fi
+  \exfs@info{#1 -> \exfs@weight:\exfs@width;}%
+}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\exfs@check@cx}
+% Auxiliary for \cs{exfs@check@cx}
+%    \begin{macrocode}
+\def\exfs@check@cx#1{%
+  \edef\exfs@tempa{\expandafter\exfs@first\exfs@width\@nil}%
+  \if\exfs@tempa c\edef\exfs@width{#1c}\let\exfs@weight\@empty
+    \else\if\exfs@tempa x\edef\exfs@width{#1x}\let\exfs@weight\@empty
+    \else\edef\exfs@weighta{%
+        \exfs@weight\exfs@tempa
+      }\let\exfs@weight\exfs@weighta
+      \edef\exfs@widtha{%
+        \expandafter\exfs@shift\exfs@width\@nil
+      }\let\exfs@width\exfs@widtha
+  \fi\fi
+}
+%    \end{macrocode}
+% \end{macro}
+% END added
+%
+% \begin{macro}{\lnstyle,\osstyle,\infstyle,\instyle,\sustyle,\swstyle}
+% Unmodified from \lpack{nfssext}.
+% Anniffiniedig -> undefined in the kernel.
+%    \begin{macrocode}
+\DeclareRobustCommand{\lnstyle}{%% anniffiniedig
+  \not@math@alphabet\lnstyle\relax
+  \exfs@try@family[\expandafter\exfs@get@base\f@family\@nil]%
+                  {\expandafter\exfs@get@base\f@family\@nil x}}
+\DeclareRobustCommand{\osstyle}{%% anniffiniedig
+  \not@math@alphabet\osstyle\relax
+  \exfs@try@family{\expandafter\exfs@get@base\f@family\@nil j}}
+\DeclareRobustCommand{\infstyle}{%% anniffiniedig
+  \not@math@alphabet\infstyle\relax
+  \exfs@try@family{\expandafter\exfs@get@base\f@family\@nil 0}}
+\let\instyle\infstyle
+\DeclareRobustCommand{\sustyle}{%% anniffiniedig
+  \not@math@alphabet\sustyle\relax
+  \exfs@try@family{\expandafter\exfs@get@base\f@family\@nil 1}}
+\DeclareRobustCommand{\swstyle}{%% anniffiniedig
+  \not@math@alphabet\swstyle\relax
+  \exfs@try@family{\expandafter\exfs@get@base\f@family\@nil w}}
+%    \end{macrocode}
+% \end{macro}
+% BEGIN added (cfr) - merge families.
+%
+% \nnfss{} (unsurprisingly) does nothing here, so this is unproblematic.
+% The following depends **absolutely** on **complete** adherence to berry names.
+%
+% \begin{macro}{\ifexfs@added,\exfs@merge@families}
+%   \cs{exfs@merge@families} is used in the macros recommended for switching the style of figures, activating swash and other variants etc.
+%    \begin{macrocode}
+\newif\ifexfs@added
+\newcommand*\exfs@merge@families[1]{%
+  \edef\exfs@vartomerge{#1}%
+  \edef\exfs@variants{\expandafter\exfs@get@variants\f@family\@nil}%
+  \exfs@info{Trying to merge variants #1 and \exfs@variants}%
+  \edef\tempo{2j}%
+  \let\exfs@tempq\@empty
+  \def\exfs@tempg{}%
+  \exfs@addedfalse
+%    \end{macrocode}
+% Check whether there are variants - if not just use the requested addition.
+%    \begin{macrocode}
+  \ifx\exfs@variants\@empty
+    \edef\exfs@tempq{\exfs@vartomerge}%
+    \exfs@addedtrue
+  \else
+    \gdef\set{0,1,2,a,d,e,f,h,j,l,p,q,s,t,v,w}% these are the variants to consider - the order here and in the font name is crucial
+    \ifx\tempo\exfs@vartomerge
+      \@for \xx:=\set \do {%
+%    \end{macrocode}
+% Check whether there are variants left - if not set the ‘next variant’ to empty
+%    \begin{macrocode}
+        \ifx\exfs@variants\@empty
+          \let\exfs@nextvariant\@empty
+        \else
+%    \end{macrocode}
+% O/w get the next variant
+%    \begin{macrocode}
+          \edef\exfs@nextvariant{\expandafter\exfs@next\exfs@variants\@nil}%
+        \fi
+%    \end{macrocode}
+%^^A         \edef\tempt{2}%
+%^^A         \edef\tempj{j}%
+% If the next variant is 2 or j, ignore it
+%    \begin{macrocode}
+        \if\exfs@nextvariant 2%
+          \edef\exfs@variants{\expandafter\exfs@shift\exfs@variants\@nil}%
+        \fi
+        \if\exfs@nextvariant j% if the next variant is j, ignore it
+          \edef\exfs@variants{\expandafter\exfs@shift\exfs@variants\@nil}%
+        \fi
+%    \end{macrocode}
+% See if the current value is either 2 or j and add it if so and if needed
+%    \begin{macrocode}
+        \if\xx 2%
+          \edef\exfs@tempg{\exfs@tempg\xx}%
+        \else
+          \if\xx j% if the current value is j, we're done
+            \edef\exfs@tempq{\exfs@tempg\xx\exfs@variants}%
+            \let\exfs@variants\@empty
+            \exfs@addedtrue
+          \else
+%    \end{macrocode}
+% o/w see if the current value matches the next variant
+%    \begin{macrocode}
+            \ifx\xx\exfs@nextvariant
+              \edef\exfs@tempg{\exfs@tempg\xx}%
+              \edef\exfs@variants{\expandafter\exfs@shift\exfs@variants\@nil}%
+            \fi
+          \fi
+        \fi
+      }%
+    \else
+      \@for \xx:=\set \do {%
+%    \end{macrocode}
+% Check whether there are variants left and, if not, add the addition if needed
+%    \begin{macrocode}
+        \ifx\exfs@variants\@empty
+          \ifexfs@added
+          \else
+            \edef\exfs@tempq{\exfs@tempg\exfs@vartomerge}%
+            \exfs@addedtrue
+          \fi
+        \else
+%    \end{macrocode}
+% o/w get the next variant
+%    \begin{macrocode}
+          \edef\exfs@nextvariant{\expandafter\exfs@next\exfs@variants\@nil}%
+%    \end{macrocode}
+% If the new token equals the next variant, combine whatever is saved in \cs{exfs@tempg} with whatever remains in \cs{exfs@variants}
+%    \begin{macrocode}
+          \ifx\exfs@nextvariant\exfs@vartomerge
+            \edef\exfs@tempq{\exfs@tempg\exfs@variants}%
+            \exfs@addedtrue
+            \let\exfs@variants\@empty
+          \else
+%    \end{macrocode}
+% o/w, if the current value matches the requested addition, add it in
+%    \begin{macrocode}
+            \ifx\exfs@vartomerge\xx
+              \edef\exfs@tempq{\exfs@tempg\xx\exfs@variants}%
+              \exfs@addedtrue
+              \let\exfs@variants\@empty
+            \else
+%    \end{macrocode}
+% o/w, if the current value matches the next variant, shift
+%    \begin{macrocode}
+              \ifx\exfs@nextvariant\xx
+                \edef\exfs@tempg{\exfs@tempg\xx}%
+                \edef\exfs@variants{\expandafter\exfs@shift\exfs@variants\@nil}%
+              \fi
+            \fi
+          \fi
+        \fi
+      }%
+    \fi
+  \fi
+  \ifx\exfs@tempq\@empty
+    \PackageError{nfssext-cfr}{Something is wrong here. Ignoring font switching command.}{}%
+  \else
+    \exfs@try@family{\expandafter\exfs@get@base\f@family\@nil \exfs@tempq}%
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\pstyle,\ostyle,\postyle}
+%   Commands for switching to proportional and/or oldstyle figures.
+%   Compare \cs{ostyle} with \lpack{nfssext}'s \cs{osstyle} above.
+%   These macros (and the block which follows) all require merging Berry names but not unmerging.
+%    \begin{macrocode}
+\DeclareRobustCommand{\pstyle}{%% anniffiniedig		proportional figures
+  \not@math@alphabet\pstyle\relax
+  \exfs@merge@families{2}}
+\DeclareRobustCommand{\ostyle}{%% anniffiniedig		oldstyle figures (cf. original osstyle above)
+  \not@math@alphabet\ostyle\relax
+  \exfs@merge@families{j}}
+%    \end{macrocode}
+% Combined command for proportional oldstyle
+%    \begin{macrocode}
+\DeclareRobustCommand{\postyle}{%% anniffiniedig
+  \not@math@alphabet\postyle\relax
+  \exfs@merge@families{2j}}
+%    \end{macrocode}
+% \end{macro} 
+% \begin{macro}{\tistyle,\ltstyle,\ofstyle,\altstyle,\regstyle,\embossstyle,\ornamentalstyle,\swashstyle,\shstyle,\qtstyle}
+%   These macros again require merging, but not unmerging, names.
+%    \begin{macrocode}
+\DeclareRobustCommand{\tistyle}{%% anniffiniedig	titling/display
+  \not@math@alphabet\tistyle\relax
+  \exfs@merge@families{d}}
+%    \end{macrocode}
+% Note that this command is for use when the light version is a separate family rather than a weight variant (e.g.\ when you've got light, light bold etc.\ as well as regular weights)
+%    \begin{macrocode}
+\DeclareRobustCommand{\ltstyle}{%% anniffiniedig
+  \not@math@alphabet\ltstyle\relax
+  \exfs@merge@families{l}}
+%    \end{macrocode}
+% Let's hope there aren't any fonts with a light family *and* an outline/openface/blank version
+%    \begin{macrocode}
+\DeclareRobustCommand{\ofstyle}{%% anniffiniedig
+  \not@math@alphabet\ofstyle\relax
+  \exfs@merge@families{l}}
+\DeclareRobustCommand{\altstyle}{%% anniffiniedig	alternative style
+  \not@math@alphabet\altstyle\relax
+  \exfs@merge@families{a}}
+\DeclareRobustCommand{\regstyle}{%% anniffiniedig 'regular' style
+  \not@math@alphabet\regstyle\relax
+  \exfs@try@family{\expandafter\exfs@get@base\f@family\@nil}}
+\DeclareRobustCommand{\embossstyle}{%% anniffiniedig
+  \not@math@alphabet\embossstyle\relax
+  \exfs@merge@families{e}}
+\DeclareRobustCommand{\ornamentalstyle}{%% anniffiniedig	intended primarily for decorative initial fonts etc.
+  \not@math@alphabet\ornamentalstyle\relax
+  \exfs@merge@families{p}}
+\DeclareRobustCommand{\qtstyle}{%% anniffiniedig	quotation style (assumes sans)
+  \not@math@alphabet\qtstyle\relax
+  \sffamily
+  \exfs@merge@families{q}}
+\DeclareRobustCommand{\shstyle}{%% anniffiniedig
+  \not@math@alphabet\shstyle\relax
+  \exfs@merge@families{h}}
+\DeclareRobustCommand{\swashstyle}{%% anniffiniedig			an attempt to improve on \swstyle
+  \not@math@alphabet\swashstyle\relax
+  \exfs@merge@families{w}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\tmstyle,\tvstyle}
+%   Macros to switch between monowidth and variable typewriter.
+%   These need to unmerge before merging.
+%   We need to unmerge sans as well as the other kind of typewriter.
+%    \begin{macrocode}
+\DeclareRobustCommand{\tmstyle}{%% anniffiniedig       monowidth typewriter
+  \not@math@alphabet\tmstyle\relax
+  \exfs@unmerge@families{s}%
+  \exfs@unmerge@families{v}%
+  \exfs@merge@families{t}}
+\DeclareRobustCommand{\tvstyle}{%% anniffiniedig       variable width typewriter
+  \not@math@alphabet\tvstyle\relax
+  \exfs@unmerge@families{s}%
+  \exfs@unmerge@families{t}%
+  \exfs@merge@families{v}}
+%    \end{macrocode}
+% \end{macro}
+% BEGIN added (cfr) - unmerge families
+%
+% \begin{macro}{\ifexfs@take,\exfs@unmergefamilies}
+%   Define the macro needed to do the unmerges.
+%    \begin{macrocode}
+\newif\ifexfs@take
+\newcommand*\exfs@unmerge@families[1]{%
+  \edef\exfs@tempf{#1}%
+  \edef\tempa{\expandafter\exfs@get@variants\f@family\@nil}%
+  \let\exfs@tempq\@empty
+  \edef\exfs@tempg{}%
+  \exfs@taketrue
+%    \end{macrocode}
+% Check whether there are variants - if not do nothing
+%    \begin{macrocode}
+  \ifx\tempa\@empty
+    \edef\exfs@tempq{}%
+  \else
+%    \end{macrocode}
+% o/w go through the variants to find the one to delete
+%    \begin{macrocode}
+    \loop
+%    \end{macrocode}
+% Get the next variant
+%    \begin{macrocode}
+      \edef\exfs@tempn{\expandafter\exfs@next\tempa\@nil}%
+%    \end{macrocode}
+% See if the next variant is the thing we seek and, if so, eliminate it
+%    \begin{macrocode}
+      \ifx\exfs@tempf\exfs@tempn
+        \edef\tempa{\expandafter\exfs@shift\tempa\@nil}%
+        \edef\exfs@tempq{\exfs@tempg\tempa}%
+        \exfs@takefalse
+%    \end{macrocode}
+% o/w save the next variant and move on if any variants remain
+%    \begin{macrocode}
+      \else
+        \edef\exfs@tempg{\exfs@tempg\exfs@tempn}%
+        \edef\tempa{\expandafter\exfs@shift\tempa\@nil}%
+        \ifx\tempa\@empty% if there are no variants left, we're done
+          \edef\exfs@tempq{\exfs@tempg}%
+          \exfs@takefalse
+        \fi
+      \fi
+      \ifexfs@take % \fi yn \repeat
+    \repeat
+  \fi
+  \exfs@try@family{\expandafter\exfs@get@base\f@family\@nil \exfs@tempq}%
+}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\tstyle,\lstyle}
+%   These are simple unmerges, with no merging necessary. 
+%    \begin{macrocode}
+\DeclareRobustCommand{\tstyle}{%% anniffiniedig		tabular figures
+  \not@math@alphabet\tstyle\relax
+  \exfs@unmerge@families{2}}
+\DeclareRobustCommand{\lstyle}{%% anniffiniedig		lining figures (cf. command above)
+  \not@math@alphabet\lstyle\relax
+  \exfs@unmerge@families{j}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\tlstyle,\plstyle,\tostyle}
+% Simple combinations for combined figure styles.
+%
+% Make a combined command for tabular lining
+%    \begin{macrocode}
+\DeclareRobustCommand{\tlstyle}{%% anniffiniedig
+  \lstyle\tstyle}
+%    \end{macrocode}
+% Proportional lining
+%    \begin{macrocode}
+\DeclareRobustCommand{\plstyle}{%% anniffiniedig
+  \lstyle\pstyle}
+%    \end{macrocode}
+% Tabular oldstyle {?!}
+%    \begin{macrocode}
+\DeclareRobustCommand{\tostyle}{%% anniffiniedig
+  \ostyle\tstyle}
+%    \end{macrocode}
+% \end{macro}
+% END added 
+%
+% \begin{macro}{\sidefault,\sishape}
+% \texttt{si} is italic sc\footnote{%
+%   That is, italic small-caps \emph{was} \texttt{si}.
+%   These days, things are more complicated \dots.%
+% }.
+% We use the original definition for the default and then set up rules for font shape changes which try \texttt{scit} and \texttt{scsl} before falling back to \texttt{si}.
+%    \begin{macrocode}
+\newcommand*{\sidefault}{si}% anniffiniedig
+%    \end{macrocode}
+% Well i brofi \texttt{si} \& yna \texttt{scit} ond wn i ddim sut i wneud hon gyda'r stwff newydd \dots{}. 
+% I was going to deprecate the \texttt{si} macros, but the truth is they are much nicer than having to combine macros for those cases when you really do want precisely italic small-caps.
+% They are also much more robust than somebody trying to force things with \cs{fontshape}\marg{si}\cs{selectfont}, so, on reflection, it seems better to retain the interface, even if the implementation isn't as straightforward as I'd like.
+%    \begin{macrocode}
+\DeclareRobustCommand{\sishape}{%
+  \exfs@try@shapeshift{si}}
+%    \end{macrocode}
+% \end{macro}
+% Kernel virtuals: ulc upper/lower case up upright.
+% \lpack{nfssext} virtuals? or \lpack{nfssext-cfr} virtuals? or?
+% It would be better to try \texttt{si}, \texttt{scit} and \texttt{scsl}, but that doesn't seem possible
+%    \begin{macrocode}
+\DeclareFontShapeChangeRule {n}{si}{scit}{scsl}% current; request (& trydedd); dewisiad cyntaf; ail ddewisiad
+\DeclareFontShapeChangeRule {it}{si}{scit}{scsl}
+\DeclareFontShapeChangeRule {sl}{si}{scit}{scsl}
+\DeclareFontShapeChangeRule {sc}{si}{scit}{scsl}
+%    \end{macrocode}
+% Current shape is si => font support hasn't been updated
+%    \begin{macrocode}
+\DeclareFontShapeChangeRule {si}{sc} {si} {}
+\DeclareFontShapeChangeRule {si}{it} {si} {}
+\DeclareFontShapeChangeRule {si}{sl} {scsl} {si}
+\DeclareFontShapeChangeRule {si}{scit} {scit} {si}% rhag ofn?!
+\DeclareFontShapeChangeRule {si}{ulc} {it} {}
+\DeclareFontShapeChangeRule {si}{up}{sc}{}
+%    \end{macrocode}
+%^^A \DeclareFontShapeChangeRule {si}{u} {it} {}
+%^^A \DeclareFontShapeChangeRule {si}{su}{sc}{}
+%    \begin{macrocode}
+\ExplSyntaxOn
+%    \end{macrocode}
+% The need for overwriting can be avoided by changing the \file{.fd} files, but \texttt{compat} supports packages I don't know about\footnote{%
+%   Or haven't published? 
+%   I haven't actually tried it with those.%
+% } \dots
+% \changes{v0.0}{0000/00/00}{%
+%   Conditionally override kernel rules affecting switches to upright/small-caps.italic etc.}
+%    \begin{macrocode}
+\bool_if:NT \g__exfs_compat_bool
+{
+  \DeclareFontShapeChangeRule {it}{sc}{si}{scsl}
+  \DeclareFontShapeChangeRule{sl}{sc}{scsl}{si}
+%    \end{macrocode}
+% Gofyn am italic etc\@. \textbar{} Ask about italic etc\@.
+% Sylwadau tebygol yma \dots{} \textbar{} Like comments here \dots{} 
+%    \begin{macrocode}
+  \DeclareFontShapeChangeRule {sc}{it} {si} {scsl}
+  \DeclareFontShapeChangeRule {sc}{sl} {scsl} {si}
+  \DeclareFontShapeChangeRule {scsl}{it} {si} {scsl}
+}
+\ExplSyntaxOff
+%    \end{macrocode}
+%^^A Ddylai'r rhai hwn ddim yn defnyddio \texttt{scit}/\texttt{scsl} yn lle \textt{si}?
+%^^A Pam \texttt{si}??
+%^^A \verb|^| Wel, maen nhw'n gwneud felly eisoes??!!
+% \changes{v0.0}{0000/00/00}{%
+%   Unconditionally add a bunch of shape change rules for shapes unsupported by the kernel - I don't *think* these should be problematic: if the current or requested shape is unsupported by the kernel, surely it can't be problematic to support that shape?} 
+%    \begin{macrocode}
+\DeclareFontShapeChangeRule {ui}{sc}{scit}{scsl}
+\DeclareFontShapeChangeRule {ui}{scsl}{scsl}{scit}
+\DeclareFontShapeChangeRule {ui}{it}{it}{ui}
+\DeclareFontShapeChangeRule {ui}{ri}{ri}{ui}
+\DeclareFontShapeChangeRule {ui}{up}{n}{}
+\DeclareFontShapeChangeRule {ui}{ulc}{ui}{}
+%    \end{macrocode}
+%^^A \DeclareFontShapeChangeRule {ui}{u}{n}{}
+%^^A \DeclareFontShapeChangeRule {ui}{su}{sc}{}
+%    \begin{macrocode}
+\DeclareFontShapeChangeRule {ri}{sc}{scit}{scsl}
+\DeclareFontShapeChangeRule {ri}{scsl}{scsl}{scit}
+\DeclareFontShapeChangeRule {ri}{it}{it}{ri}
+\DeclareFontShapeChangeRule {ri}{ui}{ui}{ri}
+%    \end{macrocode}
+% Kernel virtuals: \texttt{ulc} upper/lower case up upright
+%    \begin{macrocode}
+\DeclareFontShapeChangeRule {ri}{up}{n}{}
+\DeclareFontShapeChangeRule {ri}{ulc}{ri}{}
+%    \end{macrocode}
+% nfssext virtuals? or nfssext-cfr virtuals? or?
+%^^A \DeclareFontShapeChangeRule {ri}{u}{n}{}
+%^^A \DeclareFontShapeChangeRule {ri}{su}{sc}{}
+%^^A \DeclareFontShapeChangeRule {sc}{ri}{scit}{scsl}
+%^^A \DeclareFontShapeChangeRule {scsl}{ri}{scsl}{scit}
+%^^A \DeclareFontShapeChangeRule {it}{ri}{ri}{it}
+%^^A \DeclareFontShapeChangeRule {ui}{ri}{ri}{it}
+%^^A \DeclareFontShapeChangeRule {n}{ri}{ri}{it}
+%^^A \DeclareFontShapeChangeRule {sl}{ri}{ri}{it}
+%    \begin{macrocode}
+\DeclareFontShapeChangeRule {ol} {sc} {scol} {} % <- seiliedig ar nfssext-cfr-nfss.sty \scshape
+\DeclareFontShapeChangeRule {ol} {ulc} {ol} {}
+\DeclareFontShapeChangeRule {ol} {up} {ol} {}
+%    \end{macrocode}
+%^^A \DeclareFontShapeChangeRule {ol} {u} {ol} {}
+%^^A \DeclareFontShapeChangeRule {ol} {su} {scol} {}
+%    \begin{macrocode}
+\DeclareFontShapeChangeRule {scol} {sc} {scol} {}
+\DeclareFontShapeChangeRule {scol} {ulc} {ol} {}
+\DeclareFontShapeChangeRule {scol} {up} {scol} {}
+%    \end{macrocode}
+% \iffalse
+%^^A \DeclareFontShapeChangeRule {scol} {u} {scol} {}
+%^^A \DeclareFontShapeChangeRule {scol} {su} {scol} {}
+%^^A \DeclareFontShapeChangeRule {sc} {sc} {sc} {} % <- ??
+% \fi
+%    \begin{macrocode}
+\DeclareFontShapeChangeRule {u}{sc}{su}{} % <- seiliedig ar nfssext-cfr-nfss.sty \scshape
+\DeclareFontShapeChangeRule {su}{ulc}{u}{}
+\DeclareFontShapeChangeRule {sc}{u}{su}{}
+\DeclareFontShapeChangeRule {su}{u}{su}{}
+\DeclareFontShapeChangeRule {su}{sc}{su}{}
+%    \end{macrocode}
+%^^A \DeclareFontShapeChangeRule {u} {ulc} {u} {} % <- ??
+%^^A \DeclareFontShapeChangeRule {u} {up} {u} {} % <- ??
+%^^A \DeclareFontShapeChangeRule {su} {sc} {su} {} % <- ??
+%^^A \DeclareFontShapeChangeRule {su} {ulc} {u} {} % <- ??
+%^^A \DeclareFontShapeChangeRule {su} {up} {u} {} % <- ??
+% BEGIN added (cfr) 
+%
+% cfr: is this how outline shapes should be handled?
+% \begin{macro}{\oldefault,\olshape,\scoldefault,\scolshape}
+% Outline
+%    \begin{macrocode}
+\newcommand*{\oldefault}{ol}% anniffiniedig
+\DeclareRobustCommand{\olshape}{%% anniffiniedig
+  \exfs@try@shapeshift{ol}}
+\newcommand*{\scoldefault}{scol}% anniffiniedig
+\DeclareRobustCommand{\scolshape}{%% anniffiniedig
+  \exfs@try@shapeshift{scol}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\udefault,\ushape,\scudefault,\scushape}
+% Underlined??
+%^^A\DeclareRobustCommand{\olshape}{%
+%^^A  \not@math@alphabet\olshape\relax
+%^^A  \exfs@merge@shape{\oldefault}{\scdefault}{\scoldefault}}
+% Fudge <- ??
+%    \begin{macrocode}
+\newcommand*{\udefault}{u}% anniffiniedig
+\DeclareRobustCommand{\ushape}{%% anniffiniedig
+  \exfs@try@shapeshift{u}}
+\newcommand*{\scudefault}{su}% anniffiniedig
+\DeclareRobustCommand{\scushape}{%% anniffiniedig
+  \exfs@try@shapeshift{scu}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\uidefault,\uishape,\ridefault,\rishape}
+% Upright and reverse italic
+%    \begin{macrocode}
+\newcommand*{\uidefault}{ui}% anniffiniedig
+\DeclareRobustCommand{\uishape}{% anniffiniedig
+  \exfs@try@shapeshift{ui}}
+%    \end{macrocode}
+% Can i do this for reverse italic?
+%    \begin{macrocode}
+\newcommand*{\ridefault}{ri}% anniffiniedig
+\DeclareRobustCommand{\rishape}{% anniffiniedig
+  \exfs@try@shapeshift{ri}}
+%    \end{macrocode}
+% \end{macro}
+% END added
+%^^A \newcommand*{\exfs@merge@shape}[3]{%
+%^^A   \edef\exfs@tempa{#1}%
+%^^A   \edef\exfs@tempb{#2}%
+%^^A   \ifx\f@shape\exfs@tempb
+%^^A     \expandafter\ifx\csname\f@encoding/\f@family/\f@series/#3\endcsname\relax
+%^^A     \else
+%^^A       \edef\exfs@tempa{#3}%
+%^^A     \fi
+%^^A   \fi
+%^^A   \fontshape{\exfs@tempa}\selectfont}
+% BEGIN added (cfr) - merge width changes into series
+%^^A \newcommand*{\exfs@font@width}{% ??
+%^^A 	\edef\exfs@tempf{\expandafter\exfs@first\f@series\@nil }%
+%^^A 	\edef\exfs@temppart{\expandafter\exfs@part\f@series\@nil }%
+%^^A 	\ifx\exfs@temppart\@empty
+%^^A 		\def\exfs@width{}
+%^^A 	\else
+%^^A 		\edef\exfs@temps{\expandafter\exfs@second\f@series\@nil }%
+%^^A 		\ifx\exfs@temps{b}
+%^^A 			\edef\exfs@width{\expandafter\exfs@part\exfs@temps\@nil }%
+%^^A 		\else
+%^^A 			\ifx\exfs@temps{l}
+%^^A 				\edef\exfs@width{\expandafter\exfs@part\exfs@temps\@nil }%
+%^^A 			\else
+%^^A 				\edef\exfs@width{\exfs@temppart}%
+%^^A 			\fi
+%^^A 		\fi
+%^^A 	\fi
+%^^A 	\exfs@width
+%^^A 	}
+%
+% \begin{macro}{\exfs@merge@width}
+%   Previously dependent on incorrect series names.
+%   \changes{v0.0}{0000/00/00}{Do not depend on incorrect series names, which are no longer supported.}
+%    \begin{macrocode}
+\newcommand*{\exfs@merge@width}[1]{%
+%    \end{macrocode}
+%^^A 	\edef\exfs@temph{#1}%
+%^^A 	\edef\exfs@tempf{\expandafter\exfs@first\f@series\@nil }%
+%^^A 	\edef\exfs@temppart{\expandafter\exfs@part\f@series\@nil }%
+%^^A 	\def\tempb{b}%
+%^^A 	\def\templ{l}%
+% cfr-added
+%
+% Dibynnodd y côd gwreiddiol ar *mc* etc. \& r'odd hynny'n anghywir
+%
+% Instead of merging or unmerging cyclically, which means keeping track of everything, we split the current series (which requires some juggling, but hopefully less) and use the results.
+%    \begin{macrocode}
+    \exfs@series@splitter{\f@series}%
+    \edef\exfs@temph{#1}%
+    \if\exfs@temph m\ifx\exfs@weight\@empty\else\let\exfs@temph\@empty\fi\fi
+    \if\exfs@weight m\ifx\exfs@temph\@empty\else\let\exfs@weight\@empty\fi\fi
+    \edef\exfs@series{\exfs@weight\exfs@temph}%
+%    \end{macrocode}
+% end cfr-added
+%^^A     \ifx\exfs@tempf\tempm\edef\exfs@tempf{}\fi % 
+%^^A 	\ifx\exfs@temppart\@empty
+%^^A 		\def\exfs@series{\expandafter\exfs@tempf\exfs@temph}%
+%^^A 	\else
+%^^A 		\edef\exfs@temps{\expandafter\exfs@second\f@series\@nil }%
+%^^A 		\ifx\exfs@temps\tempb
+%^^A 			\def\exfs@series{\expandafter\exfs@tempf\exfs@temps\exfs@temph}%
+%^^A 		\else
+%^^A 			\ifx\exfs@temps\templ
+%^^A 				\def\exfs@series{\expandafter\exfs@tempf\exfs@temps\exfs@temph}%
+%^^A 			\else
+%^^A 				\def\exfs@series{\expandafter\exfs@tempf\exfs@temph}%
+%^^A 			\fi
+%^^A 		\fi
+%^^A 	\fi
+%^^A     \edef\tempy{\exfs@series}\show\tempy
+%    \begin{macrocode}
+    \exfs@info{Trying \exfs@series}%
+	\exfs@try@series{\exfs@series}}
+%    \end{macrocode}
+% \end{macro}
+%^^A	\fontseries\exfs@series\selectfont}
+%^^A \newcommand*{\exfs@unmerge@width}{%
+%^^A 	\edef\exfs@tempf{\expandafter\exfs@first\f@series\@nil }%
+%^^A 	\edef\exfs@temppart{\expandafter\exfs@part\f@series\@nil }%
+%^^A 	\def\tempb{b}%
+%^^A 	\def\templ{l}%
+%^^A     \def\tempe{}%
+%^^A 	\ifx\exfs@temppart\@empty
+%^^A 		\def\exfs@series{\expandafter\exfs@tempf}%
+%^^A 	\else
+%^^A 		\edef\exfs@temps{\expandafter\exfs@second\f@series\@nil }%
+%^^A 		\ifx\exfs@temps\tempb
+%^^A 			\def\exfs@series{\expandafter\exfs@tempf\exfs@temps}%
+%^^A 		\else
+%^^A 			\ifx\exfs@temps\templ
+%^^A 				\def\exfs@series{\expandafter\exfs@tempf\exfs@temps}%
+%^^A 			\else
+%^^A 				\def\exfs@series{\expandafter\exfs@tempf}%
+%^^A 			\fi
+%^^A 		\fi
+%^^A 	\fi
+%^^A     \ifx\tempe\exfs@series\def\exfs@series{m}\fi % angen efaillai?
+%^^A 	\exfs@try@series{\exfs@series}}
+% \begin{macro}{\regwidth}
+%   ‘Regular’ width requires conditionally adding ‘m’. 
+%    \begin{macrocode}
+\DeclareRobustCommand{\regwidth}{%% anniffiniedig
+	\not@math@alphabet\regwidth\relax
+%    \end{macrocode}
+% cfr altered
+%    \begin{macrocode}
+    \exfs@merge@width{m}}
+%    \end{macrocode}
+%^^A 	\exfs@unmerge@width}
+% \end{macro}
+% \begin{macro}{\nwdefault,\nwwidth,\cddefault,\cdwidth,\ecdefault,\ecwidth,\ucdefault,\ucwidth}
+%   Condensed widths.
+%    \begin{macrocode}
+\newcommand*{\nwdefault}{c}% anniffiniedig
+\DeclareRobustCommand{\nwwidth}{%% anniffiniedig ond rheolau
+	\not@math@alphabet\nwwidth\relax
+	\exfs@merge@width{\nwdefault}}% neu \exfs@try@series ?
+\newcommand*{\cddefault}{c}% anniffiniedig
+\DeclareRobustCommand{\cdwidth}{% anniffiniedig ond rheolau
+	\not@math@alphabet\cdwidth\relax
+	\exfs@merge@width{\cddefault}}% neu \exfs@try@series ?
+\newcommand*{\ecdefault}{ec}% anniffiniedig
+\DeclareRobustCommand{\ecwidth}{%% anniffiniedig ond rheolau
+	\not@math@alphabet\ecwidth\relax
+	\exfs@merge@width{\ecdefault}}% neu \exfs@try@series ?
+\newcommand*{\ucdefault}{uc}% anniffiniedig
+\DeclareRobustCommand{\ucwidth}{%% anniffiniedig
+	\not@math@alphabet\ucwidth\relax
+	\exfs@merge@width{\ucdefault}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\etdefault,\etwidth,\epdefault,\epwidth,\exdefault,\exwidth,\uxdefault,\uxwidth}
+%   Extended/expanded widths.
+%    \begin{macrocode}
+\newcommand*{\etdefault}{x}% anniffiniedig
+\DeclareRobustCommand{\etwidth}{%% anniffiniedig
+	\not@math@alphabet\etwidth\relax
+	\exfs@merge@width{\etdefault}}% neu \exfs@try@series ?
+\newcommand*{\epdefault}{x}% anniffiniedig
+\DeclareRobustCommand{\epwidth}{%% anniffiniedig ond rheolau
+	\not@math@alphabet\epwidth\relax
+	\exfs@merge@width{\epdefault}}% neu \exfs@try@series ?
+\newcommand*{\exdefault}{ex}% anniffiniedig
+\DeclareRobustCommand{\exwidth}{%% anniffiniedig
+	\not@math@alphabet\exwidth\relax
+	\exfs@merge@width{\exdefault}}
+\newcommand*{\uxdefault}{ux}% anniffiniedig
+\DeclareRobustCommand{\uxwidth}{%% anniffiniedig
+	\not@math@alphabet\uxwidth\relax
+	\exfs@merge@width{\uxdefault}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\mdwdefault,\mdwidth}
+%   Medium. 
+%    \begin{macrocode}
+\newcommand*\mdwdefault{m}
+\DeclareRobustCommand{\mdwidth}{%% anniffiniedig
+  \not@math@alphabet\mdwidth\relax
+  \exfs@merge@width{\mdwdefault}}
+%    \end{macrocode}
+% \end{macro}
+% Posibl ond bydda i'n colli achosion yn siwr. 
+% \textbar{} Possible but I'd lose cases for sure.
+% Hefyd hoffwn i ddim dyfalu pa rheolau y bydden nhw eu dewis. 
+% \textbar{} Also I wouldn't like to guess which rules they'll choose.
+%^^A \DeclareFontSeriesChangeRule {bc}{ux}{bux}{bc}
+%^^A \DeclareFontSeriesChangeRule {bx}{ux}{bux}{bx}
+%^^A \DeclareFontSeriesChangeRule {b}{ux} {bux} {b}
+%^^A \DeclareFontSeriesChangeRule {c}{ux}{ux}{m}
+%^^A \DeclareFontSeriesChangeRule {ebc}{ux}{ebux}{}
+%^^A \DeclareFontSeriesChangeRule {ec}{ux}{ux}{m}
+%^^A \DeclareFontSeriesChangeRule {sc}{ux}{ux}{m}
+%^^A \DeclareFontSeriesChangeRule {ebx}{ux}{ebux}{ebx}
+%^^A \DeclareFontSeriesChangeRule {eb}{ux}{ebux}{}
+%^^A \DeclareFontSeriesChangeRule {elc}{ux}{elux}{}
+%^^A \DeclareFontSeriesChangeRule {elx}{ux}{elux}{elx}
+%^^A \DeclareFontSeriesChangeRule {el}{ux}{elux}{}
+%^^A \DeclareFontSeriesChangeRule {lc}{ux}{lux}{}
+%^^A \DeclareFontSeriesChangeRule {lx}{ux}{lux}{lx}
+%^^A \DeclareFontSeriesChangeRule {l}{ux} {lux} {l}
+%^^A \DeclareFontSeriesChangeRule {m}{ux} {ux} {m}
+%^^A \DeclareFontSeriesChangeRule {sbc}{ux}{sbux}{}
+%^^A \DeclareFontSeriesChangeRule {sbx}{ux}{sbux}{sbx}
+%^^A \DeclareFontSeriesChangeRule {sb}{ux} {sbux} {}
+%^^A \DeclareFontSeriesChangeRule {slc}{ux}{slux}{}
+%^^A \DeclareFontSeriesChangeRule {sl}{ux}{slux}{}
+%^^A \DeclareFontSeriesChangeRule {ubc}{ux}{ubux}{}
+%^^A \DeclareFontSeriesChangeRule {ubx}{ux}{ubux}{ubx}
+%^^A \DeclareFontSeriesChangeRule {ub}{ux}{ubux}{}
+%^^A \DeclareFontSeriesChangeRule {ulc}{ux}{ulux}{}
+%^^A \DeclareFontSeriesChangeRule {ulx}{ux}{ulux}{ulx}
+%^^A \DeclareFontSeriesChangeRule {ul}{x}{ulx}{}
+%^^A \DeclareFontSeriesChangeRule {x}{ul}{ulx}{}
+%^^A \DeclareFontSeriesChangeRule {ux}{m?}{ux}{}
+%^^A \DeclareFontSeriesChangeRule {ux}{?m}{m}{}
+%
+% BEGIN added (cfr) merge weight changes into series
+%
+% \begin{macro}{\exfs@merge@weight}
+%   The pay off for setting up series splitting is that we can reuse the method here and, as in the case of width, the definition is greatly simplified\footnote{%
+%   At least if you don't look at the splitter code.}.
+%    \begin{macrocode}
+\newcommand*{\exfs@merge@weight}[1]{%
+  \exfs@series@splitter{\f@series}%
+%    \end{macrocode}
+% Save current series so we can test for change
+%    \begin{macrocode}
+  \let\exfs@tempg\f@series
+  \def\exfs@temph{#1}%
+  \if\exfs@temph m\relax
+    \ifx\exfs@width\@empty\relax
+    \else
+      \let\exfs@temph\@empty
+    \fi
+  \fi
+  \edef\exfs@series{\exfs@temph\exfs@width}%
+  \ifx\exfs@temph\exfs@series
+    \exfs@info{Trying \exfs@series}%
+    \exfs@try@series{\exfs@series}%
+  \else
+    \exfs@info{Trying \exfs@series, favouring \exfs@weight}%
+    \exfs@try@series[\exfs@weight]{\exfs@series}% assume user wants to change weight even if this changes back to the default width
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+%^^A Meddwl bod y côd hwn yn dibynnu ar y problem 'm' eto
+%^^A Ond alla i ddim jest ychwanegu un 
+%^^A 	\edef\exfs@tempg{#1}%
+%^^A 	\edef\exfs@tempf{\expandafter\exfs@first\f@series\@nil }%
+%^^A 	\edef\exfs@temppart{\expandafter\exfs@part\f@series\@nil }%
+%^^A 	\def\templ{l}%
+%^^A 	\def\tempb{b}%
+%^^A Case when there's no second part, so the single character must be the weight and should be replaced
+%^^A 	\ifx\exfs@temppart\@empty
+%^^A 		\def\exfs@series{\expandafter\exfs@tempg}%
+%^^A 	%:case when there's a second part
+%^^A 	\else
+%^^A 		%:get first character of second part
+%^^A 		\edef\exfs@temps{\expandafter\exfs@second\f@series\@nil }%
+%^^A 		\edef\exfs@tempw{\expandafter\exfs@part\exfs@temps\@nil }%
+%^^A 		%:is the first character b? if so, it is part of the weight and should be replaced
+%^^A 		\ifx\exfs@temps\tempb
+%^^A 			\def\exfs@series{\expandafter\exfs@tempg\exfs@tempw}%
+%^^A 		\else
+%^^A 			%:is the first character l? if so, it is part of the weight and should be replaced
+%^^A 			\ifx\exfs@temps\templ
+%^^A 				\def\exfs@series{\expandafter\exfs@tempg\exfs@tempw}%
+%^^A 			\else
+%^^A 				%:o/w the first character is part of the width and should be retained
+%^^A 				\def\exfs@series{\expandafter\exfs@tempg\exfs@temppart}%
+%^^A 			\fi
+%^^A 		\fi
+%^^A 	\fi
+%^^A 	%\fontseries\exfs@series\selectfont}
+%^^A 	\ifx\exfs@tempg\exfs@series
+%^^A 		\exfs@try@series{\exfs@series}%
+%^^A 	\else
+%^^A 		\exfs@try@series[\exfs@tempg]{\exfs@series}%		assume user wants to change weight even if this changes back to the default width
+%^^A 	\fi}
+% \begin{macro}{\mbdefault,\mbweight,\bddefault,\bfweight,\bdweight}
+% Ref.: \file{sources2e.pdf} and/or stripped code in \path{base}.
+%
+% The annotation ‘anniffiniedig’ indicates the macro is \emph{not} defined by the kernel as of 2024.
+% The addition ‘ond rheolau’ means there are nonetheless relevant rules.
+% The comment ‘dim byd i'w gael eu wneud yma’ indicates that defining the default is now sufficient and no additional font switch or text command is required.
+%    \begin{macrocode}
+\newcommand*{\mbdefault}{sb}% dim byd i'w gael ei wneud yma
+\DeclareRobustCommand{\mbweight}{%% anniffiniedig
+  \not@math@alphabet\mbweight\relax
+  \exfs@merge@weight{\mbdefault}}
+\newcommand*{\bddefault}{b}% dim byd i'w gael ei wneud yma
+\DeclareRobustCommand{\bfweight}{%% anniffiniedig
+  \not@math@alphabet\bfweight\relax
+  \exfs@merge@weight{\bddefault}}
+\DeclareRobustCommand{\bdweight}{%% anniffiniedig
+  \not@math@alphabet\bdweight\relax
+  \exfs@merge@weight{\bddefault}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\mwdefault,\mdweight}
+%   Regular, medium, default are all irregular, exceptional, fraught. 
+%    \begin{macrocode}
+\newcommand*\mwdefault{m}
+\DeclareRobustCommand{\mdweight}{%% anniffiniedig
+  \not@math@alphabet\mdweight\relax
+  \exfs@merge@weight{\mwdefault}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\dbdefault,\dbweight,\sbdefault,\sbweight,\ebdefault,\ebweight,\ubdefault,\ubweight}
+%   Heavy weights. 
+%    \begin{macrocode}
+\newcommand*{\dbdefault}{db}% anniffiniedig
+\DeclareRobustCommand{\dbweight}{%% anniffiniedig
+	\not@math@alphabet\dbweight\relax
+	\exfs@merge@weight{\dbdefault}}
+\newcommand*{\sbdefault}{sb}% anniffiniedig
+\DeclareRobustCommand{\sbweight}{%% anniffiniedig ond rheolau
+	\not@math@alphabet\sbweight\relax
+	\exfs@merge@weight{\sbdefault}}% neu \exfs@try@series ?
+\newcommand*{\ebdefault}{eb}% anniffiniedig
+\DeclareRobustCommand{\ebweight}{%% anniffiniedig ond rheolau
+	\not@math@alphabet\ebweight\relax
+	\exfs@merge@weight{\ebdefault}}% neu \exfs@try@series ?
+\newcommand*{\ubdefault}{ub}% anniffiniedig
+\DeclareRobustCommand{\ubweight}{%% anniffiniedig ond rheolau
+	\not@math@alphabet\ubweight\relax
+	\exfs@merge@weight{\ubdefault}}% neu \exfs@try@series ?
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\lgdefault,\lgweight,\eldefault,\elweight,\uldefault,\ulweight}
+%   Light weights.
+%    \begin{macrocode}
+\newcommand*{\lgdefault}{l}% anniffiniedig
+%    \end{macrocode}
+% Note - use this if light is a variant weight, rather than a separate family
+%    \begin{macrocode}
+\DeclareRobustCommand{\lgweight}{%% anniffiniedig ond rheolau
+	\not@math@alphabet\lgweight\relax
+	\exfs@merge@weight{\lgdefault}}% neu \exfs@try@series ?
+\newcommand*{\eldefault}{el}% anniffiniedig
+\DeclareRobustCommand{\elweight}{%% anniffiniedig ond rheolau
+	\not@math@alphabet\elweight\relax
+	\exfs@merge@weight{\eldefault}}% neu \exfs@try@series ?
+\newcommand*{\uldefault}{ul}% anniffiniedig
+\DeclareRobustCommand{\ulweight}{%% anniffiniedig ond rheolau
+	\not@math@alphabet\ulweight\relax
+	\exfs@merge@weight{\uldefault}}% neu \exfs@try@series ?
+%    \end{macrocode}
+% \end{macro}
+% END added
+%^^A \DeclareRobustCommand{\itshape}{%
+%^^A   \not@math@alphabet\itshape\mathit
+%^^A  \exfs@merge@shape{\itdefault}{\scdefault}{\sidefault}}
+% Original
+%^^A\DeclareRobustCommand{\scshape}{%
+%^^A  \not@math@alphabet\scshape\relax
+%^^A  \exfs@merge@shape{\scdefault}{\itdefault}{\sidefault}}
+%^^A BEGIN cfr-altered: \scshape
+%^^A \DeclareRobustCommand{\scshape}{%
+%^^A   \not@math@alphabet\scshape\relax
+%^^A   \def\tempu{u}%
+%^^A   \def\tempo{ol}%
+%^^A   \ifx\f@shape\tempu
+%^^A   	\exfs@merge@shape{\scdefault}{\udefault}{\scudefault}%
+%^^A   \else
+%^^A   	\ifx\f@shape\tempo
+%^^A 		\exfs@merge@shape{\scdefault}{\oldefault}{\scoldefault}%
+%^^A 	\else
+%^^A   		\exfs@merge@shape{\scdefault}{\itdefault}{\sidefault}%
+%^^A 	\fi
+%^^A   \fi}
+%^^A END end-altered
+%^^A \DeclareRobustCommand{\upshape}{%
+%^^A   \not@math@alphabet\upshape\relax
+%^^A   \exfs@merge@shape{\updefault}{\sidefault}{\scdefault}}
+% \begin{macro}{\dfshape}
+%   Something simpler.
+%    \begin{macrocode}
+\let\dfshape\normalshape
+%    \end{macrocode}
+% \end{macro}
+%^^A \DeclareRobustCommand{\dfshape}{%
+%^^A   \not@math@alphabet\dfshape\relax
+%^^A   \fontshape\shapedefault\selectfont}
+% \begin{macro}{\swashapedefault}
+% cfr: be' i wneud am hwn?
+%    \begin{macrocode}
+\newcommand*{\swshapedefault}{\itdefault}
+%    \end{macrocode}
+% \end{macro}
+% \LaTeX{} ddim yn cynnwys \cs{swstyle} felly \dots?
+% \textbar{} \LaTeX{} doesn't include \cs{swstyle} so \dots?
+%    \begin{macrocode}
+\ExplSyntaxOn
+\hook_gput_code:nnn {begindocument}{.}
+{% compatibility with original nfss \swshape
+%    \end{macrocode}
+% Note this doesn't affect \cs{swashstyle} or \cs{textswash}
+% \begin{macro}{\swshape} 
+%   \changes{v0.0}{0000/00/00}{%
+%     Conditionally overwrite \swshape{} to take account of default setting.
+%     This is not for any package I know of on \ctan, but the original code used \cs{textsw}.%
+%   }%
+%   Conditional definition.
+%   We overwrite the kernel's definition either way.
+%   The \texttt{compat} option determines only with what we overwrite it.
+%    \begin{macrocode}
+  \bool_if:NTF \g__exfs_compat_bool
+  {
+    \DeclareRobustCommand{\swshape}
+    {
+      \not@math@alphabet\swshape\relax
+      \swstyle\fontshape\swshapedefault\selectfont
+    }
+    \PackageWarning{nfssext-cfr}{
+      Overwriting ~ kernel ~ definition ~ of ~ \swshape \space (compat)
+    }
+  }{
+    \DeclareRobustCommand \swshape
+    {
+      \not@math@alphabet\swshape\relax
+      \exfs@swshape
+    }
+    \PackageWarning{nfssext-cfr}{
+      Overwriting ~ kernel ~ definition ~ of ~ \swshape \space (new)
+    }
+  }
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\textin} 
+%   Conditional definition.
+%    \begin{macrocode}
+  \@ifpackageloaded{hyperref}{
+    \hook_gput_code:nnn { cmd/textin/before } { . }
+    {
+      \exfs@info{
+        Note ~ that ~ '\protect\textin' ~ is ~ defined ~ by ~ hyperref.\MessageBreak
+        Use ~ for ~ inferior ~ digits ~ will ~ yield ~ an\MessageBreak
+        undefined ~ command ~ error ~ in ~ document ~ font ~ encodings.\MessageBreak
+        Use ~ '\protect\textinf' ~ to ~ access ~ inferior ~ digits
+      }
+    }
+  }{
+    \DeclareTextFontCommand{\textin}{\infstyle}
+  }
+%    \end{macrocode}
+% \end{macro}
+%    \begin{macrocode}
+}
+\ExplSyntaxOff
+%    \end{macrocode}
+% \begin{macro}{\textln,\textos,\textinf,\textsu,\textsi,\textdf}
+% The annotation ‘anniffiniedig’ indicates the macro is \emph{not} defined by the kernel as of 2024.
+%    \begin{macrocode}
+\DeclareTextFontCommand{\textln}{\lnstyle}% anniffiniedig
+\DeclareTextFontCommand{\textos}{\osstyle}% anniffiniedig
+\DeclareTextFontCommand{\textinf}{\infstyle}% anniffiniedig
+\DeclareTextFontCommand{\textsu}{\sustyle}% anniffiniedig
+\DeclareTextFontCommand{\textsi}{\sishape}% anniffiniedig
+\DeclareTextFontCommand{\textdf}{\dfshape}% anniffiniedig
+%    \end{macrocode}
+% \end{macro}
+% \cs{textsw} is already defined on newer kernels with essentially the same meaning as \lpack{nfssext} originally gave it, so we remove the definition here.
+% However, the redefinition of \cs{swshape} means \cs{textsw} is effectively redefined, so the kernel definition is only technically retained.
+%
+% BEGIN added (cfr)
+%
+% \begin{macro}{\textti,\textlt,\textof,\textalt,\textreg,\emboss,\textorn,\textqt,\textsh,\texttm,\texttv}
+% Families
+%    \begin{macrocode}
+\DeclareTextFontCommand{\textti}{\tistyle}% anniffiniedig
+\DeclareTextFontCommand{\textlt}{\ltstyle}% anniffiniedig
+\DeclareTextFontCommand{\textof}{\ofstyle}% anniffiniedig					% open-face (or outline or blank) style
+\DeclareTextFontCommand{\textalt}{\altstyle}% anniffiniedig					% alternative style
+\DeclareTextFontCommand{\textreg}{\regstyle}% anniffiniedig					% `regular' style
+\DeclareTextFontCommand{\emboss}{\embossstyle}% anniffiniedig
+\DeclareTextFontCommand{\textorn}{\ornamentalstyle}% anniffiniedig	% intended primarily for decorative initials etc.
+\DeclareTextFontCommand{\textqt}{\qtstyle}% anniffiniedig
+\DeclareTextFontCommand{\textsh}{\shstyle}% anniffiniedig						% shadowed style
+\DeclareTextFontCommand{\texttm}{\tmstyle}% anniffiniedig
+\DeclareTextFontCommand{\texttv}{\tvstyle}% anniffiniedig
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\textl,\texto,\textp,\textt,\textpl,\textpo,\texttl,\textto}
+% Families - figures
+%    \begin{macrocode}
+\DeclareTextFontCommand{\textl}{\lstyle}% anniffiniedig
+\DeclareTextFontCommand{\texto}{\ostyle}% anniffiniedig
+\DeclareTextFontCommand{\textp}{\pstyle}% anniffiniedig
+\DeclareTextFontCommand{\textt}{\tstyle}% anniffiniedig
+\DeclareTextFontCommand{\textpl}{\plstyle}% anniffiniedig
+\DeclareTextFontCommand{\textpo}{\postyle}% anniffiniedig
+\DeclareTextFontCommand{\texttl}{\tlstyle}% anniffiniedig
+\DeclareTextFontCommand{\textto}{\tostyle}% anniffiniedig
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\textol,\textswash,\textu,\textscu,\textui,\textri}
+% Shapes
+%    \begin{macrocode}
+\DeclareTextFontCommand{\textol}{\olshape}% anniffiniedig	  % outline
+\DeclareTextFontCommand{\textswash}{\swashstyle}% anniffiniedig		% an attempt to improve on \textsw
+\DeclareTextFontCommand{\textu}{\ushape}% anniffiniedig       % be' yw hwn?! <_ underlined?
+\DeclareTextFontCommand{\textscu}{\scushape}% anniffiniedig
+\DeclareTextFontCommand{\textui}{\uishape}% anniffiniedig	  % upright italic
+\DeclareTextFontCommand{\textri}{\rishape}% anniffiniedig	  % reverse italic
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\textnw,\textcd,\textec,\textuc,\textet,\textep,\textex,\textux,\textrw}
+% Widths
+%    \begin{macrocode}
+\DeclareTextFontCommand{\textnw}{\nwwidth}% anniffiniedig
+\DeclareTextFontCommand{\textcd}{\cdwidth}% anniffiniedig
+\DeclareTextFontCommand{\textec}{\ecwidth}% anniffiniedig
+\DeclareTextFontCommand{\textuc}{\ucwidth}% anniffiniedig
+\DeclareTextFontCommand{\textet}{\etwidth}% anniffiniedig
+\DeclareTextFontCommand{\textep}{\epwidth}% anniffiniedig
+\DeclareTextFontCommand{\textex}{\exwidth}% anniffiniedig
+\DeclareTextFontCommand{\textux}{\uxwidth}% anniffiniedig
+\DeclareTextFontCommand{\textrw}{\regwidth}% anniffiniedig
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\textmb,\textdb,\textbd,\textsb,\texteb,\textub,\textlg,\textel,\textul}
+% Weights
+%    \begin{macrocode}
+\DeclareTextFontCommand{\textmb}{\mbweight}% anniffiniedig
+\DeclareTextFontCommand{\textdb}{\dbweight}% anniffiniedig
+\DeclareTextFontCommand{\textbd}{\bdweight}% new?
+\DeclareTextFontCommand{\textsb}{\sbweight}% anniffiniedig
+\DeclareTextFontCommand{\texteb}{\ebweight}% anniffiniedig
+\DeclareTextFontCommand{\textub}{\ubweight}% anniffiniedig
+\DeclareTextFontCommand{\textlg}{\lgweight}% anniffiniedig
+\DeclareTextFontCommand{\textel}{\elweight}% anniffiniedig
+\DeclareTextFontCommand{\textul}{\ulweight}% anniffiniedig
+%    \end{macrocode}
+% \end{macro}
+% END added
+%
+% BEGIN patch font initialisation for Latin Modern
+%
+% Stop redefinition of bold if using Latin Modern as \texttt{clm}.
+% Kernel default only blocks redefinition for \texttt{lm}.
+% Don't rely on \lpack{cfr-lm} internal macros as they may change without notice \dots{}.
+% We don't need Dunhill, though, because it doesn't have bold of any kind.
+% \lpack{cfr-lm} doesn't support using Quotation Sans as default or using e.g.~serif as default sans, but there's nothing to stop somebody doing that so follow the kernel here even though it makes for a massive list\footnote{%
+%   I know this will go off the page when typeset, but I have no idea whether I can safely insert line breaks into the patch and I shall scream if I break this again. (Pun fully intended.)%
+% }.
+%    \begin{macrocode}
+\patchcmd{\init@series@setup}{cmr,cmss,cmtt,lcmss,lcmtt,lmr,lmss,lmtt}{cmr,cmss,cmtt,lcmss,lcmtt,lmr,lmss,lmtt,clm,clm2,clm2j,clmj,clm2js,clm2s,clmjs,clms,clm2jt,clm2t,clmjt,clmt,clm2jv,clm2v,clmjv,clmv,clm2jqs,clm2qs,clmjqs,clmqs}{%
+  \PackageWarning{nfssext-cfr}{%
+    Patching font initialisation macro for serif.%
+  }%
+}{%
+  \PackageWarning{nfssext-cfr}{%
+    Failed to patch font initialisation macro for serif.%
+  }%
+}
+\patchcmd{\init@series@setup}{{cmr,cmss,cmtt,lcmss,lcmtt,lmr,lmss,lmtt}}{{cmr,cmss,cmtt,lcmss,lcmtt,lmr,lmss,lmtt,clm,clm2,clm2j,clmj,clm2js,clm2s,clmjs,clms,clm2jt,clm2t,clmjt,clmt,clm2jv,clm2v,clmjv,clmv,clm2jqs,clm2qs,clmjqs,clmqs}}{%
+  \PackageWarning{nfssext-cfr}{%
+    Patching font initialisation macro for sans.%
+  }%
+}{%
+  \PackageWarning{nfssext-cfr}{%
+    Failed to patch font initialisation macro for sans.%
+  }%
+}
+\patchcmd{\init@series@setup}{{cmr,cmss,cmtt,lcmss,lcmtt,lmr,lmss,lmtt}}{{cmr,cmss,cmtt,lcmss,lcmtt,lmr,lmss,lmtt,clm,clm2,clm2j,clmj,clm2js,clm2s,clmjs,clms,clm2jt,clm2t,clmjt,clmt,clm2jv,clm2v,clmjv,clmv,clm2jqs,clm2qs,clmjqs,clmqs}}{%
+  \PackageWarning{nfssext-cfr}{%
+    Patching font initialisation macro for typewriter.%
+  }%
+}{%
+  \PackageWarning{nfssext-cfr}{%
+    Failed to patch font initialisation macro for typewriter.%
+  }%
+}
+%    \end{macrocode}
+% END
+% \end{package}
+% \iffalse
+%</sty-nnfss>
+% \fi
+% 
+% \subsection{NFSS}\label{subsec:sty-nfss}
+%
+% This code was written for the \emph{old} New Font Selection Scheme (\nfss).
+% It should not generally be loaded on current or recent kernels.
+%
+% \iffalse
+%<*sty-nfss>
+% \fi
+% \begin{package}{nfssext-cfr-nfss}
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}
+\RequirePackage{svn-prov}
+\ProvidesPackageSVN[\filebase-nfss.sty]{$Id: nfssext-cfr.dtx 10344 2024-09-13 20:17:16Z cfrees $}[\filebase v0.0 \revinfo{} specially mangled by cfr; based on 2003/03/14 v1.2 Experimental NFSS Extensions; for old NFSS]
+\DefineFileInfoSVN
+%    \end{macrocode}
+% ^^A Paid â defnyddio \GetFileInfoSVN*/\GetFileInfoSVN{} yn y fan hon!!
+%:cfr-added: use ifthen
+%    \begin{macrocode}
+\RequirePackage{ifthen}
+%    \end{macrocode}
+%:end-added
+% \begin{macro}{\exfs@tempa,\exfs@tempb,\exfs@tempf}
+%    \begin{macrocode}
+\newcommand*{\exfs@tempa}{}
+\newcommand*{\exfs@tempb}{}
+%    \end{macrocode}
+%:cfr-added: extra variable (\cs{exfs@tempf})
+%    \begin{macrocode}
+\newcommand*{\exfs@tempf}{}
+%    \end{macrocode}
+% \end{macro}
+%:end-added
+% \begin{macro}{\exfs@try@family}
+% \mbox{ }
+%    \begin{macrocode}
+\newcommand*{\exfs@try@family}[2][]{%
+  \let\exfs@tempa\relax
+  \begingroup
+    \fontfamily{#2}\try@load@fontshape
+    \expandafter\ifx\csname\curr@fontshape\endcsname\relax
+      \edef\exfs@tempa{#1}%
+      \ifx\exfs@tempa\@empty
+        \PackageWarning{nfssext}{%
+          Font family '\f@encoding/#2' not available\MessageBreak
+          Ignoring font switch}%
+      \else
+        \PackageInfo{nfssext}{%
+          Font family '\f@encoding/#2' not available\MessageBreak
+          Font family '\f@encoding/#1' tried instead}%
+        \exfs@try@family{#1}%
+      \fi
+    \else
+      \gdef\exfs@tempa{\fontfamily{#2}\selectfont}%
+    \fi
+  \endgroup
+  \exfs@tempa}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\exfs@try@series}
+%:cfr-added \cs{exfs@try@series}
+%    \begin{macrocode}
+\newcommand*{\exfs@try@series}[2][]{%
+  \let\exfs@tempa\relax
+  \begingroup
+    \fontseries{#2}\try@load@fontshape
+    \expandafter\ifx\csname\curr@fontshape\endcsname\relax
+      \edef\exfs@tempa{#1}%
+      \ifx\exfs@tempa\@empty
+        \PackageWarning{nfssext-cfr}{%
+          Font series '\f@encoding/\f@family/#2' not available\MessageBreak
+          Ignoring font switch}%
+      \else
+        \PackageInfo{nfssext-cfr}{%
+          Font family '\f@encoding/\f@family/#2' not available\MessageBreak
+          Font family '\f@encoding/\f@family/#1' tried instead}%
+        \exfs@try@series{#1}%
+      \fi
+    \else
+      \gdef\exfs@tempa{\fontseries{#2}\selectfont}%
+    \fi
+  \endgroup
+  \exfs@tempa
+}
+%    \end{macrocode}
+%:end-added
+% \end{macro}
+% \begin{macro}{\exfs@get@base,\exfs@get@variants,\exfs@next,\exfs@shift,\exfs@first,\exfs@part,\exfs@second}
+% \mbox{ }
+%    \begin{macrocode}
+\def\exfs@get@base#1#2#3#4\@nil{#1#2#3}
+%    \end{macrocode}
+%:cfr-added:more \cs{exfs@} commands (get@variants, next, shift, first, part, second)
+%    \begin{macrocode}
+\def\exfs@get@variants#1#2#3#4\@nil{#4}
+\def\exfs@next#1#2\@nil{#1}
+\def\exfs@shift#1#2\@nil{#2}
+\def\exfs@first#1#2\@nil{#1}
+\def\exfs@part#1#2\@nil{#2}
+\def\exfs@second#1#2#3\@nil{#2}
+%    \end{macrocode}
+%:end-added
+% \end{macro}
+% \begin{macro}{\lnstyle,\osstyle,\infstyle,\instyle,\sustyle,\swstyle}
+% \mbox{ }
+%    \begin{macrocode}
+\DeclareRobustCommand{\lnstyle}{%
+  \not@math@alphabet\lnstyle\relax
+  \exfs@try@family[\expandafter\exfs@get@base\f@family\@nil]%
+  {\expandafter\exfs@get@base\f@family\@nil x}%
+}
+\DeclareRobustCommand{\osstyle}{%
+  \not@math@alphabet\osstyle\relax
+  \exfs@try@family{\expandafter\exfs@get@base\f@family\@nil j}}
+\DeclareRobustCommand{\instyle}{%
+  \not@math@alphabet\instyle\relax
+  \exfs@try@family{\expandafter\exfs@get@base\f@family\@nil 0}}
+\DeclareRobustCommand{\sustyle}{%
+  \not@math@alphabet\sustyle\relax
+  \exfs@try@family{\expandafter\exfs@get@base\f@family\@nil 1}}
+\DeclareRobustCommand{\swstyle}{%
+  \not@math@alphabet\swstyle\relax
+  \exfs@try@family{\expandafter\exfs@get@base\f@family\@nil w}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\exfs@merge@families}
+%:cfr-added - merge families
+%    \begin{macrocode}
+\newcommand*\exfs@merge@families[1]{%
+  \edef\exfs@tempf{#1}%
+  \edef\tempa{\expandafter\exfs@get@variants\f@family\@nil}%
+  \edef\tempo{2j}%
+  \let\exfs@tempq\@empty
+  \def\exfs@tempg{}%
+  \newif\ifadded
+    \addedfalse
+%    \end{macrocode}
+%   check whether there are variants - if not just use the requested addition
+%    \begin{macrocode}
+  \ifx\tempa\@empty
+    \edef\exfs@tempq{\exfs@tempf}%
+    \addedtrue
+  \else
+    \gdef\set{0,1,2,a,d,e,f,h,j,l,p,q,s,t,v,w}% these are the variants to consider - the order here and in the font name is crucial
+    \ifx\tempo\exfs@tempf
+      \@for \xx:=\set \do {%
+%    \end{macrocode}
+%         check whether there are variants left - if not set the ‘next variant’ to empty
+%    \begin{macrocode}
+        \ifx\tempa\@empty
+          \let\exfs@tempn\@empty
+        \else
+%    \end{macrocode}
+%         o/w get the next variant
+%    \begin{macrocode}
+          \edef\exfs@tempn{\expandafter\exfs@next\tempa\@nil}%
+        \fi
+        \edef\tempt{2}%
+        \edef\tempj{j}%
+%    \end{macrocode}
+%         if the next variant is 2 or j, ignore it
+%    \begin{macrocode}
+        \ifx\exfs@tempn\tempt
+          \edef\tempa{\expandafter\exfs@shift\tempa\@nil}%
+        \fi
+        \ifx\exfs@tempn\tempj	% if the next variant is j, ignore it
+          \edef\tempa{\expandafter\exfs@shift\tempa\@nil}%
+        \fi
+%    \end{macrocode}
+%         see if the current value is either 2 or j and add it if so and if needed
+%    \begin{macrocode}
+        \ifx\tempt\xx
+          \edef\exfs@tempg{\exfs@tempg\xx}%
+        \else
+          \ifx\tempj\xx	% if the current value is j, we're done
+            \edef\exfs@tempq{\exfs@tempg\xx\tempa}%
+            \let\tempa\@empty
+            \addedtrue
+          \else
+%    \end{macrocode}
+%             o/w see if the current value matches the next variant
+%    \begin{macrocode}
+            \ifx\xx\exfs@tempn
+              \edef\exfs@tempg{\exfs@tempg\xx}%
+              \edef\tempa{\expandafter\exfs@shift\tempa\@nil}%
+            \fi
+          \fi
+        \fi
+      }%
+    \else
+      \@for \xx:=\set \do {%
+%    \end{macrocode}
+%         check whether there are variants left and, if not, add the addition if needed
+%    \begin{macrocode}
+        \ifx\tempa\@empty
+          \ifadded
+          \else
+            \edef\exfs@tempq{\exfs@tempg\exfs@tempf}%
+            \addedtrue
+          \fi
+        \else
+%    \end{macrocode}
+%         o/w get the next variant
+%    \begin{macrocode}
+          \edef\exfs@tempn{\expandafter\exfs@next\tempa\@nil}%
+%    \end{macrocode}
+%           if the new token equals the next variant, combine whatever is saved in \cs{exfs@tempg} with whatever remains in \cs{tempa}
+%    \begin{macrocode}
+          \ifx\exfs@tempn\exfs@tempf
+            \edef\exfs@tempq{\exfs@tempg\tempa}%
+            \addedtrue
+            \let\tempa\@empty
+          \else
+%    \end{macrocode}
+%             o/w, if the current value matches the requested addition, add it in
+%    \begin{macrocode}
+            \ifx\exfs@tempf\xx
+              \edef\exfs@tempq{\exfs@tempg\xx\tempa}%
+              \addedtrue
+              \let\tempa\@empty
+            \else
+%    \end{macrocode}
+%               o/w, if the current value matches the next variant, shift
+%    \begin{macrocode}
+              \ifx\exfs@tempn\xx
+                \edef\exfs@tempg{\exfs@tempg\xx}%
+                \edef\tempa{\expandafter\exfs@shift\tempa\@nil}%
+              \fi
+            \fi
+          \fi
+        \fi
+      }%
+    \fi
+  \fi
+  \ifx\exfs@tempq\@empty
+    \PackageError{nfssext-cfr}{Something is wrong here. Ignoring font switching command.}{}%
+  \else
+    \exfs@try@family{\expandafter\exfs@get@base\f@family\@nil \exfs@tempq}%
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\pstyle,\ostyle,\postyle,\tistyle}
+%    \begin{macrocode}
+\DeclareRobustCommand{\pstyle}{%		proportional figures
+  \not@math@alphabet\pstyle\relax
+  \exfs@merge@families{2}}
+\DeclareRobustCommand{\tistyle}{%	titling/display
+  \not@math@alphabet\tistyle\relax
+  \exfs@merge@families{d}}
+\DeclareRobustCommand{\ostyle}{%		oldstyle figures (cf. original osstyle above)
+  \not@math@alphabet\ostyle\relax
+  \exfs@merge@families{j}}
+%    \end{macrocode}
+% combined command for proportional oldstyle
+%    \begin{macrocode}
+\DeclareRobustCommand{\postyle}{%
+  \not@math@alphabet\postyle\relax
+  \exfs@merge@families{2j}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\ltstyle,\ofstyle,\altstyle,\regstyle,\embossstyle,\ornamentalstyle,\swashstyle,\shstyle,\qtstyle}
+%note that this command is for use when the light version is a separate family rather than a weight variant (e.g. when you've got light, light bold etc. as well as regular weights)
+%    \begin{macrocode}
+\DeclareRobustCommand{\ltstyle}{%
+  \not@math@alphabet\ltstyle\relax
+  \exfs@merge@families{l}}
+%    \end{macrocode}
+%let's hope there aren't any fonts with a light family *and* an outline/openface/blank version
+%    \begin{macrocode}
+\DeclareRobustCommand{\ofstyle}{%
+  \not@math@alphabet\ofstyle\relax
+  \exfs@merge@families{l}}
+\DeclareRobustCommand{\altstyle}{%	alternative style
+  \not@math@alphabet\altstyle\relax
+  \exfs@merge@families{a}}
+\DeclareRobustCommand{\regstyle}{% ``regular'' style
+  \not@math@alphabet\regstyle\relax
+  \exfs@try@family{\expandafter\exfs@get@base\f@family\@nil}}
+\DeclareRobustCommand{\embossstyle}{%
+  \not@math@alphabet\embossstyle\relax
+  \exfs@merge@families{e}}
+\DeclareRobustCommand{\ornamentalstyle}{%	intended primarily for decorative initial fonts etc.
+  \not@math@alphabet\ornamentalstyle\relax
+  \exfs@merge@families{p}}
+\DeclareRobustCommand{\qtstyle}{%	quotation style (assumes sans)
+  \not@math@alphabet\qtstyle\relax
+  \sffamily
+  \exfs@merge@families{q}}
+\DeclareRobustCommand{\shstyle}{%
+  \not@math@alphabet\shstyle\relax
+  \exfs@merge@families{h}}
+\DeclareRobustCommand{\swashstyle}{%			an attempt to improve on \swstyle
+  \not@math@alphabet\swashstyle\relax
+  \exfs@merge@families{w}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\tmstyle,\tvstyle}
+%   Macros to switch between monowidth and variable typewriter.
+%   These need to unmerge before merging.
+%   We need to unmerge sans as well as the other kind of typewriter.
+%    \begin{macrocode}
+\DeclareRobustCommand{\tmstyle}{%       monowidth typewriter
+  \not@math@alphabet\tmstyle\relax
+  \exfs@unmerge@families{s}%
+  \exfs@unmerge@families{v}%
+  \exfs@merge@families{t}}
+\DeclareRobustCommand{\tvstyle}{%       variable width typewriter
+  \not@math@alphabet\tvstyle\relax
+  \exfs@unmerge@families{s}%
+  \exfs@unmerge@families{t}%
+  \exfs@merge@families{v}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\exfs@unmerge@families}
+%:cfr-added - unmerge families
+%    \begin{macrocode}
+\newcounter{taken}%
+\newcommand*\exfs@unmerge@families[1]{%
+  \edef\exfs@tempf{#1}%
+  \edef\tempa{\expandafter\exfs@get@variants\f@family\@nil}%
+  \let\exfs@tempq\@empty
+  \edef\exfs@tempg{}%
+  \setcounter{taken}{0}%
+%    \end{macrocode}
+%   check whether there are variants - if not do nothing
+%    \begin{macrocode}
+  \ifx\tempa\@empty
+      \edef\exfs@tempq{}%
+  \else
+%    \end{macrocode}
+%       o/w go through the variants to find the one to delete
+%    \begin{macrocode}
+      \whiledo{\value{taken}<1}{%
+%    \end{macrocode}
+%           get the next variant
+%    \begin{macrocode}
+          \edef\exfs@tempn{\expandafter\exfs@next\tempa\@nil}%
+%    \end{macrocode}
+%           see if the next variant is the thing we seek and, if so, eliminate it
+%    \begin{macrocode}
+          \ifx\exfs@tempf\exfs@tempn
+              \edef\tempa{\expandafter\exfs@shift\tempa\@nil}%
+              \edef\exfs@tempq{\exfs@tempg\tempa}%
+              \stepcounter{taken}%
+%    \end{macrocode}
+%           o/w save the next variant and move on if any variants remain
+%    \begin{macrocode}
+          \else
+              \edef\exfs@tempg{\exfs@tempg\exfs@tempn}%
+              \edef\tempa{\expandafter\exfs@shift\tempa\@nil}%
+              \ifx\tempa\@empty% if there are no variants left, we're done
+                  \edef\exfs@tempq{\exfs@tempg}%
+                  \stepcounter{taken}%
+              \fi
+          \fi
+      }%
+  \fi
+  \exfs@try@family{\expandafter\exfs@get@base\f@family\@nil \exfs@tempq}%
+}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\tstyle,\lstyle}
+% \mbox{ }
+%    \begin{macrocode}
+\DeclareRobustCommand{\tstyle}{%		tabular figures
+  \not@math@alphabet\tstyle\relax
+  \exfs@unmerge@families{2}}
+\DeclareRobustCommand{\lstyle}{%		lining figures (cf. command above)
+  \not@math@alphabet\lstyle\relax
+  \exfs@unmerge@families{j}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\tlstyle,\plstyle,\tostyle}
+% make a combined command for tabular lining
+%    \begin{macrocode}
+\DeclareRobustCommand{\tlstyle}{%
+  \lstyle\tstyle}
+%    \end{macrocode}
+% proportional lining
+%    \begin{macrocode}
+\DeclareRobustCommand{\plstyle}{%
+  \lstyle\pstyle}
+%    \end{macrocode}
+% tabular oldstyle {?!}
+%    \begin{macrocode}
+\DeclareRobustCommand{\tostyle}{%
+  \ostyle\tstyle}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\sidefault,\sishape}
+%:end-added % si is italic sc
+%    \begin{macrocode}
+\newcommand*{\sidefault}{si}
+\DeclareRobustCommand{\sishape}{%
+  \not@math@alphabet\sishape\relax
+  \fontshape\sidefault\selectfont}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\oldefault,\olshape,\scoldefault,\scolshape}
+%:cfr-added - is this how outline shapes should be handled?
+%    \begin{macrocode}
+\newcommand*{\oldefault}{ol}
+\DeclareRobustCommand{\olshape}{%
+  \not@math@alphabet\olshape\relax
+  \fontshape\oldefault\selectfont}
+\newcommand*{\scoldefault}{scol}
+\DeclareRobustCommand{\scolshape}{%
+  \not@math@alphabet\scolshape\relax
+  \fontshape\scoldefault\selectfont}
+%    \end{macrocode}
+%^^A\DeclareRobustCommand{\olshape}{%
+%^^A  \not@math@alphabet\olshape\relax
+%^^A  \exfs@merge@shape{\oldefault}{\scdefault}{\scoldefault}}
+% \end{macro}
+% \begin{macro}{\udefault,\ushape,\scudefault,\scushape}
+%:fudge
+%    \begin{macrocode}
+\newcommand*{\udefault}{u}
+\DeclareRobustCommand{\ushape}{%
+  \not@math@alphabet\ushape\relax
+  \fontshape\udefault\selectfont}
+\newcommand*{\scudefault}{su}
+\DeclareRobustCommand{\scushape}{%
+  \not@math@alphabet\scushape\relax
+  \fontshape\scudefault\selectfont}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\uidefault,\uishape,\ridefault,\rishape}
+%:upright italic
+%    \begin{macrocode}
+\newcommand*{\uidefault}{ui}
+\DeclareRobustCommand{\uishape}{%
+  \not@math@alphabet\uishape\relax
+  \fontshape\uidefault\selectfont}
+%    \end{macrocode}
+%:can i do this for reverse italic?
+%    \begin{macrocode}
+\newcommand*{\ridefault}{ri}
+\DeclareRobustCommand{\rishape}{%
+  \not@math@alphabet\rishape\relax
+  \fontshape\ridefault\selectfont}
+%    \end{macrocode}
+% \end{macro}
+%:end-added
+% \begin{macro}{\exfs@merge@shape}
+% \mbox{ }
+%    \begin{macrocode}
+\newcommand*{\exfs@merge@shape}[3]{%
+  \edef\exfs@tempa{#1}%
+  \edef\exfs@tempb{#2}%
+  \ifx\f@shape\exfs@tempb
+    \expandafter\ifx\csname\f@encoding/\f@family/\f@series/#3\endcsname\relax
+    \else
+      \edef\exfs@tempa{#3}%
+    \fi
+  \fi
+  \fontshape{\exfs@tempa}\selectfont}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\exfs@font@width}
+%:cfr-added - merge width changes into series
+%    \begin{macrocode}
+\newcommand*{\exfs@font@width}{%
+  \edef\exfs@tempf{\expandafter\exfs@first\f@series\@nil }%
+  \edef\exfs@temppart{\expandafter\exfs@part\f@series\@nil }%
+  \ifx\exfs@temppart\@empty
+      \def\exfs@width{}
+  \else
+      \edef\exfs@temps{\expandafter\exfs@second\f@series\@nil }%
+      \ifx\exfs@temps{b}
+          \edef\exfs@width{\expandafter\exfs@part\exfs@temps\@nil }%
+      \else
+          \ifx\exfs@temps{l}
+              \edef\exfs@width{\expandafter\exfs@part\exfs@temps\@nil }%
+          \else
+              \edef\exfs@width{\exfs@temppart}%
+          \fi
+      \fi
+  \fi
+  \exfs@width
+}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\exfs@merge@width}
+% \mbox{ }
+%    \begin{macrocode}
+\newcommand*{\exfs@merge@width}[1]{%
+  \edef\exfs@temph{#1}%
+  \edef\exfs@tempf{\expandafter\exfs@first\f@series\@nil }%
+  \edef\exfs@temppart{\expandafter\exfs@part\f@series\@nil }%
+  \def\tempb{b}%
+  \def\templ{l}%
+  \ifx\exfs@temppart\@empty
+      \def\exfs@series{\expandafter\exfs@tempf\exfs@temph}%
+  \else
+      \edef\exfs@temps{\expandafter\exfs@second\f@series\@nil }%
+      \ifx\exfs@temps\tempb
+          \def\exfs@series{\expandafter\exfs@tempf\exfs@temps\exfs@temph}%
+      \else
+          \ifx\exfs@temps\templ
+              \def\exfs@series{\expandafter\exfs@tempf\exfs@temps\exfs@temph}%
+          \else
+              \def\exfs@series{\expandafter\exfs@tempf\exfs@temph}%
+          \fi
+      \fi
+  \fi
+  \exfs@try@series{\exfs@series}%
+}
+%^^A	\fontseries\exfs@series\selectfont}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\exfs@unmerge@width}
+% \mbox{ }
+%    \begin{macrocode}
+\newcommand*{\exfs@unmerge@width}{%
+  \edef\exfs@tempf{\expandafter\exfs@first\f@series\@nil }%
+  \edef\exfs@temppart{\expandafter\exfs@part\f@series\@nil }%
+  \def\tempb{b}%
+  \def\templ{l}%
+  \ifx\exfs@temppart\@empty
+      \def\exfs@series{\expandafter\exfs@tempf}%
+  \else
+      \edef\exfs@temps{\expandafter\exfs@second\f@series\@nil }%
+      \ifx\exfs@temps\tempb
+          \def\exfs@series{\expandafter\exfs@tempf\exfs@temps}%
+      \else
+          \ifx\exfs@temps\templ
+              \def\exfs@series{\expandafter\exfs@tempf\exfs@temps}%
+          \else
+              \def\exfs@series{\expandafter\exfs@tempf}%
+          \fi
+      \fi
+  \fi
+  \exfs@try@series{\exfs@series}%
+}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\regwidth}
+% \mbox{ }
+%    \begin{macrocode}
+\DeclareRobustCommand{\regwidth}{%
+  \not@math@alphabet\regwidth\relax
+  \exfs@unmerge@width}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\nwdefault,\nwwidth,\cddefault,\cdwidth,\ecdefault,\ecwidth,\ucdefault,\ucwidth}
+% \mbox{ }
+%    \begin{macrocode}
+\newcommand*{\nwdefault}{c}
+\DeclareRobustCommand{\nwwidth}{%
+  \not@math@alphabet\nwwidth\relax
+  \exfs@merge@width{\nwdefault}}
+\newcommand*{\cddefault}{c}
+\DeclareRobustCommand{\cdwidth}{%
+  \not@math@alphabet\cdwidth\relax
+  \exfs@merge@width{\cddefault}}
+\newcommand*{\ecdefault}{ec}
+\DeclareRobustCommand{\ecwidth}{%
+  \not@math@alphabet\ecwidth\relax
+  \exfs@merge@width{\ecdefault}}
+\newcommand*{\ucdefault}{uc}
+\DeclareRobustCommand{\ucwidth}{%
+  \not@math@alphabet\ucwidth\relax
+  \exfs@merge@width{\ucdefault}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\etdefault,\etwidth,\epdefault,\epwidth,\exdefault,\exwidth,\uxdefault,\uxwidth}
+% \mbox{ }
+%    \begin{macrocode}
+\newcommand*{\etdefault}{x}
+\DeclareRobustCommand{\etwidth}{%
+  \not@math@alphabet\etwidth\relax
+  \exfs@merge@width{\etdefault}}
+\newcommand*{\epdefault}{x}
+\DeclareRobustCommand{\epwidth}{%
+  \not@math@alphabet\epwidth\relax
+  \exfs@merge@width{\epdefault}}
+\newcommand*{\exdefault}{ex}
+\DeclareRobustCommand{\exwidth}{%
+  \not@math@alphabet\exwidth\relax
+  \exfs@merge@width{\exdefault}}
+\newcommand*{\uxdefault}{ux}
+\DeclareRobustCommand{\uxwidth}{%
+  \not@math@alphabet\uxwidth\relax
+  \exfs@merge@width{\uxdefault}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\exfs@merge@weight}
+%:cfr-added merge weight changes into series
+%    \begin{macrocode}
+\newcommand*{\exfs@merge@weight}[1]{%
+  \edef\exfs@tempg{#1}%
+  \edef\exfs@tempf{\expandafter\exfs@first\f@series\@nil }%
+  \edef\exfs@temppart{\expandafter\exfs@part\f@series\@nil }%
+  \def\templ{l}%
+  \def\tempb{b}%
+%    \end{macrocode}
+%  :case when there's no second part, so the single character must be the weight and should be replaced
+%    \begin{macrocode}
+  \ifx\exfs@temppart\@empty
+      \def\exfs@series{\expandafter\exfs@tempg}%
+%    \end{macrocode}
+%  :case when there's a second part
+%    \begin{macrocode}
+  \else
+%    \end{macrocode}
+%      :get first character of second part
+%    \begin{macrocode}
+      \edef\exfs@temps{\expandafter\exfs@second\f@series\@nil }%
+      \edef\exfs@tempw{\expandafter\exfs@part\exfs@temps\@nil }%
+%    \end{macrocode}
+%      :is the first character b? if so, it is part of the weight and should be replaced
+%    \begin{macrocode}
+      \ifx\exfs@temps\tempb
+          \def\exfs@series{\expandafter\exfs@tempg\exfs@tempw}%
+      \else
+%    \end{macrocode}
+%          :is the first character l? if so, it is part of the weight and should be replaced
+%    \begin{macrocode}
+          \ifx\exfs@temps\templ
+              \def\exfs@series{\expandafter\exfs@tempg\exfs@tempw}%
+          \else
+%    \end{macrocode}
+%              :o/w the first character is part of the width and should be retained
+%    \begin{macrocode}
+              \def\exfs@series{\expandafter\exfs@tempg\exfs@temppart}%
+          \fi
+      \fi
+  \fi
+%    \end{macrocode}
+%^^A  \fontseries\exfs@series\selectfont}
+%    \begin{macrocode}
+  \ifx\exfs@tempg\exfs@series
+      \exfs@try@series{\exfs@series}%
+  \else
+      \exfs@try@series[\exfs@tempg]{\exfs@series}%		assume user wants to change weight even if this changes back to the default width
+  \fi
+}
+%     \end{macrocode}
+% \end{macro}
+% \begin{macro}{\mbdefault,\mbweight,\bddefault,\bfweight,\bdweight}
+%    \begin{macrocode}
+\newcommand*{\mbdefault}{mb}
+\DeclareRobustCommand{\mbweight}{%
+  \not@math@alphabet\mbweight\relax
+  \exfs@merge@weight{\mbdefault}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\dbdefault,\dbweight,\sbdefault,\sbweight,\ebdefault,\ebweight,\ubdefault,\ubweight}
+%   Heavy weights. 
+%    \begin{macrocode}
+\newcommand*{\dbdefault}{db}
+\DeclareRobustCommand{\dbweight}{%
+  \not@math@alphabet\dbweight\relax
+  \exfs@merge@weight{\dbdefault}}
+\newcommand*{\sbdefault}{sb}
+\DeclareRobustCommand{\sbweight}{%
+  \not@math@alphabet\sbweight\relax
+  \exfs@merge@weight{\sbdefault}}
+\newcommand*{\ebdefault}{eb}
+\DeclareRobustCommand{\ebweight}{%
+  \not@math@alphabet\ebweight\relax
+  \exfs@merge@weight{\ebdefault}}
+\newcommand*{\ubdefault}{ub}
+\DeclareRobustCommand{\ubweight}{%
+  \not@math@alphabet\ubweight\relax
+  \exfs@merge@weight{\ubdefault}}
+\newcommand*{\lgdefault}{l}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\lgdefault,\lgweight,\eldefault,\elweight,\uldefault,\ulweight}
+%note - use this if light is a variant weight, rather than a separate family
+%    \begin{macrocode}
+\DeclareRobustCommand{\lgweight}{%
+  \not@math@alphabet\lgweight\relax
+  \exfs@merge@weight{\lgdefault}}
+\newcommand*{\eldefault}{el}
+\DeclareRobustCommand{\elweight}{%
+  \not@math@alphabet\elweight\relax
+  \exfs@merge@weight{\eldefault}}
+\newcommand*{\uldefault}{ul}
+\DeclareRobustCommand{\ulweight}{%
+  \not@math@alphabet\ulweight\relax
+  \exfs@merge@weight{\uldefault}}
+%    \end{macrocode}
+% \end{macro}
+%:end-added
+% \begin{macro}{\itshape,\scshape,\upshape,\dfshape}
+% redefinition
+%    \begin{macrocode}
+\DeclareRobustCommand{\itshape}{%
+  \not@math@alphabet\itshape\mathit
+  \exfs@merge@shape{\itdefault}{\scdefault}{\sidefault}}
+%    \end{macrocode}
+% original
+%^^A\DeclareRobustCommand{\scshape}{%
+%^^A  \not@math@alphabet\scshape\relax
+%^^A  \exfs@merge@shape{\scdefault}{\itdefault}{\sidefault}}
+%:cfr-altered: \cs{scshape}
+%    \begin{macrocode}
+\DeclareRobustCommand{\scshape}{%
+  \not@math@alphabet\scshape\relax
+  \def\tempu{u}%
+  \def\tempo{ol}%
+  \ifx\f@shape\tempu
+  	\exfs@merge@shape{\scdefault}{\udefault}{\scudefault}%
+  \else
+  	\ifx\f@shape\tempo
+		\exfs@merge@shape{\scdefault}{\oldefault}{\scoldefault}%
+	\else
+  		\exfs@merge@shape{\scdefault}{\itdefault}{\sidefault}%
+	\fi
+  \fi
+}
+%    \end{macrocode}
+%:end-altered
+%    \begin{macrocode}
+\DeclareRobustCommand{\upshape}{%
+  \not@math@alphabet\upshape\relax
+  \exfs@merge@shape{\updefault}{\sidefault}{\scdefault}}
+\DeclareRobustCommand{\dfshape}{%
+  \not@math@alphabet\dfshape\relax
+  \fontshape\shapedefault\selectfont}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\swashapedefault,\swshape}
+%    \begin{macrocode}
+\newcommand*{\swshapedefault}{\itdefault}
+\DeclareRobustCommand{\swshape}{%
+  \not@math@alphabet\swshape\relax
+  \swstyle\fontshape\swshapedefault\selectfont}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\textln,\textos,\textin,\textsu,\textsi,\textdf,\textsw}
+% \mbox{ } 
+%    \begin{macrocode}
+\DeclareTextFontCommand{\textln}{\lnstyle}
+\DeclareTextFontCommand{\textos}{\osstyle}
+\DeclareTextFontCommand{\textin}{\instyle}
+\DeclareTextFontCommand{\textsu}{\sustyle}
+\DeclareTextFontCommand{\textsi}{\sishape}
+\DeclareTextFontCommand{\textdf}{\dfshape}
+\DeclareTextFontCommand{\textsw}{\swshape}
+%    \end{macrocode}
+% \end{macro}
+%:cfr-added
+% \begin{macro}{\textti,\textlt,\textof,\textalt,\textreg,\emboss,\textorn,\textqt,\textsh,\texttm,\texttv}
+% Families
+%    \begin{macrocode}
+\DeclareTextFontCommand{\textti}{\tistyle}
+\DeclareTextFontCommand{\textlt}{\ltstyle}
+\DeclareTextFontCommand{\textof}{\ofstyle}						% open-face (or outline or blank) style
+\DeclareTextFontCommand{\textalt}{\altstyle}					% alternative style
+\DeclareTextFontCommand{\textreg}{\regstyle}					% ``regular'' style
+\DeclareTextFontCommand{\emboss}{\embossstyle}
+\DeclareTextFontCommand{\textorn}{\ornamentalstyle}	% intended primarily for decorative initials etc.
+\DeclareTextFontCommand{\textqt}{\qtstyle}
+\DeclareTextFontCommand{\textsh}{\shstyle}						% shadowed style
+\DeclareTextFontCommand{\texttm}{\tmstyle}
+\DeclareTextFontCommand{\texttv}{\tvstyle}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\textl,\texto,\textp,\textt,\textpl,\textpo,\texttl,\textto}
+% Families - figures
+%    \begin{macrocode}
+\DeclareTextFontCommand{\textl}{\lstyle}
+\DeclareTextFontCommand{\texto}{\ostyle}
+\DeclareTextFontCommand{\textp}{\pstyle}
+\DeclareTextFontCommand{\textt}{\tstyle}
+\DeclareTextFontCommand{\textpl}{\plstyle}
+\DeclareTextFontCommand{\textpo}{\postyle}
+\DeclareTextFontCommand{\texttl}{\tlstyle}
+\DeclareTextFontCommand{\textto}{\tostyle}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\textol,\textswash,\textu,\textscu,\textui,\textri}
+% Shapes
+%    \begin{macrocode}
+\DeclareTextFontCommand{\textol}{\olshape}						% outline
+\DeclareTextFontCommand{\textswash}{\swashstyle}		% an attempt to improve on \textsw
+\DeclareTextFontCommand{\textu}{\ushape}
+\DeclareTextFontCommand{\textscu}{\scushape}
+\DeclareTextFontCommand{\textui}{\uishape}						% upright italic
+\DeclareTextFontCommand{\textri}{\rishape}						% reverse italic
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\textnw,\textcd,\textec,\textuc,\textet,\textep,\textex,\textux,\textrw}
+% Widths
+%    \begin{macrocode}
+\DeclareTextFontCommand{\textnw}{\nwwidth}
+\DeclareTextFontCommand{\textcd}{\cdwidth}
+\DeclareTextFontCommand{\textec}{\ecwidth}
+\DeclareTextFontCommand{\textuc}{\ucwidth}
+\DeclareTextFontCommand{\textet}{\etwidth}
+\DeclareTextFontCommand{\textep}{\epwidth}
+\DeclareTextFontCommand{\textex}{\exwidth}
+\DeclareTextFontCommand{\textux}{\uxwidth}
+\DeclareTextFontCommand{\textrw}{\regwidth}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\textmb,\textdb,\textbd,\textsb,\texteb,\textub,\textlg,\textel,\textul}
+% Weights
+%    \begin{macrocode}
+\DeclareTextFontCommand{\textmb}{\mbweight}
+\DeclareTextFontCommand{\textdb}{\dbweight}
+\DeclareTextFontCommand{\textsb}{\sbweight}
+\DeclareTextFontCommand{\texteb}{\ebweight}
+\DeclareTextFontCommand{\textub}{\ubweight}
+\DeclareTextFontCommand{\textlg}{\lgweight}
+\DeclareTextFontCommand{\textel}{\elweight}
+\DeclareTextFontCommand{\textul}{\ulweight}
+%    \end{macrocode}
+% \end{macro}
+%end-added
+% \end{package}
+% \iffalse
+%</sty-nfss>
+% \fi
+%
+% 
+%\Finale

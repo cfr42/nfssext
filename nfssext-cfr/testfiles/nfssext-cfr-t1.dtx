@@ -1,0 +1,265 @@
+%% $Id: nfssext-cfr-t1.dtx 10346 2024-09-16 03:38:34Z cfrees $
+\listfiles
+\input regression-test.tex
+\makeatletter
+\def\splitseries#1{%
+  % \typeout provides more concise output here
+  \OMIT
+  \exfs@series@splitter{#1}%
+  \TIMO
+  \TYPE{#1 to \exfs@weight:\exfs@width;}%
+}
+\def\exfs@widths{cd,ec,ep,et,ex,md,nw,reg,uc,ux}
+\def\exfs@weights{bd,bf,db,eb,el,lg,mb,md,sb,ub,ul}
+\def\exfs@styles{alt,emboss,in,inf,ln,l,lt,of,ornamental,os,o,pl,po,p,qt,reg,sh,su,swash,sw,ti,tl,tm,to,t,tv}
+\def\exfs@shapes{df,it,normal,ol,ri,scol,sc,scu,si,sw,ui,up,u}
+\def\switcher#1#2{%
+  \xdef\set{\csname exfs@#2s\endcsname}%
+  \TYPE{set is \set}%
+  \edef\tempa{width}\edef\tempb{weight}\edef\tempc{#2}\edef\tempy{style}%
+  \ifx\tempc\tempa
+    \def\tempc{series}%
+  \else
+    \ifx\tempc\tempb
+      \def\tempc{series}%
+    \else
+      \ifx\tempc\tempy
+        \def\tempc{family}%
+      \fi
+    \fi
+  \fi
+  \@for \xx:=\set \do {%
+    {%
+      % \typeout provides more concise output here
+      \OMIT
+      % initial setup uses kernel macros to select font directly
+      % is this safe given the kernel hallucinates fonts and nfssext-cfr goes to such lengths to prevent invoking delusions?
+      % I guess it should be ok given every switch in testing is new?
+      \expandafter\csname font\tempc\endcsname{#1}\selectfont
+      \TIMO
+      \TYPE{%
+        #1 -> \xx
+        \NEWLINE
+        Initial: \f@encoding/\f@family/\f@series/\f@shape
+        : \curr@fontshape
+        : \expandafter\noexpand\csname \xx #2\endcsname
+      }%
+      \OMIT
+      \expandafter\csname \xx #2\endcsname 
+      \TIMO
+      \TYPE{Result: \f@encoding/\f@family/\f@series/\f@shape
+        : \curr@fontshape
+      }%
+    }%
+  }%
+}
+\makeatother
+\documentclass{article}
+\usepackage[debug]{nfssext-cfr}[2024/01/01]
+\begin{document}
+%% Some tests rely on a nefarious - not to say fictional - copy of ot1cmr.fd.
+%% Given this is precisely the kind of thing the LPPL forbids distributing,
+%% these tests are expected to fail on properly configured systems.
+\input ot1cmr-mod.fd
+\START
+%<*test-splitter>
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% BEGIN series-splitter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\TEST{series-splitter}{
+%%   \OMIT
+%%   \TIMO
+%%   weird
+  \splitseries{m}
+%%   1-0
+  \splitseries{b}
+  \splitseries{l}
+%%   0-1
+  \splitseries{c}
+  \splitseries{x}
+%%   2-0
+  \splitseries{db}
+  \splitseries{el}
+  \splitseries{sb}
+  \splitseries{ub}
+%%   0-2
+  \splitseries{ec}
+  \splitseries{ex}
+  \splitseries{sx}
+  \splitseries{uc}
+%%   1-1
+  \splitseries{bc}
+  \splitseries{bx}
+  \splitseries{lc}
+  \splitseries{lx}
+%%   1-2
+  \splitseries{bec}
+  \splitseries{lsb}
+  \splitseries{luc}
+%%   2-1
+  \splitseries{dbc}
+  \splitseries{ebx}
+  \splitseries{ulc}
+%%   2-2
+  \splitseries{dbex}
+  \splitseries{elsx}
+  \splitseries{sbux}
+  \splitseries{ubec}
+  \splitseries{uluc}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% END series-splitter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%</test-splitter>
+%<*expect-splitter>
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% BEGIN series-splitter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\TEST{series-splitter}{
+  \typeout{m to m:;}
+  \typeout{b to b:;}
+  \typeout{l to l:;}
+  \typeout{c to :c;}
+  \typeout{x to :x;}
+  \typeout{db to db:;}
+  \typeout{el to el:;}
+  \typeout{sb to sb:;}
+  \typeout{ub to ub:;}
+  \typeout{ec to :ec;}
+  \typeout{ex to :ex;}
+  \typeout{sx to :sx;}
+  \typeout{uc to :uc;}
+  \typeout{bc to b:c;}
+  \typeout{bx to b:x;}
+  \typeout{lc to l:c;}
+  \typeout{lx to l:x;}
+  \typeout{bec to b:ec;}
+  \typeout{lsb to l:sb;}
+  \typeout{luc to l:uc;}
+  \typeout{dbc to db:c;}
+  \typeout{ebx to eb:x;}
+  \typeout{ulc to ul:c;}
+  \typeout{dbex to db:ex;}
+  \typeout{elsx to el:sx;}
+  \typeout{sbux to sb:ux;}
+  \typeout{ubec to ub:ec;}
+  \typeout{uluc to ul:uc;}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% END series-splitter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%</expect-splitter>
+%<*test-series>
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% series switches
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% BEGIN width (m->)
+\TEST{width (m->)}{
+%%   \OMIT
+%%   \fontseries{m}\selectfont
+%%   \TIMO
+  \switcher{m}{width}
+}
+%% END
+%% BEGIN width (bx->)
+\TEST{width (bx->)}{
+  \switcher{bx}{width}
+}
+%% END
+%% BEGIN weight (m->)
+\TEST{weights (m->)}{
+  \switcher{m}{weight}
+}
+%% END
+%% BEGIN weight (bx->)
+\TEST{weights (bx->)}{
+  \switcher{bx}{weight}
+}
+%% END
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%</test-series>
+%<*test-shape>
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% shape switches
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\mdseries
+%% BEGIN shape md (n->)
+\TEST{shapes ((md) n->)}{
+  \switcher{n}{shape}
+}
+%% END
+%% BEGIN shape md (it->)
+\TEST{shape ((md) it->)}{
+  \switcher{it}{shape}
+}
+%% END
+%% BEGIN shape md (sc->)
+\TEST{shape ((md) sc->)}{
+  \switcher{sc}{shape}
+}
+%% END
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\fontseries{b}\selectfont
+%% BEGIN shape b (n->)
+\TEST{shapes ((b) n->)}{
+  \switcher{n}{shape}
+}
+%% END
+%% BEGIN shape b (it->)
+\TEST{shape ((b) it->)}{
+  \switcher{it}{shape}
+}
+%% END
+%% BEGIN shape b (sc->)
+\TEST{shape ((b) sc->)}{
+  \switcher{sc}{shape}
+}
+%% END
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bfseries
+%% BEGIN shape bf(x) (n->)
+\TEST{shapes ((bf(x)) n->)}{
+  \switcher{n}{shape}
+}
+%% END
+%% BEGIN shape bf(x) (it->)
+\TEST{shape ((bf(x)) it->)}{
+  \switcher{it}{shape}
+}
+%% END
+%% BEGIN shape bf(x) (sc->)
+\TEST{shape ((bf(x)) sc->)}{
+  \switcher{sc}{shape}
+}
+%% END
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%</test-shape>
+%<*test-style>
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% family (style) switches
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\normalfont
+%% BEGIN style  cmr ->
+\TEST{styles (cmr (m/n) ->)}{
+  \switcher{cmr}{style}
+}
+%% END
+%% BEGIN style  cmrj ->
+\TEST{styles (cmrj (m/n) ->)}{
+  \switcher{cmrj}{style}
+}
+%% END
+%% BEGIN style  cmr2j ->
+\TEST{styles (cmr2j (m/n) ->)}{
+  \switcher{cmr2j}{style}
+}
+%% END
+%% BEGIN style  cmr2 ->
+\TEST{styles (cmr2 (m/n) ->)}{
+  \switcher{cmr2}{style}
+}
+%% END
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%</test-style>
+\END
+\end{document}

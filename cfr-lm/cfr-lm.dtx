@@ -42,7 +42,7 @@
   \char_set_catcode_letter:N \:
 }
 \ExplSyntaxOff
-\ProvidesFileSVN{$Id: cfr-lm.dtx 10340 2024-09-12 05:26:02Z cfrees $}[v0.0
+\ProvidesFileSVN{$Id: cfr-lm.dtx 10344 2024-09-13 20:17:16Z cfrees $}[v0.0
 \revinfo][\filebase DTX: Latin Modern for 8-bit engines]
 \DefineFileInfoSVN[cfr-lm]
 \documentclass[10pt,british]{ltxdoc}
@@ -144,12 +144,6 @@
   idxgroup=,
   printtype=\textit{pkg.},
 ]{Pkg}{package}
-\NewDocElement[%
-  printtype=\textdagger,
-  idxtype=,
-  idxgroup=,
-  macrolike,
-]{DMacro}{dmacro}
 \NewDocElement[%
   idxtype=fd.,
   idxgroup=fds,
@@ -827,20 +821,19 @@ tt={var=false}
 %   	  &	\verb|\scshape\slshape|\tnotex{tn:all} &   \verb|\textsc{\textsl{}}|\tnotex{tn:all} \\
 %   	  &	\verb|\itshape\scshape|\tnotex{tn:all}\tnotex{tn:scsl} &   \verb|\textit{\textsc{}}|\tnotex{tn:all}\tnotex{tn:scsl} \\
 %   	  &	\verb|\scshape\itshape|\tnotex{tn:all}\tnotex{tn:scsl} &   \verb|\textsc{\textit{}}|\tnotex{tn:all}\tnotex{tn:scsl} \\
-%       & \color{gray}\verb|\sishape|\tnotex{tn:dep}\tnotex{tn:scsl} &	\color{gray}\verb|\textsi{}|\tnotex{tn:dep}\tnotex{tn:scsl} \\
+%       & \verb|\sishape|\tnotex{tn:scsl} &	\verb|\textsi{}|\tnotex{tn:scsl} \\
 % 		  upright italic			&	\verb|\uishape|					&	\verb|\textui{}|\\
 %       \bottomrule
 %     \end{tabular}
 %     \begin{tablenotes}
 %       \item \label{tn:all}Supported for all versions of \LaTeXe{}.
-%       \item \label{tn:dep}Deprecated.
 %       \item\label{tn:scsl} Actually the command switches to \emph{italic} small-caps but since LM does not offer this, oblique small-caps are substituted.
 %         Unlike their upper/lower-case cousins, small-caps generally look the same whether the font designer calls them ‘italic small-caps’ or ‘pblique small-caps’, so the substitution is in no way second-best in this case.
 %     \end{tablenotes}
 %   \end{threeparttable}
 % \end{table}
-% \DescribeDMacro{\sishape}
-% \DescribeDMacro{\textsi}
+% \DescribeMacro{\sishape}
+% \DescribeMacro{\textsi}
 % \DescribeMacro{\uishape}
 % \DescribeMacro{\textui}
 % Extended shape-changing macros are listed in \fref{tab:shapes}.
@@ -1300,7 +1293,7 @@ updmap --sys --enable Map=clm.map
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
 \ProvidesPackageSVN[\filebase.sty]{%
-  $Id: cfr-lm.dtx 10340 2024-09-12 05:26:02Z cfrees $%
+  $Id: cfr-lm.dtx 10344 2024-09-13 20:17:16Z cfrees $%
 }[\filebase v1.6 \revinfo][Extended support for Latin Modern 2.004]
 \DefineFileInfoSVN[clm]
 \RequirePackage[T1]{fontenc}

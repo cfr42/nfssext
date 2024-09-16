@@ -1,0 +1,148 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+============================================================
+TEST 1: width (m->)
+============================================================
+set is cd,ec,ep,et,ex,md,nw,reg,uc,ux
+m -> cd
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \cdwidth 
+Result: OT1/cmr/c/n: OT1/cmr/c/n
+m -> ec
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \ecwidth 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+m -> ep
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \epwidth 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+m -> et
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \etwidth 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+m -> ex
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \exwidth 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+m -> md
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \mdwidth 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+m -> nw
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \nwwidth 
+Result: OT1/cmr/c/n: OT1/cmr/c/n
+m -> reg
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \regwidth 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+m -> uc
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \ucwidth 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+m -> ux
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \uxwidth 
+Result: OT1/cmr/ux/n: OT1/cmr/ux/n
+============================================================
+============================================================
+TEST 2: width (bx->)
+============================================================
+set is cd,ec,ep,et,ex,md,nw,reg,uc,ux
+bx -> cd
+Initial: OT1/cmr/bx/n: OT1/cmr/bx/n: \cdwidth 
+Result: OT1/cmr/bx/n: OT1/cmr/bx/n
+bx -> ec
+Initial: OT1/cmr/bx/n: OT1/cmr/bx/n: \ecwidth 
+Result: OT1/cmr/bx/n: OT1/cmr/bx/n
+bx -> ep
+Initial: OT1/cmr/bx/n: OT1/cmr/bx/n: \epwidth 
+Result: OT1/cmr/bx/n: OT1/cmr/bx/n
+bx -> et
+Initial: OT1/cmr/bx/n: OT1/cmr/bx/n: \etwidth 
+Result: OT1/cmr/bx/n: OT1/cmr/bx/n
+bx -> ex
+Initial: OT1/cmr/bx/n: OT1/cmr/bx/n: \exwidth 
+Result: OT1/cmr/bx/n: OT1/cmr/bx/n
+bx -> md
+Initial: OT1/cmr/bx/n: OT1/cmr/bx/n: \mdwidth 
+Result: OT1/cmr/bx/n: OT1/cmr/bx/n
+bx -> nw
+Initial: OT1/cmr/bx/n: OT1/cmr/bx/n: \nwwidth 
+Result: OT1/cmr/bx/n: OT1/cmr/bx/n
+bx -> reg
+Initial: OT1/cmr/bx/n: OT1/cmr/bx/n: \regwidth 
+Result: OT1/cmr/bx/n: OT1/cmr/bx/n
+bx -> uc
+Initial: OT1/cmr/bx/n: OT1/cmr/bx/n: \ucwidth 
+Result: OT1/cmr/bx/n: OT1/cmr/bx/n
+bx -> ux
+Initial: OT1/cmr/bx/n: OT1/cmr/bx/n: \uxwidth 
+Result: OT1/cmr/bx/n: OT1/cmr/bx/n
+============================================================
+============================================================
+TEST 3: weights (m->)
+============================================================
+set is bd,bf,db,eb,el,lg,mb,md,sb,ub,ul
+m -> bd
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \bdweight 
+Result: OT1/cmr/b/n: OT1/cmr/b/n
+m -> bf
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \bfweight 
+Result: OT1/cmr/b/n: OT1/cmr/b/n
+m -> db
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \dbweight 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+m -> eb
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \ebweight 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+m -> el
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \elweight 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+m -> lg
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \lgweight 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+m -> mb
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \mbweight 
+Result: OT1/cmr/sb/n: OT1/cmr/sb/n
+m -> md
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \mdweight 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+m -> sb
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \sbweight 
+Result: OT1/cmr/sb/n: OT1/cmr/sb/n
+m -> ub
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \ubweight 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+m -> ul
+Initial: OT1/cmr/m/n: OT1/cmr/m/n: \ulweight 
+Result: OT1/cmr/m/n: OT1/cmr/m/n
+============================================================
+============================================================
+TEST 4: weights (bx->)
+============================================================
+set is bd,bf,db,eb,el,lg,mb,md,sb,ub,ul
+bx -> bd
+Initial: OT1/cmr/bx/n: OT1/cmr/bx/n: \bdweight 
+Result: OT1/cmr/bx/n: OT1/cmr/bx/n
+bx -> bf
+Initial: OT1/cmr/bx/n: OT1/cmr/bx/n: \bfweight 
+Result: OT1/cmr/bx/n: OT1/cmr/bx/n
+bx -> db
+Initial: OT1/cmr/bx/n: OT1/cmr/bx/n: \dbweight 
+Result: OT1/cmr/bx/n: OT1/cmr/bx/n
+bx -> eb
+Initial: OT1/cmr/bx/n: OT1/cmr/bx/n: \ebweight 
+Result: OT1/cmr/bx/n: OT1/cmr/bx/n
+bx -> el
+Initial: OT1/cmr/bx/n: OT1/cmr/bx/n: \elweight 
+Result: OT1/cmr/bx/n: OT1/cmr/bx/n
+bx -> lg
+Initial: OT1/cmr/bx/n: OT1/cmr/bx/n: \lgweight 
+Result: OT1/cmr/bx/n: OT1/cmr/bx/n
+bx -> mb
+Initial: OT1/cmr/bx/n: OT1/cmr/bx/n: \mbweight 
+Result: OT1/cmr/bx/n: OT1/cmr/bx/n
+bx -> md
+Initial: OT1/cmr/bx/n: OT1/cmr/bx/n: \mdweight 
+Result: OT1/cmr/bx/n: OT1/cmr/bx/n
+bx -> sb
+Initial: OT1/cmr/bx/n: OT1/cmr/bx/n: \sbweight 
+Result: OT1/cmr/bx/n: OT1/cmr/bx/n
+bx -> ub
+Initial: OT1/cmr/bx/n: OT1/cmr/bx/n: \ubweight 
+Result: OT1/cmr/bx/n: OT1/cmr/bx/n
+bx -> ul
+Initial: OT1/cmr/bx/n: OT1/cmr/bx/n: \ulweight 
+Result: OT1/cmr/bx/n: OT1/cmr/bx/n
+============================================================

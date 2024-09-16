@@ -1,0 +1,16 @@
+%% $Id: nfssext-cfr-t1.ins 10346 2024-09-16 03:38:34Z cfrees $
+\input docstrip.tex
+\keepsilent
+\askforoverwritefalse
+\generate{%
+  \file{\jobname-splitter.lvt}{\from{\jobname.dtx}{test-splitter}}
+  \file{\jobname-splitter.lve}{\from{\jobname.dtx}{expect-splitter}}
+  \file{\jobname-series.lvt}{%
+    \from{\jobname.dtx}{test-series}%
+  }
+  \file{\jobname-shape.lvt}{%
+    \from{\jobname.dtx}{test-shape}%
+  }
+  \file{\jobname-fam.lvt}{\from{\jobname.dtx}{test-style}}
+}
+\endbatchfile

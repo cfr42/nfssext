@@ -1,0 +1,111 @@
+%% $Id: nfssext-cfr.ins 10335 2024-09-10 16:13:03Z cfrees $
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% nfssext-cfr.ins
+%% Additions and changes Copyright (C) 2008-2024 Clea F. Rees.
+%% Code from skeleton.ins Copyright (C) 2015-2024 Scott Pakin (see below).
+%%
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3c
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%   https://www.latex-project.org/lppl.txt
+%% and version 1.3c or later is part of all distributions of LaTeX
+%% version 2008-05-04 or later.
+%%
+%% This work has the LPPL maintenance status `maintained'.
+%%
+%% The Current Maintainer of this work is Clea F. Rees.
+%%
+%% This work consists of all files listed in manifest.txt.
+%%
+%% The file nfssext-cfr.ins is a derived work under the terms of the
+%% LPPL. It is based on version 2.4 of skeleton.ins which is part of 
+%% dtxtut by Scott Pakin. A copy of dtxtut, including the 
+%% unmodified version of skeleton.ins is available from
+%% https://www.ctan.org/pkg/dtxtut and released under the LPPL.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input docstrip.tex
+\keepsilent
+
+%% ???
+\usedir{tex/latex/nfssext-cfr}
+
+\declarepreamble\safonol
+Copyright (C) 2008-2024 Clea F. Rees.
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either version 1.3c
+of this license or (at your option) any later version.
+The latest version of this license is in
+  https://www.latex-project.org/lppl.txt
+and version 1.3c or later is part of all distributions of LaTeX
+version 2008-05-04 or later.
+
+This work has the LPPL maintenance status `maintained'.
+
+The Current Maintainer of this work is Clea F. Rees.
+
+This file may only be distributed together with a copy of the package
+nfssext-cfr. You may however distribute the package nfssext-cfr without
+such generated files.
+
+This work consists of all files listed in manifest.txt.
+\endpreamble
+
+\def\baseFileName{nfssext.sty}
+\def\basePkgName{The Font Installation Guide}
+\def\basePkgArk{fontinstallationguide}
+\def\basePkgAuthor{Philipp Lehman}
+% \def\preChanges{%
+%   - One thing or another.}
+\def\targType{The file }
+\def\targPkg{nfssext-cfr}
+
+\declarepreamble\derpreamble
+Additions and changes Copyright (C) 2008-2024 Clea F. Rees.
+Code from \basePkgArk Copyright (C) 2002-2004 \basePkgAuthor (see below)
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either version 1.3c
+of this license or (at your option) any later version.
+The latest version of this license is in
+  https://www.latex-project.org/lppl.txt
+and version 1.3c or later is part of all distributions of LaTeX
+version 2008-05-04 or later.
+
+This work has the LPPL maintenance status `maintained'.
+
+The Current Maintainer of this work is Clea F. Rees.
+
+This work consists of all files listed in manifest.txt.
+
+
+\targType \outFileName is a derived work under the terms of the LPPL.
+It is based on version 1.2 of \baseFileName which is supplied with 
+\basePkgName by \basePkgAuthor. A copy of \basePkgName, including an 
+unmodified version of \baseFileName is available from
+  https://tug.ctan.org/pkg/\basePkgArk.
+\baseFileName is part of the included archive figuide-examples.tar.gz
+which consists of examples and templates released under the LPPL.
+\baseFileName is included in the files for tutorials 3, 5 and 6.
+
+The main modifications made to this file are described in \targPkg.dtx.
+\endpreamble
+
+\askonceonly
+
+\usepreamble\safonol
+
+\generate{%
+  \usepreamble\derpreamble
+  \file{nfssext-cfr.sty}{\from{nfssext-cfr.dtx}{sty}}
+  \file{nfssext-cfr-nfss.sty}{\from{nfssext-cfr.dtx}{sty-nfss}}
+  \file{nfssext-cfr-nnfss.sty}{\from{nfssext-cfr.dtx}{sty-nnfss}}
+  % \file{??.tex}{\from{nfssext-cfr.dtx}{??}}
+  % \usepreamble\derpreamble
+  % \file{other.etx}{\from{nfssext-cfr.dtx}{other}}
+}
+
+
+\endbatchfile
