@@ -1,4 +1,4 @@
--- $Id: build.lua 10344 2024-09-13 20:17:16Z cfrees $
+-- $Id: build.lua 10352 2024-09-16 22:30:08Z cfrees $
 -- Build configuration for nfssext-cfr
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -18,16 +18,20 @@ module = "nfssext-cfr"
 -- unpackfiles = {"*.ins"}
 -- maindir **must** be shared with dependencies
 maindir = ".."
+sourcedir = "."
 -- auxfiles = {"*.aux"}
 sourcefiles = {"*.dtx","*.ins"}
 checkengines = {"pdftex"}
 checkformat = "latex"
 checksuppfiles = {"*.fd"}
-manifestfile = {"manifest.txt"}
+manifestfile = "manifest.txt"
 -- checkdeps = {maindir .. "/cfr-lm"}
 typesetdeps = {maindir .. "/cfr-lm"}
 typesetsourcefiles = {"cfr-lm.sty", maindir .. "/cfr-lm/keep/*"}
 typesetruns = 5
 --
+dofile(maindir .. "/tag.lua")
+date = "2008-2024"
+dofile(sourcedir .. "/manifest.lua")
 -- os.execute ("printenv")
 -- vim: ts=2:sw=2:tw=80:nospell
