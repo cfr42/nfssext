@@ -1,7 +1,7 @@
 % \iffalse meta-comment
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % nfssext-cfr.dtx
-% Additions and changes Copyright (C) 2010-2024 Clea F. Rees.
+% Additions and changes Copyright (C) 2008-2024 Clea F. Rees.
 % Code from skeleton.dtx Copyright (C) 2015-2024 Scott Pakin (see below).
 %
 % This work may be distributed and/or modified under the
@@ -41,7 +41,7 @@
   \char_set_catcode_letter:N \:
 }
 \ExplSyntaxOff
-\ProvidesFileSVN{$Id: nfssext-cfr.dtx 10344 2024-09-13 20:17:16Z cfrees $}[v0.0 \revinfo][\filebase DTX: ]
+\ProvidesFileSVN{$Id: nfssext-cfr.dtx 10350 2024-09-16 19:24:10Z cfrees $}[v0.0 \revinfo][\filebase DTX: ]
 \DefineFileInfoSVN[nfssext-cfr]
 \documentclass[10pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -236,8 +236,8 @@
 %</driver>
 % \fi
 %
-% \changes{v??}{2008/10/26}{First public release as part of \lpack{cfr-lm}.}
-% \changes{}{2008/12/22}{Updated version released standalone.}
+% \changes{2008-10-26}{2008/10/26}{First public release as part of \lpack{cfr-lm}.}
+% \changes{2008-12-22}{2008/12/22}{Updated version released standalone.}
 % \changes{\svn 6140}{2017/03/28}{%
 %   Fixes a bug which prevented \cs{tmstyle} and \cs{tvstyle} working correctly if the current font was not a serif family.
 %   (Especially problematic in Beamer where \cs{normalfont} cannot be used as a workaround, but annoying elsewhere.)}
@@ -245,7 +245,6 @@
 % \changes{\svn 6140}{2017/03/28}{%
 %   Provides something a bit closer to real documentation.%
 % }
-% \changes{v0.0}{0000/00/00}{}
 % 
 % \maketitle\thispagestyle{empty}
 % \pdfinfo{%
@@ -769,17 +768,9 @@
 % Some of the same information can also be found in the log.
 % 
 % \changes{v6140}{2017-03-28}{%
-%   Attempt to modify \cs{tmstyle} and \cs{tvstyle} to work as advertised.
 %   Extend documentation somewhat.}
 % 
-% \changes{v??}{2010}{%
-%   The 2010 update includes an attempt to improve the behaviour of \cs{ofstyle}, and to add support for \lpack{microtype}.
-%   I didn't publish this at the time because I wanted to test it first.
-%   I have just discovered that I am still using a local copy.
-%   Insofar as one person can test something, I figure that 5 years ought to be enough to pick up the most obvious problems.
-%   However, your kilometres may, as always, vary.}
-% 
-% \changes{v??}{2010}{%
+% \changes{2010-07-17}{2015-06-19}{%
 %   There should be no changes for the end user except that in certain cases it is possible that line-breaks may be altered if \lpack{microtype} is in use due to the enhanced support included for variant font families.}
 % 
 % \MaybeStop{%
@@ -804,26 +795,22 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: nfssext-cfr.dtx 10344 2024-09-13 20:17:16Z cfrees $}[\filebase v0.0 \revinfo{} extensions for NFSS and NNFSS; based on 2003/03/14 v1.2 Experimental NFSS Extensions]
+\ProvidesPackageSVN[\filebase.sty]{$Id: nfssext-cfr.dtx 10350 2024-09-16 19:24:10Z cfrees $}[\filebase v0.0 \revinfo{} extensions for NFSS and NNFSS; based on 2003/03/14 v1.2 Experimental NFSS Extensions]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % ^^A Paid â defnyddio \GetFileInfoSVN*/\GetFileInfoSVN{} yn y fan hon!!
 % 
-% \changes{v6140}{2017-03-28}{modify \tmstyle and \tvstyle to unmerge sans and other typewriter before mergining appropriate variant}
 %
-% \changes{v0.0}{2020-2024}{Attempt to update for \nnfss.}
+% \changes{v0.0}{2020-2024}{Update for \nnfss.}
 %
 % \changes{v0.0}{0000/00/00}{%
-%   Make \cs{mbdefault} sb (duplicating \cs{sbdefault}) as I can't come up with anything better.}
-% \changes{v0.0}{0000/00/00}{%
-%   So nfssext-cfr merging is now limited to family, weight and width.}
+%   So \lpack{nfssext-cfr} merging is now limited to family, weight and width.}
 %^^A I *could* use font change rules for weight and width - this would make sense if I could be confident of catching all cases *and* it didn't cause problems ....
 %^^A  the real problem is, I don't know what I'm supposed to avoid ....
+%
 % \changes{v0.0}{0000/00/00}{%
-%   Add options \texttt{compat} and \texttt{force}.
-%   Quite conservative/less compatible by default.
-%   More aggressive/backwards compatible with \texttt{compat}.
-%   Load old file/incompatible with \texttt{force}.
+%   Behaviour depends on kernel version and options.
+%   On newer kernels, quite conservative/less compatible by default.
 %   Fully compatible on older kernels.}
 %
 % \changes{v0.0}{0000/00/00}{Split \file{nfssext-cfr.sty} into \file{nfssext-cfr\{,-nfss,-nnfss\}.sty}.}
@@ -871,6 +858,9 @@
 {
 %    \end{macrocode}
 % \begin{option}{compat} 
+% \changes{v0.0}{0000/00/00}{%
+%   Add option \texttt{compat}.
+%   More aggressive/backwards compatible with \texttt{compat}.}
 % \begin{macro}{\g__exfs_compat_bool}
 %   Compatibility option.
 %    \begin{macrocode}
@@ -883,6 +873,8 @@
 % \end{option}
 % \begin{option}{debug} 
 %  Turns info messages into warnings for testing purposes and possibly provides additional information. 
+% \changes{v0.0}{0000/00/00}{%
+%   Add option \texttt{debug}.}
 %    \begin{macrocode}
   debug .legacy_if_gset:n = exfs@debug,
   debug .initial:n = false,
@@ -890,6 +882,9 @@
 %    \end{macrocode}
 % \end{option}
 % \begin{option}{force} 
+% \changes{v0.0}{0000/00/00}{%
+%   Add option \texttt{force}.
+%   Load old file/incompatible with \texttt{force}.}
 % \begin{macro}{\g__exfs_force_bool}
 %  Force loading of code for \nfss{} even on newer kernels. 
 %    \begin{macrocode}
@@ -1046,6 +1041,8 @@
 % \begin{macro}{\nfssextcfr@MT@Hook,\Microtype@Hook}
 % BEGIN add \lpack{microtype} hooks
 % Partly from \lpack{microtype} docs; partly from \lpack{MinionPro} package
+% \changes{2010-07-17}{2015/06/19}{%
+%   Add \lpack{microtype} support for variants.}
 %    \begin{macrocode}
 \def\nfssextcfr@MT@Hook{%
 %    \end{macrocode}
@@ -1086,7 +1083,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase-nnfss.sty]{$Id: nfssext-cfr.dtx 10344 2024-09-13 20:17:16Z cfrees $}[\filebase v0.0 \revinfo{} extended New New Font Selection Scheme (NNFSS) based on 2003/03/14 v1.2 Experimental NFSS Extensions]
+\ProvidesPackageSVN[\filebase-nnfss.sty]{$Id: nfssext-cfr.dtx 10350 2024-09-16 19:24:10Z cfrees $}[\filebase v0.0 \revinfo{} extended New New Font Selection Scheme (NNFSS) based on 2003/03/14 v1.2 Experimental NFSS Extensions]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % ^^A Paid â defnyddio \GetFileInfoSVN*/\GetFileInfoSVN{} yn y fan hon!!
@@ -1638,6 +1635,7 @@
 %    \end{macrocode}
 % \end{macro} 
 % \begin{macro}{\tistyle,\ltstyle,\ofstyle,\altstyle,\regstyle,\embossstyle,\ornamentalstyle,\swashstyle,\shstyle,\qtstyle}
+% \changes{2010-07-17}{2015/06/19}{Improve \cs{ofstyle}.}
 %   These macros again require merging, but not unmerging, names.
 %    \begin{macrocode}
 \DeclareRobustCommand{\tistyle}{%% anniffiniedig	titling/display
@@ -1680,6 +1678,7 @@
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\tmstyle,\tvstyle}
+% \changes{v6140}{2017-03-28}{Modify \cs{tmstyle} and \cs{tvstyle} to unmerge sans and other typewriter before merging appropriate variant.}
 %   Macros to switch between monowidth and variable typewriter.
 %   These need to unmerge before merging.
 %   We need to unmerge sans as well as the other kind of typewriter.
@@ -2238,6 +2237,8 @@
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\dbdefault,\dbweight,\sbdefault,\sbweight,\ebdefault,\ebweight,\ubdefault,\ubweight}
+% \changes{v0.0}{0000/00/00}{%
+%   Make \cs{mbdefault} sb (duplicating \cs{sbdefault}) as I can't come up with anything better.}
 %   Heavy weights. 
 %    \begin{macrocode}
 \newcommand*{\dbdefault}{db}% anniffiniedig
@@ -2329,7 +2330,7 @@
 % Note this doesn't affect \cs{swashstyle} or \cs{textswash}
 % \begin{macro}{\swshape} 
 %   \changes{v0.0}{0000/00/00}{%
-%     Conditionally overwrite \swshape{} to take account of default setting.
+%     Conditionally overwrite \cs{swshape} to take account of default setting.
 %     This is not for any package I know of on \ctan, but the original code used \cs{textsw}.%
 %   }%
 %   Conditional definition.
@@ -2522,7 +2523,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase-nfss.sty]{$Id: nfssext-cfr.dtx 10344 2024-09-13 20:17:16Z cfrees $}[\filebase v0.0 \revinfo{} specially mangled by cfr; based on 2003/03/14 v1.2 Experimental NFSS Extensions; for old NFSS]
+\ProvidesPackageSVN[\filebase-nfss.sty]{$Id: nfssext-cfr.dtx 10350 2024-09-16 19:24:10Z cfrees $}[\filebase v0.0 \revinfo{} specially mangled by cfr; based on 2003/03/14 v1.2 Experimental NFSS Extensions; for old NFSS]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % ^^A Paid â defnyddio \GetFileInfoSVN*/\GetFileInfoSVN{} yn y fan hon!!
