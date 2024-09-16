@@ -41,7 +41,7 @@
   \char_set_catcode_letter:N \:
 }
 \ExplSyntaxOff
-\ProvidesFileSVN{$Id: nfssext-cfr.dtx 10350 2024-09-16 19:24:10Z cfrees $}[v0.0 \revinfo][\filebase DTX: ]
+\ProvidesFileSVN{$Id: nfssext-cfr.dtx 10355 2024-09-16 22:42:58Z cfrees $}[v1.0 \revinfo][\filebase DTX: ]
 \DefineFileInfoSVN[nfssext-cfr]
 \documentclass[10pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -795,7 +795,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: nfssext-cfr.dtx 10350 2024-09-16 19:24:10Z cfrees $}[\filebase v0.0 \revinfo{} extensions for NFSS and NNFSS; based on 2003/03/14 v1.2 Experimental NFSS Extensions]
+\ProvidesPackageSVN[\filebase.sty]{$Id: nfssext-cfr.dtx 10355 2024-09-16 22:42:58Z cfrees $}[\filebase v0.0 \revinfo{} extensions for NFSS and NNFSS; based on 2003/03/14 v1.2 Experimental NFSS Extensions]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % ^^A Paid â defnyddio \GetFileInfoSVN*/\GetFileInfoSVN{} yn y fan hon!!
@@ -803,17 +803,17 @@
 %
 % \changes{v0.0}{2020-2024}{Update for \nnfss.}
 %
-% \changes{v0.0}{0000/00/00}{%
+% \changes{v1.0}{2024-09-16}{%
 %   So \lpack{nfssext-cfr} merging is now limited to family, weight and width.}
 %^^A I *could* use font change rules for weight and width - this would make sense if I could be confident of catching all cases *and* it didn't cause problems ....
 %^^A  the real problem is, I don't know what I'm supposed to avoid ....
 %
-% \changes{v0.0}{0000/00/00}{%
+% \changes{v1.0}{2024-09-16}{%
 %   Behaviour depends on kernel version and options.
 %   On newer kernels, quite conservative/less compatible by default.
 %   Fully compatible on older kernels.}
 %
-% \changes{v0.0}{0000/00/00}{Split \file{nfssext-cfr.sty} into \file{nfssext-cfr\{,-nfss,-nnfss\}.sty}.}
+% \changes{v1.0}{2024-09-16}{Split \file{nfssext-cfr.sty} into \file{nfssext-cfr\{,-nfss,-nnfss\}.sty}.}
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -858,7 +858,7 @@
 {
 %    \end{macrocode}
 % \begin{option}{compat} 
-% \changes{v0.0}{0000/00/00}{%
+% \changes{v1.0}{2024-09-16}{%
 %   Add option \texttt{compat}.
 %   More aggressive/backwards compatible with \texttt{compat}.}
 % \begin{macro}{\g__exfs_compat_bool}
@@ -873,7 +873,7 @@
 % \end{option}
 % \begin{option}{debug} 
 %  Turns info messages into warnings for testing purposes and possibly provides additional information. 
-% \changes{v0.0}{0000/00/00}{%
+% \changes{v1.0}{2024-09-16}{%
 %   Add option \texttt{debug}.}
 %    \begin{macrocode}
   debug .legacy_if_gset:n = exfs@debug,
@@ -882,7 +882,7 @@
 %    \end{macrocode}
 % \end{option}
 % \begin{option}{force} 
-% \changes{v0.0}{0000/00/00}{%
+% \changes{v1.0}{2024-09-16}{%
 %   Add option \texttt{force}.
 %   Load old file/incompatible with \texttt{force}.}
 % \begin{macro}{\g__exfs_force_bool}
@@ -1083,7 +1083,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase-nnfss.sty]{$Id: nfssext-cfr.dtx 10350 2024-09-16 19:24:10Z cfrees $}[\filebase v0.0 \revinfo{} extended New New Font Selection Scheme (NNFSS) based on 2003/03/14 v1.2 Experimental NFSS Extensions]
+\ProvidesPackageSVN[\filebase-nnfss.sty]{$Id: nfssext-cfr.dtx 10355 2024-09-16 22:42:58Z cfrees $}[\filebase v0.0 \revinfo{} extended New New Font Selection Scheme (NNFSS) based on 2003/03/14 v1.2 Experimental NFSS Extensions]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % ^^A Paid â defnyddio \GetFileInfoSVN*/\GetFileInfoSVN{} yn y fan hon!!
@@ -1425,7 +1425,7 @@
 % \end{macro}
 % \begin{macro}{\exfs@series@splitter}
 % Common method for dealing with weight and width.
-% \changes{v0.0}{0000/00/00}{%
+% \changes{v1.0}{2024-09-16}{%
 %   Rewritten as kernel no longer supports erroneous \texttt{m}.}
 %    \begin{macrocode}
 \def\exfs@series@splitter#1{%
@@ -1822,7 +1822,7 @@
 %   Or haven't published? 
 %   I haven't actually tried it with those.%
 % } \dots
-% \changes{v0.0}{0000/00/00}{%
+% \changes{v1.0}{2024-09-16}{%
 %   Conditionally override kernel rules affecting switches to upright/small-caps.italic etc.}
 %    \begin{macrocode}
 \bool_if:NT \g__exfs_compat_bool
@@ -1842,7 +1842,7 @@
 %^^A Ddylai'r rhai hwn ddim yn defnyddio \texttt{scit}/\texttt{scsl} yn lle \textt{si}?
 %^^A Pam \texttt{si}??
 %^^A \verb|^| Wel, maen nhw'n gwneud felly eisoes??!!
-% \changes{v0.0}{0000/00/00}{%
+% \changes{v1.0}{2024-09-16}{%
 %   Unconditionally add a bunch of shape change rules for shapes unsupported by the kernel - I don't *think* these should be problematic: if the current or requested shape is unsupported by the kernel, surely it can't be problematic to support that shape?} 
 %    \begin{macrocode}
 \DeclareFontShapeChangeRule {ui}{sc}{scit}{scsl}
@@ -1980,7 +1980,7 @@
 %
 % \begin{macro}{\exfs@merge@width}
 %   Previously dependent on incorrect series names.
-%   \changes{v0.0}{0000/00/00}{Do not depend on incorrect series names, which are no longer supported.}
+%   \changes{v1.0}{2024-09-16}{Do not depend on incorrect series names, which are no longer supported.}
 %    \begin{macrocode}
 \newcommand*{\exfs@merge@width}[1]{%
 %    \end{macrocode}
@@ -2237,7 +2237,7 @@
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\dbdefault,\dbweight,\sbdefault,\sbweight,\ebdefault,\ebweight,\ubdefault,\ubweight}
-% \changes{v0.0}{0000/00/00}{%
+% \changes{v1.0}{2024-09-16}{%
 %   Make \cs{mbdefault} sb (duplicating \cs{sbdefault}) as I can't come up with anything better.}
 %   Heavy weights. 
 %    \begin{macrocode}
@@ -2329,7 +2329,7 @@
 %    \end{macrocode}
 % Note this doesn't affect \cs{swashstyle} or \cs{textswash}
 % \begin{macro}{\swshape} 
-%   \changes{v0.0}{0000/00/00}{%
+%   \changes{v1.0}{2024-09-16}{%
 %     Conditionally overwrite \cs{swshape} to take account of default setting.
 %     This is not for any package I know of on \ctan, but the original code used \cs{textsw}.%
 %   }%
@@ -2523,7 +2523,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase-nfss.sty]{$Id: nfssext-cfr.dtx 10350 2024-09-16 19:24:10Z cfrees $}[\filebase v0.0 \revinfo{} specially mangled by cfr; based on 2003/03/14 v1.2 Experimental NFSS Extensions; for old NFSS]
+\ProvidesPackageSVN[\filebase-nfss.sty]{$Id: nfssext-cfr.dtx 10355 2024-09-16 22:42:58Z cfrees $}[\filebase v0.0 \revinfo{} specially mangled by cfr; based on 2003/03/14 v1.2 Experimental NFSS Extensions; for old NFSS]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % ^^A Paid â defnyddio \GetFileInfoSVN*/\GetFileInfoSVN{} yn y fan hon!!
