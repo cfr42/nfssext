@@ -1,4 +1,4 @@
--- $Id: build.lua 10264 2024-08-20 05:29:02Z cfrees $
+-- $Id: build.lua 10359 2024-09-17 11:56:05Z cfrees $
 -- Build configuration for venturisadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -108,7 +108,7 @@ uploadconfig = {
 	repository = {"https://codeberg.org/cfr/nfssext", "https://github.com/cfr42/nfssext"},
 	-- note = "Repository mirrored at https://github.com/cfr42/nfssext",
   note       = "Creation of font definition files REQUIRES custom l3build target. I understand the lua scripts should not be included.",
-	repository = "https://codeberg.org/cfr/nfssext",
+	-- repository = "https://codeberg.org/cfr/nfssext",
   -- support {}
 	topic      = {"font", "font-type1", "font-otf"},
 	update     = true,
@@ -118,6 +118,7 @@ uploadconfig = {
   -- curlopt_file
 }
 --
+date = "2008-2024"
 dofile(maindir .. "/arkandis/arkandis-manifest.lua")
 function manifest_write_opening(filehandle)
   local date  = date or os.date()

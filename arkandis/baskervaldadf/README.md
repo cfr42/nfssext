@@ -1,4 +1,4 @@
-$Id: README.md 10322 2024-09-05 05:31:35Z cfrees $
+$Id: README.md 10359 2024-09-17 11:56:05Z cfrees $
 
 # baskervaldadf
 
@@ -43,8 +43,8 @@ If you have comments about the fonts themselves, please contact Hirwen
 Harendal (harendalh <at> hotmail <dot> com). 
 
 Clea F. Rees 
-Version 1.0
-2010/07/13
+Version 1.1
+2024-09-17
 
 vim: et:tw=80:
 

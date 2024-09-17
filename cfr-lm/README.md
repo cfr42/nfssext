@@ -1,4 +1,4 @@
-$Id: README.md 10294 2024-08-28 23:41:31Z cfrees $
+$Id: README.md 10358 2024-09-17 11:19:36Z cfrees $
 =================================================
 Copyright (C) 2008-2024 Clea F. Rees.
 
@@ -106,8 +106,8 @@ If you have comments about the fonts themselves, please contact GUST.
 
 
 Clea F. Rees
-Version 0.0
-2015/02/01
+Version 1.7
+2024-09-17
 
 =================================================
 vim: et:tw=80:sw=2:

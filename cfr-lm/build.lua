@@ -1,4 +1,4 @@
--- $Id: build.lua 10333 2024-09-09 07:38:39Z cfrees $
+-- $Id: build.lua 10358 2024-09-17 11:19:36Z cfrees $
 -- Build configuration for cfr-lm
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -37,7 +37,7 @@ uploadconfig = {
 	pkg        = ctanpkg,
 	summary    = "Extended support for Latin Modern on 8-bit engines",
   uploader   = "Clea F. Rees",
-	version    = "v0.0",
+	version    = "v1.7",
   -- optional --
 	bugtracker = {"https://codeberg.org/cfr/nfssext/issues"},
   -- description
@@ -54,7 +54,7 @@ uploadconfig = {
   -- curlopt_file
 }
 --
-date = "2010-2024"
+date = "2008-2024"
 dofile(maindir .. "/fnt-manifest.lua")
 -- os.execute ("printenv")
 -- vim: ts=2:sw=2:tw=0:nospell

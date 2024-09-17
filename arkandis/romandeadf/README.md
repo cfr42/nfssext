@@ -1,4 +1,4 @@
-$Id: README.md 10322 2024-09-05 05:31:35Z cfrees $
+$Id: README.md 10359 2024-09-17 11:56:05Z cfrees $
 
 # romandeadf
 
@@ -38,7 +38,7 @@ If you have comments about the fonts themselves, please contact Hirwen
 Harendal (harendalh <at> hotmail <dot> com). 
 
 Clea F. Rees
-Version 0.0
-0000/00/00
+Version 2.1
+2024-09-17
 
 <!-- vim: tw=80:et:sw=2: -->
