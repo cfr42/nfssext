@@ -1,0 +1,100 @@
+VENTURIS COLLECTION LIST V1.005 (Jully 2010)
+
+Number of fonts: 65
+
+VENTURIS NORMAL
+VenturisADF-Regular: yvtr8a (pfb, pfm, afm), VenturisADF-Regular.otf 
+VenturisADF-Italic: yvtri8a (pfb, pfm, afm), VenturisADF-Italic.otf
+VenturisADF-Bold: yvtb8a (pfb, pfm, afm), VenturisADF-Bold.otf
+VenturisADF-BoldItalic: yvtbi8a (pfb, pfm, afm), VenturisADF-BoldItalic.otf
+
+VenturisADFHeavy: yvth8a (pfb, pfm, afm), VenturisADFHeavy.otf
+VenturisADFHeavy-Italic: yvthi8a (pfb, pfm, afm), VenturisADFHeavy-Italic.otf
+
+VENTURIS CONDENSED
+VenturisADFCd-Regular: yvtr8ac (pfb, pfm, afm), VenturisADFCd-Regular.otf
+VenturisADFCd-Italic: yvtri8ac (pfb, pfm, afm), VenturisADFCd-Italic.otf
+VenturisADFCd-Bold: yvtb8ac (pfb, pfm, afm), VenturisADFCd-Bold.otf
+VenturisADFCd-BoldItalic: yvtbi8ac (pfb, pfm, afm), VenturisADFCd-BoldItalic.otf
+
+VENTURIS STYLE
+VenturisADFStyle-Regular: yvtrc8a (pfb, pfm, afm), VenturisADFStyle-Regular.otf 
+VenturisADFStyle-Italic: yvtrci8a (pfb, pfm, afm), VenturisADFStyle-Italic.otf
+VenturisADFStyle-Bold: yvtbc8a (pfb, pfm, afm), VenturisADFStyle-Bold.otf
+VenturisADFStyle-BoldItalic: yvtbci8a (pfb, pfm, afm), VenturisADFStyle-BoldItalic.otf
+_______________________________________________________
+VENTURIS No2
+VenturisADFNo2-Regular: yv2r8a (pfb, pfm, afm), VenturisADFNo2-Regular.otf
+VenturisADFNo2-Italic: yv2ri8a (pfb, pfm, afm), VenturisADFNo2-Italic.otf
+VenturisADFNo2-Bold: yv2b8a (pfb, pfm, afm), VenturisADFNo2-Bold.otf
+VenturisADFNo2-BoldItalic: yv2bi8a (pfb, pfm, afm), VenturisADFNo2-BoldItalic.otf
+
+VENTURIS No2 CONDENSED
+VenturisADFNo2Cd-Regular: yv2r8ac (pfb, pfm, afm), VenturisADFNo2Cd-Regular.otf
+VenturisADFNo2Cd-Italic: yv2ri8ac (pfb, pfm, afm), VenturisADFNo2Cd-Italic.otf 
+VenturisADFNo2Cd-Bold: yv2b8ac (pfb, pfm, afm), VenturisADFNo2Cd-Bold.otf
+VenturisADFNo2Cd-BoldItalic: yv2bi8ac (pfb, pfm, afm), VenturisADFNo2Cd-BoldItalic.otf
+
+VENTURIS No2 MEDIUM
+VenturisADFNo2Med-Regular: yv2m8a (pfb, pfm, afm), VenturisADFNo2Med-Regular.otf
+VenturisADFNo2Med-Italic: yv2mi8a (pfb, pfm, afm), VenturisADFNo2Med-Italic.otf
+VenturisADFNo2Med-Bold: yv2x8a (pfb, pfm, afm), VenturisADFNo2Med-Bold.otf
+VenturisADFNo2Med-BoldItalic: yv2xi8a (pfb, pfm, afm), VenturisADFNo2Med-BoldItalic.otf
+________________________________________________________
+VENTURIS SANS
+VenturisSansADF-Regular: yv1r8a (pfb, pfm, afm), VenturisSansADF-Regular.otf
+VenturisSansADF-Italic: yv1ri8a (pfb, pfm, afm), VenturisSansADF-Italic.otf
+VenturisSansADF-Bold: yv1b8a (pfb, pfm, afm), VenturisSansADF-Bold.otf
+VenturisSansADF-BoldItalic: yv1bi8a (pfb, pfm, afm), VenturisSansADF-BoldItalic.otf
+
+VenturisSansADF-Heavy: yv1h8a (pfb, pfm, afm), VenturisSansADF-Heavy.otf 
+VenturisSansADF-HeavyOblique: yv1ho8a (pfb, pfm, afm), VenturisSansADF-HeavyOblique.otf
+
+VENTURIS SANS CONDENSED
+VenturisSansADFCd-Regular: yv1r8ac (pfb, pfm, afm), VenturisSansADFCd-Regular.otf
+VenturisSansADFCd-Italic: yv1ri8ac (pfb, pfm, afm), VenturisSansADFCd-Italic.otf
+VenturisSansADFCd-Bold: yv1b8ac (pfb, pfm, afm), VenturisSansADFCd-Bold.otf
+VenturisSansADFCd-BoldItalic: yv1bi8ac (pfb, pfm, afm), VenturisSansADFCd-BoldItalic.otf
+
+VENTURIS SANS EXTENDED
+VenturisSansADFEx-Regular: yv1r8ax (pfb, pfm, afm), VenturisSansADFEx-Regular.otf
+VenturisSansADFEx-Italic: yv1ri8ax (pfb, pfm, afm), VenturisSansADFEx-Italic.otf
+VenturisSansADFEx-Bold: yv1b8ax (pfb, pfm, afm), VenturisSansADFEx-Bold.otf
+VenturisSansADFEx-BoldItalic: yv1bi8ax (pfb, pfm, afm), VenturisSansADFEx-BoldItalic.otf
+
+VENTURIS SANS LIGHT
+VenturisSansADFLight-Regular: yv1l8a (pfb, pfm, afm), VenturisSansADFLight-Regular.otf
+VenturisSansADFLight-Italic: yv1li8a (pfb, pfm, afm), VenturisSansADFLight-Italic.otf
+VenturisSansADFLight-Bold: yv1d8a (pfb, pfm, afm), VenturisSansADFLight-Bold.otf
+VenturisSansADFLight-BoldItalic: yv1di8a (pfb, pfm, afm), VenturisSansADFLight-BoldItalic.otf
+__________________________________________________________
+VENTURIS SANS No2
+VenturisSansADFNo2-Regular: yv3r8a (pfb, pfm, afm), VenturisSansADFNo2-Regular.otf
+VenturisSansADFNo2-Italic: yv3ri8a (pfb, pfm, afm), VenturisSansADFNo2-Italic.otf
+VenturisSansADFNo2-Bold: yv3b8a (pfb, pfm, afm), VenturisSansADFNo2-Bold.otf
+VenturisSansADFNo2-BoldItalic: yv3bi8a (pfb, pfm, afm), VenturisSansADFNo2-BoldItalic.otf
+
+VENTURIS SANS No2 CONDENSED
+VenturisSansADFNo2Cd-Regular: yv3r8ac (pfb, pfm, afm), VenturisSansADFNo2Cd-Regular.otf
+VenturisSansADFNo2Cd-Italic: yv3ri8ac (pfb, pfm, afm), VenturisSansADFNo2Cd-Italic.otf
+VenturisSansADFNo2Cd-Bold: yv3b8ac (pfb, pfm, afm), VenturisSansADFNo2Cd-Bold.otf
+VenturisSansADFNo2Cd-BoldItalic: yv3bi8ac (pfb, pfm, afm), VenturisSansADFNo2Cd-BoldItalic.otf
+
+VENTURIS SANS No2 EXTENDED
+VenturisSansADFNo2Ex-Regular: yv3r8ax (pfb, pfm, afm), VenturisSansADFNo2Ex-Regular.otf
+VenturisSansADFNo2Ex-Italic: yv3ri8ax (pfb, pfm, afm), VenturisSansADFNo2Ex-Italic.otf
+VenturisSansADFNo2Ex-Bold: yv3b8ax (pfb, pfm, afm), VenturisSansADFNo2Ex-Bold.otf
+VenturisSansADFNo2Ex-BoldItalic: yv3bi8ax (pfb, pfm, afm), VenturisSansADFNo2Ex-BoldItalic.otf
+__________________________________________________________
+VENTURIS TITLING
+VenturisADFGothTitling: yvodd8a (pfb, pfm, afm), VenturisADFGothTitling.otf
+VenturisADFTitlingNo1: yv1dd8au (pfb, pfm, afm), VenturisADFTitlingNo1.otf
+VenturisADFTitlingNo2: yvtbd8ac (pfb, pfm, afm), VenturisADFTitlingNo2.otf
+VenturisADFTitlingNo3: yv1bd8a (pfb, pfm, afm), VenturisADFTitlingNo3.otf
+VenturisADFTitlingNo4: yvtrdl8a (pfb, pfm, afm), VenturisADFTitlingNo4.otf
+___________________________________________________________
+VENTURIS OLD (test version)
+VenturisOldADF-Regular: yvor8a (pfb, pfm, afm), VenturisOldADF-Regular.otf
+VenturisOldADF-Italic: yvori8a (pfb, pfm, afm), VenturisOldADF-Italic.otf 
+VenturisOldADF-Bold: yvob8a (pfb, pfm, afm), VenturisOldADF-Bold.otf
+VenturisOldADF-BoldItalic: yvobi8a (pfb, pfm, afm), VenturisOldADF-BoldItalic.otf

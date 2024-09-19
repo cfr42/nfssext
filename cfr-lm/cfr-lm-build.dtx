@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: cfr-lm-build.dtx 10295 2024-08-29 03:07:34Z cfrees $}[v1.7 \revinfo][\filebase DTX: Latin Modern for 8-bit engines]
+\ProvidesFileSVN{$Id: cfr-lm-build.dtx 10362 2024-09-18 08:02:52Z cfrees $}[v1.7 \revinfo][\filebase DTX: Latin Modern for 8-bit engines]
 \DefineFileInfoSVN[cfr-lm@build]
 \documentclass[10pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -115,6 +115,12 @@
 \fancyhf[rh]{\itshape\fileversion}
 \fancyhf[lh]{\itshape\pkgname: fontinst sources}
 \fancyhf[cf]{--- \thepage~/~\lastpage{} ---}
+\newlength\tewadjust
+\AddToHook {begindocument/after}[.]
+{%
+  \setlength\tewadjust{\marginparwidth+\marginparsep}%
+  \fancyheadoffset[lh,lf]{\tewadjust}%
+}
 \ExplSyntaxOn
 \hook_gput_code:nnn {shipout/lastpage} {.}
 {

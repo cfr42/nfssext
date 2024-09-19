@@ -42,7 +42,7 @@
   \char_set_catcode_letter:N \:
 }
 \ExplSyntaxOff
-\ProvidesFileSVN{$Id: cfr-lm.dtx 10358 2024-09-17 11:19:36Z cfrees $}[v1.7 \revinfo][\filebase DTX: Latin Modern for 8-bit engines]
+\ProvidesFileSVN{$Id: cfr-lm.dtx 10367 2024-09-19 06:13:34Z cfrees $}[v1.7 \revinfo][\filebase DTX: Latin Modern for 8-bit engines]
 \DefineFileInfoSVN[cfr-lm]
 \documentclass[10pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -58,7 +58,11 @@
 \pdfmapfile{-clm.map}	% not necessary for installed package
 \pdfmapfile{+clm.map}	% not necessary for installed package
 \usepackage[rm={lining,proportional},sf={lining,proportional},tt={mono,lining,tabular}]{cfr-lm}
-\usepackage{fancyhdr}
+%^^A *** PAID Â TRIO DEFNYDDIO LTMARKS YN LLE EXTRAMARKS MEWN UNRHYW DOGFEN A DDEFNYDDIO HI MULTICOLS (YN CYNNWYS LTXDOC AC UNRHYW UN Â MYNEGAI YN ÔL BOB DEBYG!!! *** 
+\usepackage{extramarks,fancyhdr}
+% ^^A gwallgof ond allaf i ddim yn deall sut i osgoi \ifthenelse trwy defnyddio expl3
+% ^^A rhywbeth rhyfedd o \exp_** siwr o fod
+\usepackage{ifthen}
 \usepackage[plain]{fancyref}
 \usepackage{fixfoot}
 \usepackage{array,tabularx}
@@ -87,18 +91,9 @@
 \usepackage{multirow}
 \usepackage{xcolor}
 \usepackage{xurl}
-% \urlstyle{tt}
 \urlstyle{sf}
 \usepackage{microtype}
 \usepackage[a4paper,headheight=14pt,marginparwidth=45mm,hmarginratio=4:1,vscale=.8,hscale=.7,verbose]{geometry}	% use 14pt for 11pt text, 15pt for 12pt text
-% addaswyd o chronos.tex
-\newlength\tewadjust
-\newlength\chronosdoctemplgth
-\AddToHook {begindocument/after}[.]
-{%
-  \setlength\tewadjust{\marginparwidth+\marginparsep-\paperwidth+\textwidth+\oddsidemargin+1in}%
-  \setlength\chronosdoctemplgth{0pt}%
-}
 \usepackage{csquotes}
 \MakeAutoQuote{‘}{’}
 \MakeAutoQuote*{“}{”}
@@ -210,17 +205,82 @@
     \textbar{} Mirror:
     \href{https://github.com/cfr42/nfssext}{\url{github.com/cfr42/nfssext}}% 
 }}
-% \date{\fileversion~\filetoday}
+%^^A \date{\fileversion~\filetoday}
 \date{\fileversion~\filedate}
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhf[lh]{\itshape\filebase}
 % ^^A \fancyhf[rh]{\itshape\filetoday}
-\fancyhf[rh]{\itshape\fileversion}
+% ^^A \fancyhf[rh]{\itshape\fileversion}
 % ^^A \fancyhf[ch]{\itshape Support for Latin Modern}
 % ^^A\fancyhf[lf]{\itshape\fileversion}
-\fancyhf[cf]{\itshape--- \thepage~/~\lastpage{} ---}
+% ^^A \fancyhf[cf]{\itshape--- \thepage~/~\lastpage{} ---}
 \ExplSyntaxOn
+\tl_new:N \l__cfrlm_doc_ffont_tl
+\tl_new:N \l__cfrlm_doc_hfont_tl
+\tl_set:Nn \l__cfrlm_doc_ffont_tl {\itshape\plstyle}
+\tl_set:Nn \l__cfrlm_doc_hfont_tl {\itshape\plstyle}
+% ref. fancyhdr (or see tc3 ref'd there?)
+\renewcommand \sectionmark[1]{\markboth{\thesection{} ~ #1}{}}
+\renewcommand \subsectionmark[1]{\markright{\arabic{subsection} ~ #1}}
+\fancyhf[lh]
+{
+  \bool_set_false:N \l_tmpa_bool
+  \l__cfrlm_doc_hfont_tl
+  \hbox_overlap_right:n %^^A \rlap
+  {
+    \nouppercase
+    {
+      \firstleftmark
+    }
+  }
+  \skip_horizontal:n { \g__cfrlm_doc_offset_dim }
+  \nouppercase
+  {
+    \tl_if_blank:eF { \mark_use_first:nn { page } { 2e-right } }
+    {
+      \__cfrlm_doc_lreq:
+    }
+  }
+}
+\cs_new_nopar:Nn \__cfrlm_doc_lreq:
+{
+    \ifthenelse { \equal { \firstleftmark } { \firstrightmark } } {} { \firstrightmark }
+}
+\fancyhf[rh]
+{
+  \l__cfrlm_doc_hfont_tl
+  \nouppercase
+  {
+    \lastleftmark
+  }
+}
+\fancyhf[rf]
+{
+  \l__cfrlm_doc_hfont_tl
+  \nouppercase
+  {
+    \thepage{} ~ / ~ \lastpage{}
+  }
+}
+\fancyhf[lf]
+{
+  \l__cfrlm_doc_ffont_tl
+  \hbox_overlap_right:n %^^A \rlap
+  {
+    \filebase
+  }
+  \skip_horizontal:n { \g__cfrlm_doc_offset_dim }
+  \nouppercase
+  {
+    \fileversion
+  }
+}
+\dim_new:N \g__cfrlm_doc_offset_dim
+\hook_gput_code:nnn { begindocument } {.}
+{
+  \dim_gset:Nn \g__cfrlm_doc_offset_dim { \marginparwidth + \marginparsep }
+  \fancyheadoffset[lh,lf]{ \g__cfrlm_doc_offset_dim }
+}
 \hook_gput_code:nnn {shipout/lastpage} {.}
 {
   \property_record:nn {t:lastpage}{abspage,page,pagenum}
@@ -687,7 +747,7 @@ tt={var=false}
 % \fi
 % That is, by default, oldstyle, proportional figures for roman, sans and typewriter text and variable width typewriter will be selected.
 % 
-% \section{Additional font selection commands}\label{sec:commands}
+% \section{Additional font commands}\label{sec:commands}
 % 
 % \lpack{cfr=lm}\ loads \lpack{nfssext-cfr}\ which is an extension of the package \lpack{nfssext}\ supplied by Philipp Lehman as part of The Font Installation Guide.
 % The file extends the font selection commands to facilitate access to various font features.
@@ -1273,9 +1333,9 @@ updmap --sys --enable Map=clm.map
 % \PrintIndex
 % }
 % 
-% ^^A \makeatletter
-% ^^A \def\@xobeysp{\leavevmode\penalty100\ }
-% ^^A \makeatother
+% \makeatletter
+% \def\@xobeysp{\leavevmode\penalty100\ }
+% \makeatother
 % 
 % \section{Implementation}
 %
@@ -1291,9 +1351,7 @@ updmap --sys --enable Map=clm.map
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{%
-  $Id: cfr-lm.dtx 10358 2024-09-17 11:19:36Z cfrees $%
-}[\filebase v1.6 \revinfo][Extended support for Latin Modern 2.004]
+\ProvidesPackageSVN[\filebase.sty]{$Id: cfr-lm.dtx 10367 2024-09-19 06:13:34Z cfrees $}[v1.7 \revinfo][Extended support for Latin Modern 2.004]
 \DefineFileInfoSVN[clm]
 \RequirePackage[T1]{fontenc}
 \RequirePackage{nfssext-cfr}[2024/01/01]
@@ -1748,15 +1806,19 @@ updmap --sys --enable Map=clm.map
 %    \begin{macrocode}
 \tl_gset:Ne \rmdefault
 {
-  clm \bool_if:NT \l__clm_rm_prop_bool { 2 } \bool_if:NT \l__clm_rm_osf_bool { j }
+  clm \bool_if:NT \l__clm_rm_prop_bool { 2 } 
+  \bool_if:NT \l__clm_rm_osf_bool { j }
 }
 \tl_gset:Ne \sfdefault
 {
-  clm \bool_if:NT \l__clm_sf_prop_bool { 2 } \bool_if:NT \l__clm_sf_osf_bool { j } s
+  clm \bool_if:NT \l__clm_sf_prop_bool { 2 } 
+  \bool_if:NT \l__clm_sf_osf_bool { j } s
 }
 \tl_gset:Ne \ttdefault
 {
-  clm \bool_if:NT \l__clm_tt_prop_bool { 2 } \bool_if:NT \l__clm_tt_osf_bool { j } \bool_if:NTF \l__clm_tt_mono_bool { t } { v }
+  clm \bool_if:NT \l__clm_tt_prop_bool { 2 } 
+  \bool_if:NT \l__clm_tt_osf_bool { j } 
+  \bool_if:NTF \l__clm_tt_mono_bool { t } { v }
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1774,15 +1836,18 @@ updmap --sys --enable Map=clm.map
     {
       \qtfont{\qtstyle}
     }{
-      \PackageWarning{cfr-lm}{Option ~ 'qt' ~ cannot ~ be ~ implemented ~ unless\MessageBreak
-        the ~ command ~ qtfont ~ is ~ defined ~ appropriately. ~ This ~ is ~ not\MessageBreak
-        done ~ automatically ~ to ~ maximise ~ compatibility ~ with ~ other\MessageBreak
-        classes ~ and ~ packages. ~ The ~ suggested ~ use ~ is ~ to ~ have ~ qtfont\MessageBreak
-        redefine ~ a command ~ such ~ as ~ quotefont ~ which ~ is ~ initially\MessageBreak
-        set ~ to ~ some ~ reasonable ~ default ~ and ~ is ~ then ~ used ~ in ~ the\MessageBreak
-        definition ~ of ~ the ~ quote ~ and/or ~ quotation ~ environments.\MessageBreak
-        Since ~ these ~ are ~ class ~ and ~ package ~ dependent, ~ it ~ cannot\MessageBreak
-      be ~ done ~ by ~ a ~ font ~ package ~ and ~ the ~ option ~ is ~ ignored ~ here}  
+      \PackageWarning{cfr-lm}
+      {
+        Option ~ 'qt' ~ cannot ~ be ~ implemented ~ unless \MessageBreak
+        '\backslash qtfont' ~ is ~ defined ~ appropriately. ~ This ~ is ~ not \MessageBreak
+        done ~ automatically ~ to ~ maximise ~ compatibility ~ with ~ other \MessageBreak
+        classes ~ and ~ packages. ~ The ~ suggested ~ use ~ is ~ to ~ have ~ '\backslash qtfont' \MessageBreak
+        redefine ~ a command ~ such ~ as ~ '\backslash quotefont' ~ which ~ is ~ initially \MessageBreak
+        set ~ to ~ some ~ reasonable ~ default ~ and ~ used ~ in ~ the \MessageBreak
+        definition ~ of ~ the ~ quote ~ and/or ~ quotation ~ environments. \MessageBreak
+        A ~ font ~ package ~ has ~ no ~ business ~ meddling ~ in ~ such \MessageBreak
+        things ~ so ~ I'm ~ going ~ to ~ ignore ~ this ~ option
+      }  
     }
   }
 }

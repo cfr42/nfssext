@@ -1,0 +1,134 @@
+Copyright 2010 Hirwen Harendal and Clea F. Rees
+
+
+Copyright and licensing 
+=======================
+
+Fonts 
+-----
+
+The Venturis Collection consists of fonts made by Arkandis Digital Foundry
+(ADF), collectively known as the "Software", currently maintained by ADF.  As
+the Software is modified from Utopia fonts, they are under the same license as
+the Utopia fonts themselves (see LICENSE-utopia.txt).  That is, Akandis Digital
+Foundry hereby grants the TeX Users Group and any and all other interested
+parties the rights enumerated in the Utopia license.
+
+As Venturis is a trademark of Arkandis Digital Foundry, any modified versions
+of Software shall not use the font name(s) or trademark(s), in whole or in
+part, unless explicit written permission is granted by ADF as described in the
+initial license.
+
+The following changes have been made to the standard Venturis Collection font
+files in preparing this package for use with (La)TeX:
+- the postscript versions of the fonts have been renamed according to the Karl
+  Berry fontname scheme;
+- the opentype fonts have been removed from the TeX package.
+
+
+TeX/LaTeX support files and documentation
+-----------------------------------------
+
+http://www.ctan.org/tex-archive/fonts/venturisadf/
+
+As explained in comments at the top of each file, many of the encoding (.etx)
+files are based on standard fontinst files such as t1.etx and ts1.etx.
+Modifications are copyright 2010 Clea F. Rees (see below).
+
+Code from t1.etx copyright 2005 Alan Jeffrey and Sebastian Rahtz and Ulrik
+Vieth and Lars Hellstr{\"o}m (see below).
+
+Code from ts1.etx copyright 2005 Sebastian Rahtz and Ulrik Vieth and Lars
+Hellstr{\"o}m (see below).
+
+The file lining.etx is copyright 2003 Philipp Lehman (see below).
+
+README (this file) and LIST-Venturis.txt are copyright 2010 Hirwen Harendal
+and Clea F. Rees.
+
+All other non-derived files listed in manifest.txt are copyright 2010 Clea F.
+Rees.
+
+This work may be distributed and/or modified under the conditions of the LaTeX
+Project Public License, either version 1.3 of this license or (at your option)
+any later version.  The latest version of this license is in
+http://www.latex-project.org/lppl.txt and version 1.3 or later is part of all
+distributions of LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status `maintained'.
+
+The Current Maintainer of this work is Clea F. Rees.
+
+This work consists of all files listed in manifest.txt.
+
+
+files and templates
+released under the LPPL.  These include lining.etx.
+
+
+Status 
+======
+
+PS 1.005 RELEASE VERSION: July 2010
+- AFDKO's compilation bugs correction.
+- Typographical features addition. (All typo spaces and all typo hyphens.)
+- Q redrawn.
+- Minor corrections.
+
+PS 1.004 RELEASE VERSION: November 2008
+- Minor corrections, liga addition, new kerning table.
+
+PS 1.003 RELEASE VERSION: June -06- 2008
+- Minor corrections, hinting ajustements.
+
+PS 1.002 RELEASE VERSION: December -28- 2007
+- New kerning table, and minor corrections. 
+
+PS 1.001 RELEASE VERSION: December -15-2007
+- Add VenturisOld family, VenturisSans heavy and heavy oblique,
+  VenturisTitlingNo4 (outlines).
+  
+PS 1.000 RELEASE VERSION: October-01-2007
+- Add VenturisN2 Condensed and Medium families. 
+
+
+
+Installation and use 
+====================
+
+TeX/LaTeX support
+
+-----------------
+
+See included documentation, venturisadf.pdf, for information regarding (La)TeX
+support. The documentation source, venturisadf.tex uses various other
+packages. These are all standard and available from CTAN but may be commented
+out if preferred.
+
+The LaTeX packages (venturis, venturis2 and venturisold) require xkeyval and
+nfssext-cfr, available from CTAN.
+
+
+
+Further information 
+===================
+
+For further information about the Venturis Collection and other Arkandis Digital
+Foundry fonts, see the ADF homepage: http://perso.orange.fr/arkandis/ADF
+
+Further information about ADF font development of fonts specifically designed
+for use with TeX is available at:
+http://perso.orange.fr/arkandis/ADF/tugfonts.htm 
+This page includes full Venturis font previews and the opentype version of
+the fonts.
+
+
+Maintenance 
+===========
+
+TeX Package maintained by ADF
+- font development and maintenance by Hiwen HARENDAL 
+	(harendalh <at> hotmail <dot> com)
+- TeX/LaTeX support and documentation by Clea F. Rees 
+	(cfrees <at> imapmail <dot> org) 
+

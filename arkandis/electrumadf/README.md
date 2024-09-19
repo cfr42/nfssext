@@ -1,4 +1,4 @@
-$Id: README.md 10359 2024-09-17 11:56:05Z cfrees $
+$Id: README.md 10366 2024-09-18 14:25:21Z cfrees $
 
 # electrumadf
 
@@ -42,6 +42,6 @@ Harendal (harendalh <at> hotmail <dot> com).
 
 Clea F. Rees 
 Version 1.1
-2024-09-17
+2024-09-18
 
 vim: et:tw=80:

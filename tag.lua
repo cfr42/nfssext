@@ -1,4 +1,4 @@
--- $Id: tag.lua 10291 2024-08-28 22:06:21Z cfrees $
+-- $Id: tag.lua 10365 2024-09-18 14:22:33Z cfrees $
 --------------------------------------------------------------------------------
 os.setenv ("PATH", "/usr/local/texlive/bin:/usr/bin:")
 os.setenv ("TEXMFHOME", ".")
@@ -45,9 +45,14 @@ function update_tag (file,content,tagname,tagdate)
     "(\\changes%{)v0%.0(%}%{)0000[%/%-]00[%/%-]00(%})", 
     "%1" .. vtagname .. "%2" .. dyddiad .. "%3")
   end
+  if string.match (file,"%.dtx$") and string.match(content,"\\ProvidesPackageSVN") then
+    return string.gsub (content,
+    "(\\ProvidesPackageSVN%[[^%]]*%]%{%$[^%}]*%$%} *%[)v%d[%d%.]*( *\\revinfo)",
+    "%1" .. vtagname .. "%2")
+  end
   if string.match (file,"%.dtx$") or string.match (file,"%.ins") then
     return string.gsub (content,
-    "(\\ProvidesFileSVN%{%$[^%}]*%$%} *%[)v%d[%d%.]*( *\\revinfo%])",
+    "(\\ProvidesFileSVN%{%$[^%}]*%$%} *%[)v%d[%d%.]*( *\\revinfo)",
     "%1" .. vtagname .. "%2")
   elseif string.match (file,"%.md$") or string.match (file, "README*") then
     if string.match (content,"\nVersion %d[%d%.]* *\n") then
