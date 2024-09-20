@@ -42,7 +42,7 @@
   \char_set_catcode_letter:N \:
 }
 \ExplSyntaxOff
-\ProvidesFileSVN{$Id: cfr-lm.dtx 10367 2024-09-19 06:13:34Z cfrees $}[v1.7 \revinfo][\filebase DTX: Latin Modern for 8-bit engines]
+\ProvidesFileSVN{$Id: cfr-lm.dtx 10371 2024-09-20 15:51:48Z cfrees $}[v1.7 \revinfo][\filebase DTX: Latin Modern for 8-bit engines]
 \DefineFileInfoSVN[cfr-lm]
 \documentclass[10pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -60,9 +60,6 @@
 \usepackage[rm={lining,proportional},sf={lining,proportional},tt={mono,lining,tabular}]{cfr-lm}
 %^^A *** PAID Â TRIO DEFNYDDIO LTMARKS YN LLE EXTRAMARKS MEWN UNRHYW DOGFEN A DDEFNYDDIO HI MULTICOLS (YN CYNNWYS LTXDOC AC UNRHYW UN Â MYNEGAI YN ÔL BOB DEBYG!!! *** 
 \usepackage{extramarks,fancyhdr}
-% ^^A gwallgof ond allaf i ddim yn deall sut i osgoi \ifthenelse trwy defnyddio expl3
-% ^^A rhywbeth rhyfedd o \exp_** siwr o fod
-\usepackage{ifthen}
 \usepackage[plain]{fancyref}
 \usepackage{fixfoot}
 \usepackage{array,tabularx}
@@ -98,7 +95,7 @@
 \MakeAutoQuote{‘}{’}
 \MakeAutoQuote*{“}{”}
 \usepackage{caption}
-\DeclareCaptionFont{lf}{\lstyle}
+\DeclareCaptionFont{lf}{\sffamily\plstyle}
 \captionsetup[table]{labelfont=lf}
 % sicrhau hyperindex=false: llwytho CYN bookmark
 \usepackage{hypdoc}% ateb Ulrike Fischer: https://tex.stackexchange.com/a/695555/
@@ -243,8 +240,13 @@
   }
 }
 \cs_new_nopar:Nn \__cfrlm_doc_lreq:
-{
-    \ifthenelse { \equal { \firstleftmark } { \firstrightmark } } {} { \firstrightmark }
+{ % ^^A david carlisle: https://chat.stackexchange.com/transcript/message/66321842#66321842
+  % ^^A neu Ulrike Fischer: https://chat.stackexchange.com/transcript/message/66321730#66321730
+  % ^^A -> \protected@edef\cfrlm@tmpa{\firstleftmark}\protected@edef\cfrlm@tmpb{\firstrightmark}\if_tl_eq:NNTF \cfrlm@tmpa \cfrlm@tmpb {} { \firstrightmark }
+  \group_begin:
+    \let\protect\noexpand
+    \tl_if_eq:eeTF { \firstleftmark } { \firstrightmark } { \group_end: } { \group_end: \firstrightmark }
+  % ^^A neu ... { } { \let\protect\relax \firstrightmark } \group_end:
 }
 \fancyhf[rh]
 {
@@ -485,7 +487,6 @@
 % Shape, eight and width availability is shown in \fref{tab:sww}.
 % \begin{table}
 %   \centering
-%   \begin{threeparttable}
 %     \caption{Shapes, weights \& widths}\label{tab:sww}
 %     \begin{tabular} {l>{\raggedright}p{.1\textwidth}>{\raggedright}p{.1\textwidth}>{\raggedright}p{.25\textwidth}}
 %       \toprule
@@ -509,10 +510,6 @@
 % 																	&						&	bold					&	upright, oblique\tabularnewline
 %       \bottomrule
 %     \end{tabular}
-%     \begin{tablenotes}
-%       \item\label{tn:xxx}xxx
-%     \end{tablenotes}
-%   \end{threeparttable}
 % \end{table}
 % 
 % Where applicable, oblique small-caps are substituted for italic small-caps; italic or oblique for upright italic; oblique for italic; and upright for small-caps.
@@ -1351,7 +1348,7 @@ updmap --sys --enable Map=clm.map
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: cfr-lm.dtx 10367 2024-09-19 06:13:34Z cfrees $}[v1.7 \revinfo][Extended support for Latin Modern 2.004]
+\ProvidesPackageSVN[\filebase.sty]{$Id: cfr-lm.dtx 10371 2024-09-20 15:51:48Z cfrees $}[v1.7 \revinfo][Extended support for Latin Modern 2.004]
 \DefineFileInfoSVN[clm]
 \RequirePackage[T1]{fontenc}
 \RequirePackage{nfssext-cfr}[2024/01/01]
