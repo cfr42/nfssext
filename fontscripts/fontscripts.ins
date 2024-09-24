@@ -1,0 +1,266 @@
+% $Id: fontscripts.ins 10376 2024-09-24 17:26:11Z cfrees $
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% fontscripts.ins
+%% Additions and changes Copyright (C) -2024 Clea F. Rees.
+%% Code from skeleton.ins Copyright (C) 2015-2024 Scott Pakin (see below).
+%%
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3c
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%   https://www.latex-project.org/lppl.txt
+%% and version 1.3c or later is part of all distributions of LaTeX
+%% version 2008-05-04 or later.
+%%
+%% This work has the LPPL maintenance status `maintained'.
+%%
+%% The Current Maintainer of this work is Clea F. Rees.
+%%
+%% This work consists of all files listed in manifest.txt.
+%%
+%% The file fontscripts.ins is a derived work under the terms of the
+%% LPPL. It is based on version 2.4 of skeleton.ins which is part of 
+%% dtxtut by Scott Pakin. A copy of dtxtut, including the 
+%% unmodified version of skeleton.ins is available from
+%% https://www.ctan.org/pkg/dtxtut and released under the LPPL.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input docstrip.tex
+\keepsilent
+
+%% ???
+\usedir{doc/fonts/fontscripts}
+
+
+
+\begingroup
+\obeyspaces
+\let\maybenoexpand\noexpand
+\xdef\mkpreamble{%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+^^J\DoubleperCent\space
+Copyright (C) \maybenoexpand\targDates Clea F. Rees.^^J\DoubleperCent\space
+^^J\DoubleperCent\space
+This work may be distributed and/or modified under the^^J\DoubleperCent\space
+conditions of the LaTeX Project Public License, either version 1.3c^^J\DoubleperCent\space
+of this license or (at your option) any later version.^^J\DoubleperCent\space
+The latest version of this license is in^^J\DoubleperCent\space
+  https://www.latex-project.org/lppl.txt^^J\DoubleperCent\space
+and version 1.3c or later is part of all distributions of LaTeX^^J\DoubleperCent\space
+version 2008-05-04 or later.^^J\DoubleperCent\space
+^^J\DoubleperCent\space
+This work has the LPPL maintenance status `maintained'.^^J\DoubleperCent\space
+^^J\DoubleperCent\space
+The Current Maintainer of this work is Clea F. Rees.^^J\DoubleperCent\space
+^^J\DoubleperCent\space
+This file may only be distributed together with a copy of the package^^J\DoubleperCent\space
+fontscripts. You may however distribute the package fontscripts without^^J\DoubleperCent\space
+such generated files.^^J\DoubleperCent\space
+^^J\DoubleperCent\space
+This work consists of all files listed in manifest.txt.^^J\DoubleperCent\space
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+}
+\xdef\mkderpreamble{%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+^^J\DoubleperCent\space
+Additions and changes Copyright (C) \maybenoexpand\targDates Clea F. Rees.^^J\DoubleperCent\space
+Code from \maybenoexpand\basePkgName Copyright (C) \maybenoexpand\baseDates \maybenoexpand\basePkgAu (see below)^^J\DoubleperCent\space
+^^J\DoubleperCent\space
+This work may be distributed and/or modified under the^^J\DoubleperCent\space
+conditions of the LaTeX Project Public License, either version 1.3c^^J\DoubleperCent\space
+of this license or (at your option) any later version.^^J\DoubleperCent\space
+The latest version of this license is in^^J\DoubleperCent\space
+  https://www.latex-project.org/lppl.txt^^J\DoubleperCent\space
+and version 1.3c or later is part of all distributions of LaTeX^^J\DoubleperCent\space
+version 2008-05-04 or later.^^J\DoubleperCent\space
+^^J\DoubleperCent\space
+This work has the LPPL maintenance status `maintained'.^^J\DoubleperCent\space
+^^J\DoubleperCent\space
+The Current Maintainer of this work is Clea F. Rees.^^J\DoubleperCent\space
+^^J\DoubleperCent\space
+This work consists of all files listed in manifest.txt.^^J\DoubleperCent\space
+^^J\DoubleperCent\space
+\maybenoexpand\targType\maybenoexpand\outFileName is a derived work under the terms of the^^J\DoubleperCent\space
+LPPL. The original file, \maybenoexpand\baseFileName, is supplied with \maybenoexpand\basePkgName. A copy^^J\DoubleperCent\space
+of \maybenoexpand\basePkgName including an unmodified copy of \maybenoexpand\baseFileName is available from^^J\DoubleperCent\space
+https://www.ctan.org/pkg/\maybenoexpand\basePkgName.^^J\DoubleperCent\space
+The main modifications made to this file are listed below.^^J\DoubleperCent\space
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+}
+\xdef\mkbasedpreamble{%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+^^J\DoubleperCent\space
+Additions and changes Copyright (C) \maybenoexpand\targDates Clea F. Rees.^^J\DoubleperCent\space
+Code from \maybenoexpand\basePkgName Copyright (C) \maybenoexpand\baseDates \maybenoexpand\basePkgAu (see below)^^J\DoubleperCent\space
+^^J\DoubleperCent\space
+This work may be distributed and/or modified under the^^J\DoubleperCent\space
+conditions of the LaTeX Project Public License, either version 1.3c^^J\DoubleperCent\space
+of this license or (at your option) any later version.^^J\DoubleperCent\space
+The latest version of this license is in^^J\DoubleperCent\space
+  https://www.latex-project.org/lppl.txt^^J\DoubleperCent\space
+and version 1.3c or later is part of all distributions of LaTeX^^J\DoubleperCent\space
+version 2008-05-04 or later.^^J\DoubleperCent\space
+^^J\DoubleperCent\space
+This work has the LPPL maintenance status `maintained'.^^J\DoubleperCent\space
+^^J\DoubleperCent\space
+The Current Maintainer of this work is Clea F. Rees.^^J\DoubleperCent\space
+^^J\DoubleperCent\space
+This work consists of all files listed in manifest.txt.^^J\DoubleperCent\space
+^^J\DoubleperCent\space
+\maybenoexpand\targType\maybenoexpand\outFileName is a derived work under the terms of the LPPL. ^^J\DoubleperCent\space
+It is based on \maybenoexpand\baseFileName from \maybenoexpand\basePkgName. A copy of \maybenoexpand\basePkgName ^^J\DoubleperCent\space
+including a copy of \maybenoexpand\baseFileName is available from^^J\DoubleperCent\space
+https://www.ctan.org/pkg/\maybenoexpand\basePkgName. See \maybenoexpand\baseFileName for commentary.^^J\DoubleperCent\space
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+}
+\endgroup
+\def\targDates{2024}
+\expandafter\declarepreamble\expandafter\safonol\mkpreamble
+\endpreamble
+\def\targDates{2008-2024}
+\expandafter\declarepreamble\expandafter\safonolenc\mkpreamble
+\endpreamble
+\def\targType{The encoding }
+\def\basePkgName{fontinst}
+\def\baseFileName{t1.etx}
+\def\basePkgAu{Alan Jeffrey and Sebastian^^J\DoubleperCent\space Rahtz and Ulrik Vieth and Lars Hellström (see below)}
+\def\baseDates{2002}
+\expandafter\declarepreamble\expandafter\derpreamblefi\mkderpreamble
+\endpreamble
+\def\targDates{2024}
+\expandafter\declarepreamble\expandafter\derpreamblefin\mkderpreamble
+\endpreamble
+\def\baseFileName{ts1.etx}
+\expandafter\declarepreamble\expandafter\derpreamblefintc\mkderpreamble
+\endpreamble
+\def\targDates{2008-2024}
+\expandafter\declarepreamble\expandafter\derpreamblefitc\mkderpreamble
+\endpreamble
+\def\targType{The metrics file }
+\def\baseFileName{newlatin.mtx}
+\expandafter\declarepreamble\expandafter\derpreamblefim\mkderpreamble
+\endpreamble
+\def\baseFileName{lsmisc.mtx}
+\expandafter\declarepreamble\expandafter\basedpreamblefimm\mkbasedpreamble
+\endpreamble
+\def\baseFileName{lsbuild.mtx}
+\expandafter\declarepreamble\expandafter\basedpreamblefimb\mkbasedpreamble
+\endpreamble
+
+\askforoverwritefalse
+
+\usepreamble\safonol
+
+\generate{%
+  \file{fnt-tables.tex}{\from{fontscripts.dtx}{tables}}
+  \usepreamble\safonolenc
+  \file{dotoldstyle.etx}{\from{fontscripts.dtx}{dotoldstyle}}
+  \file{dotsc2.etx}{\from{fontscripts.dtx}{dotsc2}}
+  \file{dottaboldstyle.etx}{\from{fontscripts.dtx}{dottaboldstyle}}
+  \file{lining.etx}{\from{fontscripts.dtx}{lining}}
+  \file{oldstyle.etx}{\from{fontscripts.dtx}{oldstyle}}
+  \file{t1j-f_f.etx}{\from{fontscripts.dtx}{t1j-f-f}}
+  \file{ucdotalt.etx}{\from{fontscripts.dtx}{ucdotalt}}
+  \usepreamble\derpreamblefi
+  \file{t1-cfr.etx}{\from{fontscripts.dtx}{t1-cfr}}
+  \file{t1-dotalt-f_f.etx}{\from{fontscripts.dtx}{t1-dotalt-f-f}}
+  \usepreamble\derpreamblefin
+  \file{t1-dotinf.etx}{\from{fontscripts.dtx}{t1-dotinf}}
+  \usepreamble\derpreamblefi
+  \file{t1-dotinferior.etx}{\from{fontscripts.dtx}{t1-dotinferior}}
+  \usepreamble\derpreamblefin
+  \file{t1-dotsup.etx}{\from{fontscripts.dtx}{t1-dotsup}}
+  \usepreamble\derpreamblefi
+  \file{t1-dotsuperior.etx}{\from{fontscripts.dtx}{t1-dotsuperior}}
+  \file{t1-f_f.etx}{\from{fontscripts.dtx}{t1-f-f}}
+  \usepreamble\derpreamblefintc
+  \file{ts1-dotinf.etx}{\from{fontscripts.dtx}{ts1-dotinf}}
+  \usepreamble\derpreamblefintc
+  \file{ts1-dotsup.etx}{\from{fontscripts.dtx}{ts1-dotsup}}
+  \usepreamble\derpreamblefitc
+  \file{ts1-euro.etx}{\from{fontscripts.dtx}{ts1-euro}}
+  \usepreamble\derpreamblefim
+  \file{newlatin-dotsc.mtx}{\from{fontscripts.dtx}{newlatin-dotsc}}
+  \usepreamble\basedpreamblefimb
+  \file{dotscbuild.mtx}{\from{fontscripts.dtx}{dotscbuild}}
+  \usepreamble\basedpreamblefimm
+  \file{dotscmisc.mtx}{\from{fontscripts.dtx}{dotscmisc}}
+}
+
+
+% don't pollute scripts with wrongly marked up comments
+\edef\MetaPrefix{\string-\string-}
+% redeclare preambles above with correct \MetaPrefix
+
+\def \baseFileName{}
+\def \basePkgName{l3build}
+\def \baseDates{2014-2024}
+\def \targDates{2024}
+\def \basePkgAu{The LaTeX Project Team}
+\def \targType{The file }
+\def \preChanges{- almost all content is deleted.}
+
+\declarepreamble\safonol
+-------------------------------------------------
+Copyright (C) 2024 Clea F. Rees.
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either version 1.3c
+of this license or (at your option) any later version.
+The latest version of this license is in
+  https://www.latex-project.org/lppl.txt
+and version 1.3c or later is part of all distributions of LaTeX
+version 2008-05-04 or later.
+
+This work has the LPPL maintenance status `maintained'.
+
+The Current Maintainer of this work is Clea F. Rees.
+
+This file may only be distributed together with a copy of the package
+fontscripts. You may however distribute the package fontscripts without
+such generated files.
+
+This work consists of all files listed in manifest.txt.
+-------------------------------------------------
+\endpreamble
+
+\declarepreamble\tagpreamble
+-------------------------------------------------
+Additions and changes Copyright (C) 2024 Clea F. Rees.
+Code from \basePkgName  Copyright (C) \baseDates \basePkgAu (see below)
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either version 1.3c
+of this license or (at your option) any later version.
+The latest version of this license is in
+  https://www.latex-project.org/lppl.txt
+and version 1.3c or later is part of all distributions of LaTeX
+version 2008-05-04 or later.
+
+This work has the LPPL maintenance status `maintained'.
+
+The Current Maintainer of this work is Clea F. Rees.
+
+This work consists of all files listed in manifest.txt.
+
+\targType\outFileName is a derived work under the terms of the 
+LPPL. The original file, \baseFileName, is supplied with \basePkgName. A copy 
+of \basePkgName including an unmodified copy of \baseFileName is available from
+https://www.ctan.org/pkg/\basePkgName.
+The main modifications made to this file are as follows:
+\preChanges
+-------------------------------------------------
+\endpreamble
+
+
+\generate{%
+  \usepreamble\safonol
+  \nopostamble
+  \file{fontinst.lua}{\from{fontscripts.dtx}{fontinst}}
+  \askforoverwritetrue
+  \usepreamble\tagpreamble
+  % I really seriously doubt this should have a copyright notice at all
+  \file{tag.lua}{\from{fontscripts.dtx}{tag}}
+}
+
+\endbatchfile
