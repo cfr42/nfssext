@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10379 2024-09-24 20:56:31Z cfrees $}[v0.1 \revinfo][\filebase DTX: l3build scripts for font installation]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10383 2024-09-25 15:45:11Z cfrees $}[v0.1 \revinfo][\filebase DTX: l3build scripts for font installation]
 \DefineFileInfoSVN[fontscripts]
 \documentclass[10pt,british,lm-default=false]{l3doc}
 % l3doc loads fancyvrb
@@ -550,7 +550,7 @@
 %    \begin{macrocode}
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10379 2024-09-24 20:56:31Z cfrees $}[v0.1 \revinfo][\outFileName]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10383 2024-09-25 15:45:11Z cfrees $}[v0.1 \revinfo][\outFileName]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % \iffalse
@@ -581,759 +581,117 @@
 % 
 % \subsubsection{fontinst.lua}\label{subsubsec:fontinst-lua}
 % 
-% \iffalse
-%<*fontinst>
-% \fi
 % \begin{luafrag}{fontinst.lua}
-% Adjust first four non-comment lines if \TeX{} Live is not installed in \path{/usr/local/texlive} or you do not have a link \path{/usr/local/texlive/bin} pointing to the directories containing the current version's binaries\footnote{That is, if you are not me, you almost certainly need to change things.}. 
-%    \begin{macrocode}
--- $Id: fontscripts.dtx 10379 2024-09-24 20:56:31Z cfrees $
----------------------------------------------------------------------
--- Build configuration for electrumadf
--- l3build.pdf listing 1 tudalen 9
-%    \end{macrocode}
-Ref. \url{https://tex.stackexchange.com/questions/720446/how-can-i-export-variables-to-the-environment-when-running-l3build?noredirect=1#comment1791863_720446}
-%    \begin{macrocode}
-os.setenv ("PATH", "/usr/local/texlive/bin:/usr/bin:")
-os.setenv ("TEXMFHOME", ".")
-os.setenv ("TEXMFLOCAL", ".")
-os.setenv ("TEXMFARCH", ".")
--------------------------------------------------
--- copy non-public things from l3build
-local os_newline_cp = "\n"
-if os.type == "windows" then
-  if tonumber(status.luatex_version) < 100 or
-     (tonumber(status.luatex_version) == 100
-       and tonumber(status.luatex_revision) < 4) then
-    os_newline_cp = "\r\n"
-  end
-end
--------------------------------------------------
-nifergwall = 0
-%    \end{macrocode}
-% \begin{target}{fnttarg}
-% Create fonts.
-% Default assumes \lpack{fontinst}.
-% Redefine element in target list for alternative tools.
-% For example, \lpack{berenisadf}'s \texttt{build.lua} redefines it to use \textsc{gnu} \texttt{make}, \textsc{FontForge} etc.
-%    \begin{macrocode}
-ntarg = "fnttarg"
-%    \end{macrocode}
-% \end{target}
-% \begin{target}{uniquifyencs}
-% To ensure unique encodings without rebuilding fonts.
-%    \begin{macrocode}
-utarg = "uniquifyencs"
-%    \end{macrocode}
-% \end{target}
-%    \begin{macrocode}
-function gwall (msg,file,rtn)
-  file = file or "current file"
-  msg = msg or "Error: "
-  rtn = rtn or 0
-  if rtn ~= 0 then 
-    nifergwall = nifergwall + rtn
-    print (msg .. file .. " failed (" .. rtn .. ")\n")
-  end
-end
-%    \end{macrocode}
-% \begin{luafunction}{finst}
-% Is to \texttt{finst} what \texttt{fontinst} is to \texttt{fontinst}.
-%    \begin{macrocode}
-function finst (patt,dir,mode)
-  dir = dir or "."
-  mode = mode or "nonstopmode"
-  local cmd = "pdftex --interaction=" .. mode
-  local targs = {}
--- https://lunarmodules.github.io/luafilesystem/examples.html (expl)
--- l3build-file-functions.lua (filelist fn)
-  targs = filelist(dir,patt)
-  for i,j in ipairs(targs) do
-    local errorlevel = tex(j,dir,cmd)
-    gwall("Compilation of ", j, errorlevel)
-  end
-end
-%    \end{macrocode}
-% \end{luafunction}
-% \begin{luafunction}{fntkeeper}
-% Keep fonts between \texttt{l3build} runs unless \texttt{fnttarg} explicitly called.
-%    \begin{macrocode}
-function fntkeeper ()
-  local dir = dir or unpackdir
-  local keepdir = abspath(keepdir)
-  local rtn = direxists(keepdir)
-  if not rtn then
-    local errorlevel = mkdir(keepdir)
-    if errorlevel ~= 0 then
-      print("DO NOT BUILD STANDARD TARGETS WITHOUT RESOLVING!!\n")
-      gwall("Attempt to create directory ", keepdir, errorlevel)
-    end
-  else
-    local errorlevel = cleandir(keepdir)
-    if errorlevel ~= 0 then
-      print("KEEP CONTAMINATED!\n")
-      gwall("Attempt to clean directory ",keepdir,errorlevel)
-    end
-  end
-  if keepfiles ~= {} then
-    for i,j in ipairs(keepfiles) do
-      local rtn = cp(j, unpackdir, keepdir)
-      if rtn ~= 0 then
-        gwall("Copy ", j, errorlevel)
-        print("DO NOT BUILD STANDARD TARGETS WITHOUT RESOLVING!\n")
-      end
-    end
-  else
-    print("ARE YOU SURE YOU DON'T WANT TO KEEP THE FONTS??!!\n")
-  end
-  if keeptempfiles ~= {} then
-    rtn = direxists(keeptempdir)
-    if not rtn then
-      local errorlevel = mkdir(keeptempdir)
-      if errorlevel ~= 0 then
-        gwall("Attempt to create directory ", keeptempdir, errorlevel)
-      end
-    else
-      local errorlevel = cleandir(keeptempdir)
-      if errorlevel ~= 0 then
-        print("keeptemp contaminated!\n")
-        gwall("Attempt to clean directory ",keeptempdir,errorlevel)
-      end
-    end
-    for i,j in ipairs(keeptempfiles) do 
-      local errorlevel = cp(j,unpackdir,keeptempdir)
-      if errorlevel ~= 0 then
-        gwall("Copy ", j, errorlevel)
-      end
-    end
-  end	
-  return nifergwall
-end
--- oherwydd fy mod i bron ag anfon pob un ac mae'n amlwg fy mod i wedi anfon bacedi heb ei wneud hwn yn y gorffennol, well i mi wneud rhywbeth (scriptiau gwneud-cyhoeddus a make-public yn argraffu rhybudd os encs yn y cymysg
--- (cymraeg yn ofnadwy hefyd)
-%    \end{macrocode}
-% \end{luafunction}
-% \begin{luafunction}{uniquify}
-% Ensure encoding names are unique.
-%    \begin{macrocode}
-function uniquify (tag)
-  local dir = ""
-  tag = tag or encodingtag or ""
-  local pkgbase = pkgbase or ""
-  if standalone then
-    dir = keepdir
-    if pkgbase == "" then
-      print("pkgbase unspecified. Trying to guess ... ")
-      if ctanpkg ~= module and module ~= "" and module ~= nil then
-        print("Guessing " .. module)
-        pkgbase = module
-      else
-        pkgbase = string.gsub(ctanpkg, "adf$", "")
-        if pkgbase ~= "" then
-          print("Guessing " .. pkgbase)
-        end
-      end
-    end
-  else
-    dir = unpackdir
-    if pkgbase == "" then 
-      local pkglist = filelist(dir,"*.sty")
-      if #pkglist ~= 0 then
-        pkgbase = pkglist[1]
-      end
-    end
-  end
-  local encs = encs or filelist(dir,"*.enc")
-  local maps = maps or filelist(dir,"*.map")
-  if #encs == 0 then
-    return 0
-  else
-    if tag == "" then 
-      if #maps ~= 0  then
-        if #maps == 1 then
-          tag = string.gsub(maps[1],"%.map$","")
-        else
-          local t = "" 
-          local tt = ""
-          for i,j in ipairs(maps) do
-            if tt == t then 
-              tt = string.gsub(j,"%w%.map$","")
-            else
-              if t == "" then
-                t = string.gsub(j,"%w%.map$","")
-              end
-            end
-          end
-          if t == tt then
-            tag = tt
-          else
-            gwall("Attempt to find tag ","",1)
-          end
-        end
-      end
-    end
-    if tag ~= "" then  
-      for i, j in ipairs(encs) do
-        if string.match(j,"-" .. tag .. "%.enc$") or  string.match(j, module) or string.match(j,ctanpkg) or string.match(j,pkgbase) then
-          print(j .. " ... OK\n")
-        else
-          local targenc = (string.gsub(j,"%.enc$","-" .. tag .. ".enc"))
-          print("Target encoding is " .. targenc .. "\n")
-          if fileexists(dir .. "/" .. targenc) then
-            gwall("Target encoding exists !! ", targenc, 1)
-            return 1
-          else
-            local f = assert(io.open(dir .. "/" .. j, "rb"))
-            local content = f:read("*all")
-            f:close()
-            local new_content = (string.gsub(content, "(\n%%%%BeginResource: encoding fontinst%-autoenc[^\n ]*)( *\n/fontinst%-autoenc[^ %[]*)( %[)", "%1-" .. tag .. "%2-" .. tag .. "%3"))
-            if new_content ~= content then
-              print("Writing unique encoding to " .. targenc)
-              f = assert(io.open(dir .. "/" .. targenc,"w"))
-             -- this somehow removes the second value returned by string.gsub??
-              f:write((string.gsub(new_content,"\n",os_newline_cp)))
-              f:close()
-              if fileexists(dir .. "/" .. targenc) then
-                local errorlevel = rm(dir,j)
-                if errorlevel ~= 0 then
-                  gwall("Attempt to rm old encoding ",j,errorlevel)
-                end
-                if #maps ~= 0 then
-                  local jpatt = string.gsub(j,"%-","%%-")
-                  jpatt = string.gsub(jpatt,"%.","%%.")
-                  for k,m in ipairs(maps) do
-                    f = assert(io.open(dir .. "/" .. m,"rb"))
-                    local mcontent = f:read("*all")
-                    f:close()
-                    local new_mcontent = (string.gsub(mcontent,"(%<%[?)" .. jpatt .. "( %<%w+%.pfb \" fontinst%-autoenc[%w%-_]*)( ReEncodeFont)", "%1" .. targenc .. "%2-" .. tag .. "%3"))
-                    if new_mcontent ~= mcontent then 
-                      print("Writing adjusted map lines to " .. m)
-                      f = assert(io.open(dir .. "/" .. m,"w"))
-                     -- this somehow removes the second value returned by string.gsub??
-                      f:write((string.gsub(new_mcontent,"\n",os_newline_cp)))
-                      f:close()
-                    else
-                      gwall("Amending map ",m,1)
-                    end
-                  end
-                else
-                  print("FOUND NO MAPS??\n")
-                end
-              else
-                gwall("Attempt to write ",targenc,1)
-              end
-            else
-              gwall("Attempt to uniquify " .. j .. " as ",targenc,1)
-            end
-          end
-        end
-      end
-    end
-    return nifergwall
-  end
-  print("Something weird happened.\n")
-  return 1
-end
-%    \end{macrocode}
-% \end{luafunction}
-% \begin{luafunction}{fontinst}
-% Configured for \lpack{fontinst}.
-%    \begin{macrocode}
-function fontinst (dir,mode)
-  dir = dir or unpackdir
-  mode = mode or "errorstopmode --halt-on-error"
-  standalone = false
-  encodingtag = encodingtag or ""
-  -- if not direxists(dir) then
-  -- print("Missing directory. Unpacking first.\n")
-  print("Unpacking ...\n")
-  local errorlevel = unpack() 
-  -- end
-  local tfmfiles = filelist(dir,"*.tfm")
-  for i,j in ipairs(tfmfiles) do
-    local plname = string.gsub(j, "%.tfm$", ".pl")
-    if fileexists(unpackdir .. "/" .. plname) then
-      print(plname .. " already exists!")
-      return 1
-    else
-      local cmd = "tftopl " .. j .. " " .. plname
-      local errorlevel = runcmd(cmd,dir)
-      gwall("Conversion to pl from tfm ",j,errorlevel)
-      -- remove tfm to reduce pollution of package later
-      rm(unpackdir,j)
-      gwall("Deletion of tfm ", j, errorlevel)
-    end
-  end
-  for i,j in ipairs(familymakers) do
-    local errorlevel = finst(j,dir,mode)
-    gwall("Compilation of driver ", j, errorlevel)
-  end
-  if nifergwall ~= 0 then return nifergwall end
-  for i,j in ipairs(mapmakers) do
-    local errorlevel = finst (j,dir,mode)
-    gwall("Compilation of map ", j, errorlevel)
-  end
-  if nifergwall ~= 0 then return nifergwall end
-  for i,j in ipairs(binmakers) do
-    local targs = filelist(dir,j)
-    -- https://www.lua.org/pil/21.1.html
-    for k,m in ipairs(targs) do
-      targ = dir .. "/" .. m
-      -- is this really the right way to do this?
-      -- surely it is not at all safe?
-      -- though presumably no worse than executing the script directly
-      for line in io.lines(targ) do
-        if string.match(line,"^pltotf [a-zA-Z0-9%-]+%.pl [a-zA-Z0-9%-]+%.tfm$") then
-          local errorlevel = runcmd(line,dir)
-          gwall("Creation of TFM using " .. line .. " from ", j, errorlevel)
-        else
-          print("Ignoring unexpected line \"" .. line .. "\" in " .. j .. ".\n")
-          nifergwall = nifergwall + 1
-        end
-      end
-    end
-  end
-  if nifergwall ~= 0 then return nifergwall end
-  local targs = filelist(dir,"*.vpl")
-  for i,j in ipairs(targs) do
-    local cmd = "vptovf " .. j
-    local errorlevel = runcmd(cmd,dir)
-    gwall("Creation of virtual font from ", j, errorlevel)
-  end
-  -- edit the .fd files if a scale factor is declared because fontinst 
-  -- doesn't allow us to do this and the last message to the mailing list
-  -- is from 2022 with no response from the maintainer
-  local fdfiles = filelist(unpackdir, "*.fd")
-  for i,j in ipairs(fdfiles) do
-    local f = assert(io.open(unpackdir .. "/" .. j,"rb"))
-    local content = f:read("*all")
-    f:close()
-    local new_content = content
-    local csscaleaux = string.match(content, "%<%-%> *\\([%a%d][%a%d]*@@scale)") 
-    if csscaleaux ~= nil then
-      local csscale = string.gsub(csscaleaux, "@(@)", "%1")
-      if csscale ~= nil then
-        new_content = string.gsub(content, "(\\DeclareFontFamily{)", "%% addaswyd o t1phv.fd (dyddiad y ffeil fd: 2020-03-25)\n\\expandafter\\ifx\\csname " .. csscale .. "\\endcsname\\relax\n  \\let\\" .. csscaleaux .. "\\@empty\n\\else\n  \\edef\\" .. csscaleaux .. "{s*[\\csname " .. csscale .. "\\endcsname]}%%\n\\fi\n\n%1")
-      end
-    end
-    csscaleaux = string.match(content, "\\DeclareFontFamily{[^}]*}{[^}]*}{[^}]*\\hyphenchar *\\font *=[^}\n]*}") 
-    if csscaleaux ~= nil then
-      content = new_content
-      new_content = string.gsub(content, "(\\DeclareFontFamily{[^}]*}{[^}]*}{\\hyphenchar) *(\\font) *(=[^ }\n]*) *([^ }\n]* *})", "%1%2%3%4")
-    end
-    if new_content ~= content then
-      local f = assert(io.open(unpackdir .. "/" .. j,"w"))
-      -- this somehow removes the second value returned by string.gsub??
-      f:write((string.gsub(new_content,"\n",os_newline_cp)))
-      f:close()
-    end
-  end
-  local errorlevel = uniquify(encodingtag)
-  if errorlevel ~= 0 then
-    gwall("Encodings not uniquified! Do not submit to CTAN! uniquify(" .. encodingtag .. ")", "", errorlevel)
-  end
-  errorlevel = fntkeeper()
-  if errorlevel ~= 0 then
-    gwall("FONT KEEPER FAILED! DO NOT MAKE STANDARD TARGETS WITHOUT RESOLVING!! fntkeeper() ", unpackdir, errorlevel)
-  end
-  return nifergwall
-end
-dofile(maindir .. "/tag.lua")
--- fnt_test
-%    \end{macrocode}
-% \end{luafunction}
-% \begin{luafunction}{fnt_test}
-% Assumes a suitable template is available for testing.
-%    \begin{macrocode}
-function fnt_test (fntpkgname,fds,content,maps,fdsdir)
-  local coll = ""
-  -- suffix ly -> ly1 ; no suffix -> t1
-  local collly = ""
-  local targname = fntpkgname .. "-auto-test.lvt"
-  local targnamely = fntpkgname .. "-auto-test-ly1.lvt"
-  local targfile = unpackdir .. "/" .. targname
-  local targfilely = unpackdir .. "/" .. targnamely
-  -- ly1 boolean
-  local yy = 0
-  -- texnansi/ly1 fds
-  local lys = {}
-  -- ec/t1 fds
-  local ecs = {}
-  print("Creating test file for " .. fntpkgname .. " with fds: ")
-  for i, j in ipairs(fds) do print("fd: " .. j) end
-  -- l3build-tagging.lua
-  for i, j in ipairs(fds) do
-    if string.match(j,"^ly1") then
-      yy = 1
-      table.insert(lys,j)
-    else
-      table.insert(ecs,j)
-    end
-    if fdsdir ~= unpackdir then
-      local errorlevel = cp(j, fdsdir, unpackdir)
-      if errorlevel ~= 0 then
-        gwall("Copy ", j, errorlevel)
-        return errorlevel
-      end
-    end
-  end
-  -- restart so we get the filtered list (hopefully)
-  for i, j in ipairs(ecs) do
-    j = unpackdir .. "/" .. j
-    for line in io.lines(j) do
-      -- it would be much better to filter the file list ...
-      if string.match(line, "^\\DeclareFontShape%{[^%}]*%}%{[^%}]*%}%{[^%}]*%}%{[^%}]*%}%{$") then
-        coll = (coll .. string.gsub(string.gsub(line, "%{$","%%%%"), "^\\DeclareFontShape%{([^%}]*)%}%{([^%}]*)%}%{([^%}]*)%}%{([^%}]*)%}", "\n\\TEST{test-%1-%2-%3-%4}{%%%%\n  \\sampler{%1}{%2}{%3}{%4}%%%%\n}"))
-      end
-    end
-  end
-  if yy == 1 then
-    for i, j in ipairs(lys) do
-      j = unpackdir .. "/" .. j
-      for line in io.lines(j) do
-        -- it would be much better to filter the file list ...
-        if string.match(line,"^\\DeclareFontShape%{[^%}]*%}%{[^%}]*%}%{[^%}]*%}%{[^%}]*%}%{$") then
-          collly = (collly .. string.gsub(string.gsub(line,"%{$","%%%%"),"^\\DeclareFontShape%{([^%}]*)%}%{([^%}]*)%}%{([^%}]*)%}%{([^%}]*)%}", "\n\\TEST{test-%1-%2-%3-%4}{%%%%\n  \\sampler{%1}{%2}{%3}{%4}%%%%\n}"))
-        end
-      end
-    end
-    coll = maps .. "\n\\usepackage[enc=t1]{" .. fntpkgname .. "}\n\\begin{document}\n\\START\n" .. coll .. "\n\\END\n\\end{document}\n"
-    collly = maps .. "\n\\usepackage[enc=ly1]{" .. fntpkgname .. "}\n\\begin{document}\n\\START\n" .. collly .. "\n\\END\n\\end{document}\n"
-  else
-    -- assume package doesn't have an encoding option and is t1/ts1 only
-    coll = maps .. "\n\\usepackage{" .. fntpkgname .. "}\n\\begin{document}\n\\START\n" .. coll .. "\n\\END\n\\end{document}\n"
-  end
-  local new_content =  "%% Do not edit this file. It is generated by l3build and changes will be overwritten.\n" .. string.gsub(content, "\nSAMP *\n", coll)
-  local f = assert(io.open(targfile,"w"))
-  -- this somehow removes the second value returned by string.gsub??
-  f:write((string.gsub(new_content,"\n",os_newline_cp)))
-  f:close()
-  if yy == 1 then 
-    new_content =  "%% Do not edit this file. It is generated by l3build and changes will be overwritten.\n" .. string.gsub(content, "\nSAMP *\n", collly)
-    local f = assert(io.open(targfilely,"w"))
-    -- this somehow removes the second value returned by string.gsub??
-    f:write((string.gsub(new_content,"\n",os_newline_cp)))
-    f:close()
-  end
-  -- PAID Â CHEISIO YR ISOD!!
-  -- cp(targname,unpackdir,testfiledir)
-  local errorlevel = cp(targname,unpackdir,testdir)
-  if errorlevel ~= 0 then
-    gwall("Attempt to copy ", targname, errorlevel)
-  end
-  errorlevel = cp(targnamely,unpackdir,testdir)
-  if errorlevel ~= 0 then
-    gwall("Attempt to copy ", targnamely, errorlevel)
-  end
-  return nifergwall
-end
-%    \end{macrocode}
-% \end{luafunction}
-% \begin{luafunction}{checkinit_hook}
-%    \begin{macrocode}
--- checkinit_hook
-function checkinit_hook ()
-  local filename = "fnt-test.lvt"
-  local file = unpackdir .. "/" .. filename
-  local fnttestdir = maindir .. "/fnt-tests"
-  local maps = ""
-  local mapfiles=filelist(keepdir, "*.map")
-  local mapsdir = ""
-  local fdsdir = ""
-  if #mapfiles == 0 then
-    mapfiles=filelist(unpackdir, "*.map")
-    if #mapfiles == 0 then
-      gwall("Attempt to find map files ", ".map", 1)
-      return 1
-    else
-      mapsdir = unpackdir
-    end
-  else
-    mapsdir = keepdir
-  end
-  local fntpkgnames = fntpkgnames or filelist(unpackdir,"*.sty")
-  for i, j in ipairs(fntpkgnames) do
-    fntpkgnames[i] = string.gsub(j,"%.sty","")
-  end
-  -------
-  if #autotestfds == 0 then
-    local autotestfdstmp = filelist(keepdir, "*.fd")
-    -- if they're not kept, they may be source (e.g. berenisadf)
-    if #autotestfdstmp == 0 then
-      autotestfdstmp = filelist(unpackdir, "*.fd")
-      if #autotestfdstemp == 0 then
-        gwall("Attempt to find fd files ", ".fd", 1)
-        return 1
-      else
-        fdsdir = unpackdir
-      end
-    else
-      fdsdir = keepdir
-    end
-    if #autotestfdstmp == 0 then
-      print("No fds automatically found.\n")
-    else
-      for i, j in ipairs(autotestfdstmp) do
-        if not string.match(j,"^ts1") then
-          table.insert (autotestfds, j)
-        end
-      end
-    end
-  end
-  -------
-  -- if fntestfds.<package name> has been specified, use that (should be a table)
-  -- o/w assign the autotestfds table to fntestfds.<package name>
-  for i, j in ipairs(fntpkgnames) do
-    -- I really don't understand tables (and I know this is very, very basic)
-    if fnttestfds[j] == nil then
-      fnttestfds.j = autotestfds
-    end
-  end
-  -------
-  for i, j in ipairs(mapfiles) do
-    maps = maps .. "\n\\pdfmapfile{-" .. j .. "}\n\\pdfmapfile{+" .. j .. "}"
-  end
-  if not fileexists(fnttestdir .. "/" .. filename) then
-    print("Skipping test creation.\n")
-  else
-    local errorlevel = cp(filename,fnttestdir,unpackdir)
-    if errorlevel ~= 0 then
-      gwall("Copy ", filename, errorlevel)
-      return errorlevel
-    else
-      -- need to get content here
-      -- copy this from l3build-tagging.lua
-      local f = assert(io.open(file,"rb"))
-      local content = f:read("*all")
-      f:close()
-      -- ought to normalise line endings here
-      -- copied from l3build
-      -- but I don't understand why the first subs is needed
-      -- is it a problem if the file doesn't end with a newline?
-      content = string.gsub(content .. (string.match(content,"\n$") and "" or "\n"), "\r\n", "\n")
-      content = string.gsub(content, "\\RequirePackage%{svn%-prov%}\n\\ProvidesFileSVN%{[^%}]*%}%[[^%]]*%]%[[^%]]*%]\n", "")
-      for i, j in ipairs(fntpkgnames) do
-        -- create the test file for each package
-        -- errorlevel = fnt_test(j,fnttestfds[j],content,maps)
-        errorlevel = fnt_test(j,fnttestfds.j,content,maps,fdsdir)
-        if errorlevel ~= 0 then
-          gwall("Font test creation ", j, errorlevel)
-          return errorlevel
-        end
-      end
-      rm(unpackdir,filename)
-    end
-  end
-  return 0
-end
--- doc_init
-%    \end{macrocode}
-% \end{luafunction}
-% \begin{luafunction}{docinit_hook}
-%    \begin{macrocode}
-function docinit_hook ()
-  -- local fdfiles = filelist(keepdir, "*.fd")
-  local fdfiles = filelist(unpackdir, "*.fd")
-  local filename = "fnt-tables.tex"
-  local targname = ctanpkg .. "-tables.tex"
-  local file = unpackdir .. "/" .. filename
-  local targfile = unpackdir .. "/" .. targname
-  local coll = ""
-  local fnttestdir = maindir .. "/fnt-tests"
-  local maps = ""
-  local mapfiles=filelist(unpackdir, "*.map")
-  local yy = 0
-  for i, j in ipairs(mapfiles) do
-    maps = maps .. "\n\\pdfmapfile{-" .. j .. "}\n\\pdfmapfile{+" .. j .. "}"
-  end
-  if not fileexists(fnttestdir .. "/" .. filename) then
-    print("Skipping font tables.\n")
-  else
-    local errorlevel = cp(filename,fnttestdir,unpackdir)
-    -- local errorlevel = ren(unpackdir, filename, targname)
-    if errorlevel ~= 0 then
-      gwall("Copy ", filename, errorlevel)
-      return errorlevel
-    else
-      -- need to get content here
-      -- copy this from l3build-tagging.lua
-      local f = assert(io.open(file,"rb"))
-      local content = f:read("*all")
-      f:close()
-      -- ought to normalise line endings here 
-      -- copied from l3build
-      -- but I don't understand why the first subs is needed
-      -- is it a problem if the file doesn't end with a newline?
-      content = string.gsub(content .. (string.match(content,"\n$") and "" or "\n"), "\r\n", "\n") 
-      content = string.gsub(content, "\\RequirePackage%{svn%-prov%}\n\\ProvidesFileSVN%{[^%}]*%}%[[^%]]*%]%[[^%]]*%]\n", "")
-      -- l3build-tagging.lua
-      for i, j in ipairs(fdfiles) do
-        if string.match(j,"^ly1") then
-          yy = 1
-        end
-        j = unpackdir .. "/" .. j
-        for line in io.lines(j) do
-          if string.match(line,"^\\DeclareFontShape%{[^%}]*%}%{[^%}]*%}%{[^%}]*%}%{[^%}]*%}%{$") then
-            coll = (coll .. string.gsub(string.gsub(line, "%{$", "%%%%"), "^\\DeclareFontShape", "\n\\sampletable"))
-          end
-        end
-      end
-      if yy == 1 then
-        maps = "\n\\input{ly1enc.def}\n" .. maps
-      end
-      coll = maps .. "\n\\begin{document}\n" .. coll .. "\n\\end{document}\n"
-      local new_content =  "%% Do not edit this file. It is generated by l3build and changes will be overwritten.\n" .. string.gsub(content, "\n\\endinput *\n", coll)
-      local f = assert(io.open(targfile,"w"))
-      -- this somehow removes the second value returned by string.gsub??
-      f:write((string.gsub(new_content, "\n", os_newline_cp)))
-      f:close()
-      rm(unpackdir,filename)
-      cp(targname,unpackdir,sourcefiledir)
-    end
-  end
-  return 0
-end
--- fontinst must be specified first
--- it just ain't TeX
-%    \end{macrocode}
-% \end{luafunction}
-% \begin{target}{fnttarg}
-%    \begin{macrocode}
-target_list[ntarg] = {
-	func = fontinst,
-  desc = "Creates TeX font file",
-  pre = function(names)
-    if names then
-      print("fontinst does not need names\n")
-      help()
-      exit(1)
-    end
-    return 0
-  end
-}
-%    \end{macrocode}
-% \end{target}
-% \begin{target}{uniquifyencs}
-%    \begin{macrocode}
-target_list[utarg] = {
-  func = uniquify,
-  desc = "Uniquifies encodings ONLY",
-  pre = function(names)
-    standalone = true
-    if names and #names > 1 then
-      print("Too many encoding tags specified; no more than one allowed")
-      help()
-      exit(1)
-    else
-      names = names or encodingtag or ""
-    end
-    return 0
-  end
-}
--------------------------------------------------
-%    \end{macrocode}
-% \end{target}
-% \begin{luavariable}{autotestfds}
-%    \begin{macrocode}
-autotestfds = autotestfds or {}
-%    \end{macrocode}
-% \end{luavariable}
-%    \begin{macrocode}
--- auxfiles = {"*.aux"}
-bakext = ".bkup"
-%    \end{macrocode}
-% \begin{luavariable}{binaryfiles,binmakers}
-%    \begin{macrocode}
-binaryfiles = {"*.pdf", "*.zip", "*.vf", "*.tfm", "*.pfb", "*.ttf", "*.otf", "*.tar.gz"}
-binmakers = {"*-pltotf.sh"}
-%    \end{macrocode}
-% \end{luavariable}
-%    \begin{macrocode}
--- maindir before checkdeps
--- maindir = "../.."
-checkdeps = {maindir .. "/nfssext-cfr", maindir .. "/fnt-tests"}
-checkengines = {"pdftex"}
-checkformat = "latex"
--- checksuppfiles = {""}
-cleanfiles = {keeptempfiles}
-ctanreadme = "README.md"
-demofiles = {"*-example.tex"}
-%    \end{macrocode}
-% \begin{luavariable}{familymakers}
-%    \begin{macrocode}
-familymakers = {"*-drv.tex"}
-%    \end{macrocode}
-% \end{luavariable}
-%    \begin{macrocode}
-flatten = true
-flattentds = false
-%    \end{macrocode}
-% \begin{luavariable}{fnttestfds}
-%    \begin{macrocode}
-fnttestfds = fnttestfds or {}
--- fntautotestfds = fntautotestfds or {}
-%    \end{macrocode}
-% \end{luavariable}
-%    \begin{macrocode}
-installfiles = {"*.afm", "*.cls", "*.enc", "*.fd", "*.map", "*.otf", "*.pfb", "*.sty", "*.tfm", "*.ttf", "*.vf"}
--- match default as not yet existent
-sourcefiledir = sourcefiledir or "."
-%    \end{macrocode}
-% \begin{luavariable}{keepdir,keeptempdir,keepfiles,keeptempfiles,mapmakers}
-%    \begin{macrocode}
-keepdir = keepdir or sourcefiledir .. "/keep"
-keeptempdir = keeptempdir or sourcefiledir .. "/keeptemp"
-keepfiles = keepfiles or {"*.enc", "*.fd", "*.map", "*.tfm", "*.vf"}
-keeptempfiles = keeptempfiles or {"*.mtx", "*.pl", "*-pltotf.sh", "*-rec.tex", "*.vpl", "*.zz"}
-manifestfile = "manifest.txt"
-mapmakers = {"*-map.tex"}
-%    \end{macrocode}
-% \end{luavariable}
-%    \begin{macrocode}
-packtdszip = true
--- need module test or default?
-sourcefiles = {"*.afm", "afm/*.afm", "*.pfb", "*.dtx", "*.ins", "opentype/*.otf", "*.otf", "tfm/*.tfm", "truetype/*.ttf", "*.ttf", "type1/*.pfb"}
-tagfiles = {"*.dtx", "*.ins", "manifest.txt", "MANIFEST.txt", "README", "README.md"}
--- vendor and module must be specified before tdslocations
-%    \end{macrocode}
-% \begin{luavariable}{vendor}
-%    \begin{macrocode}
-vendor = vendor or "public"
-%    \end{macrocode}
-% \end{luavariable}
-%    \begin{macrocode}
-tdslocations = {
-	"fonts/afm/" .. vendor .. "/" .. module .. "/" .. "*.afm",
-	"fonts/enc/dvips/" .. module .. "/" .. "*.enc",
-	"fonts/map/dvips/" .. module .. "/" .. "*.map",
-	"fonts/opentype/" .. vendor .. "/" .. module .. "/" .. "*.otf",
-	"fonts/tfm/" .. vendor .. "/" .. module .. "/" .. "*.tfm",
-	"fonts/truetype/" .. vendor .. "/" .. module .. "/" .. "*.ttf",
-	"fonts/type1/" .. vendor .. "/" .. module .. "/" .. "*.pfb",
-	"fonts/type1/" .. vendor .. "/" .. module .. "/" .. "*.pfm",
-	"fonts/vf/" .. vendor .. "/" .. module .. "/" .. "*.vf",
-	"source/fonts/" .. module .. "/" .. "*.etx",
-	"source/fonts/" .. module .. "/" .. "*.mtx",
-	"source/fonts/" .. module .. "/" .. "*-drv.tex",
-	"source/fonts/" .. module .. "/" .. "*-map.tex",
-	"tex/latex/" .. module .. "/" .. "*.fd",
-	"tex/latex/" .. module .. "/" .. "*.sty"
-}
--- after maindir
-typesetdeps = {maindir .. "/nfssext-cfr"}
--- enable l3build doc/check to find font files
--- cannot concatenate variables here as they don't (yet?) exist
-typesetexe = "TEXMFDOTDIR=.:../local: pdflatex"
-typesetfiles = typesetfiles or  {"*.dtx", "*-tables.tex", "*-example.tex"}
-typesetsourcefiles = {keepdir .. "/*", "nfssext-cfr*.sty"}
-unpackexe = "pdflatex"
-unpackfiles = {"*.ins"}
--- vim: ts=2:sw=2:et:
-%    \end{macrocode}
+%   Use \texttt{dofile()} in \file{build.lua} to add to \lpack{l3build}.
+%   \newcommand*\FancyVerbStopString{ntarg = "fnttarg"}
+%   \VerbatimInput[gobble=0,numbers=left,numberblanklines=true,firstline=12]{fontinst.lua}
+%   \newcommand*\FancyVerbStartString{nifergwall = 0}
+%   \begin{target}{fnttarg}
+%     Create fonts.
+%     Default assumes \lpack{fontinst}.
+%     Redefine element in target list for alternative tools.
+%     For example, \lpack{berenisadf}'s \texttt{build.lua} redefines it to use \textsc{gnu} \texttt{make}, \textsc{FontForge} etc.
+%     \renewcommand*\FancyVerbStopString{utarg = "uniquifyencs"}
+%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true]{fontinst.lua}
+%   \end{target}
+%   \begin{target}{uniquifyencs}
+%     To ensure unique encodings without rebuilding fonts.
+%     \renewcommand*\FancyVerbStartString{ntarg = "fnttarg"}
+%     \renewcommand*\FancyVerbStopString{function gwall (msg,file,rtn)}
+%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true]{fontinst.lua}
+%   \end{target}
+%   \renewcommand*\FancyVerbStartString{utarg = "uniquifyencs"}
+%   \renewcommand*\FancyVerbStopString{function finst (patt,dir,mode)}
+%   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true]{fontinst.lua}
+%   \begin{luafunction}{finst}
+%     Is to \texttt{finst} what \texttt{fontinst} is to \texttt{fontinst}.
+%     \renewcommand*\FancyVerbStartString{utarg = "uniquifyencs"}
+%     \renewcommand*\FancyVerbStopString{function fntkeeper ()}
+%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=38]{fontinst.lua}
+%   \end{luafunction}
+%   \begin{luafunction}{fntkeeper}
+%     Keep fonts between \texttt{l3build} runs unless \texttt{fnttarg} explicitly called.
+%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=52,lastline=102]{fontinst.lua}
+%   \end{luafunction}
+%   \begin{luafunction}{uniquify}
+%     Ensure encoding names are unique.
+%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=105,lastline=222]{fontinst.lua}
+%   \end{luafunction}
+%   \begin{luafunction}{fontinst}
+%     Configured for \lpack{fontinst}.
+%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=223,lastline=321]{fontinst.lua}
+%   \end{luafunction}
+%   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=322,lastline=323]{fontinst.lua}
+%   \begin{luafunction}{fnt_test}
+%     Assumes a suitable template is available for testing.
+%     \renewcommand*\FancyVerbStartString{-- fnt_test}
+%     \renewcommand*\FancyVerbStopString{-- checkinit_hook}
+%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true]{fontinst.lua}
+%   \end{luafunction}
+%   \begin{luafunction}{checkinit_hook}
+%     Redefinition of standard \lpack{l3build} function.
+%     \renewcommand*\FancyVerbStartString{-- checkinit_hook}
+%     \renewcommand*\FancyVerbStopString{-- doc_init}
+%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true]{fontinst.lua}
+%   \end{luafunction}
+%   \begin{luafunction}{docinit_hook}
+%     Redefinition of standard \lpack{l3build} function.
+%     \renewcommand*\FancyVerbStartString{-- doc_init}
+%     \renewcommand*\FancyVerbStopString{-- fontinst must be specified first}
+%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true]{fontinst.lua}
+%   \end{luafunction}
+%   \begin{target}{fnttarg}
+%     Main target definition.
+%     \renewcommand*\FancyVerbStartString{-- fontinst must be specified first}
+%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,lastline=596]{fontinst.lua}
+%   \end{target}
+%   \begin{target}{uniquifyencs}
+%     Secondary target.
+%     It is not normally necessary to invoke this target separately if using the default definition of \texttt{fnttarg}.
+%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=611,lastline=597]{fontinst.lua}
+%   \end{target}
+%   \begin{luavariable}{autotestfds}
+%     \texttt{fd} files to use when auto-generating build tests.
+%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=613,lastline=613]{fontinst.lua}
+%   \end{luavariable}
+%   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=614,lastline=616]{fontinst.lua}
+%   \begin{luavariable}{binmakers}
+%     Scripts to create binary \texttt{tfm} and/or \texttt{vf} from \texttt{pl} and/or \texttt{vpl}.
+%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=617,lastline=617]{fontinst.lua}
+%   \end{luavariable}
+%   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=620,lastline=626]{fontinst.lua}
+%   \begin{luavariable}{familymakers}
+%     Files to compile to generate font definition files, human-readable metrics etc.
+%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=627,lastline=627]{fontinst.lua}
+%   \end{luavariable}
+%   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,lastline=629,firstline=628]{fontinst.lua}
+%   \begin{luavariable}{fnttestfds}
+%     Font definition files to use when auto-generating tests.
+%     May be either a table of globs or a table of tables of package names and lists of globs.
+%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,lastline=630,firstline=630]{fontinst.lua}
+%   \end{luavariable}
+%   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,lastline=634,firstline=632]{fontinst.lua}
+%   \begin{luavariable}{keepdir,keeptempdir}
+%     Directories to stash generated font files and intermediate build products.
+%     These should \textbf{not} be subdirectories of \texttt{builddir}.
+%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=635,lastline=636]{fontinst.lua}
+%   \end{luavariable}
+%   \begin{luavariable}{keepfiles,keeptempfiles}
+%     Globs for generated font files and intermediate build products to stash in \path{keepdir} and \path{keeptempdir} respectively.
+%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=637,lastline=638]{fontinst.lua}
+%   \end{luavariable}
+%   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=639,lastline=639]{fontinst.lua}
+%   \begin{luavariable}{mapmakers}
+%     Files to compile to generate map file fragments.
+%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=640,lastline=640]{fontinst.lua}
+%   \end{luavariable}
+%   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=641,lastline=644]{fontinst.lua}
+%   \begin{luavariable}{vendor}
+%     Vendor directory when installing.
+%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=645,lastline=646]{fontinst.lua}
+%   \end{luavariable}
+%   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=647]{fontinst.lua}
 % \end{luafrag}
-% \iffalse
-%</fontinst>
-% \fi
 %
 %  
 % 

@@ -1,4 +1,4 @@
--- $Id: build.lua 10379 2024-09-24 20:56:31Z cfrees $
+-- $Id: build.lua 10383 2024-09-25 15:45:11Z cfrees $
 -- Build configuration for fontscripts
 -- l3build.pdf listing 1 tudalen 9
 os.setenv ("PATH", "/usr/local/texlive/bin:/usr/bin:")
@@ -16,6 +16,16 @@ sourcefiles = {"*.dtx","*.ins"}
 manifestfile = "manifest.txt"
 typesetruns = 5
 --
+-- there must be a variable I can set for this!
+function docinit_hook()
+  local errorlevel = cp("fontinst.lua",sourcefiledir,typesetdir)
+  if not errorlevel == 0 then
+    print("Could not copy fontinst.lua!\n")
+    return 1
+  end
+  return 0
+end
+docfiles = {"fontinst.lua"}
 dofile(sourcedir .. "/../../adnoddau/l3build/tag.lua")
 date = "2024"
 dofile(sourcedir .. "/../../adnoddau/l3build/manifest.lua")
