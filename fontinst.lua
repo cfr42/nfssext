@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10331 2024-09-08 16:41:32Z cfrees $
+-- $Id: fontinst.lua 10381 2024-09-25 04:04:03Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -421,33 +421,38 @@ function checkinit_hook ()
       gwall("Attempt to find map files ", ".map", 1)
       return 1
     else
+      print("Using maps from " .. unpackdir .. "\n")
       mapsdir = unpackdir
     end
   else
     mapsdir = keepdir
+    print("Using maps from " .. keepdir .. "\n")
   end
   local fntpkgnames = fntpkgnames or filelist(unpackdir,"*.sty")
   for i, j in ipairs(fntpkgnames) do
     fntpkgnames[i] = string.gsub(j,"%.sty","")
   end
   -------
-  if #autotestfds == 0 then
-    local autotestfdstmp = filelist(keepdir, "*.fd")
-    -- if they're not kept, they may be source (e.g. berenisadf)
-    if #autotestfdstmp == 0 then
-      autotestfdstmp = filelist(unpackdir, "*.fd")
-      if #autotestfdstemp == 0 then
-        gwall("Attempt to find fd files ", ".fd", 1)
-        return 1
-      else
-        fdsdir = unpackdir
-      end
+  local autotestfdstmp = filelist(keepdir, "*.fd")
+  -- if they're not kept, they may be source (e.g. berenisadf)
+  if #autotestfdstmp == 0 then
+    autotestfdstmp = filelist(unpackdir, "*.fd")
+    if #autotestfdstemp == 0 then
+      gwall("Attempt to find fd files ", ".fd", 1)
+      return 1
     else
-      fdsdir = keepdir
+      fdsdir = unpackdir
+      print("Using fds from " .. unpackdir .. "\n")
     end
-    if #autotestfdstmp == 0 then
-      print("No fds automatically found.\n")
-    else
+  else
+    fdsdir = keepdir
+    print("Using fds from " .. keepdir .. "\n")
+  end
+  if #autotestfdstmp == 0 then
+    print("Something is amiss - this code should never be executed!\n")
+    gwall("Attempt to locate fd files ", ".fd", 1)
+  else
+    if #autotestfds == 0 then
       for i, j in ipairs(autotestfdstmp) do
         if not string.match(j,"^ts1") then
           table.insert (autotestfds, j)
@@ -461,11 +466,16 @@ function checkinit_hook ()
   for i, j in ipairs(fntpkgnames) do
     -- I really don't understand tables (and I know this is very, very basic)
     if fnttestfds[j] == nil then
-      -- fnttestfds.j = {}
-      fnttestfds.j = autotestfds
-      -- for k, l in ipairs(autotestfds) do
+      if #fnttestfds == 0 then
+        -- fnttestfds.j = {}
+        -- use only if fnttestfds isn't specified either as table of tables or table of files/globs
+        -- this doesn't seem very robust
+        fnttestfds.j = autotestfds
+        -- for k, l in ipairs(autotestfds) do
         -- table.insert (fnttestfds.j, l)
-      -- end
+      end
+    else
+      fnttestfds.j = fnttestfds
     end
   end
   -------
