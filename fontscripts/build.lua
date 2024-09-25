@@ -1,4 +1,4 @@
--- $Id: build.lua 10383 2024-09-25 15:45:11Z cfrees $
+-- $Id: build.lua 10386 2024-09-25 16:28:48Z cfrees $
 -- Build configuration for fontscripts
 -- l3build.pdf listing 1 tudalen 9
 os.setenv ("PATH", "/usr/local/texlive/bin:/usr/bin:")
@@ -37,7 +37,7 @@ function manifest_setup ()
     {
       name = "Package files",
       dir = sourcefiledir,
-      files = {"*.dtx","*.ins","*.md"},
+      files = {"*.dtx","*.ins","fontinst.lua","*.md"},
       exclude = {derivedfiles},
     },
     {
