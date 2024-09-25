@@ -1,4 +1,4 @@
--- $Id: build.lua 10352 2024-09-16 22:30:08Z cfrees $
+-- $Id: build.lua 10387 2024-09-25 21:00:38Z cfrees $
 -- Build configuration for nfssext-cfr
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -15,6 +15,7 @@ os.setenv ("TEXMFLOCAL", ".")
 os.setenv ("TEXMFARCH", ".")
 --
 module = "nfssext-cfr"
+ctanpkg = module
 -- unpackfiles = {"*.ins"}
 -- maindir **must** be shared with dependencies
 maindir = ".."
@@ -33,5 +34,33 @@ typesetruns = 5
 dofile(maindir .. "/tag.lua")
 date = "2008-2024"
 dofile(sourcedir .. "/manifest.lua")
+--
+uploadconfig = {
+  -- *required* --
+  -- announcement (don't include here?)
+  announcement  = "Belated update for (N)NFSS. Implement new package options. Switch to dtx/ins. Use l3build.",
+	author     = "Clea F. Rees",
+  -- email (don't include here!)
+	ctanPath   = "pkg/nfssext-cfr",
+	license    = {"lppl1.3c"},
+	pkg        = ctanpkg,
+	summary    = "Extended font selection commands for LaTeX's (New) New Font Selection Scheme",
+  uploader   = "Clea F. Rees",
+	version    = "v1.0",
+  -- optional --
+	bugtracker = {"https://codeberg.org/cfr/nfssext/issues"},
+  -- description
+  -- development {}
+  -- home {}
+	-- note       = "",
+	repository = {"https://codeberg.org/cfr/nfssext", "https://github.com/cfr42/nfssext"},
+  -- support {}
+	topic      = {"font-sel", "font-use", "font-supp"},
+	update     = true,
+  -- files --
+  -- announcement_file
+  -- note_file
+  -- curlopt_file
+}
 -- os.execute ("printenv")
 -- vim: ts=2:sw=2:tw=80:nospell
