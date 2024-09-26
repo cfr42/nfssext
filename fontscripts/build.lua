@@ -1,4 +1,4 @@
--- $Id: build.lua 10386 2024-09-25 16:28:48Z cfrees $
+-- $Id: build.lua 10389 2024-09-26 22:59:23Z cfrees $
 -- Build configuration for fontscripts
 -- l3build.pdf listing 1 tudalen 9
 os.setenv ("PATH", "/usr/local/texlive/bin:/usr/bin:")
@@ -23,9 +23,14 @@ function docinit_hook()
     print("Could not copy fontinst.lua!\n")
     return 1
   end
+  local errorlevel = cp("fnt-ctan.lua",sourcefiledir,typesetdir)
+  if not errorlevel == 0 then
+    print("Could not copy fnt-ctan.lua!\n")
+    return 1
+  end
   return 0
 end
-docfiles = {"fontinst.lua"}
+docfiles = {"fontinst.lua","fnt-ctan.lua"}
 dofile(sourcedir .. "/../../adnoddau/l3build/tag.lua")
 date = "2024"
 dofile(sourcedir .. "/../../adnoddau/l3build/manifest.lua")
@@ -37,7 +42,7 @@ function manifest_setup ()
     {
       name = "Package files",
       dir = sourcefiledir,
-      files = {"*.dtx","*.ins","fontinst.lua","*.md"},
+      files = {"*.dtx","*.ins","fontinst.lua","fnt-ctan.lua","*.md"},
       exclude = {derivedfiles},
     },
     {
@@ -82,7 +87,7 @@ uploadconfig = {
 	-- note       = "The catalogue currently shows the package as included only in MikTeX, but it is also included in TeX Live. Any chance this could be corrected?",
 	repository = {"https://codeberg.org/cfr/nfssext", "https://github.com/cfr42/nfssext"},
   -- support {}
-	topic      = {"font-cvt", "package-devel"},
+	topic      = {"font-cvt", "package-devel", "ctan"},
 	update     = false,
   -- files --
   -- announcement_file

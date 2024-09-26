@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10383 2024-09-25 15:45:11Z cfrees $}[v0.1 \revinfo][\filebase DTX: l3build scripts for font installation]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10393 2024-09-26 23:30:56Z cfrees $}[v0.1 \revinfo][\filebase DTX: l3build scripts for font installation]
 \DefineFileInfoSVN[fontscripts]
 \documentclass[10pt,british,lm-default=false]{l3doc}
 % l3doc loads fancyvrb
@@ -215,7 +215,7 @@
 % \section{Lua Script Fragments}\label{sec:lua}
 %
 % \file{fontinst.lua} provides two custom \lpack{l3build} targets and five new Lua functions.
-% In addition, it redefines two \lpack{l3build} functions (which do nothing by default).
+% In addition, it redefines three \lpack{l3build} functions (two of which do nothing by default).
 % As well as those provided by \lpack{l3build}, a number of additional variables are used by these functions to determine what, where and how they should operate.
 %
 % \subsection{\lpack{l3build} Targets}\label{subsec:targs}
@@ -295,6 +295,9 @@
 % This is a standard \lpack{l3build} function which does nothing by default.
 % \file{fontinst.lua} redefines it to automatically generate test files suitable for use with \texttt{l3build check} if a test template is available.
 % 
+% \DescribelFn{copyctan()} \texttt{copyctan}\plarg{}\par\noindent
+% This is extended to copy files from \texttt{keepdir} and to impose a single-layer of sub-directories of the kind required by \ctan{} for font distributions.
+%
 % \DescribelFn{docinit_hook()} \texttt{docinit_hook}\plarg{}\par\noindent
 % This is a standard \lpack{l3build} function which does nothing by default.
 % \file{fontinst.lua} redefines it to automatically generate font tables suitable for use with \texttt{l3build doc} from a template.
@@ -550,7 +553,7 @@
 %    \begin{macrocode}
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10383 2024-09-25 15:45:11Z cfrees $}[v0.1 \revinfo][\outFileName]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10393 2024-09-26 23:30:56Z cfrees $}[v0.1 \revinfo][\outFileName]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % \iffalse
@@ -603,38 +606,38 @@
 %   \renewcommand*\FancyVerbStartString{utarg = "uniquifyencs"}
 %   \renewcommand*\FancyVerbStopString{function finst (patt,dir,mode)}
 %   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true]{fontinst.lua}
-%   \begin{luafunction}{finst}
+%   \begin{luafunction}{finst()}
 %     Is to \texttt{finst} what \texttt{fontinst} is to \texttt{fontinst}.
 %     \renewcommand*\FancyVerbStartString{utarg = "uniquifyencs"}
 %     \renewcommand*\FancyVerbStopString{function fntkeeper ()}
 %     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=38]{fontinst.lua}
 %   \end{luafunction}
-%   \begin{luafunction}{fntkeeper}
+%   \begin{luafunction}{fntkeeper()}
 %     Keep fonts between \texttt{l3build} runs unless \texttt{fnttarg} explicitly called.
 %     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=52,lastline=102]{fontinst.lua}
 %   \end{luafunction}
-%   \begin{luafunction}{uniquify}
+%   \begin{luafunction}{uniquify()}
 %     Ensure encoding names are unique.
 %     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=105,lastline=222]{fontinst.lua}
 %   \end{luafunction}
-%   \begin{luafunction}{fontinst}
+%   \begin{luafunction}{fontinst()}
 %     Configured for \lpack{fontinst}.
 %     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=223,lastline=321]{fontinst.lua}
 %   \end{luafunction}
 %   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=322,lastline=323]{fontinst.lua}
-%   \begin{luafunction}{fnt_test}
+%   \begin{luafunction}{fnt_test()}
 %     Assumes a suitable template is available for testing.
 %     \renewcommand*\FancyVerbStartString{-- fnt_test}
 %     \renewcommand*\FancyVerbStopString{-- checkinit_hook}
 %     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true]{fontinst.lua}
 %   \end{luafunction}
-%   \begin{luafunction}{checkinit_hook}
+%   \begin{luafunction}{checkinit_hook()}
 %     Redefinition of standard \lpack{l3build} function.
 %     \renewcommand*\FancyVerbStartString{-- checkinit_hook}
 %     \renewcommand*\FancyVerbStopString{-- doc_init}
 %     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true]{fontinst.lua}
 %   \end{luafunction}
-%   \begin{luafunction}{docinit_hook}
+%   \begin{luafunction}{docinit_hook()}
 %     Redefinition of standard \lpack{l3build} function.
 %     \renewcommand*\FancyVerbStartString{-- doc_init}
 %     \renewcommand*\FancyVerbStopString{-- fontinst must be specified first}
@@ -693,7 +696,31 @@
 %   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=647]{fontinst.lua}
 % \end{luafrag}
 %
-%  
+% \subsubsection{fnt-ctan.lua}\label{subsubsec:fnt-ctan-lua}
+% 
+% \begin{luafrag}{fnt-ctan.lua}
+%   Included by \file{fontinst.lua} if it exists  in \texttt{maindir}.
+%   Changes the way the \texttt{ctan} target builds the archive to match \ctan{} requirements for font distributions.
+%   \VerbatimInput[gobble=0,numbers=left,numberblanklines=true,firstline=2,lastline=8,firstnumber=last]{fnt-ctan.lua}
+%   \begin{luafunction}{extname()}
+%     Get extension from filename.
+%     \newcommand*\FancyVerbStartString{-- extname(filename)}
+%     \newcommand*\FancyVerbStopString{-- copysubctan(files,srcdir,targdir)}
+%     \VerbatimInput[gobble=0,numbers=left,numberblanklines=true,firstnumber=last]{fnt-ctan.lua}
+%   \end{luafunction}
+%   \begin{luafunction}{copysubctan()}
+%     Sub-directories for \ctan.
+%     \newcommand*\FancyVerbStartString{-- copysubctan(files,srcdir,targdir)}
+%     \newcommand*\FancyVerbStopString{-- copyctan()}
+%     \VerbatimInput[gobble=0,numbers=left,numberblanklines=true,firstnumber=last]{fnt-ctan.lua}
+%   \end{luafunction}
+%   \begin{luafunction}{copyctan()}
+%     Redefine function used by \texttt{ctan}.
+%     \newcommand*\FancyVerbStartString{-- copyctan()}
+%     \newcommand*\FancyVerbStopString{-- end copyctan()}
+%     \VerbatimInput[gobble=0,numbers=left,numberblanklines=true,firstnumber=last]{fnt-ctan.lua}
+%   \end{luafunction}
+% \end{luafrag} 
 % 
 % \subsubsection{tag.lua}\label{subsubsec:tag-lua}
 % 

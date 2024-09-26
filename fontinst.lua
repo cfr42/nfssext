@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10381 2024-09-25 04:04:03Z cfrees $
+-- $Id: fontinst.lua 10389 2024-09-26 22:59:23Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -638,7 +638,7 @@ keepfiles = keepfiles or {"*.enc", "*.fd", "*.map", "*.tfm", "*.vf"}
 keeptempfiles = keeptempfiles or {"*.mtx", "*.pl", "*-pltotf.sh", "*-rec.tex", "*.vpl", "*.zz"}
 manifestfile = "manifest.txt"
 mapmakers = {"*-map.tex"}
-packtdszip = true
+packtdszip = false
 -- need module test or default?
 sourcefiles = {"*.afm", "afm/*.afm", "*.pfb", "*.dtx", "*.ins", "opentype/*.otf", "*.otf", "tfm/*.tfm", "truetype/*.ttf", "*.ttf", "type1/*.pfb"}
 tagfiles = {"*.dtx", "*.ins", "manifest.txt", "MANIFEST.txt", "README", "README.md"}
@@ -670,4 +670,9 @@ typesetfiles = typesetfiles or  {"*.dtx", "*-tables.tex", "*-example.tex"}
 typesetsourcefiles = {keepdir .. "/*", "nfssext-cfr*.sty"}
 unpackexe = "pdflatex"
 unpackfiles = {"*.ins"}
+-------------------------------------------------
+if fileexists(maindir .. "/fnt-ctan.lua") then
+  dofile(maindir .. "/fnt-ctan.lua")
+end
+-------------------------------------------------
 -- vim: ts=2:sw=2:et:
