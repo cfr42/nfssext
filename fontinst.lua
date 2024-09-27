@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10389 2024-09-26 22:59:23Z cfrees $
+-- $Id: fontinst.lua 10408 2024-09-27 07:11:26Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -463,19 +463,33 @@ function checkinit_hook ()
   -------
   -- if fntestfds.<package name> has been specified, use that (should be a table)
   -- o/w assign the autotestfds table to fntestfds.<package name>
-  for i, j in ipairs(fntpkgnames) do
-    -- I really don't understand tables (and I know this is very, very basic)
-    if fnttestfds[j] == nil then
-      if #fnttestfds == 0 then
+  -- but remember fnttestfds may be pairs and/or ipairs ...
+  print(fnttestfds)
+  for i,j in ipairs(fnttestfds) do print (i .. " : " .. j) end
+  if #fnttestfds == 0 then
+    for i,j in ipairs(fntpkgnames) do 
+      if fnttestfds[j] == nil then
+        fnttestfds.j = autotestfds
+      end
+    end
+  else
+    local testmes = {}
+    for i,j in ipairs(fnttestfds) do
+      table.insert(testmes,j)
+    end
+    for i, j in ipairs(fntpkgnames) do
+      -- I really don't understand tables (and I know this is very, very basic)
+      if fnttestfds.j == nil then
+      -- if #fnttestfds == 0 then
         -- fnttestfds.j = {}
         -- use only if fnttestfds isn't specified either as table of tables or table of files/globs
         -- this doesn't seem very robust
-        fnttestfds.j = autotestfds
+        fnttestfds.j = testmes
         -- for k, l in ipairs(autotestfds) do
         -- table.insert (fnttestfds.j, l)
+      -- else
+        -- fnttestfds.j = fnttestfds
       end
-    else
-      fnttestfds.j = fnttestfds
     end
   end
   -------
@@ -506,7 +520,8 @@ function checkinit_hook ()
       for i, j in ipairs(fntpkgnames) do
         -- create the test file for each package
         -- errorlevel = fnt_test(j,fnttestfds[j],content,maps)
-        errorlevel = fnt_test(j,fnttestfds.j,content,maps,fdsdir)
+        -- dyw fnttestfds.j ddim yn gweithio yma!!
+        errorlevel = fnt_test(j,fnttestfds[j],content,maps,fdsdir)
         if errorlevel ~= 0 then
           gwall("Font test creation ", j, errorlevel)
           return errorlevel
@@ -613,7 +628,7 @@ target_list[utarg] = {
 autotestfds = autotestfds or {}
 -- auxfiles = {"*.aux"}
 bakext = ".bkup"
-binaryfiles = {"*.pdf", "*.zip", "*.vf", "*.tfm", "*.pfb", "*.ttf", "*.otf", "*.tar.gz"}
+binaryfiles = {"*.pdf", "*.zip", "*.vf", "*.tfm", "*.pfb", "*.pfm", "*.ttf", "*.otf", "*.tar.gz"}
 binmakers = {"*-pltotf.sh"}
 -- maindir before checkdeps
 -- maindir = "../.."
@@ -629,7 +644,7 @@ flatten = true
 flattentds = false
 fnttestfds = fnttestfds or {}
 -- fntautotestfds = fntautotestfds or {}
-installfiles = {"*.afm", "*.cls", "*.enc", "*.fd", "*.map", "*.otf", "*.pfb", "*.sty", "*.tfm", "*.ttf", "*.vf"}
+installfiles = {"*.afm", "*.cls", "*.enc", "*.fd", "*.map", "*.otf", "*.pfb", "*.pfm", "*.sty", "*.tfm", "*.ttf", "*.vf"}
 -- match default as not yet existent
 sourcefiledir = sourcefiledir or "."
 keepdir = keepdir or sourcefiledir .. "/keep"
@@ -640,7 +655,7 @@ manifestfile = "manifest.txt"
 mapmakers = {"*-map.tex"}
 packtdszip = false
 -- need module test or default?
-sourcefiles = {"*.afm", "afm/*.afm", "*.pfb", "*.dtx", "*.ins", "opentype/*.otf", "*.otf", "tfm/*.tfm", "truetype/*.ttf", "*.ttf", "type1/*.pfb"}
+sourcefiles = {"*.afm", "afm/*.afm", "*.pfb", "*.pfm", "*.dtx", "*.ins", "opentype/*.otf", "*.otf", "tfm/*.tfm", "truetype/*.ttf", "*.ttf", "type1/*.pfb", "type1/*.pfm"}
 tagfiles = {"*.dtx", "*.ins", "manifest.txt", "MANIFEST.txt", "README", "README.md"}
 -- vendor and module must be specified before tdslocations
 vendor = vendor or "public"

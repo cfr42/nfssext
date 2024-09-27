@@ -1,4 +1,4 @@
--- $Id: fnt-ctan.lua 10389 2024-09-26 22:59:23Z cfrees $
+-- $Id: fnt-ctan.lua 10399 2024-09-27 02:16:30Z cfrees $
 -------------------------------------------------
 local exts = {}
 
@@ -88,17 +88,15 @@ function copyctan()
     errorlevel = rm(targdir, "*." .. j)
     if errorlevel ~= 0 then return errorlevel end
   end
-  local h = {}
-  for i,j in ipairs(exts) do
-    local f = filelist(targdir,"*." .. i)
-    if #f ~= 0 then
-      for m,n in ipairs(f) do table.insert(h,n) end
-    end
-   end
-   if #h ~=0 then
-     errorlevel = copysubctan(h,targdir,targdir)
-     if errorlevel ~= 0 then return errorlevel end
-   end
+  if fileexists(targdir .. "/COPYING") then
+    if not direxists(targdir .. "/doc") then mkdir(targdir .. "/doc") end
+    errorlevel = cp("COPYING",targdir,targdir .. "/doc")
+    if errorlevel ~= 0 then return errorlevel end
+    errorlevel = rm(targdir, "COPYING")
+    if errorlevel ~= 0 then return errorlevel end
+  end
+  -- this is horrible: ctan() copies all the files, we deal with them, and then it copies all the textfiles a second time!
+  textfiles = {"README","README.md"}
   return 0
 end
 -- end copyctan()
