@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10411 2024-09-27 13:23:43Z cfrees $
+-- $Id: fontinst.lua 10413 2024-09-27 15:12:34Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -597,6 +597,7 @@ function docinit_hook ()
 end
 -- fontinst must be specified first
 -- it just ain't TeX
+-- ntarg
 target_list[ntarg] = {
 	func = fontinst,
   desc = "Creates TeX font file",
@@ -609,6 +610,7 @@ target_list[ntarg] = {
     return 0
   end
 }
+-- utarg
 target_list[utarg] = {
   func = uniquify,
   desc = "Uniquifies encodings ONLY",
@@ -624,6 +626,7 @@ target_list[utarg] = {
     return 0
   end
 }
+-- diwedd targets
 -------------------------------------------------
 autotestfds = autotestfds or {}
 -- auxfiles = {"*.aux"}
