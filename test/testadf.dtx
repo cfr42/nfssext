@@ -29,20 +29,34 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-^^A sylwad1A
+% ^^A sylwad1A
 % sylwad2A
-%^^A sylwad3A
-\ProvidesFileSVN{$Id: testadf.dtx 10281 2024-08-24 13:08:02Z cfrees $}[v0.0 \revinfo][testadf DTX: test for 8-bit engines]
+% ^^A sylwad3A
+% ^^A \def\MyMakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
+\ExplSyntaxOn
+\def\MyMakePrivateLetters
+{
+% ^^A sylwad yannisl: https://tex.stackexchange.com/questions/723293/how-can-i-get-automatic-code-indexing-of-expl3-in-ltxdoc/723294#comment1799661_723294
+% ^^A \ExplSyntaxOn \cs_gset:Npn \MakePrivateLetters { \char_set_catcode_letter:N \@ \char_set_catcode_letter:N _ \char_set_catcode_letter:N \: } \ExplSyntaxOff`
+  \char_set_catcode_letter:N \@
+  \char_set_catcode_letter:N _
+  \char_set_catcode_letter:N \:
+}
+\ExplSyntaxOff
+\ProvidesFileSVN{$Id: testadf.dtx 10326 2024-09-07 21:11:41Z cfrees $}[v0.0 \revinfo][testadf DTX: test for 8-bit engines]
 \DefineFileInfoSVN
 \GetFileInfoSVN*
 \documentclass[11pt,british]{ltxdoc}
+\pdfmapfile{-xxx.map}
 \pdfmapfile{+xxx.map}
 \usepackage{test}
 \EnableCrossrefs
 \CodelineIndex
 \RecordChanges
-\OnlyDescription
+% ^^A \OnlyDescription
 \DoNotIndex{\verb,\ProvidesPackageSVN,\NeedsTeXFormat,\ProcessKeyOptions}
+\let\OrigMakePrivateLetters\MakePrivateLetters
+\let\MakePrivateLetters\MyMakePrivateLetters
 \begin{document}
   \DocInput{\filename}
 \end{document}
@@ -50,7 +64,7 @@
 % \fi
 % ^^A sylwad1B
 % sylwad2B
-%^^A sylwad3B
+% ^^A sylwad3B
 %
 % \changes{v1.0}{2010/07/17}{First public release.}
 % \changes{\fileversion}{\filedate}{Belated update for (New) NFSS and revised nfssext-cfr.
@@ -64,7 +78,7 @@
 % }
 % ^^A sylwad1C
 % sylwad2C
-%^^A sylwad3C
+% ^^A sylwad3C
 % 
 % \section{Implementation}
 %
@@ -76,20 +90,21 @@
 % \fi
 % ^^A sylwad1D
 % sylwad2D
-%^^A sylwad3D
+% ^^A sylwad3D
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
 % ^^A sylwad1E
 % sylwad2E
-%^^A sylwad3E
-\ProvidesPackageSVN[test.sty]{$Id: testadf.dtx 10281 2024-08-24 13:08:02Z cfrees $}[\filebase v1.1 \revinfo]
+% ^^A sylwad3E
+\ProvidesPackageSVN[test.sty]{$Id: testadf.dtx 10326 2024-09-07 21:11:41Z cfrees $}[\filebase v1.1 \revinfo]
 \DefineFileInfoSVN[test]
 \RequirePackage[T1]{fontenc}
 \RequirePackage{nfssext-cfr}
 \IfFormatAtLeastTF {2020-02-02}{}{%
   \RequirePackage{textcomp}}
 \UndeclareTextCommand{\textperthousand}{T1}
+\usepackage[tt={lining,tab,mono}]{cfr-lm}
 \ExplSyntaxOn
 \keys_define:nn { test }
 {
@@ -140,7 +155,7 @@
 % \iffalse
 %</sty>
 % \fi
-% 
+% \let\MakePrivateLetters\OrigMakePrivateLetters 
 % \subsection{Driver}
 %
 % \iffalse
@@ -152,7 +167,7 @@
 \recordtransforms{xxx-rec.tex}
   \declaresize{}{<-> \string\xxx@@scale}
   \transformfont{xxxr8r}{\reencodefont{8r}{\fromafm{xxxr8a}}}
-  \transformfont{xxxr8s}{\reencodefont{supp-xxx}{\fromafm{xxxr8a}}}
+  \transformfont{xxxr8s}{\reencodefont{supp}{\fromafm{xxxr8a}}}
   \input reglyph-xxx.tex
   \installfonts
     \fontinstcc

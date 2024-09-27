@@ -1,4 +1,4 @@
--- $Id: build.lua 10323 2024-09-06 17:32:23Z cfrees $
+-- $Id: build.lua 10407 2024-09-27 05:28:40Z cfrees $
 -- Build configuration for berenisadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -95,8 +95,10 @@ target_list[ntarg] = {
   end
 }
 -- docfiles = { "dotoldstyle.etx", "dottaboldstyle.etx", "t1-cfr.etx", "t1-dotinferior.etx", "t1-dotsuperior.etx", "ybd-encs.tex" }
-local srcfiles = { "dotoldstyle.etx", "dottaboldstyle.etx", "t1-cfr.etx", "t1-dotinferior.etx", "t1-dotsuperior.etx" }
-for i,j in ipairs(srcfiles) do table.insert(sourcefiles,j) end
+-- local srcfiles = { "dotoldstyle.etx", "dottaboldstyle.etx", "t1-cfr.etx", "t1-dotinferior.etx", "t1-dotsuperior.etx" }
+-- for i,j in ipairs(srcfiles) do table.insert(sourcefiles,j) end
+unpackdeps = {maindir .. "/fontscripts"}
+textfiles = {"*.md", "*.txt", "COPYING"}
 typesetruns = 5
 --
 uploadconfig = {

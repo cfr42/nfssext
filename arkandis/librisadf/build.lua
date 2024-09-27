@@ -1,4 +1,4 @@
--- $Id: build.lua 10226 2024-08-11 03:12:44Z cfrees $
+-- $Id: build.lua 10403 2024-09-27 05:01:15Z cfrees $
 -- Build configuration for librisadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -20,9 +20,12 @@ module = "libris"
 vendor = "arkandis"
 autotestfds = {  "t1yly.fd", "t1ylyw.fd" }
 dofile(maindir .. "/fontinst.lua")
-local srcfiles = {"t1-cfr.etx", "ts1-euro.etx", "t1-cfr.enc", "ts1-euro.enc"}
-for i,j in ipairs(srcfiles) do table.insert(sourcefiles,j) end
+-- local srcfiles = {"t1-cfr.etx", "ts1-euro.etx", "t1-cfr.enc", "ts1-euro.enc"}
+-- for i,j in ipairs(srcfiles) do table.insert(sourcefiles,j) end
+textfiles = {"*.md", "*.txt", "COPYING"}
 typesetruns = 5
+-- angen ../../TODO
+unpackdeps = {maindir .. "/fontscripts"}
 --
 uploadconfig = {
   -- *required* --

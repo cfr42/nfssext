@@ -1,4 +1,4 @@
--- $Id: build.lua 10359 2024-09-17 11:56:05Z cfrees $
+-- $Id: build.lua 10406 2024-09-27 05:19:04Z cfrees $
 -- Build configuration for venturisadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -24,8 +24,12 @@ fnttestfds.venturis2 = { "t1yv2.fd" , "t1yv3.fd" }
 fnttestfds.venturisold = { "t1yvo.fd", "t1yvoa.fd", "t1yvoad.fd", "t1yvod.fd" } 
 typesetfiles = { module .. ".dtx", "*-imp.dtx", "*-example.tex", "*-tables.tex" }
 dofile(maindir .. "/fontinst.lua")
-local srcfiles = { "lining.etx", "oldstyle.etx", "t1-dotalt-f_f.enc", "t1-dotalt-f_f.etx", "t1-f_f.enc", "t1-f_f.etx", "t1j-f_f.etx", "ts1-euro.enc", "ts1-euro.etx", "ucdotalt.etx" }
-for i,j in ipairs(srcfiles) do table.insert(sourcefiles,j) end
+-- local srcfiles = { "lining.etx", "oldstyle.etx", "t1-dotalt-f_f.enc", "t1-dotalt-f_f.etx", "t1-f_f.enc", "t1-f_f.etx", "t1j-f_f.etx", "ts1-euro.enc", "ts1-euro.etx", "ucdotalt.etx" }
+-- for i,j in ipairs(srcfiles) do table.insert(sourcefiles,j) end
+-- angen TODO new TL installation
+-- make tds archive for this one 
+packtdszip = true
+unpackdeps = {maindir .. "/fontscripts"}
 tdslocations = {
 	"fonts/afm/" .. vendor .. "/venturis/" .. "yvt*.afm",
 	"fonts/afm/" .. vendor .. "/venturis2/" .. "yv2*.afm",
@@ -86,6 +90,7 @@ tdslocations = {
 	"tex/latex/venturissans2/" .. "ts1yv3*.fd",
 	"tex/latex/" .. module .. "/" .. "*.sty"
 }
+textfiles = {"*.md", "*.txt", "COPYING"}
 typesetruns = 5
 --
 uploadconfig = {

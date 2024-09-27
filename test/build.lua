@@ -1,11 +1,43 @@
--- $Id: build.lua 10168 2024-07-21 14:04:13Z cfrees $
+-- $Id: build.lua 10388 2024-09-26 21:16:37Z cfrees $
 -- Build configuration for testadf
 ctanpkg = "testadf"
 module = "test"
 vendor = "arkandis"
 maindir = ".."
 dofile("../fontinst.lua")
-typesetfiles = {"test-test.tex"}
+-- flatten = false
+installfiles = {"*.afm", "*.cls", "*.enc", "*.fd", "*.map", "*.otf", "*.pfb", "*.sty", "*.tfm", "*.ttf", "*.vf"}
+-- typesetfiles = {"test-test.tex"}
+typesetdeps = {maindir .. "/nfssext-cfr", maindir .. "/cfr-lm"}
+typesetruns = 1
+uploadconfig = {
+  -- *required* --
+  -- announcement (don't include here?)
+	author     = "Clea F. Rees",
+  -- email (don't include here!)
+	ctanPath   = "fonts/testadf",
+	license    = {"lppl1.3c","GPL 2 with font exception"},
+	pkg        = ctanpkg,
+	summary    = "Support for TestADF on 8-bit engines",
+  uploader   = "Clea F. Rees",
+	version    = "v0.0",
+  -- optional --
+	bugtracker = {"https://codeberg.org/cfr/nfssext/issues"},
+  -- description
+  -- development {}
+  -- home {}
+	-- repository = {"https://codeberg.org/cfr/nfssext", "https://github.com/cfr42/nfssext"},
+	note = "Repository mirrored at https://github.com/cfr42/nfssext",
+	repository = "https://codeberg.org/cfr/nfssext",
+  -- support {}
+	topic      = {"font", "font-type1", "font-otf", "font-serif"},
+	update     = true,
+  -- files --
+  -- announcement_file
+  -- note_file
+  -- curlopt_file
+}
+--
 
 function filch()
 	-- avoid having to think about licences for H's work

@@ -1,4 +1,4 @@
--- $Id: build.lua 10226 2024-08-11 03:12:44Z cfrees $
+-- $Id: build.lua 10398 2024-09-27 01:07:52Z cfrees $
 -- Build configuration for baskervaldadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -17,6 +17,7 @@ os.setenv ("TEXMFARCH", ".")
 ctanpkg = "baskervaldadf"
 maindir = "../.."
 module = "baskervald"
+textfiles = {"*.md","*.txt","COPYING"}
 vendor = "arkandis"
 autotestfds = {  "t1ybv.fd", "t1ybvw.fd" }
 dofile(maindir .. "/fontinst.lua")
