@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10393 2024-09-26 23:30:56Z cfrees $}[v0.1 \revinfo][\filebase DTX: l3build scripts for font installation]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10412 2024-09-27 15:10:34Z cfrees $}[v0.1 \revinfo][\filebase DTX: l3build scripts for font installation]
 \DefineFileInfoSVN[fontscripts]
 \documentclass[10pt,british,lm-default=false]{l3doc}
 % l3doc loads fancyvrb
@@ -553,7 +553,7 @@
 %    \begin{macrocode}
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10393 2024-09-26 23:30:56Z cfrees $}[v0.1 \revinfo][\outFileName]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10412 2024-09-27 15:10:34Z cfrees $}[v0.1 \revinfo][\outFileName]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % \iffalse
@@ -645,55 +645,58 @@
 %   \end{luafunction}
 %   \begin{target}{fnttarg}
 %     Main target definition.
-%     \renewcommand*\FancyVerbStartString{-- fontinst must be specified first}
-%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,lastline=596]{fontinst.lua}
+%     \renewcommand*\FancyVerbStartString{-- ntarg}
+%     \renewcommand*\FancyVerbStopString{-- utarg}
+%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,]{fontinst.lua}
 %   \end{target}
 %   \begin{target}{uniquifyencs}
 %     Secondary target.
 %     It is not normally necessary to invoke this target separately if using the default definition of \texttt{fnttarg}.
-%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=611,lastline=597]{fontinst.lua}
+%     \renewcommand*\FancyVerbStartString{-- utarg}
+%     \renewcommand*\FancyVerbStopString{-- diwedd targets}
+%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true]{fontinst.lua}
 %   \end{target}
 %   \begin{luavariable}{autotestfds}
 %     \texttt{fd} files to use when auto-generating build tests.
-%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=613,lastline=613]{fontinst.lua}
+%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=631,lastline=631]{fontinst.lua}
 %   \end{luavariable}
-%   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=614,lastline=616]{fontinst.lua}
+%   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=633,lastline=634]{fontinst.lua}
 %   \begin{luavariable}{binmakers}
 %     Scripts to create binary \texttt{tfm} and/or \texttt{vf} from \texttt{pl} and/or \texttt{vpl}.
-%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=617,lastline=617]{fontinst.lua}
+%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=635,lastline=635]{fontinst.lua}
 %   \end{luavariable}
-%   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=620,lastline=626]{fontinst.lua}
+%   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=638,lastline=644]{fontinst.lua}
 %   \begin{luavariable}{familymakers}
 %     Files to compile to generate font definition files, human-readable metrics etc.
-%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=627,lastline=627]{fontinst.lua}
+%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=645,lastline=645]{fontinst.lua}
 %   \end{luavariable}
-%   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,lastline=629,firstline=628]{fontinst.lua}
+%   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,lastline=646,firstline=647]{fontinst.lua}
 %   \begin{luavariable}{fnttestfds}
 %     Font definition files to use when auto-generating tests.
 %     May be either a table of globs or a table of tables of package names and lists of globs.
-%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,lastline=630,firstline=630]{fontinst.lua}
+%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,lastline=648,firstline=648]{fontinst.lua}
 %   \end{luavariable}
-%   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,lastline=634,firstline=632]{fontinst.lua}
+%   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,lastline=652,firstline=650]{fontinst.lua}
 %   \begin{luavariable}{keepdir,keeptempdir}
 %     Directories to stash generated font files and intermediate build products.
 %     These should \textbf{not} be subdirectories of \texttt{builddir}.
-%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=635,lastline=636]{fontinst.lua}
+%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=653,lastline=654]{fontinst.lua}
 %   \end{luavariable}
 %   \begin{luavariable}{keepfiles,keeptempfiles}
 %     Globs for generated font files and intermediate build products to stash in \path{keepdir} and \path{keeptempdir} respectively.
-%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=637,lastline=638]{fontinst.lua}
+%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=655,lastline=656]{fontinst.lua}
 %   \end{luavariable}
-%   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=639,lastline=639]{fontinst.lua}
+%   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=657,lastline=657]{fontinst.lua}
 %   \begin{luavariable}{mapmakers}
 %     Files to compile to generate map file fragments.
-%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=640,lastline=640]{fontinst.lua}
+%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=658,lastline=658]{fontinst.lua}
 %   \end{luavariable}
-%   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=641,lastline=644]{fontinst.lua}
+%   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=659,lastline=662]{fontinst.lua}
 %   \begin{luavariable}{vendor}
 %     Vendor directory when installing.
-%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=645,lastline=646]{fontinst.lua}
+%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=663,lastline=664]{fontinst.lua}
 %   \end{luavariable}
-%   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=647]{fontinst.lua}
+%   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=665]{fontinst.lua}
 % \end{luafrag}
 %
 % \subsubsection{fnt-ctan.lua}\label{subsubsec:fnt-ctan-lua}

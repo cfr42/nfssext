@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10408 2024-09-27 07:11:26Z cfrees $
+-- $Id: fontinst.lua 10411 2024-09-27 13:23:43Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -464,12 +464,15 @@ function checkinit_hook ()
   -- if fntestfds.<package name> has been specified, use that (should be a table)
   -- o/w assign the autotestfds table to fntestfds.<package name>
   -- but remember fnttestfds may be pairs and/or ipairs ...
-  print(fnttestfds)
-  for i,j in ipairs(fnttestfds) do print (i .. " : " .. j) end
+  -- there must be a better way to do this ...
   if #fnttestfds == 0 then
     for i,j in ipairs(fntpkgnames) do 
       if fnttestfds[j] == nil then
-        fnttestfds.j = autotestfds
+        print("Auto-assigning autotestfds to fnttestfds[" .. j .. "].\n")
+        fnttestfds[j] = {}
+        for a,b in ipairs(autotestfds) do
+          table.insert(fnttestfds[j],b)
+        end
       end
     end
   else
@@ -479,16 +482,13 @@ function checkinit_hook ()
     end
     for i, j in ipairs(fntpkgnames) do
       -- I really don't understand tables (and I know this is very, very basic)
-      if fnttestfds.j == nil then
-      -- if #fnttestfds == 0 then
-        -- fnttestfds.j = {}
+      if fnttestfds[j] == nil then
+        fnttestfds[j] = {}
         -- use only if fnttestfds isn't specified either as table of tables or table of files/globs
         -- this doesn't seem very robust
-        fnttestfds.j = testmes
-        -- for k, l in ipairs(autotestfds) do
-        -- table.insert (fnttestfds.j, l)
-      -- else
-        -- fnttestfds.j = fnttestfds
+        for k, l in ipairs(testmes) do
+          table.insert (fnttestfds[j], l)
+        end
       end
     end
   end
