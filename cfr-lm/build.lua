@@ -1,4 +1,4 @@
--- $Id: build.lua 10358 2024-09-17 11:19:36Z cfrees $
+-- $Id: build.lua 10416 2024-09-27 15:59:51Z cfrees $
 -- Build configuration for cfr-lm
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -32,7 +32,7 @@ uploadconfig = {
   announcement  = "Belated update for (N)NFSS (marginally improve consistency for some documents). Remove dependency on xkeyval. Switch to dtx/ins. Use l3build.",
 	author     = "Clea F. Rees",
   -- email (don't include here!)
-	ctanPath   = "pkg/cfr-lm",
+	ctanPath   = "/fonts/cfr-lm",
 	license    = {"lppl1.3c"},
 	pkg        = ctanpkg,
 	summary    = "Extended support for Latin Modern on 8-bit engines",

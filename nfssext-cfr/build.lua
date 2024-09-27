@@ -1,4 +1,4 @@
--- $Id: build.lua 10414 2024-09-27 15:24:43Z cfrees $
+-- $Id: build.lua 10415 2024-09-27 15:33:37Z cfrees $
 -- Build configuration for nfssext-cfr
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -41,7 +41,7 @@ uploadconfig = {
   announcement  = "Belated update for (N)NFSS. Implement new package options. Switch to dtx/ins. Use l3build.",
 	author     = "Clea F. Rees",
   -- email (don't include here!)
-	ctanPath   = "macros/contrib/latex/nfssext-cfr",
+	ctanPath   = "/macros/contrib/latex/nfssext-cfr",
 	license    = {"lppl1.3c"},
 	pkg        = ctanpkg,
 	summary    = "Extended font selection commands for LaTeX's (New) New Font Selection Scheme",

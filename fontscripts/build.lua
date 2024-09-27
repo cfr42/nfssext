@@ -1,4 +1,4 @@
--- $Id: build.lua 10389 2024-09-26 22:59:23Z cfrees $
+-- $Id: build.lua 10416 2024-09-27 15:59:51Z cfrees $
 -- Build configuration for fontscripts
 -- l3build.pdf listing 1 tudalen 9
 os.setenv ("PATH", "/usr/local/texlive/bin:/usr/bin:")
@@ -73,7 +73,7 @@ uploadconfig = {
   announcement  = "Font encodings, metrics and Lua script fragments for generating font support packages for 8-bit engines with l3build. Optional template-based system enables the automatic generation of font tables and l3build tests. Easy addition of variable scaling to fd files (unsupported by some tools). Primarily designed for fontinst, but can be adapted for use with other programmes. Default configuration is intended to be cross-platform and require only tools included in TeX Live, but the documentation includes a simple adaption for integration with FontForge and GNU make.",
 	author     = "Clea F. Rees",
   -- email (don't include here!)
-	ctanPath   = "pkg/fontscripts",
+	ctanPath   = "/fonts/utilities/fontscripts",
 	license    = {"lppl1.3c"},
 	pkg        = ctanpkg,
 	summary    = "Font encodings, metrics and Lua script fragments for generating font support packages for 8-bit engines with l3build.",

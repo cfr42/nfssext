@@ -1,4 +1,4 @@
--- $Id: build.lua 10405 2024-09-27 05:09:02Z cfrees $
+-- $Id: build.lua 10416 2024-09-27 15:59:51Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -30,7 +30,7 @@ uploadconfig = {
   -- announcement (don't include here?)
 	author     = "Hirwen Harendal; Clea F. Rees",
   -- email (don't include here!)
-	ctanPath   = "pkg/electrumadf",
+	ctanPath   = "/fonts/electrumadf",
 	license    = {"lppl1.3c","GPL 2 with font exception"},
 	pkg        = ctanpkg,
 	summary    = "Support for ElectrumADF on 8-bit engines",

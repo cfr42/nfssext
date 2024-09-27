@@ -1,4 +1,4 @@
--- $Id: build.lua 10406 2024-09-27 05:19:04Z cfrees $
+-- $Id: build.lua 10416 2024-09-27 15:59:51Z cfrees $
 -- Build configuration for venturisadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -99,7 +99,7 @@ uploadconfig = {
   announcement = "Belated update for (N)NFSS; add scaling options; switch to dtx/ins; includes OTF.",
 	author     = "Hirwen Harendal; Clea F. Rees",
   -- email (don't include here!)
-	ctanPath   = "fonts/venturisadf",
+	ctanPath   = "/fonts/venturisadf",
 	license    = {"lppl1.3","utopia"},
 	pkg        = ctanpkg,
 	summary    = "Support for VenturisADF on 8-bit engines",

@@ -1,4 +1,4 @@
--- $Id: build.lua 10403 2024-09-27 05:01:15Z cfrees $
+-- $Id: build.lua 10416 2024-09-27 15:59:51Z cfrees $
 -- Build configuration for librisadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -32,7 +32,7 @@ uploadconfig = {
   -- announcement (don't include here?)
 	author     = "Hirwen Harendal; Clea F. Rees",
   -- email (don't include here!)
-	ctanPath   = "fonts/libris",
+	ctanPath   = "/fonts/libris",
 	license    = {"lppl1.3c","GPL 2 with font exception"},
 	pkg        = ctanpkg,
 	summary    = "Support for LibrisADF on 8-bit engines",
