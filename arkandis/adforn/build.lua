@@ -1,4 +1,4 @@
--- $Id: build.lua 10428 2024-09-28 05:57:56Z cfrees $
+-- $Id: build.lua 10435 2024-09-29 08:12:12Z cfrees $
 -- Build configuration for adfornadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -35,6 +35,9 @@ keepfiles = { "*.map", "*.tfm" }
 -- RHAID ei osod cyn i ddarllen fontinst.lua!
 afmtotfm = true
 dofile(maindir .. "/fontinst.lua")
+function fnt_test (fntpkgname,fds,content,maps,fdsdir)
+  return 0
+end
 typesetruns = 5
 --
 uploadconfig = {

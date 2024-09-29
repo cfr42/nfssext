@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10429 2024-09-29 02:38:34Z cfrees $
+-- $Id: fontinst.lua 10430 2024-09-29 04:31:40Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -437,7 +437,7 @@ function checkinit_hook ()
   -- if they're not kept, they may be source (e.g. berenisadf)
   if #autotestfdstmp == 0 then
     autotestfdstmp = filelist(unpackdir, "*.fd")
-    if #autotestfdstemp == 0 then
+    if #autotestfdstmp == 0 then
       gwall("Attempt to find fd files ", ".fd", 1)
       return 1
     else

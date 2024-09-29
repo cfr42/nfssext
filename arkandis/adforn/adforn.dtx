@@ -31,7 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: adforn.dtx 10428 2024-09-28 05:57:56Z cfrees $}[v0.0 \revinfo][\filebase DTX: FONT for 8-bit engines]
+\ProvidesFileSVN{$Id: adforn.dtx 10435 2024-09-29 08:12:12Z cfrees $}[v0.0 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[adforn]
 \documentclass[11pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -44,8 +44,8 @@
 % \OnlyDescription
 \DoNotIndex{\verb,\ProvidesPackageSVN,\NeedsTeXFormat,\ProcessKeyOptions,\revinfo,\filebase,\filename,\filedate,\RequirePackage,\usepackage,\DefineFileInfoSVN,\GetFileInfoSVN,\ProvidesPackageSVN,\documentclass,\MakeAutoQuote,\parindent,\par,\smallskip,\setlength,\bigskip,\maketitle,\title,\author,\date,\ExplSyntaxOn,\ExplSyntaxOff}
 \usepackage{babel}
-\pdfmapfile{-OrnementsADF.map}
-\pdfmapfile{+OrnementsADF.map}
+\pdfmapfile{-adforn.map}
+\pdfmapfile{+adforn.map}
 \usepackage[tt={monowidth,tabular,lining}]{cfr-lm}
 % \usepackage{lmodern}
 % \renewcommand{\ttdefault}{lmvtt}
@@ -479,14 +479,14 @@
 %
 % \subsection{Package}\label{subsec:sty}
 %
-% A wrapper around \lpack{pifont}.
+% Simple wrappers. 
 % \iffalse
 %<*sty>
 % \fi
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: adforn.dtx 10428 2024-09-28 05:57:56Z cfrees $}[\filebase v0.0 \revinfo]
+\ProvidesPackageSVN[\filebase.sty]{$Id: adforn.dtx 10435 2024-09-29 08:12:12Z cfrees $}[\filebase v0.0 \revinfo]
 \DefineFileInfoSVN[adforn]
 \newif\if@adforn@digonnew
 %    \end{macrocode}
@@ -507,12 +507,13 @@
 \ExplSyntaxOn
 \keys_define:nn { adforn }
 {
-  scale .tl_set:N = \ornadf@scale,
+  scale .tl_set:N = \adforn@scale,
   scale .initial:V = \@empty,
 }
 \else
-  \let\ornadf@scale\@empty
+  \let\adforn@scale\@empty
 \fi
+\show\adforn@scale
 %    \end{macrocode}
 % Provide \cs{ProcessKeyOptions}, \cs{IfFormatAtLeastTF} on older kernels.
 % Joseph Wright: from \file{siunitx.sty} ; \url{https://chat.stackexchange.com/transcript/message/64327823#64327823}
@@ -532,10 +533,9 @@
 % \begin{macro}{\adforn@style}
 % \mbox{}
 %    \begin{macrocode}
-\DeclareRobustCommand{\adforn@style}{%%
+\DeclareRobustCommand{\adforn@style}{%% do NOT break line below!
   \not@math@alphabet\adforn@style\relax
-  \fontencoding{U}\fontfamily{ornementsadf}\fontseries{m}\fontshape{n}%
-  \selectfont
+  \fontencoding{U}\fontfamily{OrnementsADF}\fontseries{m}\fontshape{n}\selectfont
 }
 %    \end{macrocode}
 % \end{macro}
@@ -546,18 +546,6 @@
 \newcommand*\adforn[1]{{\adforn@style\char#1}}
 %    \end{macrocode}
 % \end{macro}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%^^A\RequirePackage{pifont}
-%^^A{\Pifont{OrnementsADF}}
-%^^A%    \end{macrocode}
-%^^A% \begin{macro}{\adforn}
-%^^A% Wrapper for \cs{\Pisymbol}.
-%^^A%    \begin{macrocode}
-%^^A\newcommand*{\adforn}[1]{%
-%^^A	\Pisymbol{OrnementsADF}{#1}}
-%^^A%    \end{macrocode}
-%^^A% \end{macro}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \begin{macro}{\adfhalfleftarrowhead}
 % \mbox{}
 %    \begin{macrocode}
@@ -1245,24 +1233,6 @@
 %    \end{macrocode}
 % \iffalse
 %</enc>
-% \fi
-% \subsection{Map}
-% 
-% This is the map file fragment \verb|updmap| needs to install the fonts.
-% \iffalse
-%<*map>
-% \fi
-% \begin{fmapping}{OrnementsADF.map}
-% This reencodes the font using an ‘unknown’ encoding.
-% Such encodings are cheap, which is why they are used for text symbol fonts where nothing further is required.
-%    \begin{macrocode} 
-%^^A OrnementsADF OrnementsADF " OrnementsADFEncoding ReEncodeFont " <OrnementsADF.enc <OrnementsADF.pfb
-%^^A would be backwards incompatible
-%^^A OrnementsADF OrnementsADF <OrnementsADF.pfb
-%    \end{macrocode}
-% \end{fmapping}
-% \iffalse
-%</map>
 % \fi
 %
 % \subsection{Font Definitions}\label{subsec:fds}

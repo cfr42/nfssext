@@ -1,0 +1,35 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+\listfiles
+\pdftracingfonts=1
+\RequirePackage{svn-prov}
+\ProvidesFileSVN{$Id: adforn-scale.lvt 10435 2024-09-29 08:12:12Z cfrees $}[v1.1 \revinfo][\filebase: scale test]
+\pdfmapfile{-OrnementsADF.map}
+\pdfmapfile{+adforn.map}
+\input regression-test.tex\relax
+\documentclass{article}
+\usepackage{tracefnt}% infoshow is default; debugshow traces maths fonts, too
+	
+\usepackage[scale=10]{adforn}
+
+\begin{document}
+\makeatletter
+\tracinglostchars\thr@@
+\showoutput
+\makeatother
+\START
+% RHAID ddefnyddio'r llinell isod tu allan i'r \TEST
+\ExplSyntaxOn
+\TEST{adforn-scale-test}{
+  \hbox_set:Nn \l_tmpa_box 
+  {
+    \normalfont\normalsize
+    \adforn{60}
+  }
+  \box_show:N \l_tmpa_box
+}
+\ExplSyntaxOff
+\END
+
+\end{document} 
+% vim: ts=2:sw=2:

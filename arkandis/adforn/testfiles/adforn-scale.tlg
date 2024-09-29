@@ -1,0 +1,15 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+============================================================
+TEST 1: adforn-scale-test
+============================================================
+LaTeX Font Info:    Trying to load font information for U+OrnementsADF on input line ....
+LaTeX Font Info:    Font shape `U/OrnementsADF/m/n' will be
+(Font)              scaled to size 100.0pt on input line ....
+> \box...=
+\hbox(65.69995+1.09996)x134.30003
+.\U/OrnementsADF/m/n/10 (OrnementsADF@100.0pt) <
+! OK.
+<argument> \l_tmpa_box 
+l. ...}
+============================================================
