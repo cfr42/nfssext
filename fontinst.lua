@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10413 2024-09-27 15:12:34Z cfrees $
+-- $Id: fontinst.lua 10429 2024-09-29 02:38:34Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -51,7 +51,6 @@ function finst (patt,dir,mode)
 end
 function fntkeeper ()
   local dir = dir or unpackdir
-  local keepdir = abspath(keepdir)
   local rtn = direxists(keepdir)
   if not rtn then
     local errorlevel = mkdir(keepdir)
@@ -66,6 +65,7 @@ function fntkeeper ()
       gwall("Attempt to clean directory ",keepdir,errorlevel)
     end
   end
+  local keepdir = abspath(keepdir) -- abspath requires existence
   if keepfiles ~= {} then
     for i,j in ipairs(keepfiles) do
       local rtn = cp(j, unpackdir, keepdir)
@@ -691,6 +691,65 @@ unpackfiles = {"*.ins"}
 -------------------------------------------------
 if fileexists(maindir .. "/fnt-ctan.lua") then
   dofile(maindir .. "/fnt-ctan.lua")
+end
+-------------------------------------------------
+-- afmtotfm
+-- only set this true for ultra simple symbol fonts!
+afmtotfm = afmtotfm or false
+-------------------------------------------------
+-- fnt_afmtotfm (dir,mode)
+function fnt_afmtotfm (dir,mode)
+  dir = dir or unpackdir
+  mode = mode or "errorstopmode --halt-on-error"
+  local fntbasename = fntbasename or module
+  local map = mapfile or fntbasename .. ".map"
+  print("Unpacking ...\n")
+  local errorlevel = unpack()
+  print("Running afm2tfm. Please be patient ...\n")
+  local afms = filelist(unpackdir,"*.afm")
+  local content = ""
+  for i,j in ipairs(afms) do
+    local rtn = fileexists(unpackdir .. "/" .. string.gsub(j,"%.afm",".enc"))
+    if not rtn then
+      errorlevel = run(dir, "afm2tfm " .. j .. " >> " .. dir .. "/" .. map .. ".tmp")
+    else
+      errorlevel = run(dir, "afm2tfm " .. j .. " -p " .. string.gsub(j,"%.afm",".enc") .. " > " .. dir .. "/" .. map .. ".tmp")
+    end
+    if errorlevel ~= 0 then 
+      gwall("afm2tfm (" .. j ..") ",dir,errorlevel) 
+    else
+      local g = assert(io.open(dir .. "/" .. map .. ".tmp","rb"))
+      local c = g:read("all")
+      g:close()
+      content = content .. string.gsub(c, "\n", " <" .. string.gsub(j,"%.afm",".pfb") .. "\n")
+      rm(dir, map .. ".tmp")
+    end
+  end
+  local f
+  f = assert(io.open(dir .. "/" .. map, "w"))
+  f:write((string.gsub(content,"\n",os_newline_cp)))
+  f:close()
+  errorlevel = fntkeeper()
+  if errorlevel ~= 0 then
+    gwall("FONT KEEPER FAILED! DO NOT MAKE STANDARD TARGETS WITHOUT RESOLVING!! ", unpackdir, errorlevel)
+  end
+  return nifergwall
+end
+-------------------------------------------------
+-- fnt_afmtotfm -> fnttarg
+if afmtotfm then
+  target_list[ntarg] = {
+    func = fnt_afmtotfm,
+    desc = "Creates TeX font files",
+    pre = function(names)
+      if names then
+        print("fntmake does not need names\n")
+        help()
+        exit(1)
+      end
+      return 0
+    end
+  }
 end
 -------------------------------------------------
 -- vim: ts=2:sw=2:et:
