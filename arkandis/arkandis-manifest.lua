@@ -1,4 +1,4 @@
--- $Id: arkandis-manifest.lua 10332 2024-09-09 05:09:30Z cfrees $
+-- $Id: arkandis-manifest.lua 10439 2024-09-29 16:00:23Z cfrees $
 ---------------------------------------------------------------------
 ---------------------------------------------------------------------
 -- local derivedfiles = derivedfiles or {"*.cls","*.enc","*.fd","*.map","*.sty","*.tfm","*.vf"}
@@ -220,6 +220,8 @@ function manifest_setup ()
   -- we did do more this way, but it took forever not to work
   -- the current method doesn't work a bit quicker
   local buildscripts = populatescripts()
+  ---------------------------------------------------------------------
+  if noautotest then fnttestfiles = "" end
   ---------------------------------------------------------------------
   -- I have no idea how to sort them (without gnu, that is)
   local groups = {
