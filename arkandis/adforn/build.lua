@@ -1,4 +1,4 @@
--- $Id: build.lua 10435 2024-09-29 08:12:12Z cfrees $
+-- $Id: build.lua 10439 2024-09-29 16:00:23Z cfrees $
 -- Build configuration for adfornadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -50,7 +50,7 @@ uploadconfig = {
 	pkg        = ctanpkg,
 	summary    = "Support for OrnementsADF on 8-bit engines",
   uploader   = "Clea F. Rees",
-	version    = "v0.0",
+	version    = "v1.2",
   -- optional --
 	bugtracker = {"https://codeberg.org/cfr/nfssext/issues"},
   -- description
@@ -67,6 +67,7 @@ uploadconfig = {
   -- curlopt_file
 }
 --
+noautotest = true
 dofile(maindir .. "/arkandis/arkandis-manifest.lua")
 -- os.execute ("printenv")
 -- vim: ts=2:sw=2:tw=80:nospell

@@ -31,7 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: adforn.dtx 10435 2024-09-29 08:12:12Z cfrees $}[v0.0 \revinfo][\filebase DTX: FONT for 8-bit engines]
+\ProvidesFileSVN{$Id: adforn.dtx 10443 2024-09-30 00:19:08Z cfrees $}[v1.2 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[adforn]
 \documentclass[11pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -215,7 +215,7 @@
 % \newcommand*{\file}[1]{\texttt{#1}}
 %
 % \changes{v??}{YYYY/??/??}{First public release.}
-% \changes{v0.0}{0000/00/00}{Belated update for (New) NFSS and revised nfssext-cfr.
+% \changes{v1.2}{2024-09-29}{Belated update for (New) NFSS and revised nfssext-cfr.
 % Try switching to DTX/INS.}
 %
 % \maketitle\thispagestyle{empty}
@@ -486,7 +486,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: adforn.dtx 10435 2024-09-29 08:12:12Z cfrees $}[\filebase v0.0 \revinfo]
+\ProvidesPackageSVN[\filebase.sty]{$Id: adforn.dtx 10443 2024-09-30 00:19:08Z cfrees $}[v1.2 \revinfo]
 \DefineFileInfoSVN[adforn]
 \newif\if@adforn@digonnew
 %    \end{macrocode}
@@ -513,7 +513,6 @@
 \else
   \let\adforn@scale\@empty
 \fi
-\show\adforn@scale
 %    \end{macrocode}
 % Provide \cs{ProcessKeyOptions}, \cs{IfFormatAtLeastTF} on older kernels.
 % Joseph Wright: from \file{siunitx.sty} ; \url{https://chat.stackexchange.com/transcript/message/64327823#64327823}
@@ -540,7 +539,7 @@
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\adforn}
-% \changes{v0.0}{0000/00/00}{Remove \lpack{pifont} dependency.}
+% \changes{v1.2}{2024-09-29}{Remove \lpack{pifont} dependency.}
 % \mbox{}
 %    \begin{macrocode}
 \newcommand*\adforn[1]{{\adforn@style\char#1}}
@@ -1243,9 +1242,9 @@
 % \begin{fntdefn}{uornementsadf.fd}
 % Font declarations for OrnementsADF font
 %    \begin{macrocode}
-\ProvidesFile{uornementsadf.fd} [v0.0 0000/00/00 font definitions for U/OrnementsADF.]
+\ProvidesFile{uornements.fd}[v1.2 2024/09/29 font definitions for U/OrnementsADF.]
 %    \end{macrocode}
-% \changes{v0.0}{0000/00/00}{Support for scaling.}
+% \changes{v1.2}{2024-09-29}{Support for scaling.}
 % addaswyd o t1phv.fd (dyddiad y ffeil fd: 2020-03-25)
 %    \begin{macrocode}
   \expandafter\ifx\csname adforn@scale\endcsname\relax
@@ -1257,66 +1256,26 @@
 \DeclareFontShape{U}{OrnementsADF}{m}{n}{
   <-> \adforn@@scale OrnementsADF
 }{}
-\DeclareFontShape{U}{OrnementsADF}{m}{sc}{
-  <-> \adforn@@scale OrnementsADF
-}{}
-\DeclareFontShape{U}{OrnementsADF}{m}{it}{
-  <-> \adforn@@scale OrnementsADF
-}{}
-\DeclareFontShape{U}{OrnementsADF}{m}{sl}{
-  <-> \adforn@@scale OrnementsADF
-}{}
-\DeclareFontShape{U}{OrnementsADF}{m}{si}{
-  <-> \adforn@@scale OrnementsADF
-}{}
-\DeclareFontShape{U}{OrnementsADF}{m}{scit}{
-  <-> \adforn@@scale OrnementsADF
-}{}
-\DeclareFontShape{U}{OrnementsADF}{m}{scsl}{
-  <-> \adforn@@scale OrnementsADF
-}{}
-\DeclareFontShape{U}{OrnementsADF}{b}{n}{
-  <-> \adforn@@scale OrnementsADF
-}{}
-\DeclareFontShape{U}{OrnementsADF}{b}{sc}{
-  <-> \adforn@@scale OrnementsADF
-}{}
-\DeclareFontShape{U}{OrnementsADF}{b}{it}{
-  <-> \adforn@@scale OrnementsADF
-}{}
-\DeclareFontShape{U}{OrnementsADF}{b}{sl}{
-  <-> \adforn@@scale OrnementsADF
-}{}
-\DeclareFontShape{U}{OrnementsADF}{b}{si}{
-  <-> \adforn@@scale OrnementsADF
-}{}
-\DeclareFontShape{U}{OrnementsADF}{b}{scit}{
-  <-> \adforn@@scale OrnementsADF
-}{}
-\DeclareFontShape{U}{OrnementsADF}{b}{scsl}{
-  <-> \adforn@@scale OrnementsADF
-}{}
-\DeclareFontShape{U}{OrnementsADF}{bx}{n}{
-  <-> \adforn@@scale OrnementsADF
-}{}
-\DeclareFontShape{U}{OrnementsADF}{bx}{sc}{
-  <-> \adforn@@scale OrnementsADF
-}{}
-\DeclareFontShape{U}{OrnementsADF}{bx}{it}{
-  <-> \adforn@@scale OrnementsADF
-}{}
-\DeclareFontShape{U}{OrnementsADF}{bx}{sl}{
-  <-> \adforn@@scale OrnementsADF
-}{}
-\DeclareFontShape{U}{OrnementsADF}{bx}{si}{
-  <-> \adforn@@scale OrnementsADF
-}{}
-\DeclareFontShape{U}{OrnementsADF}{bx}{scit}{
-  <-> \adforn@@scale OrnementsADF
-}{}
-\DeclareFontShape{U}{OrnementsADF}{bx}{scsl}{
-  <-> \adforn@@scale OrnementsADF
-}{}
+\DeclareFontShape{U}{OrnementsADF}{m}{sc}{<->ssub * OrnementsADF/m/n}{}
+\DeclareFontShape{U}{OrnementsADF}{m}{it}{<->ssub * OrnementsADF/m/sc}{}
+\DeclareFontShape{U}{OrnementsADF}{m}{sl}{<->ssub * OrnementsADF/m/it}{}
+\DeclareFontShape{U}{OrnementsADF}{m}{si}{<->ssub * OrnementsADF/m/sl}{}
+\DeclareFontShape{U}{OrnementsADF}{m}{scit}{<->ssub * OrnementsADF/m/si}{}
+\DeclareFontShape{U}{OrnementsADF}{m}{scsl}{<->ssub * OrnementsADF/m/scit}{}
+\DeclareFontShape{U}{OrnementsADF}{b}{n}{<->ssub * OrnementsADF/m/scsl}{}
+\DeclareFontShape{U}{OrnementsADF}{b}{sc}{<->ssub * OrnementsADF/b/n}{}
+\DeclareFontShape{U}{OrnementsADF}{b}{it}{<->ssub * OrnementsADF/b/sc}{}
+\DeclareFontShape{U}{OrnementsADF}{b}{sl}{<->ssub * OrnementsADF/b/it}{}
+\DeclareFontShape{U}{OrnementsADF}{b}{si}{<->ssub * OrnementsADF/b/sl}{}
+\DeclareFontShape{U}{OrnementsADF}{b}{scit}{<->ssub * OrnementsADF/b/si}{}
+\DeclareFontShape{U}{OrnementsADF}{b}{scsl}{<->ssub * OrnementsADF/b/scit}{}
+\DeclareFontShape{U}{OrnementsADF}{bx}{n}{<->ssub * OrnementsADF/b/scsl}{}
+\DeclareFontShape{U}{OrnementsADF}{bx}{sc}{<->ssub * OrnementsADF/bx/n}{}
+\DeclareFontShape{U}{OrnementsADF}{bx}{it}{<->ssub * OrnementsADF/bx/sc}{}
+\DeclareFontShape{U}{OrnementsADF}{bx}{sl}{<->ssub * OrnementsADF/bx/it}{}
+\DeclareFontShape{U}{OrnementsADF}{bx}{si}{<->ssub * OrnementsADF/bx/sl}{}
+\DeclareFontShape{U}{OrnementsADF}{bx}{scit}{<->ssub * OrnementsADF/bx/si}{}
+\DeclareFontShape{U}{OrnementsADF}{bx}{scsl}{<->ssub * OrnementsADF/bx/scit}{}
 %    \end{macrocode}
 % \end{fntdefn}
 % \iffalse
