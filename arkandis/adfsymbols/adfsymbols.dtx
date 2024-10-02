@@ -1,0 +1,747 @@
+% \iffalse meta-comment
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% adfsymbols.dtx
+% Additions and changes Copyright (C) YYYY-2024 Clea F. Rees.
+% Code from skeleton.dtx Copyright (C) 2015-2024 Scott Pakin (see below).
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   https://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2008-05-04 or later.
+%
+% This work has the LPPL maintenance status `maintained'.
+%
+% The Current Maintainer of this work is Clea F. Rees.
+%
+% This work consists of all files listed in manifest.txt.
+%
+% The file adfsymbols.dtx is a derived work under the terms of the
+% LPPL. It is based on version 2.4 of skeleton.dtx which is part of 
+% dtxtut by Scott Pakin. A copy of dtxtut, including the 
+% unmodified version of skeleton.dtx is available from
+% https://www.ctan.org/pkg/dtxtut and released under the LPPL.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \fi
+%
+% \iffalse
+%<*driver>
+\RequirePackage{svn-prov}
+% ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
+\def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
+\ProvidesFileSVN{$Id: adfsymbols.dtx 10454 2024-10-02 05:12:31Z cfrees $}[v1.2 \revinfo][\filebase DTX: FONT for 8-bit engines]
+\DefineFileInfoSVN[adfsymbols]
+\documentclass[11pt,british]{ltxdoc}
+% l3doc loads fancyvrb
+% fancyvrb overwrites svn-prov's macros without warning
+% restore \fileversion \filerev in case we're using l3doc
+\GetFileInfoSVN{adfsymbols}
+\EnableCrossrefs
+\CodelineIndex
+\RecordChanges
+% \OnlyDescription
+\DoNotIndex{\verb,\ProvidesPackageSVN,\NeedsTeXFormat,\ProcessKeyOptions,\revinfo,\filebase,\filename,\filedate,\RequirePackage,\usepackage,\DefineFileInfoSVN,\GetFileInfoSVN,\ProvidesPackageSVN,\documentclass,\MakeAutoQuote,\parindent,\par,\smallskip,\setlength,\bigskip,\maketitle,\title,\author,\date,\ExplSyntaxOn,\ExplSyntaxOff}
+\usepackage{babel}
+\pdfmapfile{-adfsymbols.map}
+\pdfmapfile{+adfsymbols.map}
+\usepackage[tt={monowidth,tabular,lining}]{cfr-lm}
+% \usepackage{lmodern}
+% \renewcommand{\ttdefault}{lmvtt}
+% \let\origrmdefault\rmdefault
+% \DeclareRobustCommand{\origrmfamily}{%
+%   \fontencoding{T1}%
+%   \fontfamily{\origrmdefault}%
+%   \selectfont}
+% \DeclareTextFontCommand{\textorigrm}{\origrmfamily}
+\usepackage[]{adfarrows}
+\usepackage[]{adfbullets}
+\usepackage{fancyhdr}
+\usepackage{fixfoot}
+\usepackage{array,verbatim,tabularx}
+\usepackage{enumitem}
+\usepackage[referable]{threeparttablex}
+\makeatletter
+\def\TPT@measurement{% ateb David Carlisle: https://tex.stackexchange.com/a/370691/
+  \ifdim\wd\@tempboxb<\TPTminimum
+    \hsize \TPTminimum
+  \else
+    \hsize\wd\@tempboxb
+  \fi
+  \xdef\TPT@hsize{\hsize\the\hsize \noexpand\@parboxrestore}\TPT@hsize
+  \ifx\TPT@docapt\@undefined\else
+    \TPT@docapt \vskip.2\baselineskip
+  \fi \par
+  \dimen@\dp\@tempboxb % new
+  \box\@tempboxb
+  \ifvmode \prevdepth\dimen@ \fi% was \z@ not \dimen@
+}
+\renewlist{tablenotes}{enumerate}{1}
+\setlist[tablenotes]{label=\tnote{\alph*},ref=\alph*,itemsep=\z@,topsep=\z@skip,partopsep=\z@skip,parsep=\z@,itemindent=\z@,labelindent=\tabcolsep,labelsep=.2em,leftmargin=*,align=left,before={\unskip\medskip\footnotesize}}
+\makeatother
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{xurl}
+\urlstyle{tt}
+\usepackage{multicol}
+\usepackage{longtable}
+\usepackage{microtype}
+\usepackage[a4paper,headheight=14pt]{geometry}	% use 14pt for 11pt text, 15pt for 12pt text
+\usepackage{csquotes}
+\MakeAutoQuote{‘}{’}
+\MakeAutoQuote*{“}{”}
+\usepackage{caption}
+\DeclareCaptionFont{lf}{\sffamily\lstyle}
+\captionsetup[table]{labelfont=lf}
+% sicrhau hyperindex=false: llwytho CYN bookmark
+\usepackage{hypdoc}% ateb Ulrike Fischer: https://tex.stackexchange.com/a/695555/
+\usepackage{bookmark}
+\hypersetup{%
+  colorlinks=true,
+  citecolor={moss},
+  extension=pdf,
+  linkcolor={strawberry},
+  linktocpage=true,
+  pdfcreator={TeX},
+  pdfproducer={pdfeTeX},
+  urlcolor={blueberry}%
+}
+\NewDocElement[%
+  idxtype=opt.,
+  idxgroup=options,
+  printtype=\textit{opt.},
+]{Opt}{option}
+\NewDocElement[%
+  idxtype=pkg.,
+  idxgroup=packages,
+  printtype=\textit{pkg.},
+]{Pkg}{package}
+\NewDocElement[%
+  printtype=\textdagger,
+  idxtype=,
+  macrolike,
+]{DMacro}{dmacro}
+\NewDocElement[%
+  idxtype=enc.,
+  idxgroup=font encodings,
+  printtype=\textit{enc.},
+]{Fenc}{fntenc}
+\NewDocElement[%
+  idxtype=fd.,
+  idxgroup=font definitions,
+  printtype=\textit{fd.},
+]{Fdefn}{fntdefn}
+\NewDocElement[%
+  idxtype=map,
+  idxgroup=map file fragments,
+  printtype=\textit{map},
+]{Fmap}{fmapping}
+\NewDocumentCommand \val { m }
+{%
+  {\ttfamily =\,\meta{#1}}%
+}
+\ExplSyntaxOn
+\NewDocumentCommand \vals { m }
+{
+  {
+    \ttfamily = \, 
+    \clist_use:nn { #1 } { \textbar }
+  }
+} 
+\cs_new_eq:NN \pkgname \filebase
+\ExplSyntaxOff
+\usepackage{cleveref}
+\title{\filebase}
+\author{Clea F. Rees\thanks{%
+    Bug tracker:
+  \href{https://codeberg.org/cfr/nfssext/issues}{\url{codeberg.org/cfr/nfssext/issues}}
+  \textbar{} Code:
+  \href{https://codeberg.org/cfr/nfssext}{\url{codeberg.org/cfr/nfssext}}
+  \textbar{} Mirror:
+  \href{https://github.com/cfr42/nfssext}{\url{github.com/cfr42/nfssext}}% 
+}}
+% \date{\fileversion~\filetoday}
+\date{\fileversion~\filedate}
+\pagestyle{fancy}
+\fancyhf{}
+% \fancyhf[lh]{\filebase~\fileversion}
+% \fancyhf[rh]{\itshape\filetoday}
+% \fancyhf[rh]{\filedate}
+\fancyhf[ch]{}
+\fancyhf[lf]{}
+\fancyhf[rf]{}
+\fancyhf[ch]{%
+\itshape adfsymbols\hspace*{1.5em}{\Large\adfbullet{14}}\hspace*{1.5em}\filedate}
+\fancyhf[cf]{%
+  \itshape {\large\adfbullet{39}} \thepage~of~\lastpage{} %
+{\large\adfbullet{40}}}
+\renewcommand{\headrulewidth}{0pt}
+\ExplSyntaxOn
+\hook_gput_code:nnn {shipout/lastpage} {.}
+{
+  \property_record:nn {t:lastpage}{abspage,page,pagenum}
+}
+\cs_new_protected_nopar:Npn \lastpage 
+{
+  \property_ref:nn {t:lastpage}{page}
+}
+\ExplSyntaxOff
+\definecolor{strawberry}{rgb}{1.000,0.000,0.502}
+\definecolor{blueberry}{rgb}{0.000,0.000,1.000}
+\definecolor{moss}{rgb}{0.000,0.502,0.251}
+\makeatletter
+\newcommand{\adfsymset}{%
+1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52}
+\newcommand{\adfarrowshow}{%
+	\def\tempa{52}%
+	\@for \xx:=\adfsymset \do {%
+		\ifx\tempa\xx
+			\xx: \adfarrow{\xx}%
+		\else
+			\xx:	 \adfarrow{\xx}\\%
+		\fi}}
+\newcommand{\adfbulletshow}{%
+	\def\tempa{52}%
+	\@for \xx:=\adfsymset \do {%
+		\ifx\tempa\xx
+			\xx: \adfbullet{\xx}%
+		\else
+			\xx:	 \adfbullet{\xx}\\%
+		\fi}}
+\makeatother
+\begin{document}
+  \DocInput{\filename}
+  \addcontentsline{toc}{section}{ArrowsADF}
+  \DocInput{adfarrows.dtx}
+  \addcontentsline{toc}{section}{BulletsADF}
+  \DocInput{adfbullets.dtx}
+\end{document}
+%</driver>
+% \fi
+% \newcommand*{\adf}{ADF}
+% \newcommand*{\lpack}[1]{\textsf{#1}}
+% \newcommand*{\fgroup}[1]{\textsf{#1}}
+% \newcommand*{\fname}[1]{\textsf{#1}}
+% \newcommand*{\file}[1]{\texttt{#1}}
+%
+% \changes{v??}{YYYY/??/??}{First public release.}
+% \changes{v1.2}{2024-09-29}{Belated update for (New) NFSS and revised nfssext-cfr.
+% Try switching to DTX/INS.}
+%
+% \maketitle\thispagestyle{empty}
+% \pdfinfo{%
+% 	/Creator		(TeX)
+% 	/Producer	(pdfTeX)
+% 	/Author		(Clea F. Rees)
+% 	/Title			(adfsymbols)
+% 	/Subject		(TeX)
+%   /Keywords		(TeX,LaTeX,font,fonts,tex,latex,Symbols,symbols,arrow,arrows,Arrow,Arrows,arrowsadf,adfsymbols,ArrowsADF,BulletsADF,bullets,bullet,Bullets,Bullet,bulletsadf,symbolsadf,adfbullets,adfarrows,ADF,adf,Arkandis,Digital,Foundry,arkandis,digital,foundry,Hirwen,Harendal,Clea,Rees)}
+% \setlength{\parindent}{0pt}
+% \setlength{\parskip}{0.5em}
+%	
+%	
+% \begin{abstract}
+% 	\noindent Hirwen Harendal, Arkandis Digital Foundry (\adf) has produced Symbols \adf. 
+%   This guide outlines the \TeX/\LaTeX\ support provided with version 1.001 of the fonts in postscript type 1 format.
+% \end{abstract}
+% 
+% \section{Introduction}
+% 
+% This document explains how to use the \TeX/\LaTeX\ support included with version 1.001 of the Symbols \adf\ font collection in postscript type 1 format.
+% The fonts were developed by Hirwen Harendal of the Arkandis Digital Foundry (\adf), and information about the fonts themselves, together with copies of the fonts in opentype format, can be found at \url{http://pagesperso-orange.fr/arkandis/ADF/tugfonts.htm}.
+% The fonts are released under the \textsc{gpl}.
+% For details, see \textsc{readme}, \textsc{notice} and \textsc{copying}.
+% 
+% The \TeX/\LaTeX\ support package consists of all files listed in \lpack{manifest.txt}\ and these files are released under the \LaTeX\ Project Public Licence as explained in the included licensing notices and \textsc{readme}.
+% Please let me know of any problems so that I can solve them if I can.
+% If you can correct the problems and send me the fix, that would be even better.
+% Unlike the fonts themselves, the \TeX/\LaTeX\ support is somewhat experimental.
+% 
+% 
+% \lpack{adfsymbols} includes a copy of the fonts in type 1 format, documentation and support files for \TeX/\LaTeX\, including two \LaTeX\ package files, \path{adfarrows.sty} and \path{adfbullets.sty}.
+% 
+% \section{The support package}\label{sec:support}
+% 
+% \lpack{adfsymbols} provides access to the symbols in \fname{ArrowsADF} and \fname{BulletsADF} in \LaTeX\ through two packages, \lpack{adfarrows} and \lpack{adfbullets}.
+% Both packages require \lpack{pifont} and \lpack{adfarrows} also requires \lpack{fp}.
+% 
+% \subsection{adfarrows}
+% 
+% \lpack{adfarrows} provides the command \verb|\adfarrow{}| which takes a single numerical argument.
+% There are 52 arrows in \fname{ArrowsADF} which can be produced by feeding the relevant number between 1 and 52 to \verb|\adfarrow{}|\footnote{%
+%   The argument 0 will simply typeset a space and should be avoided as using it may interfere with \TeX's spacing algorithms.
+%   The problem is that \TeX\ will not recognise it as a space and so will treat it instead as a character.%
+% }:
+% \begin{multicols}{4}	%\raggedcolumns
+% 	\adfarrowshow	
+% \end{multicols}
+% 
+% For example, \verb|\adfarrow{5}\adfarrow{9}| produces: 	\adfarrow{5}\adfarrow{9}.
+% 
+% \subsubsection{Alternative commands}
+% 
+% To make things a little more convenient, additional commands are provided to access the various arrows.
+% The effect is to typeset one of the arrows show above but it is not necessary to look up or remember the correct numerical argument.
+% 
+% First, four commands are provided to access the four half arrows.
+% In each case, the number of the arrow is given first.
+% This may be used directly with the \verb|\adfarrow{}| command as explained above.
+% The alternative command is given next.
+% This command may be used to typeset the same ornament.
+% For example both \verb|\adfarrow{1}| and \verb|\adfhalfarrowright| produce \adfhalfarrowright.
+% Finally, the arrow produced by the two commands is typeset to their right.
+% 
+% \begin{longtable}{llllll}
+% 	\toprule
+% %	\textbf{no.}		&	\textbf{command}	&	\textbf{}	&	\textbf{no.}		&	\textbf{command}	&	\textbf{}\\\midrule
+% 	\endhead
+% 	\bottomrule\endfoot
+% 		1		&	\verb|\adfhalfarrowright|				&	\adfhalfarrowright				&	2		&	\verb|\adfhalfarrowleft|				&	\adfhalfarrowleft\\
+% 		27		&	\verb|\adfhalfarrowrightsolid|		&	\adfhalfarrowrightsolid	&	28		&	\verb|\adfhalfarrowleftsolid|	&	\adfhalfarrowleftsolid\\
+% \end{longtable}
+% 
+% The remaining arrows consist of six families each containing eight arrows --- one for each of the eight directions of the compass.
+% These may be accessed in two ways, in addition to using \verb|\adfarrow{}|.
+% 
+% First, eight commands are provided.
+% Each command takes a single numerical argument in the range 1--6.
+% The argument corresponds to one of the six families of arrows.
+% So using the same number with the different commands will typeset arrows from the same family pointing in different directions.
+% 
+% \begin{longtable}{llll}
+% 	\toprule
+% 	{direction}		&	{command}	&	\multicolumn{2}{l}{{example usage}}\\\midrule
+% 	\endhead
+% 	\bottomrule\endfoot
+% 		north			&	\verb|\adfarrown|		&	\verb|\adfarrown1|		&	\adfarrown1		\\
+% 		northeast	&	\verb|\adfarrowne|		&	\verb|\adfarrowne2|	&	\adfarrowne2		\\
+% 		east				&	\verb|\adfarrowe|		&	\verb|\adfarrowe3|		&	\adfarrowe3		\\
+% 		southeast	&	\verb|\adfarrowse|		&	\verb|\adfarrowse4|	&	\adfarrowse4		\\
+% 		south			&	\verb|\adfarrows|		&	\verb|\adfarrows5|		&	\adfarrows5		\\
+% 		southwest	&	\verb|\adfarrowsw|		&	\verb|\adfarrowsw6|	&	\adfarrowsw6		\\
+% 		west				&	\verb|\adfarroww|		&	\verb|\adfarroww1|		&	\adfarroww1		\\
+% 		northwest	&	\verb|\adfarrownw|		&	\verb|\adfarrownw3|	&	\adfarrownw3		\\
+% \end{longtable}
+% 
+% Second, a further command is provided which allows you to specify both the family and direction as separate arguments.
+% This is in fact the base command \verb|\adfarrow| again.
+% Above, we used the command with just one argument: \verb|\adfarrow{}|.
+% In effect, we left the optional argument empty: \verb|\adfarrow[]{}|.
+% The optional argument may, however, take one of six family names or their corresponding numbers.
+% In this case, the second argument specifies the arrow's direction.
+% \emph{Note that you must specify a family if you specify a direction.} 
+% If the optional argument is omitted, the command expects the numerical argument corresponding to the arrow you wish to typeset.
+% 
+% \begin{longtable}{ll}
+% 	\toprule
+% 	\multicolumn{2}{c}{family names for first argument}\\\cmidrule{1-2}
+% 	family number		&	family name\\\midrule
+% 	\endhead
+% 	\bottomrule\endfoot
+% 		1	&	opentail\\
+% 		2	&	plain\\
+% 		3	&	comic\\
+% 		4	&	solidtail\\
+% 		5	&	thick\\
+% 		6	&	tail\\
+% \end{longtable}
+% 
+% The arrow's direction may be specified in either a long or an abbreviated form:
+% \begin{longtable}{lll}
+% 	\toprule
+% 	\multicolumn{3}{c}{direction names for the second argument}\\\cmidrule{1-3}
+% 	direction	&	long form		& short form\\\midrule\endhead
+% 	\bottomrule\endfoot
+% 		north			&	north			&	n\\
+% 		northeast	&	northeast	&	ne\\
+% 		east				&	east				&	e\\
+% 		southeast	&	southeast	&	se\\
+% 		south			&	south			&	s\\
+% 		southwest	&	southwest	&	sw\\
+% 		west				&	west				&	w\\
+% 		northwest	&	northwest	&	nw\\
+% \end{longtable}
+% 
+% The different possibilities may be illustrated by the examples in the following table where each row consists of a selection of equivalent commands which may be used to produce identical output in different ways.
+% In each case, the number of the arrow is given first.
+% This may be used directly with the \verb|\adfarrow{}| command as explained above.
+% One of the eight commands from the previous section follows.
+% Two additional uses of \verb|\adfarrow| are given next using the \verb|\adfarrow[family]{direction}| form described in this section.
+% Finally, the arrow each of these commands typesets is displayed to their right.
+% \begin{longtable}{lllll}
+% 	\toprule\endhead
+% 	\bottomrule\endfoot
+% 		4	&	\verb|\adfarrowse1|	&	\verb|\adfarrow[1]{southeast}|				&	\verb|\adfarrow[opentail]{se}|		&	\adfarrow[opentail]{se}\\
+% 		51	&	\verb|\adfarrown6|		&	\verb|\adfarrow[tail]{north}|				&	\verb|\adfarrow[6]{n}|						&	\adfarrow[6]{n}\\
+% 		42	&	\verb|\adfarrownw5|	&	\verb|\adfarrow[thick]{nw}|					&	\verb|\adfarrow[5]{northwest}|		&	\adfarrow[5]{northwest}\\
+% 		15	&	\verb|\adfarroww2|		&	\verb|\adfarrow[2]{w}|								&	\verb|\adfarrow[plain]{west}|		&	\adfarrow[plain]{west}\\
+% 		31	&	\verb|\adfarrows4|		&	\verb|\adfarrow[solidtail]{south}|		&	\verb|\adfarrow[4]{s}|						&	\adfarrow[4]{s}\\
+% 		22	&	\verb|\adfarrowsw3|	&	\verb|\adfarrow[comic]{sw}|					&	\verb|\adfarrow[3]{southwest}|		&	\adfarrow[3]{southwest}\\
+% \end{longtable}
+% 
+%^^A 2 : \adfarrow[1]{e}
+%^^A 3 : \adfarrow[1]{se}
+%^^A 4 : \adfarrow[1]{s}
+%^^A 5 : \adfarrow[1]{sw}
+%^^A 6 : \adfarrow[1]{w}
+%^^A 7 : \adfarrow[1]{nw}
+%^^A 8 : \adfarrow[1]{n}
+%^^A 9 : \adfarrow[1]{ne}
+%^^A
+%^^A 10 : \adfarrow[2]{e}
+%^^A 11 : \adfarrow[2]{se}
+%^^A 12 : \adfarrow[2]{s}
+%^^A 13 : \adfarrow[2]{sw}
+%^^A 14 : \adfarrow[2]{w}
+%^^A 15 : \adfarrow[2]{nw}
+%^^A 16 : \adfarrow[2]{n}
+%^^A 17 : \adfarrow[2]{ne}
+%^^A
+%^^A 10 : \adfarrow[plain]{e}
+%^^A 11 : \adfarrow[plain]{se}
+%^^A 12 : \adfarrow[plain]{s}
+%^^A 13 : \adfarrow[plain]{sw}
+%^^A 14 : \adfarrow[plain]{w}
+%^^A 15 : \adfarrow[plain]{nw}
+%^^A 16 : \adfarrow[plain]{n}
+%^^A 17 : \adfarrow[plain]{ne}
+%^^A
+%^^A 10 : \adfarrow[plain]{east}
+%^^A 11 : \adfarrow[plain]{southeast}
+%^^A 12 : \adfarrow[plain]{south}
+%^^A 13 : \adfarrow[plain]{southwest}
+%^^A 14 : \adfarrow[plain]{west}
+%^^A 15 : \adfarrow[plain]{northwest}
+%^^A 16 : \adfarrow[plain]{north}
+%^^A 17 : \adfarrow[plain]{northeast}
+%
+% \subsection{adfbullets}
+% 
+% \lpack{adfbullets} provides the command \verb|\adfbullet{}| which takes a single numerical argument.
+% There are 52 bullets in \fname{BulletsADF} which can be produced by feeding the relevant number between 1 and 52 to \verb|\adfbullet{}|\footnote{Again, a 0 will simply typeset a space and should be avoided as using it may interfere with \TeX's spacing algorithms.}:
+% \begin{multicols}{4}
+% 	\adfbulletshow
+% \end{multicols}
+% 
+% For example, \verb|\adfbullet{17}\adfbullet{19}\adfbullet{23}| produces: 	\adfbullet{17}\adfbullet{19}\adfbullet{23}.
+% 
+% \section{Usage}
+% 
+% \lpack{enumitem} allows you to easily change the format of lists: 
+% \begin{verbatim}
+% \begin{itemize}[label=\adfbullet{25}]
+% 	\item diagrams;
+% 	\item presentations;
+% 	\item handouts;
+% 	\item brochures, leaflets and pamphlets;
+% 	\item forms, including fill-in \textsc[pdf] forms.
+% \end{itemize}
+% \end{verbatim}
+% Refer to the package documentation for further details.
+% 
+% \lpack{adfarrows} and \lpack{adfbullets} can be used in \lpack{beamer} presentations to produce lists with custom bullet markers; as icons and markers in \lpack{pgf} diagrams; with \lpack{sectsty}, \lpack{titlesec} and/or \lpack{fancyhdr} to typeset custom headings, headers and footers. 
+% For example, the equivalent of,
+% \begin{verbatim}
+% \pagestyle{fancy}
+% 	\fancyhf[ch]{}
+% 	\fancyhf[lf]{}
+% 	\fancyhf[rf]{}
+% 	\fancyhf[lh]{}
+% 	\fancyhf[rh]{}
+% 	\fancyhf[ch]{%
+% 		\itshape adfsymbols\hspace*{1.5em}{\Large\adfbullet{14}}\hspace*{1.5em}\filedate}
+% 	\fancyhf[cf]{%
+% 		\itshape {\large\adfbullet{39}} \thepage~\ofname~\lastpage %
+% 		{\large\adfbullet{40}}}
+% 	\renewcommand{\headrulewidth}{0pt}
+% \end{verbatim}
+% was used to customise this document's headers and footers with \lpack{fancyhdr}. 
+%
+% \appendix
+% 
+% 
+% \MaybeStop{%
+% \PrintChanges
+% \PrintIndex
+% }
+% 
+% \section{Implementation}
+%
+% You do not need to read the remainder of this document in order to install or use the fonts.
+%
+% \subsection{Encoding}
+%
+% Both \fname{ArrowsADF} and \fname{BulletsADF} use a single encoding.
+% The only reason to reencode the fonts is to ensure consecutive slot numbers, which makes the user interface a bit nicer.
+%
+% \iffalse
+%<*enc>
+% \fi
+%    \begin{macrocode}
+/SymbolsADFEncoding [
+/space
+/A
+/B
+/C
+/D
+/E
+/F
+/G
+/H
+/I
+/J
+/K
+/L
+/M
+/N
+/O
+/P
+/Q
+/R
+/S
+/T
+/U
+/V
+/W
+/X
+/Y
+/Z
+/a
+/b
+/c
+/d
+/e
+/f
+/g
+/h
+/i
+/j
+/k
+/l
+/m
+/n
+/o
+/p
+/q
+/r
+/s
+/t
+/u
+/v
+/w
+/x
+/y
+/z
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+/.notdef
+] def
+%    \end{macrocode}
+% \iffalse
+%</enc>
+% \fi
+%
+%\Finale
+%^^A vim: sw=2:et:tw=0:
