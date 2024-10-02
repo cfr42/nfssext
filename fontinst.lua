@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10430 2024-09-29 04:31:40Z cfrees $
+-- $Id: fontinst.lua 10453 2024-10-01 06:28:48Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -703,17 +703,27 @@ function fnt_afmtotfm (dir,mode)
   mode = mode or "errorstopmode --halt-on-error"
   local fntbasename = fntbasename or module
   local map = mapfile or fntbasename .. ".map"
+  local fntencs = fntencs or {}
   print("Unpacking ...\n")
   local errorlevel = unpack()
   print("Running afm2tfm. Please be patient ...\n")
   local afms = filelist(unpackdir,"*.afm")
   local content = ""
-  for i,j in ipairs(afms) do
-    local rtn = fileexists(unpackdir .. "/" .. string.gsub(j,"%.afm",".enc"))
-    if not rtn then
-      errorlevel = run(dir, "afm2tfm " .. j .. " >> " .. dir .. "/" .. map .. ".tmp")
+  for i,k in ipairs(afms) do
+    j = string.gsub(k,"%.afm","")
+    if fntencs[j] == nil then 
+      local rtn = fileexists(unpackdir .. "/" .. j .. ".enc")
+      if not rtn then
+        errorlevel = run(dir, "afm2tfm " .. k .. " >> " .. dir .. "/" .. map .. ".tmp")
+      else
+        errorlevel = run(dir, "afm2tfm " .. k .. " -p " .. j .. ".enc" .. " >> " .. dir .. "/" .. map .. ".tmp")
+      end
     else
-      errorlevel = run(dir, "afm2tfm " .. j .. " -p " .. string.gsub(j,"%.afm",".enc") .. " > " .. dir .. "/" .. map .. ".tmp")
+      if not fileexists(unpackdir .. "/" .. fntencs[j]) then
+        gwall("Search for encoding specified for " .. j .. " ",unpackdir,1)
+      else
+        errorlevel = run(dir, "afm2tfm " .. k .. " -p " .. fntencs[j] .. " >> " .. dir .. "/" .. map .. ".tmp")
+      end
     end
     if errorlevel ~= 0 then 
       gwall("afm2tfm (" .. j ..") ",dir,errorlevel) 
@@ -721,7 +731,7 @@ function fnt_afmtotfm (dir,mode)
       local g = assert(io.open(dir .. "/" .. map .. ".tmp","rb"))
       local c = g:read("all")
       g:close()
-      content = content .. string.gsub(c, "\n", " <" .. string.gsub(j,"%.afm",".pfb") .. "\n")
+      content = content .. string.gsub(c, "\n", " <" .. string.gsub(k,"%.afm",".pfb") .. "\n")
       rm(dir, map .. ".tmp")
     end
   end
