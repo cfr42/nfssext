@@ -31,62 +31,33 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: adfsymbols.dtx 10454 2024-10-02 05:12:31Z cfrees $}[v1.2 \revinfo][\filebase DTX: FONT for 8-bit engines]
+\ProvidesFileSVN{$Id: adfsymbols.dtx 10458 2024-10-03 01:57:56Z cfrees $}[v1.2 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[adfsymbols]
 \documentclass[11pt,british]{ltxdoc}
-% l3doc loads fancyvrb
-% fancyvrb overwrites svn-prov's macros without warning
-% restore \fileversion \filerev in case we're using l3doc
+%^^A l3doc loads fancyvrb
+%^^A fancyvrb overwrites svn-prov's macros without warning
+%^^A restore \fileversion \filerev in case we're using l3doc
 \GetFileInfoSVN{adfsymbols}
 \EnableCrossrefs
 \CodelineIndex
 \RecordChanges
-% \OnlyDescription
+%^^A \OnlyDescription
 \DoNotIndex{\verb,\ProvidesPackageSVN,\NeedsTeXFormat,\ProcessKeyOptions,\revinfo,\filebase,\filename,\filedate,\RequirePackage,\usepackage,\DefineFileInfoSVN,\GetFileInfoSVN,\ProvidesPackageSVN,\documentclass,\MakeAutoQuote,\parindent,\par,\smallskip,\setlength,\bigskip,\maketitle,\title,\author,\date,\ExplSyntaxOn,\ExplSyntaxOff}
 \usepackage{babel}
 \pdfmapfile{-adfsymbols.map}
 \pdfmapfile{+adfsymbols.map}
 \usepackage[tt={monowidth,tabular,lining}]{cfr-lm}
-% \usepackage{lmodern}
-% \renewcommand{\ttdefault}{lmvtt}
-% \let\origrmdefault\rmdefault
-% \DeclareRobustCommand{\origrmfamily}{%
-%   \fontencoding{T1}%
-%   \fontfamily{\origrmdefault}%
-%   \selectfont}
-% \DeclareTextFontCommand{\textorigrm}{\origrmfamily}
-\usepackage[]{adfarrows}
-\usepackage[]{adfbullets}
+\usepackage{adfarrows}
+\usepackage{adfbullets}
 \usepackage{fancyhdr}
-\usepackage{fixfoot}
-\usepackage{array,verbatim,tabularx}
+\usepackage{array}
 \usepackage{enumitem}
-\usepackage[referable]{threeparttablex}
-\makeatletter
-\def\TPT@measurement{% ateb David Carlisle: https://tex.stackexchange.com/a/370691/
-  \ifdim\wd\@tempboxb<\TPTminimum
-    \hsize \TPTminimum
-  \else
-    \hsize\wd\@tempboxb
-  \fi
-  \xdef\TPT@hsize{\hsize\the\hsize \noexpand\@parboxrestore}\TPT@hsize
-  \ifx\TPT@docapt\@undefined\else
-    \TPT@docapt \vskip.2\baselineskip
-  \fi \par
-  \dimen@\dp\@tempboxb % new
-  \box\@tempboxb
-  \ifvmode \prevdepth\dimen@ \fi% was \z@ not \dimen@
-}
-\renewlist{tablenotes}{enumerate}{1}
-\setlist[tablenotes]{label=\tnote{\alph*},ref=\alph*,itemsep=\z@,topsep=\z@skip,partopsep=\z@skip,parsep=\z@,itemindent=\z@,labelindent=\tabcolsep,labelsep=.2em,leftmargin=*,align=left,before={\unskip\medskip\footnotesize}}
-\makeatother
 \usepackage{booktabs}
 \usepackage{multirow}
 \usepackage{xcolor}
 \usepackage{xurl}
 \urlstyle{tt}
 \usepackage{multicol}
-\usepackage{longtable}
 \usepackage{microtype}
 \usepackage[a4paper,headheight=14pt]{geometry}	% use 14pt for 11pt text, 15pt for 12pt text
 \usepackage{csquotes}
@@ -95,8 +66,8 @@
 \usepackage{caption}
 \DeclareCaptionFont{lf}{\sffamily\lstyle}
 \captionsetup[table]{labelfont=lf}
-% sicrhau hyperindex=false: llwytho CYN bookmark
-\usepackage{hypdoc}% ateb Ulrike Fischer: https://tex.stackexchange.com/a/695555/
+%^^A sicrhau hyperindex=false: llwytho CYN bookmark
+\usepackage{hypdoc}%^^A ateb Ulrike Fischer: https://tex.stackexchange.com/a/695555/
 \usepackage{bookmark}
 \hypersetup{%
   colorlinks=true,
@@ -118,11 +89,6 @@
   idxgroup=packages,
   printtype=\textit{pkg.},
 ]{Pkg}{package}
-\NewDocElement[%
-  printtype=\textdagger,
-  idxtype=,
-  macrolike,
-]{DMacro}{dmacro}
 \NewDocElement[%
   idxtype=enc.,
   idxgroup=font encodings,
@@ -162,7 +128,6 @@
   \textbar{} Mirror:
   \href{https://github.com/cfr42/nfssext}{\url{github.com/cfr42/nfssext}}% 
 }}
-% \date{\fileversion~\filetoday}
 \date{\fileversion~\filedate}
 \pagestyle{fancy}
 \fancyhf{}
@@ -173,7 +138,7 @@
 \fancyhf[lf]{}
 \fancyhf[rf]{}
 \fancyhf[ch]{%
-\itshape adfsymbols\hspace*{1.5em}{\Large\adfbullet{14}}\hspace*{1.5em}\filedate}
+\itshape \pkgname\hspace*{1.5em}{\Large\adfbullet{14}}\hspace*{1.5em}\filedate}
 \fancyhf[cf]{%
   \itshape {\large\adfbullet{39}} \thepage~of~\lastpage{} %
 {\large\adfbullet{40}}}
@@ -225,12 +190,14 @@
 % \newcommand*{\fgroup}[1]{\textsf{#1}}
 % \newcommand*{\fname}[1]{\textsf{#1}}
 % \newcommand*{\file}[1]{\texttt{#1}}
-%
+% 
 % \changes{v??}{YYYY/??/??}{First public release.}
 % \changes{v1.2}{2024-09-29}{Belated update for (New) NFSS and revised nfssext-cfr.
 % Try switching to DTX/INS.}
 %
-% \maketitle\thispagestyle{empty}
+% \maketitle
+% \thispagestyle{empty}
+% 
 % \pdfinfo{%
 % 	/Creator		(TeX)
 % 	/Producer	(pdfTeX)
@@ -265,18 +232,24 @@
 % \section{The support package}\label{sec:support}
 % 
 % \lpack{adfsymbols} provides access to the symbols in \fname{ArrowsADF} and \fname{BulletsADF} in \LaTeX\ through two packages, \lpack{adfarrows} and \lpack{adfbullets}.
-% Both packages require \lpack{pifont} and \lpack{adfarrows} also requires \lpack{fp}.
+% \changes{v0.0}{0000/00/00}{Drop dependencies on \lpack{pifont} and \lpack{fp}.}
 % 
 % \subsection{adfarrows}
 % 
+% \DescribePkg{adfarrows}
 % \lpack{adfarrows} provides the command \verb|\adfarrow{}| which takes a single numerical argument.
-% There are 52 arrows in \fname{ArrowsADF} which can be produced by feeding the relevant number between 1 and 52 to \verb|\adfarrow{}|\footnote{%
+% There are 52 arrows in \fname{ArrowsADF} which can be produced by feeding the relevant number between 1 and 52 to \verb|\adfarrow{}|.
+%
+% \DescribeMacro{\adfarrow}\marg{number}
+%
+% Where \meta{number} is a positive integer between 1 and 52 inclusive\footnote{%
 %   The argument 0 will simply typeset a space and should be avoided as using it may interfere with \TeX's spacing algorithms.
 %   The problem is that \TeX\ will not recognise it as a space and so will treat it instead as a character.%
-% }:
+% }.
 % \begin{multicols}{4}	%\raggedcolumns
 % 	\adfarrowshow	
 % \end{multicols}
+% 
 % 
 % For example, \verb|\adfarrow{5}\adfarrow{9}| produces: 	\adfarrow{5}\adfarrow{9}.
 % 
@@ -285,36 +258,55 @@
 % To make things a little more convenient, additional commands are provided to access the various arrows.
 % The effect is to typeset one of the arrows show above but it is not necessary to look up or remember the correct numerical argument.
 % 
-% First, four commands are provided to access the four half arrows.
+% \DescribeMacro{\adfhalfarrowright}
+% \DescribeMacro{\adfhalfarrowleft}
+% \DescribeMacro{\adfhalfarrowleftsolid}
+% \DescribeMacro{\adfhalfarrowrightsolid}
+% First, \cref{tab:arr-half} lists the four commands provided to access the half arrows.
 % In each case, the number of the arrow is given first.
 % This may be used directly with the \verb|\adfarrow{}| command as explained above.
 % The alternative command is given next.
-% This command may be used to typeset the same ornament.
+% This command may be used to typeset the same arrow.
 % For example both \verb|\adfarrow{1}| and \verb|\adfhalfarrowright| produce \adfhalfarrowright.
 % Finally, the arrow produced by the two commands is typeset to their right.
 % 
-% \begin{longtable}{llllll}
-% 	\toprule
-% %	\textbf{no.}		&	\textbf{command}	&	\textbf{}	&	\textbf{no.}		&	\textbf{command}	&	\textbf{}\\\midrule
-% 	\endhead
-% 	\bottomrule\endfoot
+% \newcolumntype{T}{>{\ttfamily\tlstyle\arraybackslash}l}
+% \begin{table}
+%   \centering
+%   \caption{Commands for half arrows}\label{tab:arr-half}
+%   \begin{tabular}{llllll}
+% 	  \toprule
+% 	  \textsf{No.}		&	\textsf{Command}	&	\textsf{}	&	\textsf{No.}		&	\textsf{Command}	&	\textsf{}\\
+%     \midrule
 % 		1		&	\verb|\adfhalfarrowright|				&	\adfhalfarrowright				&	2		&	\verb|\adfhalfarrowleft|				&	\adfhalfarrowleft\\
 % 		27		&	\verb|\adfhalfarrowrightsolid|		&	\adfhalfarrowrightsolid	&	28		&	\verb|\adfhalfarrowleftsolid|	&	\adfhalfarrowleftsolid\\
-% \end{longtable}
+%   	\bottomrule
+%   \end{tabular}
+% \end{table}
 % 
 % The remaining arrows consist of six families each containing eight arrows --- one for each of the eight directions of the compass.
 % These may be accessed in two ways, in addition to using \verb|\adfarrow{}|.
 % 
-% First, eight commands are provided.
-% Each command takes a single numerical argument in the range 1--6.
+% \DescribeMacro{\adfarrown}\marg{number}
+% \DescribeMacro{\adfarrowne}
+% \DescribeMacro{\adfarrowe}
+% \DescribeMacro{\adfarrowse}
+% \DescribeMacro{\adfarrows}
+% \DescribeMacro{\adfarrowsw}
+% \DescribeMacro{\adfarroww}
+% \DescribeMacro{\adfarrownw}
+% First, eight commands are provided (\cref{tab:arr-dir-macros}).
+% Each command takes a single numerical argument, \meta{number}, which must be a positive integer in the range 1--6 inclusive.
 % The argument corresponds to one of the six families of arrows.
 % So using the same number with the different commands will typeset arrows from the same family pointing in different directions.
 % 
-% \begin{longtable}{llll}
-% 	\toprule
-% 	{direction}		&	{command}	&	\multicolumn{2}{l}{{example usage}}\\\midrule
-% 	\endhead
-% 	\bottomrule\endfoot
+% \begin{table}
+%   \centering
+%   \caption{Directional commands}\label{tab:arr-dir-macros}
+%   \begin{tabular}{llll}
+% 	  \toprule
+% 	  \textsf{Direction}		&	\textsf{Command}	&	\multicolumn{2}{l}{\textsf{Example usage}}\\
+%     \midrule
 % 		north			&	\verb|\adfarrown|		&	\verb|\adfarrown1|		&	\adfarrown1		\\
 % 		northeast	&	\verb|\adfarrowne|		&	\verb|\adfarrowne2|	&	\adfarrowne2		\\
 % 		east				&	\verb|\adfarrowe|		&	\verb|\adfarrowe3|		&	\adfarrowe3		\\
@@ -323,122 +315,118 @@
 % 		southwest	&	\verb|\adfarrowsw|		&	\verb|\adfarrowsw6|	&	\adfarrowsw6		\\
 % 		west				&	\verb|\adfarroww|		&	\verb|\adfarroww1|		&	\adfarroww1		\\
 % 		northwest	&	\verb|\adfarrownw|		&	\verb|\adfarrownw3|	&	\adfarrownw3		\\
-% \end{longtable}
+% 	  \bottomrule
+%   \end{tabular}
+% \end{table}
 % 
 % Second, a further command is provided which allows you to specify both the family and direction as separate arguments.
 % This is in fact the base command \verb|\adfarrow| again.
 % Above, we used the command with just one argument: \verb|\adfarrow{}|.
 % In effect, we left the optional argument empty: \verb|\adfarrow[]{}|.
-% The optional argument may, however, take one of six family names or their corresponding numbers.
-% In this case, the second argument specifies the arrow's direction.
+%
+% \DescribeMacro{\adfarrow}\marg{number}
+% \DescribeMacro{\adfarrow}\oarg{family}\marg{direction}
+%
+% Where \meta{number} may be any positive integer between 1 and 52 (as above), \meta{family} may be any integer between 1 and 6 (\cref{tab:arr-fams}) and \meta{direction} may be any of the eight standard compass directions  (\cref{tab:arr-dirs}).
+% \meta{family} may also be the name of the ‘family’ of arrows.
+% \meta{direction} may also be given in an abbreviated form.
+%
+% When \meta{family} is given, the second argument specifies the arrow's direction.
 % \emph{Note that you must specify a family if you specify a direction.} 
-% If the optional argument is omitted, the command expects the numerical argument corresponding to the arrow you wish to typeset.
+% If the optional argument is omitted, the command expects the numerical argument corresponding to the arrow you wish to typeset as listed earlier.
 % 
-% \begin{longtable}{ll}
-% 	\toprule
-% 	\multicolumn{2}{c}{family names for first argument}\\\cmidrule{1-2}
-% 	family number		&	family name\\\midrule
-% 	\endhead
-% 	\bottomrule\endfoot
-% 		1	&	opentail\\
-% 		2	&	plain\\
-% 		3	&	comic\\
-% 		4	&	solidtail\\
-% 		5	&	thick\\
-% 		6	&	tail\\
-% \end{longtable}
+% \begin{table}
+%   \centering
+%   \caption{\cs{adfarrow}: ‘family’ names and numbers for first argument}\label{tab:arr-fams}
+%   \begin{tabular}{ll}
+%   	\toprule
+% 	  \textsf{No.}	&	\textsf{Name}\\
+%     \midrule
+% 	  1	&	opentail\\
+% 	  2	&	plain\\
+% 	  3	&	comic\\
+% 	  4	&	solidtail\\
+% 	  5	&	thick\\
+% 	  6	&	tail\\
+% 	  \bottomrule
+%   \end{tabular}
+% \end{table}
 % 
-% The arrow's direction may be specified in either a long or an abbreviated form:
-% \begin{longtable}{lll}
-% 	\toprule
-% 	\multicolumn{3}{c}{direction names for the second argument}\\\cmidrule{1-3}
-% 	direction	&	long form		& short form\\\midrule\endhead
-% 	\bottomrule\endfoot
+% The arrow's direction may be specified in either a long or an abbreviated form.
+% \begin{table}
+%   \centering
+%   \caption{\cs{adfarrow}: direction names for second argument}\label{tab:arr-dirs}
+%   \begin{tabular}{lll}
+% 	  \toprule
+% 	  \textsf{Direction}	  &	\multicolumn{2}{l}{\textsf{Name \& abbreviation}}\\
+%     \midrule
 % 		north			&	north			&	n\\
 % 		northeast	&	northeast	&	ne\\
-% 		east				&	east				&	e\\
+% 		east			&	east			&	e\\
 % 		southeast	&	southeast	&	se\\
 % 		south			&	south			&	s\\
 % 		southwest	&	southwest	&	sw\\
-% 		west				&	west				&	w\\
+% 		west			&	west			&	w\\
 % 		northwest	&	northwest	&	nw\\
-% \end{longtable}
+%   	\bottomrule
+%   \end{tabular}
+% \end{table}
 % 
-% The different possibilities may be illustrated by the examples in the following table where each row consists of a selection of equivalent commands which may be used to produce identical output in different ways.
-% In each case, the number of the arrow is given first.
-% This may be used directly with the \verb|\adfarrow{}| command as explained above.
-% One of the eight commands from the previous section follows.
-% Two additional uses of \verb|\adfarrow| are given next using the \verb|\adfarrow[family]{direction}| form described in this section.
-% Finally, the arrow each of these commands typesets is displayed to their right.
-% \begin{longtable}{lllll}
-% 	\toprule\endhead
-% 	\bottomrule\endfoot
+% The different possibilities are illustrated \cref{tab:arr-egs} where each row consists of a selection of equivalent commands which may be used to produce identical output in different ways.
+% \begin{table}
+%   \centering
+%   \caption{\cs{adfarrow}: examples}\label{tab:arr-egs}
+%   \begin{tabular}{lllll}
+% 	  \toprule
+%     \textsf{No.} & \multicolumn{3}{l}{\textsf{Commands equivalent to \cs{adfarrow}\marg{no.}}} & \textsf{Result} \\
+%     \midrule
 % 		4	&	\verb|\adfarrowse1|	&	\verb|\adfarrow[1]{southeast}|				&	\verb|\adfarrow[opentail]{se}|		&	\adfarrow[opentail]{se}\\
 % 		51	&	\verb|\adfarrown6|		&	\verb|\adfarrow[tail]{north}|				&	\verb|\adfarrow[6]{n}|						&	\adfarrow[6]{n}\\
 % 		42	&	\verb|\adfarrownw5|	&	\verb|\adfarrow[thick]{nw}|					&	\verb|\adfarrow[5]{northwest}|		&	\adfarrow[5]{northwest}\\
 % 		15	&	\verb|\adfarroww2|		&	\verb|\adfarrow[2]{w}|								&	\verb|\adfarrow[plain]{west}|		&	\adfarrow[plain]{west}\\
 % 		31	&	\verb|\adfarrows4|		&	\verb|\adfarrow[solidtail]{south}|		&	\verb|\adfarrow[4]{s}|						&	\adfarrow[4]{s}\\
 % 		22	&	\verb|\adfarrowsw3|	&	\verb|\adfarrow[comic]{sw}|					&	\verb|\adfarrow[3]{southwest}|		&	\adfarrow[3]{southwest}\\
-% \end{longtable}
+%   	\bottomrule
+%   \end{tabular}
+% \end{table}
+% In each case, the number of the arrow is given first.
+% This may be used directly with the \verb|\adfarrow{}| command as explained above.
+% One of the eight commands from the previous section follows.
+% Two additional uses of \verb|\adfarrow| are given next using the \verb|\adfarrow[family]{direction}| form described in this section.
+% Finally, the arrow each of these commands typesets is displayed to their right.
 % 
-%^^A 2 : \adfarrow[1]{e}
-%^^A 3 : \adfarrow[1]{se}
-%^^A 4 : \adfarrow[1]{s}
-%^^A 5 : \adfarrow[1]{sw}
-%^^A 6 : \adfarrow[1]{w}
-%^^A 7 : \adfarrow[1]{nw}
-%^^A 8 : \adfarrow[1]{n}
-%^^A 9 : \adfarrow[1]{ne}
-%^^A
-%^^A 10 : \adfarrow[2]{e}
-%^^A 11 : \adfarrow[2]{se}
-%^^A 12 : \adfarrow[2]{s}
-%^^A 13 : \adfarrow[2]{sw}
-%^^A 14 : \adfarrow[2]{w}
-%^^A 15 : \adfarrow[2]{nw}
-%^^A 16 : \adfarrow[2]{n}
-%^^A 17 : \adfarrow[2]{ne}
-%^^A
-%^^A 10 : \adfarrow[plain]{e}
-%^^A 11 : \adfarrow[plain]{se}
-%^^A 12 : \adfarrow[plain]{s}
-%^^A 13 : \adfarrow[plain]{sw}
-%^^A 14 : \adfarrow[plain]{w}
-%^^A 15 : \adfarrow[plain]{nw}
-%^^A 16 : \adfarrow[plain]{n}
-%^^A 17 : \adfarrow[plain]{ne}
-%^^A
-%^^A 10 : \adfarrow[plain]{east}
-%^^A 11 : \adfarrow[plain]{southeast}
-%^^A 12 : \adfarrow[plain]{south}
-%^^A 13 : \adfarrow[plain]{southwest}
-%^^A 14 : \adfarrow[plain]{west}
-%^^A 15 : \adfarrow[plain]{northwest}
-%^^A 16 : \adfarrow[plain]{north}
-%^^A 17 : \adfarrow[plain]{northeast}
-%
 % \subsection{adfbullets}
-% 
+%
+% \DescribePkg{adfbullets}
 % \lpack{adfbullets} provides the command \verb|\adfbullet{}| which takes a single numerical argument.
-% There are 52 bullets in \fname{BulletsADF} which can be produced by feeding the relevant number between 1 and 52 to \verb|\adfbullet{}|\footnote{Again, a 0 will simply typeset a space and should be avoided as using it may interfere with \TeX's spacing algorithms.}:
+% There are 52 bullets in \fname{BulletsADF} which can be produced by feeding the relevant number between 1 and 52 to \verb|\adfbullet{}|.
+%
+% \DescribeMacro{\adfbullet}\marg{number}
+%
+% Where \meta{number} is a positive integer between 1 and 52 inclusive\footnote{%
+%   Again, the argument 0 will simply typeset a space and should be avoided as using it may interfere with \TeX's spacing algorithms.%
+% }.
 % \begin{multicols}{4}
 % 	\adfbulletshow
 % \end{multicols}
 % 
 % For example, \verb|\adfbullet{17}\adfbullet{19}\adfbullet{23}| produces: 	\adfbullet{17}\adfbullet{19}\adfbullet{23}.
 % 
-% \section{Usage}
+% \section{Usage Examples}
 % 
 % \lpack{enumitem} allows you to easily change the format of lists: 
 % \begin{verbatim}
 % \begin{itemize}[label=\adfbullet{25}]
-% 	\item diagrams;
-% 	\item presentations;
-% 	\item handouts;
-% 	\item brochures, leaflets and pamphlets;
-% 	\item forms, including fill-in \textsc[pdf] forms.
+% 	\item sealing was,
+% 	\item cabbages;
+% 	\item kings.
 % \end{itemize}
 % \end{verbatim}
+% \begin{itemize}[label=\adfbullet{25}]
+% 	\item sealing was,
+% 	\item cabbages;
+% 	\item kings.
+% \end{itemize}
 % Refer to the package documentation for further details.
 % 
 % \lpack{adfarrows} and \lpack{adfbullets} can be used in \lpack{beamer} presentations to produce lists with custom bullet markers; as icons and markers in \lpack{pgf} diagrams; with \lpack{sectsty}, \lpack{titlesec} and/or \lpack{fancyhdr} to typeset custom headings, headers and footers. 
