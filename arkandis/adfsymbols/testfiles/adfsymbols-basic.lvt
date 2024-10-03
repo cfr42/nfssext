@@ -1,0 +1,23 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+\listfiles
+\RequirePackage{svn-prov}
+\ProvidesFileSVN{$Id: adfsymbols-basic.lvt 10462 2024-10-03 19:16:55Z cfrees $}[v1.1 \revinfo][\filebase: basic test]
+\pdfmapfile{-ArrowsADF.map}
+\pdfmapfile{-BulletsADF.map}
+\pdfmapfile{+adfsymbols.map}
+\input regression-test.tex\relax
+\documentclass{article}
+	
+\usepackage{adfarrows}
+\usepackage{adfbullets}
+
+\begin{document}
+\START
+\SEPARATOR
+\TYPE{Lefel if: \the\currentiflevel.}
+\TYPE{Lefel grwpiau: \the\currentgrouplevel.}
+\SEPARATOR
+\END
+\end{document} 
+% vim: ts=2:sw=2:

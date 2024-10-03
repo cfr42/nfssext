@@ -1,0 +1,86 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+\listfiles
+\pdftracingfonts=1
+\RequirePackage{svn-prov}
+\ProvidesFileSVN{$Id: adfarrows-alt.lvt 10459 2024-10-03 06:07:06Z cfrees $}[v1.1 \revinfo][\filebase: subs test]
+\pdfmapfile{-ArrowsADF.map}
+\pdfmapfile{-BulletsADF.map}
+\pdfmapfile{+adfsymbols.map}
+\input regression-test.tex\relax
+\documentclass{article}
+\usepackage{tracefnt}% infoshow is default; debugshow traces maths fonts, too
+	
+\usepackage{adfarrows}
+\makeatletter
+\newcommand{\adfsymset}{%
+1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52}
+\newcommand{\adfarrowshow}{%
+	\def\tempa{52}%
+	\@for \xx:=\adfsymset \do {%
+		\ifx\tempa\xx
+			\xx: \adfarrow{\xx}%
+		\else
+			\xx:	 \adfarrow{\xx}\\%
+		\fi}}
+\makeatother
+
+\begin{document}
+\makeatletter
+\tracinglostchars\thr@@
+\START
+% RHAID ddefnyddio'r llinell isod tu allan i'r \TEST
+\ExplSyntaxOn
+% it would be much better if I could get tex to give me the slot number - either in the original or (preferably) the reencoded font
+% as it is, all it tells me in many cases is that it has used some character or other from the font and, even when it does way which it has used, I'm not sure I should believe it.
+\TEST{adfarrows-alt-test-1}{
+  \hbox_set:Nn \l_tmpa_box 
+  {
+    \adfhalfarrowright
+    \adfhalfarrowleft
+    \adfhalfarrowrightsolid
+    \adfhalfarrowleftsolid
+  }
+  \box_show:N \l_tmpa_box
+}
+\TEST{adfarrows-alt-test-2}{
+  \hbox_set:Nn \l_tmpa_box 
+  {
+    \clist_map_inline:nn { e, se, s, sw, w, nw, n, ne }
+    {
+      \int_step_inline:nn { 6 }
+      {
+        \use:c { adfarrow #1 } ##1 
+      }
+    }
+  }
+  \box_show:N \l_tmpa_box
+}
+\TEST{adfarrows-alt-test-3}{
+  \hbox_set:Nn \l_tmpa_box 
+  {
+    \clist_map_inline:nn 
+    { 
+      e, se, s, sw, w, nw, n, ne ,
+      east, southeast, south, southwest, west, northwest, north, northeast
+    } {
+      \int_step_inline:nn { 6 }
+      {
+        \adfarrow [ ##1 ] { #1 } 
+      }
+      \clist_map_inline:nn 
+      {
+        opentail, plain, comic, solidtail, thick, tail
+      } {
+        \adfarrow [ ##1 ] { #1 }
+      }
+    }
+  }
+  \box_show:N \l_tmpa_box
+}
+\ExplSyntaxOff
+\makeatother
+\END
+
+\end{document} 
+% vim: ts=2:sw=2:

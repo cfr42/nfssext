@@ -1,0 +1,274 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+============================================================
+TEST 1: adfarrows-alt-test-1
+============================================================
+LaTeX Font Info:    Trying to load font information for U+ArrowsADF on input line ....
+> \box...=
+\hbox(3.38998+0.0)x32.07999
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^A
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^B
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^[
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^\
+! OK.
+<argument> \l_tmpa_box 
+l. ...}
+============================================================
+============================================================
+TEST 2: adfarrows-alt-test-2
+============================================================
+> \box...=
+\hbox(7.08+2.51)x292.83972
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^C
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^K
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^S
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^]
+.\U/ArrowsADF/m/n/10 (ArrowsADF) %
+.\U/ArrowsADF/m/n/10 (ArrowsADF) -
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^D
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^L
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^T
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^^
+.\U/ArrowsADF/m/n/10 (ArrowsADF) &
+.\U/ArrowsADF/m/n/10 (ArrowsADF) .
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^E
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^M
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^U
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^_
+.\U/ArrowsADF/m/n/10 (ArrowsADF) '
+.\U/ArrowsADF/m/n/10 (ArrowsADF) /
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^F
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^N
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^V
+.\U/ArrowsADF/m/n/10 (ArrowsADF)  
+.\U/ArrowsADF/m/n/10 (ArrowsADF) (
+.\U/ArrowsADF/m/n/10 (ArrowsADF) 0
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^G
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^O
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^W
+.\U/ArrowsADF/m/n/10 (ArrowsADF) !
+.\U/ArrowsADF/m/n/10 (ArrowsADF) )
+.\U/ArrowsADF/m/n/10 (ArrowsADF) 1
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^H
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^P
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^X
+.\U/ArrowsADF/m/n/10 (ArrowsADF) "
+.\U/ArrowsADF/m/n/10 (ArrowsADF) *
+.\U/ArrowsADF/m/n/10 (ArrowsADF) 2
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^I
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^Q
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^Y
+.\U/ArrowsADF/m/n/10 (ArrowsADF) #
+.\U/ArrowsADF/m/n/10 (ArrowsADF) +
+.\U/ArrowsADF/m/n/10 (ArrowsADF) 3
+.\U/ArrowsADF/m/n/10 (ArrowsADF) 
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^R
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^Z
+.\U/ArrowsADF/m/n/10 (ArrowsADF) $
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ,
+.\U/ArrowsADF/m/n/10 (ArrowsADF) 4
+! OK.
+<argument> \l_tmpa_box 
+l. ...}
+============================================================
+============================================================
+TEST 3: adfarrows-alt-test-3
+============================================================
+> \box...=
+\hbox(7.08+2.51)x1173.33902
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^A
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^B
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^C
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^D
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^E
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^F
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^C
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^K
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^S
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^]
+.\U/ArrowsADF/m/n/10 (ArrowsADF) %
+.\U/ArrowsADF/m/n/10 (ArrowsADF) -
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^B
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^C
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^D
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^E
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^F
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^G
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^D
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^L
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^T
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^^
+.\U/ArrowsADF/m/n/10 (ArrowsADF) &
+.\U/ArrowsADF/m/n/10 (ArrowsADF) .
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^C
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^D
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^E
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^F
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^G
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^H
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^E
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^M
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^U
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^_
+.\U/ArrowsADF/m/n/10 (ArrowsADF) '
+.\U/ArrowsADF/m/n/10 (ArrowsADF) /
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^D
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^E
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^F
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^G
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^H
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^I
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^F
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^N
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^V
+.\U/ArrowsADF/m/n/10 (ArrowsADF)  
+.\U/ArrowsADF/m/n/10 (ArrowsADF) (
+.\U/ArrowsADF/m/n/10 (ArrowsADF) 0
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^E
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^F
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^G
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^H
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^I
+.\U/ArrowsADF/m/n/10 (ArrowsADF) 
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^G
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^O
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^W
+.\U/ArrowsADF/m/n/10 (ArrowsADF) !
+.\U/ArrowsADF/m/n/10 (ArrowsADF) )
+.\U/ArrowsADF/m/n/10 (ArrowsADF) 1
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^F
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^G
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^H
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^I
+.\U/ArrowsADF/m/n/10 (ArrowsADF) 
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^K
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^H
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^P
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^X
+.\U/ArrowsADF/m/n/10 (ArrowsADF) "
+.\U/ArrowsADF/m/n/10 (ArrowsADF) *
+.\U/ArrowsADF/m/n/10 (ArrowsADF) 2
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^G
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^H
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^I
+.\U/ArrowsADF/m/n/10 (ArrowsADF) 
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^K
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^L
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^I
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^Q
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^Y
+.\U/ArrowsADF/m/n/10 (ArrowsADF) #
+.\U/ArrowsADF/m/n/10 (ArrowsADF) +
+.\U/ArrowsADF/m/n/10 (ArrowsADF) 3
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^H
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^I
+.\U/ArrowsADF/m/n/10 (ArrowsADF) 
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^K
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^L
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^M
+.\U/ArrowsADF/m/n/10 (ArrowsADF) 
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^R
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^Z
+.\U/ArrowsADF/m/n/10 (ArrowsADF) $
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ,
+.\U/ArrowsADF/m/n/10 (ArrowsADF) 4
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^A
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^B
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^C
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^D
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^E
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^F
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^C
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^K
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^S
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^]
+.\U/ArrowsADF/m/n/10 (ArrowsADF) %
+.\U/ArrowsADF/m/n/10 (ArrowsADF) -
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^B
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^C
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^D
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^E
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^F
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^G
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^D
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^L
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^T
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^^
+.\U/ArrowsADF/m/n/10 (ArrowsADF) &
+.\U/ArrowsADF/m/n/10 (ArrowsADF) .
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^C
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^D
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^E
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^F
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^G
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^H
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^E
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^M
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^U
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^_
+.\U/ArrowsADF/m/n/10 (ArrowsADF) '
+.\U/ArrowsADF/m/n/10 (ArrowsADF) /
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^D
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^E
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^F
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^G
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^H
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^I
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^F
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^N
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^V
+.\U/ArrowsADF/m/n/10 (ArrowsADF)  
+.\U/ArrowsADF/m/n/10 (ArrowsADF) (
+.\U/ArrowsADF/m/n/10 (ArrowsADF) 0
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^E
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^F
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^G
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^H
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^I
+.\U/ArrowsADF/m/n/10 (ArrowsADF) 
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^G
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^O
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^W
+.\U/ArrowsADF/m/n/10 (ArrowsADF) !
+.\U/ArrowsADF/m/n/10 (ArrowsADF) )
+.\U/ArrowsADF/m/n/10 (ArrowsADF) 1
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^F
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^G
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^H
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^I
+.\U/ArrowsADF/m/n/10 (ArrowsADF) 
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^K
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^H
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^P
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^X
+.\U/ArrowsADF/m/n/10 (ArrowsADF) "
+.\U/ArrowsADF/m/n/10 (ArrowsADF) *
+.\U/ArrowsADF/m/n/10 (ArrowsADF) 2
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^G
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^H
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^I
+.\U/ArrowsADF/m/n/10 (ArrowsADF) 
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^K
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^L
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^I
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^Q
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^Y
+.\U/ArrowsADF/m/n/10 (ArrowsADF) #
+.\U/ArrowsADF/m/n/10 (ArrowsADF) +
+.\U/ArrowsADF/m/n/10 (ArrowsADF) 3
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^H
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^I
+.\U/ArrowsADF/m/n/10 (ArrowsADF) 
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^K
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^L
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^M
+.\U/ArrowsADF/m/n/10 (ArrowsADF) 
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^R
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^Z
+.\U/ArrowsADF/m/n/10 (ArrowsADF) $
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ,
+.\U/ArrowsADF/m/n/10 (ArrowsADF) 4
+! OK.
+<argument> \l_tmpa_box 
+l. ...}
+============================================================

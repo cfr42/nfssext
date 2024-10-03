@@ -1,0 +1,45 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+\listfiles
+\pdftracingfonts=1
+\RequirePackage{svn-prov}
+\ProvidesFileSVN{$Id: adfsymbols-scale.lvt 10458 2024-10-03 01:57:56Z cfrees $}[v1.1 \revinfo][\filebase: scale test]
+\pdfmapfile{-ArrowsADF.map}
+\pdfmapfile{-BulletsADF.map}
+\pdfmapfile{+adfsymbols.map}
+\input regression-test.tex\relax
+\documentclass{article}
+\usepackage{tracefnt}% infoshow is default; debugshow traces maths fonts, too
+	
+\usepackage[scale=20]{adfarrows}
+\usepackage[scale=20]{adfbullets}
+
+\begin{document}
+\makeatletter
+\tracinglostchars\thr@@
+\showoutput
+\makeatother
+\START
+% RHAID ddefnyddio'r llinell isod tu allan i'r \TEST
+\ExplSyntaxOn
+\TEST{adfarrows-scale-test}{
+  \hbox_set:Nn \l_tmpa_box 
+  {
+    \normalfont\normalsize
+    \adfarrow{8}
+  }
+  \box_show:N \l_tmpa_box
+}
+\TEST{adfbullets-scale-test}{
+  \hbox_set:Nn \l_tmpa_box 
+  {
+    \normalfont\normalsize
+    \adfbullet{12}
+  }
+  \box_show:N \l_tmpa_box
+}
+\ExplSyntaxOff
+\END
+
+\end{document} 
+% vim: ts=2:sw=2:

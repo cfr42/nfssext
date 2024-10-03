@@ -1,0 +1,830 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+============================================================
+TEST 1: adfarrows-show-test-1
+============================================================
+LaTeX Font Info:    Trying to load font information for U+ArrowsADF on input line ....
+> \box...=
+\hbox(7.08+2.51)x1175.47707
+.\OT1/cmr/m/n/10 (cmr10) 1
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^A
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 2
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^B
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 3
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^C
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 4
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^D
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 5
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^E
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 6
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^F
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 7
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^G
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 8
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^H
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 9
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^I
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 1
+.\OT1/cmr/m/n/10 (cmr10) 0
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) 
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 1
+.\OT1/cmr/m/n/10 (cmr10) 1
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^K
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 1
+.\OT1/cmr/m/n/10 (cmr10) 2
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^L
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 1
+.\OT1/cmr/m/n/10 (cmr10) 3
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^M
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 1
+.\OT1/cmr/m/n/10 (cmr10) 4
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^N
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 1
+.\OT1/cmr/m/n/10 (cmr10) 5
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^O
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 1
+.\OT1/cmr/m/n/10 (cmr10) 6
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^P
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 1
+.\OT1/cmr/m/n/10 (cmr10) 7
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^Q
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 1
+.\OT1/cmr/m/n/10 (cmr10) 8
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^R
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 1
+.\OT1/cmr/m/n/10 (cmr10) 9
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^S
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 2
+.\OT1/cmr/m/n/10 (cmr10) 0
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^T
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 2
+.\OT1/cmr/m/n/10 (cmr10) 1
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^U
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 2
+.\OT1/cmr/m/n/10 (cmr10) 2
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^V
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 2
+.\OT1/cmr/m/n/10 (cmr10) 3
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^W
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 2
+.\OT1/cmr/m/n/10 (cmr10) 4
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^X
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 2
+.\OT1/cmr/m/n/10 (cmr10) 5
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^Y
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 2
+.\OT1/cmr/m/n/10 (cmr10) 6
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^Z
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 2
+.\OT1/cmr/m/n/10 (cmr10) 7
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^[
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 2
+.\OT1/cmr/m/n/10 (cmr10) 8
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^\
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 2
+.\OT1/cmr/m/n/10 (cmr10) 9
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^]
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 3
+.\OT1/cmr/m/n/10 (cmr10) 0
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^^
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 3
+.\OT1/cmr/m/n/10 (cmr10) 1
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ^^_
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 3
+.\OT1/cmr/m/n/10 (cmr10) 2
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF)  
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 3
+.\OT1/cmr/m/n/10 (cmr10) 3
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) !
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 3
+.\OT1/cmr/m/n/10 (cmr10) 4
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) "
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 3
+.\OT1/cmr/m/n/10 (cmr10) 5
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) #
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 3
+.\OT1/cmr/m/n/10 (cmr10) 6
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) $
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 3
+.\OT1/cmr/m/n/10 (cmr10) 7
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) %
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 3
+.\OT1/cmr/m/n/10 (cmr10) 8
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) &
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 3
+.\OT1/cmr/m/n/10 (cmr10) 9
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) '
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 4
+.\OT1/cmr/m/n/10 (cmr10) 0
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) (
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 4
+.\OT1/cmr/m/n/10 (cmr10) 1
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) )
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 4
+.\OT1/cmr/m/n/10 (cmr10) 2
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) *
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 4
+.\OT1/cmr/m/n/10 (cmr10) 3
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) +
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 4
+.\OT1/cmr/m/n/10 (cmr10) 4
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) ,
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 4
+.\OT1/cmr/m/n/10 (cmr10) 5
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) -
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 4
+.\OT1/cmr/m/n/10 (cmr10) 6
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) .
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 4
+.\OT1/cmr/m/n/10 (cmr10) 7
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) /
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 4
+.\OT1/cmr/m/n/10 (cmr10) 8
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) 0
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 4
+.\OT1/cmr/m/n/10 (cmr10) 9
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) 1
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 5
+.\OT1/cmr/m/n/10 (cmr10) 0
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) 2
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 5
+.\OT1/cmr/m/n/10 (cmr10) 1
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) 3
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 5
+.\OT1/cmr/m/n/10 (cmr10) 2
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/ArrowsADF/m/n/10 (ArrowsADF) 4
+! OK.
+<argument> \l_tmpa_box 
+l. ...}
+============================================================
+============================================================
+TEST 2: adfbullets-show-test-1
+============================================================
+LaTeX Font Info:    Trying to load font information for U+BulletsADF on input line ....
+> \box...=
+\hbox(6.44444+0.69)x1117.24713
+.\OT1/cmr/m/n/10 (cmr10) 1
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) ^^A
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 2
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) ^^B
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 3
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) ^^C
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 4
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) ^^D
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 5
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) ^^E
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 6
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) ^^F
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 7
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) ^^G
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 8
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) ^^H
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 9
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) ^^I
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 1
+.\OT1/cmr/m/n/10 (cmr10) 0
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) 
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 1
+.\OT1/cmr/m/n/10 (cmr10) 1
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) ^^K
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 1
+.\OT1/cmr/m/n/10 (cmr10) 2
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) ^^L
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 1
+.\OT1/cmr/m/n/10 (cmr10) 3
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) ^^M
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 1
+.\OT1/cmr/m/n/10 (cmr10) 4
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) ^^N
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 1
+.\OT1/cmr/m/n/10 (cmr10) 5
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) ^^O
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 1
+.\OT1/cmr/m/n/10 (cmr10) 6
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) ^^P
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 1
+.\OT1/cmr/m/n/10 (cmr10) 7
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) ^^Q
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 1
+.\OT1/cmr/m/n/10 (cmr10) 8
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) ^^R
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 1
+.\OT1/cmr/m/n/10 (cmr10) 9
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) ^^S
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 2
+.\OT1/cmr/m/n/10 (cmr10) 0
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) ^^T
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 2
+.\OT1/cmr/m/n/10 (cmr10) 1
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) ^^U
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 2
+.\OT1/cmr/m/n/10 (cmr10) 2
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) ^^V
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 2
+.\OT1/cmr/m/n/10 (cmr10) 3
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) ^^W
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 2
+.\OT1/cmr/m/n/10 (cmr10) 4
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) ^^X
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 2
+.\OT1/cmr/m/n/10 (cmr10) 5
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) ^^Y
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 2
+.\OT1/cmr/m/n/10 (cmr10) 6
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) ^^Z
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 2
+.\OT1/cmr/m/n/10 (cmr10) 7
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) ^^[
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 2
+.\OT1/cmr/m/n/10 (cmr10) 8
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) ^^\
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 2
+.\OT1/cmr/m/n/10 (cmr10) 9
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) ^^]
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 3
+.\OT1/cmr/m/n/10 (cmr10) 0
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) ^^^
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 3
+.\OT1/cmr/m/n/10 (cmr10) 1
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) ^^_
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 3
+.\OT1/cmr/m/n/10 (cmr10) 2
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF)  
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 3
+.\OT1/cmr/m/n/10 (cmr10) 3
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) !
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 3
+.\OT1/cmr/m/n/10 (cmr10) 4
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) "
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 3
+.\OT1/cmr/m/n/10 (cmr10) 5
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) #
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 3
+.\OT1/cmr/m/n/10 (cmr10) 6
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) $
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 3
+.\OT1/cmr/m/n/10 (cmr10) 7
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) %
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 3
+.\OT1/cmr/m/n/10 (cmr10) 8
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) &
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 3
+.\OT1/cmr/m/n/10 (cmr10) 9
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) '
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 4
+.\OT1/cmr/m/n/10 (cmr10) 0
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) (
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 4
+.\OT1/cmr/m/n/10 (cmr10) 1
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) )
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 4
+.\OT1/cmr/m/n/10 (cmr10) 2
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) *
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 4
+.\OT1/cmr/m/n/10 (cmr10) 3
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) +
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 4
+.\OT1/cmr/m/n/10 (cmr10) 4
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) ,
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 4
+.\OT1/cmr/m/n/10 (cmr10) 5
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) -
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 4
+.\OT1/cmr/m/n/10 (cmr10) 6
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) .
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 4
+.\OT1/cmr/m/n/10 (cmr10) 7
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) /
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 4
+.\OT1/cmr/m/n/10 (cmr10) 8
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) 0
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 4
+.\OT1/cmr/m/n/10 (cmr10) 9
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) 1
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 5
+.\OT1/cmr/m/n/10 (cmr10) 0
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) 2
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 5
+.\OT1/cmr/m/n/10 (cmr10) 1
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) 3
+.\penalty 10000
+.\glue 0.0 plus 1.0fil
+.\penalty -10000
+.\OT1/cmr/m/n/10 (cmr10) 5
+.\OT1/cmr/m/n/10 (cmr10) 2
+.\OT1/cmr/m/n/10 (cmr10) :
+.\glue 4.44444 plus 3.33331 minus 0.55556
+.\U/BulletsADF/m/n/10 (BulletsADF) 4
+! OK.
+<argument> \l_tmpa_box 
+l. ...}
+============================================================

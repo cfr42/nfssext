@@ -1,0 +1,56 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+\listfiles
+\pdftracingfonts=1
+\RequirePackage{svn-prov}
+\ProvidesFileSVN{$Id: adfsymbols-subs.lvt 10459 2024-10-03 06:07:06Z cfrees $}[v1.1 \revinfo][\filebase: subs test]
+\pdfmapfile{-ArrowsADF.map}
+\pdfmapfile{-BulletsADF.map}
+\pdfmapfile{+adfsymbols.map}
+\input regression-test.tex\relax
+\documentclass{article}
+\usepackage{tracefnt}% infoshow is default; debugshow traces maths fonts, too
+	
+\usepackage{adfarrows}
+\usepackage{adfbullets}
+
+\begin{document}
+\makeatletter
+\tracinglostchars\thr@@
+\START
+% RHAID ddefnyddio'r llinell isod tu allan i'r \TEST
+\ExplSyntaxOn
+\TEST{adfarrows-subs-test-1}{
+  \hbox_set:Nn \l_tmpa_box 
+  {
+    \adfarrows@style\bfseries\scshape\char 30 
+  }
+  \box_show:N \l_tmpa_box
+}
+\TEST{adfarrow-subs-test-2}{
+  \hbox_set:Nn \l_tmpa_box 
+  {
+    \fontencoding{U}\fontfamily{ArrowsADF}\fontseries{bx}\fontshape{scsl}\selectfont\char 30
+  }
+  \box_show:N \l_tmpa_box
+}
+\TEST{adfbullets-subs-test-1}{
+  \hbox_set:Nn \l_tmpa_box 
+  {
+    \adfbullets@style\bfseries\scshape\char 30 
+  }
+  \box_show:N \l_tmpa_box
+}
+\TEST{adfbullet-subs-test-2}{
+  \hbox_set:Nn \l_tmpa_box 
+  {
+    \fontencoding{U}\fontfamily{BulletsADF}\fontseries{bx}\fontshape{scsl}\selectfont\char 30
+  }
+  \box_show:N \l_tmpa_box
+}
+\ExplSyntaxOff
+\makeatother
+\END
+
+\end{document} 
+% vim: ts=2:sw=2:

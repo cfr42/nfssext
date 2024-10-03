@@ -1,0 +1,28 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+============================================================
+TEST 1: adfarrows-scale-test
+============================================================
+LaTeX Font Info:    Trying to load font information for U+ArrowsADF on input line ....
+LaTeX Font Info:    Font shape `U/ArrowsADF/m/n' will be
+(Font)              scaled to size 200.0pt on input line ....
+> \box...=
+\hbox(100.79994+12.00008)x132.20004
+.\U/ArrowsADF/m/n/10 (ArrowsADF@200.0pt) ^^H
+! OK.
+<argument> \l_tmpa_box 
+l. ...}
+============================================================
+============================================================
+TEST 2: adfbullets-scale-test
+============================================================
+LaTeX Font Info:    Trying to load font information for U+BulletsADF on input line ....
+LaTeX Font Info:    Font shape `U/BulletsADF/m/n' will be
+(Font)              scaled to size 200.0pt on input line ....
+> \box...=
+\hbox(95.80002+0.0)x111.19995
+.\U/BulletsADF/m/n/10 (BulletsADF@200.0pt) ^^L
+! OK.
+<argument> \l_tmpa_box 
+l. ...}
+============================================================
