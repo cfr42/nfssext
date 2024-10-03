@@ -1,7 +1,7 @@
 % \iffalse meta-comment
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % adfsymbols.dtx
-% Additions and changes Copyright (C) YYYY-2024 Clea F. Rees.
+% Additions and changes Copyright (C) 2019-2024 Clea F. Rees.
 % Code from skeleton.dtx Copyright (C) 2015-2024 Scott Pakin (see below).
 %
 % This work may be distributed and/or modified under the
@@ -31,9 +31,9 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: adfsymbols.dtx 10464 2024-10-03 19:29:14Z cfrees $}[v1.3 \revinfo][\filebase DTX: FONT for 8-bit engines]
+\ProvidesFileSVN{$Id: adfsymbols.dtx 10467 2024-10-03 23:14:27Z cfrees $}[v1.3 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[adfsymbols]
-\documentclass[11pt,british]{ltxdoc}
+\documentclass[10pt,british]{ltxdoc}
 %^^A l3doc loads fancyvrb
 %^^A fancyvrb overwrites svn-prov's macros without warning
 %^^A restore \fileversion \filerev in case we're using l3doc
@@ -59,7 +59,7 @@
 \urlstyle{tt}
 \usepackage{multicol}
 \usepackage{microtype}
-\usepackage[a4paper,headheight=14pt]{geometry}	% use 14pt for 11pt text, 15pt for 12pt text
+%^^A \usepackage[a4paper,headheight=14pt,marginparwidth=45mm,reversemp=true]{geometry}	% use 14pt for 11pt text, 15pt for 12pt text
 \usepackage{csquotes}
 \MakeAutoQuote{‘}{’}
 \MakeAutoQuote*{“}{”}
@@ -175,6 +175,8 @@
 		\else
 			\xx:	 \adfbullet{\xx}\\%
 		\fi}}
+\def\@xobeysp{\leavevmode\penalty100\ }
+\c@IndexColumns=2
 \makeatother
 \begin{document}
   \DocInput{\filename}
@@ -182,6 +184,8 @@
   \DocInput{adfarrows.dtx}
   \addcontentsline{toc}{section}{BulletsADF}
   \DocInput{adfbullets.dtx}
+  \PrintChanges
+  \PrintIndex
 \end{document}
 %</driver>
 % \fi
@@ -191,8 +195,10 @@
 % \newcommand*{\fname}[1]{\textsf{#1}}
 % \newcommand*{\file}[1]{\texttt{#1}}
 % 
-% \changes{v??}{YYYY/??/??}{First public release.}
-% \changes{v1.2}{2024-09-29}{Belated update for (New) NFSS and revised nfssext-cfr.
+% \changes{v??}{2019}{First public release.}
+% \changes{v1.2a}{2019}{Fix lack of localisation bug.}
+% \changes{v1.2b}{2019/10/13}{Include both PDF and TFM.}
+% \changes{v1.3}{2024-09-29}{Belated update for (N)NFSS (probably unneeded.
 % Try switching to DTX/INS.}
 %
 % \maketitle
@@ -229,7 +235,7 @@
 % 
 % \lpack{adfsymbols} includes a copy of the fonts in type 1 format, documentation and support files for \TeX/\LaTeX\, including two \LaTeX\ package files, \path{adfarrows.sty} and \path{adfbullets.sty}.
 % 
-% \section{The support package}\label{sec:support}
+% \section{The support packages}\label{sec:support}
 % 
 % \lpack{adfsymbols} provides access to the symbols in \fname{ArrowsADF} and \fname{BulletsADF} in \LaTeX\ through two packages, \lpack{adfarrows} and \lpack{adfbullets}.
 % \changes{v1.3}{2024-10-03}{Drop dependencies on \lpack{pifont} and \lpack{fp}.}
@@ -237,6 +243,16 @@
 % \subsection{adfarrows}
 % 
 % \DescribePkg{adfarrows}
+% \lpack{adfarrows} provides access to \fname{ArrowsADF}.
+% The package supports a single option to scale the fonts.
+%
+% \DescribeOpt{scale}\val{scaling factor}
+%
+% Scale the font  by \meta{scaling factor}, which should be a positive integer or simple decimal such as \verb|2| or \verb|1.2|.
+% This option is intended for cases where the fonts should be scaled to match other fonts used in the document e.g.~for consistency with the size of regular text or superscript markers.
+%
+% Initially empty, which is equivalent to \verb|1| but more efficient.
+%
 % \lpack{adfarrows} provides the command \verb|\adfarrow{}| which takes a single numerical argument.
 % There are 52 arrows in \fname{ArrowsADF} which can be produced by feeding the relevant number between 1 and 52 to \verb|\adfarrow{}|.
 %
@@ -398,6 +414,16 @@
 % \subsection{adfbullets}
 %
 % \DescribePkg{adfbullets}
+% \lpack{adfbullets} provides access to \fname{BulletsADF}.
+% The package supports a single option to scale the fonts.
+%
+% \DescribeOpt{scale}\val{scaling factor}
+%
+% Scale the font  by \meta{scaling factor}, which should be a positive integer or simple decimal such as \verb|2| or \verb|1.2|.
+% This option is intended for cases where the fonts should be scaled to match other fonts used in the document e.g.~for consistency with the size of regular text or superscript markers.
+%
+% Initially empty, which is equivalent to \verb|1| but more efficient.
+%
 % \lpack{adfbullets} provides the command \verb|\adfbullet{}| which takes a single numerical argument.
 % There are 52 bullets in \fname{BulletsADF} which can be produced by feeding the relevant number between 1 and 52 to \verb|\adfbullet{}|.
 %
@@ -451,8 +477,8 @@
 % 
 % 
 % \MaybeStop{%
-% \PrintChanges
-% \PrintIndex
+%^^A \PrintChanges
+%^^A \PrintIndex
 % }
 % 
 % \section{Implementation}

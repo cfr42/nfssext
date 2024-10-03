@@ -1,7 +1,7 @@
 % \iffalse meta-comment
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % adfbullets.dtx
-% Additions and changes Copyright (C) YYYY-2024 Clea F. Rees.
+% Additions and changes Copyright (C) 2019-2024 Clea F. Rees.
 % Code from skeleton.dtx Copyright (C) 2015-2024 Scott Pakin (see below).
 %
 % This work may be distributed and/or modified under the
@@ -31,7 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: adfbullets.dtx 10464 2024-10-03 19:29:14Z cfrees $}[v1.3 \revinfo][\filebase DTX: FONT for 8-bit engines]
+\ProvidesFileSVN{$Id: adfbullets.dtx 10467 2024-10-03 23:14:27Z cfrees $}[v1.3 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[adfbullets]
 \documentclass[11pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -205,10 +205,6 @@
 %</driver>
 % \fi
 %
-%
-% \changes{v??}{YYYY/??/??}{First public release.}
-% \changes{v1.3}{2024-10-03}{}
-%
 % \title{\pkgname: adfbullets}
 % \author{Clea F. Rees\thanks{%
 %     Bug tracker:
@@ -252,7 +248,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: adfbullets.dtx 10464 2024-10-03 19:29:14Z cfrees $}[v1.3 \revinfo]
+\ProvidesPackageSVN[\filebase.sty]{$Id: adfbullets.dtx 10467 2024-10-03 23:14:27Z cfrees $}[v1.3 \revinfo]
 \DefineFileInfoSVN[adfbullets]
 \newif\if@adfbullets@digonnew
 %    \end{macrocode}
@@ -266,6 +262,8 @@
   }%
 }{\@adfbullets@digonnewtrue}
 %    \end{macrocode}
+% \begin{option}{scale}
+% \changes{v1.3}{Add scaling option.}
 % \texttt{scale} takes a factor by which to scale the fonts.
 % This is empty by default, which is equivalent to \texttt{1}, but more efficient.
 %    \begin{macrocode}
@@ -280,6 +278,7 @@
   \let\adfbullets@scale\@empty
 \fi
 %    \end{macrocode}
+% \end{option}
 % Provide \cs{ProcessKeyOptions}, \cs{IfFormatAtLeastTF} on older kernels.
 % Joseph Wright: from \file{siunitx.sty} ; \url{https://chat.stackexchange.com/transcript/message/64327823#64327823}
 %    \begin{macrocode}
@@ -371,13 +370,5 @@
 %</fd>
 % \fi
 %
-% \iffalse
-% \fi
-% \iffalse
-% \fi
-% \iffalse
-% \fi
-% \iffalse
-% \fi
 %\Finale
 %^^A vim: sw=2:et:tw=0:
