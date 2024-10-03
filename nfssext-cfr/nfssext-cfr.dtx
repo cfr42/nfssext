@@ -41,7 +41,7 @@
   \char_set_catcode_letter:N \:
 }
 \ExplSyntaxOff
-\ProvidesFileSVN{$Id: nfssext-cfr.dtx 10366 2024-09-18 14:25:21Z cfrees $}[v1.0 \revinfo][\filebase DTX: Extended font selection for NFSS and NNFSS]
+\ProvidesFileSVN{$Id: nfssext-cfr.dtx 10456 2024-10-03 01:19:12Z cfrees $}[v1.1 \revinfo][\filebase DTX: Extended font selection for NFSS and NNFSS]
 \DefineFileInfoSVN[nfssext-cfr]
 \documentclass[10pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -795,7 +795,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: nfssext-cfr.dtx 10366 2024-09-18 14:25:21Z cfrees $}[v1.0 \revinfo{} extensions for NFSS and NNFSS; based on 2003/03/14 v1.2 Experimental NFSS Extensions]
+\ProvidesPackageSVN[\filebase.sty]{$Id: nfssext-cfr.dtx 10456 2024-10-03 01:19:12Z cfrees $}[v1.1 \revinfo{} extensions for NFSS and NNFSS; based on 2003/03/14 v1.2 Experimental NFSS Extensions]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % ^^A Paid â defnyddio \GetFileInfoSVN*/\GetFileInfoSVN{} yn y fan hon!!
@@ -851,11 +851,11 @@
 %    \end{macrocode}
 % BEGIN expl pkg option setup
 %    \begin{macrocode}
-\newif\ifexfs@debug
-\ExplSyntaxOn
-\prop_gput:Nnn \g_msg_module_name_prop { nfssext-cfr } { exfs }
-\keys_define:nn { exfs }
-{
+  \newif\ifexfs@debug
+  \ExplSyntaxOn
+  \prop_gput:Nnn \g_msg_module_name_prop { nfssext-cfr } { exfs }
+  \keys_define:nn { exfs }
+  {
 %    \end{macrocode}
 % \begin{option}{compat} 
 % \changes{v1.0}{2024-09-16}{%
@@ -864,10 +864,10 @@
 % \begin{macro}{\g__exfs_compat_bool}
 %   Compatibility option.
 %    \begin{macrocode}
-  compat .bool_gset:N = \g__exfs_compat_bool,
-  compat .default:n = true,
-  compat .initial:n = false,
-  compat .usage:n = preamble,
+    compat .bool_gset:N = \g__exfs_compat_bool,
+    compat .default:n = true,
+    compat .initial:n = false,
+    compat .usage:n = preamble,
 %    \end{macrocode}
 % \end{macro}
 % \end{option}
@@ -876,9 +876,9 @@
 % \changes{v1.0}{2024-09-16}{%
 %   Add option \texttt{debug}.}
 %    \begin{macrocode}
-  debug .legacy_if_gset:n = exfs@debug,
-  debug .initial:n = false,
-  debug .default:n = true,
+    debug .legacy_if_gset:n = exfs@debug,
+    debug .initial:n = false,
+    debug .default:n = true,
 %    \end{macrocode}
 % \end{option}
 % \begin{option}{force} 
@@ -888,63 +888,63 @@
 % \begin{macro}{\g__exfs_force_bool}
 %  Force loading of code for \nfss{} even on newer kernels. 
 %    \begin{macrocode}
-  force .bool_gset:N = \g__exfs_force_bool,
-  force .default:n = true,
-  force .initial:n = false,
-  force .usage:n = preamble,
+    force .bool_gset:N = \g__exfs_force_bool,
+    force .default:n = true,
+    force .initial:n = false,
+    force .usage:n = preamble,
 %    \end{macrocode}
 % \end{macro}
 % \end{option}
 %    \begin{macrocode}
-}
+  }
 %    \end{macrocode}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Joseph Wright: from \file{siunitx.sty} ; \url{https://chat.stackexchange.com/transcript/message/64327823#64327823}
 %    \begin{macrocode}
-\providecommand \IfFormatAtLeastTF { \@ifl@t@r \fmtversion }
-\IfFormatAtLeastTF { 2022-06-01 }
-{
-  \ProcessKeyOptions [ exfs ] 
-}{
-  \RequirePackage { l3keys2e }
-  \ProcessKeysOptions { exfs }
+  \providecommand \IfFormatAtLeastTF { \@ifl@t@r \fmtversion }
+  \IfFormatAtLeastTF { 2022-06-01 }
+  {
+    \ProcessKeyOptions [ exfs ] 
+  }{
+    \RequirePackage { l3keys2e }
+    \ProcessKeysOptions { exfs }
 %    \end{macrocode}
 % \begin{macro}{\ProcessKeyOptions}
 % \mbox{ }
 %    \begin{macrocode}
-  \NewDocumentCommand \ProcessKeyOptions { o }
-  {
-    \IfValueTF { #1 } { \ProcessKeysOptions { #1 }  }
-    { \PackageError{nfssext-cfr}{
-        Optional~argument~mandatory~on~kernels~this~old.\MessageBreak
-        Please~specify~the~module~whose~keys~should~be~processed
-      }{
-        \protect\ProcessKeyOptions~only~passes~keys~to~
-        \protect\ProcessKeyOptions\MessageBreak
-        on~older~kernels~for~the~convenience~of~package~authors.~
-        Since~\protect\ProcessKeysOptions\MessageBreak
-        takes~an~argument,~the~optional~argument~to~
-        \protect\ProcessKeyOptions~is~required
-      } 
+    \NewDocumentCommand \ProcessKeyOptions { o }
+    {
+      \IfValueTF { #1 } { \ProcessKeysOptions { #1 }  }
+      { \PackageError{nfssext-cfr}{
+          Optional~argument~mandatory~on~kernels~this~old.\MessageBreak
+          Please~specify~the~module~whose~keys~should~be~processed
+        }{
+          \protect\ProcessKeyOptions~only~passes~keys~to~
+          \protect\ProcessKeyOptions\MessageBreak
+          on~older~kernels~for~the~convenience~of~package~authors.~
+          Since~\protect\ProcessKeysOptions\MessageBreak
+          takes~an~argument,~the~optional~argument~to~
+          \protect\ProcessKeyOptions~is~required
+        } 
+      }
     }
-  }
 %    \end{macrocode}
 % \end{macro}
 %    \begin{macrocode}
-}
-\IfFormatAtLeastTF { 2020-10-01 }{
-}{
-  \RequirePackage { xparse }
+  }
+  \IfFormatAtLeastTF { 2020-10-01 }{
+  }{
+    \RequirePackage { xparse }
 %    \end{macrocode}
 % \begin{macro}{\ExpandArgs}
 % \mbox{ }
 %    \begin{macrocode}
-  \providecommand \ExpandArgs [1]
-  { \cs_if_exist_use:c { exp_args:N #1 } }
+    \providecommand \ExpandArgs [1]
+    { \cs_if_exist_use:c { exp_args:N #1 } }
 %    \end{macrocode}
 % \end{macro}
 %    \begin{macrocode}
-}
+  }
 %    \end{macrocode}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % END expl pkg option setup
@@ -954,88 +954,88 @@
 % We test for the presence of \cs{init@series@setup} in order to determine whether to load code for \nnfss{} or \nfss.
 % If \texttt{force} is set, we load for \nfss{} regardless.
 %    \begin{macrocode}
-\RequirePackage{etoolbox}
-\msg_new:nnn { nfssext-cfr } { compat } 
-{
-  You ~ or ~ a ~ font-support ~ package ~ have ~ loaded ~ me ~ ( line ~ \msg_line_number: ) ~ with ~ the ~ compat ~ option. ~
-  This ~ means ~ the ~ package ~ may ~ require ~ updating. ~
-  Update ~ the ~ package ~ if ~ necessary ~ and ~ use ~ compat=false ~ when ~ loading ~ me.
-}
-\msg_new:nnn { nfssext-cfr } { force } 
-{
-  You ~ or ~ a ~ font-support ~ package ~ have ~ loaded ~ me ~ ( line ~ \msg_line_number: ) ~ with ~ the ~ force ~ option. ~
-  This ~ is ~ a ~ desperate ~ measure ~ of ~ last ~ resort. ~
-  **Breakage ~ is ~ expected.**
-}
-\hook_gput_code:nnn { begindocument/before } { . }
-{
-  \cs_if_exist:NTF \init@series@setup
+  \RequirePackage{etoolbox}
+  \msg_new:nnn { nfssext-cfr } { compat } 
   {
-    \bool_if:NTF \g__exfs_force_bool
-    {
-      \msg_warning:nn { nfssext-cfr } { force }
-      \RequirePackage {nfssext-cfr-nfss}
-    }{
-      \bool_if:NT \g__exfs_compat_bool
-      {
-        \msg_warning:nn { nfssext-cfr } { compat }
-      }
-      \RequirePackage {nfssext-cfr-nnfss}
-    }
-  }{% achosiad heb broblemau - diolch byth!
-    \RequirePackage {nfssext-cfr-nfss}
+    You ~ or ~ a ~ font-support ~ package ~ have ~ loaded ~ me ~ ( line ~ \msg_line_number: ) ~ with ~ the ~ compat ~ option. ~
+    This ~ means ~ the ~ package ~ may ~ require ~ updating. ~
+    Update ~ the ~ package ~ if ~ necessary ~ and ~ use ~ compat=false ~ when ~ loading ~ me.
   }
-}
+  \msg_new:nnn { nfssext-cfr } { force } 
+  {
+    You ~ or ~ a ~ font-support ~ package ~ have ~ loaded ~ me ~ ( line ~ \msg_line_number: ) ~ with ~ the ~ force ~ option. ~
+    This ~ is ~ a ~ desperate ~ measure ~ of ~ last ~ resort. ~
+    **Breakage ~ is ~ expected.**
+  }
+  \hook_gput_code:nnn { begindocument/before } { . }
+  {
+    \cs_if_exist:NTF \init@series@setup
+    {
+      \bool_if:NTF \g__exfs_force_bool
+      {
+        \msg_warning:nn { nfssext-cfr } { force }
+        \RequirePackage {nfssext-cfr-nfss}
+      }{
+        \bool_if:NT \g__exfs_compat_bool
+        {
+          \msg_warning:nn { nfssext-cfr } { compat }
+        }
+        \RequirePackage {nfssext-cfr-nnfss}
+      }
+    }{% achosiad heb broblemau - diolch byth!
+      \RequirePackage {nfssext-cfr-nfss}
+    }
+  }
 %    \end{macrocode}
 % \begin{macro}{\__exfs_set:n}
 %    \begin{macrocode}
-\cs_new_protected_nopar:Nn \__exfs_set:n
-{
-  \keys_set:nn { exfs } { #1 }
-}
+  \cs_new_protected_nopar:Nn \__exfs_set:n
+  {
+    \keys_set:nn { exfs } { #1 }
+  }
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\nfssextset}
 %   Allow setting of options later in preamble or in document.
 %   This is intended to enable debugging to be toggled locally.
 %    \begin{macrocode}
-\cs_set_eq:NN \nfssextset \__exfs_set:n 
+  \cs_set_eq:NN \nfssextset \__exfs_set:n 
 %    \end{macrocode}
 % \end{macro}
 %    \begin{macrocode}
-\ExplSyntaxOff
+  \ExplSyntaxOff
 %    \end{macrocode}
 % END added
 % \begin{macro}{\DeclareTextOrnament,\ornament}
 %   These are unmodified from \lpack{nfssext}.
 %   I'm not aware of any \ctan{} packages using these and they have not been tested for compatibility with \nnfss{}, though I can't see any patently obvious problems.
 %    \begin{macrocode}
-\newcommand*{\DeclareTextOrnament}[7]{%
-  \expandafter\def\csname#1@orn\@roman#2\endcsname{#3/#4/#5/#6/#7}}
-\begingroup
-  \catcode`\/=12
-  \gdef\exfs@split@orndef#1/#2/#3/#4/#5\@nil{%
-    \def\f@encoding{#1}%
-    \def\f@family{#2}%
-    \def\f@series{#3}%
-    \def\f@shape{#4}%
-    \def\exfs@tempa{#5}}
-\endgroup
-\def\exfs@base@family{\expandafter\exfs@get@base\f@family\@nil}
-\DeclareRobustCommand{\ornament}[1]{%
-  \expandafter\ifx\csname\exfs@base@family @orn\@roman#1\endcsname\relax
-    \PackageWarning{nfssext}{%
-      Ornament #1 undefined for font family '\exfs@base@family'\MessageBreak
-      Setting debug mark}%
-    \rule{1ex}{1ex}%
-  \else
-    \begingroup
-      \edef\exfs@tempb{\csname\exfs@base@family @orn\@roman#1\endcsname}%
-      \expandafter\expandafter\expandafter\exfs@split@orndef
-        \expandafter\string\exfs@tempb\@nil
-      \selectfont\char\exfs@tempa
-    \endgroup
-  \fi}
+  \newcommand*{\DeclareTextOrnament}[7]{%
+    \expandafter\def\csname#1@orn\@roman#2\endcsname{#3/#4/#5/#6/#7}}
+  \begingroup
+    \catcode`\/=12
+    \gdef\exfs@split@orndef#1/#2/#3/#4/#5\@nil{%
+      \def\f@encoding{#1}%
+      \def\f@family{#2}%
+      \def\f@series{#3}%
+      \def\f@shape{#4}%
+      \def\exfs@tempa{#5}}
+  \endgroup
+  \def\exfs@base@family{\expandafter\exfs@get@base\f@family\@nil}
+  \DeclareRobustCommand{\ornament}[1]{%
+    \expandafter\ifx\csname\exfs@base@family @orn\@roman#1\endcsname\relax
+      \PackageWarning{nfssext}{%
+        Ornament #1 undefined for font family '\exfs@base@family'\MessageBreak
+        Setting debug mark}%
+      \rule{1ex}{1ex}%
+    \else
+      \begingroup
+        \edef\exfs@tempb{\csname\exfs@base@family @orn\@roman#1\endcsname}%
+        \expandafter\expandafter\expandafter\exfs@split@orndef
+          \expandafter\string\exfs@tempb\@nil
+        \selectfont\char\exfs@tempa
+      \endgroup
+    \fi}
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\nfssextcfr@MT@Hook,\Microtype@Hook}
@@ -1049,21 +1049,28 @@
 %^^A	\DeclareMicrotypeVariants{x,j,w,a,d,0,1}% this is the default declaration according to the docs
 %^^A	\DeclareMicrotypeVariants*{2,e,h,l}% this should *append* the variants (what do I use 'f' for? better take it out...)
 %    \begin{macrocode}
-  \DeclareMicrotypeVariants*{2,2d,2dj,2j,dj,e,h,l}% is this necessary or would the previous line be enough?
-}
-\@ifpackageloaded{microtype}{%
-  \PackageWarning{nfssext-cfr}{%
-    You have loaded me (or a font support package which loads me)\MessageBreak
-    after loading microtype, but microtype should be loaded after\MessageBreak
-    all font defaults have been setup}%
-  \nfssextcfr@MT@Hook
-}{%
-  \@ifundefined{Microtype@Hook}{%
-    \let\Microtype@Hook\nfssextcfr@MT@Hook}{% MinionPro has \global before this
-    \g@addto@macro\Microtype@Hook{\nfssextcfr@MT@Hook}}}
+    \DeclareMicrotypeVariants*{2,2d,2dj,2j,dj,e,h,l}% is this necessary or would the previous line be enough?
+  }
+  \@ifpackageloaded{microtype}{%
+    \PackageWarning{nfssext-cfr}{%
+      You have loaded me (or a font support package which loads me)\MessageBreak
+      after loading microtype, but microtype should be loaded after\MessageBreak
+      all font defaults have been setup}%
+    \nfssextcfr@MT@Hook
+  }{%
+    \@ifundefined{Microtype@Hook}{%
+      \let\Microtype@Hook\nfssextcfr@MT@Hook
+    }{% MinionPro has \global before this
+      \g@addto@macro\Microtype@Hook{\nfssextcfr@MT@Hook}%
+    }%
+  }
 %    \end{macrocode}
 % \end{macro}
+% \changes{v1.1}{2024-10-03}{Fix grouping cock up.}
+%    \begin{macrocode}
+\fi
 % END
+%    \end{macrocode}
 % \end{package}
 % \iffalse
 %</sty>
@@ -1083,7 +1090,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase-nnfss.sty]{$Id: nfssext-cfr.dtx 10366 2024-09-18 14:25:21Z cfrees $}[v1.0 \revinfo{} extended New New Font Selection Scheme (NNFSS) based on 2003/03/14 v1.2 Experimental NFSS Extensions]
+\ProvidesPackageSVN[\filebase-nnfss.sty]{$Id: nfssext-cfr.dtx 10456 2024-10-03 01:19:12Z cfrees $}[v1.1 \revinfo{} extended New New Font Selection Scheme (NNFSS) based on 2003/03/14 v1.2 Experimental NFSS Extensions]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % ^^A Paid â defnyddio \GetFileInfoSVN*/\GetFileInfoSVN{} yn y fan hon!!
@@ -2523,7 +2530,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase-nfss.sty]{$Id: nfssext-cfr.dtx 10366 2024-09-18 14:25:21Z cfrees $}[v1.0 \revinfo{} specially mangled by cfr; based on 2003/03/14 v1.2 Experimental NFSS Extensions; for old NFSS]
+\ProvidesPackageSVN[\filebase-nfss.sty]{$Id: nfssext-cfr.dtx 10456 2024-10-03 01:19:12Z cfrees $}[v1.1 \revinfo{} specially mangled by cfr; based on 2003/03/14 v1.2 Experimental NFSS Extensions; for old NFSS]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % ^^A Paid â defnyddio \GetFileInfoSVN*/\GetFileInfoSVN{} yn y fan hon!!
