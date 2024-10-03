@@ -31,7 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: adfarrows.dtx 10458 2024-10-03 01:57:56Z cfrees $}[v1.2 \revinfo][\filebase DTX: FONT for 8-bit engines]
+\ProvidesFileSVN{$Id: adfarrows.dtx 10464 2024-10-03 19:29:14Z cfrees $}[v1.3 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[adfarrows]
 \documentclass[11pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -215,7 +215,7 @@
 %
 %
 % \changes{v??}{YYYY/??/??}{First public release.}
-% \changes{v0.0}{0000-00-00}{}
+% \changes{v1.3}{2024-10-03}{}
 %
 %
 % \title{\pkgname: adfarrows}
@@ -262,7 +262,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: adfarrows.dtx 10458 2024-10-03 01:57:56Z cfrees $}[v0.0 \revinfo  ArrowsADF]
+\ProvidesPackageSVN[\filebase.sty]{$Id: adfarrows.dtx 10464 2024-10-03 19:29:14Z cfrees $}[v1.3 \revinfo  ArrowsADF]
 \DefineFileInfoSVN[adfarrows]
 \newif\if@adfarrows@digonnew
 %    \end{macrocode}
@@ -314,8 +314,8 @@
 }
 %    \end{macrocode}
 % \end{macro}
-% \changes{v0.0}{0000/00/00}{Remove cack-handed dependency on \lpack{fp}.}
-% \changes{v0.0}{0000/00/00}{%
+% \changes{v1.3}{2024-10-03}{Remove cack-handed dependency on \lpack{fp}.}
+% \changes{v1.3}{2024-10-03}{%
 %   May as well use \lpack{expl3} here.
 %   The alternative would be rewriting the code to use \TeX{} counts, but for symbols like these there does not seem to be much reason to avoid the overhead of \lpack{expl3}.
 %   (Certainly almost anything would be an improvement over the current implementation, I suppose.)}
@@ -429,7 +429,7 @@
 % \end{macro}
 % \begin{macro}{\l__adfarrows_dir_west_int}
 % \mbox{}
-% \changes{v0.0}{0000/00/00}{Try to make west arrows point west.}
+% \changes{v1.3}{2024-10-03}{Try to make west arrows point west.}
 %    \begin{macrocode}
 \def\adfarrows@west{west}%
 \int_new:N \l__adfarrows_dir_west_int
@@ -532,7 +532,7 @@
 \int_set:Nn \l__adfarrows_base_tail_int {45}
 %    \end{macrocode}
 % \end{macro}
-% \changes{v0.0}{0000/00/00}{Was \cs{adfarrows@fam}\marg{}\marg{}\marg{}\marg{}.}
+% \changes{v1.3}{2024-10-03}{Was \cs{adfarrows@fam}\marg{}\marg{}\marg{}\marg{}.}
 % \begin{macro}{\l__adfarrows_arrow_int}
 % \mbox{}
 %    \begin{macrocode}
@@ -580,7 +580,7 @@
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\adfarrow}
-% \changes{v0.0}{0000-00-00}{Remove \lpack{pifont} dependency.}
+% \changes{v1.3}{2024-10-03}{Remove \lpack{pifont} dependency.}
 % \mbox{}
 %    \begin{macrocode}
 \NewDocumentCommand \adfarrow { o m }
@@ -756,7 +756,7 @@
 %    \begin{macrocode}
 \ProvidesFile{uarrowsadf.fd}[v1.3 2024/10/01 font definitions for U/ArrowsADF.]
 %    \end{macrocode}
-% \changes{v0.0}{0000-00-00}{Support for scaling.}
+% \changes{v1.3}{2024-10-03}{Support for scaling.}
 % addaswyd o t1phv.fd (dyddiad y ffeil fd: 2020-03-25)
 %    \begin{macrocode}
   \expandafter\ifx\csname adfarrows@scale\endcsname\relax

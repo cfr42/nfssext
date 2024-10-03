@@ -31,7 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: adfbullets.dtx 10458 2024-10-03 01:57:56Z cfrees $}[v1.2 \revinfo][\filebase DTX: FONT for 8-bit engines]
+\ProvidesFileSVN{$Id: adfbullets.dtx 10464 2024-10-03 19:29:14Z cfrees $}[v1.3 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[adfbullets]
 \documentclass[11pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -207,7 +207,7 @@
 %
 %
 % \changes{v??}{YYYY/??/??}{First public release.}
-% \changes{v0.0}{0000-00-00}{}
+% \changes{v1.3}{2024-10-03}{}
 %
 % \title{\pkgname: adfbullets}
 % \author{Clea F. Rees\thanks{%
@@ -252,7 +252,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: adfbullets.dtx 10458 2024-10-03 01:57:56Z cfrees $}[v0.0 \revinfo]
+\ProvidesPackageSVN[\filebase.sty]{$Id: adfbullets.dtx 10464 2024-10-03 19:29:14Z cfrees $}[v1.3 \revinfo]
 \DefineFileInfoSVN[adfbullets]
 \newif\if@adfbullets@digonnew
 %    \end{macrocode}
@@ -305,7 +305,7 @@
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\adfbullet}
-% \changes{v0.0}{0000-00-00}{Remove \lpack{pifont} dependency.}
+% \changes{v1.3}{2024-10-03}{Remove \lpack{pifont} dependency.}
 % \mbox{}
 %    \begin{macrocode}
 \newcommand*\adfbullet[1]{{\adfbullets@style\char#1}}
@@ -333,7 +333,7 @@
 %    \begin{macrocode}
 \ProvidesFile{ubulletsadf.fd}[v1.3 2024/10/01 font definitions for U/BulletsADF.]
 %    \end{macrocode}
-% \changes{v0.0}{0000-00-00}{Support for scaling.}
+% \changes{v1.3}{2024-10-03}{Support for scaling.}
 % addaswyd o t1phv.fd (dyddiad y ffeil fd: 2020-03-25)
 %    \begin{macrocode}
   \expandafter\ifx\csname adfbullets@scale\endcsname\relax
