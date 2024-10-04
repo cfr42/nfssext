@@ -1,0 +1,16 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+\RequirePackage{svn-prov}
+\ProvidesFileSVN{$Id: nfssext-cfr-t0-basic.lvt 10469 2024-10-04 05:46:00Z cfrees $}[v1.1 \revinfo][\filebase: basic test]
+\input regression-test.tex\relax
+\documentclass{article}
+\usepackage{nfssext-cfr}
+
+\begin{document}
+\START
+\SEPARATOR
+\TYPE{Lefel if: \the\currentiflevel.}
+\TYPE{Lefel grwpiau: \the\currentgrouplevel.}
+\SEPARATOR
+\end{document} 
+% vim: ts=2:sw=2:

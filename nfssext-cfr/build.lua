@@ -1,4 +1,4 @@
--- $Id: build.lua 10415 2024-09-27 15:33:37Z cfrees $
+-- $Id: build.lua 10459 2024-10-03 06:07:06Z cfrees $
 -- Build configuration for nfssext-cfr
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -38,7 +38,7 @@ dofile(sourcedir .. "/manifest.lua")
 uploadconfig = {
   -- *required* --
   -- announcement (don't include here?)
-  announcement  = "Belated update for (N)NFSS. Implement new package options. Switch to dtx/ins. Use l3build.",
+  announcement  = "",--Belated update for (N)NFSS. Implement new package options. Switch to dtx/ins. Use l3build.",
 	author     = "Clea F. Rees",
   -- email (don't include here!)
 	ctanPath   = "/macros/contrib/latex/nfssext-cfr",
@@ -46,13 +46,13 @@ uploadconfig = {
 	pkg        = ctanpkg,
 	summary    = "Extended font selection commands for LaTeX's (New) New Font Selection Scheme",
   uploader   = "Clea F. Rees",
-	version    = "v1.0",
+	version    = "v1.1",
   -- optional --
 	bugtracker = {"https://codeberg.org/cfr/nfssext/issues"},
   description= "An extension and modification of Philipp Lehman's nfssext which provides extended font selection commands modelled on those provided by LaTeX 2e.",
   -- development {}
   -- home {}
-	-- note       = "",
+	note       = "My apologies. I ought to have caught this.",
 	repository = {"https://codeberg.org/cfr/nfssext", "https://github.com/cfr42/nfssext"},
   -- support {}
 	topic      = {"font-sel", "font-use", "font-supp"},
