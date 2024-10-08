@@ -1,4 +1,4 @@
--- $Id: build.lua 10481 2024-10-08 03:14:01Z cfrees $
+-- $Id: build.lua 10482 2024-10-08 04:28:08Z cfrees $
 -- Build configuration for nfssext-cfr
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -33,7 +33,9 @@ typesetruns = 5
 --
 dofile(maindir .. "/tag.lua")
 date = "2008-2024"
--- dofile(sourcedir .. "/manifest.lua")
+if direxists(sourcedir .. "/../../adnoddau/l3build/tag.lua") then
+  dofile(sourcedir .. "/../../adnoddau/l3build/manifest.lua")
+end
 --
 uploadconfig = {
   -- *required* --
