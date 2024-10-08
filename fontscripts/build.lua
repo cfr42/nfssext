@@ -1,4 +1,4 @@
--- $Id: build.lua 10482 2024-10-08 04:28:08Z cfrees $
+-- $Id: build.lua 10484 2024-10-08 04:36:01Z cfrees $
 -- Build configuration for fontscripts
 -- l3build.pdf listing 1 tudalen 9
 os.setenv ("PATH", "/usr/local/texlive/bin:/usr/bin:")
@@ -32,7 +32,7 @@ function docinit_hook()
 end
 docfiles = {"fontinst.lua","fnt-ctan.lua"}
 date = "2024"
-if direxists(sourcedir .. "/../../adnoddau/l3build/tag.lua") then
+if direxists(sourcedir .. "/../../adnoddau/l3build") then
   dofile(sourcedir .. "/../../adnoddau/l3build/tag.lua")
   dofile(sourcedir .. "/../../adnoddau/l3build/manifest.lua")
 end
