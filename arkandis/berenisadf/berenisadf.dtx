@@ -31,7 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\ModMakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: berenisadf.dtx 10366 2024-09-18 14:25:21Z cfrees $}[v2.1 \revinfo][\filebase DTX: FONT for 8-bit engines]
+\ProvidesFileSVN{$Id: berenisadf.dtx 10515 2024-10-19 05:20:42Z cfrees $}[v2.1 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[berenisadf]
 \documentclass[11pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -1032,7 +1032,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[berenis.sty]{$Id: berenisadf.dtx 10366 2024-09-18 14:25:21Z cfrees $}[v2.1 \revinfo]
+\ProvidesPackageSVN[berenis.sty]{$Id: berenisadf.dtx 10515 2024-10-19 05:20:42Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN[berenis]
 %    \end{macrocode}
 % Load \lpack{nfssext-cfr}.  
@@ -1272,6 +1272,7 @@
 % (Ideally would set further stuff but these are the most problematic.)
 % \changes{v1.0}{????/??/??}{Tai bach work for ‘swash’ encoding.}
 % \changes{v2.0}{????/??/??}{Tai bach work for any LY1 encoding.}
+% \changes{v0.0}{2024/10/19}{Fix broken text composites for LY1 encoding.}
 % The cost is some of the non-fancy non-standard ligatures and the boundary character in the non-swash variants.
 %    \begin{macrocode}
 \tl_if_eq:NnT \g__berenis_enc_tl { LY1 }
@@ -1281,16 +1282,16 @@
 % \let\MakePrivateLetters\OrigMakePrivateLetters
 %    \begin{macrocode}
   \DeclareTextCompositeCommand{\^}{LY1}{W}{
-    \char9
+    9
   }
   \DeclareTextCompositeCommand{\^}{LY1}{w}{
-    \char3
+    3
   }
   \DeclareTextCompositeCommand{\^}{LY1}{Y}{
-    \char10
+    10
   }
   \DeclareTextCompositeCommand{\^}{LY1}{y}{
-    \char13
+    13
   }
 } 
 \IfFormatAtLeastTF {2020-02-02}{%
