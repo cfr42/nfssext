@@ -41,8 +41,10 @@ jobs:
           package_file: .github/tl_packages
       - name: Remove environmental restrictions
         run: sed -i '/^os\.setenv /d' $(find . -name "*.lua") 
-      - name: Run l3build
-        run: for i in nfssext-cfr cfr-lm fontscripts arkandis/adforn arkandis/adfsymb arkandis/baskervaldadf arkandis/berenisadf arkandis/electrumadf arkandis/librisadf arkandis/romandeadf arkandis/venturisadf ; do (cd $i && l3build ctan) ; done
+      - name: Run l3build for support packages
+        run: for i in nfssext-cfr fontscripts ; do (cd $i && l3build ctan) ; done
+      - name: Run l3build for font packages
+        run: for i in cfr-lm arkandis/adforn arkandis/adfsymb arkandis/baskervaldadf arkandis/berenisadf arkandis/electrumadf arkandis/librisadf arkandis/romandeadf arkandis/venturisadf ; do (cd $i && l3build fnttarg && l3build ctan) ; done
       # https://github.com/latex3/hyperref/blob/adc36adbc3650db73329469b43afb0ee86e3c807/.github/workflows/main.yaml
       - name: Archive failed test output
         # what does this do exactly?
