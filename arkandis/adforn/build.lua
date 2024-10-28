@@ -1,4 +1,4 @@
--- $Id: build.lua 10439 2024-09-29 16:00:23Z cfrees $
+-- $Id: build.lua 10538 2024-10-28 16:07:36Z cfrees $
 -- Build configuration for adfornadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -38,6 +38,7 @@ dofile(maindir .. "/fontinst.lua")
 function fnt_test (fntpkgname,fds,content,maps,fdsdir)
   return 0
 end
+typesetdeps = {maindir .. "/nfssext-cfr", maindir .. "/cfr-lm"}
 typesetruns = 5
 --
 uploadconfig = {

@@ -1,4 +1,4 @@
--- $Id: build.lua 10484 2024-10-08 04:36:01Z cfrees $
+-- $Id: build.lua 10538 2024-10-28 16:07:36Z cfrees $
 -- Build configuration for fontscripts
 -- l3build.pdf listing 1 tudalen 9
 os.setenv ("PATH", "/usr/local/texlive/bin:/usr/bin:")
@@ -14,6 +14,7 @@ maindir = "."
 sourcedir = "."
 sourcefiles = {"*.dtx","*.ins"}
 manifestfile = "manifest.txt"
+typesetdeps = {maindir .. "/nfssext-cfr", maindir .. "/cfr-lm"}
 typesetruns = 5
 --
 -- there must be a variable I can set for this!

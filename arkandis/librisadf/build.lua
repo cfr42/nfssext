@@ -1,4 +1,4 @@
--- $Id: build.lua 10416 2024-09-27 15:59:51Z cfrees $
+-- $Id: build.lua 10538 2024-10-28 16:07:36Z cfrees $
 -- Build configuration for librisadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -25,6 +25,8 @@ dofile(maindir .. "/fontinst.lua")
 textfiles = {"*.md", "*.txt", "COPYING"}
 typesetruns = 5
 -- angen ../../TODO
+checkdeps = {maindir .. "/nfssext-cfr"}
+typesetdeps = {maindir .. "/nfssext-cfr"}
 unpackdeps = {maindir .. "/fontscripts"}
 --
 uploadconfig = {

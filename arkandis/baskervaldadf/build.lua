@@ -1,4 +1,4 @@
--- $Id: build.lua 10416 2024-09-27 15:59:51Z cfrees $
+-- $Id: build.lua 10538 2024-10-28 16:07:36Z cfrees $
 -- Build configuration for baskervaldadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -23,6 +23,8 @@ autotestfds = {  "t1ybv.fd", "t1ybvw.fd" }
 dofile(maindir .. "/fontinst.lua")
 -- local srcfiles = {"dotsc2.etx", "dotscbuild.mtx", "dotscmisc.mtx", "newlatin-dotsc.mtx", "t1-dotinf.etx", "t1-dotsup.etx", "ts1-dotinf.etx", "ts1-dotsup.etx"}
 -- for i,j in ipairs(srcfiles) do table.insert(sourcefiles,j) end
+checkdeps = {maindir .. "/nfssext-cfr"}
+typesetdeps = {maindir .. "/nfssext-cfr"}
 typesetruns = 5
 --
 uploadconfig = {

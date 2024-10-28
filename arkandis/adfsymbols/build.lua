@@ -1,4 +1,4 @@
--- $Id: build.lua 10454 2024-10-02 05:12:31Z cfrees $
+-- $Id: build.lua 10538 2024-10-28 16:07:36Z cfrees $
 -- Build configuration for adfsymbols
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -42,6 +42,7 @@ dofile(maindir .. "/fontinst.lua")
 function fnt_test (fntpkgname,fds,content,maps,fdsdir)
   return 0
 end
+typesetdeps = {maindir .. "/nfssext-cfr", maindir .. "/cfr-lm"}
 typesetfiles = { module .. ".dtx" }
 typesetruns = 4
 --

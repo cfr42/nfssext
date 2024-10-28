@@ -1,4 +1,4 @@
--- $Id: build.lua 10416 2024-09-27 15:59:51Z cfrees $
+-- $Id: build.lua 10538 2024-10-28 16:07:36Z cfrees $
 -- Build configuration for venturisadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -29,6 +29,8 @@ dofile(maindir .. "/fontinst.lua")
 -- angen TODO new TL installation
 -- make tds archive for this one 
 packtdszip = true
+checkdeps = {maindir .. "/nfssext-cfr"}
+typesetdeps = {maindir .. "/nfssext-cfr"}
 unpackdeps = {maindir .. "/fontscripts"}
 tdslocations = {
 	"fonts/afm/" .. vendor .. "/venturis/" .. "yvt*.afm",
