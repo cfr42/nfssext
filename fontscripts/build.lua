@@ -1,4 +1,4 @@
--- $Id: build.lua 10538 2024-10-28 16:07:36Z cfrees $
+-- $Id: build.lua 10539 2024-10-28 18:36:40Z cfrees $
 -- Build configuration for fontscripts
 -- l3build.pdf listing 1 tudalen 9
 os.setenv ("PATH", "/usr/local/texlive/bin:/usr/bin:")
@@ -10,7 +10,7 @@ module = "fontscripts"
 ctanpkg = "fontscripts"
 -- maindir **must** be shared with dependencies
 -- but don't make fontscripts a dependency or dependant
-maindir = "."
+maindir = ".."
 sourcedir = "."
 sourcefiles = {"*.dtx","*.ins"}
 manifestfile = "manifest.txt"
