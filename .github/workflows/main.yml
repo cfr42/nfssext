@@ -20,8 +20,7 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "l3build-ctan"
-  l3build-ctan:
+  l3build-ctan-clm:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -43,9 +42,9 @@ jobs:
         run: sed -i '/^os\.setenv /d' $(find . -name "*.lua") 
         # nfssext-cfr uses cfr-lm (though it falls back if built first)
         # cfr-lm uses nfssext-cfr but there's nothing to build
-      - name: Run l3build for cfr-lm
+      - name: Run l3build for clm
         run: (cd cfr-lm ;  cp -r $(kpsewhich -var-value TEXMFDIST)/fonts/afm/public/lm afm && mkdir -p tfm && cp $(kpsewhich -var-value TEXMFDIST)/fonts/tfm/public/lm/ec-* tfm/ && l3build fnttarg && l3build doc && l3build ctan)
-      - name: Archive failed test output for cfr-lm
+      - name: Archive failed test output for clm
         # what does this do exactly?
         if: ${{ always() }}
         uses: zauguin/l3build-failure-artifacts@v1
@@ -53,23 +52,316 @@ jobs:
           name: testfiles-nfssext-clm
           # Decide how long to keep the test output artefact:
           # retention-days: 3
+
+
+  l3build-ctan-nfssext-cfr:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
+      # We need Ghostscript for XeTeX tests.
+      - run: sudo apt-get update && sudo apt-get install ghostscript 
+      - name: Install TeX Live
+        uses: zauguin/install-texlive@v3
+        with:
+          # List the required TeX Live packages in a separate file to allow reuse in
+          # different workflows.
+          package_file: .github/tl_packages
+      - name: Remove environmental restrictions
+        run: sed -i '/^os\.setenv /d' $(find . -name "*.lua") 
       - name: Run l3build for support packages
-        run: for i in nfssext-cfr fontscripts ; do (cd $i && l3build ctan) ; done
+        run: (cd nfssext-cfr && l3build ctan)
       - name: Archive failed test output for support packages
         # what does this do exactly?
         if: ${{ always() }}
         uses: zauguin/l3build-failure-artifacts@v1
         with:
-          name: testfiles-nfssext-support
+          name: testfiles-nfssext-cfr
           # Decide how long to keep the test output artefact:
           # retention-days: 3
-      - name: Run l3build for ADF font packages
-        run: for i in arkandis/adforn arkandis/adfsymb arkandis/baskervaldadf arkandis/berenisadf arkandis/electrumadf arkandis/librisadf arkandis/romandeadf arkandis/venturisadf ; do (cd $i && l3build fnttarg && l3build doc && l3build ctan) ; done
-      - name: Archive failed test output for ADF
+
+
+  l3build-ctan-fontscripts:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
+      # We need Ghostscript for XeTeX tests.
+      - run: sudo apt-get update && sudo apt-get install ghostscript 
+      - name: Install TeX Live
+        uses: zauguin/install-texlive@v3
+        with:
+          # List the required TeX Live packages in a separate file to allow reuse in
+          # different workflows.
+          package_file: .github/tl_packages
+      - name: Remove environmental restrictions
+        run: sed -i '/^os\.setenv /d' $(find . -name "*.lua") 
+      - name: Run l3build for fontscripts
+        run: (cd fontscripts && l3build ctan) 
+      - name: Archive failed test output for fontscripts packages
         # what does this do exactly?
         if: ${{ always() }}
         uses: zauguin/l3build-failure-artifacts@v1
         with:
-          name: testfiles-nfssext-adf
+          name: testfiles-nfssext-fontscripts
           # Decide how long to keep the test output artefact:
           # retention-days: 3
+
+  l3build-ctan-adforn:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
+      # We need Ghostscript for XeTeX tests.
+      - run: sudo apt-get update && sudo apt-get install ghostscript make
+      - name: Install TeX Live
+        uses: zauguin/install-texlive@v3
+        with:
+          # List the required TeX Live packages in a separate file to allow reuse in
+          # different workflows.
+          package_file: .github/tl_packages
+      - name: Remove environmental restrictions
+        run: sed -i '/^os\.setenv /d' $(find . -name "*.lua") 
+      - name: Run l3build for adforn
+        run: (cd arkandis/adforn  && l3build fnttarg && l3build doc && l3build ctan)
+      - name: Archive failed test output for adforn
+        # what does this do exactly?
+        if: ${{ always() }}
+        uses: zauguin/l3build-failure-artifacts@v1
+        with:
+          name: testfiles-nfssext-adforn
+          # Decide how long to keep the test output artefact:
+          # retention-days: 3
+
+  l3build-ctan-adfsymbols:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
+      # We need Ghostscript for XeTeX tests.
+      - run: sudo apt-get update && sudo apt-get install ghostscript make
+      - name: Install TeX Live
+        uses: zauguin/install-texlive@v3
+        with:
+          # List the required TeX Live packages in a separate file to allow reuse in
+          # different workflows.
+          package_file: .github/tl_packages
+      - name: Remove environmental restrictions
+        run: sed -i '/^os\.setenv /d' $(find . -name "*.lua") 
+      - name: Run l3build for adfsymbols
+        run: (cd arkandis/adfsymbols  && l3build fnttarg && l3build doc && l3build ctan)
+      - name: Archive failed test output for adfsymbols
+        # what does this do exactly?
+        if: ${{ always() }}
+        uses: zauguin/l3build-failure-artifacts@v1
+        with:
+          name: testfiles-nfssext-adfsymbols
+          # Decide how long to keep the test output artefact:
+          # retention-days: 3
+
+  l3build-ctan-baskervaldadf:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
+      # We need Ghostscript for XeTeX tests.
+      - run: sudo apt-get update && sudo apt-get install ghostscript make
+      - name: Install TeX Live
+        uses: zauguin/install-texlive@v3
+        with:
+          # List the required TeX Live packages in a separate file to allow reuse in
+          # different workflows.
+          package_file: .github/tl_packages
+      - name: Remove environmental restrictions
+        run: sed -i '/^os\.setenv /d' $(find . -name "*.lua") 
+      - name: Run l3build for baskervaldadf
+        run: (cd arkandis/baskervaldadf  && l3build fnttarg && l3build doc && l3build ctan)
+      - name: Archive failed test output for baskervaldadf
+        # what does this do exactly?
+        if: ${{ always() }}
+        uses: zauguin/l3build-failure-artifacts@v1
+        with:
+          name: testfiles-nfssext-baskervaldadf
+          # Decide how long to keep the test output artefact:
+          # retention-days: 3
+
+  l3build-ctan-berenisadf:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
+      # We need Ghostscript for XeTeX tests.
+      - run: sudo apt-get update && sudo apt-get install ghostscript make
+      - name: Install TeX Live
+        uses: zauguin/install-texlive@v3
+        with:
+          # List the required TeX Live packages in a separate file to allow reuse in
+          # different workflows.
+          package_file: .github/tl_packages
+      - name: Remove environmental restrictions
+        run: sed -i '/^os\.setenv /d' $(find . -name "*.lua") 
+      - name: Run l3build for berenisadf
+        run: (cd arkandis/berenisadf  && l3build fnttarg && l3build doc && l3build ctan)
+      - name: Archive failed test output for berenisadf
+        # what does this do exactly?
+        if: ${{ always() }}
+        uses: zauguin/l3build-failure-artifacts@v1
+        with:
+          name: testfiles-nfssext-berenisadf
+          # Decide how long to keep the test output artefact:
+          # retention-days: 3
+
+  l3build-ctan-electrumadf:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
+      # We need Ghostscript for XeTeX tests.
+      - run: sudo apt-get update && sudo apt-get install ghostscript make
+      - name: Install TeX Live
+        uses: zauguin/install-texlive@v3
+        with:
+          # List the required TeX Live packages in a separate file to allow reuse in
+          # different workflows.
+          package_file: .github/tl_packages
+      - name: Remove environmental restrictions
+        run: sed -i '/^os\.setenv /d' $(find . -name "*.lua") 
+      - name: Run l3build for electrumadf
+        run: (cd arkandis/electrumadf  && l3build fnttarg && l3build doc && l3build ctan)
+      - name: Archive failed test output for electrumadf
+        # what does this do exactly?
+        if: ${{ always() }}
+        uses: zauguin/l3build-failure-artifacts@v1
+        with:
+          name: testfiles-nfssext-electrumadf
+          # Decide how long to keep the test output artefact:
+          # retention-days: 3
+
+  l3build-ctan-librisadf:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
+      # We need Ghostscript for XeTeX tests.
+      - run: sudo apt-get update && sudo apt-get install ghostscript make
+      - name: Install TeX Live
+        uses: zauguin/install-texlive@v3
+        with:
+          # List the required TeX Live packages in a separate file to allow reuse in
+          # different workflows.
+          package_file: .github/tl_packages
+      - name: Remove environmental restrictions
+        run: sed -i '/^os\.setenv /d' $(find . -name "*.lua") 
+      - name: Run l3build for librisadf
+        run: (cd arkandis/librisadf  && l3build fnttarg && l3build doc && l3build ctan)
+      - name: Archive failed test output for librisadf
+        # what does this do exactly?
+        if: ${{ always() }}
+        uses: zauguin/l3build-failure-artifacts@v1
+        with:
+          name: testfiles-nfssext-librisadf
+          # Decide how long to keep the test output artefact:
+          # retention-days: 3
+
+  l3build-ctan-romandeadf:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
+      # We need Ghostscript for XeTeX tests.
+      - run: sudo apt-get update && sudo apt-get install ghostscript make
+      - name: Install TeX Live
+        uses: zauguin/install-texlive@v3
+        with:
+          # List the required TeX Live packages in a separate file to allow reuse in
+          # different workflows.
+          package_file: .github/tl_packages
+      - name: Remove environmental restrictions
+        run: sed -i '/^os\.setenv /d' $(find . -name "*.lua") 
+      - name: Run l3build for romandeadf
+        run: (cd arkandis/romandeadf  && l3build fnttarg && l3build doc && l3build ctan)
+      - name: Archive failed test output for romandeadf
+        # what does this do exactly?
+        if: ${{ always() }}
+        uses: zauguin/l3build-failure-artifacts@v1
+        with:
+          name: testfiles-nfssext-romandeadf
+          # Decide how long to keep the test output artefact:
+          # retention-days: 3
+
+  l3build-ctan-venturisadf:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
+      # We need Ghostscript for XeTeX tests.
+      - run: sudo apt-get update && sudo apt-get install ghostscript make
+      - name: Install TeX Live
+        uses: zauguin/install-texlive@v3
+        with:
+          # List the required TeX Live packages in a separate file to allow reuse in
+          # different workflows.
+          package_file: .github/tl_packages
+      - name: Remove environmental restrictions
+        run: sed -i '/^os\.setenv /d' $(find . -name "*.lua") 
+      - name: Run l3build for venturisadf
+        run: (cd arkandis/venturisadf  && l3build fnttarg && l3build doc && l3build ctan)
+      - name: Archive failed test output for venturisadf
+        # what does this do exactly?
+        if: ${{ always() }}
+        uses: zauguin/l3build-failure-artifacts@v1
+        with:
+          name: testfiles-nfssext-venturisadf
+          # Decide how long to keep the test output artefact:
+          # retention-days: 3
+
