@@ -25,7 +25,6 @@ dofile(maindir .. "/fontinst.lua")
 textfiles = {"*.md", "*.txt", "COPYING"}
 typesetruns = 5
 -- angen ../../TODO
-checkdeps = {maindir .. "/nfssext-cfr"}
 typesetdeps = {maindir .. "/nfssext-cfr"}
 unpackdeps = {maindir .. "/fontscripts"}
 --

@@ -99,7 +99,6 @@ target_list[ntarg] = {
 -- for i,j in ipairs(srcfiles) do table.insert(sourcefiles,j) end
 unpackdeps = {maindir .. "/fontscripts"}
 textfiles = {"*.md", "*.txt", "COPYING"}
-checkdeps = {maindir .. "/nfssext-cfr"}
 typesetdeps = {maindir .. "/nfssext-cfr"}
 typesetruns = 5
 --

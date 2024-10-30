@@ -29,7 +29,6 @@ dofile(maindir .. "/fontinst.lua")
 -- angen TODO new TL installation
 -- make tds archive for this one 
 packtdszip = true
-checkdeps = {maindir .. "/nfssext-cfr"}
 typesetdeps = {maindir .. "/nfssext-cfr"}
 unpackdeps = {maindir .. "/fontscripts"}
 tdslocations = {

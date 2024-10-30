@@ -23,7 +23,6 @@ dofile(maindir .. "/fontinst.lua")
 -- local srcfiles = { "ts1-euro.etx", "ts1-euro.enc" }
 -- for i,j in ipairs(srcfiles) do table.insert(sourcefiles,j) end
 -- angen TODO new TL installation
-checkdeps = {maindir .. "/nfssext-cfr"}
 typesetdeps = {maindir .. "/nfssext-cfr"}
 unpackdeps = {maindir .. "/fontscripts"}
 textfiles = {"*.md", "*.txt", "COPYING"}
