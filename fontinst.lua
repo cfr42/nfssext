@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10453 2024-10-01 06:28:48Z cfrees $
+-- $Id: fontinst.lua 10546 2024-10-30 16:34:18Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -647,6 +647,7 @@ flatten = true
 flattentds = false
 fnttestfds = fnttestfds or {}
 -- fntautotestfds = fntautotestfds or {}
+-- installfiles adjusted below
 installfiles = {"*.afm", "*.cls", "*.enc", "*.fd", "*.map", "*.otf", "*.pfb", "*.pfm", "*.sty", "*.tfm", "*.ttf", "*.vf"}
 -- match default as not yet existent
 sourcefiledir = sourcefiledir or "."
@@ -688,6 +689,17 @@ typesetfiles = typesetfiles or  {"*.dtx", "*-tables.tex", "*-example.tex"}
 typesetsourcefiles = {keepdir .. "/*", "nfssext-cfr*.sty"}
 unpackexe = "pdflatex"
 unpackfiles = {"*.ins"}
+-------------------------------------------------
+-- adjust installfiles
+-- do we need mtx and/or etx from fontscripts?
+needsmtx = needsmtx or false
+needsetx = needsetx or false
+if needsmtx then
+  table.insert(installfiles,"*.mtx")
+end
+if needsetx then
+  table.insert(installfiles,"*.etx")
+end
 -------------------------------------------------
 if fileexists(maindir .. "/fnt-ctan.lua") then
   dofile(maindir .. "/fnt-ctan.lua")
