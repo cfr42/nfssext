@@ -3622,7 +3622,7 @@ Completed box being shipped out [1]
 ....\glue 0.0 plus 1.0fil
 ....\T1/yrd/m/n/10 (yrdr8t) 1
 ....\glue 0.0 plus 1.0fil
-{t1-romandeadf.enc}{ts1-euro.enc}{romande-supp.enc}
+{t1-romandeadf.enc}{ts1-euro-yrd.enc}{romande-supp.enc}
 ============================================================
 ============================================================
 TEST 2: test-T1-yrd-m-sc
