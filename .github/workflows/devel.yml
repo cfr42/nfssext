@@ -218,6 +218,8 @@ jobs:
           # retention-days: 3
 
   l3build-ctan-berenisadf:
+    # no idea why
+    needs: l3build-ctan-clm
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -249,6 +251,8 @@ jobs:
           # retention-days: 3
 
   l3build-ctan-electrumadf:
+    # no idea why
+    needs: l3build-ctan-clm
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -280,6 +284,8 @@ jobs:
           # retention-days: 3
 
   l3build-ctan-librisadf:
+    # no idea why
+    needs: l3build-ctan-clm
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -311,6 +317,8 @@ jobs:
           # retention-days: 3
 
   l3build-ctan-romandeadf:
+    # no idea why
+    needs: l3build-ctan-clm
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -342,6 +350,8 @@ jobs:
           # retention-days: 3
 
   l3build-ctan-venturisadf:
+    # no idea why
+    needs: l3build-ctan-clm
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
