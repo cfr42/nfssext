@@ -1,4 +1,4 @@
--- $Id: build.lua 10538 2024-10-28 16:07:36Z cfrees $
+-- $Id: build.lua 10545 2024-10-30 02:24:39Z cfrees $
 -- Build configuration for berenisadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -99,7 +99,6 @@ target_list[ntarg] = {
 -- for i,j in ipairs(srcfiles) do table.insert(sourcefiles,j) end
 unpackdeps = {maindir .. "/fontscripts"}
 textfiles = {"*.md", "*.txt", "COPYING"}
-checkdeps = {maindir .. "/nfssext-cfr"}
 typesetdeps = {maindir .. "/nfssext-cfr"}
 typesetruns = 5
 --
