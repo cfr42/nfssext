@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10453 2024-10-01 06:28:48Z cfrees $
+-- $Id: fontinst.lua 10552 2024-10-30 22:57:28Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -199,7 +199,7 @@ function uniquify (tag)
                       f:write((string.gsub(new_mcontent,"\n",os_newline_cp)))
                       f:close()
                     else
-                      gwall("Amending map ",m,1)
+                      print("Nothing to do for " .. m .. ".\n")
                     end
                   end
                 else
