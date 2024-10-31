@@ -1,3 +1,10 @@
+$Id: README.md 10560 2024-10-31 06:59:04Z cfrees $
+
+[![Automatic
+Checks for nfssext/main](https://github.com/cfr42/nfssext/actions/workflows/main.yml/badge.svg)](https://github.com/cfr42/nfssext/actions/workflows/main.yml)
+[![Automatic Checks for
+nfssext/devel](https://github.com/cfr42/nfssext/actions/workflows/devel.yml/badge.svg?branch=devel)](https://github.com/cfr42/nfssext/actions/workflows/devel.yml)
+
 # nfssext
 
 nfssext-cfr and LaTeX font packages
