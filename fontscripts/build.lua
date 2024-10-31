@@ -1,4 +1,4 @@
--- $Id: build.lua 10549 2024-10-30 17:23:08Z cfrees $
+-- $Id: build.lua 10553 2024-10-30 23:30:12Z cfrees $
 -- Build configuration for fontscripts
 -- l3build.pdf listing 1 tudalen 9
 os.setenv ("PATH", "/usr/local/texlive/bin:/usr/bin:")
