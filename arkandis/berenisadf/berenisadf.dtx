@@ -31,7 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\ModMakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: berenisadf.dtx 10561 2024-10-31 21:48:08Z cfrees $}[v2.1 \revinfo][\filebase DTX: FONT for 8-bit engines]
+\ProvidesFileSVN{$Id: berenisadf.dtx 10563 2024-10-31 23:31:36Z cfrees $}[v2.1 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[berenisadf]
 \documentclass[11pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -1032,7 +1032,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[berenis.sty]{$Id: berenisadf.dtx 10561 2024-10-31 21:48:08Z cfrees $}[v0.0 \revinfo]
+\ProvidesPackageSVN[berenis.sty]{$Id: berenisadf.dtx 10563 2024-10-31 23:31:36Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN[berenis]
 %    \end{macrocode}
 % Load \lpack{nfssext-cfr}.  
@@ -1280,6 +1280,7 @@
 %    \end{macrocode}
 %^^A pam??
 % \let\MakePrivateLetters\OrigMakePrivateLetters
+% \changes{0.0}{0000/00/00}{Replace lost \cs{char}s in composite declarations.}
 %    \begin{macrocode}
   \DeclareTextCompositeCommand{\^}{LY1}{W}{
     \char9
