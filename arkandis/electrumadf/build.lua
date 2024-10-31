@@ -1,8 +1,4 @@
-<<<<<<< HEAD
--- $Id: build.lua 10545 2024-10-30 02:24:39Z cfrees $
-=======
 -- $Id: build.lua 10550 2024-10-30 18:06:25Z cfrees $
->>>>>>> c75637d (remove checkdeps (again) from adf build.lua s)
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
