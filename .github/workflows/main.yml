@@ -3,7 +3,7 @@
 # https://github.com/latex3/hyperref/blob/adc36adbc3650db73329469b43afb0ee86e3c807/.github/workflows/main.yaml
 # https://github.com/josephwright/siunitx/blob/main/.github/workflows/main.yaml
 
-name: Automatic Checks
+name: Automatic Checks for nfssext/main
 
 # Controls when the workflow will run
 on:
@@ -134,7 +134,7 @@ jobs:
 
       # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
       # We need Ghostscript for XeTeX tests.
-      - run: sudo apt-get update && sudo apt-get install ghostscript make
+      - run: sudo apt-get update && sudo apt-get install ghostscript 
       - name: Install TeX Live
         uses: zauguin/install-texlive@v3
         with:
@@ -166,7 +166,7 @@ jobs:
 
       # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
       # We need Ghostscript for XeTeX tests.
-      - run: sudo apt-get update && sudo apt-get install ghostscript make
+      - run: sudo apt-get update && sudo apt-get install ghostscript 
       - name: Install TeX Live
         uses: zauguin/install-texlive@v3
         with:
@@ -197,7 +197,7 @@ jobs:
 
       # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
       # We need Ghostscript for XeTeX tests.
-      - run: sudo apt-get update && sudo apt-get install ghostscript make
+      - run: sudo apt-get update && sudo apt-get install ghostscript 
       - name: Install TeX Live
         uses: zauguin/install-texlive@v3
         with:
@@ -230,7 +230,7 @@ jobs:
 
       # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
       # We need Ghostscript for XeTeX tests.
-      - run: sudo apt-get update && sudo apt-get install ghostscript make
+      - run: sudo apt-get update && sudo apt-get install ghostscript make fontforge
       - name: Install TeX Live
         uses: zauguin/install-texlive@v3
         with:
@@ -263,7 +263,7 @@ jobs:
 
       # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
       # We need Ghostscript for XeTeX tests.
-      - run: sudo apt-get update && sudo apt-get install ghostscript make
+      - run: sudo apt-get update && sudo apt-get install ghostscript 
       - name: Install TeX Live
         uses: zauguin/install-texlive@v3
         with:
@@ -296,7 +296,7 @@ jobs:
 
       # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
       # We need Ghostscript for XeTeX tests.
-      - run: sudo apt-get update && sudo apt-get install ghostscript make
+      - run: sudo apt-get update && sudo apt-get install ghostscript 
       - name: Install TeX Live
         uses: zauguin/install-texlive@v3
         with:
@@ -329,7 +329,7 @@ jobs:
 
       # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
       # We need Ghostscript for XeTeX tests.
-      - run: sudo apt-get update && sudo apt-get install ghostscript make
+      - run: sudo apt-get update && sudo apt-get install ghostscript 
       - name: Install TeX Live
         uses: zauguin/install-texlive@v3
         with:
@@ -362,7 +362,7 @@ jobs:
 
       # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
       # We need Ghostscript for XeTeX tests.
-      - run: sudo apt-get update && sudo apt-get install ghostscript make
+      - run: sudo apt-get update && sudo apt-get install ghostscript 
       - name: Install TeX Live
         uses: zauguin/install-texlive@v3
         with:
