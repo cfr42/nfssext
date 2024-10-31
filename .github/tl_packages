@@ -217,12 +217,5 @@ alphalph
 fancyvrb
 underscore
 lm
-<<<<<<< HEAD
-<<<<<<< HEAD
 fancyref
 afm2pl
-=======
->>>>>>> a44409c (add lm)
-=======
-fancyref
->>>>>>> a18b446 (tweak pkgs, branch-specific workflow)
