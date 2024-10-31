@@ -3587,7 +3587,7 @@ Completed box being shipped out [1]
 ....\glue 0.0 plus 1.0fil
 ....\T1/yvo/m/n/10 (yvor8t) 1
 ....\glue 0.0 plus 1.0fil
-{t1-venturisold-longs.enc}{ts1-euro.enc}
+{t1-venturisold-longs-yv.enc}{ts1-euro-yv.enc}
 ============================================================
 ============================================================
 TEST 2: test-T1-yvo-m-it
@@ -32305,7 +32305,7 @@ Completed box being shipped out [9]
 ....\glue 0.0 plus 1.0fil
 ....\T1/yvo/m/n/10 (yvor8t) 9
 ....\glue 0.0 plus 1.0fil
-{t1-f_f.enc}
+{t1-f_f-yv.enc}
 ============================================================
 ============================================================
 TEST 10: test-T1-yvoad-db-n
