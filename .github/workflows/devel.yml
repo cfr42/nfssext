@@ -38,8 +38,6 @@ jobs:
           # List the required TeX Live packages in a separate file to allow reuse in
           # different workflows.
           package_file: .github/tl_packages
-      - name: Remove environmental restrictions
-        run: sed -i '/^os\.setenv /d' $(find . -name "*.lua") 
         # nfssext-cfr uses cfr-lm (though it falls back if built first)
         # cfr-lm uses nfssext-cfr but there's nothing to build
       - name: Run l3build for clm
@@ -74,8 +72,6 @@ jobs:
           # List the required TeX Live packages in a separate file to allow reuse in
           # different workflows.
           package_file: .github/tl_packages
-      - name: Remove environmental restrictions
-        run: sed -i '/^os\.setenv /d' $(find . -name "*.lua") 
       - name: Run l3build for support packages
         run: (cd nfssext-cfr && l3build ctan)
       - name: Archive failed test output for support packages
@@ -108,8 +104,6 @@ jobs:
           # List the required TeX Live packages in a separate file to allow reuse in
           # different workflows.
           package_file: .github/tl_packages
-      - name: Remove environmental restrictions
-        run: sed -i '/^os\.setenv /d' $(find . -name "*.lua") 
       - name: Run l3build for fontscripts
         run: (cd fontscripts && l3build ctan) 
       - name: Archive failed test output for fontscripts packages
@@ -140,8 +134,6 @@ jobs:
           # List the required TeX Live packages in a separate file to allow reuse in
           # different workflows.
           package_file: .github/tl_packages
-      - name: Remove environmental restrictions
-        run: sed -i '/^os\.setenv /d' $(find . -name "*.lua") 
       - name: Run l3build for adforn
         run: (cd arkandis/adforn  && l3build fnttarg && l3build doc && l3build ctan)
       - name: Archive failed test output for adforn
@@ -172,8 +164,6 @@ jobs:
           # List the required TeX Live packages in a separate file to allow reuse in
           # different workflows.
           package_file: .github/tl_packages
-      - name: Remove environmental restrictions
-        run: sed -i '/^os\.setenv /d' $(find . -name "*.lua") 
       - name: Run l3build for adfsymbols
         run: (cd arkandis/adfsymbols  && l3build fnttarg && l3build doc && l3build ctan)
       - name: Archive failed test output for adfsymbols
@@ -203,8 +193,6 @@ jobs:
           # List the required TeX Live packages in a separate file to allow reuse in
           # different workflows.
           package_file: .github/tl_packages
-      - name: Remove environmental restrictions
-        run: sed -i '/^os\.setenv /d' $(find . -name "*.lua") 
       - name: Run l3build for baskervaldadf
         run: (cd arkandis/baskervaldadf  && l3build fnttarg && l3build doc && l3build ctan)
       - name: Archive failed test output for baskervaldadf
@@ -236,8 +224,6 @@ jobs:
           # List the required TeX Live packages in a separate file to allow reuse in
           # different workflows.
           package_file: .github/tl_packages
-      - name: Remove environmental restrictions
-        run: sed -i '/^os\.setenv /d' $(find . -name "*.lua") 
       - name: Run l3build for berenisadf
         run: (cd arkandis/berenisadf  && l3build fnttarg && l3build doc && l3build ctan)
       - name: Archive failed test output for berenisadf
@@ -269,8 +255,6 @@ jobs:
           # List the required TeX Live packages in a separate file to allow reuse in
           # different workflows.
           package_file: .github/tl_packages
-      - name: Remove environmental restrictions
-        run: sed -i '/^os\.setenv /d' $(find . -name "*.lua") 
       - name: Run l3build for electrumadf
         run: (cd arkandis/electrumadf  && l3build fnttarg && l3build doc && l3build ctan)
       - name: Archive failed test output for electrumadf
@@ -302,8 +286,6 @@ jobs:
           # List the required TeX Live packages in a separate file to allow reuse in
           # different workflows.
           package_file: .github/tl_packages
-      - name: Remove environmental restrictions
-        run: sed -i '/^os\.setenv /d' $(find . -name "*.lua") 
       - name: Run l3build for librisadf
         run: (cd arkandis/librisadf  && l3build fnttarg && l3build doc && l3build ctan)
       - name: Archive failed test output for librisadf
@@ -335,8 +317,6 @@ jobs:
           # List the required TeX Live packages in a separate file to allow reuse in
           # different workflows.
           package_file: .github/tl_packages
-      - name: Remove environmental restrictions
-        run: sed -i '/^os\.setenv /d' $(find . -name "*.lua") 
       - name: Run l3build for romandeadf
         run: (cd arkandis/romandeadf  && l3build fnttarg && l3build doc && l3build ctan)
       - name: Archive failed test output for romandeadf
@@ -368,8 +348,6 @@ jobs:
           # List the required TeX Live packages in a separate file to allow reuse in
           # different workflows.
           package_file: .github/tl_packages
-      - name: Remove environmental restrictions
-        run: sed -i '/^os\.setenv /d' $(find . -name "*.lua") 
       - name: Run l3build for venturisadf
         run: (cd arkandis/venturisadf  && l3build fnttarg && l3build doc && l3build ctan)
       - name: Archive failed test output for venturisadf

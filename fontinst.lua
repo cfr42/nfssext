@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10552 2024-10-30 22:57:28Z cfrees $
+-- $Id: fontinst.lua 10582 2024-11-06 03:32:11Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -9,10 +9,6 @@
 	os.setenv is luatex and not in the standard builtin os lua library
 	ref. https://tex.stackexchange.com/questions/720446/how-can-i-export-variables-to-the-environment-when-running-l3build?noredirect=1#comment1791863_720446
 --]]
-os.setenv ("PATH", "/usr/local/texlive/bin:/usr/bin:")
-os.setenv ("TEXMFHOME", ".")
-os.setenv ("TEXMFLOCAL", ".")
-os.setenv ("TEXMFARCH", ".")
 -------------------------------------------------
 -- copy non-public things from l3build
 local os_newline_cp = "\n"

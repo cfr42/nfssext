@@ -1,9 +1,5 @@
--- $Id: tag.lua 10377 2024-09-24 17:44:39Z cfrees $
+-- $Id: tag.lua 10582 2024-11-06 03:32:11Z cfrees $
 --------------------------------------------------------------------------------
-os.setenv ("PATH", "/usr/local/texlive/bin:/usr/bin:")
-os.setenv ("TEXMFHOME", ".")
-os.setenv ("TEXMFLOCAL", ".")
-os.setenv ("TEXMFARCH", ".")
 --------------------------------------------------------------------------------
 -- *angen* global
 tagfiles = tagfiles or {"*.dtx", "*.ins", "manifest.txt", "MANIFEST.txt", "README", "README.md"}

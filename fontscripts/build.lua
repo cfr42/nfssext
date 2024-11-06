@@ -1,10 +1,6 @@
--- $Id: build.lua 10553 2024-10-30 23:30:12Z cfrees $
+-- $Id: build.lua 10582 2024-11-06 03:32:11Z cfrees $
 -- Build configuration for fontscripts
 -- l3build.pdf listing 1 tudalen 9
-os.setenv ("PATH", "/usr/local/texlive/bin:/usr/bin:")
-os.setenv ("TEXMFHOME", ".")
-os.setenv ("TEXMFLOCAL", ".")
-os.setenv ("TEXMFARCH", ".")
 --
 module = "fontscripts"
 ctanpkg = "fontscripts"
