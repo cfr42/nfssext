@@ -423,3 +423,5 @@ nfssext-cfr/timeout
 test/README.md
 test/manifest.txt
 test/testfiles/*.tlg
+test/afm
+test/type1

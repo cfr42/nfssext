@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10582 2024-11-06 03:32:11Z cfrees $
+-- $Id: fontinst.lua 10583 2024-11-07 06:26:37Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -10,7 +10,11 @@
 	ref. https://tex.stackexchange.com/questions/720446/how-can-i-export-variables-to-the-environment-when-running-l3build?noredirect=1#comment1791863_720446
 --]]
 -------------------------------------------------
+-------------------------------------------------
 -- copy non-public things from l3build
+-- these are just copied because they aren't documented
+-- so we duplicate them here as we're not entitled to use them o/w
+-------------------------------------------------
 local os_newline_cp = "\n"
 if os.type == "windows" then
   if tonumber(status.luatex_version) < 100 or
@@ -20,9 +24,65 @@ if os.type == "windows" then
   end
 end
 -------------------------------------------------
+-- from l3build-aux.lua
+-- Construct a localtexmf including any tdsdirs
+-- Needed for checking and typesetting, hence global
+function localtexmf()
+  local paths = ""
+  for src,_ in pairs(tdsdirs) do
+    paths = paths .. os_pathsep .. abspath(src) .. "//"
+  end
+  if texmfdir and texmfdir ~= "" and direxists(texmfdir) then
+    paths = paths .. os_pathsep .. abspath(texmfdir) .. "//"
+  end
+  return paths
+end
+-------------------------------------------------
+-- https://lunarmodules.github.io/luafilesystem/examples.html
+function lsrdir (path)
+  filenames = filenames or {}  
+  for file in lfs.dir(path) do
+    if file ~= "." and file ~= ".." then
+      local f = path .. "/" .. file
+      -- print(f)
+      local attr = lfs.attributes (f)
+      -- why is this necessary?
+      -- lfs.attributes does or doesn't return a table?
+      assert (type(attr) == "table")
+      if attr.mode == "directory" then
+        lsrdir (f)
+      else
+        -- table.insert(filenames,f)
+        filenames[file] = true
+      end
+    end
+  end
+  return filenames
+end
+-------------------------------------------------
 nifergwall = 0
 ntarg = "fnttarg"
 utarg = "uniquifyencs"
+-------------------------------------------------
+-- it is way too easy to pick up the same package's files in the dist tree
+-- when that happens, some installation tools fail to generate duplicate files
+-- once the update goes to ctan, the files disappear ...
+buildsearch = false
+-- also very easy for font files not to get installed properly and the old ones used
+-- note this overrides the l3build default
+checksearch = false
+-- sourcedir = sourcedir or "."
+-------------------------------------------------
+local builddir = builddir or maindir .. "/build"
+-------------------------------------------------
+builddeps = builddeps or {}
+fntdir = fntdir or builddir .. "/fnt"
+-- should use existing fnt variables, I think
+-- buildfiles = buildfiles or { "*.afm", "*.etx", "*.mtx", "*.otf",  "*.tex" , "*.tfm" }
+buildfiles = buildfiles or { "*.afm", "*.enc", "*.etx", "*.fd", "*.lig", "*.make", "*.map", "*.mtx", "*.nam", "*.otf", "*.pe", "*.tex" , "*.tfm" }
+-- buildsuppfiles = buildsuppfiles or {}
+buildsuppfiles_sys = buildsuppfiles_sys or {}
+-------------------------------------------------
 function gwall (msg,file,rtn)
   file = file or "current file"
   msg = msg or "Error: "
@@ -32,6 +92,67 @@ function gwall (msg,file,rtn)
     print (msg .. file .. " failed (" .. rtn .. ")\n")
   end
 end
+-------------------------------------------------
+function buildinit_hook () return 0 end
+-------------------------------------------------
+-- hack copy of checkinit()
+function buildinit ()
+  cleandir(fntdir)
+  dep_install (builddeps)
+  -- is this a appropriate? better not?
+  -- for i,j in ipairs(filelist(localdir)) do
+  --   cp(j,localdir,fntdir)
+  -- end
+  print("Unpacking ...\n")
+  local errorlevel = unpack() 
+  if errorlevel ~= 0 then 
+    gwall("Unpacking ",module,errorlevel)
+    return nifergwall
+  else
+    for i,j in ipairs(buildfiles) do
+      cp(j,unpackdir,fntdir)
+    end
+    -- if #buildsuppfiles_sys ~= 0 then
+      for j,_ in pairs(buildsuppfiles_sys) do
+        if fileexists(j) then
+          cp(basename(j),dirname(j),fntdir)
+        else
+          local jpath = kpse.find_file(j)
+          local jdir = dirname(jpath)
+          cp(j,jdir,fntdir)
+        end
+      end
+    -- end
+  end
+  return buildinit_hook()
+end
+-------------------------------------------------
+-------------------------------------------------
+function build_fnt (dir,cmd,file)
+  file = file or ""
+  cmd = cmd or ""
+  dir = dir or unpackdir
+  -- steal from l3build-check.lua
+  local preamble =
+    -- No use of localdir here as the files get copied to testdir:
+    -- avoids any paths in the logs
+    os_setenv .. " TEXINPUTS=." .. localtexmf()
+      .. (buildsearch and os_pathsep or "")
+      -- .. os_concat ..
+      -- no need for LUAINPUTS here
+      -- .. os_concat ..
+    -- ensure epoch settings
+    -- set_epoch_cmd(epoch, forcecheckepoch) ..
+    -- Ensure lines are of a known length
+    -- os_setenv .. " max_print_line=" .. maxprintline
+      .. os_concat
+  local errorlevel = runcmd(
+    preamble .." " ..  cmd .. " " .. file, dir
+  )
+  gwall(cmd,file,errorlevel)
+  return errorlevel
+end
+-------------------------------------------------
 function finst (patt,dir,mode)
   dir = dir or "."
   mode = mode or "nonstopmode"
@@ -41,12 +162,13 @@ function finst (patt,dir,mode)
   -- l3build-file-functions.lua (filelist fn)
   targs = filelist(dir,patt)
   for i,j in ipairs(targs) do
-    local errorlevel = tex(j,dir,cmd)
+    -- local errorlevel = tex(j,dir,cmd)
+    local errorlevel = build_fnt(dir,cmd,j)
     gwall("Compilation of ", j, errorlevel)
   end
 end
-function fntkeeper ()
-  local dir = dir or unpackdir
+function fntkeeper (dir)
+  dir = dir or fntdir
   local rtn = direxists(keepdir)
   if not rtn then
     local errorlevel = mkdir(keepdir)
@@ -64,7 +186,7 @@ function fntkeeper ()
   local keepdir = abspath(keepdir) -- abspath requires existence
   if keepfiles ~= {} then
     for i,j in ipairs(keepfiles) do
-      local rtn = cp(j, unpackdir, keepdir)
+      local rtn = cp(j, dir, keepdir)
       if rtn ~= 0 then
         gwall("Copy ", j, errorlevel)
         print("DO NOT BUILD STANDARD TARGETS WITHOUT RESOLVING!\n")
@@ -88,7 +210,7 @@ function fntkeeper ()
       end
     end
     for i,j in ipairs(keeptempfiles) do 
-      local errorlevel = cp(j,unpackdir,keeptempdir)
+      local errorlevel = cp(j,dir,keeptempdir)
       if errorlevel ~= 0 then
         gwall("Copy ", j, errorlevel)
       end
@@ -96,6 +218,7 @@ function fntkeeper ()
   end	
   return nifergwall
 end
+-------------------------------------------------
 -- oherwydd fy mod i bron ag anfon pob un ac mae'n amlwg fy mod i wedi anfon bacedi heb ei wneud hwn yn y gorffennol, well i mi wneud rhywbeth (scriptiau gwneud-cyhoeddus a make-public yn argraffu rhybudd os encs yn y cymysg
 -- (cymraeg yn ofnadwy hefyd)
 function uniquify (tag)
@@ -216,28 +339,36 @@ function uniquify (tag)
   print("Something weird happened.\n")
   return 1
 end
+-------------------------------------------------
 function fontinst (dir,mode)
-  dir = dir or unpackdir
+  -- dir = dir or unpackdir
+  dir = dir or fntdir
   mode = mode or "errorstopmode --halt-on-error"
   standalone = false
   encodingtag = encodingtag or ""
-  -- if not direxists(dir) then
-  -- print("Missing directory. Unpacking first.\n")
-  print("Unpacking ...\n")
-  local errorlevel = unpack() 
-  -- end
+  if #buildsuppfiles_sys == 0 then
+    print("Assuming all fontinst files should be available during build.\n")
+    local path = kpse.var_value("TEXMFDIST") .. "/tex/fontinst"
+    -- note this variable is **NOT** like l3build tables
+    -- like the non-indexed ones in manifest scripts ...
+    buildsuppfiles_sys = lsrdir(path)
+  end
+  buildinit ()
   local tfmfiles = filelist(dir,"*.tfm")
   for i,j in ipairs(tfmfiles) do
     local plname = string.gsub(j, "%.tfm$", ".pl")
-    if fileexists(unpackdir .. "/" .. plname) then
+    if fileexists(dir .. "/" .. plname) then
       print(plname .. " already exists!")
       return 1
     else
       local cmd = "tftopl " .. j .. " " .. plname
+      -- safe or not?
       local errorlevel = runcmd(cmd,dir)
+      -- necessary or not?
+      -- local errorlevel = build_fnt(cmd,dir)
       gwall("Conversion to pl from tfm ",j,errorlevel)
       -- remove tfm to reduce pollution of package later
-      rm(unpackdir,j)
+      rm(dir,j)
       gwall("Deletion of tfm ", j, errorlevel)
     end
   end
@@ -251,6 +382,11 @@ function fontinst (dir,mode)
     gwall("Compilation of map ", j, errorlevel)
   end
   if nifergwall ~= 0 then return nifergwall end
+  print("Tidying up build directory ...\n")
+  for i,_ in pairs(buildsuppfiles_sys) do
+    local errorlevel = rm(dir,i) 
+    gwall("Removal of ",dir .. "/" .. i,errorlevel)
+  end
   for i,j in ipairs(binmakers) do
     local targs = filelist(dir,j)
     -- https://www.lua.org/pil/21.1.html
@@ -261,7 +397,8 @@ function fontinst (dir,mode)
       -- though presumably no worse than executing the script directly
       for line in io.lines(targ) do
         if string.match(line,"^pltotf [a-zA-Z0-9%-]+%.pl [a-zA-Z0-9%-]+%.tfm$") then
-          local errorlevel = runcmd(line,dir)
+          -- local errorlevel = runcmd(line,dir)
+          local errorlevel = build_fnt(dir,line)
           gwall("Creation of TFM using " .. line .. " from ", j, errorlevel)
         else
           print("Ignoring unexpected line \"" .. line .. "\" in " .. j .. ".\n")
@@ -273,16 +410,18 @@ function fontinst (dir,mode)
   if nifergwall ~= 0 then return nifergwall end
   local targs = filelist(dir,"*.vpl")
   for i,j in ipairs(targs) do
-    local cmd = "vptovf " .. j
-    local errorlevel = runcmd(cmd,dir)
+    -- local cmd = "vptovf " .. j
+    -- local errorlevel = runcmd(cmd,dir)
+    local cmd = "vptovf"
+    local errorlevel = build_fnt(dir,cmd,j)
     gwall("Creation of virtual font from ", j, errorlevel)
   end
   -- edit the .fd files if a scale factor is declared because fontinst 
   -- doesn't allow us to do this and the last message to the mailing list
   -- is from 2022 with no response from the maintainer
-  local fdfiles = filelist(unpackdir, "*.fd")
+  local fdfiles = filelist(dir, "*.fd")
   for i,j in ipairs(fdfiles) do
-    local f = assert(io.open(unpackdir .. "/" .. j,"rb"))
+    local f = assert(io.open(dir .. "/" .. j,"rb"))
     local content = f:read("*all")
     f:close()
     local new_content = content
@@ -299,7 +438,7 @@ function fontinst (dir,mode)
       new_content = string.gsub(content, "(\\DeclareFontFamily{[^}]*}{[^}]*}{\\hyphenchar) *(\\font) *(=[^ }\n]*) *([^ }\n]* *})", "%1%2%3%4")
     end
     if new_content ~= content then
-      local f = assert(io.open(unpackdir .. "/" .. j,"w"))
+      local f = assert(io.open(dir .. "/" .. j,"w"))
       -- this somehow removes the second value returned by string.gsub??
       f:write((string.gsub(new_content,"\n",os_newline_cp)))
       f:close()
@@ -311,7 +450,7 @@ function fontinst (dir,mode)
   end
   errorlevel = fntkeeper()
   if errorlevel ~= 0 then
-    gwall("FONT KEEPER FAILED! DO NOT MAKE STANDARD TARGETS WITHOUT RESOLVING!! fntkeeper() ", unpackdir, errorlevel)
+    gwall("FONT KEEPER FAILED! DO NOT MAKE STANDARD TARGETS WITHOUT RESOLVING!! fntkeeper() ", dir, errorlevel)
   end
   return nifergwall
 end
@@ -710,15 +849,18 @@ function fnt_afmtotfm (dir,mode)
     if fntencs[j] == nil then 
       local rtn = fileexists(unpackdir .. "/" .. j .. ".enc")
       if not rtn then
-        errorlevel = run(dir, "afm2tfm " .. k .. " >> " .. dir .. "/" .. map .. ".tmp")
+        -- errorlevel = run(dir, "afm2tfm " .. k .. " >> " .. dir .. "/" .. map .. ".tmp")
+        errorlevel = build_fnt(dir,"afm2tfm " .. k " >> " .. dir .. "/" .. map .. ".tmp")
       else
-        errorlevel = run(dir, "afm2tfm " .. k .. " -p " .. j .. ".enc" .. " >> " .. dir .. "/" .. map .. ".tmp")
+        -- errorlevel = run(dir, "afm2tfm " .. k .. " -p " .. j .. ".enc" .. " >> " .. dir .. "/" .. map .. ".tmp")
+        errorlevel = build_fnt(dir, "afm2tfm " .. k .. " -p " .. j .. ".enc" .. " >> " .. dir .. "/" .. map .. ".tmp")
       end
     else
       if not fileexists(unpackdir .. "/" .. fntencs[j]) then
         gwall("Search for encoding specified for " .. j .. " ",unpackdir,1)
       else
-        errorlevel = run(dir, "afm2tfm " .. k .. " -p " .. fntencs[j] .. " >> " .. dir .. "/" .. map .. ".tmp")
+        -- errorlevel = run(dir, "afm2tfm " .. k .. " -p " .. fntencs[j] .. " >> " .. dir .. "/" .. map .. ".tmp")
+        errorlevel = build_fnt(dir, "afm2tfm " .. k .. " -p " .. fntencs[j] .. " >> " .. dir .. "/" .. map .. ".tmp")
       end
     end
     if errorlevel ~= 0 then 
