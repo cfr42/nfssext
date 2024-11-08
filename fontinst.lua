@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10585 2024-11-08 03:31:12Z cfrees $
+-- $Id: fontinst.lua 10586 2024-11-08 06:06:22Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -255,29 +255,42 @@ function uniquify (tag)
   local pkgbase = pkgbase or ""
   if standalone then
     dir = keepdir
-    if pkgbase == "" then
-      print("pkgbase unspecified. Trying to guess ... ")
-      if ctanpkg ~= module and module ~= "" and module ~= nil then
-        print("Guessing " .. module)
-        pkgbase = module
-      else
-        pkgbase = string.gsub(ctanpkg, "adf$", "")
-        if pkgbase ~= "" then
-          print("Guessing " .. pkgbase)
-        end
-      end
-    end
   else
     dir = fntdir
-    if pkgbase == "" then 
-      local pkglist = filelist(dir,"*.sty")
-      if #pkglist ~= 0 then
-        pkgbase = pkglist[1]
+  end
+  if pkgbase == "" then
+    print("pkgbase unspecified. Trying to guess ... ")
+    if ctanpkg ~= module and module ~= "" and module ~= nil then
+      print("Guessing " .. module)
+      pkgbase = module
+    else
+      pkgbase = string.gsub(ctanpkg, "adf$", "")
+      if pkgbase ~= "" then
+        print("Guessing " .. pkgbase)
       end
     end
   end
+  if pkgbase == "" then 
+    local pkglist = filelist(dir,"*.sty")
+    if #pkglist ~= 0 then
+      pkglist = filelist(unpackdir,"*.sty")
+    end
+    if #pkglist ~= 0 then
+      pkgbase = string.gsub(pkglist[1], "%.sty", "")
+      print("Guessing " .. pkgbase)
+    end
+  end
+  if pkgbase == "" then 
+    pkgbase = "NotAMatchAtAll" 
+    gwall("Guessing pkgbase ","",1)
+  end
   local encs = encs or filelist(dir,"*.enc")
   local maps = maps or filelist(dir,"*.map")
+  print("Uniquifying encodings ... ")
+  for _,i in ipairs(encs) do print(" " .. i) end
+  print("\nUniquifying maps ... ")
+  for _,i in ipairs(maps) do print(" " .. i) end
+  print(" ...\n")
   if #encs == 0 then
     return 0
   else
