@@ -1,19 +1,12 @@
--- $Id: fontinst.lua 10586 2024-11-08 06:06:22Z cfrees $
--- Build configuration for electrumadf
--- l3build.pdf listing 1 tudalen 9
---[[
-	os.setenv requires shell-escape (which l3build always enables) but will 
-	*appear** to set the variable anyway i.e will report the value even though
-	it isn't set
-	os.execute("env") can be used to show the environment
-	os.setenv is luatex and not in the standard builtin os lua library
-	ref. https://tex.stackexchange.com/questions/720446/how-can-i-export-variables-to-the-environment-when-running-l3build?noredirect=1#comment1791863_720446
---]]
+-- $Id: fontinst.lua 10587 2024-11-08 17:42:39Z cfrees $
 -------------------------------------------------
 -------------------------------------------------
 -- copy non-public things from l3build
 -- these are just copied because they aren't documented
--- so we duplicate them here as we're not entitled to use them o/w
+-- so we duplicate them as we're not entitled to use them o/w
+-- I've tried to eliminate local shorthands for clarity
+-- should these all be local?
+-- they should probably be renamed ...
 -------------------------------------------------
 -- os_newline_cp {{{
 local os_newline_cp = "\n"
@@ -39,6 +32,30 @@ function localtexmf()
     paths = paths .. os_pathsep .. abspath(texmfdir) .. "//"
   end
   return paths
+end
+-- }}}
+-------------------------------------------------
+-- get_script_name {{{
+local function get_script_name()
+  if string.match(arg[0], "l3build$") or string.match(arg[0], "l3build%.lua$") then
+    return kpse.lookup("l3build.lua")
+  else
+    return arg[0] -- Why no lookup here?
+  end
+end
+-- }}}
+-------------------------------------------------
+-- dep_install {{{
+function dep_install(deps)
+  local error_level
+  for _, dep in ipairs(deps) do
+    print("Installing dependency: " .. dep)
+    error_level = run(dep, "texlua " .. get_script_name() .. " unpack -q")
+    if error_level ~= 0 then
+      return error_level
+    end
+  end
+  return 0
 end
 -- }}}
 -------------------------------------------------
@@ -117,13 +134,16 @@ function buildinit_hook () return 0 end
 -- hack copy of checkinit()
 function buildinit ()
   cleandir(fntdir)
+  -- l3build never cleans this by default?
+  cleandir(localdir)
   dep_install (builddeps)
   -- is this a appropriate? better not?
-  -- for i,j in ipairs(filelist(localdir)) do
-  --   cp(j,localdir,fntdir)
-  -- end
+  for i,j in ipairs(filelist(localdir)) do
+    cp(j,localdir,fntdir)
+  end
   print("Unpacking ...\n")
-  local errorlevel = unpack() 
+  -- unpack() / bundleunpack() are not public?
+  local errorlevel = call({sourcefiledir},"unpack") 
   if errorlevel ~= 0 then 
     gwall("Unpacking ",module,errorlevel)
     return nifergwall
@@ -601,12 +621,19 @@ function checkinit_hook ()
   local mapsdir = ""
   local fdsdir = ""
   local adds = checksuppfiles_addlst or maindir .. "/checksuppfiles-add.lst"
+  -- how did this ever work?
+  for _,i in ipairs(filelist(keepdir)) do
+    if i ~= "." and i ~= ".." then
+      local errorlevel = cp(i,keepdir,testdir) 
+      gwall("Copying ",i,errorlevel)
+    end
+  end
   if #checksuppfiles_add == 0 then
     checksuppfiles_add = { "svn-prov.sty", "fonttable.sty", "etoolbox.sty" }
   end
   if #checksuppfiles_sys == 0 then
   -- if checksuppfiles_sys == nil then
-    print("Assuming some basic files should be available testing.\n")
+    print("Assuming some basic files should be available during testing.\n")
     if fileexists(adds) then
       for line in io.lines(adds) do
         table.insert(checksuppfiles_sys,line)
@@ -625,14 +652,10 @@ function checkinit_hook ()
     end
   end
   for _,j in ipairs(checksuppfiles_sys) do
-  --   if fileexists(j) then
-  --     cp(basename(j),dirname(j),testdir)
-  --   else
-      local jpath = kpse.find_file(j)
-      local jdir = dirname(jpath)
-      local errorlevel = cp(j,jdir,testdir) 
-      errorlevel = 0 or gwall("Copying ",j,errorlevel)
-  --   end
+    local jpath = kpse.find_file(j)
+    local jdir = dirname(jpath)
+    local errorlevel = cp(j,jdir,testdir) 
+    errorlevel = 0 or gwall("Copying ",j,errorlevel)
   end
   if #mapfiles == 0 then
     mapfiles=filelist(unpackdir, "*.map")
@@ -820,7 +843,7 @@ end
 -------------------------------------------------
 -- fontinst must be specified first
 -- it just ain't TeX
--- ntarg
+-- ntarg {{{
 target_list[ntarg] = {
 	func = fontinst,
   desc = "Creates TeX font file",
@@ -833,7 +856,8 @@ target_list[ntarg] = {
     return 0
   end
 }
--- utarg
+-- }}}
+-- utarg {{{
 target_list[utarg] = {
   func = uniquify,
   desc = "Uniquifies encodings ONLY",
@@ -849,6 +873,7 @@ target_list[utarg] = {
     return 0
   end
 }
+-- }}}
 -- diwedd targets
 -------------------------------------------------
 autotestfds = autotestfds or {}
@@ -920,22 +945,28 @@ end
 -- only set this true for ultra simple symbol fonts!
 afmtotfm = afmtotfm or false
 -------------------------------------------------
--- fnt_afmtotfm (dir,mode)
+-- fnt_afmtotfm (dir,mode) {{{
 function fnt_afmtotfm (dir,mode)
-  dir = dir or unpackdir
+  dir = dir or fntdir
   mode = mode or "errorstopmode --halt-on-error"
   local fntbasename = fntbasename or module
   local map = mapfile or fntbasename .. ".map"
   local fntencs = fntencs or {}
-  print("Unpacking ...\n")
-  local errorlevel = unpack()
+  standalone = false
+  encodingtag = encodingtag or ""
+  -- if #buildsuppfiles_sys == 0 then
+  --   print("Assuming all fontinst files should be available during build.\n")
+  --   local path = kpse.var_value("TEXMFDIST") .. "/tex/fontinst"
+  --   buildsuppfiles_sys = lsrdir(path)
+  -- end
+  buildinit ()
   print("Running afm2tfm. Please be patient ...\n")
-  local afms = filelist(unpackdir,"*.afm")
+  local afms = filelist(dir,"*.afm")
   local content = ""
   for i,k in ipairs(afms) do
     j = string.gsub(k,"%.afm","")
     if fntencs[j] == nil then 
-      local rtn = fileexists(unpackdir .. "/" .. j .. ".enc")
+      local rtn = fileexists(dir .. "/" .. j .. ".enc")
       if not rtn then
         -- errorlevel = run(dir, "afm2tfm " .. k .. " >> " .. dir .. "/" .. map .. ".tmp")
         errorlevel = build_fnt(dir,"afm2tfm " .. k " >> " .. dir .. "/" .. map .. ".tmp")
@@ -944,8 +975,8 @@ function fnt_afmtotfm (dir,mode)
         errorlevel = build_fnt(dir, "afm2tfm " .. k .. " -p " .. j .. ".enc" .. " >> " .. dir .. "/" .. map .. ".tmp")
       end
     else
-      if not fileexists(unpackdir .. "/" .. fntencs[j]) then
-        gwall("Search for encoding specified for " .. j .. " ",unpackdir,1)
+      if not fileexists(dir .. "/" .. fntencs[j]) then
+        gwall("Search for encoding specified for " .. j .. " ",dir,1)
       else
         -- errorlevel = run(dir, "afm2tfm " .. k .. " -p " .. fntencs[j] .. " >> " .. dir .. "/" .. map .. ".tmp")
         errorlevel = build_fnt(dir, "afm2tfm " .. k .. " -p " .. fntencs[j] .. " >> " .. dir .. "/" .. map .. ".tmp")
@@ -967,12 +998,13 @@ function fnt_afmtotfm (dir,mode)
   f:close()
   errorlevel = fntkeeper()
   if errorlevel ~= 0 then
-    gwall("FONT KEEPER FAILED! DO NOT MAKE STANDARD TARGETS WITHOUT RESOLVING!! ", unpackdir, errorlevel)
+    gwall("FONT KEEPER FAILED! DO NOT MAKE STANDARD TARGETS WITHOUT RESOLVING!! ", dir, errorlevel)
   end
   return nifergwall
 end
+-- }}}
 -------------------------------------------------
--- fnt_afmtotfm -> fnttarg
+-- fnt_afmtotfm -> fnttarg {{{
 if afmtotfm then
   target_list[ntarg] = {
     func = fnt_afmtotfm,
@@ -987,5 +1019,6 @@ if afmtotfm then
     end
   }
 end
+-- }}}
 -------------------------------------------------
 -- vim: ts=2:sw=2:et:foldmethod=marker:
