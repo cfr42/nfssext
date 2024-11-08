@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10584 2024-11-08 00:48:02Z cfrees $
+-- $Id: fontinst.lua 10585 2024-11-08 03:31:12Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -160,6 +160,7 @@ function build_fnt (dir,cmd,file)
       .. (buildsearch and os_pathsep or "")
       -- .. os_concat ..
       -- no need for LUAINPUTS here
+      -- but we need to set more variables ...?
       -- .. os_concat ..
     -- ensure epoch settings
     -- set_epoch_cmd(epoch, forcecheckepoch) ..
@@ -267,7 +268,7 @@ function uniquify (tag)
       end
     end
   else
-    dir = unpackdir
+    dir = fntdir
     if pkgbase == "" then 
       local pkglist = filelist(dir,"*.sty")
       if #pkglist ~= 0 then
@@ -574,6 +575,9 @@ function fnt_test (fntpkgname,fds,content,maps,fdsdir)
 end
 -- }}}
 -------------------------------------------------
+checksuppfiles_sys = checksuppfiles_sys or {}
+checksuppfiles_add = checksuppfiles_add or {}
+-------------------------------------------------
 -- checkinit_hook {{{
 function checkinit_hook ()
   local filename = "fnt-test.lvt"
@@ -583,12 +587,19 @@ function checkinit_hook ()
   local mapfiles=filelist(keepdir, "*.map")
   local mapsdir = ""
   local fdsdir = ""
-  -- if #checksuppfiles_sys == 0 then
-  if checksuppfiles_sys == nil then
+  local adds = checksuppfiles_addlst or maindir .. "/checksuppfiles-add.lst"
+  if #checksuppfiles_add == 0 then
+    checksuppfiles_add = { "svn-prov.sty", "fonttable.sty", "etoolbox.sty" }
+  end
+  if #checksuppfiles_sys == 0 then
+  -- if checksuppfiles_sys == nil then
     print("Assuming some basic files should be available testing.\n")
-    local path = kpse.var_value("TEXMFDIST") .. "/tex/latex/base"
-    checksuppfiles_sys = lsrdir(path)
-    path = kpse.var_value("TEXMFDIST") .. "/tex/latex/l3build"
+    if fileexists(adds) then
+      for line in io.lines(adds) do
+        table.insert(checksuppfiles_sys,line)
+      end
+    end
+    local path = kpse.var_value("TEXMFDIST") .. "/tex/latex/l3build"
     checksuppfiles_sys = lsrdir(path,checksuppfiles_sys)
     path = kpse.var_value("TEXMFDIST") .. "/tex/latex/l3backend"
     checksuppfiles_sys = lsrdir(path,checksuppfiles_sys)
@@ -596,8 +607,7 @@ function checkinit_hook ()
     -- checksuppfiles_sys = lsrdir(path,checksuppfiles_sys)
     -- path = kpse.var_value("TEXMFDIST") .. "/fonts"
     checksuppfiles_sys = lsrdir(path,checksuppfiles_sys)
-    local checksuppfiles_sysadd = checksuppfiles_sysadd or { "svn-prov.sty", "fonttable.sty", "etoolbox.sty" }
-    for _,i in ipairs(checksuppfiles_sysadd) do
+    for _,i in ipairs(checksuppfiles_add) do
       table.insert(checksuppfiles_sys,i)
     end
   end
