@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10583 2024-11-07 06:26:37Z cfrees $
+-- $Id: fontinst.lua 10584 2024-11-08 00:48:02Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -15,6 +15,7 @@
 -- these are just copied because they aren't documented
 -- so we duplicate them here as we're not entitled to use them o/w
 -------------------------------------------------
+-- os_newline_cp {{{
 local os_newline_cp = "\n"
 if os.type == "windows" then
   if tonumber(status.luatex_version) < 100 or
@@ -23,7 +24,9 @@ if os.type == "windows" then
     os_newline_cp = "\r\n"
   end
 end
+-- }}}
 -------------------------------------------------
+-- localtexmf {{{
 -- from l3build-aux.lua
 -- Construct a localtexmf including any tdsdirs
 -- Needed for checking and typesetting, hence global
@@ -37,30 +40,40 @@ function localtexmf()
   end
   return paths
 end
+-- }}}
 -------------------------------------------------
--- https://lunarmodules.github.io/luafilesystem/examples.html
-function lsrdir (path)
-  filenames = filenames or {}  
+-------------------------------------------------
+-- lsrdir_aux {{{
+function lsrdir_aux (path,filenames)
   for file in lfs.dir(path) do
     if file ~= "." and file ~= ".." then
       local f = path .. "/" .. file
-      -- print(f)
       local attr = lfs.attributes (f)
       -- why is this necessary?
       -- lfs.attributes does or doesn't return a table?
       assert (type(attr) == "table")
       if attr.mode == "directory" then
-        lsrdir (f)
+        lsrdir_aux (f,filenames)
       else
-        -- table.insert(filenames,f)
-        filenames[file] = true
+        table.insert(filenames,file)
       end
     end
   end
   return filenames
 end
+-- }}}
+-- lsrdir {{{
+-- https://lunarmodules.github.io/luafilesystem/examples.html
+function lsrdir (path,filenames)
+  local filenames = filenames or {}
+  filenames = lsrdir_aux (path,filenames)
+  return filenames
+end
+-- }}}
 -------------------------------------------------
+-- error-tracking
 nifergwall = 0
+-- target names
 ntarg = "fnttarg"
 utarg = "uniquifyencs"
 -------------------------------------------------
@@ -73,6 +86,8 @@ buildsearch = false
 checksearch = false
 -- sourcedir = sourcedir or "."
 -------------------------------------------------
+-- builddir
+-- should be global? or local is better?
 local builddir = builddir or maindir .. "/build"
 -------------------------------------------------
 builddeps = builddeps or {}
@@ -83,6 +98,7 @@ buildfiles = buildfiles or { "*.afm", "*.enc", "*.etx", "*.fd", "*.lig", "*.make
 -- buildsuppfiles = buildsuppfiles or {}
 buildsuppfiles_sys = buildsuppfiles_sys or {}
 -------------------------------------------------
+-- gwall {{{
 function gwall (msg,file,rtn)
   file = file or "current file"
   msg = msg or "Error: "
@@ -92,9 +108,12 @@ function gwall (msg,file,rtn)
     print (msg .. file .. " failed (" .. rtn .. ")\n")
   end
 end
+-- }}}
 -------------------------------------------------
+-- buildinit_hook
 function buildinit_hook () return 0 end
 -------------------------------------------------
+-- buildinit {{{
 -- hack copy of checkinit()
 function buildinit ()
   cleandir(fntdir)
@@ -112,8 +131,8 @@ function buildinit ()
     for i,j in ipairs(buildfiles) do
       cp(j,unpackdir,fntdir)
     end
-    -- if #buildsuppfiles_sys ~= 0 then
-      for j,_ in pairs(buildsuppfiles_sys) do
+    if #buildsuppfiles_sys ~= 0 then
+      for _,j in ipairs(buildsuppfiles_sys) do
         if fileexists(j) then
           cp(basename(j),dirname(j),fntdir)
         else
@@ -122,12 +141,13 @@ function buildinit ()
           cp(j,jdir,fntdir)
         end
       end
-    -- end
+    end
   end
   return buildinit_hook()
 end
+-- }}}
 -------------------------------------------------
--------------------------------------------------
+-- build_fnt {{{
 function build_fnt (dir,cmd,file)
   file = file or ""
   cmd = cmd or ""
@@ -152,7 +172,9 @@ function build_fnt (dir,cmd,file)
   gwall(cmd,file,errorlevel)
   return errorlevel
 end
+-- }}}
 -------------------------------------------------
+-- finst {{{
 function finst (patt,dir,mode)
   dir = dir or "."
   mode = mode or "nonstopmode"
@@ -167,6 +189,9 @@ function finst (patt,dir,mode)
     gwall("Compilation of ", j, errorlevel)
   end
 end
+-- }}}
+-------------------------------------------------
+-- fntkeeper {{{
 function fntkeeper (dir)
   dir = dir or fntdir
   local rtn = direxists(keepdir)
@@ -218,7 +243,9 @@ function fntkeeper (dir)
   end	
   return nifergwall
 end
+-- }}}
 -------------------------------------------------
+-- uniquify {{{
 -- oherwydd fy mod i bron ag anfon pob un ac mae'n amlwg fy mod i wedi anfon bacedi heb ei wneud hwn yn y gorffennol, well i mi wneud rhywbeth (scriptiau gwneud-cyhoeddus a make-public yn argraffu rhybudd os encs yn y cymysg
 -- (cymraeg yn ofnadwy hefyd)
 function uniquify (tag)
@@ -339,7 +366,9 @@ function uniquify (tag)
   print("Something weird happened.\n")
   return 1
 end
+-- }}}
 -------------------------------------------------
+-- fontinst {{{
 function fontinst (dir,mode)
   -- dir = dir or unpackdir
   dir = dir or fntdir
@@ -349,8 +378,6 @@ function fontinst (dir,mode)
   if #buildsuppfiles_sys == 0 then
     print("Assuming all fontinst files should be available during build.\n")
     local path = kpse.var_value("TEXMFDIST") .. "/tex/fontinst"
-    -- note this variable is **NOT** like l3build tables
-    -- like the non-indexed ones in manifest scripts ...
     buildsuppfiles_sys = lsrdir(path)
   end
   buildinit ()
@@ -383,7 +410,7 @@ function fontinst (dir,mode)
   end
   if nifergwall ~= 0 then return nifergwall end
   print("Tidying up build directory ...\n")
-  for i,_ in pairs(buildsuppfiles_sys) do
+  for _,i in ipairs(buildsuppfiles_sys) do
     local errorlevel = rm(dir,i) 
     gwall("Removal of ",dir .. "/" .. i,errorlevel)
   end
@@ -454,8 +481,12 @@ function fontinst (dir,mode)
   end
   return nifergwall
 end
+-- }}}
+-------------------------------------------------
+-- tag.lua
 dofile(maindir .. "/tag.lua")
--- fnt_test
+-------------------------------------------------
+-- fnt_test {{{
 function fnt_test (fntpkgname,fds,content,maps,fdsdir)
   local coll = ""
   -- suffix ly -> ly1 ; no suffix -> t1
@@ -541,7 +572,9 @@ function fnt_test (fntpkgname,fds,content,maps,fdsdir)
   end
   return nifergwall
 end
--- checkinit_hook
+-- }}}
+-------------------------------------------------
+-- checkinit_hook {{{
 function checkinit_hook ()
   local filename = "fnt-test.lvt"
   local file = unpackdir .. "/" .. filename
@@ -550,6 +583,34 @@ function checkinit_hook ()
   local mapfiles=filelist(keepdir, "*.map")
   local mapsdir = ""
   local fdsdir = ""
+  -- if #checksuppfiles_sys == 0 then
+  if checksuppfiles_sys == nil then
+    print("Assuming some basic files should be available testing.\n")
+    local path = kpse.var_value("TEXMFDIST") .. "/tex/latex/base"
+    checksuppfiles_sys = lsrdir(path)
+    path = kpse.var_value("TEXMFDIST") .. "/tex/latex/l3build"
+    checksuppfiles_sys = lsrdir(path,checksuppfiles_sys)
+    path = kpse.var_value("TEXMFDIST") .. "/tex/latex/l3backend"
+    checksuppfiles_sys = lsrdir(path,checksuppfiles_sys)
+    path = kpse.var_value("TEXMFDIST") .. "/tex/latex/lm"
+    -- checksuppfiles_sys = lsrdir(path,checksuppfiles_sys)
+    -- path = kpse.var_value("TEXMFDIST") .. "/fonts"
+    checksuppfiles_sys = lsrdir(path,checksuppfiles_sys)
+    local checksuppfiles_sysadd = checksuppfiles_sysadd or { "svn-prov.sty", "fonttable.sty", "etoolbox.sty" }
+    for _,i in ipairs(checksuppfiles_sysadd) do
+      table.insert(checksuppfiles_sys,i)
+    end
+  end
+  for _,j in ipairs(checksuppfiles_sys) do
+  --   if fileexists(j) then
+  --     cp(basename(j),dirname(j),testdir)
+  --   else
+      local jpath = kpse.find_file(j)
+      local jdir = dirname(jpath)
+      local errorlevel = cp(j,jdir,testdir) 
+      errorlevel = 0 or gwall("Copying ",j,errorlevel)
+  --   end
+  end
   if #mapfiles == 0 then
     mapfiles=filelist(unpackdir, "*.map")
     if #mapfiles == 0 then
@@ -667,7 +728,9 @@ function checkinit_hook ()
   end
   return 0
 end
--- doc_init
+-- }}}
+-------------------------------------------------
+-- doc_init {{{
 function docinit_hook ()
   -- local fdfiles = filelist(keepdir, "*.fd")
   local fdfiles = filelist(unpackdir, "*.fd")
@@ -730,6 +793,8 @@ function docinit_hook ()
   end
   return 0
 end
+-- }}}
+-------------------------------------------------
 -- fontinst must be specified first
 -- it just ain't TeX
 -- ntarg
@@ -900,4 +965,4 @@ if afmtotfm then
   }
 end
 -------------------------------------------------
--- vim: ts=2:sw=2:et:
+-- vim: ts=2:sw=2:et:foldmethod=marker:
