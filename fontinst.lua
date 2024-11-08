@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10587 2024-11-08 17:42:39Z cfrees $
+-- $Id: fontinst.lua 10588 2024-11-08 19:50:41Z cfrees $
 -------------------------------------------------
 -------------------------------------------------
 -- copy non-public things from l3build
@@ -88,11 +88,43 @@ function lsrdir (path,filenames)
 end
 -- }}}
 -------------------------------------------------
+-------------------------------------------------
 -- error-tracking
 nifergwall = 0
 -- target names
 ntarg = "fnttarg"
 utarg = "uniquifyencs"
+-------------------------------------------------
+-------------------------------------------------
+sourcedir = sourcedir or "."
+maindir = maindir or sourcedir
+-------------------------------------------------
+-------------------------------------------------
+-- use fontscripts.lua if found {{{
+local configs = {}
+if buildsearch then
+  local f = kpse.find_file("fontscripts.lua")
+  if f ~= nil then
+    dofile(f)
+    print("WARNING: Using local configuration from " .. f .. ".\n Your package may not build elsewhere.\n")
+    table.insert(configs,f)
+  end
+end
+if fileexists(maindir .. "/fontscripts.lua") then
+  dofile(maindir .. "/fontscripts.lua")
+  print("Using local configuration from " .. maindir .. "/fontscripts.lua.\n Ensure this is included when publishing sources.\n")
+  table.insert(configs,maindir .. "/fontscripts.lua")
+end
+if fileexists(sourcedir .. "/fontscripts.lua") then
+  dofile(sourcedir .. "/fontscripts.lua")
+  print("Using local configuration from " .. sourcedir .. "/fontscripts.lua.\n Ensure this is included when publishing sources.\n")
+  table.insert(configs,sourcedir .. "/fontscripts.lua")
+end
+if #configs == 0 then
+  print("No fontscripts.lua found.\n Using defaults.")
+end
+-- }}}
+-------------------------------------------------
 -------------------------------------------------
 -- it is way too easy to pick up the same package's files in the dist tree
 -- when that happens, some installation tools fail to generate duplicate files
@@ -101,7 +133,6 @@ buildsearch = false
 -- also very easy for font files not to get installed properly and the old ones used
 -- note this overrides the l3build default
 checksearch = false
--- sourcedir = sourcedir or "."
 -------------------------------------------------
 -- builddir
 -- should be global? or local is better?
