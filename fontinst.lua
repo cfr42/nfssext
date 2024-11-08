@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10588 2024-11-08 19:50:41Z cfrees $
+-- $Id: fontinst.lua 10590 2024-11-08 21:33:23Z cfrees $
 -------------------------------------------------
 -------------------------------------------------
 -- copy non-public things from l3build
@@ -100,28 +100,28 @@ sourcedir = sourcedir or "."
 maindir = maindir or sourcedir
 -------------------------------------------------
 -------------------------------------------------
--- use fontscripts.lua if found {{{
+-- use fntbuild.lua if found {{{
 local configs = {}
 if buildsearch then
-  local f = kpse.find_file("fontscripts.lua")
+  local f = kpse.find_file("fntbuild.lua")
   if f ~= nil then
     dofile(f)
     print("WARNING: Using local configuration from " .. f .. ".\n Your package may not build elsewhere.\n")
     table.insert(configs,f)
   end
 end
-if fileexists(maindir .. "/fontscripts.lua") then
-  dofile(maindir .. "/fontscripts.lua")
-  print("Using local configuration from " .. maindir .. "/fontscripts.lua.\n Ensure this is included when publishing sources.\n")
-  table.insert(configs,maindir .. "/fontscripts.lua")
+if fileexists(maindir .. "/fntbuild.lua") then
+  dofile(maindir .. "/fntbuild.lua")
+  print("Using local configuration from " .. maindir .. "/fntbuild.lua.\n Ensure this is included when publishing sources.\n")
+  table.insert(configs,maindir .. "/fntbuild.lua")
 end
-if fileexists(sourcedir .. "/fontscripts.lua") then
-  dofile(sourcedir .. "/fontscripts.lua")
-  print("Using local configuration from " .. sourcedir .. "/fontscripts.lua.\n Ensure this is included when publishing sources.\n")
-  table.insert(configs,sourcedir .. "/fontscripts.lua")
+if fileexists(sourcedir .. "/fntbuild.lua") then
+  dofile(sourcedir .. "/fntbuild.lua")
+  print("Using local configuration from " .. sourcedir .. "/fntbuild.lua.\n Ensure this is included when publishing sources.\n")
+  table.insert(configs,sourcedir .. "/fntbuild.lua")
 end
 if #configs == 0 then
-  print("No fontscripts.lua found.\n Using defaults.")
+  print("No fntbuild.lua found.\n Using defaults.")
 end
 -- }}}
 -------------------------------------------------
