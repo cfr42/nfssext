@@ -41,7 +41,7 @@ jobs:
         # nfssext-cfr uses cfr-lm (though it falls back if built first)
         # cfr-lm uses nfssext-cfr but there's nothing to build
       - name: Run l3build for clm
-        run: (cd cfr-lm ;  cp -r $(kpsewhich -var-value TEXMFDIST)/fonts/afm/public/lm afm && mkdir -p tfm && cp $(kpsewhich -var-value TEXMFDIST)/fonts/tfm/public/lm/ec-* tfm/ && l3build fnttarg && l3build doc && l3build ctan)
+        run: (cd cfr-lm ;  cp -r $(kpsewhich -var-value TEXMFDIST)/fonts/afm/public/lm afm && mkdir -p tfm && cp $(kpsewhich -var-value TEXMFDIST)/fonts/tfm/public/lm/ec-* tfm/ && l3build fnttarg && l3build ctan)
       - name: Archive failed test output for clm
         # run even if previous step failed
         if: ${{ always() }}
@@ -49,7 +49,7 @@ jobs:
         with:
           name: testfiles-nfssext-clm
           # Decide how long to keep the test output artefact:
-          # retention-days: 3
+          retention-days: 7
 
 
   l3build-ctan-nfssext-cfr:
@@ -81,7 +81,7 @@ jobs:
         with:
           name: testfiles-nfssext-cfr
           # Decide how long to keep the test output artefact:
-          # retention-days: 3
+          retention-days: 7
 
 
   l3build-ctan-fontscripts:
@@ -113,7 +113,7 @@ jobs:
         with:
           name: testfiles-nfssext-fontscripts
           # Decide how long to keep the test output artefact:
-          # retention-days: 3
+          retention-days: 7
 
   l3build-ctan-adforn:
     needs: l3build-ctan-clm
@@ -135,7 +135,7 @@ jobs:
           # different workflows.
           package_file: .github/tl_packages
       - name: Run l3build for adforn
-        run: (cd arkandis/adforn  && l3build fnttarg && l3build doc && l3build ctan)
+        run: (cd arkandis/adforn  && l3build fnttarg && l3build ctan)
       - name: Archive failed test output for adforn
         # run even if previous step failed
         if: ${{ always() }}
@@ -143,7 +143,7 @@ jobs:
         with:
           name: testfiles-nfssext-adforn
           # Decide how long to keep the test output artefact:
-          # retention-days: 3
+          retention-days: 7
 
   l3build-ctan-adfsymbols:
     needs: l3build-ctan-clm
@@ -165,7 +165,7 @@ jobs:
           # different workflows.
           package_file: .github/tl_packages
       - name: Run l3build for adfsymbols
-        run: (cd arkandis/adfsymbols  && l3build fnttarg && l3build doc && l3build ctan)
+        run: (cd arkandis/adfsymbols  && l3build fnttarg && l3build ctan)
       - name: Archive failed test output for adfsymbols
         # run even if previous step failed
         if: ${{ always() }}
@@ -173,7 +173,7 @@ jobs:
         with:
           name: testfiles-nfssext-adfsymbols
           # Decide how long to keep the test output artefact:
-          # retention-days: 3
+          retention-days: 7
 
   l3build-ctan-baskervaldadf:
     # The type of runner that the job will run on
@@ -194,7 +194,7 @@ jobs:
           # different workflows.
           package_file: .github/tl_packages
       - name: Run l3build for baskervaldadf
-        run: (cd arkandis/baskervaldadf  && l3build fnttarg && l3build doc && l3build ctan)
+        run: (cd arkandis/baskervaldadf  && l3build fnttarg && l3build ctan)
       - name: Archive failed test output for baskervaldadf
         # run even if previous step failed
         if: ${{ always() }}
@@ -202,7 +202,7 @@ jobs:
         with:
           name: testfiles-nfssext-baskervaldadf
           # Decide how long to keep the test output artefact:
-          # retention-days: 3
+          retention-days: 7
 
   l3build-ctan-berenisadf:
     # no idea why
@@ -225,7 +225,7 @@ jobs:
           # different workflows.
           package_file: .github/tl_packages
       - name: Run l3build for berenisadf
-        run: (cd arkandis/berenisadf  && l3build fnttarg && l3build doc && l3build ctan)
+        run: (cd arkandis/berenisadf  && l3build fnttarg && l3build ctan)
       - name: Archive failed test output for berenisadf
         # run even if previous step failed
         if: ${{ always() }}
@@ -233,7 +233,7 @@ jobs:
         with:
           name: testfiles-nfssext-berenisadf
           # Decide how long to keep the test output artefact:
-          # retention-days: 3
+          retention-days: 7
 
   l3build-ctan-electrumadf:
     # no idea why
@@ -256,7 +256,7 @@ jobs:
           # different workflows.
           package_file: .github/tl_packages
       - name: Run l3build for electrumadf
-        run: (cd arkandis/electrumadf  && l3build fnttarg && l3build doc && l3build ctan)
+        run: (cd arkandis/electrumadf  && l3build fnttarg && l3build ctan)
       - name: Archive failed test output for electrumadf
         # run even if previous step failed
         if: ${{ always() }}
@@ -264,7 +264,7 @@ jobs:
         with:
           name: testfiles-nfssext-electrumadf
           # Decide how long to keep the test output artefact:
-          # retention-days: 3
+          retention-days: 7
 
   l3build-ctan-librisadf:
     # no idea why
@@ -287,7 +287,7 @@ jobs:
           # different workflows.
           package_file: .github/tl_packages
       - name: Run l3build for librisadf
-        run: (cd arkandis/librisadf  && l3build fnttarg && l3build doc && l3build ctan)
+        run: (cd arkandis/librisadf  && l3build fnttarg && l3build ctan)
       - name: Archive failed test output for librisadf
         # run even if previous step failed
         if: ${{ always() }}
@@ -295,7 +295,7 @@ jobs:
         with:
           name: testfiles-nfssext-librisadf
           # Decide how long to keep the test output artefact:
-          # retention-days: 3
+          retention-days: 7
 
   l3build-ctan-romandeadf:
     # no idea why
@@ -318,7 +318,7 @@ jobs:
           # different workflows.
           package_file: .github/tl_packages
       - name: Run l3build for romandeadf
-        run: (cd arkandis/romandeadf  && l3build fnttarg && l3build doc && l3build ctan)
+        run: (cd arkandis/romandeadf  && l3build fnttarg && l3build ctan)
       - name: Archive failed test output for romandeadf
         # run even if previous step failed
         if: ${{ always() }}
@@ -326,7 +326,7 @@ jobs:
         with:
           name: testfiles-nfssext-romandeadf
           # Decide how long to keep the test output artefact:
-          # retention-days: 3
+          retention-days: 7
 
   l3build-ctan-venturisadf:
     # no idea why
@@ -349,7 +349,7 @@ jobs:
           # different workflows.
           package_file: .github/tl_packages
       - name: Run l3build for venturisadf
-        run: (cd arkandis/venturisadf  && l3build fnttarg && l3build doc && l3build ctan)
+        run: (cd arkandis/venturisadf  && l3build fnttarg && l3build ctan)
       - name: Archive failed test output for venturisadf
         # run even if previous step failed
         if: ${{ always() }}
@@ -357,5 +357,5 @@ jobs:
         with:
           name: testfiles-nfssext-venturisadf
           # Decide how long to keep the test output artefact:
-          # retention-days: 3
+          retention-days: 7
 
