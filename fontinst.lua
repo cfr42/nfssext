@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10596 2024-11-09 05:24:15Z cfrees $
+-- $Id: fontinst.lua 10597 2024-11-09 22:03:12Z cfrees $
 -------------------------------------------------
 -------------------------------------------------
 -- copy non-public things from l3build
@@ -145,6 +145,8 @@ fntdir = fntdir or builddir .. "/fnt"
 buildfiles = buildfiles or { "*.afm", "*.enc", "*.etx", "*.fd", "*.lig", "*.make", "*.map", "*.mtx", "*.nam", "*.otf", "*.pe", "*.tex" , "*.tfm" }
 -- buildsuppfiles = buildsuppfiles or {}
 buildsuppfiles_sys = buildsuppfiles_sys or {}
+mapfiles_sys = mapfiles_sys or {}
+mapfiles_add = mapfiles_add or {}
 -------------------------------------------------
 -- gwall {{{
 function gwall (msg,file,rtn)
@@ -155,6 +157,43 @@ function gwall (msg,file,rtn)
     nifergwall = nifergwall + rtn
     print (msg .. file .. " failed (" .. rtn .. ")\n")
   end
+end
+-- }}}
+-------------------------------------------------
+-------------------------------------------------
+-- map_cat {{{
+function map_cat (frags,dir,mapfile)
+  mapfile = mapfile or "pdftex.map"
+  local n = 0
+  if #frags == 0 then 
+    { "cm.map", "cm-super-t1.map", "cm-super-ts1.map", "lm.map" }
+  end
+  if #mapfiles_add ~= 0 then
+    for _,i in ipairs(mapfiles_add) do
+      table.insert(frags,i)
+    end
+  end
+  if fileexists(dir .. "/" .. mapfile) then 
+    local errorlevel = rm(dir,mapfile) 
+    gwall("Removal of ",dir .. "/" .. mapfile,errorlevel)
+  end
+  if #frags ~= 0 then
+    local m = assert(io.open(dir .. "/" .. mapfile,"a"))
+    for _,i in ipairs(frags) do
+      local ff = kpse.find_file(i)
+      if ff ~= "" then
+        local f = assert(io.open(ff),"rb")
+        local l = f:read("*all")
+        f:close()
+        m:write(l)
+      else
+        gwall("Search for map fragment ",i,1)
+        n = n + 1
+      end
+    end
+    m:close()
+  end
+  return n
 end
 -- }}}
 -------------------------------------------------
@@ -655,6 +694,9 @@ function checkinit_hook ()
   local mapsdir = ""
   local fdsdir = ""
   local adds = checksuppfiles_addlst or maindir .. "/checksuppfiles-add.lst"
+  if not checksearch then
+    map_cat(mapfiles_sys,testdir)
+  end
   -- how did this ever work?
   for _,i in ipairs(filelist(keepdir)) do
     if i ~= "." and i ~= ".." then
