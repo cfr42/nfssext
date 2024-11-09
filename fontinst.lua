@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10592 2024-11-09 02:16:51Z cfrees $
+-- $Id: fontinst.lua 10593 2024-11-09 03:44:06Z cfrees $
 -------------------------------------------------
 -------------------------------------------------
 -- copy non-public things from l3build
@@ -304,6 +304,7 @@ function uniquify (tag)
   local dir = ""
   tag = tag or encodingtag or ""
   local pkgbase = pkgbase or ""
+  local pkglist = {}
   if standalone then
     dir = keepdir
   else
@@ -312,7 +313,7 @@ function uniquify (tag)
   if pkgbase == "" then 
     print("pkgbase unspecified. Trying to guess ... ")
     if not standalone then 
-      local pkglist = filelist(dir,"*.sty")
+      pkglist = filelist(dir,"*.sty")
       if #pkglist == 0 then
         pkglist = filelist(unpackdir,"*.sty")
       end
@@ -373,7 +374,7 @@ function uniquify (tag)
     end
     if tag ~= "" then  
       for i, j in ipairs(encs) do
-        if string.match(j,"-" .. tag .. "%.enc$") or  string.match(j, module) or string.match(j,ctanpkg) or string.match(j,pkgbase) then
+        if string.match(j,"-" .. tag .. "%.enc$") or  string.match(j, module) or string.match(j,ctanpkg) or string.match(j,pkgbase) or string.match(j, string.gsub(module, "adf", "")) then
           print(j .. " ... OK\n")
         else
           local targenc = (string.gsub(j,"%.enc$","-" .. tag .. ".enc"))
