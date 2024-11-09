@@ -2,6 +2,7 @@ article.cls
 etoolbox.sty
 fontenc.sty
 fonttable.sty
+ly1enc.def
 ly1enc.dfu
 ly1lmr.fd
 ly1lmss.fd

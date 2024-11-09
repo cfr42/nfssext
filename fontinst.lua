@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10593 2024-11-09 03:44:06Z cfrees $
+-- $Id: fontinst.lua 10595 2024-11-09 05:16:38Z cfrees $
 -------------------------------------------------
 -------------------------------------------------
 -- copy non-public things from l3build
@@ -662,29 +662,33 @@ function checkinit_hook ()
       gwall("Copying ",i,errorlevel)
     end
   end
-  if #checksuppfiles_add == 0 then
-    checksuppfiles_add = { "svn-prov.sty", "fonttable.sty", "etoolbox.sty" }
-  end
   if #checksuppfiles_sys == 0 then
-  -- if checksuppfiles_sys == nil then
     print("Assuming some basic files should be available during testing.\n")
     if fileexists(adds) then
+      print("Adding files from " ... adds .. " to file list.\n")
       for line in io.lines(adds) do
         table.insert(checksuppfiles_sys,line)
       end
     end
+    print("Adding files from /tex/latex/l3build to file list.\n")
     local path = kpse.var_value("TEXMFDIST") .. "/tex/latex/l3build"
     checksuppfiles_sys = lsrdir(path,checksuppfiles_sys)
+    print("Adding files from /tex/latex/l3backend to file list.\n")
     path = kpse.var_value("TEXMFDIST") .. "/tex/latex/l3backend"
     checksuppfiles_sys = lsrdir(path,checksuppfiles_sys)
+    print("Adding files from /tex/latex/lm to file list.\n")
     path = kpse.var_value("TEXMFDIST") .. "/tex/latex/lm"
     -- checksuppfiles_sys = lsrdir(path,checksuppfiles_sys)
     -- path = kpse.var_value("TEXMFDIST") .. "/fonts"
     checksuppfiles_sys = lsrdir(path,checksuppfiles_sys)
-    for _,i in ipairs(checksuppfiles_add) do
-      table.insert(checksuppfiles_sys,i)
+    if #checksuppfiles_add ~= 0 then
+      for _,i in ipairs(checksuppfiles_add) do
+        print("Adding " .. i .. " to file list.\n")
+        table.insert(checksuppfiles_sys,i)
+      end
     end
   end
+  print("Copying system files to " .. testdir .. ".\n")
   for _,j in ipairs(checksuppfiles_sys) do
     local jpath = kpse.find_file(j)
     local jdir = dirname(jpath)
