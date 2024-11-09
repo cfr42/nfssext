@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10590 2024-11-08 21:33:23Z cfrees $
+-- $Id: fontinst.lua 10591 2024-11-09 01:34:31Z cfrees $
 -------------------------------------------------
 -------------------------------------------------
 -- copy non-public things from l3build
@@ -304,13 +304,33 @@ function uniquify (tag)
   local dir = ""
   tag = tag or encodingtag or ""
   local pkgbase = pkgbase or ""
+  local pkgtags = pkgtags or {}
+  if #pkgtags == 0 then 
+    pkgtags[ctanpkg] = true
+    pkgtags[module] = true
+  end
   if standalone then
     dir = keepdir
   else
     dir = fntdir
   end
-  if pkgbase == "" then
+  if pkgbase == "" then 
     print("pkgbase unspecified. Trying to guess ... ")
+    if not standalone then 
+      local pkglist = filelist(dir,"*.sty")
+      if #pkglist == 0 then
+        pkglist = filelist(unpackdir,"*.sty")
+      end
+      if #pkglist ~= 0 then
+        pkgbase = string.gsub(pkglist[1], "%.sty", "")
+        print("Guessing " .. pkgbase)
+      end
+      for _,i in ipairs(pkglist) do
+        pkgtags[string.gsub(i, "%.sty", "")] = true
+      end
+    end
+  end
+  if pkgbase == "" then
     if ctanpkg ~= module and module ~= "" and module ~= nil then
       print("Guessing " .. module)
       pkgbase = module
@@ -319,16 +339,6 @@ function uniquify (tag)
       if pkgbase ~= "" then
         print("Guessing " .. pkgbase)
       end
-    end
-  end
-  if pkgbase == "" then 
-    local pkglist = filelist(dir,"*.sty")
-    if #pkglist ~= 0 then
-      pkglist = filelist(unpackdir,"*.sty")
-    end
-    if #pkglist ~= 0 then
-      pkgbase = string.gsub(pkglist[1], "%.sty", "")
-      print("Guessing " .. pkgbase)
     end
   end
   if pkgbase == "" then 
@@ -370,8 +380,15 @@ function uniquify (tag)
       end
     end
     if tag ~= "" then  
+      pkgtags["-" .. tag] = true
       for i, j in ipairs(encs) do
-        if string.match(j,"-" .. tag .. "%.enc$") or  string.match(j, module) or string.match(j,ctanpkg) or string.match(j,pkgbase) then
+        local ok = false
+        for k,_ in pairs(pkgtags) do
+          if string.match(j, k .. "%.enc$") then
+            ok = true
+          end
+        end
+        if ok then
           print(j .. " ... OK\n")
         else
           local targenc = (string.gsub(j,"%.enc$","-" .. tag .. ".enc"))

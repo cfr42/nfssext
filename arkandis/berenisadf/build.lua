@@ -1,4 +1,4 @@
--- $Id: build.lua 10582 2024-11-06 03:32:11Z cfrees $
+-- $Id: build.lua 10591 2024-11-09 01:34:31Z cfrees $
 -- Build configuration for berenisadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -30,18 +30,17 @@ keeptempfiles = { "*.pl" }
 autotcfds ={ "ts1ybd2j.fd", "ts1ybd2.fd", "ts1ybdj.fd", "ts1ybd.fd" }
 dofile(maindir .. "/fontinst.lua")
 function fntmake (dir,mode)
-  dir = dir or unpackdir
+  dir = dir or fntdir
   mode = mode or "errorstopmode --halt-on-error"
-  print("Unpacking ...\n")
-  local errorlevel = unpack()
+  buildinit()
   print("Running make. Please be patient ...\n")
   errorlevel = run(dir, "chmod +x ff-ybd.pe")
   if errorlevel ~=0 then
-    gwall("Attempt to make fontforge script executable ", unpackdir, errorlevel)
+    gwall("Attempt to make fontforge script executable ", dir, errorlevel)
   else
     errorlevel = run(dir, "make -f Makefile.make all")
     if errorlevel ~= 0 then
-      gwall("make ", unpackdir, errorlevel)
+      gwall("make ", dir, errorlevel)
     end
     -- make ts1 swash families so tc commands pick up the characters in ly1
     -- we don't need t1 versions of these families as there's no room for swash
@@ -53,7 +52,7 @@ function fntmake (dir,mode)
       local jfam = string.gsub(j, "^ts1(.*)%.fd$", "%1")
       local jnewfam = jfam .. "w"
       local jnew = string.gsub(j, "(%.fd)$", "w%1")
-      local f = assert(io.open(unpackdir .. "/" .. j,"rb"))
+      local f = assert(io.open(dir .. "/" .. j,"rb"))
       local content = f:read("*all")
       f:close()
       -- ought to normalise line endings here 
@@ -64,14 +63,14 @@ function fntmake (dir,mode)
       local new_content = string.gsub(content, "{" .. jfam .. "}", "{" .. jnewfam .. "}")
       new_content = string.gsub(new_content, "(ts1[^%.]*)(%.fd)", "%1w%2")
       new_content = string.gsub(new_content, "(TS1/ybd[a-z0-9]*)", "%1w")
-      f = assert(io.open(unpackdir .. "/" .. jnew,"w"))
+      f = assert(io.open(dir .. "/" .. jnew,"w"))
       -- this somehow removes the second value returned by string.gsub??
       f:write((string.gsub(new_content,"\n",os_newline_cp)))
       f:close()
     end
     errorlevel = fntkeeper()
     if errorlevel ~= 0 then
-      gwall("FONT KEEPER FAILED! DO NOT MAKE STANDARD TARGETS WITHOUT RESOLVING!! ", unpackdir, errorlevel)
+      gwall("FONT KEEPER FAILED! DO NOT MAKE STANDARD TARGETS WITHOUT RESOLVING!! ", dir, errorlevel)
     end
   end
   return nifergwall
