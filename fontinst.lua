@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10595 2024-11-09 05:16:38Z cfrees $
+-- $Id: fontinst.lua 10596 2024-11-09 05:24:15Z cfrees $
 -------------------------------------------------
 -------------------------------------------------
 -- copy non-public things from l3build
@@ -665,7 +665,7 @@ function checkinit_hook ()
   if #checksuppfiles_sys == 0 then
     print("Assuming some basic files should be available during testing.\n")
     if fileexists(adds) then
-      print("Adding files from " ... adds .. " to file list.\n")
+      print("Adding files from " .. adds .. " to file list.\n")
       for line in io.lines(adds) do
         table.insert(checksuppfiles_sys,line)
       end
