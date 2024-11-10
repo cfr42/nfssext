@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10600 2024-11-10 08:09:56Z cfrees $
+-- $Id: fontinst.lua 10601 2024-11-10 22:08:56Z cfrees $
 -------------------------------------------------
 -------------------------------------------------
 -- copy non-public things from l3build
@@ -244,11 +244,19 @@ function buildinit ()
 end
 -- }}}
 -------------------------------------------------
+local build_fnt_env = {} 
+-------------------------------------------------
 -- build_fnt {{{
 function build_fnt (dir,cmd,file)
   file = file or ""
   cmd = cmd or ""
   dir = dir or unpackdir
+  local build_fnt_envset = ""
+  if #build_fnt_env ~= 0 then
+    for _,i in ipairs(build_fnt_env) do
+      build_fnt_envset = build_fnt_envset .. os_concat .. os_setenv .. " " .. i
+    end
+  end
   -- steal from l3build-check.lua
   local preamble =
     -- would it be simpler to copy the typesetting sandbox here?
@@ -260,7 +268,24 @@ function build_fnt (dir,cmd,file)
     -- .. os_concat ..
     -- no need for LUAINPUTS here
     -- but we need to set more variables ...?
-    -- .. os_concat ..
+    .. 
+    (buildsearch and 
+      (os_setenv .. " TEXMFAUXTREES={}"
+      .. os_setenv .. " TEXMFHOME={}"
+      .. os_setenv .. " TEXMFLOCAL={}"
+      .. os_setenv .. " TEXMFCONFIG=."
+      .. os_setenv .. " TEXMFVAR=."
+      .. os_setenv .. " TEXVFFONTS=${TEXINPUTS}"
+      .. os_setenv .. " TEXTFMFONTS=${TEXINPUTS}"
+      .. os_setenv .. " TEXFONTMAPS=${TEXINPUTS}"
+      .. os_setenv .. " TEXT1FONTS=${TEXINPUTS}"
+      .. os_setenv .. " TEXAFMFONTS=${TEXINPUTS}"
+      .. os_setenv .. " TEXTTFFONTS=${TEXINPUTS}"
+      .. os_setenv .. " TEXOPENTYPEFONTS=${TEXINPUTS}"
+      .. os_setenv .. " TEXLIGFONTS=${TEXINPUTS}"
+      .. os_setenv .. " TEXENCFONTS=${TEXINPUTS}"
+    ) or "")
+    .. build_fnt_envset
     .. os_concat
   local errorlevel = runcmd(
     preamble .." " ..  cmd .. " " .. file, dir
@@ -492,6 +517,10 @@ function fontinst (dir,mode)
   mode = mode or "errorstopmode --halt-on-error"
   standalone = false
   encodingtag = encodingtag or ""
+  -- if not buildsearch then
+  --   -- unnecessary?
+  --   build_fnt_env = { "TEXINPUTS.fontinst=${TEXINPUTS}" }
+  -- end
   if #buildsuppfiles_sys == 0 then
     print("Assuming all fontinst files should be available during build.\n")
     local path = kpse.var_value("TEXMFDIST") .. "/tex/fontinst"
