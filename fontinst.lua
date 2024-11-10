@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10599 2024-11-10 06:12:23Z cfrees $
+-- $Id: fontinst.lua 10600 2024-11-10 08:09:56Z cfrees $
 -------------------------------------------------
 -------------------------------------------------
 -- copy non-public things from l3build
@@ -1081,6 +1081,13 @@ function fnt_afmtotfm (dir,mode)
       content = content .. string.gsub(c, "\n", " <" .. string.gsub(k,"%.afm",".pfb") .. "\n")
       rm(dir, map .. ".tmp")
     end
+  end
+  -- need to do this as uniquify() isn't used
+  -- otherwise the file ends up in localdir (and probably the package)
+  -- catching this is the only benefit I can see in my inability to clean localdir
+  if fileexists(dir .. "/pdftex.map") then
+    local errorlevel = rm(dir,"pdftex.map") 
+    gwall("Removing ","pdftex.map",errorlevel)
   end
   local f
   f = assert(io.open(dir .. "/" .. map, "w"))
