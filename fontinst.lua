@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10598 2024-11-10 03:36:00Z cfrees $
+-- $Id: fontinst.lua 10599 2024-11-10 06:12:23Z cfrees $
 -------------------------------------------------
 -------------------------------------------------
 -- copy non-public things from l3build
@@ -180,7 +180,8 @@ function map_cat (frags,dir,mapfile)
   if #frags ~= 0 then
     local m = assert(io.open(dir .. "/" .. mapfile,"a"))
     for _,i in ipairs(frags) do
-      local ff = kpse.find_file(i)
+      -- kpse.find_file assumes filetype tex i.e. ignores file ext.
+      local ff = kpse.find_file(i,"map")
       if ff ~= "" then
         local f = assert(io.open(ff),"rb")
         local l = f:read("*all")
@@ -250,19 +251,17 @@ function build_fnt (dir,cmd,file)
   dir = dir or unpackdir
   -- steal from l3build-check.lua
   local preamble =
+    -- would it be simpler to copy the typesetting sandbox here?
+    -- paths in the logs don't matter and copying localdir complicates things a bit
     -- No use of localdir here as the files get copied to testdir:
     -- avoids any paths in the logs
     os_setenv .. " TEXINPUTS=." .. localtexmf()
-      .. (buildsearch and os_pathsep or "")
-      -- .. os_concat ..
-      -- no need for LUAINPUTS here
-      -- but we need to set more variables ...?
-      -- .. os_concat ..
-    -- ensure epoch settings
-    -- set_epoch_cmd(epoch, forcecheckepoch) ..
-    -- Ensure lines are of a known length
-    -- os_setenv .. " max_print_line=" .. maxprintline
-      .. os_concat
+    .. (buildsearch and os_pathsep or "")
+    -- .. os_concat ..
+    -- no need for LUAINPUTS here
+    -- but we need to set more variables ...?
+    -- .. os_concat ..
+    .. os_concat
   local errorlevel = runcmd(
     preamble .." " ..  cmd .. " " .. file, dir
   )
