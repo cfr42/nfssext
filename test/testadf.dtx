@@ -43,7 +43,7 @@
   \char_set_catcode_letter:N \:
 }
 \ExplSyntaxOff
-\ProvidesFileSVN{$Id: testadf.dtx 10326 2024-09-07 21:11:41Z cfrees $}[v0.0 \revinfo][testadf DTX: test for 8-bit engines]
+\ProvidesFileSVN{$Id: testadf.dtx 10599 2024-11-10 06:12:23Z cfrees $}[v0.0 \revinfo][testadf DTX: test for 8-bit engines]
 \DefineFileInfoSVN
 \GetFileInfoSVN*
 \documentclass[11pt,british]{ltxdoc}
@@ -97,14 +97,14 @@
 % ^^A sylwad1E
 % sylwad2E
 % ^^A sylwad3E
-\ProvidesPackageSVN[test.sty]{$Id: testadf.dtx 10326 2024-09-07 21:11:41Z cfrees $}[\filebase v1.1 \revinfo]
+\ProvidesPackageSVN[test.sty]{$Id: testadf.dtx 10599 2024-11-10 06:12:23Z cfrees $}[\filebase v1.1 \revinfo]
 \DefineFileInfoSVN[test]
 \RequirePackage[T1]{fontenc}
 \RequirePackage{nfssext-cfr}
 \IfFormatAtLeastTF {2020-02-02}{}{%
   \RequirePackage{textcomp}}
 \UndeclareTextCommand{\textperthousand}{T1}
-\usepackage[tt={lining,tab,mono}]{cfr-lm}
+% ^^A \usepackage[tt={lining,tab,mono}]{cfr-lm}
 \ExplSyntaxOn
 \keys_define:nn { test }
 {
