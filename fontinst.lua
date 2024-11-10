@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10597 2024-11-09 22:03:12Z cfrees $
+-- $Id: fontinst.lua 10598 2024-11-10 03:36:00Z cfrees $
 -------------------------------------------------
 -------------------------------------------------
 -- copy non-public things from l3build
@@ -161,12 +161,12 @@ end
 -- }}}
 -------------------------------------------------
 -------------------------------------------------
--- map_cat {{{
+-- map_cat (frags,dir,mapfile) {{{
 function map_cat (frags,dir,mapfile)
   mapfile = mapfile or "pdftex.map"
   local n = 0
   if #frags == 0 then 
-    { "cm.map", "cm-super-t1.map", "cm-super-ts1.map", "lm.map" }
+    frags = { "cm.map", "cm-super-t1.map", "cm-super-ts1.map", "lm.map" }
   end
   if #mapfiles_add ~= 0 then
     for _,i in ipairs(mapfiles_add) do
@@ -232,6 +232,12 @@ function buildinit ()
         end
       end
     end
+  end
+  if not buildsearch then
+    -- we aren't typesetting, so we really don't need a map file
+    -- not sure this is really needed - do any tools use this anyway?
+    -- https://rosettacode.org/wiki/Create_a_file
+    io.open(fntdir .. "/pdftex.map", "w"):close()
   end
   return buildinit_hook()
 end
@@ -348,6 +354,11 @@ function uniquify (tag)
     dir = keepdir
   else
     dir = fntdir
+  end
+  if fileexists(dir .. "/pdftex.map") then
+    print("Removing temporary pdftex.map from " .. dir .. "...\n")
+    local errorlevel = rm(dir,"pdftex.map")
+    gwall("Removing ","pdftex.map",errorlevel)
   end
   if pkgbase == "" then 
     print("pkgbase unspecified. Trying to guess ... ")
