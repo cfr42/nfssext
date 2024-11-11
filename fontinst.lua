@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10601 2024-11-10 22:08:56Z cfrees $
+-- $Id: fontinst.lua 10602 2024-11-11 00:56:02Z cfrees $
 -------------------------------------------------
 -------------------------------------------------
 -- copy non-public things from l3build
@@ -265,26 +265,25 @@ function build_fnt (dir,cmd,file)
     -- avoids any paths in the logs
     os_setenv .. " TEXINPUTS=." .. localtexmf()
     .. (buildsearch and os_pathsep or "")
-    -- .. os_concat ..
+    .. os_concat ..
     -- no need for LUAINPUTS here
     -- but we need to set more variables ...?
-    .. 
-    (buildsearch and 
+    (buildsearch and "" or 
       (os_setenv .. " TEXMFAUXTREES={}"
-      .. os_setenv .. " TEXMFHOME={}"
-      .. os_setenv .. " TEXMFLOCAL={}"
-      .. os_setenv .. " TEXMFCONFIG=."
-      .. os_setenv .. " TEXMFVAR=."
-      .. os_setenv .. " TEXVFFONTS=${TEXINPUTS}"
-      .. os_setenv .. " TEXTFMFONTS=${TEXINPUTS}"
-      .. os_setenv .. " TEXFONTMAPS=${TEXINPUTS}"
-      .. os_setenv .. " TEXT1FONTS=${TEXINPUTS}"
-      .. os_setenv .. " TEXAFMFONTS=${TEXINPUTS}"
-      .. os_setenv .. " TEXTTFFONTS=${TEXINPUTS}"
-      .. os_setenv .. " TEXOPENTYPEFONTS=${TEXINPUTS}"
-      .. os_setenv .. " TEXLIGFONTS=${TEXINPUTS}"
-      .. os_setenv .. " TEXENCFONTS=${TEXINPUTS}"
-    ) or "")
+      .. os_concat .. os_setenv .. " TEXMFHOME={}"
+      .. os_concat .. os_setenv .. " TEXMFLOCAL={}"
+      .. os_concat .. os_setenv .. " TEXMFCONFIG=."
+      .. os_concat .. os_setenv .. " TEXMFVAR=."
+      .. os_concat .. os_setenv .. " TEXVFFONTS=${TEXINPUTS}"
+      .. os_concat .. os_setenv .. " TEXTFMFONTS=${TEXINPUTS}"
+      .. os_concat .. os_setenv .. " TEXFONTMAPS=${TEXINPUTS}"
+      .. os_concat .. os_setenv .. " TEXT1FONTS=${TEXINPUTS}"
+      .. os_concat .. os_setenv .. " TEXAFMFONTS=${TEXINPUTS}"
+      .. os_concat .. os_setenv .. " TEXTTFFONTS=${TEXINPUTS}"
+      .. os_concat .. os_setenv .. " TEXOPENTYPEFONTS=${TEXINPUTS}"
+      .. os_concat .. os_setenv .. " TEXLIGFONTS=${TEXINPUTS}"
+      .. os_concat .. os_setenv .. " TEXENCFONTS=${TEXINPUTS}")
+    )
     .. build_fnt_envset
     .. os_concat
   local errorlevel = runcmd(
@@ -1003,7 +1002,24 @@ binmakers = {"*-pltotf.sh"}
 -- maindir before checkdeps
 -- maindir = "../.."
 checkdeps = {maindir .. "/nfssext-cfr", maindir .. "/fnt-tests"}
-checkengines = {"pdftex"}
+-- checkengines = { .. os_concat ..
+--     (checksearch and 
+--       (os_setenv .. " TEXMFAUXTREES={}"
+--       .. os_setenv .. " TEXMFHOME={}"
+--       .. os_setenv .. " TEXMFLOCAL={}"
+--       .. os_setenv .. " TEXMFCONFIG=."
+--       .. os_setenv .. " TEXMFVAR=."
+--       .. os_setenv .. " TEXVFFONTS=${TEXINPUTS}"
+--       .. os_setenv .. " TEXTFMFONTS=${TEXINPUTS}"
+--       .. os_setenv .. " TEXFONTMAPS=${TEXINPUTS}"
+--       .. os_setenv .. " TEXT1FONTS=${TEXINPUTS}"
+--       .. os_setenv .. " TEXAFMFONTS=${TEXINPUTS}"
+--       .. os_setenv .. " TEXTTFFONTS=${TEXINPUTS}"
+--       .. os_setenv .. " TEXOPENTYPEFONTS=${TEXINPUTS}"
+--       .. os_setenv .. " TEXLIGFONTS=${TEXINPUTS}"
+--       .. os_setenv .. " TEXENCFONTS=${TEXINPUTS}"
+--     ) or "")
+--     .. os_concat .. "pdftex"}
 checkformat = "latex"
 -- checksuppfiles = {""}
 cleanfiles = {keeptempfiles}
