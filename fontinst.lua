@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10603 2024-11-11 02:22:58Z cfrees $
+-- $Id: fontinst.lua 10604 2024-11-11 04:12:28Z cfrees $
 -------------------------------------------------
 -------------------------------------------------
 -- copy non-public things from l3build
@@ -750,17 +750,34 @@ function checkinit_hook ()
         table.insert(checksuppfiles_sys,line)
       end
     end
-    print("Adding files from /tex/latex/l3build to file list.\n")
-    local path = kpse.var_value("TEXMFDIST") .. "/tex/latex/l3build"
-    checksuppfiles_sys = lsrdir(path,checksuppfiles_sys)
-    print("Adding files from /tex/latex/l3backend to file list.\n")
-    path = kpse.var_value("TEXMFDIST") .. "/tex/latex/l3backend"
-    checksuppfiles_sys = lsrdir(path,checksuppfiles_sys)
-    print("Adding files from /tex/latex/lm to file list.\n")
-    path = kpse.var_value("TEXMFDIST") .. "/tex/latex/lm"
-    -- checksuppfiles_sys = lsrdir(path,checksuppfiles_sys)
-    -- path = kpse.var_value("TEXMFDIST") .. "/fonts"
-    checksuppfiles_sys = lsrdir(path,checksuppfiles_sys)
+    local d = { 
+      "/tex/latex/l3build", 
+      "/tex/latex/l3backend",
+      "/tex/latex/lm" ,
+      "/fonts/enc/dvips/base",
+      "/fonts/enc/dvips/lm",
+      "/fonts/enc/dvips/cm-super",
+      "/fonts/type1/public/lm",
+      "/fonts/type1/public/cm-super",
+      "/fonts/tfm/public/cm",
+      "/fonts/tfm/jknappen/ec",
+      "/fonts/tfm/public/cm-super",
+      "/fonts/tfm/public/lm" }
+    for _,i in ipairs(d) do
+      local path = kpse.var_value("TEXMFDIST") .. i
+      if direxists(path) then
+        -- print("Adding files from " .. i .. " to file list.\n")
+        print("Adding files from " .. i .. " to test directory.\n")
+        local tmpls = filelist(path)
+        for _,j in ipairs(tmpls) do
+          if j ~= "." and j ~= ".." then
+            local errorlevel = cp(j,path,testdir)
+            gwall("Copying ",path .. "/" .. j,errorlevel)
+          end
+        end
+        -- checksuppfiles_sys = lsrdir(path,checksuppfiles_sys)
+      end
+    end
     if #checksuppfiles_add ~= 0 then
       for _,i in ipairs(checksuppfiles_add) do
         print("Adding " .. i .. " to file list.\n")
@@ -768,12 +785,19 @@ function checkinit_hook ()
       end
     end
   end
-  print("Copying system files to " .. testdir .. ".\n")
-  for _,j in ipairs(checksuppfiles_sys) do
-    local jpath = kpse.find_file(j)
-    local jdir = dirname(jpath)
-    local errorlevel = cp(j,jdir,testdir) 
-    errorlevel = 0 or gwall("Copying ",j,errorlevel)
+  print("Copying itemised system files to " .. testdir .. ".\n")
+  if #checksuppfiles_sys ~= 0 then
+    for _,j in ipairs(checksuppfiles_sys) do
+      -- local jpath = kpse.find_file(j)
+      local jpath = kpse.lookup(j)
+      if jpath ~= nil then 
+        local jdir = dirname(jpath)
+        local errorlevel = cp(j,jdir,testdir) 
+        gwall("Copying ",j,errorlevel)
+      else
+        gwall("Finding ",j,errorlevel)
+      end
+    end
   end
   if #mapfiles == 0 then
     mapfiles=filelist(unpackdir, "*.map")
@@ -894,7 +918,7 @@ function checkinit_hook ()
     checkopts = checkopts 
       .. " --cnf-line=TEXMFAUXTREES={} --cnf-line=TEXMFHOME={} --cnf-line=TEXMFLOCAL={} --cnf-line=TEXMFCONFIG=. --cnf-line=TEXMFVAR=. --cnf-line=VFFONTS=."
       .. localtexmf() .. " --cnf-line=TFMFONTS=."
-      .. localtexmf() .. " --cnf-line=FONTMAPS=."
+      .. localtexmf() .. " --cnf-line=TEXFONTMAPS=."
       .. localtexmf() .. " --cnf-line=T1FONTS=."
       .. localtexmf() .. " --cnf-line=AFMFONTS=."
       .. localtexmf() .. " --cnf-line=TTFFONTS=."
