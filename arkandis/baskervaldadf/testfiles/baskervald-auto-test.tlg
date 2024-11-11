@@ -3611,6 +3611,7 @@ Completed box being shipped out [1]
 ....\glue 0.0 plus 1.0fil
 ....\T1/ybv/m/n/10 (ybvr8t) 1
 ....\glue 0.0 plus 1.0fil
+{8r.enc}{supp-ybv.enc}
 ============================================================
 ============================================================
 TEST 2: test-T1-ybv-m-it
