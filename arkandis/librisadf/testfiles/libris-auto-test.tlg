@@ -3564,6 +3564,7 @@ Completed box being shipped out [1]
 ....\glue 0.0 plus 1.0fil
 ....\T1/cmr/m/n/10 (ecrm1000) 1
 ....\glue 0.0 plus 1.0fil
+{cm-super-t1.enc}{t1-cfr-yly.enc}{libris-supp.enc}{ts1-euro-yly.enc}
 ============================================================
 ============================================================
 TEST 2: test-T1-yly-m-it
