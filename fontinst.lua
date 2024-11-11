@@ -1,4 +1,4 @@
--- $Id: fontinst.lua 10602 2024-11-11 00:56:02Z cfrees $
+-- $Id: fontinst.lua 10603 2024-11-11 02:22:58Z cfrees $
 -------------------------------------------------
 -------------------------------------------------
 -- copy non-public things from l3build
@@ -274,15 +274,15 @@ function build_fnt (dir,cmd,file)
       .. os_concat .. os_setenv .. " TEXMFLOCAL={}"
       .. os_concat .. os_setenv .. " TEXMFCONFIG=."
       .. os_concat .. os_setenv .. " TEXMFVAR=."
-      .. os_concat .. os_setenv .. " TEXVFFONTS=${TEXINPUTS}"
-      .. os_concat .. os_setenv .. " TEXTFMFONTS=${TEXINPUTS}"
+      .. os_concat .. os_setenv .. " VFFONTS=${TEXINPUTS}"
+      .. os_concat .. os_setenv .. " TFMFONTS=${TEXINPUTS}"
       .. os_concat .. os_setenv .. " TEXFONTMAPS=${TEXINPUTS}"
-      .. os_concat .. os_setenv .. " TEXT1FONTS=${TEXINPUTS}"
-      .. os_concat .. os_setenv .. " TEXAFMFONTS=${TEXINPUTS}"
-      .. os_concat .. os_setenv .. " TEXTTFFONTS=${TEXINPUTS}"
-      .. os_concat .. os_setenv .. " TEXOPENTYPEFONTS=${TEXINPUTS}"
-      .. os_concat .. os_setenv .. " TEXLIGFONTS=${TEXINPUTS}"
-      .. os_concat .. os_setenv .. " TEXENCFONTS=${TEXINPUTS}")
+      .. os_concat .. os_setenv .. " T1FONTS=${TEXINPUTS}"
+      .. os_concat .. os_setenv .. " AFMFONTS=${TEXINPUTS}"
+      .. os_concat .. os_setenv .. " TTFFONTS=${TEXINPUTS}"
+      .. os_concat .. os_setenv .. " OPENTYPEFONTS=${TEXINPUTS}"
+      .. os_concat .. os_setenv .. " LIGFONTS=${TEXINPUTS}"
+      .. os_concat .. os_setenv .. " ENCFONTS=${TEXINPUTS}")
     )
     .. build_fnt_envset
     .. os_concat
@@ -890,6 +890,19 @@ function checkinit_hook ()
       rm(unpackdir,filename)
     end
   end
+  if not checksearch then
+    checkopts = checkopts 
+      .. " --cnf-line=TEXMFAUXTREES={} --cnf-line=TEXMFHOME={} --cnf-line=TEXMFLOCAL={} --cnf-line=TEXMFCONFIG=. --cnf-line=TEXMFVAR=. --cnf-line=VFFONTS=."
+      .. localtexmf() .. " --cnf-line=TFMFONTS=."
+      .. localtexmf() .. " --cnf-line=FONTMAPS=."
+      .. localtexmf() .. " --cnf-line=T1FONTS=."
+      .. localtexmf() .. " --cnf-line=AFMFONTS=."
+      .. localtexmf() .. " --cnf-line=TTFFONTS=."
+      .. localtexmf() .. " --cnf-line=OPENTYPEFONTS=."
+      .. localtexmf() .. " --cnf-line=LIGFONTS=."
+      .. localtexmf() .. " --cnf-line=ENCFONTS=."
+      .. localtexmf() 
+  end
   return 0
 end
 -- }}}
@@ -1002,22 +1015,23 @@ binmakers = {"*-pltotf.sh"}
 -- maindir before checkdeps
 -- maindir = "../.."
 checkdeps = {maindir .. "/nfssext-cfr", maindir .. "/fnt-tests"}
--- checkengines = { .. os_concat ..
---     (checksearch and 
+checkengines = { "pdftex" } 
+-- os_concat ..
+--     (checksearch and
 --       (os_setenv .. " TEXMFAUXTREES={}"
---       .. os_setenv .. " TEXMFHOME={}"
---       .. os_setenv .. " TEXMFLOCAL={}"
---       .. os_setenv .. " TEXMFCONFIG=."
---       .. os_setenv .. " TEXMFVAR=."
---       .. os_setenv .. " TEXVFFONTS=${TEXINPUTS}"
---       .. os_setenv .. " TEXTFMFONTS=${TEXINPUTS}"
---       .. os_setenv .. " TEXFONTMAPS=${TEXINPUTS}"
---       .. os_setenv .. " TEXT1FONTS=${TEXINPUTS}"
---       .. os_setenv .. " TEXAFMFONTS=${TEXINPUTS}"
---       .. os_setenv .. " TEXTTFFONTS=${TEXINPUTS}"
---       .. os_setenv .. " TEXOPENTYPEFONTS=${TEXINPUTS}"
---       .. os_setenv .. " TEXLIGFONTS=${TEXINPUTS}"
---       .. os_setenv .. " TEXENCFONTS=${TEXINPUTS}"
+--       .. os_concat .. os_setenv .. " TEXMFHOME={}"
+--       .. os_concat .. os_setenv .. " TEXMFLOCAL={}"
+--       .. os_concat .. os_setenv .. " TEXMFCONFIG=."
+--       .. os_concat .. os_setenv .. " TEXMFVAR=."
+--       .. os_concat .. os_setenv .. " TEXVFFONTS=${TEXINPUTS}"
+--       .. os_concat .. os_setenv .. " TEXTFMFONTS=${TEXINPUTS}"
+--       .. os_concat .. os_setenv .. " TEXFONTMAPS=${TEXINPUTS}"
+--       .. os_concat .. os_setenv .. " TEXT1FONTS=${TEXINPUTS}"
+--       .. os_concat .. os_setenv .. " TEXAFMFONTS=${TEXINPUTS}"
+--       .. os_concat .. os_setenv .. " TEXTTFFONTS=${TEXINPUTS}"
+--       .. os_concat .. os_setenv .. " TEXOPENTYPEFONTS=${TEXINPUTS}"
+--       .. os_concat .. os_setenv .. " TEXLIGFONTS=${TEXINPUTS}"
+--       .. os_concat .. os_setenv .. " TEXENCFONTS=${TEXINPUTS}"
 --     ) or "")
 --     .. os_concat .. "pdftex"}
 checkformat = "latex"
