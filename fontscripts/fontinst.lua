@@ -1,1 +1,0 @@
-../fontinst.lua
