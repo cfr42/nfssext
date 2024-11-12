@@ -1,4 +1,4 @@
--- $Id: build.lua 10617 2024-11-12 19:24:47Z cfrees $
+-- $Id: build.lua 10623 2024-11-12 21:01:33Z cfrees $
 -- Build configuration for fontscripts
 -- l3build.pdf listing 1 tudalen 9
 --
@@ -16,9 +16,9 @@ typesetruns = 5
 --
 -- there must be a variable I can set for this!
 function docinit_hook()
-  local errorlevel = cp("fontbuild.lua",sourcefiledir,typesetdir)
+  local errorlevel = cp("fntbuild.lua",sourcefiledir,typesetdir)
   if not errorlevel == 0 then
-    print("Could not copy fontbuild.lua!\n")
+    print("Could not copy fntbuild.lua!\n")
     return 1
   end
   local errorlevel = cp("fnt-ctan.lua",sourcefiledir,typesetdir)
@@ -28,7 +28,7 @@ function docinit_hook()
   end
   return 0
 end
-docfiles = {"fontbuild.lua","fnt-ctan.lua"}
+docfiles = {"fntbuild.lua","fnt-ctan.lua"}
 date = "2024"
 if direxists(sourcedir .. "/../../adnoddau/l3build") then
   dofile(sourcedir .. "/../../adnoddau/l3build/tag.lua")
@@ -42,7 +42,7 @@ function manifest_setup ()
     {
       name = "Package files",
       dir = sourcefiledir,
-      files = {"*.dtx","*.ins","fontbuild.lua","fnt-ctan.lua","*.md"},
+      files = {"*.dtx","*.ins","fntbuild.lua","fnt-ctan.lua","*.md"},
       exclude = {derivedfiles},
     },
     {
