@@ -1,4 +1,4 @@
--- $Id: fntbuild-config.lua 10611 2024-11-12 17:12:11Z cfrees $
+-- $Id: fntbuild-config.lua 10614 2024-11-12 17:37:07Z cfrees $
 -- configuration for nfssext
 -------------------------------------------------
 sourcedir = sourcedir or "."
