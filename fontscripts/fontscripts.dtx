@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10412 2024-09-27 15:10:34Z cfrees $}[v0.1 \revinfo][\filebase DTX: l3build scripts for font installation]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10615 2024-11-12 17:44:07Z cfrees $}[v0.1 \revinfo][\filebase DTX: l3build scripts for font installation]
 \DefineFileInfoSVN[fontscripts]
 \documentclass[10pt,british,lm-default=false]{l3doc}
 % l3doc loads fancyvrb
@@ -553,7 +553,7 @@
 %    \begin{macrocode}
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10412 2024-09-27 15:10:34Z cfrees $}[v0.1 \revinfo][\outFileName]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10615 2024-11-12 17:44:07Z cfrees $}[v0.1 \revinfo][\outFileName]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % \iffalse
@@ -724,28 +724,6 @@
 %     \VerbatimInput[gobble=0,numbers=left,numberblanklines=true,firstnumber=last]{fnt-ctan.lua}
 %   \end{luafunction}
 % \end{luafrag} 
-% 
-% \subsubsection{tag.lua}\label{subsubsec:tag-lua}
-% 
-% This is just a copy of the function from \file{l3build-tagging.lua}.
-% It is here because \file{fontinst.lua} calls a file containing a custom \file{tag.lua} file locally\footnote{%
-%   This file is on \github{} for the morbidly curious, along with at least three attempts to create a \file{manifest.txt}.%
-% }.
-% For an example of how to do this, see the \file{build-config.lua} file for \LaTeXe{}.
-%
-% \iffalse
-%<*tag>
-% \fi
-% \begin{luafrag}{tag.lua}
-%    \begin{macrocode}
-function update_tag(filename,content,tagname,tagdate)
-  return content
-end
-%    \end{macrocode}
-% \end{luafrag}
-% \iffalse
-%</tag>
-% \fi
 % 
 % 
 % 
