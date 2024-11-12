@@ -5,5 +5,11 @@ sourcedir = sourcedir or "."
 maindir = maindir or ".." 
 builddeps = { maindir .. "/fontscripts" } 
 -------------------------------------------------
+-- tag.lua
+tagfile = tagfile or maindir .. "/tag.lua"
+if fileexists(tagfile) then
+  dofile(tagfile)
+end
+-------------------------------------------------
 -------------------------------------------------
 -- vim: ts=2:sw=2:et:foldmethod=marker:

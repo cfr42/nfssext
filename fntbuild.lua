@@ -628,8 +628,6 @@ function fontinst (dir,mode)
 end
 -- }}}
 -------------------------------------------------
--- tag.lua
-dofile(maindir .. "/tag.lua")
 -------------------------------------------------
 -- fnt_test {{{
 function fnt_test (fntpkgname,fds,content,maps,fdsdir)
