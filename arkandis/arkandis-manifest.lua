@@ -1,10 +1,10 @@
--- $Id: arkandis-manifest.lua 10439 2024-09-29 16:00:23Z cfrees $
+-- $Id: arkandis-manifest.lua 10612 2024-11-12 17:21:11Z cfrees $
 ---------------------------------------------------------------------
 ---------------------------------------------------------------------
 -- local derivedfiles = derivedfiles or {"*.cls","*.enc","*.fd","*.map","*.sty","*.tfm","*.vf"}
 -- local arkandisfiles = arkandisfiles or {"*.afm","*.otf","*.pfb",".pfm","*.ttf","NOTICE.txt","COPYING"}
 -- local fnttestfiles = fnttestfiles or {"fnt-tests.tex", "fnt-test.lvt"} 
--- local buildscripts = buildscripts or  {"*.lua", "Makefile", "../arkandis/*.lua", "../../fontinst.lua"}
+-- local buildscripts = buildscripts or  {"*.lua", "Makefile", "../arkandis/*.lua", "../../fntbuild.lua"}
 -- local fnttestdir = fnttestdir or maindir .. "/fnt-tests"
 -- local testfiles = testfiles or {"*.lvt","*.pvt","*.tlg","*.lve","*.tpf"}
 -- local addetx = addetx or filelist(sourcefiledir,"*.etx")      
@@ -126,7 +126,7 @@ function populatescripts()
   if buildscripts == nil then
     -- local bldscripts = {}
     local bldscripts = ""
-    local possscripts = {sourcefiledir .. "/build.lua", maindir .. "/fontinst.lua", maindir .. "/tag.lua", arkandisdir .. "/arkandis-manifest.lua"}
+    local possscripts = {sourcefiledir .. "/build.lua", maindir .. "/fntbuild.lua", maindir .. "/tag.lua", arkandisdir .. "/arkandis-manifest.lua"}
     for i,j in ipairs(possscripts) do
       if fileexists(j) then
         bldscripts = bldscripts .. "\n* " .. basename(j) 

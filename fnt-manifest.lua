@@ -1,9 +1,9 @@
--- $Id: fnt-manifest.lua 10356 2024-09-17 05:46:19Z cfrees $
+-- $Id: fnt-manifest.lua 10612 2024-11-12 17:21:11Z cfrees $
 ---------------------------------------------------------------------
 -- local derivedfiles = derivedfiles or {"*.cls","*.enc","*.fd","*.map","*.sty","*.tfm","*.vf"}
 -- local origfntfiles = origfntfiles or {"*.afm","*.otf","*.pfb",".pfm","*.ttf","NOTICE.txt","COPYING"}
 -- local fnttestfiles = fnttestfiles or {"fnt-tests.tex", "fnt-test.lvt"} 
--- local buildscripts = buildscripts or  {"*.lua", "Makefile", "../vendor/*.lua", "../../fontinst.lua"}
+-- local buildscripts = buildscripts or  {"*.lua", "Makefile", "../vendor/*.lua", "../../fntbuild.lua"}
 -- local fnttestdir = fnttestdir or maindir .. "/fnt-tests"
 -- local testfiles = testfiles or {"*.lvt","*.pvt","*.tlg","*.lve","*.tpf"}
 local fnttestfiles = fnttestfiles or "* fnt-tables.tex\n* fnt-tests.tex\n* fnt-test.lvt"
@@ -15,7 +15,7 @@ function populatescripts()
   if buildscripts == nil then
     -- local bldscripts = {}
     local bldscripts = ""
-    local possscripts = {sourcefiledir .. "/build.lua", maindir .. "/fontinst.lua", maindir .. "/fnt-manifest.lua", maindir .. "/tag.lua"}
+    local possscripts = {sourcefiledir .. "/build.lua", maindir .. "/fntbuild.lua", maindir .. "/fnt-manifest.lua", maindir .. "/tag.lua"}
     for i,j in ipairs(possscripts) do
       if fileexists(j) then
         bldscripts = bldscripts .. "\n* " .. basename(j) 

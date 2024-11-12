@@ -31,7 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: venturis.dtx 10366 2024-09-18 14:25:21Z cfrees $}[v2.0 \revinfo][\filebase DTX: Venturis ADF for 8-bit engines]
+\ProvidesFileSVN{$Id: venturis.dtx 10612 2024-11-12 17:21:11Z cfrees $}[v2.0 \revinfo][\filebase DTX: Venturis ADF for 8-bit engines]
 \DefineFileInfoSVN[venturis]
 \documentclass[11pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -423,7 +423,7 @@ This is essentially the same family as yvtj but with lining figures. Additional 
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: venturis.dtx 10366 2024-09-18 14:25:21Z cfrees $}[v2.0 \revinfo for VenturisADF PS 1.005]
+\ProvidesPackageSVN[\filebase.sty]{$Id: venturis.dtx 10612 2024-11-12 17:21:11Z cfrees $}[v2.0 \revinfo for VenturisADF PS 1.005]
 \DefineFileInfoSVN[venturis]
 \RequirePackage[T1]{fontenc}
 \RequirePackage{nfssext-cfr}[2024/01/01]
@@ -588,7 +588,7 @@ This is essentially the same family as yvtj but with lining figures. Additional 
 \recordtransforms{yvt-rec.tex}
 %    \end{macrocode}
 % Allow fonts to be scaled via variable in fd files
-% Also requires fontinst.lua fnttarg as no means to define variable in fontinst 
+% Also requires fntbuild.lua fnttarg as no means to define variable in fontinst 
 %    \begin{macrocode}
 \declaresize{}{<-> \string\yvt@@scale}
 %    \end{macrocode}

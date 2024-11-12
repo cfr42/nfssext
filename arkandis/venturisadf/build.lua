@@ -1,4 +1,4 @@
--- $Id: build.lua 10582 2024-11-06 03:32:11Z cfrees $
+-- $Id: build.lua 10612 2024-11-12 17:21:11Z cfrees $
 -- Build configuration for venturisadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -19,7 +19,7 @@ fnttestfds.venturis = { "t1yvt.fd", "t1yvtajw.fd", "t1yvtaw.fd", "t1yvtd.fd", "t
 fnttestfds.venturis2 = { "t1yv2.fd" , "t1yv3.fd" } 
 fnttestfds.venturisold = { "t1yvo.fd", "t1yvoa.fd", "t1yvoad.fd", "t1yvod.fd" } 
 typesetfiles = { module .. ".dtx", "*-imp.dtx", "*-example.tex", "*-tables.tex" }
-dofile(maindir .. "/fontinst.lua")
+dofile(maindir .. "/fntbuild.lua")
 -- local srcfiles = { "lining.etx", "oldstyle.etx", "t1-dotalt-f_f.enc", "t1-dotalt-f_f.etx", "t1-f_f.enc", "t1-f_f.etx", "t1j-f_f.etx", "ts1-euro.enc", "ts1-euro.etx", "ucdotalt.etx" }
 -- for i,j in ipairs(srcfiles) do table.insert(sourcefiles,j) end
 -- angen TODO new TL installation
