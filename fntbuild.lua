@@ -1,4 +1,4 @@
--- $Id: fntbuild.lua 10611 2024-11-12 17:12:11Z cfrees $
+-- $Id: fntbuild.lua 10613 2024-11-12 17:27:26Z cfrees $
 -------------------------------------------------
 -------------------------------------------------
 -- copy non-public things from l3build
@@ -100,28 +100,28 @@ sourcedir = sourcedir or "."
 maindir = maindir or sourcedir
 -------------------------------------------------
 -------------------------------------------------
--- use fntbuild.lua if found {{{
+-- use fntbuild-config.lua if found {{{
 local configs = {}
 if buildsearch then
-  local f = kpse.find_file("fntbuild.lua")
+  local f = kpse.find_file("fntbuild-config.lua")
   if f ~= nil then
     dofile(f)
     print("WARNING: Using local configuration from " .. f .. ".\n Your package may not build elsewhere.\n")
     table.insert(configs,f)
   end
 end
-if fileexists(maindir .. "/fntbuild.lua") then
-  dofile(maindir .. "/fntbuild.lua")
-  print("Using local configuration from " .. maindir .. "/fntbuild.lua.\n Ensure this is included when publishing sources.\n")
-  table.insert(configs,maindir .. "/fntbuild.lua")
+if fileexists(maindir .. "/fntbuild-config.lua") then
+  dofile(maindir .. "/fntbuild-config.lua")
+  print("Using local configuration from " .. maindir .. "/fntbuild-config.lua.\n Ensure this is included when publishing sources.\n")
+  table.insert(configs,maindir .. "/fntbuild-config.lua")
 end
-if fileexists(sourcedir .. "/fntbuild.lua") then
-  dofile(sourcedir .. "/fntbuild.lua")
-  print("Using local configuration from " .. sourcedir .. "/fntbuild.lua.\n Ensure this is included when publishing sources.\n")
-  table.insert(configs,sourcedir .. "/fntbuild.lua")
+if fileexists(sourcedir .. "/fntbuild-config.lua") then
+  dofile(sourcedir .. "/fntbuild-config.lua")
+  print("Using local configuration from " .. sourcedir .. "/fntbuild-config.lua.\n Ensure this is included when publishing sources.\n")
+  table.insert(configs,sourcedir .. "/fntbuild-config.lua")
 end
 if #configs == 0 then
-  print("No fntbuild.lua found.\n Using defaults.")
+  print("No fntbuild-config.lua found.\n Using defaults.")
 end
 -- }}}
 -------------------------------------------------
