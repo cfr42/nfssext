@@ -1,4 +1,4 @@
--- $Id: build.lua 10582 2024-11-06 03:32:11Z cfrees $
+-- $Id: build.lua 10612 2024-11-12 17:21:11Z cfrees $
 -- Build configuration for adfsymbols
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -28,13 +28,13 @@ textfiles = {"*.md","*.txt","COPYING","NOTICE"}
 vendor = "arkandis"
 autotestfds = {  "uarrowsadf.fd" , "ubulletsadf.fd" }
 keepfiles = { "*.map", "*.tfm" }
--- RHAID ei osod cyn i ddarllen fontinst.lua!
+-- RHAID ei osod cyn i ddarllen fntbuild.lua!
 afmtotfm = true
 fntencs = fntencs or {}
 fntencs["ArrowsADF"] = "SymbolsADF.enc"
 fntencs["BulletsADF"] = "SymbolsADF.enc"
 print(fntencs["ArrowsADF"])
-dofile(maindir .. "/fontinst.lua")
+dofile(maindir .. "/fntbuild.lua")
 function fnt_test (fntpkgname,fds,content,maps,fdsdir)
   return 0
 end

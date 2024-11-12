@@ -1,4 +1,4 @@
--- $Id: build.lua 10582 2024-11-06 03:32:11Z cfrees $
+-- $Id: build.lua 10612 2024-11-12 17:21:11Z cfrees $
 -- Build configuration for electrumadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -16,7 +16,7 @@ module = "electrum"
 vendor = "arkandis"
 autotestfds = {  "t1yes.fd", "t1yesj.fd", "t1yesjw.fd", "t1yesw.fd" }
 textfiles = {"*.md","*.txt","COPYING"}
-dofile(maindir .. "/fontinst.lua")
+dofile(maindir .. "/fntbuild.lua")
 -- local srcfiles = {"dotsc2.etx", "dotscbuild.mtx", "dotscmisc.mtx", "newlatin-dotsc.mtx", "t1-dotinf.etx", "t1-dotsup.etx", "ts1-dotinf.etx", "ts1-dotsup.etx"}
 -- for i,j in ipairs(srcfiles) do table.insert(sourcefiles,j) end
 typesetdeps = {maindir .. "/nfssext-cfr"}
