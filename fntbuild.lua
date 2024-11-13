@@ -1,4 +1,4 @@
--- $Id: fntbuild.lua 10614 2024-11-12 17:37:07Z cfrees $
+-- $Id: fntbuild.lua 10628 2024-11-13 17:03:07Z cfrees $
 -------------------------------------------------
 -------------------------------------------------
 -- copy non-public things from l3build
@@ -46,6 +46,10 @@ end
 -- }}}
 -------------------------------------------------
 -- dep_install {{{
+---@param 
+---@return 
+---@see 
+---@usage 
 function dep_install(deps)
   local error_level
   for _, dep in ipairs(deps) do
@@ -61,6 +65,11 @@ end
 -------------------------------------------------
 -------------------------------------------------
 -- lsrdir_aux {{{
+---@param path string
+---@param filenames table
+---@return table 
+---@see 
+---@usage private
 function lsrdir_aux (path,filenames)
   for file in lfs.dir(path) do
     if file ~= "." and file ~= ".." then
@@ -81,12 +90,18 @@ end
 -- }}}
 -- lsrdir {{{
 -- https://lunarmodules.github.io/luafilesystem/examples.html
+---@param path string
+---@param filenames table
+---@return table 
+---@see 
+---@usage public
 function lsrdir (path,filenames)
   local filenames = filenames or {}
   filenames = lsrdir_aux (path,filenames)
   return filenames
 end
 -- }}}
+--
 -------------------------------------------------
 -------------------------------------------------
 -- error-tracking
@@ -106,22 +121,22 @@ if buildsearch then
   local f = kpse.find_file("fntbuild-config.lua")
   if f ~= nil then
     dofile(f)
-    print("WARNING: Using local configuration from " .. f .. ".\n Your package may not build elsewhere.\n")
+    print("\nWARNING: Using local configuration from " .. f .. ".\nYour package may not build elsewhere.\n")
     table.insert(configs,f)
   end
 end
 if fileexists(maindir .. "/fntbuild-config.lua") then
   dofile(maindir .. "/fntbuild-config.lua")
-  print("Using local configuration from " .. maindir .. "/fntbuild-config.lua.\n Ensure this is included when publishing sources.\n")
+  print("\nUsing local configuration from " .. maindir .. "/fntbuild-config.lua.\nEnsure this is included when publishing sources.\n")
   table.insert(configs,maindir .. "/fntbuild-config.lua")
 end
 if fileexists(sourcedir .. "/fntbuild-config.lua") then
   dofile(sourcedir .. "/fntbuild-config.lua")
-  print("Using local configuration from " .. sourcedir .. "/fntbuild-config.lua.\n Ensure this is included when publishing sources.\n")
+  print("\nUsing local configuration from " .. sourcedir .. "/fntbuild-config.lua.\nEnsure this is included when publishing sources.\n")
   table.insert(configs,sourcedir .. "/fntbuild-config.lua")
 end
 if #configs == 0 then
-  print("No fntbuild-config.lua found.\n Using defaults.")
+  print("\nNo fntbuild-config.lua found.\nUsing defaults.\n")
 end
 -- }}}
 -------------------------------------------------
@@ -141,14 +156,17 @@ local builddir = builddir or maindir .. "/build"
 builddeps = builddeps or {}
 fntdir = fntdir or builddir .. "/fnt"
 -- should use existing fnt variables, I think
--- buildfiles = buildfiles or { "*.afm", "*.etx", "*.mtx", "*.otf",  "*.tex" , "*.tfm" }
 buildfiles = buildfiles or { "*.afm", "*.enc", "*.etx", "*.fd", "*.lig", "*.make", "*.map", "*.mtx", "*.nam", "*.otf", "*.pe", "*.tex" , "*.tfm" }
--- buildsuppfiles = buildsuppfiles or {}
 buildsuppfiles_sys = buildsuppfiles_sys or {}
 mapfiles_sys = mapfiles_sys or {}
 mapfiles_add = mapfiles_add or {}
 -------------------------------------------------
 -- gwall {{{
+---@param msg string 
+---@param file string
+---@param rtn number 
+---@see 
+---@usage private
 function gwall (msg,file,rtn)
   file = file or "current file"
   msg = msg or "Error: "
@@ -162,6 +180,12 @@ end
 -------------------------------------------------
 -------------------------------------------------
 -- map_cat (frags,dir,mapfile) {{{
+---@param frags table
+---@param dir string 
+---@param mapfile string
+---@return 0 on success, number of errors otherwise
+---@see 
+---@usage private
 function map_cat (frags,dir,mapfile)
   mapfile = mapfile or "pdftex.map"
   local n = 0
@@ -203,6 +227,9 @@ function buildinit_hook () return 0 end
 -------------------------------------------------
 -- buildinit {{{
 -- hack copy of checkinit()
+---@return 0 on success, error level otherwise
+---@see 
+---@usage private
 function buildinit ()
   cleandir(fntdir)
   -- l3build never cleans this by default?
@@ -213,8 +240,9 @@ function buildinit ()
     cp(j,localdir,fntdir)
   end
   print("Unpacking ...\n")
-  -- unpack() / bundleunpack() are not public?
-  local errorlevel = call({sourcefiledir},"unpack") 
+  -- direct usage is legitimate ...
+  -- https://chat.stackexchange.com/transcript/message/66617079#66617079
+  local errorlevel = unpack() 
   if errorlevel ~= 0 then 
     gwall("Unpacking ",module,errorlevel)
     return nifergwall
@@ -247,6 +275,12 @@ end
 local build_fnt_env = {} 
 -------------------------------------------------
 -- build_fnt {{{
+---@param file string
+---@param cmd string
+---@param file string
+---@return 0 on success, error level otherwise
+---@see 
+---@usage public
 function build_fnt (dir,cmd,file)
   file = file or ""
   cmd = cmd or ""
@@ -293,8 +327,15 @@ function build_fnt (dir,cmd,file)
   return errorlevel
 end
 -- }}}
+--
 -------------------------------------------------
 -- finst {{{
+---@param patt string
+---@param dir string
+---@param mode string
+---@return 
+---@see 
+---@usage public
 function finst (patt,dir,mode)
   dir = dir or "."
   mode = mode or "nonstopmode"
@@ -312,6 +353,10 @@ end
 -- }}}
 -------------------------------------------------
 -- fntkeeper {{{
+---@param dir string 
+---@return 0 on success, error level otherwise
+---@see 
+---@usage public
 function fntkeeper (dir)
   dir = dir or fntdir
   local rtn = direxists(keepdir)
@@ -368,6 +413,10 @@ end
 -- uniquify {{{
 -- oherwydd fy mod i bron ag anfon pob un ac mae'n amlwg fy mod i wedi anfon bacedi heb ei wneud hwn yn y gorffennol, well i mi wneud rhywbeth (scriptiau gwneud-cyhoeddus a make-public yn argraffu rhybudd os encs yn y cymysg
 -- (cymraeg yn ofnadwy hefyd)
+---@param tag string 
+---@return 0 on success, error level or 1 otherwise
+---@see 
+---@usage public
 function uniquify (tag)
   local dir = ""
   tag = tag or encodingtag or ""
@@ -379,7 +428,7 @@ function uniquify (tag)
     dir = fntdir
   end
   if fileexists(dir .. "/pdftex.map") then
-    print("Removing temporary pdftex.map from " .. dir .. "...\n")
+    print("\nRemoving temporary pdftex.map from " .. dir .. "...\n")
     local errorlevel = rm(dir,"pdftex.map")
     gwall("Removing ","pdftex.map",errorlevel)
   end
@@ -510,6 +559,11 @@ end
 -- }}}
 -------------------------------------------------
 -- fontinst {{{
+---@param dir string
+---@param mode string
+---@return 0 on success, error level otherwise
+---@see 
+---@usage private 
 function fontinst (dir,mode)
   -- dir = dir or unpackdir
   dir = dir or fntdir
@@ -630,6 +684,15 @@ end
 -------------------------------------------------
 -------------------------------------------------
 -- fnt_test {{{
+---Generates lvt files for l3build check from fds and template.
+---@param fntpkgname string
+---@param fds table 
+---@param content string
+---@param maps table
+---@param fdsdir string
+---@return 0 on success, error level otherwise
+---@see 
+---@usage private
 function fnt_test (fntpkgname,fds,content,maps,fdsdir)
   local coll = ""
   -- suffix ly -> ly1 ; no suffix -> t1
@@ -646,7 +709,8 @@ function fnt_test (fntpkgname,fds,content,maps,fdsdir)
   local ecs = {}
   -- local mapsly = "" 
   print("Creating test file for " .. fntpkgname .. " with fds: ")
-  for i, j in ipairs(fds) do print("fd: " .. j) end
+  for i, j in ipairs(fds) do print("  fd: " .. j) end
+  print("\n")
   -- l3build-tagging.lua
   for i, j in ipairs(fds) do
     -- local errorlevel = cp(j, keepdir, unpackdir)
@@ -721,6 +785,10 @@ checksuppfiles_sys = checksuppfiles_sys or {}
 checksuppfiles_add = checksuppfiles_add or {}
 -------------------------------------------------
 -- checkinit_hook {{{
+---Additional setup for testing tailored to font packages.
+---@return 0 on success, error level otherwise 
+---@see l3build
+---@usage N/A
 function checkinit_hook ()
   local filename = "fnt-test.lvt"
   local file = unpackdir .. "/" .. filename
@@ -741,13 +809,7 @@ function checkinit_hook ()
     end
   end
   if #checksuppfiles_sys == 0 then
-    print("Assuming some basic files should be available during testing.\n")
-    if fileexists(adds) then
-      print("Adding files from " .. adds .. " to file list.\n")
-      for line in io.lines(adds) do
-        table.insert(checksuppfiles_sys,line)
-      end
-    end
+    print("\nAssuming some basic files should be available during testing.\n\nAdding files to " .. testdir .. " from")
     local d = { 
       "/tex/latex/l3build", 
       "/tex/latex/l3backend",
@@ -764,8 +826,7 @@ function checkinit_hook ()
     for _,i in ipairs(d) do
       local path = kpse.var_value("TEXMFDIST") .. i
       if direxists(path) then
-        -- print("Adding files from " .. i .. " to file list.\n")
-        print("Adding files from " .. i .. " to test directory.\n")
+        print("  " .. i .. "/")
         local tmpls = filelist(path)
         for _,j in ipairs(tmpls) do
           if j ~= "." and j ~= ".." then
@@ -776,20 +837,25 @@ function checkinit_hook ()
         -- checksuppfiles_sys = lsrdir(path,checksuppfiles_sys)
       end
     end
+    if fileexists(adds) then
+      for line in io.lines(adds) do
+        table.insert(checksuppfiles_sys,line)
+      end
+    end
     if #checksuppfiles_add ~= 0 then
       for _,i in ipairs(checksuppfiles_add) do
-        print("Adding " .. i .. " to file list.\n")
         table.insert(checksuppfiles_sys,i)
       end
     end
   end
-  print("Copying itemised system files to " .. testdir .. ".\n")
   if #checksuppfiles_sys ~= 0 then
+    print("\nCopying itemised system files to " .. testdir)
     for _,j in ipairs(checksuppfiles_sys) do
       -- local jpath = kpse.find_file(j)
       local jpath = kpse.lookup(j)
       if jpath ~= nil then 
         local jdir = dirname(jpath)
+        print("  " .. jpath)
         local errorlevel = cp(j,jdir,testdir) 
         gwall("Copying ",j,errorlevel)
       else
@@ -803,12 +869,12 @@ function checkinit_hook ()
       gwall("Attempt to find map files ", ".map", 1)
       return 1
     else
-      print("Using maps from " .. unpackdir .. "\n")
+      print("\nUsing maps from " .. unpackdir)
       mapsdir = unpackdir
     end
   else
     mapsdir = keepdir
-    print("Using maps from " .. keepdir .. "\n")
+    print("\nUsing maps from " .. keepdir)
   end
   local fntpkgnames = fntpkgnames or filelist(unpackdir,"*.sty")
   for i, j in ipairs(fntpkgnames) do
@@ -824,14 +890,14 @@ function checkinit_hook ()
       return 1
     else
       fdsdir = unpackdir
-      print("Using fds from " .. unpackdir .. "\n")
+      print("Using fds from " .. unpackdir)
     end
   else
     fdsdir = keepdir
-    print("Using fds from " .. keepdir .. "\n")
+    print("Using fds from " .. keepdir)
   end
   if #autotestfdstmp == 0 then
-    print("Something is amiss - this code should never be executed!\n")
+    print("Something is amiss - this code should never be executed!")
     gwall("Attempt to locate fd files ", ".fd", 1)
   else
     if #autotestfds == 0 then
@@ -850,7 +916,7 @@ function checkinit_hook ()
   if #fnttestfds == 0 then
     for i,j in ipairs(fntpkgnames) do 
       if fnttestfds[j] == nil then
-        print("Auto-assigning autotestfds to fnttestfds[" .. j .. "].\n")
+        print("\nAuto-assigning autotestfds to fnttestfds[" .. j .. "].\n")
         fnttestfds[j] = {}
         for a,b in ipairs(autotestfds) do
           table.insert(fnttestfds[j],b)
@@ -930,6 +996,10 @@ end
 -- }}}
 -------------------------------------------------
 -- doc_init {{{
+---Additional setup for typesetting tailored to font packages with optional creation of template-based docs e.g. font tables.
+---@return 0 on success, error level otherwise
+---@see l3build
+---@usage N/A
 function docinit_hook ()
   -- local fdfiles = filelist(keepdir, "*.fd")
   local fdfiles = filelist(unpackdir, "*.fd")
@@ -1038,24 +1108,6 @@ binmakers = {"*-pltotf.sh"}
 -- maindir = "../.."
 checkdeps = {maindir .. "/nfssext-cfr", maindir .. "/fnt-tests"}
 checkengines = { "pdftex" } 
--- os_concat ..
---     (checksearch and
---       (os_setenv .. " TEXMFAUXTREES={}"
---       .. os_concat .. os_setenv .. " TEXMFHOME={}"
---       .. os_concat .. os_setenv .. " TEXMFLOCAL={}"
---       .. os_concat .. os_setenv .. " TEXMFCONFIG=."
---       .. os_concat .. os_setenv .. " TEXMFVAR=."
---       .. os_concat .. os_setenv .. " TEXVFFONTS=${TEXINPUTS}"
---       .. os_concat .. os_setenv .. " TEXTFMFONTS=${TEXINPUTS}"
---       .. os_concat .. os_setenv .. " TEXFONTMAPS=${TEXINPUTS}"
---       .. os_concat .. os_setenv .. " TEXT1FONTS=${TEXINPUTS}"
---       .. os_concat .. os_setenv .. " TEXAFMFONTS=${TEXINPUTS}"
---       .. os_concat .. os_setenv .. " TEXTTFFONTS=${TEXINPUTS}"
---       .. os_concat .. os_setenv .. " TEXOPENTYPEFONTS=${TEXINPUTS}"
---       .. os_concat .. os_setenv .. " TEXLIGFONTS=${TEXINPUTS}"
---       .. os_concat .. os_setenv .. " TEXENCFONTS=${TEXINPUTS}"
---     ) or "")
---     .. os_concat .. "pdftex"}
 checkformat = "latex"
 -- checksuppfiles = {""}
 cleanfiles = {keeptempfiles}
@@ -1102,6 +1154,7 @@ tdslocations = {
 typesetdeps = {maindir .. "/nfssext-cfr"}
 -- enable l3build doc/check to find font files
 -- cannot concatenate variables here as they don't (yet?) exist
+-- hope only used for docs?
 typesetexe = "TEXMFDOTDIR=.:../local: pdflatex"
 typesetfiles = typesetfiles or  {"*.dtx", "*-tables.tex", "*-example.tex"}
 typesetsourcefiles = {keepdir .. "/*", "nfssext-cfr*.sty"}
@@ -1117,6 +1170,11 @@ end
 afmtotfm = afmtotfm or false
 -------------------------------------------------
 -- fnt_afmtotfm (dir,mode) {{{
+---@param dir string
+---@param mode string
+---@return 0 on success, number of errors otherwise 
+---@see 
+---@usage private
 function fnt_afmtotfm (dir,mode)
   dir = dir or fntdir
   mode = mode or "errorstopmode --halt-on-error"
@@ -1125,11 +1183,6 @@ function fnt_afmtotfm (dir,mode)
   local fntencs = fntencs or {}
   standalone = false
   encodingtag = encodingtag or ""
-  -- if #buildsuppfiles_sys == 0 then
-  --   print("Assuming all fontinst files should be available during build.\n")
-  --   local path = kpse.var_value("TEXMFDIST") .. "/tex/fontinst"
-  --   buildsuppfiles_sys = lsrdir(path)
-  -- end
   buildinit ()
   print("Running afm2tfm. Please be patient ...\n")
   local afms = filelist(dir,"*.afm")
@@ -1139,17 +1192,14 @@ function fnt_afmtotfm (dir,mode)
     if fntencs[j] == nil then 
       local rtn = fileexists(dir .. "/" .. j .. ".enc")
       if not rtn then
-        -- errorlevel = run(dir, "afm2tfm " .. k .. " >> " .. dir .. "/" .. map .. ".tmp")
         errorlevel = build_fnt(dir,"afm2tfm " .. k " >> " .. dir .. "/" .. map .. ".tmp")
       else
-        -- errorlevel = run(dir, "afm2tfm " .. k .. " -p " .. j .. ".enc" .. " >> " .. dir .. "/" .. map .. ".tmp")
         errorlevel = build_fnt(dir, "afm2tfm " .. k .. " -p " .. j .. ".enc" .. " >> " .. dir .. "/" .. map .. ".tmp")
       end
     else
       if not fileexists(dir .. "/" .. fntencs[j]) then
         gwall("Search for encoding specified for " .. j .. " ",dir,1)
       else
-        -- errorlevel = run(dir, "afm2tfm " .. k .. " -p " .. fntencs[j] .. " >> " .. dir .. "/" .. map .. ".tmp")
         errorlevel = build_fnt(dir, "afm2tfm " .. k .. " -p " .. fntencs[j] .. " >> " .. dir .. "/" .. map .. ".tmp")
       end
     end
