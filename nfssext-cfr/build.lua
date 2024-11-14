@@ -1,4 +1,4 @@
--- $Id: build.lua 10582 2024-11-06 03:32:11Z cfrees $
+-- $Id: build.lua 10631 2024-11-14 05:26:44Z cfrees $
 -- Build configuration for nfssext-cfr
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -15,7 +15,7 @@ ctanpkg = module
 -- unpackfiles = {"*.ins"}
 -- maindir **must** be shared with dependencies
 maindir = ".."
-sourcedir = "."
+sourcefiledir = "."
 -- auxfiles = {"*.aux"}
 sourcefiles = {"*.dtx","*.ins"}
 checkengines = {"pdftex"}
@@ -29,8 +29,8 @@ typesetruns = 5
 --
 dofile(maindir .. "/tag.lua")
 date = "2008-2024"
-if direxists(sourcedir .. "/../../adnoddau/l3build") then
-  dofile(sourcedir .. "/../../adnoddau/l3build/manifest.lua")
+if direxists(sourcefiledir .. "/../../adnoddau/l3build") then
+  dofile(sourcefiledir .. "/../../adnoddau/l3build/manifest.lua")
 end
 --
 uploadconfig = {

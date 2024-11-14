@@ -1,4 +1,4 @@
--- $Id: build.lua 10623 2024-11-12 21:01:33Z cfrees $
+-- $Id: build.lua 10631 2024-11-14 05:26:44Z cfrees $
 -- Build configuration for fontscripts
 -- l3build.pdf listing 1 tudalen 9
 --
@@ -7,7 +7,7 @@ ctanpkg = "fontscripts"
 -- maindir **must** be shared with dependencies
 -- but don't make fontscripts a dependency or dependant
 maindir = ".."
-sourcedir = "."
+sourcefiledir = "."
 sourcefiles = {"*.dtx", "*.ins"}
 installfiles = {"*.etx", "*.mtx"}
 manifestfile = "manifest.txt"
@@ -30,9 +30,9 @@ function docinit_hook()
 end
 docfiles = {"fntbuild.lua","fnt-ctan.lua"}
 date = "2024"
-if direxists(sourcedir .. "/../../adnoddau/l3build") then
-  dofile(sourcedir .. "/../../adnoddau/l3build/tag.lua")
-  dofile(sourcedir .. "/../../adnoddau/l3build/manifest.lua")
+if direxists(sourcefiledir .. "/../../adnoddau/l3build") then
+  dofile(sourcefiledir .. "/../../adnoddau/l3build/tag.lua")
+  dofile(sourcefiledir .. "/../../adnoddau/l3build/manifest.lua")
 end
 function manifest_setup ()
   local groups = {

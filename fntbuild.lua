@@ -1,4 +1,4 @@
--- $Id: fntbuild.lua 10629 2024-11-14 02:35:13Z cfrees $
+-- $Id: fntbuild.lua 10631 2024-11-14 05:26:44Z cfrees $
 -------------------------------------------------
 -------------------------------------------------
 -- copy non-public things from l3build
@@ -105,42 +105,50 @@ end
 -------------------------------------------------
 -------------------------------------------------
 -- error-tracking
+---@usage private
 nifergwall = 0
 -- target names
+---@usage private
 ntarg = "fnttarg"
+---@usage private
 utarg = "uniquifyencs"
 -------------------------------------------------
 -------------------------------------------------
-sourcedir = sourcedir or "."
-maindir = maindir or sourcedir
+sourcefiledir = sourcefiledir or "."
+maindir = maindir or sourcefiledir
 -------------------------------------------------
 -------------------------------------------------
 -- use fntbuild-config.lua if found {{{
-local configs = {}
-if buildsearch then
-  local f = kpse.find_file("fntbuild-config.lua")
-  if f ~= nil then
-    dofile(f)
-    print("\nWARNING: Using local configuration from " .. f .. ".\nYour package may not build elsewhere.\n")
-    table.insert(configs,f)
+---@usage private
+local function build_config()
+  local configs = {}
+  if buildsearch then
+    local f = kpse.find_file("fntbuild-config.lua")
+    if f ~= nil then
+      dofile(f)
+      print("\nWARNING: Using local configuration from " .. f .. ".\nYour package may not build elsewhere.\n")
+      table.insert(configs,f)
+    end
   end
-end
-if fileexists(maindir .. "/fntbuild-config.lua") then
-  dofile(maindir .. "/fntbuild-config.lua")
-  print("\nUsing local configuration from " .. maindir .. "/fntbuild-config.lua.\nEnsure this is included when publishing sources.\n")
-  table.insert(configs,maindir .. "/fntbuild-config.lua")
-end
-if fileexists(sourcedir .. "/fntbuild-config.lua") then
-  dofile(sourcedir .. "/fntbuild-config.lua")
-  print("\nUsing local configuration from " .. sourcedir .. "/fntbuild-config.lua.\nEnsure this is included when publishing sources.\n")
-  table.insert(configs,sourcedir .. "/fntbuild-config.lua")
-end
-if #configs == 0 then
-  print("\nNo fntbuild-config.lua found.\nUsing defaults.\n")
+  if fileexists(maindir .. "/fntbuild-config.lua") then
+    dofile(maindir .. "/fntbuild-config.lua")
+    print("\nUsing local configuration from " .. maindir .. "/fntbuild-config.lua.\nEnsure this is included when publishing sources.\n")
+    table.insert(configs,maindir .. "/fntbuild-config.lua")
+  end
+  if fileexists(sourcefiledir .. "/fntbuild-config.lua") then
+    dofile(sourcefiledir .. "/fntbuild-config.lua")
+    print("\nUsing local configuration from " .. sourcefiledir .. "/fntbuild-config.lua.\nEnsure this is included when publishing sources.\n")
+    table.insert(configs,sourcefiledir .. "/fntbuild-config.lua")
+  end
+  if #configs == 0 then
+    print("\nNo fntbuild-config.lua found.\nUsing defaults.\n")
+  end
+  return 0
 end
 -- }}}
 -------------------------------------------------
 -------------------------------------------------
+---@usage public
 -- it is way too easy to pick up the same package's files in the dist tree
 -- when that happens, some installation tools fail to generate duplicate files
 -- once the update goes to ctan, the files disappear ...
@@ -1103,21 +1111,16 @@ target_list[utarg] = {
 -------------------------------------------------
 autotestfds = autotestfds or {}
 -- auxfiles = {"*.aux"}
-bakext = ".bkup"
 binaryfiles = {"*.pdf", "*.zip", "*.vf", "*.tfm", "*.pfb", "*.pfm", "*.ttf", "*.otf", "*.tar.gz"}
-binmakers = {"*-pltotf.sh"}
+binmakers = binmakers or {"*-pltotf.sh"}
 -- maindir before checkdeps
 -- maindir = "../.."
-checkdeps = {maindir .. "/nfssext-cfr", maindir .. "/fnt-tests"}
+checkdeps = { maindir .. "/fnt-tests"}
 checkengines = { "pdftex" } 
 checkformat = "latex"
 -- checksuppfiles = {""}
 cleanfiles = {keeptempfiles}
-ctanreadme = "README.md"
-demofiles = {"*-example.tex"}
-familymakers = {"*-drv.tex"}
-flatten = true
-flattentds = false
+familymakers = familymakers or {"*-drv.tex"}
 fnttestfds = fnttestfds or {}
 -- fntautotestfds = fntautotestfds or {}
 installfiles = {"*.afm", "*.cls", "*.enc", "*.fd", "*.map", "*.otf", "*.pfb", "*.pfm", "*.sty", "*.tfm", "*.ttf", "*.vf"}
@@ -1127,12 +1130,9 @@ keepdir = keepdir or sourcefiledir .. "/keep"
 keeptempdir = keeptempdir or sourcefiledir .. "/keeptemp"
 keepfiles = keepfiles or {"*.enc", "*.fd", "*.map", "*.tfm", "*.vf"}
 keeptempfiles = keeptempfiles or {"*.mtx", "*.pl", "*-pltotf.sh", "*-rec.tex", "*.vpl", "*.zz"}
-manifestfile = "manifest.txt"
-mapmakers = {"*-map.tex"}
-packtdszip = false
+mapmakers = mapmakers or {"*-map.tex"}
 -- need module test or default?
 sourcefiles = {"*.afm", "afm/*.afm", "*.pfb", "*.pfm", "*.dtx", "*.ins", "opentype/*.otf", "*.otf", "tfm/*.tfm", "truetype/*.ttf", "*.ttf", "type1/*.pfb", "type1/*.pfm"}
-tagfiles = {"*.dtx", "*.ins", "manifest.txt", "MANIFEST.txt", "README", "README.md"}
 -- vendor and module must be specified before tdslocations
 vendor = vendor or "public"
 tdslocations = {
@@ -1153,15 +1153,12 @@ tdslocations = {
 	"tex/latex/" .. module .. "/" .. "*.sty"
 }
 -- after maindir
-typesetdeps = {maindir .. "/nfssext-cfr"}
 -- enable l3build doc/check to find font files
 -- cannot concatenate variables here as they don't (yet?) exist
 -- hope only used for docs?
 typesetexe = "TEXMFDOTDIR=.:../local: pdflatex"
 typesetfiles = typesetfiles or  {"*.dtx", "*-tables.tex", "*-example.tex"}
-typesetsourcefiles = {keepdir .. "/*", "nfssext-cfr*.sty"}
-unpackexe = "pdflatex"
-unpackfiles = {"*.ins"}
+typesetsourcefiles = {keepdir .. "/*"}
 -------------------------------------------------
 if fileexists(maindir .. "/fnt-ctan.lua") then
   dofile(maindir .. "/fnt-ctan.lua")
@@ -1248,5 +1245,7 @@ if afmtotfm then
   }
 end
 -- }}}
+-------------------------------------------------
+build_config()
 -------------------------------------------------
 -- vim: ts=2:sw=2:et:foldmethod=marker:
