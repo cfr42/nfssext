@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10621 2024-11-12 20:34:24Z cfrees $}[v0.1 \revinfo][\filebase DTX: l3build scripts for font installation]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10630 2024-11-14 02:36:16Z cfrees $}[v0.1 \revinfo][\filebase DTX: l3build scripts for font installation]
 \DefineFileInfoSVN[fontscripts]
 \documentclass[10pt,british,lm-default=false]{l3doc}
 % l3doc loads fancyvrb
@@ -165,6 +165,17 @@
 \ExplSyntaxOff
 \NewDocumentCommand \istable{m}{\texttt{= \{}\ivals{#1}\texttt{\}}\par\noindent} 
 \NewDocumentCommand \isstring{m}{\texttt{= ''}\meta{#1}\texttt{''}\par\noindent} 
+\newcommand*\afm{\textsc{afm}}
+\newcommand*\enc{\textsc{enc}}
+\newcommand*\etx{\textsc{etx}}
+\newcommand*\fd{\textsc{fd}}
+\newcommand*\map{\textsc{map}}
+\newcommand*\mtx{\textsc{mtx}}
+\newcommand*\pfb{\textsc{pfb}}
+\newcommand*\pl{\textsc{pl}}
+\newcommand*\tfm{\textsc{tfm}}
+\newcommand*\vf{\textsc{vf}}
+\newcommand*\vpl{\textsc{vpl}}
 \definecolor{strawberry}{rgb}{1.000,0.000,0.502}
 \definecolor{blueberry}{rgb}{0.000,0.000,1.000}
 \definecolor{moss}{rgb}{0.000,0.502,0.251}
@@ -221,34 +232,97 @@
 % \subsection{\lpack{l3build} Targets}\label{subsec:targs}
 %
 % \DescribeTarg{fnttarg}
-% Runs \texttt{fontinst()}.
+% Runs \texttt{fontinst ()} by default or \verb|fnt_afmtotfm ()| if \texttt{afmtotfm} is \texttt{true}.
 % 
 % Builds traditional \TeX{} font files for 8-bit engines.
-% The building is done in \texttt{unpackdir}.
+% The building is done in \texttt{fntdir}.
 % The results are copied to \texttt{keepdir} and the intermediate results to \texttt{keeptempdir}.
 % Files in the former are copied back into the \texttt{builddir} when building documentation, running tests etc.
 %
+% This target may be redefined if another tool chain is used for font creation\footnote{^^A
+%   \verb|fnt_afmtotfm ()| in \file{fntbuild.lua} and \file{build.lua} in \lpack{berenisadf} provide examples.^^A
+% }.
+% 
 % \DescribeTarg{uniquifyencs} \meta{encoding tag}\par\noindent
 % Tries to ensure that the names of encoding files and font encodings are unique by editing font definition files and map file fragments in \texttt{keepdir}.
 % \meta{encoding tag} is optional.
 % If no argument is given and \texttt{encodingtag} is empty, a suitable tag will be determined automatically\footnote{Hopefully.}.
 %
+% Note that it is not necessary to use this target if \textt{l3build fnttarg} is used with a tool for which built-in support is provided.
+%
 % \subsection{Lua Functions}\label{subsec:fns}
 %
 % \subsubsection{New Functions}\label{subsubsec:new}
 %
+% \DescribelFn{buildinit_hook()} \texttt{buildinit_hook}\plarg{}\par\noindent
+% A function which does nothing successfully by default, similar to the hooks provided by \lpack{l3build}.
+% May be redefined to perform additional tasks when setting up the environment for \texttt{fnttarg}.
+% The function should return an error level.
+%
+% \DescribelFn{(fnt_afmtotfm)} \texttt{fnt_afmtoafm}\plarg{dir}\par\noindent
+% A function to generate support files for simple symbolic fonts in \meta{dir} using \texttt{afm2tfm}.
+% The function generates \tfm s, \fd s and a \map.
+% It requires \afm s and, optionally, \enc s.
+% If \meta{dir} is unspecified, \texttt{fntdir} is used.
+%
+% If \texttt{afmtotfm} is \texttt{true}, a call to \verb|fnt_afmtotfm()| replaces the default call to \texttt{fontinst()} when the \texttt{fnttarg} target is used.
+%
+% Like \texttt{fontinst()}, \verb|fnt_afmtotfm()| calls \texttt{build_fnt()} and \texttt{fntkeeper()}, but it does \textbf{not} call \texttt{uniquify()}.
+%
+% Note this function is designed for only very simple cases.
+% The target \TeX{} fonts must each correspond to a unique \file{.afm} (though it would not be hard to extend the function to support a one-many mapping).
+%
+% \DescribelFn{build_fnt()} \texttt{build_fnt}\plarg{dir,cmd,file}\par\noindent
+% A wrapper around \texttt{runcmd()} which runs \meta{cmd} \meta{file} in \meta{dir}.
+% If \texttt{buildsearch} is \texttt{false} (the default), the function first sets up a restricted environment designed to avoid contaminating the build with undesirable elements from \TeX{} search paths. 
+%
+% Note that the restrictions are designed to avoid contamination resulting from searches using \texttt{kpathsea}.
+% If you use this function with a different tool chain, you may need to take additional steps to isolate the build.
+% For example, the function does nothing to prevent a FontForge script accessing resources in \path{~/.local/share}, \path{/usr/local/fonts}, \path{/etc}, \path{/System/Library} etc\@.
+%
+% \textbf{In general, \lpack{l3build} ‘sandboxing’ uses a black-listing rather than a white-listing model.
+%   Since this is inherently less reliable, you should not depend on the effectiveness of isolation.}
+% This means you should check what actually happens e.g.~which paths actually end up in your \texttt{.log} files or test the effectiveness of the isolation.
+% 
+% \texttt{build_fnt_envset} may be used to selectively adapt the default sandboxing, which is sets the \texttt{kpathsea} variables shown in \fref{tab:build-env}.
+% \begin{table}
+%   \centering
+%   \caption{Default environment for ‘sandboxed’ build.}\label{tab:build-env}
+%   \begin{tabular}{>{\ttfamily\arraybackslash}l>{\ttfamily\arraybackslash}l}
+%     \toprule
+%       kpathsea \textsf{variable} & \textsf{value} \\
+%     \midrule
+%       TEXINPUTS & . localtexmf() \\
+%       TEXMFAUXTREES & \{\} \\
+%       TEXMFHOME & \{\} \\
+%       TEXMFLOCAL & \{\} \\
+%       TEXMFCONFIG & . \\
+%       TEXMFVAR & . \\
+%       VFFONTS & \verb|${TEXINPUTS}| \\
+%       TFMFONTS & \verb|${TEXINPUTS}| \\
+%       TEXFONTMAPS & \verb|${TEXINPUTS}| \\
+%       T1FONTS & \verb|${TEXINPUTS}| \\
+%       AFMFONTS & \verb|${TEXINPUTS}| \\
+%       TTFFONTS & \verb|${TEXINPUTS}| \\
+%       OPENTYPEFONTS & \verb|${TEXINPUTS}| \\
+%       LIGFONTS & \verb|${TEXINPUTS}| \\
+%       ENCFONTS & \verb|${TEXINPUTS}| \\
+%     \bottomrule
+%   \end{tabular}
+% \end{table}
+% 
 % \DescribelFn{finst()} \texttt{finst}\plarg{patt,dir,mode}\par\noindent
-% Compile the second \lpack{fontinst} stage.
+% A wrapper around \texttt{build_fnt()} whcih runs \verb|pdftex --interaction| \meta{mode} in directory \meta{dir} on each file in \meta{dir} matching the pattern \meta{patt}. 
 %
 % Called by \texttt{fontinst()}.
 % There is usually no need to call this function directly.
 % 
 % \DescribelFn{fontinst()} \texttt{fontinst}\plarg{dir,mode}\par\noindent
-% The main function called by \texttt{fnttarg}.
+% Executes a \lpack{fontinst} workflow to generate \TeX{} fonts and associated files in directory \meta{dir}, executing \texttt{pdftex} with the option \verb|--interaction| \meta{mode}.
+% 
+% This is the default build function called by \texttt{fnttarg}.
 %
-% The function assumes \lpack{fontinst} is used but can be redefined to build files using alternative tools as appropriate.
-%
-% The default definition calls \texttt{finst()}, \texttt{fntkeeper()} and \texttt{uniquify()} in addition to performing initial compilation.
+% The function calls \texttt{finst()}, \texttt{fntkeeper()} and \texttt{uniquify()} in addition to performing initial compilation.
 % The process requires the usual \lpack{fontinst} setup i.e.~a driver to generate the initial files and a second file to create map file fragments.
 %
 % If a variable scaling factor is used, the font definition files will be edited to ensure this works, since \lpack{fontinst} apparently supports scaling only by a fixed factor.
@@ -275,25 +349,74 @@
 % }{}
 % \end{verbatim}
 % to enable a suitable option in the \texttt{sty} file.
+%
+% If \lpack{fontinst} is setup to produce a shell script for converting \file{.pl} and \file{.vpl} files to \file{.tfm} and \file{.vf}, the function executes the commands contained in this script.
+% In order to maintain compatibility on Windows, the commands are extracted and run by Lua rather than calling the shell to execute the commands directly.
 % 
 % \DescribelFn{fnt_test()} \texttt{fnt_test}\plarg{fntpkgname,fds,content,maps,fdsdir}\par\noindent
 % Auto-generates \texttt{lvt} files suitable for use with \texttt{l3build check} from a template.
 %
-% \DescribelFn{fntkeeper()} \texttt{fntkeeper}\plarg{}\par\noindent
-% Copies generated files to \texttt{keepdir} and/or \texttt{keeptempdir} to prevent deletion by \texttt{l3build}.
+% \DescribelFn{fntkeeper()} \texttt{fntkeeper}\plarg{dir}\par\noindent
+% Copies generated files in \meta{dir} to \texttt{keepdir} and/or \texttt{keeptempdir} to prevent deletion by \texttt{l3build}.
+% Returns an error level.
 %
-% This function is called by \texttt{fontinst()} and may be useful if that function is redefined.
+% This function is called by the function executed by the default functions called by \texttt{fnttarg()} and may be useful if that target is redefined to call a different function.
 % 
+% \Describelfn{lsrdir()} \texttt{lsrdir}\plarg{path,filenames}\par\noindent
+% Adds a recursive list of files in \texttt{path} to the list of files in \texttt{filenames} and returns \texttt{filenames} and returns the resulting table.
+% \texttt{path} should be a string containing the fully-qualified path to a directory.
+% If specified, \texttt{filenames} should be a table. 
+% Note that the function appends entries to \texttt{filenames} rather than replacing them.
+%
 % \DescribelFn{uniquify()} \texttt{uniquify}\plarg{tag}\par\noindent
 % Tries to ensure the names of font encodings and encoding files are unique by editing font definition files and map file fragments. 
 %
-% This function is used by \texttt{fontinst()} or may be called directly using the \texttt{uniquifyencs} target.
+% This function is used by \texttt{fontinst()} and \texttt{fnt_afmtotfm()}, may be utilised in a custom definition of \texttt{build_fnt()} or may be called directly using the \texttt{uniquifyencs} target.
 % 
 % \subsubsection{Redefined Functions}\label{subsubsec:redef}
 % 
 % \DescribelFn{checkinit_hook()} \texttt{checkinit_hook}\plarg{}\par\noindent
 % This is a standard \lpack{l3build} function which does nothing by default.
 % \file{fntbuild.lua} redefines it to automatically generate test files suitable for use with \texttt{l3build check} if a test template is available.
+% If \texttt{checksearch} is \texttt{false}, the hook also sets up an environment tailored to font-testing.
+% 
+% \textbf{Note that \texttt{checksearch} is enabled by default.}
+% Contrary to \lpack{l3build}, \texttt{fntbuild.lua} enables sandboxing during both building and testing.
+% If you do not want this, reenable \texttt{checksearch} after \file{fntbuild.lua} is read or, better yet, create a custom \file{fntbuild-config.lua}.
+%
+% The default environment for testing does the following:
+% \begin{itemize}
+%   \item concatenates all files specified in \texttt{mapfiles_sys} and writes the result to \file{pdftex.map} in \texttt{testdir};
+%   \item copies the contents of \texttt{keepdir} to \texttt{testdir};
+%   \item copies either the files specified in \texttt{checksuppfiles_sys} or the contents of the directories listed in \fref{tab:check-suppdirs} to \texttt{testdir};
+%   \item copies the files listed in the file specified as \texttt{checksuppfiles_addlist} to \testtt{testdir}, if the file exists;
+%   \item copies any files specified in \texttt{checksuppfiles_add} to \texttt{testdir};
+%   \item restricts the environment by setting the variables listed in \fref{tab:check-env}.
+% \end{itemize}
+% \begin{table}
+%   \centering
+%   \caption{Default environment for ‘sandboxed’ testing.}\label{tab:check-env}
+%   \begin{tabular}{>{\ttfamily\arraybackslash}l>{\ttfamily\arraybackslash}l}
+%     \toprule
+%     \sffamily\texttt{kpathsea} variable & value \\
+%     \midrule
+%     TEXMFAUXTREES & {} \\
+%     TEXMFHOME & {} \\
+%     TEXMFLOCAL & {} \\
+%     TEXMFCONFIG & . \\
+%     TEXMFVAR & . \\
+%     VFFONTS & .  localtexmf()   \\
+%     TFMFONTS & . localtexmf()   \\
+%     TEXFONTMAPS & . localtexmf()   \\
+%     T1FONTS & . localtexmf()   \\
+%     AFMFONTS & . localtexmf()   \\
+%     TTFFONTS & . localtexmf()   \\
+%     OPENTYPEFONTS & . localtexmf()   \\
+%     LIGFONTS & . localtexmf()   \\
+%     ENCFONTS & . localtexmf()  \\
+%     \bottomrule
+%   \end{tabular}
+% \end{table}
 % 
 % \DescribelFn{copyctan()} \texttt{copyctan}\plarg{}\par\noindent
 % This is extended to copy files from \texttt{keepdir} and to impose a single-layer of sub-directories of the kind required by \ctan{} for font distributions.
@@ -553,7 +676,7 @@
 %    \begin{macrocode}
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10621 2024-11-12 20:34:24Z cfrees $}[v0.1 \revinfo][\outFileName]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10630 2024-11-14 02:36:16Z cfrees $}[v0.1 \revinfo][\outFileName]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % \iffalse
