@@ -1,4 +1,4 @@
--- $Id: fntbuild.lua 10628 2024-11-13 17:03:07Z cfrees $
+-- $Id: fntbuild.lua 10629 2024-11-14 02:35:13Z cfrees $
 -------------------------------------------------
 -------------------------------------------------
 -- copy non-public things from l3build
@@ -223,6 +223,8 @@ end
 -- }}}
 -------------------------------------------------
 -- buildinit_hook
+---@return 0
+---@usage public
 function buildinit_hook () return 0 end
 -------------------------------------------------
 -- buildinit {{{
@@ -563,7 +565,7 @@ end
 ---@param mode string
 ---@return 0 on success, error level otherwise
 ---@see 
----@usage private 
+---@usage public 
 function fontinst (dir,mode)
   -- dir = dir or unpackdir
   dir = dir or fntdir
@@ -692,7 +694,7 @@ end
 ---@param fdsdir string
 ---@return 0 on success, error level otherwise
 ---@see 
----@usage private
+---@usage public
 function fnt_test (fntpkgname,fds,content,maps,fdsdir)
   local coll = ""
   -- suffix ly -> ly1 ; no suffix -> t1
@@ -1169,15 +1171,13 @@ end
 -- only set this true for ultra simple symbol fonts!
 afmtotfm = afmtotfm or false
 -------------------------------------------------
--- fnt_afmtotfm (dir,mode) {{{
+-- fnt_afmtotfm (dir) {{{
 ---@param dir string
----@param mode string
 ---@return 0 on success, number of errors otherwise 
 ---@see 
----@usage private
-function fnt_afmtotfm (dir,mode)
+---@usage public
+function fnt_afmtotfm (dir)
   dir = dir or fntdir
-  mode = mode or "errorstopmode --halt-on-error"
   local fntbasename = fntbasename or module
   local map = mapfile or fntbasename .. ".map"
   local fntencs = fntencs or {}
