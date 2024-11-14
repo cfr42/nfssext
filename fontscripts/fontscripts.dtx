@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10630 2024-11-14 02:36:16Z cfrees $}[v0.1 \revinfo][\filebase DTX: l3build scripts for font installation]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10631 2024-11-14 05:26:44Z cfrees $}[v0.1 \revinfo][\filebase DTX: l3build scripts for font installation]
 \DefineFileInfoSVN[fontscripts]
 \documentclass[10pt,british,lm-default=false]{l3doc}
 % l3doc loads fancyvrb
@@ -362,7 +362,7 @@
 %
 % This function is called by the function executed by the default functions called by \texttt{fnttarg()} and may be useful if that target is redefined to call a different function.
 % 
-% \Describelfn{lsrdir()} \texttt{lsrdir}\plarg{path,filenames}\par\noindent
+% \DescribelFn{lsrdir()} \texttt{lsrdir}\plarg{path,filenames}\par\noindent
 % Adds a recursive list of files in \texttt{path} to the list of files in \texttt{filenames} and returns \texttt{filenames} and returns the resulting table.
 % \texttt{path} should be a string containing the fully-qualified path to a directory.
 % If specified, \texttt{filenames} should be a table. 
@@ -389,7 +389,7 @@
 %   \item concatenates all files specified in \texttt{mapfiles_sys} and writes the result to \file{pdftex.map} in \texttt{testdir};
 %   \item copies the contents of \texttt{keepdir} to \texttt{testdir};
 %   \item copies either the files specified in \texttt{checksuppfiles_sys} or the contents of the directories listed in \fref{tab:check-suppdirs} to \texttt{testdir};
-%   \item copies the files listed in the file specified as \texttt{checksuppfiles_addlist} to \testtt{testdir}, if the file exists;
+%   \item copies the files listed in the file specified as \texttt{checksuppfiles_addlist} to \texttt{testdir}, if the file exists;
 %   \item copies any files specified in \texttt{checksuppfiles_add} to \texttt{testdir};
 %   \item restricts the environment by setting the variables listed in \fref{tab:check-env}.
 % \end{itemize}
@@ -430,25 +430,18 @@
 % \newcolumntype{e}{>{\ttfamily =}c}
 % \begin{table}
 %   \centering
-%   \caption{\lpack{fontinst} defaults for \lpack{l3build} variables.}\label{tab:varia}
+%   \caption{\lpack{fontscripts} defaults for \lpack{l3build} variables.}\label{tab:varia}
 %   \begin{tabularx}\linewidth{>{\ttfamily}le>{\ttfamily\raggedright\arraybackslash}X}
 %     \toprule
 %     \normalfont\textbf{Variable} & \multicolumn{1}{c}{} & \normalfont\textbf{Value} \\
 %     \midrule
-%       bakext && ''.bkup''\\
-%       checkdeps && \{maindir .. ''/nfssext-cfr'', maindir .. ''/fnt-tests''\}\\
+%       checkdeps && \{maindir .. ''/fnt-tests''\}\\
 %       checkengines && \{''pdftex''\}\\
 %       checkformat && ''latex''\\
+%       checksearch &&  false \\
 %       cleanfiles && \{keeptempfiles\}\\
-%       ctanreadme && ''README.md''\\
 %       demofiles && \{''*-example.tex''\}\\
-%       flatten && true\\
-%       flattentds && false\\
-%       installfiles && \{''*.afm'', ''*.cls'', ''*.enc'', ''*.fd'', ''*.map'', ''*.otf'', ''*.pfb'', ''*.sty'', ''*.tfm'', ''*.ttf'', ''*.vf''\}\\
-%       manifestfile && ''manifest.txt''\\
-%       nifergwall && 0\\
-%       ntarg && ''fnttarg''\\
-%       packtdszip && true\\
+%       installfiles && \{''*.afm'', ''*.cls'', ''*.enc'', ''*.fd'', ''*.map'', ''*.otf'', ''*.pfb'', ''*.pfm'', ''*.sty'', ''*.tfm'', ''*.ttf'', ''*.vf''\}\\
 %       sourcefiledir && sourcefiledir or ''.''\\
 %       sourcefiles && \{''*.afm'', ''afm/*.afm'', ''*.pfb'', ''*.dtx'', ''*.ins'', ''opentype/*.otf'', ''*.otf'', ''tfm/*.tfm'', ''truetype/*.ttf'', ''*.ttf'', ''type1/*.pfb''\}\\
 %       tagfiles && \{''*.dtx'', ''*.ins'', ''manifest.txt'', ''MANIFEST.txt'', ''README'', ''README.md''\}\\
@@ -469,34 +462,45 @@
 %       	''tex/latex/'' .. module .. ''/'' .. ''*.fd'',
 %       	''tex/latex/'' .. module .. ''/'' .. ''*.sty''
 %       \} \\
-%       typesetdeps && \{maindir .. ''/nfssext-cfr''\}\\
 %       typesetexe && ''TEXMFDOTDIR=.:../local: pdflatex''\\
 %       typesetfiles && typesetfiles or  \{''*.dtx'', ''*-tables.tex'', ''*-example.tex''\}\\
-%       typesetsourcefiles && \{keepdir .. ''/*'', ''nfssext-cfr*.sty''\}\\
-%       unpackexe && ''pdflatex''\\
-%       unpackfiles && \{''*.ins''\}\\
-%       utarg && ''uniquifyencs''\\
+%       typesetsourcefiles && \{keepdir .. ''/*''\}\\
 %     \bottomrule
 %   \end{tabularx}
 % \end{table}
 % \begin{table}
 %   \centering
-%   \caption{\lpack{fontinst} defaults for \lpack{fontscript} variables.}\label{tab:varia-n}
+%   \caption{Default values for \lpack{fontscripts}  variables.}\label{tab:varia-n}
 %   \begin{tabularx}\linewidth{>{\ttfamily}le>{\ttfamily\raggedright\arraybackslash}X}
 %     \toprule
 %     \normalfont\textbf{Variable} & \multicolumn{1}{c}{} & \normalfont\textbf{Value} \\
 %     \midrule
+%       afmtotfm && afmtotfm or false \\
 %       autotestfds && autotestfds or \{\}\\
 %       binaryfiles && \{''*.pdf'', ''*.zip'', ''*.vf'', ''*.tfm'', ''*.pfb'', ''*.ttf'', ''*.otf'', ''*.tar.gz''\}\\
 %       binmakers && \{''*-pltotf.sh''\}\\
+%       builddeps && builddeps or \{\} \\
+%       buildfiles && buildfiles or \{ ''*.afm'', ''*.enc'', ''*.etx'', ''*.fd'', ''*.lig'', ''*.make'', ''*.map'', ''*.mtx'', ''*.nam'', ''*.otf'', ''*.pe'', ''*.tex'' , ''*.tfm'' \} \\
+%       buildsearch && false \\
+%       buildsuppfiles_sys && buildsuppfiles_sys or \{\} \\
+%       checksuppfiles_sys && checksuppfiles_sys or \{\} \\
+%       checksuppfiles_add && checksuppfiles_add or \{\} \\
+%  
 %       familymakers && \{''*-drv.tex''\}\\
+%       fntdir  && fntdir or builddir .. ''/fnt'' \\
 %       fnttestfds && fnttestfds or \{\}\\
 %       keepdir && keepdir or sourcefiledir .. ''/keep''\\
 %       keepfiles && keepfiles or \{''*.enc'', ''*.fd'', ''*.map'', ''*.tfm'', ''*.vf''\}\\
 %       keeptempdir && keeptempdir or sourcefiledir .. ''/keeptemp''\\
 %       keeptempfiles && keeptempfiles or \{''*.mtx'', ''*.pl'', ''*-pltotf.sh'', ''*-rec.tex'', ''*.vpl'', ''*.zz''\}\\
 %       mapmakers && \{''*-map.tex''\}\\
+%       mapfiles_sys && mapfiles_sys or \{\} \\
+%       mapfiles_add && mapfiles or \{\} \\
+%       
+%       nifergwall && 0\\
+%       ntarg && ''fnttarg''\\
 %       vendor && vendor or ''public''\\
+%       utarg && ''uniquifyencs''\\
 %     \bottomrule
 %   \end{tabularx}
 % \end{table}
@@ -676,7 +680,7 @@
 %    \begin{macrocode}
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10630 2024-11-14 02:36:16Z cfrees $}[v0.1 \revinfo][\outFileName]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10631 2024-11-14 05:26:44Z cfrees $}[v0.1 \revinfo][\outFileName]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % \iffalse
