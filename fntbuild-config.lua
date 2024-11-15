@@ -1,4 +1,4 @@
--- $Id: fntbuild-config.lua 10631 2024-11-14 05:26:44Z cfrees $
+-- $Id: fntbuild-config.lua 10633 2024-11-15 06:07:23Z cfrees $
 -- configuration for nfssext
 -------------------------------------------------
 sourcefiledir = sourcefiledir or "."
@@ -18,6 +18,32 @@ unpackexe = "pdflatex"
 unpackfiles = {"*.ins"}
 -------------------------------------------------
 builddeps = { maindir .. "/fontscripts" } 
+checksuppfiles_add = {
+  "/fonts/enc/dvips/lm",
+  "/fonts/tfm/public/lm",
+  "/fonts/type1/public/lm",
+  "etoolbox.sty",
+  "ly1enc.def",
+  "ly1enc.dfu",
+  "ly1lmr.fd",
+  "ly1lmss.fd",
+  "ly1lmtt.fd",
+  "omllmm.fd",
+  "omllmr.fd",
+  "omslmr.fd",
+  "omslmsy.fd",
+  "omxlmex.fd",
+  "ot1lmr.fd",
+  "ot1lmss.fd",
+  "ot1lmtt.fd",
+  "svn-prov.sty",
+  "ts1lmdh.fd",
+  "ts1lmr.fd",
+  "ts1lmss.fd",
+  "ts1lmssq.fd",
+  "ts1lmtt.fd",
+  "ts1lmvtt.fd",
+}
 -------------------------------------------------
 -- tag.lua
 tagfile = tagfile or maindir .. "/tag.lua"
