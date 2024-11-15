@@ -1,4 +1,4 @@
--- $Id: fntbuild.lua 10632 2024-11-15 03:44:51Z cfrees $
+-- $Id: fntbuild.lua 10633 2024-11-15 06:07:23Z cfrees $
 -------------------------------------------------
 -------------------------------------------------
 -- copy non-public things from l3build
@@ -122,7 +122,8 @@ sourcefiledir = sourcefiledir or "."
 maindir = maindir or sourcefiledir
 -------------------------------------------------
 -------------------------------------------------
--- use fntbuild-config.lua if found {{{
+-- build_config() {{{
+---use fntbuild-config.lua if found
 ---@usage private
 local function build_config()
   local configs = {}
@@ -842,6 +843,7 @@ local function copio_aux (locs,dest,kpsevar,indent)
     end
   end
 end
+-- }}}
 -------------------------------------------------
 -- local copio {{{
 ---Copy files or directory contents recursively.
@@ -857,6 +859,7 @@ local function copio (locs,dest,kpsevar)
   kpsevar = kpsevar or "TEXMFDIST"
   copio_aux(locs,dest,kpsevar,"")
 end
+-- }}}
 -------------------------------------------------
 -- checkinit_hook {{{
 ---Additional setup for testing tailored to font packages.
@@ -871,7 +874,7 @@ function checkinit_hook ()
   local mapfiles=filelist(keepdir, "*.map")
   local mapsdir = ""
   local fdsdir = ""
-  local adds = checksuppfiles_addlst or maindir .. "/checksuppfiles-add.lst"
+  -- local adds = checksuppfiles_addlst or maindir .. "/checksuppfiles-add.lst"
   if not checksearch then
     map_cat(mapfiles_sys,testdir)
   end
@@ -920,21 +923,10 @@ function checkinit_hook ()
       }
     end
     copio(checksuppfiles_sys,testdir,"TEXMFDIST")
-    local m = {}
-    if fileexists(adds) then
-      for line in io.lines(adds) do
-        table.insert(m,line)
-      end
-    end
     if #checksuppfiles_add ~= 0 then
-      for _,i in ipairs(checksuppfiles_add) do
-        table.insert(m,i)
-      end
-    end
-    if #m ~= 0 then
       local str = kpse.var_value("TEXMFDIST")
       if string.match(str,"%-") then str = string.gsub(str,"%-","%%-") end
-      for _,j in ipairs(m) do
+      for _,j in ipairs(checksuppfiles_add) do
         if string.match(j,"^/") then
           copio({j},testdir,"TEXMFDIST")
         else
@@ -955,6 +947,7 @@ function checkinit_hook ()
       end
     end
   end
+  -- setup & test creation
   if #mapfiles == 0 then
     mapfiles=filelist(unpackdir, "*.map")
     if #mapfiles == 0 then
