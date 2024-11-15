@@ -1,4 +1,4 @@
--- $Id: fntbuild.lua 10631 2024-11-14 05:26:44Z cfrees $
+-- $Id: fntbuild.lua 10632 2024-11-15 03:44:51Z cfrees $
 -------------------------------------------------
 -------------------------------------------------
 -- copy non-public things from l3build
@@ -77,6 +77,8 @@ function lsrdir_aux (path,filenames)
       local attr = lfs.attributes (f)
       -- why is this necessary?
       -- lfs.attributes does or doesn't return a table?
+      -- David Carlisle: poss. nil rather than table
+      -- -> assert then gives error
       assert (type(attr) == "table")
       if attr.mode == "directory" then
         lsrdir_aux (f,filenames)
@@ -108,8 +110,10 @@ end
 ---@usage private
 nifergwall = 0
 -- target names
+-- fnttarg
 ---@usage private
 ntarg = "fnttarg"
+-- uniquifyencs
 ---@usage private
 utarg = "uniquifyencs"
 -------------------------------------------------
@@ -794,6 +798,66 @@ end
 checksuppfiles_sys = checksuppfiles_sys or {}
 checksuppfiles_add = checksuppfiles_add or {}
 -------------------------------------------------
+-- local copio_aux {{{
+---Copy files or directory contents recursively.
+---@return 0 on success, error level otherwise 
+---@see 
+---@param locs table
+---@param dest string
+---@param kpsevar string
+---@param indent string
+---@usage private
+local function copio_aux (locs,dest,kpsevar,indent)
+  indent = indent .. "  "
+  for _,i in ipairs(locs) do
+    local path = kpse.var_value(kpsevar) .. i
+    local attr = lfs.attributes (path)
+    if type(attr) == "table" then
+      if attr.mode == "directory" then
+        print(indent .. i .. "/")
+        local tmpls = filelist(path)
+        for _,j in ipairs(tmpls) do
+          if j ~= "." and j ~= ".." then
+            local att = lfs.attributes (path .. "/" .. j)
+            assert (type(att) == "table")
+            if att.mode == "directory" then
+              copio_aux({path .. "/" .. j},dest,kpsevar,indent)
+            else
+              local errorlevel = cp(j,path,dest)
+              gwall("Copying ",path .. "/" .. j,errorlevel)
+            end
+          end
+        end
+      else
+        if fileexists(path) then
+          print("  " .. i)
+          local errorlevel = cp(basename(path),dirname(path),dest)
+          gwall("Copying ",path,errorlevel)
+        else
+          gwall("Lookup ",path,1)
+        end
+      end
+    else
+      gwall("Getting information about ",i,1)
+    end
+  end
+end
+-------------------------------------------------
+-- local copio {{{
+---Copy files or directory contents recursively.
+---@return 0 on success, error level otherwise 
+---@see 
+---@param locs table
+---@param dest string
+---@param kpsevar string
+---@usage private
+local function copio (locs,dest,kpsevar)
+  if locs == nil then return 0 end
+  if #locs == 0 then return 0 end
+  kpsevar = kpsevar or "TEXMFDIST"
+  copio_aux(locs,dest,kpsevar,"")
+end
+-------------------------------------------------
 -- checkinit_hook {{{
 ---Additional setup for testing tailored to font packages.
 ---@return 0 on success, error level otherwise 
@@ -818,58 +882,76 @@ function checkinit_hook ()
       gwall("Copying ",i,errorlevel)
     end
   end
-  if #checksuppfiles_sys == 0 then
+  if not checksearch then
     print("\nAssuming some basic files should be available during testing.\n\nAdding files to " .. testdir .. " from")
-    local d = { 
-      "/tex/latex/l3build", 
-      "/tex/latex/l3backend",
-      "/tex/latex/lm" ,
-      "/fonts/enc/dvips/base",
-      "/fonts/enc/dvips/lm",
-      "/fonts/enc/dvips/cm-super",
-      "/fonts/type1/public/lm",
-      "/fonts/type1/public/cm-super",
-      "/fonts/tfm/public/cm",
-      "/fonts/tfm/jknappen/ec",
-      "/fonts/tfm/public/cm-super",
-      "/fonts/tfm/public/lm" }
-    for _,i in ipairs(d) do
-      local path = kpse.var_value("TEXMFDIST") .. i
-      if direxists(path) then
-        print("  " .. i .. "/")
-        local tmpls = filelist(path)
-        for _,j in ipairs(tmpls) do
-          if j ~= "." and j ~= ".." then
-            local errorlevel = cp(j,path,testdir)
-            gwall("Copying ",path .. "/" .. j,errorlevel)
-          end
-        end
-        -- checksuppfiles_sys = lsrdir(path,checksuppfiles_sys)
-      end
+    if #checksuppfiles_sys == 0 then
+      checksuppfiles_sys = { 
+        "/tex/latex/base/article.cls",
+        "/tex/latex/base/fontenc.sty",
+        "/tex/latex/base/omlcmm.fd",
+        "/tex/latex/base/omlcmr.fd",
+        "/tex/latex/base/omscmr.fd",
+        "/tex/latex/base/omscmsy.fd",
+        "/tex/latex/base/omxcmex.fd",
+        "/tex/latex/base/ot1cmr.fd",
+        "/tex/latex/base/ot1cmss.fd",
+        "/tex/latex/base/ot1cmtt.fd",
+        "/tex/latex/base/size10.clo",
+        "/tex/latex/base/size11.clo",
+        "/tex/latex/base/size12.clo",
+        "/tex/latex/base/t1cmr.fd",
+        "/tex/latex/base/t1cmss.fd",
+        "/tex/latex/base/t1cmtt.fd",
+        "/tex/latex/base/tracefnt.sty",
+        "/tex/latex/base/ts1cmr.fd",
+        "/tex/latex/base/ts1cmss.fd",
+        "/tex/latex/base/ts1cmtt.fd",
+        "/tex/latex/base/ucmr.fd",
+        "/tex/latex/base/ucmss.fd",
+        "/tex/latex/base/ucmtt.fd",
+        "/tex/latex/l3build", 
+        "/tex/latex/l3backend",
+        "/tex/latex/fonttable/fonttable.sty",
+        "/fonts/enc/dvips/base",
+        "/fonts/enc/dvips/cm-super",
+        "/fonts/type1/public/cm-super",
+        "/fonts/tfm/public/cm",
+        "/fonts/tfm/jknappen/ec",
+      }
     end
+    copio(checksuppfiles_sys,testdir,"TEXMFDIST")
+    local m = {}
     if fileexists(adds) then
       for line in io.lines(adds) do
-        table.insert(checksuppfiles_sys,line)
+        table.insert(m,line)
       end
     end
     if #checksuppfiles_add ~= 0 then
       for _,i in ipairs(checksuppfiles_add) do
-        table.insert(checksuppfiles_sys,i)
+        table.insert(m,i)
       end
     end
-  end
-  if #checksuppfiles_sys ~= 0 then
-    print("\nCopying itemised system files to " .. testdir)
-    for _,j in ipairs(checksuppfiles_sys) do
-      -- local jpath = kpse.find_file(j)
-      local jpath = kpse.lookup(j)
-      if jpath ~= nil then 
-        local jdir = dirname(jpath)
-        print("  " .. jpath)
-        local errorlevel = cp(j,jdir,testdir) 
-        gwall("Copying ",j,errorlevel)
-      else
-        gwall("Finding ",j,errorlevel)
+    if #m ~= 0 then
+      local str = kpse.var_value("TEXMFDIST")
+      if string.match(str,"%-") then str = string.gsub(str,"%-","%%-") end
+      for _,j in ipairs(m) do
+        if string.match(j,"^/") then
+          copio({j},testdir,"TEXMFDIST")
+        else
+          local jpath = kpse.lookup(j)
+          if jpath ~= nil then 
+            local jdir = dirname(jpath)
+            if string.match(jdir,"^" .. str) then
+              print("  " .. jpath)
+              local errorlevel = cp(j,jdir,testdir) 
+              gwall("Copying ",j,errorlevel)
+            else
+              gwall("Restricted search for ",j,1)
+            end
+          else
+            gwall("Finding ",j,errorlevel)
+          end
+        end
       end
     end
   end
@@ -1109,31 +1191,51 @@ target_list[utarg] = {
 -- }}}
 -- diwedd targets
 -------------------------------------------------
+-- font definitions to use when auto-generating tests
+---@see fnt_test() checkinit_hook() fnttestfds
+---@usage public
 autotestfds = autotestfds or {}
--- auxfiles = {"*.aux"}
 binaryfiles = {"*.pdf", "*.zip", "*.vf", "*.tfm", "*.pfb", "*.pfm", "*.ttf", "*.otf", "*.tar.gz"}
+-- script containing commands to convert pl and vpl files to binary form
+---@see fontinst()
+---@usage public
 binmakers = binmakers or {"*-pltotf.sh"}
 -- maindir before checkdeps
 -- maindir = "../.."
-checkdeps = { maindir .. "/fnt-tests"}
+checkdeps = { maindir .. "/fnt-tests" }
 checkengines = { "pdftex" } 
 checkformat = "latex"
--- checksuppfiles = {""}
 cleanfiles = {keeptempfiles}
+-- \TeX{} files to compile to produce pl, vpl etc.
+---@see fontinst()
+---@usage public
 familymakers = familymakers or {"*-drv.tex"}
+-- font definitions to use when auto-generating tests
+---@see fnt_test() checkinit_hook() autotestfds
+---@usage public
 fnttestfds = fnttestfds or {}
--- fntautotestfds = fntautotestfds or {}
 installfiles = {"*.afm", "*.cls", "*.enc", "*.fd", "*.map", "*.otf", "*.pfb", "*.pfm", "*.sty", "*.tfm", "*.ttf", "*.vf"}
--- match default as not yet existent
-sourcefiledir = sourcefiledir or "."
+-- sourcefiledir must be specified first
+-- directory to store build products
+---@usage public
 keepdir = keepdir or sourcefiledir .. "/keep"
+-- directory to store keeptempfiles
+---@usage public
 keeptempdir = keeptempdir or sourcefiledir .. "/keeptemp"
+-- build products
+---@usage public
 keepfiles = keepfiles or {"*.enc", "*.fd", "*.map", "*.tfm", "*.vf"}
+-- files to keep for diagnostics, but which shouldn't be packaged
+---@usage public
 keeptempfiles = keeptempfiles or {"*.mtx", "*.pl", "*-pltotf.sh", "*-rec.tex", "*.vpl", "*.zz"}
+-- \TeX{} files to compile to produce map file fragments etc.
+---@see fontinst()
+---@usage public
 mapmakers = mapmakers or {"*-map.tex"}
 -- need module test or default?
 sourcefiles = {"*.afm", "afm/*.afm", "*.pfb", "*.pfm", "*.dtx", "*.ins", "opentype/*.otf", "*.otf", "tfm/*.tfm", "truetype/*.ttf", "*.ttf", "type1/*.pfb", "type1/*.pfm"}
 -- vendor and module must be specified before tdslocations
+---@usage public
 vendor = vendor or "public"
 tdslocations = {
 	"fonts/afm/" .. vendor .. "/" .. module .. "/" .. "*.afm",
@@ -1153,7 +1255,7 @@ tdslocations = {
 	"tex/latex/" .. module .. "/" .. "*.sty"
 }
 -- after maindir
--- enable l3build doc/check to find font files
+-- enable l3build doc to find font files
 -- cannot concatenate variables here as they don't (yet?) exist
 -- hope only used for docs?
 typesetexe = "TEXMFDOTDIR=.:../local: pdflatex"
@@ -1164,8 +1266,13 @@ if fileexists(maindir .. "/fnt-ctan.lua") then
   dofile(maindir .. "/fnt-ctan.lua")
 end
 -------------------------------------------------
+-- execute before testing afmtotfm so fnttarg is correct in case the config sets it true
+build_config()
+-------------------------------------------------
 -- afmtotfm
--- only set this true for ultra simple symbol fonts!
+---@usage public
+---boolean
+---only set this true for ultra simple symbol fonts!
 afmtotfm = afmtotfm or false
 -------------------------------------------------
 -- fnt_afmtotfm (dir) {{{
@@ -1245,7 +1352,5 @@ if afmtotfm then
   }
 end
 -- }}}
--------------------------------------------------
-build_config()
 -------------------------------------------------
 -- vim: ts=2:sw=2:et:foldmethod=marker:
