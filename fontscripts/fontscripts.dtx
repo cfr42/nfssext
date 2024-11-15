@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10631 2024-11-14 05:26:44Z cfrees $}[v0.1 \revinfo][\filebase DTX: l3build scripts for font installation]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10634 2024-11-15 07:33:59Z cfrees $}[v0.1 \revinfo][\filebase DTX: l3build scripts for font installation]
 \DefineFileInfoSVN[fontscripts]
 \documentclass[10pt,british,lm-default=false]{l3doc}
 % l3doc loads fancyvrb
@@ -225,12 +225,17 @@
 % 
 % \section{Lua Script Fragments}\label{sec:lua}
 %
+% \changes{v0.0}{0000/00/00}{\texttt{fontinst.lua} renamed to \texttt{fntbuild.lua}.}
 % \file{fntbuild.lua} provides two custom \lpack{l3build} targets and five new Lua functions.
 % In addition, it redefines three \lpack{l3build} functions (two of which do nothing by default).
 % As well as those provided by \lpack{l3build}, a number of additional variables are used by these functions to determine what, where and how they should operate.
 %
 % \subsection{\lpack{l3build} Targets}\label{subsec:targs}
 %
+% \changes{v0.0}{0000/00/00}{\texttt{fnttarg} may now be ‘sandboxed’.
+%   The default build recipes (based on \lpack{fontinst} and \texttt{afm2tfm}) are configured to do this and \texttt{buildsearch} is disabled by default.
+%   At present, isolation only affects \TeX-based build tools. 
+%   FontForge and \gnu{} \texttt{make} are unaffected, for example.}
 % \DescribeTarg{fnttarg}
 % Runs \texttt{fontinst ()} by default or \verb|fnt_afmtotfm ()| if \texttt{afmtotfm} is \texttt{true}.
 % 
@@ -254,11 +259,13 @@
 %
 % \subsubsection{New Functions}\label{subsubsec:new}
 %
+% \changes{v0.0}{0000/00/00}{New function: \texttt{buildinit_hook()}.}
 % \DescribelFn{buildinit_hook()} \texttt{buildinit_hook}\plarg{}\par\noindent
 % A function which does nothing successfully by default, similar to the hooks provided by \lpack{l3build}.
 % May be redefined to perform additional tasks when setting up the environment for \texttt{fnttarg}.
 % The function should return an error level.
 %
+% \changes{v0.0}{0000/00/00}{New function: \texttt{fnt_afmtotfm()}.}
 % \DescribelFn{(fnt_afmtotfm)} \texttt{fnt_afmtoafm}\plarg{dir}\par\noindent
 % A function to generate support files for simple symbolic fonts in \meta{dir} using \texttt{afm2tfm}.
 % The function generates \tfm s, \fd s and a \map.
@@ -272,6 +279,7 @@
 % Note this function is designed for only very simple cases.
 % The target \TeX{} fonts must each correspond to a unique \file{.afm} (though it would not be hard to extend the function to support a one-many mapping).
 %
+% \changes{v0.0}{0000/00/00}{New function: \texttt{build_fnt()}.}
 % \DescribelFn{build_fnt()} \texttt{build_fnt}\plarg{dir,cmd,file}\par\noindent
 % A wrapper around \texttt{runcmd()} which runs \meta{cmd} \meta{file} in \meta{dir}.
 % If \texttt{buildsearch} is \texttt{false} (the default), the function first sets up a restricted environment designed to avoid contaminating the build with undesirable elements from \TeX{} search paths. 
@@ -362,6 +370,7 @@
 %
 % This function is called by the function executed by the default functions called by \texttt{fnttarg()} and may be useful if that target is redefined to call a different function.
 % 
+% \changes{v0.0}{0000/00/00}{New function: \texttt{lsrdir()}.}
 % \DescribelFn{lsrdir()} \texttt{lsrdir}\plarg{path,filenames}\par\noindent
 % Adds a recursive list of files in \texttt{path} to the list of files in \texttt{filenames} and returns \texttt{filenames} and returns the resulting table.
 % \texttt{path} should be a string containing the fully-qualified path to a directory.
@@ -380,7 +389,8 @@
 % \file{fntbuild.lua} redefines it to automatically generate test files suitable for use with \texttt{l3build check} if a test template is available.
 % If \texttt{checksearch} is \texttt{false}, the hook also sets up an environment tailored to font-testing.
 % 
-% \textbf{Note that \texttt{checksearch} is enabled by default.}
+% \changes{v0.0}{0000/00/00}{Disable \texttt{checksearch} by default.}
+% \textbf{Note that \texttt{checksearch} is disabled by default.}
 % Contrary to \lpack{l3build}, \texttt{fntbuild.lua} enables sandboxing during both building and testing.
 % If you do not want this, reenable \texttt{checksearch} after \file{fntbuild.lua} is read or, better yet, create a custom \file{fntbuild-config.lua}.
 %
@@ -440,11 +450,9 @@
 %       checkformat && ''latex''\\
 %       checksearch &&  false \\
 %       cleanfiles && \{keeptempfiles\}\\
-%       demofiles && \{''*-example.tex''\}\\
 %       installfiles && \{''*.afm'', ''*.cls'', ''*.enc'', ''*.fd'', ''*.map'', ''*.otf'', ''*.pfb'', ''*.pfm'', ''*.sty'', ''*.tfm'', ''*.ttf'', ''*.vf''\}\\
 %       sourcefiledir && sourcefiledir or ''.''\\
 %       sourcefiles && \{''*.afm'', ''afm/*.afm'', ''*.pfb'', ''*.dtx'', ''*.ins'', ''opentype/*.otf'', ''*.otf'', ''tfm/*.tfm'', ''truetype/*.ttf'', ''*.ttf'', ''type1/*.pfb''\}\\
-%       tagfiles && \{''*.dtx'', ''*.ins'', ''manifest.txt'', ''MANIFEST.txt'', ''README'', ''README.md''\}\\
 %       tdslocations && \{%
 %       	''fonts/afm/'' .. vendor .. ''/'' .. module .. ''/'' .. ''*.afm'',
 %       	''fonts/enc/dvips/'' .. module .. ''/'' .. ''*.enc'',
@@ -468,6 +476,7 @@
 %     \bottomrule
 %   \end{tabularx}
 % \end{table}
+% \changes{v0.0}{0000/00/00}{New variables: \texttt{afmtotfm}, \texttt{builddeps}, \texttt{buildfiles}, \texttt{buildsearch}, \texttt{buildsuppfiles_sys}, \texttt{checksuppfiles_sys}, \texttt{checksuppfiles_add}, \texttt{fntdir}, \texttt{mapfiles_sys}, \texttt{mapfiles_add}}
 % \begin{table}
 %   \centering
 %   \caption{Default values for \lpack{fontscripts}  variables.}\label{tab:varia-n}
@@ -485,7 +494,6 @@
 %       buildsuppfiles_sys && buildsuppfiles_sys or \{\} \\
 %       checksuppfiles_sys && checksuppfiles_sys or \{\} \\
 %       checksuppfiles_add && checksuppfiles_add or \{\} \\
-%  
 %       familymakers && \{''*-drv.tex''\}\\
 %       fntdir  && fntdir or builddir .. ''/fnt'' \\
 %       fnttestfds && fnttestfds or \{\}\\
@@ -496,11 +504,10 @@
 %       mapmakers && \{''*-map.tex''\}\\
 %       mapfiles_sys && mapfiles_sys or \{\} \\
 %       mapfiles_add && mapfiles or \{\} \\
-%       
-%       nifergwall && 0\\
-%       ntarg && ''fnttarg''\\
+%^^A       nifergwall && 0\\
+%^^A       ntarg && ''fnttarg''\\
 %       vendor && vendor or ''public''\\
-%       utarg && ''uniquifyencs''\\
+%^^A       utarg && ''uniquifyencs''\\
 %     \bottomrule
 %   \end{tabularx}
 % \end{table}
@@ -680,7 +687,7 @@
 %    \begin{macrocode}
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10631 2024-11-14 05:26:44Z cfrees $}[v0.1 \revinfo][\outFileName]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10634 2024-11-15 07:33:59Z cfrees $}[v0.1 \revinfo][\outFileName]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % \iffalse
@@ -707,150 +714,149 @@
 % These are not standalone scripts, but files to be read by \texttt{l3build} to provide additional and/or divergent functions.
 % Note that several are based on LPPL files not on \ctan{}, as the \LaTeX{} Project does not package their build scripts. 
 % 
-% \textbf{These script fragments were not written for general use and will \MakeUppercase{certainly fail} if not adapted to your build environment.}
 % 
 % \subsubsection{fntbuild.lua}\label{subsubsec:fntbuild-lua}
-% 
-% \begin{luafrag}{fntbuild.lua}
-%   Use \texttt{dofile()} in \file{build.lua} to add to \lpack{l3build}.
-%   \newcommand*\FancyVerbStopString{ntarg = "fnttarg"}
-%   \VerbatimInput[gobble=0,numbers=left,numberblanklines=true,firstline=12]{fntbuild.lua}
-%   \newcommand*\FancyVerbStartString{nifergwall = 0}
-%   \begin{target}{fnttarg}
-%     Create fonts.
-%     Default assumes \lpack{fontinst}.
-%     Redefine element in target list for alternative tools.
-%     For example, \lpack{berenisadf}'s \texttt{build.lua} redefines it to use \textsc{gnu} \texttt{make}, \textsc{FontForge} etc.
-%     \renewcommand*\FancyVerbStopString{utarg = "uniquifyencs"}
-%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true]{fntbuild.lua}
-%   \end{target}
-%   \begin{target}{uniquifyencs}
-%     To ensure unique encodings without rebuilding fonts.
-%     \renewcommand*\FancyVerbStartString{ntarg = "fnttarg"}
-%     \renewcommand*\FancyVerbStopString{function gwall (msg,file,rtn)}
-%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true]{fntbuild.lua}
-%   \end{target}
-%   \renewcommand*\FancyVerbStartString{utarg = "uniquifyencs"}
-%   \renewcommand*\FancyVerbStopString{function finst (patt,dir,mode)}
-%   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true]{fntbuild.lua}
-%   \begin{luafunction}{finst()}
-%     Is to \texttt{finst} what \texttt{fontinst} is to \texttt{fontinst}.
-%     \renewcommand*\FancyVerbStartString{utarg = "uniquifyencs"}
-%     \renewcommand*\FancyVerbStopString{function fntkeeper ()}
-%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=38]{fntbuild.lua}
-%   \end{luafunction}
-%   \begin{luafunction}{fntkeeper()}
-%     Keep fonts between \texttt{l3build} runs unless \texttt{fnttarg} explicitly called.
-%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=52,lastline=102]{fntbuild.lua}
-%   \end{luafunction}
-%   \begin{luafunction}{uniquify()}
-%     Ensure encoding names are unique.
-%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=105,lastline=222]{fntbuild.lua}
-%   \end{luafunction}
-%   \begin{luafunction}{fontinst()}
-%     Configured for \lpack{fontinst}.
-%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=223,lastline=321]{fntbuild.lua}
-%   \end{luafunction}
-%   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=322,lastline=323]{fntbuild.lua}
-%   \begin{luafunction}{fnt_test()}
-%     Assumes a suitable template is available for testing.
-%     \renewcommand*\FancyVerbStartString{-- fnt_test}
-%     \renewcommand*\FancyVerbStopString{-- checkinit_hook}
-%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true]{fntbuild.lua}
-%   \end{luafunction}
-%   \begin{luafunction}{checkinit_hook()}
-%     Redefinition of standard \lpack{l3build} function.
-%     \renewcommand*\FancyVerbStartString{-- checkinit_hook}
-%     \renewcommand*\FancyVerbStopString{-- doc_init}
-%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true]{fntbuild.lua}
-%   \end{luafunction}
-%   \begin{luafunction}{docinit_hook()}
-%     Redefinition of standard \lpack{l3build} function.
-%     \renewcommand*\FancyVerbStartString{-- doc_init}
-%     \renewcommand*\FancyVerbStopString{-- fontinst must be specified first}
-%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true]{fntbuild.lua}
-%   \end{luafunction}
-%   \begin{target}{fnttarg}
-%     Main target definition.
-%     \renewcommand*\FancyVerbStartString{-- ntarg}
-%     \renewcommand*\FancyVerbStopString{-- utarg}
-%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,]{fntbuild.lua}
-%   \end{target}
-%   \begin{target}{uniquifyencs}
-%     Secondary target.
-%     It is not normally necessary to invoke this target separately if using the default definition of \texttt{fnttarg}.
-%     \renewcommand*\FancyVerbStartString{-- utarg}
-%     \renewcommand*\FancyVerbStopString{-- diwedd targets}
-%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true]{fntbuild.lua}
-%   \end{target}
-%   \begin{luavariable}{autotestfds}
-%     \texttt{fd} files to use when auto-generating build tests.
-%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=631,lastline=631]{fntbuild.lua}
-%   \end{luavariable}
-%   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=633,lastline=634]{fntbuild.lua}
-%   \begin{luavariable}{binmakers}
-%     Scripts to create binary \texttt{tfm} and/or \texttt{vf} from \texttt{pl} and/or \texttt{vpl}.
-%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=635,lastline=635]{fntbuild.lua}
-%   \end{luavariable}
-%   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=638,lastline=644]{fntbuild.lua}
-%   \begin{luavariable}{familymakers}
-%     Files to compile to generate font definition files, human-readable metrics etc.
-%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=645,lastline=645]{fntbuild.lua}
-%   \end{luavariable}
-%   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,lastline=646,firstline=647]{fntbuild.lua}
-%   \begin{luavariable}{fnttestfds}
-%     Font definition files to use when auto-generating tests.
-%     May be either a table of globs or a table of tables of package names and lists of globs.
-%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,lastline=648,firstline=648]{fntbuild.lua}
-%   \end{luavariable}
-%   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,lastline=652,firstline=650]{fntbuild.lua}
-%   \begin{luavariable}{keepdir,keeptempdir}
-%     Directories to stash generated font files and intermediate build products.
-%     These should \textbf{not} be subdirectories of \texttt{builddir}.
-%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=653,lastline=654]{fntbuild.lua}
-%   \end{luavariable}
-%   \begin{luavariable}{keepfiles,keeptempfiles}
-%     Globs for generated font files and intermediate build products to stash in \path{keepdir} and \path{keeptempdir} respectively.
-%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=655,lastline=656]{fntbuild.lua}
-%   \end{luavariable}
-%   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=657,lastline=657]{fntbuild.lua}
-%   \begin{luavariable}{mapmakers}
-%     Files to compile to generate map file fragments.
-%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=658,lastline=658]{fntbuild.lua}
-%   \end{luavariable}
-%   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=659,lastline=662]{fntbuild.lua}
-%   \begin{luavariable}{vendor}
-%     Vendor directory when installing.
-%     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=663,lastline=664]{fntbuild.lua}
-%   \end{luavariable}
-%   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=665]{fntbuild.lua}
-% \end{luafrag}
+% ^^A 
+% ^^A \begin{luafrag}{fntbuild.lua}
+% ^^A   Use \texttt{dofile()} in \file{build.lua} to add to \lpack{l3build}.
+% ^^A   \newcommand*\FancyVerbStopString{ntarg = "fnttarg"}
+% ^^A   \VerbatimInput[gobble=0,numbers=left,numberblanklines=true,firstline=12]{fntbuild.lua}
+% ^^A   \newcommand*\FancyVerbStartString{nifergwall = 0}
+% ^^A   \begin{target}{fnttarg}
+% ^^A     Create fonts.
+% ^^A     Default assumes \lpack{fontinst}.
+% ^^A     Redefine element in target list for alternative tools.
+% ^^A     For example, \lpack{berenisadf}'s \texttt{build.lua} redefines it to use \textsc{gnu} \texttt{make}, \textsc{FontForge} etc.
+% ^^A     \renewcommand*\FancyVerbStopString{utarg = "uniquifyencs"}
+% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true]{fntbuild.lua}
+% ^^A   \end{target}
+% ^^A   \begin{target}{uniquifyencs}
+% ^^A     To ensure unique encodings without rebuilding fonts.
+% ^^A     \renewcommand*\FancyVerbStartString{ntarg = "fnttarg"}
+% ^^A     \renewcommand*\FancyVerbStopString{function gwall (msg,file,rtn)}
+% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true]{fntbuild.lua}
+% ^^A   \end{target}
+% ^^A   \renewcommand*\FancyVerbStartString{utarg = "uniquifyencs"}
+% ^^A   \renewcommand*\FancyVerbStopString{function finst (patt,dir,mode)}
+% ^^A   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true]{fntbuild.lua}
+% ^^A   \begin{luafunction}{finst()}
+% ^^A     Is to \texttt{finst} what \texttt{fontinst} is to \texttt{fontinst}.
+% ^^A     \renewcommand*\FancyVerbStartString{utarg = "uniquifyencs"}
+% ^^A     \renewcommand*\FancyVerbStopString{function fntkeeper ()}
+% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=38]{fntbuild.lua}
+% ^^A   \end{luafunction}
+% ^^A   \begin{luafunction}{fntkeeper()}
+% ^^A     Keep fonts between \texttt{l3build} runs unless \texttt{fnttarg} explicitly called.
+% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=52,lastline=102]{fntbuild.lua}
+% ^^A   \end{luafunction}
+% ^^A   \begin{luafunction}{uniquify()}
+% ^^A     Ensure encoding names are unique.
+% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=105,lastline=222]{fntbuild.lua}
+% ^^A   \end{luafunction}
+% ^^A   \begin{luafunction}{fontinst()}
+% ^^A     Configured for \lpack{fontinst}.
+% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=223,lastline=321]{fntbuild.lua}
+% ^^A   \end{luafunction}
+% ^^A   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=322,lastline=323]{fntbuild.lua}
+% ^^A   \begin{luafunction}{fnt_test()}
+% ^^A     Assumes a suitable template is available for testing.
+% ^^A     \renewcommand*\FancyVerbStartString{-- fnt_test}
+% ^^A     \renewcommand*\FancyVerbStopString{-- checkinit_hook}
+% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true]{fntbuild.lua}
+% ^^A   \end{luafunction}
+% ^^A   \begin{luafunction}{checkinit_hook()}
+% ^^A     Redefinition of standard \lpack{l3build} function.
+% ^^A     \renewcommand*\FancyVerbStartString{-- checkinit_hook}
+% ^^A     \renewcommand*\FancyVerbStopString{-- doc_init}
+% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true]{fntbuild.lua}
+% ^^A   \end{luafunction}
+% ^^A   \begin{luafunction}{docinit_hook()}
+% ^^A     Redefinition of standard \lpack{l3build} function.
+% ^^A     \renewcommand*\FancyVerbStartString{-- doc_init}
+% ^^A     \renewcommand*\FancyVerbStopString{-- fontinst must be specified first}
+% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true]{fntbuild.lua}
+% ^^A   \end{luafunction}
+% ^^A   \begin{target}{fnttarg}
+% ^^A     Main target definition.
+% ^^A     \renewcommand*\FancyVerbStartString{-- ntarg}
+% ^^A     \renewcommand*\FancyVerbStopString{-- utarg}
+% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,]{fntbuild.lua}
+% ^^A   \end{target}
+% ^^A   \begin{target}{uniquifyencs}
+% ^^A     Secondary target.
+% ^^A     It is not normally necessary to invoke this target separately if using the default definition of \texttt{fnttarg}.
+% ^^A     \renewcommand*\FancyVerbStartString{-- utarg}
+% ^^A     \renewcommand*\FancyVerbStopString{-- diwedd targets}
+% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true]{fntbuild.lua}
+% ^^A   \end{target}
+% ^^A   \begin{luavariable}{autotestfds}
+% ^^A     \texttt{fd} files to use when auto-generating build tests.
+% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=631,lastline=631]{fntbuild.lua}
+% ^^A   \end{luavariable}
+% ^^A   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=633,lastline=634]{fntbuild.lua}
+% ^^A   \begin{luavariable}{binmakers}
+% ^^A     Scripts to create binary \texttt{tfm} and/or \texttt{vf} from \texttt{pl} and/or \texttt{vpl}.
+% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=635,lastline=635]{fntbuild.lua}
+% ^^A   \end{luavariable}
+% ^^A   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=638,lastline=644]{fntbuild.lua}
+% ^^A   \begin{luavariable}{familymakers}
+% ^^A     Files to compile to generate font definition files, human-readable metrics etc.
+% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=645,lastline=645]{fntbuild.lua}
+% ^^A   \end{luavariable}
+% ^^A   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,lastline=646,firstline=647]{fntbuild.lua}
+% ^^A   \begin{luavariable}{fnttestfds}
+% ^^A     Font definition files to use when auto-generating tests.
+% ^^A     May be either a table of globs or a table of tables of package names and lists of globs.
+% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,lastline=648,firstline=648]{fntbuild.lua}
+% ^^A   \end{luavariable}
+% ^^A   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,lastline=652,firstline=650]{fntbuild.lua}
+% ^^A   \begin{luavariable}{keepdir,keeptempdir}
+% ^^A     Directories to stash generated font files and intermediate build products.
+% ^^A     These should \textbf{not} be subdirectories of \texttt{builddir}.
+% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=653,lastline=654]{fntbuild.lua}
+% ^^A   \end{luavariable}
+% ^^A   \begin{luavariable}{keepfiles,keeptempfiles}
+% ^^A     Globs for generated font files and intermediate build products to stash in \path{keepdir} and \path{keeptempdir} respectively.
+% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=655,lastline=656]{fntbuild.lua}
+% ^^A   \end{luavariable}
+% ^^A   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=657,lastline=657]{fntbuild.lua}
+% ^^A   \begin{luavariable}{mapmakers}
+% ^^A     Files to compile to generate map file fragments.
+% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=658,lastline=658]{fntbuild.lua}
+% ^^A   \end{luavariable}
+% ^^A   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=659,lastline=662]{fntbuild.lua}
+% ^^A   \begin{luavariable}{vendor}
+% ^^A     Vendor directory when installing.
+% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=663,lastline=664]{fntbuild.lua}
+% ^^A   \end{luavariable}
+% ^^A   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=665]{fntbuild.lua}
+% ^^A \end{luafrag}
 %
 % \subsubsection{fnt-ctan.lua}\label{subsubsec:fnt-ctan-lua}
 % 
-% \begin{luafrag}{fnt-ctan.lua}
-%   Included by \file{fntbuild.lua} if it exists  in \texttt{maindir}.
-%   Changes the way the \texttt{ctan} target builds the archive to match \ctan{} requirements for font distributions.
-%   \VerbatimInput[gobble=0,numbers=left,numberblanklines=true,firstline=2,lastline=8,firstnumber=last]{fnt-ctan.lua}
-%   \begin{luafunction}{extname()}
-%     Get extension from filename.
-%     \newcommand*\FancyVerbStartString{-- extname(filename)}
-%     \newcommand*\FancyVerbStopString{-- copysubctan(files,srcdir,targdir)}
-%     \VerbatimInput[gobble=0,numbers=left,numberblanklines=true,firstnumber=last]{fnt-ctan.lua}
-%   \end{luafunction}
-%   \begin{luafunction}{copysubctan()}
-%     Sub-directories for \ctan.
-%     \newcommand*\FancyVerbStartString{-- copysubctan(files,srcdir,targdir)}
-%     \newcommand*\FancyVerbStopString{-- copyctan()}
-%     \VerbatimInput[gobble=0,numbers=left,numberblanklines=true,firstnumber=last]{fnt-ctan.lua}
-%   \end{luafunction}
-%   \begin{luafunction}{copyctan()}
-%     Redefine function used by \texttt{ctan}.
-%     \newcommand*\FancyVerbStartString{-- copyctan()}
-%     \newcommand*\FancyVerbStopString{-- end copyctan()}
-%     \VerbatimInput[gobble=0,numbers=left,numberblanklines=true,firstnumber=last]{fnt-ctan.lua}
-%   \end{luafunction}
-% \end{luafrag} 
+% ^^A \begin{luafrag}{fnt-ctan.lua}
+% ^^A   Included by \file{fntbuild.lua} if it exists  in \texttt{maindir}.
+% ^^A   Changes the way the \texttt{ctan} target builds the archive to match \ctan{} requirements for font distributions.
+% ^^A   \VerbatimInput[gobble=0,numbers=left,numberblanklines=true,firstline=2,lastline=8,firstnumber=last]{fnt-ctan.lua}
+% ^^A   \begin{luafunction}{extname()}
+% ^^A     Get extension from filename.
+% ^^A     \newcommand*\FancyVerbStartString{-- extname(filename)}
+% ^^A     \newcommand*\FancyVerbStopString{-- copysubctan(files,srcdir,targdir)}
+% ^^A     \VerbatimInput[gobble=0,numbers=left,numberblanklines=true,firstnumber=last]{fnt-ctan.lua}
+% ^^A   \end{luafunction}
+% ^^A   \begin{luafunction}{copysubctan()}
+% ^^A     Sub-directories for \ctan.
+% ^^A     \newcommand*\FancyVerbStartString{-- copysubctan(files,srcdir,targdir)}
+% ^^A     \newcommand*\FancyVerbStopString{-- copyctan()}
+% ^^A     \VerbatimInput[gobble=0,numbers=left,numberblanklines=true,firstnumber=last]{fnt-ctan.lua}
+% ^^A   \end{luafunction}
+% ^^A   \begin{luafunction}{copyctan()}
+% ^^A     Redefine function used by \texttt{ctan}.
+% ^^A     \newcommand*\FancyVerbStartString{-- copyctan()}
+% ^^A     \newcommand*\FancyVerbStopString{-- end copyctan()}
+% ^^A     \VerbatimInput[gobble=0,numbers=left,numberblanklines=true,firstnumber=last]{fnt-ctan.lua}
+% ^^A   \end{luafunction}
+% ^^A \end{luafrag} 
 % 
 % 
 % 
