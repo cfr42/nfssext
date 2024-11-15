@@ -39,8 +39,10 @@ jobs:
           package_file: .github/tl_packages
         # nfssext-cfr uses cfr-lm (though it falls back if built first)
         # cfr-lm uses nfssext-cfr but there's nothing to build
-      - name: Run l3build for clm
+      - name: Run l3build ctan for clm
         run: (cd cfr-lm ;  cp -r $(kpsewhich -var-value TEXMFDIST)/fonts/afm/public/lm afm && mkdir -p tfm && cp $(kpsewhich -var-value TEXMFDIST)/fonts/tfm/public/lm/ec-* tfm/ && l3build fnttarg && l3build ctan)
+      - name: Run l3build install for clm
+        run: (cd cfr-lm ; l3build install && updmap --enable Map=clm.map)
       - name: Archive failed test output for clm
         # run even if previous step failed
         if: ${{ always() }}
