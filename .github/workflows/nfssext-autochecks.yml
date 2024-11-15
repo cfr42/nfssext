@@ -42,7 +42,7 @@ jobs:
       - name: Run l3build ctan for clm
         run: (cd cfr-lm ;  cp -r $(kpsewhich -var-value TEXMFDIST)/fonts/afm/public/lm afm && mkdir -p tfm && cp $(kpsewhich -var-value TEXMFDIST)/fonts/tfm/public/lm/ec-* tfm/ && l3build fnttarg && l3build ctan)
       - name: Run l3build install for clm
-        run: (cd cfr-lm ; l3build install && sudo updmap --sys --enable Map=clm.map)
+        run: (cd cfr-lm ; l3build install && updmap --sys --enable Map=clm.map)
       - name: Archive failed test output for clm
         # run even if previous step failed
         if: ${{ always() }}
