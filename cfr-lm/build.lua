@@ -1,4 +1,4 @@
--- $Id: build.lua 10636 2024-11-15 20:37:31Z cfrees $
+-- $Id: build.lua 10637 2024-11-15 20:41:53Z cfrees $
 -- Build configuration for cfr-lm
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -57,16 +57,11 @@ cleandir(sourcefiledir .. "/afm")
 cleandir(sourcefiledir .. "/tfm") 
 local str = kpse.var_value("TEXMFDIST")
 print(str)
-for _,i in ipairs(filelist(str .. "/fonts/afm/public/lm")) do
-	print(i)
-	if i ~= "." and i ~= ".." then
-		cp(i,str .. "/fonts/afm/public/lm",sourcefiledir .. "/afm")
-	end
+for _,i in ipairs(filelist(str .. "/fonts/afm/public/lm","*.afm")) do
+  cp(i,str .. "/fonts/afm/public/lm",sourcefiledir .. "/afm")
 end
-for _,i in ipairs(filelist(str .. "/fonts/tfm/public/lm"),"ec-*") do
-	if i ~= "." and i ~= ".." then
-		cp(i,str .. "/fonts/tfm/public/lm",sourcefiledir .. "/tfm")
-	end
+for _,i in ipairs(filelist(str .. "/fonts/tfm/public/lm","ec-*")) do
+  cp(i,str .. "/fonts/tfm/public/lm",sourcefiledir .. "/tfm")
 end
 -- os.execute ("printenv")
 -- vim: ts=2:sw=2:tw=0:nospell
