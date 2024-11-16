@@ -1,4 +1,4 @@
--- $Id: fntbuild.lua 10633 2024-11-15 06:07:23Z cfrees $
+-- $Id: fntbuild.lua 10638 2024-11-16 00:52:32Z cfrees $
 -------------------------------------------------
 -------------------------------------------------
 -- copy non-public things from l3build
@@ -1346,8 +1346,8 @@ if afmtotfm then
 end
 -- }}}
 -------------------------------------------------
-if options["target"] = "install" then
-  table.insert(installfiles,keepdir .. "/*.*")
+if options["target"] == "install" then
+  table.insert(sourcefiles,keepdir .. "/*.*")
 end
 -------------------------------------------------
 -- vim: ts=2:sw=2:et:foldmethod=marker:
