@@ -1346,4 +1346,8 @@ if afmtotfm then
 end
 -- }}}
 -------------------------------------------------
+if options["target"] = "install" then
+  table.insert(installfiles,keepdir .. "/*.*")
+end
+-------------------------------------------------
 -- vim: ts=2:sw=2:et:foldmethod=marker:
