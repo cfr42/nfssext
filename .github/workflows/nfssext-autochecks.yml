@@ -72,7 +72,7 @@ jobs:
           # different workflows.
           package_file: .github/tl_packages
       - name: Run l3build install for clm
-        run: (cd cfr-lm ; l3build install && updmap --sys --enable Map=clm.map)
+        run: (cd cfr-lm ; l3build install && updmap --user --enable Map=clm.map)
       - name: Run l3build for support packages
         run: (cd nfssext-cfr && l3build ctan)
       - name: Archive failed test output for support packages
@@ -106,7 +106,7 @@ jobs:
           # different workflows.
           package_file: .github/tl_packages
       - name: Run l3build install for clm
-        run: (cd cfr-lm ; l3build install && updmap --sys --enable Map=clm.map)
+        run: (cd cfr-lm ; l3build install && updmap --user --enable Map=clm.map)
       - name: Run l3build for fontscripts
         run: (cd fontscripts && l3build ctan) 
       - name: Archive failed test output for fontscripts packages
@@ -138,7 +138,7 @@ jobs:
           # different workflows.
           package_file: .github/tl_packages
       - name: Run l3build install for clm
-        run: (cd cfr-lm ; l3build install && updmap --sys --enable Map=clm.map)
+        run: (cd cfr-lm ; l3build install && updmap --user --enable Map=clm.map)
       - name: Run l3build for adforn
         run: (cd arkandis/adforn  && l3build fnttarg && l3build ctan)
       - name: Archive failed test output for adforn
@@ -170,7 +170,7 @@ jobs:
           # different workflows.
           package_file: .github/tl_packages
       - name: Run l3build install for clm
-        run: (cd cfr-lm ; l3build install && updmap --sys --enable Map=clm.map)
+        run: (cd cfr-lm ; l3build install && updmap --user --enable Map=clm.map)
       - name: Run l3build for adfsymbols
         run: (cd arkandis/adfsymbols  && l3build fnttarg && l3build ctan)
       - name: Archive failed test output for adfsymbols
@@ -232,7 +232,7 @@ jobs:
           # different workflows.
           package_file: .github/tl_packages
       - name: Run l3build install for clm
-        run: (cd cfr-lm ; l3build install && updmap --sys --enable Map=clm.map)
+        run: (cd cfr-lm ; l3build install && updmap --user --enable Map=clm.map)
       - name: Run l3build for berenisadf
         run: (cd arkandis/berenisadf  && l3build fnttarg && l3build ctan)
       - name: Archive failed test output for berenisadf
@@ -265,7 +265,7 @@ jobs:
           # different workflows.
           package_file: .github/tl_packages
       - name: Run l3build install for clm
-        run: (cd cfr-lm ; l3build install && updmap --sys --enable Map=clm.map)
+        run: (cd cfr-lm ; l3build install && updmap --user --enable Map=clm.map)
       - name: Run l3build for electrumadf
         run: (cd arkandis/electrumadf  && l3build fnttarg && l3build ctan)
       - name: Archive failed test output for electrumadf
@@ -298,7 +298,7 @@ jobs:
           # different workflows.
           package_file: .github/tl_packages
       - name: Run l3build install for clm
-        run: (cd cfr-lm ; l3build install && updmap --sys --enable Map=clm.map)
+        run: (cd cfr-lm ; l3build install && updmap --user --enable Map=clm.map)
       - name: Run l3build for librisadf
         run: (cd arkandis/librisadf  && l3build fnttarg && l3build ctan)
       - name: Archive failed test output for librisadf
@@ -333,7 +333,7 @@ jobs:
       - name: Run l3build for romandeadf
         run: (cd arkandis/romandeadf  && l3build fnttarg && l3build ctan)
       - name: Run l3build install for clm
-        run: (cd cfr-lm ; l3build install && updmap --sys --enable Map=clm.map)
+        run: (cd cfr-lm ; l3build install && updmap --user --enable Map=clm.map)
       - name: Archive failed test output for romandeadf
         # run even if previous step failed
         if: ${{ always() }}
@@ -364,7 +364,7 @@ jobs:
           # different workflows.
           package_file: .github/tl_packages
       - name: Run l3build install for clm
-        run: (cd cfr-lm ; l3build install && updmap --sys --enable Map=clm.map)
+        run: (cd cfr-lm ; l3build install && updmap --user --enable Map=clm.map)
       - name: Run l3build for venturisadf
         run: (cd arkandis/venturisadf  && l3build fnttarg && l3build ctan)
       - name: Archive failed test output for venturisadf
