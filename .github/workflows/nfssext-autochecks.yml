@@ -30,7 +30,7 @@ jobs:
 
       # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
       # We need Ghostscript for XeTeX tests.
-      - run: sudo apt-get update && sudo apt-get install ghostscript 
+      - run: sudo apt-get update #&& sudo apt-get install ghostscript 
       - name: Install TeX Live
         uses: zauguin/install-texlive@v3
         with:
@@ -41,8 +41,6 @@ jobs:
         # cfr-lm uses nfssext-cfr but there's nothing to build
       - name: Run l3build ctan for clm
         run: (cd cfr-lm ;  l3build fnttarg && l3build ctan)
-      - name: Run l3build install for clm
-        run: (cd cfr-lm ; l3build install && updmap --sys --enable Map=clm.map)
       - name: Archive failed test output for clm
         # run even if previous step failed
         if: ${{ always() }}
@@ -66,13 +64,15 @@ jobs:
 
       # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
       # We need Ghostscript for XeTeX tests.
-      - run: sudo apt-get update && sudo apt-get install ghostscript 
+      - run: sudo apt-get update #&& sudo apt-get install ghostscript 
       - name: Install TeX Live
         uses: zauguin/install-texlive@v3
         with:
           # List the required TeX Live packages in a separate file to allow reuse in
           # different workflows.
           package_file: .github/tl_packages
+      - name: Run l3build install for clm
+        run: (cd cfr-lm ; l3build install && updmap --sys --enable Map=clm.map)
       - name: Run l3build for support packages
         run: (cd nfssext-cfr && l3build ctan)
       - name: Archive failed test output for support packages
@@ -98,13 +98,15 @@ jobs:
 
       # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
       # We need Ghostscript for XeTeX tests.
-      - run: sudo apt-get update && sudo apt-get install ghostscript 
+      - run: sudo apt-get update #&& sudo apt-get install ghostscript 
       - name: Install TeX Live
         uses: zauguin/install-texlive@v3
         with:
           # List the required TeX Live packages in a separate file to allow reuse in
           # different workflows.
           package_file: .github/tl_packages
+      - name: Run l3build install for clm
+        run: (cd cfr-lm ; l3build install && updmap --sys --enable Map=clm.map)
       - name: Run l3build for fontscripts
         run: (cd fontscripts && l3build ctan) 
       - name: Archive failed test output for fontscripts packages
@@ -128,13 +130,15 @@ jobs:
 
       # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
       # We need Ghostscript for XeTeX tests.
-      - run: sudo apt-get update && sudo apt-get install ghostscript 
+      - run: sudo apt-get update #&& sudo apt-get install ghostscript 
       - name: Install TeX Live
         uses: zauguin/install-texlive@v3
         with:
           # List the required TeX Live packages in a separate file to allow reuse in
           # different workflows.
           package_file: .github/tl_packages
+      - name: Run l3build install for clm
+        run: (cd cfr-lm ; l3build install && updmap --sys --enable Map=clm.map)
       - name: Run l3build for adforn
         run: (cd arkandis/adforn  && l3build fnttarg && l3build ctan)
       - name: Archive failed test output for adforn
@@ -158,13 +162,15 @@ jobs:
 
       # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
       # We need Ghostscript for XeTeX tests.
-      - run: sudo apt-get update && sudo apt-get install ghostscript 
+      - run: sudo apt-get update #&& sudo apt-get install ghostscript 
       - name: Install TeX Live
         uses: zauguin/install-texlive@v3
         with:
           # List the required TeX Live packages in a separate file to allow reuse in
           # different workflows.
           package_file: .github/tl_packages
+      - name: Run l3build install for clm
+        run: (cd cfr-lm ; l3build install && updmap --sys --enable Map=clm.map)
       - name: Run l3build for adfsymbols
         run: (cd arkandis/adfsymbols  && l3build fnttarg && l3build ctan)
       - name: Archive failed test output for adfsymbols
@@ -225,6 +231,8 @@ jobs:
           # List the required TeX Live packages in a separate file to allow reuse in
           # different workflows.
           package_file: .github/tl_packages
+      - name: Run l3build install for clm
+        run: (cd cfr-lm ; l3build install && updmap --sys --enable Map=clm.map)
       - name: Run l3build for berenisadf
         run: (cd arkandis/berenisadf  && l3build fnttarg && l3build ctan)
       - name: Archive failed test output for berenisadf
@@ -249,13 +257,15 @@ jobs:
 
       # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
       # We need Ghostscript for XeTeX tests.
-      - run: sudo apt-get update && sudo apt-get install ghostscript 
+      - run: sudo apt-get update #&& sudo apt-get install ghostscript 
       - name: Install TeX Live
         uses: zauguin/install-texlive@v3
         with:
           # List the required TeX Live packages in a separate file to allow reuse in
           # different workflows.
           package_file: .github/tl_packages
+      - name: Run l3build install for clm
+        run: (cd cfr-lm ; l3build install && updmap --sys --enable Map=clm.map)
       - name: Run l3build for electrumadf
         run: (cd arkandis/electrumadf  && l3build fnttarg && l3build ctan)
       - name: Archive failed test output for electrumadf
@@ -280,13 +290,15 @@ jobs:
 
       # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
       # We need Ghostscript for XeTeX tests.
-      - run: sudo apt-get update && sudo apt-get install ghostscript 
+      - run: sudo apt-get update #&& sudo apt-get install ghostscript 
       - name: Install TeX Live
         uses: zauguin/install-texlive@v3
         with:
           # List the required TeX Live packages in a separate file to allow reuse in
           # different workflows.
           package_file: .github/tl_packages
+      - name: Run l3build install for clm
+        run: (cd cfr-lm ; l3build install && updmap --sys --enable Map=clm.map)
       - name: Run l3build for librisadf
         run: (cd arkandis/librisadf  && l3build fnttarg && l3build ctan)
       - name: Archive failed test output for librisadf
@@ -311,7 +323,7 @@ jobs:
 
       # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
       # We need Ghostscript for XeTeX tests.
-      - run: sudo apt-get update && sudo apt-get install ghostscript 
+      - run: sudo apt-get update #&& sudo apt-get install ghostscript 
       - name: Install TeX Live
         uses: zauguin/install-texlive@v3
         with:
@@ -320,6 +332,8 @@ jobs:
           package_file: .github/tl_packages
       - name: Run l3build for romandeadf
         run: (cd arkandis/romandeadf  && l3build fnttarg && l3build ctan)
+      - name: Run l3build install for clm
+        run: (cd cfr-lm ; l3build install && updmap --sys --enable Map=clm.map)
       - name: Archive failed test output for romandeadf
         # run even if previous step failed
         if: ${{ always() }}
@@ -342,13 +356,15 @@ jobs:
 
       # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
       # We need Ghostscript for XeTeX tests.
-      - run: sudo apt-get update && sudo apt-get install ghostscript 
+      - run: sudo apt-get update #&& sudo apt-get install ghostscript 
       - name: Install TeX Live
         uses: zauguin/install-texlive@v3
         with:
           # List the required TeX Live packages in a separate file to allow reuse in
           # different workflows.
           package_file: .github/tl_packages
+      - name: Run l3build install for clm
+        run: (cd cfr-lm ; l3build install && updmap --sys --enable Map=clm.map)
       - name: Run l3build for venturisadf
         run: (cd arkandis/venturisadf  && l3build fnttarg && l3build ctan)
       - name: Archive failed test output for venturisadf
