@@ -150,29 +150,29 @@ jobs:
 #             working_directory: arkandis/venturisadf
 #             pre_target: fnttarg
 #             # extra_needs: clm
-      name: "Test build: ${{ matrix.module }}"
-      steps:
+    name: "Test build: ${{ matrix.module }}"
+    steps:
 #         # - name: Wait for clm
 #         #   if: ${{ matrix.extra_needs }}
 #         #   needs: ${{ matrix.extra_needs }}
 #         # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-        - name: Checkout repo
-          uses: actions/checkout@v4
-        # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
-        # We need Ghostscript for XeTeX tests.
-        - run: sudo apt-get update
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
+      # We need Ghostscript for XeTeX tests.
+      - run: sudo apt-get update
 #         - if: ${{ matrix.extra_packages }}
 #           run: sudo apt-get install ${{ matrix.extra_packages }}
-        - name: Restore TeX Live from cache
-          uses: actions/cache/restore@v4
-          with:
-            path: ~/texlive
-            key: ${{ needs.texlive-cache.outputs.cache_key }}
-            fail-on-cache-miss: true
+      - name: Restore TeX Live from cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/texlive
+          key: ${{ needs.texlive-cache.outputs.cache_key }}
+          fail-on-cache-miss: true
         # oes angen hwn?
         # oes!
-        - name: Set PATH
-          run: echo $HOME/texlive/bin/x86_64-linux >> $GITHUB_PATH
+      - name: Set PATH
+        run: echo $HOME/texlive/bin/x86_64-linux >> $GITHUB_PATH
 #         - name: Restore cfr-lm from cache
 #           # if: ${{ matrix.extra_needs }}
 #           uses: actions/cache/restore@v4
@@ -182,21 +182,21 @@ jobs:
 #               ~/.texmf
 #             key: clm-${{ github.sha }}
 #             fail-on-cache-miss: false
-        - name: Run l3build fnttarg
-          if: ${{ matrix.pre_target }}
-          working-directory: ${{ matrix.working_directory }}
-          run: "l3build fnttarg"
-        - name: Run l3build
-          working-directory: ${{ matrix.working_directory }}
-          run: "l3build ctan"
-        - name: Archive failed test output
-          # run even if previous step failed
-          if: ${{ always() }}
-          uses: zauguin/l3build-failure-artifacts@v1
-          with:
-            name: testfiles-${{ matrix.module }}
-            # Decide how long to keep the test output artefact:
-            retention-days: 7
+      - name: Run l3build fnttarg
+        if: ${{ matrix.pre_target }}
+        working-directory: ${{ matrix.working_directory }}
+        run: "l3build fnttarg"
+      - name: Run l3build
+        working-directory: ${{ matrix.working_directory }}
+        run: "l3build ctan"
+      - name: Archive failed test output
+      # run even if previous step failed
+        if: ${{ always() }}
+        uses: zauguin/l3build-failure-artifacts@v1
+        with:
+          name: testfiles-${{ matrix.module }}
+          # Decide how long to keep the test output artefact:
+        retention-days: 7
 
 
 #   l3build-ctan-nfssext-cfr:
