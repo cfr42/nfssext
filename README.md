@@ -1,7 +1,6 @@
-$Id: README.md 10642 2024-11-17 16:59:54Z cfrees $
+$Id: README.md 10643 2024-11-17 17:10:17Z cfrees $
 
-[![Automatic Checks for nfssext/main](https://github.com/cfr42/nfssext/actions/workflows/nfssext-autochecks.yml/badge.svg?branch=main)](https://github.com/cfr42/nfssext/actions/workflows/nfssext-autochecks.yml)
-[![Automatic Checks for nfssext/devel](https://github.com/cfr42/nfssext/actions/workflows/nfssext-autochecks.yml/badge.svg)](https://github.com/cfr42/nfssext/actions/workflows/nfssext-autochecks.yml)
+[![Automatic Checks for nfssext](https://github.com/cfr42/nfssext/actions/workflows/nfssext-autochecks.yml/badge.svg)](https://github.com/cfr42/nfssext/actions/workflows/nfssext-autochecks.yml)
 
 # nfssext
 
