@@ -56,12 +56,12 @@ jobs:
       # We need Ghostscript for XeTeX tests.
       - run: sudo apt-get update #&& sudo apt-get install ghostscript 
       # Steps represent a sequence of tasks that will be executed as part of the job
-      - name: Resotre TeX Live from cache
-          uses: actions/cache/restore@v4
-          with: 
-            path: ~/texlive
-            key: ${{ needs.texlive-cache.outputs.cache_key }}
-            fail-on-cache-miss: true
+      - name: Restore TeX Live from cache
+        uses: actions/cache/restore@v4
+        with: 
+          path: ~/texlive
+          key: ${{ needs.texlive-cache.outputs.cache_key }}
+          fail-on-cache-miss: true
       - name: Run l3build fnttarg 
         working-directory: cfr-lm
         run: l3build fnttarg
