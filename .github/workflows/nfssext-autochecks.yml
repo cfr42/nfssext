@@ -196,7 +196,7 @@ jobs:
         with:
           name: testfiles-${{ matrix.module }}
           # Decide how long to keep the test output artefact:
-        retention-days: 7
+          retention-days: 7
 
 
 #   l3build-ctan-nfssext-cfr:
