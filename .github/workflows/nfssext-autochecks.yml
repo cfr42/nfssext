@@ -49,8 +49,8 @@ jobs:
     needs: texlive-cache
     # nfssext-cfr uses cfr-lm (though it falls back if built first)
     # cfr-lm uses nfssext-cfr but there's nothing to build
-    outputs:
-      clm_cache_key: $(( steps.clm-cache.outputs.cache_key }}
+    # outputs:
+    #   clm_cache_key: $(( steps.clm-cache.outputs.cache_key }}
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repo
