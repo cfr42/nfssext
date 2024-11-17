@@ -65,6 +65,10 @@ jobs:
           path: ~/texlive
           key: ${{ needs.texlive-cache.outputs.cache_key }}
           fail-on-cache-miss: true
+      # oes angen hwn?
+      # oes!
+      - name: Set PATH
+        run: echo $HOME/texlive/bin/x86_64-linux >> $GITHUB_PATH
       - name: Run l3build fnttarg 
         working-directory: cfr-lm
         run: l3build fnttarg
