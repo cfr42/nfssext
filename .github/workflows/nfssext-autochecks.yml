@@ -145,8 +145,9 @@ jobs:
             extra_needs: clm
       name: "Test build: ${{ matrix.module }}"
       steps:
-        - if: ${{ matrix.extra_needs }}
-          needs: [ ${{ matrix.extra_needs }} ]
+        - name: Wait for clm
+          if: ${{ matrix.extra_needs }}
+          needs: ${{ matrix.extra_needs }}
         # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
         - name: Checkout repo
           uses: actions/checkout@v4
