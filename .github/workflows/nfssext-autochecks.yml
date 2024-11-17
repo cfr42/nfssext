@@ -23,7 +23,7 @@ jobs:
 
   # addaswyd o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
   # update TL tree if needed
-  tl-update-cache:
+  texlive-cache:
     runs-on: ubuntu-latest
     name: Update TeX Live cache
     outputs: 
@@ -46,7 +46,7 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     name: "Test build: cfr-lm"
-    needs: tl-update-cache
+    needs: texlive-cache
     # nfssext-cfr uses cfr-lm (though it falls back if built first)
     # cfr-lm uses nfssext-cfr but there's nothing to build
     outputs:
