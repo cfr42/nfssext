@@ -52,6 +52,9 @@ jobs:
     outputs:
       clm_cache_key: $(( steps.clm-cache.outputs.cache_key }}
     steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout repo
+        uses: actions/checkout@v4
       # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
       # We need Ghostscript for XeTeX tests.
       - run: sudo apt-get update #&& sudo apt-get install ghostscript 
@@ -91,104 +94,104 @@ jobs:
           key: clm-${{ github.sha }}
 
 
-  # addaswyd o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
-  nfssext:
-    if: ${{ always() }}
-    runs-on: ubuntu-latest
-    needs: [ tl-update-cache, clm ]
-    strategy: 
-      matrix:
-        # include indicates that we want to set explicitly these combinations
-        # and don't want full matrix testing.
-        include:
-          - module: adforn
-            working_directory: arkandis/adforn
-            pre_target: fnttarg
-            # extra_needs: clm
-          - module: adfsymbols
-            working_directory: arkandis/adfsymbols
-            pre_target: fnttarg
-            # extra_needs: clm
-          - module: baskervaldadf
-            working_directory: arkandis/baskervaldadf
-            pre_target: fnttarg
-          - module: berenisadf
-            working_directory: arkandis/berenisadf
-            # berenis needs make, ff
-            extra_packages: make fontforge
-            pre_target: fnttarg
-            # extra_needs: clm
-          # - module: cfr-lm
-          #   working_directory: cfr-lm
-          #   pre_target: fnttarg
-          - module: electrumadf
-            working_directory: arkandis/electrumadf
-            pre_target: fnttarg
-            # extra_needs: clm
-          - module: fontscripts
-            working_directory: fontscripts
-            # extra_needs: clm
-          - module: librisadf
-            working_directory: arkandis/librisadf
-            pre_target: fnttarg
-            # extra_needs: clm
-          - module: nfssext-cfr
-            working_directory: nfssext-cfr
-            # extra_needs: clm
-          - module: romandeadf
-            working_directory: arkandis/romandeadf
-            pre_target: fnttarg
-            # extra_needs: clm
-          - module: venturisadf
-            working_directory: arkandis/venturisadf
-            pre_target: fnttarg
-            # extra_needs: clm
-      name: "Test build: ${{ matrix.module }}"
-      steps:
-        # - name: Wait for clm
-        #   if: ${{ matrix.extra_needs }}
-        #   needs: ${{ matrix.extra_needs }}
-        # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-        - name: Checkout repo
-          uses: actions/checkout@v4
-        # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
-        # We need Ghostscript for XeTeX tests.
-        - run: sudo apt-get update 
-        - if: ${{ matrix.extra_packages }}
-          run: sudo apt-get install ${{ matrix.extra_packages }}
-        - name: Restore TeX Live from cache
-          uses: actions/cache/restore@v4
-          with: 
-            path: ~/texlive
-            key: ${{ needs.texlive-cache.outputs.cache_key }}
-            fail-on-cache-miss: true
-        # oes angen hwn?
-        # - run: echo $HOME/texlive/bin/x86_64-linux >> $GITHUB_PATH
-        - name: Restore cfr-lm from cache
-          # if: ${{ matrix.extra_needs }}
-          uses: actions/cache/restore@v4
-          with:
-            path: |
-              ~/.texlive
-              ~/.texmf
-            key: clm-${{ github.sha }}
-            fail-on-cache-miss: false
-        - name: Run l3build fnttarg
-          if: ${{ matrix.pre_target }}
-          working-directory: ${{ matrix.working_directory }}
-          run: "l3build fnttarg"
-        - name: Run l3build
-          working-directory: ${{ matrix.working_directory }}
-          run: "l3build ctan"
-        - name: Archive failed test output 
-          # run even if previous step failed
-          if: ${{ always() }}
-          uses: zauguin/l3build-failure-artifacts@v1
-          with:
-            name: testfiles-${{ matrix.module }}
-            # Decide how long to keep the test output artefact:
-            retention-days: 7
-
+#   # addaswyd o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
+#   nfssext:
+#     if: ${{ always() }}
+#     runs-on: ubuntu-latest
+#     needs: [ tl-update-cache, clm ]
+#     strategy: 
+#       matrix:
+#         # include indicates that we want to set explicitly these combinations
+#         # and don't want full matrix testing.
+#         include:
+#           - module: adforn
+#             working_directory: arkandis/adforn
+#             pre_target: fnttarg
+#             # extra_needs: clm
+#           - module: adfsymbols
+#             working_directory: arkandis/adfsymbols
+#             pre_target: fnttarg
+#             # extra_needs: clm
+#           - module: baskervaldadf
+#             working_directory: arkandis/baskervaldadf
+#             pre_target: fnttarg
+#           - module: berenisadf
+#             working_directory: arkandis/berenisadf
+#             # berenis needs make, ff
+#             extra_packages: make fontforge
+#             pre_target: fnttarg
+#             # extra_needs: clm
+#           # - module: cfr-lm
+#           #   working_directory: cfr-lm
+#           #   pre_target: fnttarg
+#           - module: electrumadf
+#             working_directory: arkandis/electrumadf
+#             pre_target: fnttarg
+#             # extra_needs: clm
+#           - module: fontscripts
+#             working_directory: fontscripts
+#             # extra_needs: clm
+#           - module: librisadf
+#             working_directory: arkandis/librisadf
+#             pre_target: fnttarg
+#             # extra_needs: clm
+#           - module: nfssext-cfr
+#             working_directory: nfssext-cfr
+#             # extra_needs: clm
+#           - module: romandeadf
+#             working_directory: arkandis/romandeadf
+#             pre_target: fnttarg
+#             # extra_needs: clm
+#           - module: venturisadf
+#             working_directory: arkandis/venturisadf
+#             pre_target: fnttarg
+#             # extra_needs: clm
+#       name: "Test build: ${{ matrix.module }}"
+#       steps:
+#         # - name: Wait for clm
+#         #   if: ${{ matrix.extra_needs }}
+#         #   needs: ${{ matrix.extra_needs }}
+#         # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+#         - name: Checkout repo
+#           uses: actions/checkout@v4
+#         # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
+#         # We need Ghostscript for XeTeX tests.
+#         - run: sudo apt-get update 
+#         - if: ${{ matrix.extra_packages }}
+#           run: sudo apt-get install ${{ matrix.extra_packages }}
+#         - name: Restore TeX Live from cache
+#           uses: actions/cache/restore@v4
+#           with: 
+#             path: ~/texlive
+#             key: ${{ needs.texlive-cache.outputs.cache_key }}
+#             fail-on-cache-miss: true
+#         # oes angen hwn?
+#         # - run: echo $HOME/texlive/bin/x86_64-linux >> $GITHUB_PATH
+#         - name: Restore cfr-lm from cache
+#           # if: ${{ matrix.extra_needs }}
+#           uses: actions/cache/restore@v4
+#           with:
+#             path: |
+#               ~/.texlive
+#               ~/.texmf
+#             key: clm-${{ github.sha }}
+#             fail-on-cache-miss: false
+#         - name: Run l3build fnttarg
+#           if: ${{ matrix.pre_target }}
+#           working-directory: ${{ matrix.working_directory }}
+#           run: "l3build fnttarg"
+#         - name: Run l3build
+#           working-directory: ${{ matrix.working_directory }}
+#           run: "l3build ctan"
+#         - name: Archive failed test output 
+#           # run even if previous step failed
+#           if: ${{ always() }}
+#           uses: zauguin/l3build-failure-artifacts@v1
+#           with:
+#             name: testfiles-${{ matrix.module }}
+#             # Decide how long to keep the test output artefact:
+#             retention-days: 7
+# 
 
 
 #   l3build-ctan-nfssext-cfr:
