@@ -1,4 +1,4 @@
--- $Id: fntbuild.lua 10651 2024-11-19 15:32:09Z cfrees $
+-- $Id: fntbuild.lua 10652 2024-11-19 15:42:55Z cfrees $
 -------------------------------------------------
 -------------------------------------------------
 -- copy non-public things from l3build
@@ -1266,13 +1266,14 @@ if fntbuild_frag_path == nil then
   -- dwyn o Joseph Wright: l3build.lua
   -- ar gael am fod Joseph yn wneud kpse.set_program_name("kpsewhich")
   -- gweler texdoc luatex
-  local fntbuild_kpse_path = kpse.find_file("fntbuild.lua", "lua")
-  if fntbuild_kpse_path ~= nil then
-    fntbuild_frag_path = dirname(fntbuild_kpse_path)
+  local p = kpse.find_file("fntbuild.lua", "lua")
+  if p ~= nil and p ~= "" then
+    fntbuild_frag_path = dirname(p)
   else
     gwall("Search for ","self",1)
   end
 end
+print("Found myself in " .. fntbuild_frag_path)
 -- dwyn o Joseph Wright: l3build.lua
 local function fntbuild_require (frag)
   require(kpse.lookup("fntbuild-" .. frag .. ".lua", { path = fntbuild_frag_path }))
