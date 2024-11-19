@@ -1,4 +1,4 @@
--- $Id: fntbuild.lua 10650 2024-11-19 07:23:57Z cfrees $
+-- $Id: fntbuild.lua 10651 2024-11-19 15:32:09Z cfrees $
 -------------------------------------------------
 -------------------------------------------------
 -- copy non-public things from l3build
@@ -1273,9 +1273,9 @@ if fntbuild_frag_path == nil then
     gwall("Search for ","self",1)
   end
 end
-print("Found myself in " .. fntbuild_frag_path)
+-- dwyn o Joseph Wright: l3build.lua
 local function fntbuild_require (frag)
-  require( fntbuild_frag_path .. "/fntbuild-" .. frag .. ".lua" )
+  require(kpse.lookup("fntbuild-" .. frag .. ".lua", { path = fntbuild_frag_path }))
 end
 fntbuild_require("ctan")
 -------------------------------------------------
