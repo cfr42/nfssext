@@ -1,4 +1,4 @@
--- $Id: build.lua 10612 2024-11-12 17:21:11Z cfrees $
+-- $Id: build.lua 10649 2024-11-19 06:08:49Z cfrees $
 -- Build configuration for adfornadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -30,7 +30,7 @@ autotestfds = {  "uornementsadf.fd" }
 keepfiles = { "*.map", "*.tfm" }
 -- RHAID ei osod cyn i ddarllen fntbuild.lua!
 afmtotfm = true
-dofile(maindir .. "/fntbuild.lua")
+dofile(maindir .. "/fontscripts/fntbuild.lua")
 function fnt_test (fntpkgname,fds,content,maps,fdsdir)
   return 0
 end
