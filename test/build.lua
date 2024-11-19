@@ -1,11 +1,11 @@
--- $Id: build.lua 10648 2024-11-19 05:45:07Z cfrees $
+-- $Id: build.lua 10650 2024-11-19 07:23:57Z cfrees $
 -- Build configuration for testadf
 ctanpkg = "testadf"
 module = "test"
 vendor = "arkandis"
 maindir = ".."
 -- buildsuppfiles_sys = {"fontinst.sty"}
-dofile("../fontscripts/fntbuild.lua")
+dofile(maindir .. "/fontscripts/fntbuild.lua")
 -- flatten = false
 installfiles = {"*.afm", "*.cls", "*.enc", "*.fd", "*.map", "*.otf", "*.pfb", "*.sty", "*.tfm", "*.ttf", "*.vf"}
 -- typesetfiles = {"test-test.tex"}
