@@ -1,4 +1,4 @@
--- $Id: build.lua 10612 2024-11-12 17:21:11Z cfrees $
+-- $Id: build.lua 10649 2024-11-19 06:08:49Z cfrees $
 -- Build configuration for librisadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -15,7 +15,7 @@ maindir = "../.."
 module = "libris"
 vendor = "arkandis"
 autotestfds = {  "t1yly.fd", "t1ylyw.fd" }
-dofile(maindir .. "/fntbuild.lua")
+dofile(maindir .. "/fontscripts/fntbuild.lua")
 -- local srcfiles = {"t1-cfr.etx", "ts1-euro.etx", "t1-cfr.enc", "ts1-euro.enc"}
 -- for i,j in ipairs(srcfiles) do table.insert(sourcefiles,j) end
 textfiles = {"*.md", "*.txt", "COPYING"}

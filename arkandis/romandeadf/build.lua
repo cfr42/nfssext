@@ -1,4 +1,4 @@
--- $Id: build.lua 10612 2024-11-12 17:21:11Z cfrees $
+-- $Id: build.lua 10649 2024-11-19 06:08:49Z cfrees $
 -- Build configuration for romandeadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -15,7 +15,7 @@ maindir = "../.."
 module = "romande"
 vendor = "arkandis"
 autotestfds = {  "t1yrd.fd", "t1yrda.fd", "t1yrdaw.fd", "t1yrdw.fd" }
-dofile(maindir .. "/fntbuild.lua")
+dofile(maindir .. "/fontscripts/fntbuild.lua")
 -- local srcfiles = { "ts1-euro.etx", "ts1-euro.enc" }
 -- for i,j in ipairs(srcfiles) do table.insert(sourcefiles,j) end
 -- angen TODO new TL installation

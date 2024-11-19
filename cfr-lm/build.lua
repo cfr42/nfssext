@@ -1,4 +1,4 @@
--- $Id: build.lua 10637 2024-11-15 20:41:53Z cfrees $
+-- $Id: build.lua 10649 2024-11-19 06:08:49Z cfrees $
 -- Build configuration for cfr-lm
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -17,7 +17,7 @@ maindir = ".."
 module = "cfr-lm"
 vendor = "public"
 autotestfds = { "t1clm.fd", "t1clm2.fd", "t1clm2d.fd", "t1clm2dj.fd", "t1clm2j.fd", "t1clm2jqs.fd", "t1clm2js.fd", "t1clm2jt.fd", "t1clm2jv.fd", "t1clm2qs.fd", "t1clm2s.fd", "t1clm2t.fd", "t1clm2v.fd", "t1clmd.fd", "t1clmdj.fd", "t1clmj.fd", "t1clmjqs.fd", "t1clmjs.fd", "t1clmjt.fd", "t1clmjv.fd", "t1clmqs.fd", "t1clms.fd", "t1clmt.fd", "t1clmv.fd" }
-dofile(maindir .. "/fntbuild.lua")
+dofile(maindir .. "/fontscripts/fntbuild.lua")
 -- local srcfiles = {"dotsc2.etx", "dotscbuild.mtx", "dotscmisc.mtx", "newlatin-dotsc.mtx", "t1-dotinf.etx", "t1-dotsup.etx", "ts1-dotinf.etx", "ts1-dotsup.etx"}
 -- for i,j in ipairs(srcfiles) do table.insert(sourcefiles,j) end
 typesetdeps = {maindir .. "/nfssext-cfr"}
