@@ -1,4 +1,4 @@
--- $Id: build.lua 10631 2024-11-14 05:26:44Z cfrees $
+-- $Id: build.lua 10648 2024-11-19 05:45:07Z cfrees $
 -- Build configuration for fontscripts
 -- l3build.pdf listing 1 tudalen 9
 --
@@ -9,7 +9,7 @@ ctanpkg = "fontscripts"
 maindir = ".."
 sourcefiledir = "."
 sourcefiles = {"*.dtx", "*.ins"}
-installfiles = {"*.etx", "*.mtx"}
+installfiles = {"*.etx", "*.mtx", "*.lua"}
 manifestfile = "manifest.txt"
 typesetdeps = {maindir .. "/nfssext-cfr", maindir .. "/cfr-lm"}
 typesetruns = 5
@@ -21,14 +21,14 @@ function docinit_hook()
     print("Could not copy fntbuild.lua!\n")
     return 1
   end
-  local errorlevel = cp("fnt-ctan.lua",sourcefiledir,typesetdir)
+  local errorlevel = cp("fntbuild-ctan.lua",sourcefiledir,typesetdir)
   if not errorlevel == 0 then
-    print("Could not copy fnt-ctan.lua!\n")
+    print("Could not copy fntbuild-ctan.lua!\n")
     return 1
   end
   return 0
 end
-docfiles = {"fntbuild.lua","fnt-ctan.lua"}
+docfiles = {"fntbuild.lua","fntbuild-ctan.lua"}
 date = "2024"
 if direxists(sourcefiledir .. "/../../adnoddau/l3build") then
   dofile(sourcefiledir .. "/../../adnoddau/l3build/tag.lua")
@@ -42,7 +42,7 @@ function manifest_setup ()
     {
       name = "Package files",
       dir = sourcefiledir,
-      files = {"*.dtx","*.ins","fntbuild.lua","fnt-ctan.lua","*.md"},
+      files = {"*.dtx","*.ins","fntbuild.lua","fntbuild-ctan.lua","*.md"},
       exclude = {derivedfiles},
     },
     {

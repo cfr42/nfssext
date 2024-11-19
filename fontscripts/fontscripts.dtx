@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10635 2024-11-15 15:46:16Z cfrees $}[v0.1 \revinfo][\filebase DTX: l3build scripts for font installation]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10647 2024-11-19 00:19:49Z cfrees $}[v0.1 \revinfo][\filebase DTX: l3build scripts for font installation]
 \DefineFileInfoSVN[fontscripts]
 \documentclass[10pt,british,lm-default=false]{l3doc}
 % l3doc loads fancyvrb
@@ -687,7 +687,7 @@
 %    \begin{macrocode}
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10635 2024-11-15 15:46:16Z cfrees $}[v0.1 \revinfo][\outFileName]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10647 2024-11-19 00:19:49Z cfrees $}[v0.1 \revinfo][\outFileName]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % \iffalse
@@ -832,29 +832,29 @@
 % ^^A   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=665]{fntbuild.lua}
 % ^^A \end{luafrag}
 %
-% \subsubsection{fnt-ctan.lua}\label{subsubsec:fnt-ctan-lua}
+% \subsubsection{fntbuild-ctan.lua}\label{subsubsec:fntbuild-ctan-lua}
 % 
-% ^^A \begin{luafrag}{fnt-ctan.lua}
+% ^^A \begin{luafrag}{fntbuild-ctan.lua}
 % ^^A   Included by \file{fntbuild.lua} if it exists  in \texttt{maindir}.
 % ^^A   Changes the way the \texttt{ctan} target builds the archive to match \ctan{} requirements for font distributions.
-% ^^A   \VerbatimInput[gobble=0,numbers=left,numberblanklines=true,firstline=2,lastline=8,firstnumber=last]{fnt-ctan.lua}
+% ^^A   \VerbatimInput[gobble=0,numbers=left,numberblanklines=true,firstline=2,lastline=8,firstnumber=last]{fntbuild-ctan.lua}
 % ^^A   \begin{luafunction}{extname()}
 % ^^A     Get extension from filename.
 % ^^A     \newcommand*\FancyVerbStartString{-- extname(filename)}
 % ^^A     \newcommand*\FancyVerbStopString{-- copysubctan(files,srcdir,targdir)}
-% ^^A     \VerbatimInput[gobble=0,numbers=left,numberblanklines=true,firstnumber=last]{fnt-ctan.lua}
+% ^^A     \VerbatimInput[gobble=0,numbers=left,numberblanklines=true,firstnumber=last]{fntbuild-ctan.lua}
 % ^^A   \end{luafunction}
 % ^^A   \begin{luafunction}{copysubctan()}
 % ^^A     Sub-directories for \ctan.
 % ^^A     \newcommand*\FancyVerbStartString{-- copysubctan(files,srcdir,targdir)}
 % ^^A     \newcommand*\FancyVerbStopString{-- copyctan()}
-% ^^A     \VerbatimInput[gobble=0,numbers=left,numberblanklines=true,firstnumber=last]{fnt-ctan.lua}
+% ^^A     \VerbatimInput[gobble=0,numbers=left,numberblanklines=true,firstnumber=last]{fntbuild-ctan.lua}
 % ^^A   \end{luafunction}
 % ^^A   \begin{luafunction}{copyctan()}
 % ^^A     Redefine function used by \texttt{ctan}.
 % ^^A     \newcommand*\FancyVerbStartString{-- copyctan()}
 % ^^A     \newcommand*\FancyVerbStopString{-- end copyctan()}
-% ^^A     \VerbatimInput[gobble=0,numbers=left,numberblanklines=true,firstnumber=last]{fnt-ctan.lua}
+% ^^A     \VerbatimInput[gobble=0,numbers=left,numberblanklines=true,firstnumber=last]{fntbuild-ctan.lua}
 % ^^A   \end{luafunction}
 % ^^A \end{luafrag} 
 % 
