@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10647 2024-11-19 00:19:49Z cfrees $}[v0.1 \revinfo][\filebase DTX: l3build scripts for font installation]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10655 2024-11-20 19:53:34Z cfrees $}[v0.1 \revinfo][\filebase DTX: l3build scripts for font installation]
 \DefineFileInfoSVN[fontscripts]
 \documentclass[10pt,british,lm-default=false]{l3doc}
 % l3doc loads fancyvrb
@@ -687,7 +687,7 @@
 %    \begin{macrocode}
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10647 2024-11-19 00:19:49Z cfrees $}[v0.1 \revinfo][\outFileName]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10655 2024-11-20 19:53:34Z cfrees $}[v0.1 \revinfo][\outFileName]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % \iffalse
@@ -1054,6 +1054,7 @@ be typeset as
 % \fi
 % \begin{metrics}{newlatin-dotsc.mtx}
 % based on \file{newlatin.mtx} - because I couldn't figure out how to pass options...
+% \changes{v0.0}{0000/00/00}{Re-remove load of \file{lsfake}.}
 %    \begin{macrocode}
 \relax
 
@@ -1070,7 +1071,6 @@ be typeset as
 \ifoption{nosc}\then \Else
 
 \usemtxpackage{dotscbuild}
-% \usemtxpackage{lsfake}
 \usemtxpackage{dotscmisc}
 
 \Fi
@@ -1131,6 +1131,7 @@ be typeset as
 %<*dotscmisc>
 % \fi
 % \begin{metrics}{dotscmisc.mtx}
+% \changes{v0.0}{0000/00/00}{Re-remove spurious kerning adjustments for triple ligatures.}
 %    \begin{macrocode}
 \relax
 
@@ -1177,7 +1178,6 @@ be typeset as
       \glyph{i.sc}{1000}
    \endsetglyph
    
-%    \setleftkerning{fi.sc}{f.sc}{1000}
    \setrightkerning{fi.sc}{i.sc}{1000}
 
    \setglyph{f_i.sc}
@@ -1196,7 +1196,6 @@ be typeset as
    \endsetglyph
    \setrightkerning{f_f_i.sc}{ffi.sc}{1000}
 
-%    \setleftkerning{ffi.sc}{f.sc}{1000}
    \setrightkerning{ffi.sc}{i.sc}{1000}
 \fi
 
@@ -1207,7 +1206,6 @@ be typeset as
       \glyph{l.sc}{1000}
    \endsetglyph
 
-%    \setleftkerning{fl.sc}{f.sc}{1000}
    \setrightkerning{fl.sc}{l.sc}{1000}
 
    \setglyph{f_l.sc}
@@ -1221,7 +1219,6 @@ be typeset as
       \glyph{l.sc}{1000}
    \endsetglyph
 
-%    \setleftkerning{ffl.sc}{f.sc}{1000}
    \setrightkerning{ffl.sc}{l.sc}{1000}
 
    \setglyph{f_f_l.sc}
@@ -1239,7 +1236,6 @@ be typeset as
       \movert{\add{\kerning{i.sc}{j.sc}}{\int{smallcapsspacing}}}
       \glyph{j.sc}{1000}
    \endsetglyph
-%    \setleftkerning{ij.sc}{i.sc}{1000}
    \setrightkerning{ij.sc}{j.sc}{1000}
 \fi
 
@@ -1264,6 +1260,36 @@ be typeset as
 % \end{metrics}
 % \iffalse
 %</dotscmisc>
+% \fi
+% 
+% \subsubsection{unfakable.mtx}\label{subsubsec:unfakable}
+% 
+% This metrics file prevents \pkg{fontinst} from inserting ‘gravestones’ into virtual fonts when a glyph is missing.
+% \textbf{It should be used only for the \texttt{TS1}.
+% It should NOT be used when using the \texttt{T1} encoding.}
+% 
+% \iffalse
+%<*unfakable>
+% \fi
+% \begin{metrics}{unfakable.mtx}
+%    \begin{macrocode}
+\relax
+\metrics
+
+\ProvidesMtxPackage{unfakable}
+
+\setcommand\unfakableaccent#1{%
+  \message{Missing glyph `#1'}%
+}
+\setcommand\unfakable#1{%
+  \message{Missing glyph `#1'}%
+}
+
+\endmetrics
+%    \end{macrocode}
+% \end{metrics}
+% \iffalse
+%</unfakable>
 % \fi
 % 
 %
