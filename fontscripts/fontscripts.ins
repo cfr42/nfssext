@@ -1,4 +1,4 @@
-% $Id: fontscripts.ins 10621 2024-11-12 20:34:24Z cfrees $
+% $Id: fontscripts.ins 10655 2024-11-20 19:53:34Z cfrees $
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% fontscripts.ins
 %% Additions and changes Copyright (C) -2024 Clea F. Rees.
@@ -117,6 +117,8 @@ https://www.ctan.org/pkg/\maybenoexpand\basePkgName. See \maybenoexpand\baseFile
 \def\targDates{2024}
 \expandafter\declarepreamble\expandafter\safonol\mkpreamble
 \endpreamble
+\expandafter\declarepreamble\expandafter\safonolmtx\mkpreamble
+\endpreamble
 \def\targDates{2008-2024}
 \expandafter\declarepreamble\expandafter\safonolenc\mkpreamble
 \endpreamble
@@ -153,6 +155,8 @@ https://www.ctan.org/pkg/\maybenoexpand\basePkgName. See \maybenoexpand\baseFile
 
 \generate{%
   \file{fnt-tables.tex}{\from{fontscripts.dtx}{tables}}
+  \usepreamble\safonolmtx
+  \file{unfakable.mtx}{\from{fontscripts.dtx}{unfakable}}
   \usepreamble\safonolenc
   \file{dotoldstyle.etx}{\from{fontscripts.dtx}{dotoldstyle}}
   \file{dotsc2.etx}{\from{fontscripts.dtx}{dotsc2}}
