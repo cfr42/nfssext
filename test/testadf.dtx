@@ -43,7 +43,7 @@
   \char_set_catcode_letter:N \:
 }
 \ExplSyntaxOff
-\ProvidesFileSVN{$Id: testadf.dtx 10644 2024-11-18 00:31:59Z cfrees $}[v0.0 \revinfo][testadf DTX: test for 8-bit engines]
+\ProvidesFileSVN{$Id: testadf.dtx 10655 2024-11-20 19:53:34Z cfrees $}[v0.0 \revinfo][testadf DTX: test for 8-bit engines]
 \DefineFileInfoSVN
 \GetFileInfoSVN*
 \documentclass[11pt,british]{ltxdoc}
@@ -98,7 +98,7 @@
 % ^^A sylwad1E
 % sylwad2E
 % ^^A sylwad3E
-\ProvidesPackageSVN[test.sty]{$Id: testadf.dtx 10644 2024-11-18 00:31:59Z cfrees $}[\filebase v1.1 \revinfo]
+\ProvidesPackageSVN[test.sty]{$Id: testadf.dtx 10655 2024-11-20 19:53:34Z cfrees $}[\filebase v1.1 \revinfo]
 \DefineFileInfoSVN[test]
 \RequirePackage[T1]{fontenc}
 \RequirePackage{nfssext-cfr}
@@ -182,7 +182,7 @@
     \fontinstcc
     \installfamily{TS1}{xxx}{}
     \normalcc
-		\installfont{xxxr8c}{xxxr8r,xxxr8sr,textcomp}{ts1-euro}{TS1}{xxx}{m}{n}{}
+		\installfont{xxxr8c}{xxxr8r,xxxr8sr,unfakable,textcomp}{ts1-euro}{TS1}{xxx}{m}{n}{}
   \endinstallfonts
 \endrecordtransforms
 \bye
@@ -1745,4 +1745,5 @@
 % \iffalse
 %</t1-xxx>
 % \fi
+%
 %\Finale
