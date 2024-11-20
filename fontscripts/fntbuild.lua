@@ -1,4 +1,4 @@
--- $Id: fntbuild.lua 10652 2024-11-19 15:42:55Z cfrees $
+-- $Id: fntbuild.lua 10654 2024-11-20 04:24:27Z cfrees $
 -------------------------------------------------
 -------------------------------------------------
 -- copy non-public things from l3build
@@ -917,6 +917,7 @@ function checkinit_hook ()
         "/tex/latex/fonttable/fonttable.sty",
         "/fonts/enc/dvips/base",
         "/fonts/enc/dvips/cm-super",
+        "/fonts/type1/public/amsfonts/cm",
         "/fonts/type1/public/cm-super",
         "/fonts/tfm/public/cm",
         "/fonts/tfm/jknappen/ec",
