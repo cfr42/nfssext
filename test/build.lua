@@ -1,4 +1,4 @@
--- $Id: build.lua 10650 2024-11-19 07:23:57Z cfrees $
+-- $Id: build.lua 10655 2024-11-20 19:53:34Z cfrees $
 -- Build configuration for testadf
 ctanpkg = "testadf"
 module = "test"
@@ -6,8 +6,9 @@ vendor = "arkandis"
 maindir = ".."
 -- buildsuppfiles_sys = {"fontinst.sty"}
 dofile(maindir .. "/fontscripts/fntbuild.lua")
+-- builddeps = { maindir .. "/fontscripts" }
 -- flatten = false
-installfiles = {"*.afm", "*.cls", "*.enc", "*.fd", "*.map", "*.otf", "*.pfb", "*.sty", "*.tfm", "*.ttf", "*.vf"}
+-- installfiles = {"*.afm", "*.cls", "*.enc", "*.fd", "*.map", "*.otf", "*.pfb", "*.sty", "*.tfm", "*.ttf", "*.vf"}
 -- typesetfiles = {"test-test.tex"}
 typesetdeps = {maindir .. "/nfssext-cfr", maindir .. "/cfr-lm"}
 typesetruns = 1
