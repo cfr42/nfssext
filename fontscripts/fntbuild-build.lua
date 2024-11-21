@@ -271,28 +271,24 @@ function uniquify (tag)
   print(" ...\n")
   if #encs == 0 then
     return 0
-  else
-    if tag == "" then 
-      if #maps ~= 0  then
-        if #maps == 1 then
-          tag = string.gsub(maps[1],"%.map$","")
+  elseif tag == "" then 
+    if #maps ~= 0  then
+      if #maps == 1 then
+        tag = string.gsub(maps[1],"%.map$","")
+      else
+        local t = "" 
+        local tt = ""
+        for i,j in ipairs(maps) do
+          if tt == t then 
+            tt = string.gsub(j,"%w%.map$","")
+          elseif t == "" then
+            t = string.gsub(j,"%w%.map$","")
+          end
+        end
+        if t == tt then
+          tag = tt
         else
-          local t = "" 
-          local tt = ""
-          for i,j in ipairs(maps) do
-            if tt == t then 
-              tt = string.gsub(j,"%w%.map$","")
-            else
-              if t == "" then
-                t = string.gsub(j,"%w%.map$","")
-              end
-            end
-          end
-          if t == tt then
-            tag = tt
-          else
-            gwall("Attempt to find tag ","",1)
-          end
+          gwall("Attempt to find tag ","",1)
         end
       end
     end
@@ -533,12 +529,10 @@ function fnt_afmtotfm (dir)
       else
         errorlevel = build_fnt(dir, "afm2tfm " .. k .. " -p " .. j .. ".enc" .. " >> " .. dir .. "/" .. map .. ".tmp")
       end
+    elseif not fileexists(dir .. "/" .. fntencs[j]) then
+      gwall("Search for encoding specified for " .. j .. " ",dir,1)
     else
-      if not fileexists(dir .. "/" .. fntencs[j]) then
-        gwall("Search for encoding specified for " .. j .. " ",dir,1)
-      else
-        errorlevel = build_fnt(dir, "afm2tfm " .. k .. " -p " .. fntencs[j] .. " >> " .. dir .. "/" .. map .. ".tmp")
-      end
+      errorlevel = build_fnt(dir, "afm2tfm " .. k .. " -p " .. fntencs[j] .. " >> " .. dir .. "/" .. map .. ".tmp")
     end
     if errorlevel ~= 0 then 
       gwall("afm2tfm (" .. j ..") ",dir,errorlevel) 

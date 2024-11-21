@@ -1,4 +1,4 @@
--- $Id: fntbuild-check.lua 10659 2024-11-21 06:49:20Z cfrees $
+-- $Id: fntbuild-check.lua 10660 2024-11-21 18:49:06Z cfrees $
 -------------------------------------------------
 -- fntbuild-check
 -------------------------------------------------
@@ -37,14 +37,12 @@ local function copio_aux (locs,dest,kpsevar,indent)
             end
           end
         end
+      elseif fileexists(path) then
+        print("  " .. i)
+        local errorlevel = cp(basename(path),dirname(path),dest)
+        gwall("Copying ",path,errorlevel)
       else
-        if fileexists(path) then
-          print("  " .. i)
-          local errorlevel = cp(basename(path),dirname(path),dest)
-          gwall("Copying ",path,errorlevel)
-        else
-          gwall("Lookup ",path,1)
-        end
+        gwall("Lookup ",path,1)
       end
     else
       gwall("Getting information about ",i,1)
@@ -295,12 +293,10 @@ function checkinit_hook ()
   if #autotestfdstmp == 0 then
     print("Something is amiss - this code should never be executed!")
     gwall("Attempt to locate fd files ", ".fd", 1)
-  else
-    if #autotestfds == 0 then
-      for i, j in ipairs(autotestfdstmp) do
-        if not string.match(j,"^ts1") then
-          table.insert (autotestfds, j)
-        end
+  elseif #autotestfds == 0 then
+    for i, j in ipairs(autotestfdstmp) do
+      if not string.match(j,"^ts1") then
+        table.insert (autotestfds, j)
       end
     end
   end
