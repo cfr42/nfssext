@@ -41,7 +41,7 @@
   \char_set_catcode_letter:N \:
 }
 \ExplSyntaxOff
-\ProvidesFileSVN{$Id: nfssext-cfr.dtx 10459 2024-10-03 06:07:06Z cfrees $}[v1.1 \revinfo][\filebase DTX: Extended font selection for NFSS and NNFSS]
+\ProvidesFileSVN{$Id: nfssext-cfr.dtx 10663 2024-11-24 15:03:13Z cfrees $}[v1.1 \revinfo][\filebase DTX: Extended font selection for NFSS and NNFSS]
 \DefineFileInfoSVN[nfssext-cfr]
 \documentclass[10pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -795,11 +795,13 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: nfssext-cfr.dtx 10459 2024-10-03 06:07:06Z cfrees $}[v1.1 \revinfo{} extensions for NFSS and NNFSS; based on 2003/03/14 v1.2 Experimental NFSS Extensions]
+\ProvidesPackageSVN[\filebase.sty]{$Id: nfssext-cfr.dtx 10663 2024-11-24 15:03:13Z cfrees $}[v0.0 \revinfo{} extensions for NFSS and NNFSS; based on 2003/03/14 v1.2 Experimental NFSS Extensions]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % ^^A Paid â defnyddio \GetFileInfoSVN*/\GetFileInfoSVN{} yn y fan hon!!
 % 
+% ^^A Is there really no more manageable way of coping with different versions of the format?
+% ^^A How does lpt manage this?!!
 %
 % \changes{v0.0}{2020-2024}{Update for \nnfss.}
 %
@@ -987,6 +989,49 @@
     }
   }
 %    \end{macrocode}
+% \changes{v0.0}{0000-00-00}{Workaround to allow use of encoding subset declarations in font definition files, even if somebody tries to use a font package with an older format.}
+% This code is here to enable backwards-compatible encoding declarations in font definition files.
+% We have three cases: \begin{enumerate}[inline,label=(\arabic*)]\item the format predates \nnfss{}, in which case the commands probably don't exist at all, \item the format is recent enough for \nnfss{} but predates the November 2024 ‘hotfix’ release (2024-11-19), in which case the commands will return errors after the preamble and \item the format is at least as new as the ‘hotfix’, in which case the macros' definitions should be fine\end{enumerate}.
+%
+% In the third case, we do nothing.
+%    \begin{macrocode}
+  \IfFormatAtLeastF { 2024-11-19 }
+  {
+    \cs_if_free:NTF \DeclareEncodingSubset
+    {
+%    \end{macrocode}
+% \begin{macro}{\DeclareEncodingSubset}
+% If the macro isn't even defined in the preamble, define it to absorb three arguments. 
+%    \begin{macrocode}
+      \def\DeclareEncodingSubset#1#2#3{} 
+    }{
+%    \end{macrocode}
+% \begin{macro}{\@DeclareEncodingSubset@copi}
+% Otherwise, we save the preamble definition of the innermost definition on ‘in between’ kernels.
+%    \begin{macrocode}
+      \let\@DeclareEncodingSubset@copi\@DeclareEncodingSubset
+%    \end{macrocode}
+% \end{macro}
+%    \begin{macrocode}
+      \hook_gput_code:nnn { begindocument / end } { . }
+      { 
+%    \end{macrocode}
+% \begin{macro}{\DeclareEncodingSubset}
+% Simpler than the kernel version because we're only interested in use inside \file{fd} files.
+% If the declarations are in \file{sty} files, it doesn't matter what definitions are in place inside the document environment.
+%
+% \textbf{Note the syntax differs from the kernel/preamble version.}
+% The macro expects three arguments, but the star syntax is \textbf{not} supported as it makes no sense in font definition files, which are family-specific.
+%    \begin{macrocode}
+        \let\DeclareEncodingSubset\@DeclareEncodingSubset@copi
+        \PackageWarning{nfssext-cfr}{Overwriting ~ the ~ format's ~ definition ~ of ~ \string\DeclareEncodingSubset{} }
+%    \end{macrocode}
+% \end{macro}
+%    \begin{macrocode}
+      }
+    }
+  }
+%    \end{macrocode}
 % \begin{macro}{\__exfs_set:n}
 %    \begin{macrocode}
   \cs_new_protected_nopar:Nn \__exfs_set:n
@@ -1090,7 +1135,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase-nnfss.sty]{$Id: nfssext-cfr.dtx 10459 2024-10-03 06:07:06Z cfrees $}[v1.1 \revinfo{} extended New New Font Selection Scheme (NNFSS) based on 2003/03/14 v1.2 Experimental NFSS Extensions]
+\ProvidesPackageSVN[\filebase-nnfss.sty]{$Id: nfssext-cfr.dtx 10663 2024-11-24 15:03:13Z cfrees $}[v1.1 \revinfo{} extended New New Font Selection Scheme (NNFSS) based on 2003/03/14 v1.2 Experimental NFSS Extensions]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % ^^A Paid â defnyddio \GetFileInfoSVN*/\GetFileInfoSVN{} yn y fan hon!!
@@ -2530,7 +2575,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase-nfss.sty]{$Id: nfssext-cfr.dtx 10459 2024-10-03 06:07:06Z cfrees $}[v1.1 \revinfo{} specially mangled by cfr; based on 2003/03/14 v1.2 Experimental NFSS Extensions; for old NFSS]
+\ProvidesPackageSVN[\filebase-nfss.sty]{$Id: nfssext-cfr.dtx 10663 2024-11-24 15:03:13Z cfrees $}[v1.1 \revinfo{} specially mangled by cfr; based on 2003/03/14 v1.2 Experimental NFSS Extensions; for old NFSS]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % ^^A Paid â defnyddio \GetFileInfoSVN*/\GetFileInfoSVN{} yn y fan hon!!
