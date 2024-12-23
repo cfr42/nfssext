@@ -1,4 +1,4 @@
--- $Id: fntbuild-utils.lua 10659 2024-11-21 06:49:20Z cfrees $
+-- $Id: fntbuild-utils.lua 10695 2024-12-23 07:12:11Z cfrees $
 -------------------------------------------------
 -- fntbuild-utils
 -------------------------------------------------
@@ -56,7 +56,7 @@ end
 function dep_install(deps)
   local error_level
   for _, dep in ipairs(deps) do
-    print("Installing dependency: " .. dep)
+    print("Installing dependency:", dep)
     error_level = run(dep, "texlua " .. get_script_name() .. " unpack -q")
     if error_level ~= 0 then
       return error_level
@@ -120,18 +120,18 @@ function build_config()
     local f = kpse.find_file("fntbuild-config.lua")
     if f ~= nil then
       dofile(f)
-      print("\nWARNING: Using local configuration from " .. f .. ".\nYour package may not build elsewhere.\n")
+      print("\nWARNING: Using local configuration from", f .. ".\nYour package may not build elsewhere.\n")
       table.insert(configs,f)
     end
   end
   if fileexists(maindir .. "/fntbuild-config.lua") then
     dofile(maindir .. "/fntbuild-config.lua")
-    print("\nUsing local configuration from " .. maindir .. "/fntbuild-config.lua.\nEnsure this is included when publishing sources.\n")
+    print("\nUsing local configuration from", maindir .. "/fntbuild-config.lua.\nEnsure this is included when publishing sources.\n")
     table.insert(configs,maindir .. "/fntbuild-config.lua")
   end
   if fileexists(sourcefiledir .. "/fntbuild-config.lua") then
     dofile(sourcefiledir .. "/fntbuild-config.lua")
-    print("\nUsing local configuration from " .. sourcefiledir .. "/fntbuild-config.lua.\nEnsure this is included when publishing sources.\n")
+    print("\nUsing local configuration from", sourcefiledir .. "/fntbuild-config.lua.\nEnsure this is included when publishing sources.\n")
     table.insert(configs,sourcefiledir .. "/fntbuild-config.lua")
   end
   if #configs == 0 then

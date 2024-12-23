@@ -230,7 +230,7 @@ function uniquify (tag)
     dir = fntdir
   end
   if fileexists(dir .. "/pdftex.map") then
-    print("\nRemoving temporary pdftex.map from " .. dir .. "...\n")
+    print("\nRemoving temporary pdftex.map from ", dir, "...\n")
     local errorlevel = rm(dir,"pdftex.map")
     gwall("Removing ","pdftex.map",errorlevel)
   end
@@ -243,18 +243,18 @@ function uniquify (tag)
       end
       if #pkglist ~= 0 then
         pkgbase = string.gsub(pkglist[1], "%.sty", "")
-        print("Guessing " .. pkgbase)
+        print("Guessing ", pkgbase)
       end
     end
   end
   if pkgbase == "" then
     if ctanpkg ~= module and module ~= "" and module ~= nil then
-      print("Guessing " .. module)
+      print("Guessing ", module)
       pkgbase = module
     else
       pkgbase = string.gsub(ctanpkg, "adf$", "")
       if pkgbase ~= "" then
-        print("Guessing " .. pkgbase)
+        print("Guessing ", pkgbase)
       end
     end
   end
@@ -265,9 +265,9 @@ function uniquify (tag)
   local encs = encs or filelist(dir,"*.enc")
   local maps = maps or filelist(dir,"*.map")
   print("Uniquifying encodings ... ")
-  for _,i in ipairs(encs) do print(" " .. i) end
+  for _,i in ipairs(encs) do print(" ", i) end
   print("\nUniquifying maps ... ")
-  for _,i in ipairs(maps) do print(" " .. i) end
+  for _,i in ipairs(maps) do print(" ", i) end
   print(" ...\n")
   if #encs == 0 then
     return 0
@@ -295,10 +295,10 @@ function uniquify (tag)
     if tag ~= "" then  
       for i, j in ipairs(encs) do
         if string.match(j,"-" .. tag .. "%.enc$") or  string.match(j, module) or string.match(j,ctanpkg) or string.match(j,pkgbase) or string.match(j, string.gsub(module, "adf", "")) then
-          print(j .. " ... OK\n")
+          print(j, "... OK\n")
         else
           local targenc = (string.gsub(j,"%.enc$","-" .. tag .. ".enc"))
-          print("Target encoding is " .. targenc .. "\n")
+          print("Target encoding is", targenc, "\n")
           if fileexists(dir .. "/" .. targenc) then
             gwall("Target encoding exists !! ", targenc, 1)
             return 1
@@ -308,7 +308,7 @@ function uniquify (tag)
             f:close()
             local new_content = (string.gsub(content,"(\n%%%%BeginResource: encoding fontinst%-autoenc[^\n ]*)( *\n/fontinst%-autoenc[^ %[]*)( %[)","%1-" .. tag .. "%2-" .. tag .. "%3"))
             if new_content ~= content then
-              print("Writing unique encoding to " .. targenc)
+              print("Writing unique encoding to ", targenc)
               f = assert(io.open(dir .. "/" .. targenc,"w"))
               -- this somehow removes the second value returned by string.gsub??
               f:write((string.gsub(new_content,"\n",os_newline_cp)))
@@ -327,13 +327,13 @@ function uniquify (tag)
                     f:close()
                     local new_mcontent = (string.gsub(mcontent,"(%<%[?)" .. jpatt .. "( %<%w+%.pfb \" fontinst%-autoenc[%w%-_]*)( ReEncodeFont)", "%1" .. targenc .. "%2-" .. tag .. "%3"))
                     if new_mcontent ~= mcontent then 
-                      print("Writing adjusted map lines to " .. m)
+                      print("Writing adjusted map lines to ", m)
                       f = assert(io.open(dir .. "/" .. m,"w"))
                       -- this somehow removes the second value returned by string.gsub??
                       f:write((string.gsub(new_mcontent,"\n",os_newline_cp)))
                       f:close()
                     else
-                      print("Nothing to do for " .. m .. ".\n")
+                      print("Nothing to do for ", m, ".\n")
                     end
                   end
                 else
@@ -403,7 +403,7 @@ function fontinst (dir,mode)
   for i,j in ipairs(tfmfiles) do
     local plname = string.gsub(j, "%.tfm$", ".pl")
     if fileexists(dir .. "/" .. plname) then
-      print(plname .. " already exists!")
+      print(plname,  "already exists!")
       return 1
     else
       local cmd = "tftopl " .. j .. " " .. plname
@@ -446,7 +446,7 @@ function fontinst (dir,mode)
           local errorlevel = build_fnt(dir,line)
           gwall("Creation of TFM using " .. line .. " from ", j, errorlevel)
         else
-          print("Ignoring unexpected line \"" .. line .. "\" in " .. j .. ".\n")
+          print("Ignoring unexpected line \"" .. line .. "\" in", j .. ".\n")
           nifergwall = nifergwall + 1
         end
       end

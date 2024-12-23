@@ -1,4 +1,4 @@
--- $Id: fntbuild-check.lua 10660 2024-11-21 18:49:06Z cfrees $
+-- $Id: fntbuild-check.lua 10695 2024-12-23 07:12:11Z cfrees $
 -------------------------------------------------
 -- fntbuild-check
 -------------------------------------------------
@@ -93,8 +93,8 @@ function fnt_test (fntpkgname,fds,content,maps,fdsdir)
   -- ec/t1 fds
   local ecs = {}
   -- local mapsly = "" 
-  print("Creating test file for " .. fntpkgname .. " with fds: ")
-  for i, j in ipairs(fds) do print("  fd: " .. j) end
+  print("Creating test file for", fntpkgname, "with fds: ")
+  for i, j in ipairs(fds) do print("  fd:", j) end
   print("\n")
   -- l3build-tagging.lua
   for i, j in ipairs(fds) do
@@ -194,7 +194,7 @@ function checkinit_hook ()
     end
   end
   if not checksearch then
-    print("\nAssuming some basic files should be available during testing.\n\nAdding files to " .. testdir .. " from")
+    print("\nAssuming some basic files should be available during testing.\n\nAdding files to", testdir, "from")
     if #checksuppfiles_sys == 0 then
       checksuppfiles_sys = { 
         "/tex/latex/base/article.cls",
@@ -263,12 +263,12 @@ function checkinit_hook ()
       gwall("Attempt to find map files ", ".map", 1)
       return 1
     else
-      print("\nUsing maps from " .. unpackdir)
+      print("\nUsing maps from", unpackdir)
       mapsdir = unpackdir
     end
   else
     mapsdir = keepdir
-    print("\nUsing maps from " .. keepdir)
+    print("\nUsing maps from", keepdir)
   end
   local fntpkgnames = fntpkgnames or filelist(unpackdir,"*.sty")
   for i, j in ipairs(fntpkgnames) do
@@ -284,11 +284,11 @@ function checkinit_hook ()
       return 1
     else
       fdsdir = unpackdir
-      print("Using fds from " .. unpackdir)
+      print("Using fds from", unpackdir)
     end
   else
     fdsdir = keepdir
-    print("Using fds from " .. keepdir)
+    print("Using fds from", keepdir)
   end
   if #autotestfdstmp == 0 then
     print("Something is amiss - this code should never be executed!")
