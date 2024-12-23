@@ -1,4 +1,4 @@
--- $Id: fntbuild.lua 10659 2024-11-21 06:49:20Z cfrees $
+-- $Id: fntbuild.lua 10695 2024-12-23 07:12:11Z cfrees $
 -------------------------------------------------
 -------------------------------------------------
 -- I don't know how to bootstrap this ... 
@@ -26,11 +26,11 @@ utarg = "uniquifyencs"
 ---@usage private
 function gwall (msg,file,rtn)
   file = file or "current file"
-  msg = msg or "Error: "
+  msg = msg or "Error:"
   rtn = rtn or 0
   if rtn ~= 0 then 
     nifergwall = nifergwall + rtn
-    print (msg .. file .. " failed (" .. rtn .. ")\n")
+    print (msg, file, "failed (" .. rtn .. ")\n")
   end
 end
 -- }}}
@@ -57,7 +57,7 @@ if fntbuild_home == nil then
   end
 end
 -------------------------------------------------
-print("Found myself in " .. fntbuild_home)
+print("Found myself in", fntbuild_home)
 -------------------------------------------------
 -- dwyn o Joseph Wright: l3build.lua
 local function fntbuild_require (frag)
