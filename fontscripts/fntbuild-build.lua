@@ -154,6 +154,7 @@ function build_fnt (dir,cmd,file)
 end
 -- }}}
 -------------------------------------------------
+-------------------------------------------------
 -- fntkeeper {{{
 ---@param dir string 
 ---@return 0 on success, error level otherwise
@@ -211,6 +212,62 @@ function fntkeeper (dir)
   return nifergwall
 end
 -- }}}
+-------------------------------------------------
+-------------------------------------------------
+-- fnt_subset {{{
+---@params fd, subset, subsettemplate
+---@usage private
+local function fnt_subset (fd,fam,subset)
+  local defn = string.gsub(subsettemplate,"%$FONTFAMILY",fam)
+  defn = string.gsub(defn,"%$SUBSET",subset)
+  local f = assert(io.open(fntdir .. "/" .. fd, "rb"))
+  local content = f:read("*all")
+  f:close()
+  local patt
+  if string.match(content, "\\endinput") then
+    patt = "(\\endinput)"
+  else
+    patt = "()$"
+  end
+  f = assert(io.open(fntdir .. "/" .. fd, "w"))
+  f:write("%% Encoding subset declaration added by fontscripts\n", (string.gsub(content,patt,"\n\n" .. defn .. "\n\n%1")))
+  f:close()
+  return 0    -- how to make this return an error level?
+end
+-- }}}
+-------------------------------------------------
+-- fntsubsetter {{{
+---@param  
+---@description add encoding subset definitions for TS1 if applicable and requested
+---@return 0 on success, error level or 1 otherwise
+---@see 
+---@usage public
+function fntsubsetter ()
+  local tcsubset = tcsubset or "9"
+  if subset == nil or subset == false then return 0 end
+  if type(subsetfiles) == "string"  and subsetfiles ~= "auto" then
+    local s = subsetfiles
+    local subsetfiles = { s }
+  end
+  if #subsetfiles == 0 then
+    for i in lfs.dir(fntdir) do
+      -- we avoid using filelist() here because it doesn't support char sets
+      if string.match(i, "^[Tt][Ss]1.*%.fd$") then
+        table.insert(subsetfiles,i)
+      end
+    end
+  end
+  if #subsetfiles == 0 then return 0 end
+  for _, i in ipairs(subsetfiles) do
+    local fam = string.gsub(i, "^[Tt][Ss]1(.+)%.fd$", "%1")
+    local s = subsetdefns.fam or tcsubset
+    local errorlevel = fnt_subset(i,fam,s)
+    gwall("Inserting TS1 subset definition ",i,errorlevel)
+  end
+  return nifergwall
+end
+-- }}}
+-------------------------------------------------
 -------------------------------------------------
 -- uniquify {{{
 -- oherwydd fy mod i bron ag anfon pob un ac mae'n amlwg fy mod i wedi anfon bacedi heb ei wneud hwn yn y gorffennol, well i mi wneud rhywbeth (scriptiau gwneud-cyhoeddus a make-public yn argraffu rhybudd os encs yn y cymysg
@@ -306,7 +363,7 @@ function uniquify (tag)
             local f = assert(io.open(dir .. "/" .. j,"rb"))
             local content = f:read("*all")
             f:close()
-            local new_content = (string.gsub(content,"(\n%%%%BeginResource: encoding fontinst%-autoenc[^\n ]*)( *\n/fontinst%-autoenc[^ %[]*)( %[)","%1-" .. tag .. "%2-" .. tag .. "%3"))
+            local new_content = (string.gsub(content,"(\n%%%%BeginResource: encoding fontinst%-autoenc[^\n ]*)( *\n/fontinst%-autoenc[^ %[]*)( %[)","\n%% Encoding renamed by fontscripts\n\n%1-" .. tag .. "%2-" .. tag .. "%3"))
             if new_content ~= content then
               print("Writing unique encoding to ", targenc)
               f = assert(io.open(dir .. "/" .. targenc,"w"))
@@ -330,7 +387,8 @@ function uniquify (tag)
                       print("Writing adjusted map lines to ", m)
                       f = assert(io.open(dir .. "/" .. m,"w"))
                       -- this somehow removes the second value returned by string.gsub??
-                      f:write((string.gsub(new_mcontent,"\n",os_newline_cp)))
+                      f:write("%% Encodings renamed by fontscripts\n",(string.gsub(new_mcontent,"\n",os_newline_cp)))
+                      -- f:write((string.gsub(new_mcontent,"\n",os_newline_cp)))
                       f:close()
                     else
                       print("Nothing to do for ", m, ".\n")
@@ -485,13 +543,17 @@ function fontinst (dir,mode)
     if new_content ~= content then
       local f = assert(io.open(dir .. "/" .. j,"w"))
       -- this somehow removes the second value returned by string.gsub??
-      f:write((string.gsub(new_content,"\n",os_newline_cp)))
+      f:write("%% Scaling added by fontscripts\n",(string.gsub(new_content,"\n",os_newline_cp)))
       f:close()
     end
   end
   local errorlevel = uniquify(encodingtag)
   if errorlevel ~= 0 then
     gwall("Encodings not uniquified! Do not submit to CTAN! uniquify(" .. encodingtag .. ")","",errorlevel)
+  end
+  errorlevel = fntsubsetter()
+  if errorlevel ~= 0 then
+    gwall("Encoding subset definitions not inserted! fntsubsetter() ","",errorlevel)
   end
   errorlevel = fntkeeper()
   if errorlevel ~= 0 then

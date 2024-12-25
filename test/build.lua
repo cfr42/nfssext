@@ -1,4 +1,4 @@
--- $Id: build.lua 10655 2024-11-20 19:53:34Z cfrees $
+-- $Id: build.lua 10700 2024-12-25 02:50:50Z cfrees $
 -- Build configuration for testadf
 ctanpkg = "testadf"
 module = "test"
@@ -6,6 +6,10 @@ vendor = "arkandis"
 maindir = ".."
 -- buildsuppfiles_sys = {"fontinst.sty"}
 dofile(maindir .. "/fontscripts/fntbuild.lua")
+subset = true
+subsetdefns.xxx = 3
+subsetdefns.yyy = 5
+subsettemplate = "\\ExpandArgs {nnc} \\DeclareEncodingSubset {TS1} {$FONTFAMILY} {$SUBSET}"
 -- builddeps = { maindir .. "/fontscripts" }
 -- flatten = false
 -- installfiles = {"*.afm", "*.cls", "*.enc", "*.fd", "*.map", "*.otf", "*.pfb", "*.sty", "*.tfm", "*.ttf", "*.vf"}

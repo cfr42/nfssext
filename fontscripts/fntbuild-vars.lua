@@ -1,16 +1,17 @@
--- $Id: fntbuild-vars.lua 10659 2024-11-21 06:49:20Z cfrees $
+-- $Id: fntbuild-vars.lua 10700 2024-12-25 02:50:50Z cfrees $
 -- fntbuild variables
 -------------------------------------------------
 -------------------------------------------------
--- l3build variables needed before l3build defines them
+-- l3build variables needed before l3build defines them {{{
 -------------------------------------------------
 sourcefiledir = sourcefiledir or "."
 maindir = maindir or sourcefiledir
 -- builddir
 -- should be global? or local is better?
 builddir = builddir or maindir .. "/build"
+-- }}}
 -------------------------------------------------
--- l3build variables with changed defaults
+-- l3build variables with changed defaults {{{
 -------------------------------------------------
 -- also very easy for font files not to get installed properly and the old ones used
 -- note this overrides the l3build default
@@ -28,9 +29,10 @@ sourcefiles = {"*.afm", "afm/*.afm", "*.pfb", "*.pfm", "*.dtx", "*.ins", "openty
 typesetexe = "TEXMFDOTDIR=.:../local: pdflatex"
 typesetfiles = typesetfiles or  {"*.dtx", "*-tables.tex", "*-example.tex"}
 -- typesetsourcefiles changed below
+-- }}}
 -------------------------------------------------
 -------------------------------------------------
--- additional variables
+-- additional variables (inc. dependant changes) {{{
 -------------------------------------------------
 -------------------------------------------------
 -- font definitions to use when auto-generating tests
@@ -55,7 +57,7 @@ buildsuppfiles_sys = buildsuppfiles_sys or {}
 -- sys replaces defaults; add ads to them
 checksuppfiles_sys = checksuppfiles_sys or {}
 checksuppfiles_add = checksuppfiles_add or {}
-cleanfiles = {keeptempfiles}
+cleanfiles = {keeptempfiles}  -- ** changed default
 -- \TeX{} files to compile to produce pl, vpl etc.
 ---@see fontinst()
 ---@usage public
@@ -84,10 +86,28 @@ keeptempfiles = keeptempfiles or {"*.mtx", "*.pl", "*-pltotf.sh", "*-rec.tex", "
 ---@see fontinst()
 ---@usage public
 mapmakers = mapmakers or {"*-map.tex"}
+---@see fntsubsetter()
+---@usage public
+---@boolean
+---@description whether to add subset defns to fd files for TC encodings
+subset = false
+---@see fntsubsetter()
+---@usage public
+---@usage subsetdefns.<family> = <subset>
+subsetdefns = subsetdefns or {}
+---@see fntsubsetter()
+---@usage public
+---@description list of TC fds to insert subset defns into
+subsetfiles = subsetfiles or {}
+---@see fntsubsetter()
+---@description $FONTFAMILY and $SUBSET may be used as placeholders 
+---@usage public
+subsettemplate = subsettemplate or "\\DeclareEncodingSubset{TS1}{$FONTFAMILY}{$SUBSET}"
+-------------------------------------------------
 -- vendor and module must be specified before tdslocations
 ---@usage public
 vendor = vendor or "public"
-tdslocations = {
+tdslocations = {  -- ** changed default
 	"fonts/afm/" .. vendor .. "/" .. module .. "/" .. "*.afm",
 	"fonts/enc/dvips/" .. module .. "/" .. "*.enc",
 	"fonts/map/dvips/" .. module .. "/" .. "*.map",
@@ -104,7 +124,8 @@ tdslocations = {
 	"tex/latex/" .. module .. "/" .. "*.fd",
 	"tex/latex/" .. module .. "/" .. "*.sty"
 }
-typesetsourcefiles = {keepdir .. "/*"}
+typesetsourcefiles = {keepdir .. "/*"}  -- ** changed default
+-- }}}
 -------------------------------------------------
 -------------------------------------------------
 -------------------------------------------------
