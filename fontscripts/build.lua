@@ -1,4 +1,4 @@
--- $Id: build.lua 10648 2024-11-19 05:45:07Z cfrees $
+-- $Id: build.lua 10702 2024-12-27 22:02:47Z cfrees $
 -- Build configuration for fontscripts
 -- l3build.pdf listing 1 tudalen 9
 --
@@ -14,21 +14,19 @@ manifestfile = "manifest.txt"
 typesetdeps = {maindir .. "/nfssext-cfr", maindir .. "/cfr-lm"}
 typesetruns = 5
 --
+docfiles = filelist(sourcefiledir,"fntbuild-*.lua")
+table.insert(docfiles,"fntbuild.lua")
 -- there must be a variable I can set for this!
 function docinit_hook()
-  local errorlevel = cp("fntbuild.lua",sourcefiledir,typesetdir)
-  if not errorlevel == 0 then
-    print("Could not copy fntbuild.lua!\n")
-    return 1
-  end
-  local errorlevel = cp("fntbuild-ctan.lua",sourcefiledir,typesetdir)
-  if not errorlevel == 0 then
-    print("Could not copy fntbuild-ctan.lua!\n")
-    return 1
+  for _,i in ipairs(docfiles) do
+    local errorlevel = cp(i,sourcefiledir,typesetdir)
+    if not errorlevel == 0 then
+      print("Could not copy fntbuild.lua!\n")
+      return 1
+    end
   end
   return 0
 end
-docfiles = {"fntbuild.lua","fntbuild-ctan.lua"}
 date = "2024"
 if direxists(sourcefiledir .. "/../../adnoddau/l3build") then
   dofile(sourcefiledir .. "/../../adnoddau/l3build/tag.lua")
@@ -42,7 +40,7 @@ function manifest_setup ()
     {
       name = "Package files",
       dir = sourcefiledir,
-      files = {"*.dtx","*.ins","fntbuild.lua","fntbuild-ctan.lua","*.md"},
+      files = {"*.dtx","*.ins","fntbuild.lua","fntbuild-*.lua","*.md"},
       exclude = {derivedfiles},
     },
     {
@@ -51,7 +49,7 @@ function manifest_setup ()
     {
       name = "Package files",
       dir = unpackdir,
-      files = {"*.cls","*.etx","*.lua","*.mtx","*.sty","*.tex","*.txt"},
+      files = {"*.cls","*.etx","*.mtx","*.sty","*.tex","*.txt"},
       exclude = sourcefiles,
       description = "* manifest.txt",
     },
@@ -70,7 +68,7 @@ unpackexe = "pdflatex"
 uploadconfig = {
   -- *required* --
   -- announcement (don't include here?)
-  announcement  = "Font encodings, metrics and Lua script fragments for generating font support packages for 8-bit engines with l3build. Optional template-based system enables the automatic generation of font tables and l3build tests. Easy addition of variable scaling to fd files (unsupported by some tools). Primarily designed for fontinst, but can be adapted for use with other programmes. Default configuration is intended to be cross-platform and require only tools included in TeX Live, but the documentation includes a simple adaption for integration with FontForge and GNU make.",
+  announcement = {Restructuring and update. An attempt has been made to make the script more modular. Insertion of Text Companion encoding subset declarations into font definition files is now supported. This functionality must be explicitly enabled. Basic support for sandboxing font builds is provided. This is enabled by default for fontinst, but can be used independently if other tools are utilised.",
 	author     = "Clea F. Rees",
   -- email (don't include here!)
 	ctanPath   = "/fonts/utilities/fontscripts",
@@ -81,7 +79,7 @@ uploadconfig = {
 	version    = "v0.1",
   -- optional --
 	bugtracker = {"https://codeberg.org/cfr/nfssext/issues"},
-  -- description
+  description  = "Font encodings, metrics and Lua script fragments for generating font support packages for 8-bit engines with l3build. Optional template-based system enables the automatic generation of font tables and l3build tests. Easy addition of variable scaling to fd files (unsupported by some tools). Primarily designed for fontinst, but can be adapted for use with other programmes. Default configuration is intended to be cross-platform and require only tools included in TeX Live, but the documentation includes a simple adaption for integration with FontForge and GNU make.",
   -- development {}
   -- home {}
 	-- note       = "The catalogue currently shows the package as included only in MikTeX, but it is also included in TeX Live. Any chance this could be corrected?",
