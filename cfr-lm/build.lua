@@ -1,4 +1,4 @@
--- $Id: build.lua 10705 2025-01-02 07:47:44Z cfrees $
+-- $Id: build.lua 10706 2025-01-02 07:51:14Z cfrees $
 -- Build configuration for cfr-lm
 -------------------------------------------------------------------------------
 -- l3build.pdf listing 1 tudalen 9
@@ -52,7 +52,7 @@ subsetdefns.clmqs = "lmssq"
 subsetdefns.clms = "lmss" 
 subsetdefns.clmt = "lmtt" 
 subsetdefns.clmv = "lmvtt" 
-subsettemplate = "\\ExpandArgs {nnc} \DeclareEncodingSubset {TS1} {$FONTFAMILY} {TS1:$SUBSET}"
+subsettemplate = "\\ExpandArgs {nnc} \\DeclareEncodingSubset {TS1} {$FONTFAMILY} {TS1:$SUBSET}"
 typesetdeps = {maindir .. "/nfssext-cfr"}
 typesetruns = 5
 -------------------------------------------------------------------------------
