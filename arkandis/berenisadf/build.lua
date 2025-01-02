@@ -1,4 +1,4 @@
--- $Id: build.lua 10649 2024-11-19 06:08:49Z cfrees $
+-- $Id: build.lua 10705 2025-01-02 07:47:44Z cfrees $
 -- Build configuration for berenisadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -127,7 +127,7 @@ uploadconfig = {
 --
 arkandisfiles = {"*.otf","NOTICE*","COPYING"}
 arkandisders = {"*.afm","*.pfb","*.pfm"}
-date = "2010-2024"
+date = "2010-2025"
 dofile(maindir .. "/arkandis/arkandis-manifest.lua")
 -- os.execute ("printenv")
 -- vim: ts=2:sw=2:tw=80:nospell

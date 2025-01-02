@@ -1,4 +1,4 @@
--- $Id: build.lua 10649 2024-11-19 06:08:49Z cfrees $
+-- $Id: build.lua 10705 2025-01-02 07:47:44Z cfrees $
 -- Build configuration for venturisadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -120,7 +120,7 @@ uploadconfig = {
   -- curlopt_file
 }
 --
-date = "2008-2024"
+date = "2008-2025"
 dofile(maindir .. "/arkandis/arkandis-manifest.lua")
 function manifest_write_opening(filehandle)
   local date  = date or os.date()

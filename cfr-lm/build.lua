@@ -1,5 +1,6 @@
--- $Id: build.lua 10649 2024-11-19 06:08:49Z cfrees $
+-- $Id: build.lua 10705 2025-01-02 07:47:44Z cfrees $
 -- Build configuration for cfr-lm
+-------------------------------------------------------------------------------
 -- l3build.pdf listing 1 tudalen 9
 --[[
 	os.setenv requires shell-escape (which l3build always enables) but will 
@@ -9,7 +10,7 @@
 	os.setenv is luatex and not in the standard builtin os lua library
 	ref. https://tex.stackexchange.com/questions/720446/how-can-i-export-variables-to-the-environment-when-running-l3build?noredirect=1#comment1791863_720446
 --]]
---
+-------------------------------------------------------------------------------
 ctanpkg = "cfr-lm"
 -- exclude tfms from lm we used just to correct erroneous font dimens in the afms 
 excludefiles =  {"*~","*.afm","build.lua","config-*.lua","ec-*.tfm","*.otf","*.pfm","*.pfb"}
@@ -20,9 +21,43 @@ autotestfds = { "t1clm.fd", "t1clm2.fd", "t1clm2d.fd", "t1clm2dj.fd", "t1clm2j.f
 dofile(maindir .. "/fontscripts/fntbuild.lua")
 -- local srcfiles = {"dotsc2.etx", "dotscbuild.mtx", "dotscmisc.mtx", "newlatin-dotsc.mtx", "t1-dotinf.etx", "t1-dotsup.etx", "ts1-dotinf.etx", "ts1-dotsup.etx"}
 -- for i,j in ipairs(srcfiles) do table.insert(sourcefiles,j) end
+-------------------------------------------------------------------------------
+-- TC subset defns
+-------------------------------------------------------------------------------
+-- add subset defns to fds, but don't hardcode them 
+-- note that this relies on implementation details, so maybe some fallback in the stys would be good, too?
+-- I just can't come up with a better idea right now
+subset = true
+subsetdefns.clm = "lmr" 
+subsetdefns.clm2 = "lmr" 
+subsetdefns.clm2d = "lmdh"
+subsetdefns.clm2dj = "lmdh"
+subsetdefns.clm2j = "lmr"
+subsetdefns.clm2jqs = "lmssq"
+subsetdefns.clm2js = "lmssq"
+subsetdefns.clm2jt = "lmtt"
+subsetdefns.clm2jv = "lmvtt"
+subsetdefns.clm2qs = "lmssq"
+subsetdefns.clm2s = "lmss" 
+subsetdefns.clm2t = "lmtt" 
+subsetdefns.clm2v = "lmvtt" 
+subsetdefns.clmd = "lmdh" 
+subsetdefns.clmdj = "lmdh" 
+subsetdefns.clmj = "lmr" 
+subsetdefns.clmjqs = "lmssq" 
+subsetdefns.clmjs = "lmss" 
+subsetdefns.clmjt = "lmtt" 
+subsetdefns.clmjv = "lmvtt" 
+subsetdefns.clmqs = "lmssq" 
+subsetdefns.clms = "lmss" 
+subsetdefns.clmt = "lmtt" 
+subsetdefns.clmv = "lmvtt" 
+subsettemplate = "\\ExpandArgs {nnc} \DeclareEncodingSubset {TS1} {$FONTFAMILY} {TS1:$SUBSET}"
 typesetdeps = {maindir .. "/nfssext-cfr"}
 typesetruns = 5
---
+-------------------------------------------------------------------------------
+-- CTAN upload 
+-------------------------------------------------------------------------------
 uploadconfig = {
   -- *required* --
   -- announcement (don't include here?)
@@ -50,9 +85,14 @@ uploadconfig = {
   -- note_file
   -- curlopt_file
 }
---
-date = "2008-2024"
+-------------------------------------------------------------------------------
+-- manifest
+-------------------------------------------------------------------------------
+date = "2008-2025"
 dofile(maindir .. "/fnt-manifest.lua")
+-------------------------------------------------------------------------------
+-- pull afms & tfms from dist tree
+-------------------------------------------------------------------------------
 cleandir(sourcefiledir .. "/afm")
 cleandir(sourcefiledir .. "/tfm") 
 local str = kpse.var_value("TEXMFDIST")
@@ -63,5 +103,7 @@ end
 for _,i in ipairs(filelist(str .. "/fonts/tfm/public/lm","ec-*")) do
   cp(i,str .. "/fonts/tfm/public/lm",sourcefiledir .. "/tfm")
 end
+-------------------------------------------------------------------------------
 -- os.execute ("printenv")
+-------------------------------------------------------------------------------
 -- vim: ts=2:sw=2:tw=0:nospell

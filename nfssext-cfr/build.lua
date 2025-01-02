@@ -1,4 +1,4 @@
--- $Id: build.lua 10631 2024-11-14 05:26:44Z cfrees $
+-- $Id: build.lua 10705 2025-01-02 07:47:44Z cfrees $
 -- Build configuration for nfssext-cfr
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -28,7 +28,7 @@ typesetsourcefiles = {"cfr-lm.sty", maindir .. "/cfr-lm/keep/*"}
 typesetruns = 5
 --
 dofile(maindir .. "/tag.lua")
-date = "2008-2024"
+date = "2008-2025"
 if direxists(sourcefiledir .. "/../../adnoddau/l3build") then
   dofile(sourcefiledir .. "/../../adnoddau/l3build/manifest.lua")
 end
