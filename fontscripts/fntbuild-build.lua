@@ -215,7 +215,7 @@ end
 -------------------------------------------------
 -------------------------------------------------
 -- fnt_subset {{{
----@params fd, subset, subsettemplate
+---@params fd, family, subset
 ---@usage private
 local function fnt_subset (fd,fam,subset)
   local defn = string.gsub(subsettemplate,"%$FONTFAMILY",fam)
@@ -245,9 +245,10 @@ end
 function fntsubsetter ()
   local tcsubset = tcsubset or "9"
   if subset == nil or subset == false then return 0 end
+  local subsetfiles = subsetfiles or {}
   if type(subsetfiles) == "string"  and subsetfiles ~= "auto" then
     local s = subsetfiles
-    local subsetfiles = { s }
+    subsetfiles = { s }
   end
   if #subsetfiles == 0 then
     for i in lfs.dir(fntdir) do
@@ -260,7 +261,7 @@ function fntsubsetter ()
   if #subsetfiles == 0 then return 0 end
   for _, i in ipairs(subsetfiles) do
     local fam = string.gsub(i, "^[Tt][Ss]1(.+)%.fd$", "%1")
-    local s = subsetdefns.fam or tcsubset
+    local s = subsetdefns[fam] or tcsubset
     local errorlevel = fnt_subset(i,fam,s)
     gwall("Inserting TS1 subset definition ",i,errorlevel)
   end

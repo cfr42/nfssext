@@ -1,4 +1,4 @@
--- $Id: fntbuild.lua 10695 2024-12-23 07:12:11Z cfrees $
+-- $Id: fntbuild.lua 10707 2025-01-02 21:57:28Z cfrees $
 -------------------------------------------------
 -------------------------------------------------
 -- I don't know how to bootstrap this ... 
@@ -39,12 +39,11 @@ end
 local possplaces = { sourcefiledir, maindir, maindir .. "/fontscripts" }
 for _,i in ipairs (possplaces) do
   if fileexists( i .. "/fntbuild.lua" ) then
-    print(i)
     fntbuild_home = i
     break
   end
 end
-print(fntbuild_home)
+print("fntbuild_home:", fntbuild_home)
 if fntbuild_home == nil then
   -- dwyn o Joseph Wright: l3build.lua
   -- ar gael am fod Joseph yn wneud kpse.set_program_name("kpsewhich")

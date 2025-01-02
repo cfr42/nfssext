@@ -1,4 +1,4 @@
--- $Id: fntbuild-vars.lua 10700 2024-12-25 02:50:50Z cfrees $
+-- $Id: fntbuild-vars.lua 10707 2025-01-02 21:57:28Z cfrees $
 -- fntbuild variables
 -------------------------------------------------
 -------------------------------------------------
@@ -94,13 +94,21 @@ subset = false
 ---@see fntsubsetter()
 ---@usage public
 ---@usage subsetdefns.<family> = <subset>
+---@description table: list of TC fds to insert subset defns into
+---@description entry keys should be family names; entry values should be values
+---@description for subsetdefns.<key> = <value>,
+---@description   <key>   will be substituted for $FONTFAMILY and 
+---@description   <value> will be substituted for $SUBSET into the subsettemplate
 subsetdefns = subsetdefns or {}
 ---@see fntsubsetter()
 ---@usage public
----@description list of TC fds to insert subset defns into
+---@usage value should be list of filenames as table
+---@description list of font defn files to insert subset defns into
+---@description defaults to all fds matching [Tt][Ss]1.*\.fd
 subsetfiles = subsetfiles or {}
 ---@see fntsubsetter()
 ---@description $FONTFAMILY and $SUBSET may be used as placeholders 
+---@description template for inserted lines specifying TS1 encoding subsets in subsetfiles
 ---@usage public
 subsettemplate = subsettemplate or "\\DeclareEncodingSubset{TS1}{$FONTFAMILY}{$SUBSET}"
 -------------------------------------------------

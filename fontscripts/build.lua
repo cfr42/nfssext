@@ -1,4 +1,4 @@
--- $Id: build.lua 10705 2025-01-02 07:47:44Z cfrees $
+-- $Id: build.lua 10707 2025-01-02 21:57:28Z cfrees $
 -- Build configuration for fontscripts
 -- l3build.pdf listing 1 tudalen 9
 --
@@ -68,7 +68,7 @@ unpackexe = "pdflatex"
 uploadconfig = {
   -- *required* --
   -- announcement (don't include here?)
-  announcement = {Restructuring and update. An attempt has been made to make the script more modular. Insertion of Text Companion encoding subset declarations into font definition files is now supported. This functionality must be explicitly enabled. Basic support for sandboxing font builds is provided. This is enabled by default for fontinst, but can be used independently if other tools are utilised.",
+  announcement = "Restructuring and update. An attempt has been made to make the script more modular. Insertion of Text Companion encoding subset declarations into font definition files is now supported. This functionality must be explicitly enabled. Basic support for sandboxing font builds is provided. This is enabled by default for fontinst, but can be used independently if other tools are utilised.",
 	author     = "Clea F. Rees",
   -- email (don't include here!)
 	ctanPath   = "/fonts/utilities/fontscripts",
