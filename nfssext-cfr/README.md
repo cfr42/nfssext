@@ -1,10 +1,10 @@
-$Id: README.md 10459 2024-10-03 06:07:06Z cfrees $
+$Id: README.md 10703 2025-01-02 05:41:50Z cfrees $
 
 =================================================
 # nfssext-cfr
 =================================================
 
-Additions and changes Copyright (C) 2008-2024 Clea F. Rees.
+Additions and changes Copyright (C) 2008-2025 Clea F. Rees.
 Code from The Font Installation Guide Copyright (C) 2002-2004 Philipp Lehman
 (see below)
 

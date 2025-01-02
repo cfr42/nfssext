@@ -1,6 +1,6 @@
-$Id: README.md 10362 2024-09-18 08:02:52Z cfrees $
+$Id: README.md 10703 2025-01-02 05:41:50Z cfrees $
 =================================================
-Copyright (C) 2008-2024 Clea F. Rees.
+Copyright (C) 2008-2025 Clea F. Rees.
 
 This work may be distributed and/or modified under the
 conditions of the LaTeX Project Public License, either version 1.3c
