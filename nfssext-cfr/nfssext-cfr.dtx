@@ -41,7 +41,7 @@
   \char_set_catcode_letter:N \:
 }
 \ExplSyntaxOff
-\ProvidesFileSVN{$Id: nfssext-cfr.dtx 10703 2025-01-02 05:41:50Z cfrees $}[v1.1 \revinfo][\filebase DTX: Extended font selection for NFSS and NNFSS]
+\ProvidesFileSVN{$Id: nfssext-cfr.dtx 10711 2025-01-03 18:00:07Z cfrees $}[v1.2 \revinfo][\filebase DTX: Extended font selection for NFSS and NNFSS]
 \DefineFileInfoSVN[nfssext-cfr]
 \documentclass[10pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -270,6 +270,9 @@
 %   Comprehensive support is provided for ‘swash’ and ‘alternate’ styles.
 %   These are implemented as families rather than shapes to support fonts which offer multiple swash shapes (e.g.~small-caps, italic and upright) or alternate styles.
 %   These may be used to provide effective access to fancy ligatures, end-of-word swashes etc.\ without sacrificing the range of characters provided by \textsc{t1}.
+%
+%   The package also provides code to enable new font definition files, which may use \cs{DeclareEncodingSubset} as of the 2024-11-29 \LaTeX{} release, to be used with older versions of the format.
+%   For post-2020 versions of the format, the package supports these declarations; for older versions, the package provides an empty definition.
 % 
 %   The package is not primarily intended for direct use by end-users, but is designed rather to facilitate the creation of more sophisticated font support packages.
 %   End-users may nonetheless find the package useful, subject to the constraints explained in this document.
@@ -368,12 +371,18 @@
 %       \cs{itshape}\DescribeMacro[noprint]{\itshape} & old kernels only\\
 %       \cs{scshape}\DescribeMacro[noprint]{\scshape} & old kernels only\\
 %       \cs{upshape}\DescribeMacro[noprint]{\upshape} & old kernels only\\
+%       \cs{DeclareEncodingSubset}\DescribeMacro[noprint]{\DeclareEncodingSubset} & redefined on post-2020 pre-2024-11-19 kernels\tnotex{tn:des} \\ 
+%         & defined on old kernels\tnotex{tn:deso} \\
 %       \bottomrule
 %     \end{tabular}
 %     \begin{tablenotes}
 %       \item\label{tn:sw-exists}Defined only by newer kernels.
 %       \item\label{tn:swshape-refs}See \cref{tab:gen,tab:shapes} and text.
 %       \item\label{tn:sw}Definition depends on kernel, \texttt{force} and \texttt{compat}.
+%       \item\label{tn:des}The redefinition is done at the beginning of the document, so does not affect any use in \texttt{.sty} files.
+%         The change allows declarations to be used in font definition files, even if the format is older than the ‘hot fix’ provided in November 2024. 
+%       \item\label{tn:deso}The definition is empty in this case.
+%         It enables older formats to use font definition files which include encoding declarations, but the information provided in such declarations is simply discarded.
 %     \end{tablenotes}
 %   \end{threeparttable}
 % \end{table}
@@ -795,7 +804,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: nfssext-cfr.dtx 10703 2025-01-02 05:41:50Z cfrees $}[v0.0 \revinfo{} extensions for NFSS and NNFSS; based on 2003/03/14 v1.2 Experimental NFSS Extensions]
+\ProvidesPackageSVN[\filebase.sty]{$Id: nfssext-cfr.dtx 10711 2025-01-03 18:00:07Z cfrees $}[v1.2 \revinfo{} extensions for NFSS and NNFSS; based on 2003/03/14 v1.2 Experimental NFSS Extensions]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % ^^A Paid â defnyddio \GetFileInfoSVN*/\GetFileInfoSVN{} yn y fan hon!!
@@ -989,7 +998,7 @@
     }
   }
 %    \end{macrocode}
-% \changes{v0.0}{0000-00-00}{Workaround to allow use of encoding subset declarations in font definition files, even if somebody tries to use a font package with an older format.}
+% \changes{v1.2}{2025-01-03}{Workaround to allow use of encoding subset declarations in font definition files, even if somebody tries to use a font package with an older format.}
 % This code is here to enable backwards-compatible encoding declarations in font definition files.
 % We have three cases: \begin{enumerate*}[label=(\arabic*)]\item the format predates \nnfss{}, in which case the commands probably don't exist at all, \item the format is recent enough for \nnfss{} but predates the November 2024 ‘hotfix’ release (2024-11-19), in which case the commands will return errors after the preamble and \item the format is at least as new as the ‘hotfix’, in which case the macros' definitions should be fine\end{enumerate*}.
 %
@@ -1134,7 +1143,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase-nnfss.sty]{$Id: nfssext-cfr.dtx 10703 2025-01-02 05:41:50Z cfrees $}[v1.1 \revinfo{} extended New New Font Selection Scheme (NNFSS) based on 2003/03/14 v1.2 Experimental NFSS Extensions]
+\ProvidesPackageSVN[\filebase-nnfss.sty]{$Id: nfssext-cfr.dtx 10711 2025-01-03 18:00:07Z cfrees $}[v1.2 \revinfo{} extended New New Font Selection Scheme (NNFSS) based on 2003/03/14 v1.2 Experimental NFSS Extensions]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % ^^A Paid â defnyddio \GetFileInfoSVN*/\GetFileInfoSVN{} yn y fan hon!!
@@ -2574,7 +2583,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase-nfss.sty]{$Id: nfssext-cfr.dtx 10703 2025-01-02 05:41:50Z cfrees $}[v1.1 \revinfo{} specially mangled by cfr; based on 2003/03/14 v1.2 Experimental NFSS Extensions; for old NFSS]
+\ProvidesPackageSVN[\filebase-nfss.sty]{$Id: nfssext-cfr.dtx 10711 2025-01-03 18:00:07Z cfrees $}[v1.2 \revinfo{} specially mangled by cfr; based on 2003/03/14 v1.2 Experimental NFSS Extensions; for old NFSS]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % ^^A Paid â defnyddio \GetFileInfoSVN*/\GetFileInfoSVN{} yn y fan hon!!
