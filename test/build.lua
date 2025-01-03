@@ -1,4 +1,4 @@
--- $Id: build.lua 10700 2024-12-25 02:50:50Z cfrees $
+-- $Id: build.lua 10708 2025-01-03 03:16:37Z cfrees $
 -- Build configuration for testadf
 ctanpkg = "testadf"
 module = "test"
@@ -7,9 +7,9 @@ maindir = ".."
 -- buildsuppfiles_sys = {"fontinst.sty"}
 dofile(maindir .. "/fontscripts/fntbuild.lua")
 subset = true
-subsetdefns.xxx = 3
-subsetdefns.yyy = 5
-subsettemplate = "\\ExpandArgs {nnc} \\DeclareEncodingSubset {TS1} {$FONTFAMILY} {$SUBSET}"
+subsetdefns.xxx = "lmr"
+subsetdefns.yyy = "lmr"
+subsettemplate = "\\ExpandArgs {nnc} \\DeclareEncodingSubset {TS1} {$FONTFAMILY} {TS1:$SUBSET}"
 -- builddeps = { maindir .. "/fontscripts" }
 -- flatten = false
 -- installfiles = {"*.afm", "*.cls", "*.enc", "*.fd", "*.map", "*.otf", "*.pfb", "*.sty", "*.tfm", "*.ttf", "*.vf"}
