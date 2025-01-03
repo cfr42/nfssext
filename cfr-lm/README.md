@@ -1,4 +1,4 @@
-$Id: README.md 10703 2025-01-02 05:41:50Z cfrees $
+$Id: README.md 10710 2025-01-03 17:10:49Z cfrees $
 =================================================
 Copyright (C) 2008-2025 Clea F. Rees.
 
@@ -74,6 +74,8 @@ files. l3build is also used to generate tables for all provided fonts and to
 implement regression testing (though this will not, unfortunately, pick up the
 likely regressions due to the 2020 changes).
 
+Version 1.8 moves TS1 encoding subset declarations into font definition files.
+
 A more detailed history is included in the documentation and sources.
 
 # Documentation
@@ -106,8 +108,8 @@ If you have comments about the fonts themselves, please contact GUST.
 
 
 Clea F. Rees
-Version 1.7
-2024-09-18
+Version 1.8
+2025-01-03
 
 =================================================
 vim: et:tw=80:sw=2:

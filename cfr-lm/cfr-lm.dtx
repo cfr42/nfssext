@@ -42,7 +42,7 @@
   \char_set_catcode_letter:N \:
 }
 \ExplSyntaxOff
-\ProvidesFileSVN{$Id: cfr-lm.dtx 10708 2025-01-03 03:16:37Z cfrees $}[v1.7 \revinfo][\filebase DTX: Latin Modern for 8-bit engines]
+\ProvidesFileSVN{$Id: cfr-lm.dtx 10710 2025-01-03 17:10:49Z cfrees $}[v1.8 \revinfo][\filebase DTX: Latin Modern for 8-bit engines]
 \DefineFileInfoSVN[cfr-lm]
 \documentclass[10pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -1348,7 +1348,7 @@ updmap --sys --enable Map=clm.map
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: cfr-lm.dtx 10708 2025-01-03 03:16:37Z cfrees $}[v0.0 \revinfo][Extended support for Latin Modern 2.004]
+\ProvidesPackageSVN[\filebase.sty]{$Id: cfr-lm.dtx 10710 2025-01-03 17:10:49Z cfrees $}[v1.8 \revinfo][Extended support for Latin Modern 2.004]
 \DefineFileInfoSVN[clm]
 \RequirePackage[T1]{fontenc}
 \RequirePackage{nfssext-cfr}[2024/01/01]
@@ -1363,11 +1363,11 @@ updmap --sys --enable Map=clm.map
 %   On the other hand, if the implementation details of subset handling in the format change, the code in this package may break.
 %   But that's already true for so much of the code in \lpack{nfssext}/\lpack{nfssext-cfr}, that one more area of fragility probably matters but little.^^A
 % }. 
-% \changes{v0.0}{0000/00/00}{\lpack{nfssext-cfr} enables TC subset declarations in font definition files for ‘in between’ formats.}
+% \changes{v1.8}{2025-01-03}{\lpack{nfssext-cfr} enables TC subset declarations in font definition files for ‘in between’ formats.}
 %    \begin{macrocode}
 \IfFormatAtLeastTF {2020-02-02}{%
 %    \end{macrocode}
-% \changes{v0.0}{0000/00/00}{Determine TC encoding subset declarations dynamically and include in font definition files.}
+% \changes{v1.8}{2025-01-03}{Determine TC encoding subset declarations dynamically and include in font definition files.}
 %^^A To get the oldstyle numbers etc.\ used from TS1, we need to set the subset to 0 or 1.
 %^^A We follow the kernel's handling of Latin Modern and eschew the builtin circle.
 %    \begin{macrocode}
