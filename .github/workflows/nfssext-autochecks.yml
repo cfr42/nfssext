@@ -96,6 +96,14 @@ jobs:
             ~/.texlive
             ~/texmf
           key: clm-${{ github.sha }}
+      - name: Archive docs
+      # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-cfr-lm
+          path: cfr-lm/*.pdf
+          # Decide how long to keep the test output artefact:
+          retention-days: 30
 
 
   # addaswyd o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
@@ -168,6 +176,14 @@ jobs:
           name: testfiles-${{ matrix.module }}
           # Decide how long to keep the test output artefact:
           retention-days: 7
+      - name: Archive docs
+      # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-${{ matrix.module }}
+          path: ${{ matrix.working_directory }}/*.pdf
+          # Decide how long to keep the test output artefact:
+          retention-days: 30
 
   # addaswyd o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
   # need cfr-lm
@@ -244,5 +260,13 @@ jobs:
           name: testfiles-${{ matrix.module }}
           # Decide how long to keep the test output artefact:
           retention-days: 7
+      - name: Archive docs
+      # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-${{ matrix.module }}
+          path: ${{ matrix.working_directory }}/*.pdf
+          # Decide how long to keep the test output artefact:
+          retention-days: 30
 
 # vim: sw=2:et:ts=2:
