@@ -42,7 +42,7 @@
   \char_set_catcode_letter:N \:
 }
 \ExplSyntaxOff
-\ProvidesFileSVN{$Id: cfr-lm.dtx 10710 2025-01-03 17:10:49Z cfrees $}[v1.8 \revinfo][\filebase DTX: Latin Modern for 8-bit engines]
+\ProvidesFileSVN{$Id: cfr-lm.dtx 10714 2025-01-04 17:14:55Z cfrees $}[v1.8 \revinfo][\filebase DTX: Latin Modern for 8-bit engines]
 \DefineFileInfoSVN[cfr-lm]
 \documentclass[10pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -59,7 +59,7 @@
 \pdfmapfile{+clm.map}	% not necessary for installed package
 \usepackage[rm={lining,proportional},sf={lining,proportional},tt={mono,lining,tabular}]{cfr-lm}
 %^^A *** PAID Â TRIO DEFNYDDIO LTMARKS YN LLE EXTRAMARKS MEWN UNRHYW DOGFEN A DDEFNYDDIO HI MULTICOLS (YN CYNNWYS LTXDOC AC UNRHYW UN Â MYNEGAI YN ÔL BOB DEBYG!!! *** 
-\usepackage{extramarks,fancyhdr}
+\usepackage{fancyhdr,extramarks}
 \usepackage[plain]{fancyref}
 \usepackage{fixfoot}
 \usepackage{array,tabularx}
@@ -1348,7 +1348,7 @@ updmap --sys --enable Map=clm.map
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: cfr-lm.dtx 10710 2025-01-03 17:10:49Z cfrees $}[v1.8 \revinfo][Extended support for Latin Modern 2.004]
+\ProvidesPackageSVN[\filebase.sty]{$Id: cfr-lm.dtx 10714 2025-01-04 17:14:55Z cfrees $}[v1.8 \revinfo][Extended support for Latin Modern 2.004]
 \DefineFileInfoSVN[clm]
 \RequirePackage[T1]{fontenc}
 \RequirePackage{nfssext-cfr}[2024/01/01]
