@@ -1,4 +1,4 @@
--- $Id: fntbuild-doc.lua 10715 2025-01-04 22:18:20Z cfrees $
+-- $Id: fntbuild-doc.lua 10717 2025-01-05 06:27:29Z cfrees $
 -------------------------------------------------
 -- fntbuild-doc
 -------------------------------------------------
@@ -68,7 +68,7 @@ function docinit_hook ()
       f:write((string.gsub(new_content,"\n",os_newline_cp)))
       f:close()
       rm(unpackdir,filename)
-      cp(targname,unpackdir,sourcefiledir)
+      cp(targname,unpackdir,typesetdir)
     end
   end
   return 0
