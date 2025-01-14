@@ -1,4 +1,4 @@
--- $Id: build.lua 10705 2025-01-02 07:47:44Z cfrees $
+-- $Id: build.lua 10719 2025-01-14 01:57:23Z cfrees $
 -- Build configuration for berenisadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -27,6 +27,7 @@ vendor = "arkandis"
 autotestfds = {  "ly1ybd.fd", "ly1ybd2.fd", "ly1ybd2j.fd", "ly1ybd2jw.fd", "ly1ybd2w.fd", "ly1ybdj.fd", "ly1ybdjw.fd", "ly1ybdw.fd", "t1ybd.fd", "t1ybd2.fd", "t1ybd2j.fd", "t1ybdj.fd" }
 keepfiles = { "ybd.map", "*.afm", "*.pfb", "*.tfm" , "ts1ybd2w.fd", "ts1ybd2jw.fd", "ts1ybdjw.fd", "ts1ybdw.fd" }
 keeptempfiles = { "*.pl" }
+-- START doc eg
 autotcfds ={ "ts1ybd2j.fd", "ts1ybd2.fd", "ts1ybdj.fd", "ts1ybd.fd" }
 dofile(maindir .. "/fontscripts/fntbuild.lua")
 function fntmake (dir,mode)
@@ -57,10 +58,12 @@ function fntmake (dir,mode)
       f:close()
       -- ought to normalise line endings here 
       -- copied from l3build
-      -- but I don't understand why the first subs is needed
-      -- is it a problem if the file doesn't end with a newline?
-      content = string.gsub(content .. (string.match(content,"\n$") and "" or "\n"), "\r\n", "\n") 
-      local new_content = string.gsub(content, "{" .. jfam .. "}", "{" .. jnewfam .. "}")
+      content = string.gsub(content .. (string.match(content,"\n$") and "" or "\n"),
+        "\r\n", "\n"
+      ) 
+      local new_content = string.gsub(content, 
+        "{" .. jfam .. "}", "{" .. jnewfam .. "}"
+      )
       new_content = string.gsub(new_content, "(ts1[^%.]*)(%.fd)", "%1w%2")
       new_content = string.gsub(new_content, "(TS1/ybd[a-z0-9]*)", "%1w")
       f = assert(io.open(dir .. "/" .. jnew,"w"))
@@ -70,7 +73,9 @@ function fntmake (dir,mode)
     end
     errorlevel = fntkeeper()
     if errorlevel ~= 0 then
-      gwall("FONT KEEPER FAILED! DO NOT MAKE STANDARD TARGETS WITHOUT RESOLVING!! ", dir, errorlevel)
+      gwall("FONT KEEPER FAILED! DO NOT MAKE STANDARD TARGETS WITHOUT RESOLVING!! ",
+        dir, errorlevel
+      )
     end
   end
   return nifergwall
@@ -89,6 +94,7 @@ target_list[ntarg] = {
     return 0
   end
 }
+-- STOP doc eg
 -- docfiles = { "dotoldstyle.etx", "dottaboldstyle.etx", "t1-cfr.etx", "t1-dotinferior.etx", "t1-dotsuperior.etx", "ybd-encs.tex" }
 -- local srcfiles = { "dotoldstyle.etx", "dottaboldstyle.etx", "t1-cfr.etx", "t1-dotinferior.etx", "t1-dotsuperior.etx" }
 -- for i,j in ipairs(srcfiles) do table.insert(sourcefiles,j) end
@@ -113,9 +119,9 @@ uploadconfig = {
   -- description
   -- development {}
   -- home {}
-	-- repository = {"https://codeberg.org/cfr/nfssext", "https://github.com/cfr42/nfssext"},
+	repository = {"https://codeberg.org/cfr/nfssext", "https://github.com/cfr42/nfssext"},
 	note = "Repository mirrored at https://github.com/cfr42/nfssext",
-	repository = "https://codeberg.org/cfr/nfssext",
+	-- repository = "https://codeberg.org/cfr/nfssext",
   -- support {}
 	topic      = {"font", "font-type1", "font-otf", "font-serif"},
 	update     = true,
