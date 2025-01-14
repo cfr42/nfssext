@@ -1,4 +1,4 @@
--- $Id: build.lua 10707 2025-01-02 21:57:28Z cfrees $
+-- $Id: build.lua 10718 2025-01-14 01:55:38Z cfrees $
 -- Build configuration for fontscripts
 -- l3build.pdf listing 1 tudalen 9
 --
@@ -24,6 +24,17 @@ function docinit_hook()
       print("Could not copy fntbuild.lua!\n")
       return 1
     end
+  end
+  local errorlevel = cp("build.lua",maindir .. "/arkandis/berenisadf",typesetdir)
+  if errorlevel == 0 then
+    errorlevel = ren(typesetdir,"build.lua","berenis-build.lua")
+    if errorlevel ~= 0 then 
+      print("Could not rename berenisadf's build.lua to berenis-build.lua in " ..  typesetdir .. ".")
+      return 1
+    end
+  else
+    print("Could not copy " .. maindir .. "/arkandis/berenisadf/build.lua to " .. typesetdir .. ".")
+    return 1
   end
   return 0
 end

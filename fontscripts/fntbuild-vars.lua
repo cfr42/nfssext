@@ -1,4 +1,4 @@
--- $Id: fntbuild-vars.lua 10707 2025-01-02 21:57:28Z cfrees $
+-- $Id: fntbuild-vars.lua 10718 2025-01-14 01:55:38Z cfrees $
 -- fntbuild variables
 -------------------------------------------------
 -------------------------------------------------
@@ -22,9 +22,12 @@ checkdeps = { maindir .. "/fnt-tests" }
 checkengines = { "pdftex" } 
 checkformat = "latex"
 -- cleanfiles changed below 
-installfiles = {"*.afm", "*.cls", "*.enc", "*.fd", "*.map", "*.otf", "*.pfb", "*.pfm", "*.sty", "*.tfm", "*.ttf", "*.vf"}
+installfiles = {"*.afm", "*.cls", "*.enc", "*.fd", "*.map", "*.otf", "*.pfb", 
+  "*.pfm", "*.sty", "*.tfm", "*.ttf", "*.vf"}
 -- need module test or default?
-sourcefiles = {"*.afm", "afm/*.afm", "*.pfb", "*.pfm", "*.dtx", "*.ins", "opentype/*.otf", "*.otf", "tfm/*.tfm", "truetype/*.ttf", "*.ttf", "type1/*.pfb", "type1/*.pfm"}
+sourcefiles = {"*.afm", "afm/*.afm", "*.pfb", "*.pfm", "*.dtx", "*.ins", 
+  "opentype/*.otf", "*.otf", "tfm/*.tfm", "truetype/*.ttf", "*.ttf", 
+  "type1/*.pfb", "type1/*.pfm"}
 -- tdslocations changed below
 typesetexe = "TEXMFDOTDIR=.:../local: pdflatex"
 typesetfiles = typesetfiles or  {"*.dtx", "*-tables.tex", "*-example.tex"}
@@ -39,7 +42,8 @@ typesetfiles = typesetfiles or  {"*.dtx", "*-tables.tex", "*-example.tex"}
 ---@see fnt_test() checkinit_hook() fnttestfds
 ---@usage public
 autotestfds = autotestfds or {}
-binaryfiles = {"*.pdf", "*.zip", "*.vf", "*.tfm", "*.pfb", "*.pfm", "*.ttf", "*.otf", "*.tar.gz"}
+binaryfiles = {"*.pdf", "*.zip", "*.vf", "*.tfm", "*.pfb", "*.pfm", "*.ttf", 
+  "*.otf", "*.tar.gz"}
 -- script containing commands to convert pl and vpl files to binary form
 ---@see fontinst()
 ---@usage public
@@ -52,7 +56,8 @@ buildsearch = false
 -------------------------------------------------
 builddeps = builddeps or {}
 -- should use existing fnt variables, I think
-buildfiles = buildfiles or { "*.afm", "*.enc", "*.etx", "*.fd", "*.lig", "*.make", "*.map", "*.mtx", "*.nam", "*.otf", "*.pe", "*.tex" , "*.tfm" }
+buildfiles = buildfiles or { "*.afm", "*.enc", "*.etx", "*.fd", "*.lig", 
+  "*.make", "*.map", "*.mtx", "*.nam", "*.otf", "*.pe", "*.tex" , "*.tfm" }
 buildsuppfiles_sys = buildsuppfiles_sys or {}
 -- sys replaces defaults; add ads to them
 checksuppfiles_sys = checksuppfiles_sys or {}
@@ -81,7 +86,8 @@ keeptempdir = keeptempdir or sourcefiledir .. "/keeptemp"
 keepfiles = keepfiles or {"*.enc", "*.fd", "*.map", "*.tfm", "*.vf"}
 -- files to keep for diagnostics, but which shouldn't be packaged
 ---@usage public
-keeptempfiles = keeptempfiles or {"*.mtx", "*.pl", "*-pltotf.sh", "*-rec.tex", "*.vpl", "*.zz"}
+keeptempfiles = keeptempfiles or {"*.mtx", "*.pl", "*-pltotf.sh", "*-rec.tex", 
+  "*.vpl", "*.zz"}
 -- \TeX{} files to compile to produce map file fragments etc.
 ---@see fontinst()
 ---@usage public
@@ -108,9 +114,11 @@ subsetdefns = subsetdefns or {}
 subsetfiles = subsetfiles or {}
 ---@see fntsubsetter()
 ---@description $FONTFAMILY and $SUBSET may be used as placeholders 
----@description template for inserted lines specifying TS1 encoding subsets in subsetfiles
+---@description template for inserted lines specifying TS1 encoding subsets in 
+---@description subsetfiles
 ---@usage public
-subsettemplate = subsettemplate or "\\DeclareEncodingSubset{TS1}{$FONTFAMILY}{$SUBSET}"
+subsettemplate = subsettemplate or 
+  "\\DeclareEncodingSubset{TS1}{$FONTFAMILY}{$SUBSET}"
 -------------------------------------------------
 -- vendor and module must be specified before tdslocations
 ---@usage public

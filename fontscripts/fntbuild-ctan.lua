@@ -1,4 +1,4 @@
--- $Id: fntbuild-ctan.lua 10648 2024-11-19 05:45:07Z cfrees $
+-- $Id: fntbuild-ctan.lua 10718 2025-01-14 01:55:38Z cfrees $
 -------------------------------------------------
 local exts = {}
 
@@ -51,7 +51,8 @@ function copyctan()
   local errorlevel
   local targdir = ctandir .. "/" .. ctanpkg
   keptfiles = {}
-  if #exts == 0 then exts = {"afm","dtx","enc","fd","ins","map","md","otf","pdf","pfb","pfm","tex","tfm","txt","vf"} end
+  if #exts == 0 then exts = {"afm","dtx","enc","fd","ins","map","md",
+    "otf","pdf","pfb","pfm","tex","tfm","txt","vf"} end
   if not exts["pfb"] then exts["pfb"] = "type1" end
   if not exts["pfm"] then exts["pfm"] = "type1" end
   if not exts["ttf"] then exts["ttf"] = "truetype" end
@@ -96,7 +97,8 @@ function copyctan()
     errorlevel = rm(targdir, "COPYING")
     if errorlevel ~= 0 then return errorlevel end
   end
-  -- this is horrible: ctan() copies all the files, we deal with them, and then it copies all the textfiles a second time!
+  -- this is horrible: ctan() copies all the files, we deal with them, 
+  -- and then it copies all the textfiles a second time!
   textfiles = {"README","README.md"}
   return 0
 end

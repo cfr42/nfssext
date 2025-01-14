@@ -1,4 +1,4 @@
--- $Id: fntbuild.lua 10707 2025-01-02 21:57:28Z cfrees $
+-- $Id: fntbuild.lua 10718 2025-01-14 01:55:38Z cfrees $
 -------------------------------------------------
 -------------------------------------------------
 -- I don't know how to bootstrap this ... 
@@ -73,7 +73,8 @@ fntbuild_require("ctan")
 -- load user config
 -- local (if buildsearch) - maindir -- sourcefiledir
 -------------------------------------------------
--- execute before testing afmtotfm so fnttarg is correct in case the config sets it true
+-- execute before testing afmtotfm so fnttarg is correct in case the 
+-- config sets it true
 build_config()
 -------------------------------------------------
 -------------------------------------------------

@@ -230,7 +230,9 @@ local function fnt_subset (fd,fam,subset)
     patt = "()$"
   end
   f = assert(io.open(fntdir .. "/" .. fd, "w"))
-  f:write("%% Encoding subset declaration added by fontscripts\n", (string.gsub(content,patt,"\n\n" .. defn .. "\n\n%1")))
+  f:write("%% Encoding subset declaration added by fontscripts\n",
+    (string.gsub(content,patt,"\n\n" .. defn .. "\n\n%1"))
+  )
   f:close()
   return 0    -- how to make this return an error level?
 end
@@ -271,7 +273,9 @@ end
 -------------------------------------------------
 -------------------------------------------------
 -- uniquify {{{
--- oherwydd fy mod i bron ag anfon pob un ac mae'n amlwg fy mod i wedi anfon bacedi heb ei wneud hwn yn y gorffennol, well i mi wneud rhywbeth (scriptiau gwneud-cyhoeddus a make-public yn argraffu rhybudd os encs yn y cymysg
+-- oherwydd fy mod i bron ag anfon pob un ac mae'n amlwg fy mod i wedi anfon 
+-- bacedi heb ei wneud hwn yn y gorffennol, well i mi wneud rhywbeth (scriptiau 
+-- gwneud-cyhoeddus a make-public yn argraffu rhybudd os encs yn y cymysg
 -- (cymraeg yn ofnadwy hefyd)
 ---@param tag string 
 ---@return 0 on success, error level or 1 otherwise
@@ -352,7 +356,11 @@ function uniquify (tag)
     end
     if tag ~= "" then  
       for i, j in ipairs(encs) do
-        if string.match(j,"-" .. tag .. "%.enc$") or  string.match(j, module) or string.match(j,ctanpkg) or string.match(j,pkgbase) or string.match(j, string.gsub(module, "adf", "")) then
+        if string.match(j,"-" .. tag .. "%.enc$") 
+          or  string.match(j, module) 
+          or string.match(j,ctanpkg) 
+          or string.match(j,pkgbase) 
+          or string.match(j, string.gsub(module, "adf", "")) then
           print(j, "... OK\n")
         else
           local targenc = (string.gsub(j,"%.enc$","-" .. tag .. ".enc"))
@@ -364,11 +372,15 @@ function uniquify (tag)
             local f = assert(io.open(dir .. "/" .. j,"rb"))
             local content = f:read("*all")
             f:close()
-            local new_content = (string.gsub(content,"(\n%%%%BeginResource: encoding fontinst%-autoenc[^\n ]*)( *\n/fontinst%-autoenc[^ %[]*)( %[)","\n%% Encoding renamed by fontscripts\n\n%1-" .. tag .. "%2-" .. tag .. "%3"))
+            local new_content = (string.gsub(content,
+            "(\n%%%%BeginResource: encoding fontinst%-autoenc[^\n ]*)( *\n/fontinst%-autoenc[^ %[]*)( %[)",
+              "\n%% Encoding renamed by fontscripts\n\n%1-" 
+              .. tag .. "%2-" .. tag .. "%3"
+            ))
             if new_content ~= content then
               print("Writing unique encoding to ", targenc)
               f = assert(io.open(dir .. "/" .. targenc,"w"))
-              -- this somehow removes the second value returned by string.gsub??
+              -- remove the second value returned by string.gsub
               f:write((string.gsub(new_content,"\n",os_newline_cp)))
               f:close()
               if fileexists(dir .. "/" .. targenc) then
@@ -383,13 +395,17 @@ function uniquify (tag)
                     f = assert(io.open(dir .. "/" .. m,"rb"))
                     local mcontent = f:read("*all")
                     f:close()
-                    local new_mcontent = (string.gsub(mcontent,"(%<%[?)" .. jpatt .. "( %<%w+%.pfb \" fontinst%-autoenc[%w%-_]*)( ReEncodeFont)", "%1" .. targenc .. "%2-" .. tag .. "%3"))
+                    local new_mcontent = (string.gsub(mcontent,
+                      "(%<%[?)" .. jpatt .. 
+                      "( %<%w+%.pfb \" fontinst%-autoenc[%w%-_]*)( ReEncodeFont)", 
+                      "%1" .. targenc .. "%2-" .. tag .. "%3"
+                    ))
                     if new_mcontent ~= mcontent then 
                       print("Writing adjusted map lines to ", m)
                       f = assert(io.open(dir .. "/" .. m,"w"))
-                      -- this somehow removes the second value returned by string.gsub??
-                      f:write("%% Encodings renamed by fontscripts\n",(string.gsub(new_mcontent,"\n",os_newline_cp)))
-                      -- f:write((string.gsub(new_mcontent,"\n",os_newline_cp)))
+                      -- remove the second value returned by string.gsub
+                      f:write("%% Encodings renamed by fontscripts\n",
+                      (string.gsub(new_mcontent,"\n",os_newline_cp)))
                       f:close()
                     else
                       print("Nothing to do for ", m, ".\n")
@@ -533,24 +549,33 @@ function fontinst (dir,mode)
     if csscaleaux ~= nil then
       local csscale = string.gsub(csscaleaux, "@(@)", "%1")
       if csscale ~= nil then
-        new_content = string.gsub(content, "(\\DeclareFontFamily{)", "%% addaswyd o t1phv.fd (dyddiad y ffeil fd: 2020-03-25)\n\\expandafter\\ifx\\csname " .. csscale .. "\\endcsname\\relax\n  \\let\\" .. csscaleaux .. "\\@empty\n\\else\n  \\edef\\" .. csscaleaux .. "{s*[\\csname " .. csscale .. "\\endcsname]}%%\n\\fi\n\n%1")
+        new_content = string.gsub(content, "(\\DeclareFontFamily{)", 
+        "%% addaswyd o t1phv.fd (dyddiad y ffeil fd: 2020-03-25)\n\\expandafter\\ifx\\csname " 
+        .. csscale .. "\\endcsname\\relax\n  \\let\\" .. csscaleaux 
+        .. "\\@empty\n\\else\n  \\edef\\" .. csscaleaux 
+        .. "{s*[\\csname " .. csscale .. "\\endcsname]}%%\n\\fi\n\n%1")
       end
     end
-    csscaleaux = string.match(content, "\\DeclareFontFamily{[^}]*}{[^}]*}{[^}]*\\hyphenchar *\\font *=[^}\n]*}") 
+    csscaleaux = string.match(content, 
+    "\\DeclareFontFamily{[^}]*}{[^}]*}{[^}]*\\hyphenchar *\\font *=[^}\n]*}") 
     if csscaleaux ~= nil then
       content = new_content
-      new_content = string.gsub(content, "(\\DeclareFontFamily{[^}]*}{[^}]*}{\\hyphenchar) *(\\font) *(=[^ }\n]*) *([^ }\n]* *})", "%1%2%3%4")
+      new_content = string.gsub(content, 
+      "(\\DeclareFontFamily{[^}]*}{[^}]*}{\\hyphenchar) *(\\font) *(=[^ }\n]*) *([^ }\n]* *})", 
+      "%1%2%3%4")
     end
     if new_content ~= content then
       local f = assert(io.open(dir .. "/" .. j,"w"))
       -- this somehow removes the second value returned by string.gsub??
-      f:write("%% Scaling added by fontscripts\n",(string.gsub(new_content,"\n",os_newline_cp)))
+      f:write("%% Scaling added by fontscripts\n",(string.gsub(new_content,
+        "\n",os_newline_cp)))
       f:close()
     end
   end
   local errorlevel = uniquify(encodingtag)
   if errorlevel ~= 0 then
-    gwall("Encodings not uniquified! Do not submit to CTAN! uniquify(" .. encodingtag .. ")","",errorlevel)
+    gwall("Encodings not uniquified! Do not submit to CTAN! uniquify(" 
+      .. encodingtag .. ")","",errorlevel)
   end
   errorlevel = fntsubsetter()
   if errorlevel ~= 0 then
@@ -558,7 +583,9 @@ function fontinst (dir,mode)
   end
   errorlevel = fntkeeper()
   if errorlevel ~= 0 then
-    gwall("FONT KEEPER FAILED! DO NOT MAKE STANDARD TARGETS WITHOUT RESOLVING!! fntkeeper() ", dir, errorlevel)
+    gwall(
+      "FONT KEEPER FAILED! DO NOT MAKE STANDARD TARGETS WITHOUT RESOLVING!! fntkeeper() ", 
+      dir, errorlevel)
   end
   return nifergwall
 end
@@ -588,14 +615,17 @@ function fnt_afmtotfm (dir)
     if fntencs[j] == nil then 
       local rtn = fileexists(dir .. "/" .. j .. ".enc")
       if not rtn then
-        errorlevel = build_fnt(dir,"afm2tfm " .. k " >> " .. dir .. "/" .. map .. ".tmp")
+        errorlevel = build_fnt(dir,"afm2tfm " .. k " >> " .. dir 
+          .. "/" .. map .. ".tmp")
       else
-        errorlevel = build_fnt(dir, "afm2tfm " .. k .. " -p " .. j .. ".enc" .. " >> " .. dir .. "/" .. map .. ".tmp")
+        errorlevel = build_fnt(dir, "afm2tfm " .. k .. " -p " .. j 
+          .. ".enc" .. " >> " .. dir .. "/" .. map .. ".tmp")
       end
     elseif not fileexists(dir .. "/" .. fntencs[j]) then
       gwall("Search for encoding specified for " .. j .. " ",dir,1)
     else
-      errorlevel = build_fnt(dir, "afm2tfm " .. k .. " -p " .. fntencs[j] .. " >> " .. dir .. "/" .. map .. ".tmp")
+      errorlevel = build_fnt(dir, "afm2tfm " .. k .. " -p " .. fntencs[j] 
+        .. " >> " .. dir .. "/" .. map .. ".tmp")
     end
     if errorlevel ~= 0 then 
       gwall("afm2tfm (" .. j ..") ",dir,errorlevel) 
@@ -603,7 +633,8 @@ function fnt_afmtotfm (dir)
       local g = assert(io.open(dir .. "/" .. map .. ".tmp","rb"))
       local c = g:read("all")
       g:close()
-      content = content .. string.gsub(c, "\n", " <" .. string.gsub(k,"%.afm",".pfb") .. "\n")
+      content = content .. string.gsub(c, "\n", " <" 
+        .. string.gsub(k,"%.afm",".pfb") .. "\n")
       rm(dir, map .. ".tmp")
     end
   end
@@ -620,7 +651,8 @@ function fnt_afmtotfm (dir)
   f:close()
   errorlevel = fntkeeper()
   if errorlevel ~= 0 then
-    gwall("FONT KEEPER FAILED! DO NOT MAKE STANDARD TARGETS WITHOUT RESOLVING!! ", dir, errorlevel)
+    gwall("FONT KEEPER FAILED! DO NOT MAKE STANDARD TARGETS WITHOUT RESOLVING!! ", 
+      dir, errorlevel)
   end
   return nifergwall
 end
