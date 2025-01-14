@@ -1,4 +1,4 @@
--- $Id: build.lua 10718 2025-01-14 01:55:38Z cfrees $
+-- $Id: build.lua 10720 2025-01-14 22:10:25Z cfrees $
 -- Build configuration for fontscripts
 -- l3build.pdf listing 1 tudalen 9
 --
@@ -74,30 +74,42 @@ function manifest_setup ()
   }
   return groups
 end
+-- see if this helps ...
+packtdszip = true
 unpackexe = "pdflatex"
 --
 uploadconfig = {
   -- *required* --
   -- announcement (don't include here?)
-  announcement = "Restructuring and update. An attempt has been made to make the script more modular. Insertion of Text Companion encoding subset declarations into font definition files is now supported. This functionality must be explicitly enabled. Basic support for sandboxing font builds is provided. This is enabled by default for fontinst, but can be used independently if other tools are utilised.",
-	author     = "Clea F. Rees",
+  announcement  = "Restructuring and update. An attempt has been made to make the script more modular. Insertion of Text Companion encoding subset declarations into font definition files is now supported. This functionality must be explicitly enabled. Basic support for sandboxing font builds is provided. This is enabled by default for fontinst, but can be used independently if other tools are utilised.",
+	author        = "Clea F. Rees",
   -- email (don't include here!)
-	ctanPath   = "/fonts/utilities/fontscripts",
-	license    = {"lppl1.3c"},
-	pkg        = ctanpkg,
-	summary    = "Font encodings, metrics and Lua script fragments for generating font support packages for 8-bit engines with l3build.",
-  uploader   = "Clea F. Rees",
-	version    = "v0.1",
+	ctanPath      = "/fonts/utilities/fontscripts",
+	license       = {"lppl1.3c"},
+	pkg           = ctanpkg,
+	summary       = "Font encodings, metrics and Lua script fragments for generating font support packages for 8-bit engines with l3build.",
+  uploader      = "Clea F. Rees",
+	version       = "v0.1",
   -- optional --
-	bugtracker = {"https://codeberg.org/cfr/nfssext/issues"},
-  description  = "Font encodings, metrics and Lua script fragments for generating font support packages for 8-bit engines with l3build. Optional template-based system enables the automatic generation of font tables and l3build tests. Easy addition of variable scaling to fd files (unsupported by some tools). Primarily designed for fontinst, but can be adapted for use with other programmes. Default configuration is intended to be cross-platform and require only tools included in TeX Live, but the documentation includes a simple adaption for integration with FontForge and GNU make.",
+	bugtracker    = {"https://codeberg.org/cfr/nfssext/issues"},
+  description   = "Font encodings, metrics and Lua script fragments for generating font support packages for 8-bit engines with l3build. Optional template-based system enables the automatic generation of font tables and l3build tests. Easy addition of variable scaling to fd files (unsupported by some tools). Primarily designed for fontinst, but can be adapted for use with other programmes. Default configuration is intended to be cross-platform and require only tools included in TeX Live, but the documentation includes a simple adaption for integration with FontForge and GNU make.",
   -- development {}
   -- home {}
-	-- note       = "The catalogue currently shows the package as included only in MikTeX, but it is also included in TeX Live. Any chance this could be corrected?",
-	repository = {"https://codeberg.org/cfr/nfssext", "https://github.com/cfr42/nfssext"},
+	-- note          = "The catalogue currently shows the package as included only in MikTeX, but it is also included in TeX Live. Any chance this could be corrected?",
+	repository    = {"https://codeberg.org/cfr/nfssext", "https://github.com/cfr42/nfssext"},
   -- support {}
-	topic      = {"font-cvt", "package-devel", "ctan"},
-	update     = false,
+  tdslocations  = {
+    "doc/latex/fontscripts/*.md",
+    "doc/latex/fontscripts/*.pdf",
+    "doc/latex/fontscripts/*.txt",
+    "tex/fontinst/fontscripts/*.etx",
+    "tex/fontinst/fontscripts/*.mtx",
+    "scripts/fontscripts/fntbuild*.lua",
+    "source/latex/fontscripts/*.dtx",
+    "source/latex/fontscripts/*.ins",
+  },
+	topic         = {"font-cvt", "package-devel", "ctan"},
+	update        = false,
   -- files --
   -- announcement_file
   -- note_file

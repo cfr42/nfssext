@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10718 2025-01-14 01:55:38Z cfrees $}[v0.1 \revinfo][\filebase DTX: l3build scripts for font installation]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10720 2025-01-14 22:10:25Z cfrees $}[v0.1 \revinfo][\filebase DTX: l3build scripts for font installation]
 \DefineFileInfoSVN[fontscripts]
 \documentclass[10pt,british,lm-default=false]{l3doc}
 % l3doc loads fancyvrb
@@ -39,7 +39,7 @@
 \EnableCrossrefs
 \CodelineIndex
 \RecordChanges
-% \OnlyDescription
+\OnlyDescription
 \DoNotIndex{\verb,\ProvidesPackageSVN,\NeedsTeXFormat,\ProcessKeyOptions}
 \usepackage{babel}
 \usepackage{fancyhdr}
@@ -210,7 +210,8 @@
 % \begin{abstract}
 %   \noindent
 %   \lpack{fontscripts} provides variant font encodings, support metrics and Lua script fragments to automate the creation of \TeX{}/\LaTeXe{} font files for 8-bit engines using \lpack{l3build}.
-%   A template-based system enables the automatic generation of font tables and \lpack{l3build} tests.\smallskip 
+%   A template-based system enables the automatic generation of font tables and \lpack{l3build} tests.
+%   Variables support the addition of encoding subset declarations for the Text Companion (\texttt{TS1}) encoding and variable scaling factors in font definition files.\smallskip 
 %
 %   The script fragments\footnote{%
 %     The main script fragments are written in \emph{extremely elementary} Lua.
@@ -219,12 +220,54 @@
 %   For tools which do not otherwise support it, such as \lpack{fontinst}, the scripts enable the automatic addition of variable scaling in font definition files. 
 %   A semi-automatic system tries to ensure font encoding names are unique.\smallskip
 % 
-%   The script fragments are primarily designed for \lpack{fontinst}, but can easily be modified to work with other tools.
+%   The script fragments originally designed for \lpack{fontinst}, but support for \texttt{afmtotfm} (intended for fonts consisting entirely of ornaments etc.) is provided and a modular approach enables easy modification for other tools.
 %   The default configuration is intended to be cross-platform and requires only tools included in \TeX{} Live, but the documentation includes a simple adaption for integration with FontForge and \textsc{gnu} make.
 % \end{abstract}
 %
 % \tableofcontents
-% 
+%
+% \section{Quick Start}\label{sec:start}
+%
+% \textbf{This assumes you are familiar with basic usage of \lpack{l3build}.
+%   If not, please see \lpack{l3build}'s manual for basic setup.}
+%
+% Configuring your project for \lpack{l3build} includes creation of a file, \file{build.lua}, in your working directory.
+% This should specify at least the \texttt{module} name, typically the name of your package.
+% So you should have something like this,
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+module = {fontastic}
+\end{verbatim}
+% \iffalse
+%<?verb>
+% \fi
+% We now need to edit this file to make \pkg{l3build} aware of the Lua \texttt{fntbuild} scripts provided by \lpack{fontscripts}.
+% \iffalse
+%<*verb>
+% \fi
+%^^A kpse.set_program_name("kpsewhich")
+\begin{verbatim}
+module = {fontastic}
+kpse.set_program_name("kpsewhich")
+require(kpse.lookup("fntbuild.lua"))
+\end{verbatim}
+% \iffalse
+%<?verb>
+% \fi
+% This should be sufficient to make the functions provided by the script available.
+% To effectively use these functions, however, you will probably need to provide configuration details for your specific workflow and setup.
+% For example, if you want to build fonts this way, you may need to specify which build tool you use and which files contain the code to compile or commands to execute.
+% The remainder of this document explains how to do this\footnote{%^^A
+%   Unless you are reading a version which includes the implementation section.
+%   In that case, \emph{most} of the document is just code listing and it is the first bit of what remains explains how to actually use the scripts.%^^A
+% }.
+% You also need to tell the scripts if you want to override the defaults e.g.~if you would like \texttt{fntbuild} to insert subset encoding declarations and/or variable scaling factors into font definition files\footnote{%
+%   \texttt{fontinst} only.
+%   As far as I know, this is simply an oversight on \lpack{fontinst}'s part -- fixed scaling factors are supported out-of-the-box -- and I assume other tools have the ability to include variable scaling without \texttt{fntbuild}'s interference.%^^A
+% } or to auto-generate tests and/or font tables.
+%
 % \section{Lua Script Fragments}\label{sec:lua}
 %
 % \changes{v0.0}{0000/00/00}{\texttt{fontinst.lua} renamed to \texttt{fntbuild.lua}.}
@@ -781,7 +824,7 @@ subsetdefns.<family 2> = "3"
 %    \begin{macrocode}
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10718 2025-01-14 01:55:38Z cfrees $}[v0.1 \revinfo][\outFileName]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10720 2025-01-14 22:10:25Z cfrees $}[v0.1 \revinfo][\outFileName]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % \iffalse
