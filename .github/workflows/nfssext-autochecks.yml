@@ -42,7 +42,7 @@ jobs:
           package_file: .github/tl_packages
 
   clm:
-    if: ${{ always() }}
+    if: ${{ !cancelled() }}
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     name: "Test build: cfr-lm"
@@ -74,7 +74,7 @@ jobs:
         run: l3build fnttarg
       - name: Archive failed build output
       # run even if previous step failed
-        if: ${{ always() }}
+        if: ${{ !cancelled() }}
       # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
         uses: actions/upload-artifact@v4
         with:
@@ -92,7 +92,7 @@ jobs:
         run: updmap --user --enable Map=clm.map
       - name: Archive failed test output for clm
         # run even if previous step failed
-        if: ${{ always() }}
+        if: ${{ !cancelled() }}
         uses: zauguin/l3build-failure-artifacts@v1
         with:
           name: testfiles-clm
@@ -119,7 +119,7 @@ jobs:
   # addaswyd o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
   # these do not depend on clm
   nfssext:
-    if: ${{ always() }}
+    if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     needs: texlive-cache
     # don't abandon other builds if one module fails
@@ -177,7 +177,7 @@ jobs:
         run: "l3build fnttarg"
       - name: Archive failed build output
       # run even if previous step failed
-        if: ${{ always() }}
+        if: ${{ !cancelled() }}
       # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
         uses: actions/upload-artifact@v4
         with:
@@ -190,7 +190,7 @@ jobs:
         run: "l3build ctan"
       - name: Archive failed test output
       # run even if previous step failed
-        if: ${{ always() }}
+        if: ${{ !cancelled() }}
         uses: zauguin/l3build-failure-artifacts@v1
         with:
           name: testfiles-${{ matrix.module }}
@@ -210,7 +210,7 @@ jobs:
   # we don't really need the variable doing it in a separate matrix ...
   # but leave for now as may be useful
   nfssext-needy:
-    if: ${{ always() }}
+    if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     needs: [ texlive-cache, clm ]
     # don't abandon other builds if one module fails
@@ -283,7 +283,7 @@ jobs:
         run: "l3build ctan"
       - name: Archive failed test output
       # run even if previous step failed
-        if: ${{ always() }}
+        if: ${{ !cancelled() }}
         uses: zauguin/l3build-failure-artifacts@v1
         with:
           name: testfiles-${{ matrix.module }}
