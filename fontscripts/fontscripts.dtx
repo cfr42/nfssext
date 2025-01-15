@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10720 2025-01-14 22:10:25Z cfrees $}[v0.1 \revinfo][\filebase DTX: l3build scripts for font installation]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10721 2025-01-15 04:08:41Z cfrees $}[v0.1 \revinfo][\filebase DTX: l3build scripts for font installation]
 \DefineFileInfoSVN[fontscripts]
 \documentclass[10pt,british,lm-default=false]{l3doc}
 % l3doc loads fancyvrb
@@ -241,7 +241,7 @@
 module = {fontastic}
 \end{verbatim}
 % \iffalse
-%<?verb>
+%</verb>
 % \fi
 % We now need to edit this file to make \pkg{l3build} aware of the Lua \texttt{fntbuild} scripts provided by \lpack{fontscripts}.
 % \iffalse
@@ -254,7 +254,7 @@ kpse.set_program_name("kpsewhich")
 require(kpse.lookup("fntbuild.lua"))
 \end{verbatim}
 % \iffalse
-%<?verb>
+%</verb>
 % \fi
 % This should be sufficient to make the functions provided by the script available.
 % To effectively use these functions, however, you will probably need to provide configuration details for your specific workflow and setup.
@@ -824,7 +824,7 @@ subsetdefns.<family 2> = "3"
 %    \begin{macrocode}
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10720 2025-01-14 22:10:25Z cfrees $}[v0.1 \revinfo][\outFileName]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10721 2025-01-15 04:08:41Z cfrees $}[v0.1 \revinfo][\outFileName]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % \iffalse
