@@ -181,7 +181,7 @@ jobs:
       - name: Run l3build fnttarg
         if: ${{ matrix.pre_target }}
         working-directory: ${{ matrix.working_directory }}
-        id: '${{ matrix.fnttarg_id }}'
+        id: ${{ matrix.fnttarg_id }}
         run: (l3build fnttarg && echo -e "BUILD_RET=0\nBUILD_ARK=false" >> "$GITHUB_OUTPUT") || echo -e "BUILD_RET=1\nBUILD_ARK=true" >> "$GITHUB_OUTPUT"
       - name: Archive failed build output
       # run even iff previous step failed
