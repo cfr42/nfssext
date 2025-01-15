@@ -181,13 +181,11 @@ jobs:
       - name: Run l3build fnttarg
         if: ${{ matrix.pre_target }}
         working-directory: ${{ matrix.working_directory }}
-        id: ${{ matrix.fnttarg_id }}
-        run: (l3build fnttarg && echo -e "BUILD_RET=0\nBUILD_ARK=false" >> "$GITHUB_OUTPUT") || echo -e "BUILD_RET=1\nBUILD_ARK=true" >> "$GITHUB_OUTPUT"
+        id: fnttarg
+        run: (l3build fnttarg && echo -e "BUILD_RET=0" >> "$GITHUB_OUTPUT") || echo -e "BUILD_RET=1" >> "$GITHUB_OUTPUT"
       - name: Archive failed build output
       # run even iff previous step failed
-        # if: ${{ !cancelled() && !format('steps.{1}.outputs.BUILD_RET', '${{ matrix.fnttarg_id }}') }}
-        if: ${{ !cancelled() }}
-        if: ${{ 'steps.${{ matrix.fnttarg_id }}.outputs.BUILD_ARK' }} 
+        if: ${{ !cancelled() && !(steps.fnttarg.outputs.BUILD_RET) }}
       # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
         uses: actions/upload-artifact@v4
         with:
