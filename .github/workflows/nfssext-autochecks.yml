@@ -157,7 +157,7 @@ jobs:
             pre_target: fnttarg
             fnttarg_id: fnttarg-venturisadf
     name: "Test build: ${{ matrix.module }}"
-    fnttarg_id_full: format('steps.{1}.outputs.BUILD_RET', ${{ matrix.fnttarg_id }})
+    fnttarg_id_full: format('steps.{1}.outputs.BUILD_RET', matrix.fnttarg_id )
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repo
