@@ -79,7 +79,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: buildfiles-clm
-          path: build/fntdir/*.log
+          path: build/fnt/*.log
           # Decide how long to keep the test output artefact:
           retention-days: 7
       - name: Run l3build ctan 
@@ -182,7 +182,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: buildfiles-${{ matrix.module }}
-          path: build/fntdir/*.log
+          path: build/fnt/*.log
           # Decide how long to keep the test output artefact:
           retention-days: 7
       - name: Run l3build
@@ -275,7 +275,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: buildfiles-${{ matrix.module }}
-          path: build/fntdir/*.log
+          path: build/fnt/*.log
           # Decide how long to keep the test output artefact:
           retention-days: 7
       - name: Run l3build
