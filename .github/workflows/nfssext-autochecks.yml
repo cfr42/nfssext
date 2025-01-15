@@ -185,7 +185,7 @@ jobs:
         run: (l3build fnttarg && echo "BUILD_RET=0" >> "$GITHUB_OUTPUT") || echo "BUILD_RET=1" >> "$GITHUB_OUTPUT"
       - name: Archive failed build output
       # run even iff previous step failed
-        if: ${{ !cancelled() && !(${{ format('steps.{1}.outputs.BUILD_RET', ${{ matrix.fnttarg_id }}) }}) }}
+        if: ${{ !cancelled() && !(${{ format('steps.{1}.outputs.BUILD_RET', '${{ matrix.fnttarg_id }}') }}) }}
       # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
         uses: actions/upload-artifact@v4
         with:
