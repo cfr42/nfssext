@@ -72,6 +72,16 @@ jobs:
       - name: Run l3build fnttarg 
         working-directory: cfr-lm
         run: l3build fnttarg
+      - name: Archive failed build output
+      # run even if previous step failed
+        if: ${{ always() }}
+      # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
+        uses: actions/upload-artifact@v4
+        with:
+          name: buildfiles-clm
+          path: build/fntdir/*.log
+          # Decide how long to keep the test output artefact:
+          retention-days: 7
       - name: Run l3build ctan 
         working-directory: cfr-lm
         run: l3build ctan
@@ -165,6 +175,16 @@ jobs:
         if: ${{ matrix.pre_target }}
         working-directory: ${{ matrix.working_directory }}
         run: "l3build fnttarg"
+      - name: Archive failed build output
+      # run even if previous step failed
+        if: ${{ always() }}
+      # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
+        uses: actions/upload-artifact@v4
+        with:
+          name: buildfiles-${{ matrix.module }}
+          path: build/fntdir/*.log
+          # Decide how long to keep the test output artefact:
+          retention-days: 7
       - name: Run l3build
         working-directory: ${{ matrix.working_directory }}
         run: "l3build ctan"
@@ -249,6 +269,15 @@ jobs:
         if: ${{ matrix.pre_target }}
         working-directory: ${{ matrix.working_directory }}
         run: "l3build fnttarg"
+      - name: Archive failed build output
+        if: ${{ matrix.pre_target }}
+      # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
+        uses: actions/upload-artifact@v4
+        with:
+          name: buildfiles-${{ matrix.module }}
+          path: build/fntdir/*.log
+          # Decide how long to keep the test output artefact:
+          retention-days: 7
       - name: Run l3build
         working-directory: ${{ matrix.working_directory }}
         run: "l3build ctan"
