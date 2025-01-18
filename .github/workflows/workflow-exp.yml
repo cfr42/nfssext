@@ -41,12 +41,14 @@ jobs:
         uses: actions/checkout@v4
       - name: Update system 
         run: sudo apt-get update
-      - name: Run l3build fnttarg
-        id: fnttarg
+      - name: Run true
         if: ${{ matrix.my_result }}
+        id: fnttarg
         run:  echo -e "BUILD_RET=0" >> "$GITHUB_OUTPUT" 
-        else:
-          run: echo -e "BUILD_RET=1" >> "$GITHUB_OUTPUT"
+      - name: Run false
+        if: ${{ ! (matrix.my_result) }}
+        id: fnttarg
+        run: echo -e "BUILD_RET=1" >> "$GITHUB_OUTPUT"
       - name: Archive failed build output
         if: ${{ !cancelled() && !(steps.fnttarg.outputs.BUILD_RET) }}
         uses: actions/upload-artifact@v4
