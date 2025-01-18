@@ -61,9 +61,9 @@ jobs:
           else
             echo -e "BUILD_RET=1" >> "$GITHUB_OUTPUT"
             echo -e "build_ret_${modid}=1" >> "$GITHUB_OUTPUT"
+            ls holly
           fi
           cat "$GITHUB_OUTPUT"
-          [[ "$buildret" != "true" ]] && ls holly
       - name: Archive failed build output
         if: ${{ !cancelled() && !(steps.build_ret.outputs.BUILD_RET) }}
         uses: actions/upload-artifact@v4
