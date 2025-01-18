@@ -29,7 +29,8 @@ jobs:
       mod_b_output: ${{ steps.build_ret.outputs.build_ret_modb }}
       mod_c_output: ${{ steps.build_ret.outputs.build_ret_modc }}
     # don't abandon other builds if one module fails
-    continue-on-error: true
+    # continue-on-error: true
+    fail-fast: false
     strategy:
       matrix:
         include:
