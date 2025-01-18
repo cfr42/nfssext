@@ -54,13 +54,14 @@ jobs:
           # buildret="${{ steps.thing.outputs.build_ret }}"
           buildret=${{ matrix.my_result }}
           modid="${{ matrix.mod_id }}"
-          if [ "$buildret" == "true" ] then
+          if [ "$buildret" == "true" ] 
+          then
             echo -e "BUILD_RET=0" >> "$GITHUB_OUTPUT"
             echo -e "build_ret_${modid}=0" >> "$GITHUB_OUTPUT"
           else
             echo -e "BUILD_RET=1" >> "$GITHUB_OUTPUT"
             echo -e "build_ret_${modid}=1" >> "$GITHUB_OUTPUT"
-          endif
+          fi
           cat "$GITHUB_OUTPUT"
       - name: Archive failed build output
         if: ${{ !cancelled() && !(steps.build_ret.outputs.BUILD_RET) }}
