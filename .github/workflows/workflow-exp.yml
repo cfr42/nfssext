@@ -75,6 +75,8 @@ jobs:
   summary:
     name: summary
     needs: things
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
     steps:
       - name: Summarise
         run: |
