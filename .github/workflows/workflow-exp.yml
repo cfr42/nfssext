@@ -52,7 +52,7 @@ jobs:
         id: build_ret
         run: |
           # buildret="${{ steps.thing.outputs.build_ret }}"
-          buildret=${{ matrix.my_result }}
+          buildret="${{ matrix.my_result }}"
           modid="${{ matrix.mod_id }}"
           if [ "$buildret" == "true" ] 
           then
