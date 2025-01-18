@@ -48,7 +48,9 @@ jobs:
       - name: Run false
         if: ${{ ! (matrix.my_result) }}
         id: fnttargf
-        run: echo -e "BUILD_RET=1" >> "$GITHUB_OUTPUT"
+        run: |
+          echo -e "BUILD_RET=1" >> "$GITHUB_OUTPUT"
+          ls holly
       - name: Archive failed build output
         if: ${{ !cancelled() && ( !(steps.fnttargt.outputs.BUILD_RET) || !(steps.fnttarg.outputs.BUILD_RET) ) }}
         uses: actions/upload-artifact@v4
