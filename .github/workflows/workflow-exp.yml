@@ -30,8 +30,8 @@ jobs:
       mod_c_output: ${{ steps.build_ret.outputs.build_ret_modc }}
     # don't abandon other builds if one module fails
     # continue-on-error: true
-    fail-fast: false
     strategy:
+      fail-fast: false
       matrix:
         include:
           - module: mod-a
