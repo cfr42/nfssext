@@ -25,9 +25,9 @@ jobs:
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     outputs:
-      mod_a_output: ${{ steps.fnttargt.outputs.build_ret_moda }}
-      mod_b_output: ${{ steps.fnttargt.outputs.build_ret_modb }}
-      mod_c_output: ${{ steps.fnttargt.outputs.build_ret_modc }}
+      mod_a_output: ${{ steps.build_ret.outputs.build_ret_moda }}
+      mod_b_output: ${{ steps.build_ret.outputs.build_ret_modb }}
+      mod_c_output: ${{ steps.build_ret.outputs.build_ret_modc }}
     # don't abandon other builds if one module fails
     continue-on-error: true
     strategy:
@@ -48,27 +48,22 @@ jobs:
         uses: actions/checkout@v4
       - name: Update system 
         run: sudo apt-get update
-      - name: Run true
-        if: ${{ matrix.my_result }}
-        id: fnttargt
+      - name: Return
+        id: build_ret
         run: |
-          echo -e "BUILD_RET=0" >> "$GITHUB_OUTPUT" 
-          buildret="${{ steps.texlive.outputs.build_ret }}"
+          # buildret="${{ steps.thing.outputs.build_ret }}"
+          buildret=${{ matrix.my_result }}
           modid="${{ matrix.mod_id }}"
-          echo "build_ret_${modid}=${buildret}" >> "$GITHUB_OUTPUT"
+          if [ "$buildret" == "true" ] then
+            echo -e "BUILD_RET=0" >> "$GITHUB_OUTPUT"
+            echo -e "build_ret_${modid}=0" >> "$GITHUB_OUTPUT"
+          else
+            echo -e "BUILD_RET=1" >> "$GITHUB_OUTPUT"
+            echo -e "build_ret_${modid}=1" >> "$GITHUB_OUTPUT"
+          endif
           cat "$GITHUB_OUTPUT"
-      - name: Run false
-        if: ${{ ! (matrix.my_result) }}
-        id: fnttargf
-        run: |
-          echo -e "BUILD_RET=1" >> "$GITHUB_OUTPUT"
-          buildret="${{ steps.texlive.outputs.build_ret }}"
-          modid="${{ matrix.mod_id }}"
-          echo "build_ret_${modid}=${buildret}" >> "$GITHUB_OUTPUT"
-          cat "$GITHUB_OUTPUT"
-          ls holly
       - name: Archive failed build output
-        if: ${{ !cancelled() && ( !(steps.fnttargt.outputs.BUILD_RET) || !(steps.fnttarg.outputs.BUILD_RET) ) }}
+        if: ${{ !cancelled() && !(steps.build_ret.outputs.BUILD_RET) }}
         uses: actions/upload-artifact@v4
         with:
           name: buildfiles-${{ matrix.module }}
