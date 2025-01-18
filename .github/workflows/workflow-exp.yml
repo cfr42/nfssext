@@ -72,4 +72,16 @@ jobs:
           path: fontscripts/*.lua
           retention-days: 1
 
+  summary:
+    name: summary
+    needs: things
+    steps:
+      - name: Summarise
+        run: |
+          outmoda="${{ needs.things.outputs.build_ret_moda }}"
+          outmodb="${{ needs.things.outputs.build_ret_modb }}"
+          outmodc="${{ needs.things.outputs.build_ret_modc }}"
+          ("[[ $outmoda != 0 || $outmodb != 0 || $outmodc != 0 ]]" && echo -e "BUILD_RET=1" >> "$GITHUB_OUTPUT") || echo -e "BUILD_RET=0" >> "$GITHUB_OUTPUT"
+          cat "$GITHUB_OUTPUT"
+
 # vim: sw=2:et:ts=2:
