@@ -78,12 +78,15 @@ jobs:
     needs: things
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
+    ret_a: ${{ needs.things.outputs.build_ret_moda }}
+    ret_b: ${{ needs.things.outputs.build_ret_modb }}
+    ret_c: ${{ needs.things.outputs.build_ret_modc }}
     steps:
       - name: Summarise
         run: |
-          outmoda="${{ needs.things.outputs.build_ret_moda }}"
-          outmodb="${{ needs.things.outputs.build_ret_modb }}"
-          outmodc="${{ needs.things.outputs.build_ret_modc }}"
+          outmoda="${{ ret_a }}"
+          outmodb="${{ ret_b }}"
+          outmodc="${{ ret_c }}"
           ("[[ $outmoda != 0 || $outmodb != 0 || $outmodc != 0 ]]" && echo -e "BUILD_RET=1" >> "$GITHUB_OUTPUT") || echo -e "BUILD_RET=0" >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
 
