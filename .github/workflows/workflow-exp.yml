@@ -80,9 +80,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Summarise
-        reta: ${{ needs.things.outputs.build_ret_moda }}
-        retb: ${{ needs.things.outputs.build_ret_modb }}
-        retc: ${{ needs.things.outputs.build_ret_modc }}
+        env:
+          reta: ${{ needs.things.outputs.build_ret_moda }}
+          retb: ${{ needs.things.outputs.build_ret_modb }}
+          retc: ${{ needs.things.outputs.build_ret_modc }}
         run: |
           outmoda="${{ reta }}"
           outmodb="${{ retb }}"
