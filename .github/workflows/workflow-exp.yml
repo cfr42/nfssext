@@ -82,7 +82,7 @@ jobs:
       - name: Summarise
       # https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions#jobsjob_idoutputs
         env:
-          MODA_OUTPUT: ${{ needs.things.outputs.moda_output }}
+          reta: ${{ needs.things.outputs.moda_output }}
           retb: ${{ needs.things.outputs.modb_output }}
           retc: ${{ needs.things.outputs.modc_output }}
         run: |
