@@ -80,6 +80,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Summarise
+      # https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions#jobsjob_idoutputs
         env:
           reta: ${{ needs.things.outputs.build_ret_moda }}
           retb: ${{ needs.things.outputs.build_ret_modb }}
