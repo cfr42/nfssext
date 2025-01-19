@@ -86,7 +86,7 @@ jobs:
           outmodb: ${{ needs.things.outputs.mod_b_output }}
           outmodc: ${{ needs.things.outputs.mod_c_output }}
         run: |
-          ("[[ $outmoda != 0 || $outmodb != 0 || $outmodc != 0 ]]" && echo -e "BUILD_RET=1" >> "$GITHUB_OUTPUT") || echo -e "BUILD_RET=0" >> "$GITHUB_OUTPUT"
+          ([[ $outmoda != 0 || $outmodb != 0 || $outmodc != 0 ]] && echo -e "BUILD_RET=1" >> "$GITHUB_OUTPUT") || echo -e "BUILD_RET=0" >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
 
 # vim: sw=2:et:ts=2:
