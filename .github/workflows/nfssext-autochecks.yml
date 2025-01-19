@@ -10,7 +10,17 @@ on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
     branches: 
-      - "*"
+      # - "*"
+      # - "*workflow"
+      - '*'
+    paths:
+      - '**'
+      - '!**.md'
+      - '!**.txt'
+      - '!.github/workflows/*.yml'
+      - '.github/workflows/nfssext-autochecks.yml'
+      - '!licences/**'
+      - '!test/**'
   pull_request:
     branches: 
       - "*"
@@ -123,9 +133,23 @@ jobs:
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     needs: texlive-cache
+    outputs:
+      fnttarg_baskervaldadf_output: ${{ steps.fnttarg.outputs.build_ret_baskervaldadf }}
+      fnttarg_berenisadf_output: ${{ steps.fnttarg.outputs.build_ret_berenisadf }}
+      fnttarg_electrumadf_output: ${{ steps.fnttarg.outputs.build_ret_electrumadf }}
+      fnttarg_librisadf_output: ${{ steps.fnttarg.outputs.build_ret_librisadf }}
+      fnttarg_romandeadf_output: ${{ steps.fnttarg.outputs.build_ret_romandeadf }}
+      fnttarg_venturisadf_output: ${{ steps.fnttarg.outputs.build_ret_venturisadf }}
+      ctan_baskervaldadf_output: ${{ steps.ctan.outputs.ctan_ret_baskervaldadf }}
+      ctan_berenisadf_output: ${{ steps.ctan.outputs.ctan_ret_berenisadf }}
+      ctan_electrumadf_output: ${{ steps.ctan.outputs.ctan_ret_electrumadf }}
+      ctan_librisadf_output: ${{ steps.ctan.outputs.ctan_ret_librisadf }}
+      ctan_romandeadf_output: ${{ steps.ctan.outputs.ctan_ret_romandeadf }}
+      ctan_venturisadf_output: ${{ steps.ctan.outputs.ctan_ret_venturisadf }}
     # don't abandon other builds if one module fails
-    continue-on-error: true
+    # continue-on-error: true
     strategy:
+      fail-fast: false
       matrix:
         # include indicates that we want to set explicitly these combinations
         # and don't want full matrix testing.
@@ -182,7 +206,10 @@ jobs:
         if: ${{ matrix.pre_target }}
         working-directory: ${{ matrix.working_directory }}
         id: fnttarg
-        run: (l3build fnttarg && echo -e "BUILD_RET=0" >> "$GITHUB_OUTPUT") || echo -e "BUILD_RET=1" >> "$GITHUB_OUTPUT"
+        run: |
+          module="${{ matrix.module }}"
+          (l3build fnttarg && echo -e "BUILD_RET=0\nbuild_ret_${module}=0" >> "$GITHUB_OUTPUT") || echo -e "BUILD_RET=1\nbuild_ret_${module}=1" >> "$GITHUB_OUTPUT"
+          cat "$GITHUB_OUTPUT"
       - name: Archive failed build output
       # run even iff previous step failed
         if: ${{ !cancelled() && !(steps.fnttarg.outputs.BUILD_RET) }}
@@ -195,7 +222,11 @@ jobs:
           retention-days: 7
       - name: Run l3build
         working-directory: ${{ matrix.working_directory }}
-        run: "l3build ctan"
+        id: ctan
+        run: |
+          module="${{ matrix.module }}"
+          (l3build ctan && echo -e "BUILD_RET=0\nctan_ret_${module}=0" >> "$GITHUB_OUTPUT") || echo -e "BUILD_RET=1\nctan_ret_${module}=1" >> "$GITHUB_OUTPUT"
+          cat "$GITHUB_OUTPUT"
       - name: Archive failed test output
       # run even if previous step failed
         if: ${{ !cancelled() }}
@@ -221,9 +252,17 @@ jobs:
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     needs: [ texlive-cache, clm ]
+    outputs:
+      fnttarg_adforn_output: ${{ steps.fnttarg.outputs.build_ret_adforn }}
+      fnttarg_adfsymbols_output: ${{ steps.fnttarg.outputs.build_ret_adfsymbols }}
+      ctan_adforn_output: ${{ steps.ctan.outputs.ctan_ret_adforn }}
+      ctan_adfsymbols_output: ${{ steps.ctan.outputs.ctan_ret_adfsymbols }}
+      ctan_fontscripts_output: ${{ steps.ctan.outputs.ctan_ret_fontscripts }}
+      ctan_nfssext_cfr_output: ${{ steps.ctan.outputs.ctan_ret_nfssext-cfr }}
     # don't abandon other builds if one module fails
-    continue-on-error: true
+    # continue-on-error: true
     strategy:
+      fail-fast: false
       matrix:
         # include indicates that we want to set explicitly these combinations
         # and don't want full matrix testing.
@@ -277,7 +316,10 @@ jobs:
         if: ${{ matrix.pre_target }}
         working-directory: ${{ matrix.working_directory }}
         id: fnttarg
-        run: (l3build fnttarg && echo -e "BUILD_RET=0" >> "$GITHUB_OUTPUT") || echo -e "BUILD_RET=1" >> "$GITHUB_OUTPUT"
+        run: |
+          module="${{ matrix.module }}"
+          (l3build fnttarg && echo -e "BUILD_RET=0\nbuild_ret_${module}=0" >> "$GITHUB_OUTPUT") || echo -e "BUILD_RET=1\nbuild_ret_${module}=1" >> "$GITHUB_OUTPUT"
+          cat "$GITHUB_OUTPUT"
       - name: Archive failed build output
       # run even iff previous step failed
         if: ${{ !cancelled() && !(steps.fnttarg.outputs.BUILD_RET) && matrix.pre_target }}
@@ -290,7 +332,11 @@ jobs:
           retention-days: 7
       - name: Run l3build
         working-directory: ${{ matrix.working_directory }}
-        run: "l3build ctan"
+        id: ctan
+        run: |
+          module="${{ matrix.module }}"
+          (l3build ctan && echo -e "BUILD_RET=0\nctan_ret_${module}=0" >> "$GITHUB_OUTPUT") || echo -e "BUILD_RET=1\nctan_ret_${module}=1" >> "$GITHUB_OUTPUT"
+          cat "$GITHUB_OUTPUT"
       - name: Archive failed test output
       # run even if previous step failed
         if: ${{ !cancelled() }}
@@ -307,5 +353,37 @@ jobs:
           path: ${{ matrix.working_directory }}/*.pdf
           # Decide how long to keep the test output artefact:
           retention-days: 30
+
+  summary:
+    name: summary
+    needs: [ nfssext, nfssext-needy ]
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: NFSSEXT Autochecks Summary
+      # https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions#jobsjob_idoutputs
+        env:
+          fnttargbaskervaldadf: ${{ needs.nfssext.outputs.fnttarg_baskervaldadf }}
+          fnttargberenisadf: ${{ needs.nfssext.outputs.fnttarg_berenisadf }}
+          fnttargelectrumadf: ${{ needs.nfssext.outputs.fnttarg_electrumadf }}
+          fnttarglibrisadf: ${{ needs.nfssext.outputs.fnttarg_librisadf }}
+          fnttargromandeadf: ${{ needs.nfssext.outputs.fnttarg_romandeadf }}
+          fnttargventurisadf: ${{ needs.nfssext.outputs.fnttarg_venturisadf }}
+          ctanbaskervaldadf: ${{ needs.nfssext.outputs.ctan_baskervaldadf }}
+          ctanberenisadf: ${{ needs.nfssext.outputs.ctan_berenisadf }}
+          ctanelectrumadf: ${{ needs.nfssext.outputs.ctan_electrumadf }}
+          ctanlibrisadf: ${{ needs.nfssext.outputs.ctan_librisadf }}
+          ctanromandeadf: ${{ needs.nfssext.outputs.ctan_romandeadf }}
+          ctanventurisadf: ${{ needs.nfssext.outputs.ctan_venturisadf }}
+          fnttargadforn: ${{ needs.nfssext-needy.outputs.fnttarg_adforn }}
+          fnttargadfsymbols: ${{ needs.nfssext-needy.outputs.fnttarg_adfsymbols }}
+          ctanadforn: ${{ needs.nfssext-needy.outputs.ctan_adforn }}
+          ctanadfsymbols: ${{ needs.nfssext-needy.outputs.ctan_adfsymbols }}
+          ctanfontscripts: ${{ needs.nfssext-needy.outputs.ctan_fontscripts }}
+          ctannfssextcfr: ${{ needs.nfssext-needy.outputs.ctan_nfssext_cfr }}
+        run: |
+          ([[ $fnttargbaskervaldadf != 0 || $fnttargberenisadf != 0 || $fnttargelectrumadf != 0 || $fnttarglibrisadf != 0 || $fnttargromandeadf != 0 || $fnttargventurisadf != 0 || $ctanbaskervaldadf != 0 || $ctanberenisadf != 0 || $ctanelectrumadf != 0 || $ctanlibrisadf != 0 || $ctanromandeadf != 0 || $ctanventurisadf != 0 || $fnttargadforn != 0 || $fnttargadfsymbols != 0 || $ctanadforn != 0 || $ctanadfsymbols != 0 || $ctanfontscripts != 0 || $ctannfssextcfr != 0 ]] && echo -e "BUILD_RET=1" >> "$GITHUB_OUTPUT") || echo -e "BUILD_RET=0" >> "$GITHUB_OUTPUT"
+          cat "$GITHUB_OUTPUT"
+
 
 # vim: sw=2:et:ts=2:

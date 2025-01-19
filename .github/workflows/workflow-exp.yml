@@ -11,12 +11,13 @@ on:
   push:
     branches: 
       - "*"
+    paths:
+      - '.github/workflows/workflow-exp.yml'
   pull_request:
     branches: 
       - "*"
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
+    paths:
+      - '.github/workflows/workflow-exp.yml'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
