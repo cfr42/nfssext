@@ -1,4 +1,4 @@
--- $Id: build.lua 10725 2025-01-25 01:27:12Z cfrees $
+-- $Id: build.lua 10727 2025-01-25 06:03:54Z cfrees $
 -- Build configuration for fontscripts
 -- l3build.pdf listing 1 tudalen 9
 --
@@ -41,7 +41,7 @@ function docinit_hook()
 end
 date = "2024-2025"
 if direxists(sourcefiledir .. "/../../adnoddau/l3build") then
-  dofile(sourcefiledir .. "/../../adnoddau/l3build/tag.lua")
+  dofile(maindir .. "/tag.lua")
   dofile(sourcefiledir .. "/../../adnoddau/l3build/manifest.lua")
 end
 function manifest_setup ()
