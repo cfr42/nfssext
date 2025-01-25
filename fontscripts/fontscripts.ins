@@ -1,4 +1,4 @@
-% $Id: fontscripts.ins 10708 2025-01-03 03:16:37Z cfrees $
+% $Id: fontscripts.ins 10723 2025-01-25 00:52:39Z cfrees $
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% fontscripts.ins
 %% Additions and changes Copyright (C) 2024-2025 Clea F. Rees.
@@ -154,6 +154,8 @@ https://www.ctan.org/pkg/\maybenoexpand\basePkgName. See \maybenoexpand\baseFile
 \usepreamble\safonol
 
 \generate{%
+  \file{fontscripts-doc.tex}{\from{fontscripts.dtx}{doc}}
+  \file{fontscripts-code.tex}{\from{fontscripts.dtx}{doc-code}}
   \file{fnt-tables.tex}{\from{fontscripts.dtx}{tables}}
   \usepreamble\safonolmtx
   \file{unfakable.mtx}{\from{fontscripts.dtx}{unfakable}}

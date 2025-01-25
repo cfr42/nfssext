@@ -1,4 +1,4 @@
--- $Id: build.lua 10720 2025-01-14 22:10:25Z cfrees $
+-- $Id: build.lua 10725 2025-01-25 01:27:12Z cfrees $
 -- Build configuration for fontscripts
 -- l3build.pdf listing 1 tudalen 9
 --
@@ -12,6 +12,7 @@ sourcefiles = {"*.dtx", "*.ins"}
 installfiles = {"*.etx", "*.mtx", "*.lua"}
 manifestfile = "manifest.txt"
 typesetdeps = {maindir .. "/nfssext-cfr", maindir .. "/cfr-lm"}
+typesetfiles = {"*-doc.tex", "*-code.tex"}
 typesetruns = 5
 --
 docfiles = filelist(sourcefiledir,"fntbuild-*.lua")
@@ -66,10 +67,11 @@ function manifest_setup ()
     },
     {
       name = "Typeset documentation",
-      files = {typesetfiles,typesetdemofiles},
+      -- files = {typesetfiles,typesetdemofiles},
+      files = {"*.pdf"},
       excludefiles = {".",".."},
       dir = sourcefiledir,
-      rename = {"%.%w+$",".pdf"},
+      -- rename = {"%.%w+$",".pdf"},
     },
   }
   return groups
