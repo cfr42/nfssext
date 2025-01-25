@@ -417,6 +417,7 @@ cfr-lm/tfm
 cfr-lm/v1.6-unpublished
 cfr-lm/unused
 fontscripts/fontscripts.pdf
+fontscripts/fontscripts-*.pdf
 nfssext-cfr/nfssext-cfr.pdf
 nfssext-cfr/pre-dtx
 nfssext-cfr/timeout
