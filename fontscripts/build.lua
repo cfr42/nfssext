@@ -1,7 +1,12 @@
--- $Id: build.lua 10727 2025-01-25 06:03:54Z cfrees $
+-- $Id: build.lua 10728 2025-01-25 06:25:05Z cfrees $
+-------------------------------------------------------------------------------
+-- This work, which consists of all files listed in manifest.txt, is released 
+-- under the LaTeX Project Public Licence version 1.3c or later. See individual 
+-- files for details.
+-------------------------------------------------------------------------------
 -- Build configuration for fontscripts
 -- l3build.pdf listing 1 tudalen 9
---
+-------------------------------------------------------------------------------
 module = "fontscripts"
 ctanpkg = "fontscripts"
 -- maindir **must** be shared with dependencies
@@ -91,7 +96,7 @@ uploadconfig = {
 	pkg           = ctanpkg,
 	summary       = "Font encodings, metrics and Lua script fragments for generating font support packages for 8-bit engines with l3build.",
   uploader      = "Clea F. Rees",
-	version       = "v0.1",
+	version       = "v0.2",
   -- optional --
 	bugtracker    = {"https://codeberg.org/cfr/nfssext/issues"},
   description   = "Font encodings, metrics and Lua script fragments for generating font support packages for 8-bit engines with l3build. Optional template-based system enables the automatic generation of font tables and l3build tests. Easy addition of variable scaling to fd files (unsupported by some tools). Primarily designed for fontinst, but can be adapted for use with other programmes. Default configuration is intended to be cross-platform and require only tools included in TeX Live, but the documentation includes a simple adaption for integration with FontForge and GNU make.",
@@ -111,11 +116,11 @@ uploadconfig = {
     "source/latex/fontscripts/*.ins",
   },
 	topic         = {"font-cvt", "package-devel", "ctan"},
-	update        = false,
+	update        = true,
   -- files --
   -- announcement_file
   -- note_file
   -- curlopt_file
 }
---
+-------------------------------------------------------------------------------
 -- vim: ts=2:sw=2:tw=80:nospell
