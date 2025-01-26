@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10732 2025-01-26 09:06:04Z cfrees $}[v0.2 \revinfo][\filebase DTX: l3build scripts for font installation]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10735 2025-01-26 19:16:26Z cfrees $}[v0.2 \revinfo][\filebase DTX: l3build scripts for font installation]
 \DefineFileInfoSVN[fontscripts]
 \documentclass[10pt,british,lm-default=false]{l3doc}
 % l3doc loads fancyvrb
@@ -307,14 +307,25 @@ require(kpse.lookup("fntbuild.lua"))
 %
 % \subsubsection{New Functions}\label{subsubsec:new}
 %
+% \changes{v0.2}{2025-01-26}{New function: \texttt{buildinit()}.}
+% \DescribelFn{buildinit()} \texttt{buildinit}\plarg{}\par\noindent
+% Sets up the build environment in preparation for building by unpacking and copying files, installing dependencies etc.\ in preparation for building.
+% Workflows supported out-of-the-box use this function, so there is no need to invoke it explicitly in these cases\footnote{^^A
+%   See \verb|fontinst()| and \verb|fnt_afmtotfm()| in \file{fntbuild-build.lua}.^^A
+% }.
+% It can be used in the definition of custom functions.
+% See \cref{sec:custom} for an example.
+%
 % \changes{v0.2}{2025-01-25}{New function: \texttt{buildinit\_hook()}.}
 % \DescribelFn{buildinit_hook()} \texttt{buildinit\_hook}\plarg{}\par\noindent
 % A function which does nothing successfully by default, similar to the hooks provided by \lpack{l3build}.
 % May be redefined to perform additional tasks when setting up the environment for \texttt{fnttarg}.
 % The function should return an error level.
 %
+% The hook is executed after unpacking, copying etc.\ at the end of \texttt{buildinit()} so it can be used to modify those preparations, if necessary.
+%
 % \changes{v0.2}{2025-01-25}{New function: \texttt{fnt\_afmtotfm()}.}
-% \DescribelFn{(fnt_afmtotfm)} \texttt{fnt\_afmtoafm}\plarg{dir}\par\noindent
+% \DescribelFn{fnt_afmtotfm()} \texttt{fnt\_afmtoafm}\plarg{dir}\par\noindent
 % A function to generate support files for simple symbolic fonts in \meta{dir} using \texttt{afm2tfm}.
 % The function generates \tfm s, \fd s and a \map.
 % It requires \afm s and, optionally, \enc s.
@@ -823,7 +834,7 @@ subsetdefns.<family 2> = "3"
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2\nil{#1}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName doc]{$Id: fontscripts.dtx 10732 2025-01-26 09:06:04Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName doc]{$Id: fontscripts.dtx 10735 2025-01-26 19:16:26Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \AddToHook{begindocument}{\OnlyDescription}
 \input{\MyFileBaseName.dtx}
@@ -834,7 +845,7 @@ subsetdefns.<family 2> = "3"
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2\nil{#1}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName code]{$Id: fontscripts.dtx 10732 2025-01-26 09:06:04Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName code]{$Id: fontscripts.dtx 10735 2025-01-26 19:16:26Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \input{\MyFileBaseName.dtx}
 %</doc-code>
@@ -847,7 +858,7 @@ subsetdefns.<family 2> = "3"
 %    \begin{macrocode}
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10732 2025-01-26 09:06:04Z cfrees $}[v0.2 \revinfo][\outFileName]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10735 2025-01-26 19:16:26Z cfrees $}[v0.2 \revinfo][\outFileName]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % \iffalse

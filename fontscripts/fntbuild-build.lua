@@ -55,7 +55,7 @@ function buildinit_hook () return 0 end
 -- hack copy of checkinit()
 ---@return 0 on success, error level otherwise
 ---@see 
----@usage private
+---@usage public
 function buildinit ()
   cleandir(fntdir)
   -- l3build never cleans this by default?
