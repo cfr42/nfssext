@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10727 2025-01-25 06:03:54Z cfrees $}[v0.2 \revinfo][\filebase DTX: l3build scripts for font installation]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10729 2025-01-26 07:29:33Z cfrees $}[v0.2 \revinfo][\filebase DTX: l3build scripts for font installation]
 \DefineFileInfoSVN[fontscripts]
 \documentclass[10pt,british,lm-default=false]{l3doc}
 % l3doc loads fancyvrb
@@ -184,6 +184,7 @@
 \def\@xobeysp{\leavevmode\penalty100\ }
 \makeatother
 \newcolumntype{T}{>{\ttfamily\arraybackslash}l}
+\fvset{gobble=0}
 \begin{document}
 \DocInput{\filename}
 \end{document}
@@ -822,7 +823,7 @@ subsetdefns.<family 2> = "3"
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2\nil{#1}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName doc]{$Id: fontscripts.dtx 10727 2025-01-25 06:03:54Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName doc]{$Id: fontscripts.dtx 10729 2025-01-26 07:29:33Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \AddToHook{begindocument}{\OnlyDescription}
 \input{\MyFileBaseName.dtx}
@@ -833,7 +834,7 @@ subsetdefns.<family 2> = "3"
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2\nil{#1}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName code]{$Id: fontscripts.dtx 10727 2025-01-25 06:03:54Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName code]{$Id: fontscripts.dtx 10729 2025-01-26 07:29:33Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \input{\MyFileBaseName.dtx}
 %</doc-code>
@@ -846,7 +847,7 @@ subsetdefns.<family 2> = "3"
 %    \begin{macrocode}
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10727 2025-01-25 06:03:54Z cfrees $}[v0.2 \revinfo][\outFileName]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10729 2025-01-26 07:29:33Z cfrees $}[v0.2 \revinfo][\outFileName]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % \iffalse
