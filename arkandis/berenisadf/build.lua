@@ -1,4 +1,4 @@
--- $Id: build.lua 10719 2025-01-14 01:57:23Z cfrees $
+-- $Id: build.lua 10732 2025-01-26 09:06:04Z cfrees $
 -- Build configuration for berenisadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -27,9 +27,10 @@ vendor = "arkandis"
 autotestfds = {  "ly1ybd.fd", "ly1ybd2.fd", "ly1ybd2j.fd", "ly1ybd2jw.fd", "ly1ybd2w.fd", "ly1ybdj.fd", "ly1ybdjw.fd", "ly1ybdw.fd", "t1ybd.fd", "t1ybd2.fd", "t1ybd2j.fd", "t1ybdj.fd" }
 keepfiles = { "ybd.map", "*.afm", "*.pfb", "*.tfm" , "ts1ybd2w.fd", "ts1ybd2jw.fd", "ts1ybdjw.fd", "ts1ybdw.fd" }
 keeptempfiles = { "*.pl" }
--- START doc eg
-autotcfds ={ "ts1ybd2j.fd", "ts1ybd2.fd", "ts1ybdj.fd", "ts1ybd.fd" }
 dofile(maindir .. "/fontscripts/fntbuild.lua")
+-- START doc eg
+-- require(kpse.lookup("fntbuild.lua"))
+autotcfds ={ "ts1ybd2j.fd", "ts1ybd2.fd", "ts1ybdj.fd", "ts1ybd.fd" }
 function fntmake (dir,mode)
   dir = dir or fntdir
   mode = mode or "errorstopmode --halt-on-error"

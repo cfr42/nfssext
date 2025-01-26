@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10731 2025-01-26 08:57:04Z cfrees $}[v0.2 \revinfo][\filebase DTX: l3build scripts for font installation]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10732 2025-01-26 09:06:04Z cfrees $}[v0.2 \revinfo][\filebase DTX: l3build scripts for font installation]
 \DefineFileInfoSVN[fontscripts]
 \documentclass[10pt,british,lm-default=false]{l3doc}
 % l3doc loads fancyvrb
@@ -775,7 +775,7 @@ subsetdefns.<family 2> = "3"
 % \section{Customisation}\label{sec:custom}
 %
 % As in the case of \lpack{l3build}, you can replace functions and targets at will, albeit on a much more limited scale.
-% Although it would be better to just not use \file{fntbuild.lua} at all if you want to redefine everything, it can make sense to redefine \texttt{fontinst()} if, say, you want to use different font creation tools but make use of the functions for stashing generated files, generating font tables, testing etc.
+% Although it would be better to just not use \file{fntbuild.lua} at all if you want to redefine everything, it can make sense to replace \texttt{fontinst()} if, say, you want to use different font creation tools but make use of the functions for stashing generated files, generating font tables, testing etc.
 %
 % For example, \lpack{berenisadf} was built using a \file{build.lua} containing 
 % \newcommand*\FancyVerbStopString{-- STOP doc eg}
@@ -786,6 +786,7 @@ subsetdefns.<family 2> = "3"
 % That is, \lpack{berenisadf} doesn't use \texttt{fontinst()} at all, but \texttt{fntmake()}, which simply invokes \texttt{gnu} \texttt{make} and calls \texttt{fntkeeper()}\footnote{%
 %   It does not ensure encoding names are unique, but it should.%
 % }.
+% Note the use of \texttt{buildinit()} to setup the build environment.
 %
 % \subsection{Examples}\label{subsec:eeiau}
 % 
@@ -822,7 +823,7 @@ subsetdefns.<family 2> = "3"
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2\nil{#1}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName doc]{$Id: fontscripts.dtx 10731 2025-01-26 08:57:04Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName doc]{$Id: fontscripts.dtx 10732 2025-01-26 09:06:04Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \AddToHook{begindocument}{\OnlyDescription}
 \input{\MyFileBaseName.dtx}
@@ -833,7 +834,7 @@ subsetdefns.<family 2> = "3"
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2\nil{#1}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName code]{$Id: fontscripts.dtx 10731 2025-01-26 08:57:04Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName code]{$Id: fontscripts.dtx 10732 2025-01-26 09:06:04Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \input{\MyFileBaseName.dtx}
 %</doc-code>
@@ -846,7 +847,7 @@ subsetdefns.<family 2> = "3"
 %    \begin{macrocode}
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10731 2025-01-26 08:57:04Z cfrees $}[v0.2 \revinfo][\outFileName]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10732 2025-01-26 09:06:04Z cfrees $}[v0.2 \revinfo][\outFileName]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % \iffalse
