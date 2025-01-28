@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10735 2025-01-26 19:16:26Z cfrees $}[v0.2 \revinfo][\filebase DTX: l3build scripts for font installation]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10742 2025-01-28 07:41:01Z cfrees $}[v0.2 \revinfo][\filebase DTX: l3build scripts for font installation]
 \DefineFileInfoSVN[fontscripts]
 \documentclass[10pt,british,lm-default=false]{l3doc}
 % l3doc loads fancyvrb
@@ -705,11 +705,14 @@ require(kpse.lookup("fntbuild.lua"))
 % \texttt{nil} by default.
 % Set to any value other than \texttt{nil} or \texttt{false} to enable subset declarations.
 %
+% \textbf{Note this variable must be given a non-default value if subset encoding declarations should be added.
+%   Specifying definitions, files and templates only determines what will be done IF anything is done at all.}
+%
 % \changes{v0.2}{2025-01-25}{New variable: \texttt{subsetdefns}.}
 % \DescribelVar{subsetdefns}\texttt{subsetdefns} \istable{}
 % If different families should get different subset values, the various settings should be configured here.
 %
-% For example, the following example sets the subset for \meta{family 1} to \texttt{1} and that for \meta{family 2} to \texttt{3}.
+% For example, the following code sets the subset for \meta{family 1} to \texttt{1} and that for \meta{family 2} to \texttt{3}.
 % \iffalse
 %<*verb>
 % \fi
@@ -728,6 +731,36 @@ subsetdefns.<family 2> = "3"
 % \changes{v0.2}{2025-01-25}{New variable: \texttt{subsettemplate}.}
 % \DescribelVar{subsettemplate}\texttt{subsettemplate} \isstring{}
 % Template to use when constructing subset declarations.
+% 
+% By default, the template simply plugs family and value pairs into a standard declaration as shown in \cref{tab:varia-n}.
+% However, it is also possible to use more complex declarations.
+% For example, \pkg{cfr-lm} does not actually include any \texttt{TS1} fonts at all.
+% Instead, it just says which Latin Modern family should be used for which \pkg{cfr-lm} family.
+% So the only sensible approach is to use whichever subset declarations the relevant Latin Modern font definitions use.
+% Unfortunately, these are provided by the \LaTeXe{} format rather than \pkg{lm}, besides which it is at least theoretically possible the appropriate subsets might change and \pkg{cfr-lm} has no control over this.
+% For this reason, the package simply says ‘for \pkg{cfr-lm} family $x$, use whichever subset is declared for Latin Modern family $y$’ for each pair of families $x$ and $y$.
+%
+% This is setup using the following line in the \file{build.lua}:
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+subsettemplate = "\\ExpandArgs {nnc} \\DeclareEncodingSubset {TS1} {$FONTFAMILY} {TS1:$SUBSET}"
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% Rather than numerical values, therefore, \pkg{cfr-lm} declares subset encodings such as
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+subsetdefns.clms = "lmss" 
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% The result is that \LaTeXe{} will use whichever subset is declared for \texttt{lmss} for \texttt{clms}, which, after all, is no more than a fancy alias for \texttt{lmss} in the \texttt{TS1} encoding.
 %
 % \DescribelVar{vendor}\texttt{vendor} \isstring{vendor}
 % Vendor directory for font installation such as \texttt{public} or \texttt{arkandis}.
@@ -834,7 +867,7 @@ subsetdefns.<family 2> = "3"
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2\nil{#1}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName doc]{$Id: fontscripts.dtx 10735 2025-01-26 19:16:26Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName doc]{$Id: fontscripts.dtx 10742 2025-01-28 07:41:01Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \AddToHook{begindocument}{\OnlyDescription}
 \input{\MyFileBaseName.dtx}
@@ -845,7 +878,7 @@ subsetdefns.<family 2> = "3"
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2\nil{#1}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName code]{$Id: fontscripts.dtx 10735 2025-01-26 19:16:26Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName code]{$Id: fontscripts.dtx 10742 2025-01-28 07:41:01Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \input{\MyFileBaseName.dtx}
 %</doc-code>
@@ -858,7 +891,7 @@ subsetdefns.<family 2> = "3"
 %    \begin{macrocode}
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10735 2025-01-26 19:16:26Z cfrees $}[v0.2 \revinfo][\outFileName]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10742 2025-01-28 07:41:01Z cfrees $}[v0.2 \revinfo][\outFileName]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % \iffalse
