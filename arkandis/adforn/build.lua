@@ -1,4 +1,4 @@
--- $Id: build.lua 10745 2025-01-29 06:17:47Z cfrees $
+-- $Id: build.lua 10746 2025-01-29 06:47:44Z cfrees $
 -- Build configuration for adfornadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -28,7 +28,8 @@ textfiles = {"*.md","*.txt","COPYING","NOTICE"}
 fnt = {}
 fnt.vendor = "arkandis"
 -- this is a stupid way to do this
-fnt.autotestfds = {  "uornementsadf.fd" }
+-- fnt.autotestfds = {  "uornementsadf.fd" }
+fnt.autotestfds = { }
 fnt.keepfiles = { "*.map", "*.tfm" }
 -- RHAID ei osod cyn i ddarllen fntbuild.lua!
 fnt.afmtotfm = true
