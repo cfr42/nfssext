@@ -1,4 +1,4 @@
--- $Id: arkandis-manifest.lua 10612 2024-11-12 17:21:11Z cfrees $
+-- $Id: arkandis-manifest.lua 10743 2025-01-29 02:29:53Z cfrees $
 ---------------------------------------------------------------------
 ---------------------------------------------------------------------
 -- local derivedfiles = derivedfiles or {"*.cls","*.enc","*.fd","*.map","*.sty","*.tfm","*.vf"}
@@ -17,6 +17,7 @@
 -- a few files!!
 ----------------------------------------------------------------------
 ----------------------------------------------------------------------
+local arkandis = arkandis or {}
 local fnttestfiles = fnttestfiles or "* fnt-tests.tex\n* fnt-test.lvt"
 local fnttablestemplate = fnttablestemplate or "\n* fnt-tables.tex"
 local sourcefiledir = sourcefiledir or "."
@@ -28,7 +29,7 @@ local derivedfiles = derivedfiles or {}
 table.insert(derivedfiles,"*-tables.tex")
 ----------------------------------------------------------------------
 ----------------------------------------------------------------------
-function idxfiles(dir,globs)
+local function idxfiles(dir,globs)
   local m_files = {}
   globs = globs or {"*.*"}
   local t = {}
@@ -53,7 +54,7 @@ function idxfiles(dir,globs)
   return m_files
 end
 ----------------------------------------------------------------------
-function idxexcl(dir,files,exclfiles)
+local function idxexcl(dir,files,exclfiles)
   local m_files = idxfiles(dir,files)
   local tmpt = {}
   if exclfiles ~= nil then
@@ -80,7 +81,7 @@ function idxexcl(dir,files,exclfiles)
   return m_files
 end
 ----------------------------------------------------------------------
-function idxtable(tble)
+local function idxtable(tble)
   local t = {}
   for i,j in pairs(tble) do
     table.insert(t,i)
@@ -92,7 +93,7 @@ end
 -- concatenating strings is slow
 -- concatenating tables is fast
 -- https://www.lua.org/pil/11.6.html
-function bullets(items,idx)
+local function bullets(items,idx)
   local bulleted = {}
   local first = true
   -- table.insert(bulleted,"")
@@ -120,7 +121,7 @@ function bullets(items,idx)
 end
 ----------------------------------------------------------------------
 ----------------------------------------------------------------------
-function populatescripts()
+local function populatescripts()
   local arkandisdir = arkandisdir or maindir .. "/arkandis"
   local sourcefiledir = sourcefiledir or "."
   if buildscripts == nil then
@@ -140,6 +141,7 @@ function populatescripts()
 end
 ----------------------------------------------------------------------
 ----------------------------------------------------------------------
+-- override l3build
 function manifest_write_opening(filehandle)
   local date  = date or os.date()
   filehandle:write( "# Manifest for " .. ctanpkg .. "\n\nCopyright (C) " .. date .. " Clea F. Rees\n\n" )
@@ -171,6 +173,7 @@ end
 --   return f
 -- end
 ---------------------------------------------------------------------
+-- override l3build
 function manifest_setup ()
   if not ( fileexists(unpackdir .. "/" .. module .. ".sty") or fileexists(unpackdir .. "/" .. ctanpkg .. ".sty") ) then
     unpack()
@@ -221,7 +224,7 @@ function manifest_setup ()
   -- the current method doesn't work a bit quicker
   local buildscripts = populatescripts()
   ---------------------------------------------------------------------
-  if noautotest then fnttestfiles = "" end
+  if arkandis.noautotest then fnttestfiles = "" end
   ---------------------------------------------------------------------
   -- I have no idea how to sort them (without gnu, that is)
   local groups = {

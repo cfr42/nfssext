@@ -1,4 +1,4 @@
--- $Id: fnt-manifest.lua 10612 2024-11-12 17:21:11Z cfrees $
+-- $Id: fnt-manifest.lua 10743 2025-01-29 02:29:53Z cfrees $
 ---------------------------------------------------------------------
 -- local derivedfiles = derivedfiles or {"*.cls","*.enc","*.fd","*.map","*.sty","*.tfm","*.vf"}
 -- local origfntfiles = origfntfiles or {"*.afm","*.otf","*.pfb",".pfm","*.ttf","NOTICE.txt","COPYING"}
@@ -9,7 +9,7 @@
 local fnttestfiles = fnttestfiles or "* fnt-tables.tex\n* fnt-tests.tex\n* fnt-test.lvt"
 local derfntexcfiles = derfntexcfiles or '".",".."'
 -- local fnttablestemplate = fnttablestemplate or "* fnt-tables.tex"
-function populatescripts()
+local function populatescripts()
   -- local vendordir = vendordir or maindir .. "/public"
   local sourcefiledir = sourcefiledir or "."
   if buildscripts == nil then
@@ -27,7 +27,7 @@ function populatescripts()
     return buildscripts
   end
 end
-function populatefontsupp(fontglob)
+local function populatefontsupp(fontglob)
   -- local sourcefiledir = sourcefiledir or "."
   fontglob = fontglob or "*.*" 
   -- if fontsupp == nil then
@@ -46,7 +46,7 @@ function populatefontsupp(fontglob)
     -- return fontsupp
   -- end
 end
-function populatedoc()
+local function populatedoc()
   local docs = docs  or {typesetfiles,typesetdemofiles}
   local tmpdocs = ""
   for i,j in ipairs(docs) do
@@ -56,7 +56,7 @@ function populatedoc()
   end
   return string.gsub(tmpdocs, "%.$w+$", ".pdf")
 end
-function populatetxt()
+local function populatetxt()
   local txts = textfiles or {}
   local tmptxts = ""
   for i,j in ipairs(txts) do
@@ -86,7 +86,7 @@ function populatetxt()
   return tmptxts
 end
 ----------------------------------------------------------------------
-function manifest_write_opening(filehandle)
+local function manifest_write_opening(filehandle)
   local date  = date or os.date()
   filehandle:write( "# Manifest for " .. ctanpkg .. "\n\nCopyright (C) " .. date .. " Clea F. Rees\n\n" )
   filehandle:write(
@@ -156,35 +156,35 @@ function manifest_setup ()
     {
       name = "Font Encodings",
       files = {"*.enc"},
-      dir = keepdir,
+      dir = fnt.keepdir,
       exclude = {"*.afm","*.otf","*.pfb",".pfm","*.ttf","NOTICE.txt","COPYING",".",".."},
       -- description = derfntfiles,
     },
     {
       name = "Font Definitions",
       files = {"*.fd"},
-      dir = keepdir,
+      dir = fnt.keepdir,
       exclude = {"*.afm","*.otf","*.pfb",".pfm","*.ttf","NOTICE.txt","COPYING",".",".."},
       -- description = derfntfiles,
     },
     {
       name = "Map Files",
       files = {"*.map"},
-      dir = keepdir,
+      dir = fnt.keepdir,
       exclude = {"*.afm","*.otf","*.pfb",".pfm","*.ttf","NOTICE.txt","COPYING",".",".."},
       -- description = derfntfiles,
     },
     {
       name = "TeX Font Metrics",
       files = {"*.tfm"},
-      dir = keepdir,
+      dir = fnt.keepdir,
       exclude = {"*.afm","*.otf","*.pfb",".pfm","*.ttf","NOTICE.txt","COPYING",".",".."},
       -- description = derfntfiles,
     },
     {
       name = "Virtual Fonts",
       files = {"*.vf"},
-      dir = keepdir,
+      dir = fnt.keepdir,
       exclude = {"*.afm","*.otf","*.pfb",".pfm","*.ttf","NOTICE.txt","COPYING",".",".."},
       -- description = derfntfiles,
     },

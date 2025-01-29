@@ -1,18 +1,18 @@
--- $Id: fntbuild-doc.lua 10718 2025-01-14 01:55:38Z cfrees $
+-- $Id: fntbuild-doc.lua 10743 2025-01-29 02:29:53Z cfrees $
 -------------------------------------------------
 -- fntbuild-doc
 -------------------------------------------------
 -------------------------------------------------
 -- redefine l3build fn
 -------------------------------------------------
--- doc_init {{{
+-- local doc_init {{{
 ---Additional setup for typesetting tailored to font packages with optional 
 ---creation of template-based docs e.g. font tables.
 ---@return 0 on success, error level otherwise
 ---@see l3build
 ---@usage N/A
-function docinit_hook ()
-  -- local fdfiles = filelist(keepdir, "*.fd")
+local function doc_init ()
+  -- local fdfiles = filelist(fnt.keepdir, "*.fd")
   local fdfiles = filelist(unpackdir, "*.fd")
   local filename = "fnt-tables.tex"
   local targname = ctanpkg .. "-tables.tex"
@@ -33,7 +33,7 @@ function docinit_hook ()
     local errorlevel = cp(filename,fnttestdir,unpackdir)
     -- local errorlevel = ren(unpackdir, filename, targname)
     if errorlevel ~= 0 then
-      gwall("Copy ", filename, errorlevel)
+      fnt.gwall("Copy ", filename, errorlevel)
       return errorlevel
     else
       -- need to get content here
@@ -75,7 +75,7 @@ function docinit_hook ()
       "\n\\endinput *\n", coll)
       local f = assert(io.open(targfile,"w"))
       -- this somehow removes the second value returned by string.gsub??
-      f:write((string.gsub(new_content,"\n",os_newline_cp)))
+      f:write((string.gsub(new_content,"\n",fnt.os_newline_cp)))
       f:close()
       rm(unpackdir,filename)
       cp(targname,unpackdir,typesetdir)
@@ -83,6 +83,11 @@ function docinit_hook ()
   end
   return 0
 end
+-- }}}
+-------------------------------------------------
+-------------------------------------------------
+-- exports {{{
+fnt.docinit_hook = doc_init
 -- }}}
 -------------------------------------------------
 -------------------------------------------------

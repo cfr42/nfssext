@@ -1,4 +1,4 @@
--- $Id: build.lua 10649 2024-11-19 06:08:49Z cfrees $
+-- $Id: build.lua 10743 2025-01-29 02:29:53Z cfrees $
 -- Build configuration for romandeadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -13,8 +13,9 @@
 ctanpkg = "romandeadf"
 maindir = "../.."
 module = "romande"
-vendor = "arkandis"
-autotestfds = {  "t1yrd.fd", "t1yrda.fd", "t1yrdaw.fd", "t1yrdw.fd" }
+fnt = {}
+fnt.vendor = "arkandis"
+fnt.autotestfds = {  "t1yrd.fd", "t1yrda.fd", "t1yrdaw.fd", "t1yrdw.fd" }
 dofile(maindir .. "/fontscripts/fntbuild.lua")
 -- local srcfiles = { "ts1-euro.etx", "ts1-euro.enc" }
 -- for i,j in ipairs(srcfiles) do table.insert(sourcefiles,j) end

@@ -1,4 +1,4 @@
--- $Id: build.lua 10649 2024-11-19 06:08:49Z cfrees $
+-- $Id: build.lua 10743 2025-01-29 02:29:53Z cfrees $
 -- Build configuration for adfsymbols
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -11,31 +11,32 @@
 --]]
 -------------------------------------------------
 -- copy non-public things from l3build
-local os_newline_cp = "\n"
-if os.type == "windows" then
-  if tonumber(status.luatex_version) < 100 or
-     (tonumber(status.luatex_version) == 100
-       and tonumber(status.luatex_revision) < 4) then
-    os_newline_cp = "\r\n"
-  end
-end
+-- local os_newline_cp = "\n"
+-- if os.type == "windows" then
+--   if tonumber(status.luatex_version) < 100 or
+--      (tonumber(status.luatex_version) == 100
+--        and tonumber(status.luatex_revision) < 4) then
+--     os_newline_cp = "\r\n"
+--   end
+-- end
 -------------------------------------------------
 --
 ctanpkg = "adfsymbols"
 maindir = "../.."
 module = "adfsymbols"
 textfiles = {"*.md","*.txt","COPYING","NOTICE"}
-vendor = "arkandis"
-autotestfds = {  "uarrowsadf.fd" , "ubulletsadf.fd" }
-keepfiles = { "*.map", "*.tfm" }
+fnt = {}
+fnt.vendor = "arkandis"
+fnt.autotestfds = {  "uarrowsadf.fd" , "ubulletsadf.fd" }
+fnt.keepfiles = { "*.map", "*.tfm" }
 -- RHAID ei osod cyn i ddarllen fntbuild.lua!
-afmtotfm = true
-fntencs = fntencs or {}
-fntencs["ArrowsADF"] = "SymbolsADF.enc"
-fntencs["BulletsADF"] = "SymbolsADF.enc"
-print(fntencs["ArrowsADF"])
+fnt.afmtotfm = true
+fnt.encs = fnt.encs or {}
+fnt.encs["ArrowsADF"] = "SymbolsADF.enc"
+fnt.encs["BulletsADF"] = "SymbolsADF.enc"
+print(fnt.encs["ArrowsADF"])
 dofile(maindir .. "/fontscripts/fntbuild.lua")
-function fnt_test (fntpkgname,fds,content,maps,fdsdir)
+function fnt.test (fntpkgname,fds,content,maps,fdsdir)
   return 0
 end
 typesetdeps = {maindir .. "/nfssext-cfr", maindir .. "/cfr-lm"}
@@ -69,7 +70,8 @@ uploadconfig = {
   -- curlopt_file
 }
 --
-noautotest = true
+arkandis = arkandis or {}
+arkandis.noautotest = true
 dofile(maindir .. "/arkandis/arkandis-manifest.lua")
 -- os.execute ("printenv")
 -- vim: ts=2:sw=2:tw=80:nospell

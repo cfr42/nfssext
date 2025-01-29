@@ -1,16 +1,16 @@
--- $Id: build.lua 10708 2025-01-03 03:16:37Z cfrees $
+-- $Id: build.lua 10743 2025-01-29 02:29:53Z cfrees $
 -- Build configuration for testadf
 ctanpkg = "testadf"
 module = "test"
-vendor = "arkandis"
 maindir = ".."
--- buildsuppfiles_sys = {"fontinst.sty"}
+-- fnt.buildsuppfiles_sys = {"fontinst.sty"}
 dofile(maindir .. "/fontscripts/fntbuild.lua")
-subset = true
-subsetdefns.xxx = "lmr"
-subsetdefns.yyy = "lmr"
-subsettemplate = "\\ExpandArgs {nnc} \\DeclareEncodingSubset {TS1} {$FONTFAMILY} {TS1:$SUBSET}"
--- builddeps = { maindir .. "/fontscripts" }
+fnt.vendor = "arkandis"
+fnt.subset = true
+fnt.subsetdefns.xxx = "lmr"
+fnt.subsetdefns.yyy = "lmr"
+fnt.subsettemplate = "\\ExpandArgs {nnc} \\DeclareEncodingSubset {TS1} {$FONTFAMILY} {TS1:$SUBSET}"
+-- fnt.builddeps = { maindir .. "/fontscripts" }
 -- flatten = false
 -- installfiles = {"*.afm", "*.cls", "*.enc", "*.fd", "*.map", "*.otf", "*.pfb", "*.sty", "*.tfm", "*.ttf", "*.vf"}
 -- typesetfiles = {"test-test.tex"}
@@ -45,7 +45,7 @@ uploadconfig = {
 }
 --
 
-function filch()
+local function filch()
   -- avoid having to think about licences for H's work
   -- normally they'd either be here or I'd copy the lot
   -- equiv to:

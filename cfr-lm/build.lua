@@ -1,4 +1,4 @@
--- $Id: build.lua 10706 2025-01-02 07:51:14Z cfrees $
+-- $Id: build.lua 10743 2025-01-29 02:29:53Z cfrees $
 -- Build configuration for cfr-lm
 -------------------------------------------------------------------------------
 -- l3build.pdf listing 1 tudalen 9
@@ -13,11 +13,12 @@
 -------------------------------------------------------------------------------
 ctanpkg = "cfr-lm"
 -- exclude tfms from lm we used just to correct erroneous font dimens in the afms 
-excludefiles =  {"*~","*.afm","build.lua","config-*.lua","ec-*.tfm","*.otf","*.pfm","*.pfb"}
+excludefiles =  {"*~","*.afm","build.lua","config-*.lua","ec-*.tfm","*.otf","*.pfm", "*.pfb"}
 maindir = ".."
 module = "cfr-lm"
-vendor = "public"
-autotestfds = { "t1clm.fd", "t1clm2.fd", "t1clm2d.fd", "t1clm2dj.fd", "t1clm2j.fd", "t1clm2jqs.fd", "t1clm2js.fd", "t1clm2jt.fd", "t1clm2jv.fd", "t1clm2qs.fd", "t1clm2s.fd", "t1clm2t.fd", "t1clm2v.fd", "t1clmd.fd", "t1clmdj.fd", "t1clmj.fd", "t1clmjqs.fd", "t1clmjs.fd", "t1clmjt.fd", "t1clmjv.fd", "t1clmqs.fd", "t1clms.fd", "t1clmt.fd", "t1clmv.fd" }
+fnt = {}
+fnt.vendor = "public"
+fnt.autotestfds = { "t1clm.fd", "t1clm2.fd", "t1clm2d.fd", "t1clm2dj.fd", "t1clm2j.fd", "t1clm2jqs.fd", "t1clm2js.fd", "t1clm2jt.fd", "t1clm2jv.fd", "t1clm2qs.fd", "t1clm2s.fd", "t1clm2t.fd", "t1clm2v.fd", "t1clmd.fd", "t1clmdj.fd", "t1clmj.fd", "t1clmjqs.fd", "t1clmjs.fd", "t1clmjt.fd", "t1clmjv.fd", "t1clmqs.fd", "t1clms.fd", "t1clmt.fd", "t1clmv.fd" }
 dofile(maindir .. "/fontscripts/fntbuild.lua")
 -- local srcfiles = {"dotsc2.etx", "dotscbuild.mtx", "dotscmisc.mtx", "newlatin-dotsc.mtx", "t1-dotinf.etx", "t1-dotsup.etx", "ts1-dotinf.etx", "ts1-dotsup.etx"}
 -- for i,j in ipairs(srcfiles) do table.insert(sourcefiles,j) end
@@ -27,32 +28,32 @@ dofile(maindir .. "/fontscripts/fntbuild.lua")
 -- add subset defns to fds, but don't hardcode them 
 -- note that this relies on implementation details, so maybe some fallback in the stys would be good, too?
 -- I just can't come up with a better idea right now
-subset = true
-subsetdefns.clm = "lmr" 
-subsetdefns.clm2 = "lmr" 
-subsetdefns.clm2d = "lmdh"
-subsetdefns.clm2dj = "lmdh"
-subsetdefns.clm2j = "lmr"
-subsetdefns.clm2jqs = "lmssq"
-subsetdefns.clm2js = "lmssq"
-subsetdefns.clm2jt = "lmtt"
-subsetdefns.clm2jv = "lmvtt"
-subsetdefns.clm2qs = "lmssq"
-subsetdefns.clm2s = "lmss" 
-subsetdefns.clm2t = "lmtt" 
-subsetdefns.clm2v = "lmvtt" 
-subsetdefns.clmd = "lmdh" 
-subsetdefns.clmdj = "lmdh" 
-subsetdefns.clmj = "lmr" 
-subsetdefns.clmjqs = "lmssq" 
-subsetdefns.clmjs = "lmss" 
-subsetdefns.clmjt = "lmtt" 
-subsetdefns.clmjv = "lmvtt" 
-subsetdefns.clmqs = "lmssq" 
-subsetdefns.clms = "lmss" 
-subsetdefns.clmt = "lmtt" 
-subsetdefns.clmv = "lmvtt" 
-subsettemplate = "\\ExpandArgs {nnc} \\DeclareEncodingSubset {TS1} {$FONTFAMILY} {TS1:$SUBSET}"
+fnt.subset = true
+fnt.subsetdefns.clm = "lmr" 
+fnt.subsetdefns.clm2 = "lmr" 
+fnt.subsetdefns.clm2d = "lmdh"
+fnt.subsetdefns.clm2dj = "lmdh"
+fnt.subsetdefns.clm2j = "lmr"
+fnt.subsetdefns.clm2jqs = "lmssq"
+fnt.subsetdefns.clm2js = "lmssq"
+fnt.subsetdefns.clm2jt = "lmtt"
+fnt.subsetdefns.clm2jv = "lmvtt"
+fnt.subsetdefns.clm2qs = "lmssq"
+fnt.subsetdefns.clm2s = "lmss" 
+fnt.subsetdefns.clm2t = "lmtt" 
+fnt.subsetdefns.clm2v = "lmvtt" 
+fnt.subsetdefns.clmd = "lmdh" 
+fnt.subsetdefns.clmdj = "lmdh" 
+fnt.subsetdefns.clmj = "lmr" 
+fnt.subsetdefns.clmjqs = "lmssq" 
+fnt.subsetdefns.clmjs = "lmss" 
+fnt.subsetdefns.clmjt = "lmtt" 
+fnt.subsetdefns.clmjv = "lmvtt" 
+fnt.subsetdefns.clmqs = "lmssq" 
+fnt.subsetdefns.clms = "lmss" 
+fnt.subsetdefns.clmt = "lmtt" 
+fnt.subsetdefns.clmv = "lmvtt" 
+fnt.subsettemplate = "\\ExpandArgs {nnc} \\DeclareEncodingSubset {TS1} {$FONTFAMILY} {TS1:$SUBSET}"
 typesetdeps = {maindir .. "/nfssext-cfr"}
 typesetruns = 5
 -------------------------------------------------------------------------------
@@ -104,6 +105,5 @@ for _,i in ipairs(filelist(str .. "/fonts/tfm/public/lm","ec-*")) do
   cp(i,str .. "/fonts/tfm/public/lm",sourcefiledir .. "/tfm")
 end
 -------------------------------------------------------------------------------
--- os.execute ("printenv")
 -------------------------------------------------------------------------------
 -- vim: ts=2:sw=2:tw=0:nospell

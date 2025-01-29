@@ -1,4 +1,4 @@
--- $Id: fntbuild-vars.lua 10718 2025-01-14 01:55:38Z cfrees $
+-- $Id: fntbuild-vars.lua 10743 2025-01-29 02:29:53Z cfrees $
 -- fntbuild variables
 -------------------------------------------------
 -------------------------------------------------
@@ -13,6 +13,8 @@ builddir = builddir or maindir .. "/build"
 -------------------------------------------------
 -- l3build variables with changed defaults {{{
 -------------------------------------------------
+binaryfiles = {"*.pdf", "*.zip", "*.vf", "*.tfm", "*.pfb", "*.pfm", "*.ttf", 
+  "*.otf", "*.tar.gz"}
 -- also very easy for font files not to get installed properly and the old ones used
 -- note this overrides the l3build default
 checksearch = false
@@ -39,100 +41,97 @@ typesetfiles = typesetfiles or  {"*.dtx", "*-tables.tex", "*-example.tex"}
 -------------------------------------------------
 -------------------------------------------------
 -- font definitions to use when auto-generating tests
----@see fnt_test() checkinit_hook() fnttestfds
+---@see fnt_test() checkinit_hook() fnt.fnttestfds
 ---@usage public
-autotestfds = autotestfds or {}
-binaryfiles = {"*.pdf", "*.zip", "*.vf", "*.tfm", "*.pfb", "*.pfm", "*.ttf", 
-  "*.otf", "*.tar.gz"}
+fnt.autotestfds = fnt.autotestfds or {}
 -- script containing commands to convert pl and vpl files to binary form
 ---@see fontinst()
 ---@usage public
-binmakers = binmakers or {"*-pltotf.sh"}
+fnt.binmakers = fnt.binmakers or {"*-pltotf.sh"}
 ---@usage public
 -- it is way too easy to pick up the same package's files in the dist tree
 -- when that happens, some installation tools fail to generate duplicate files
 -- once the update goes to ctan, the files disappear ...
-buildsearch = false
--------------------------------------------------
-builddeps = builddeps or {}
+fnt.buildsearch = false
+fnt.builddeps = fnt.builddeps or {}
 -- should use existing fnt variables, I think
-buildfiles = buildfiles or { "*.afm", "*.enc", "*.etx", "*.fd", "*.lig", 
+fnt.buildfiles = fnt.buildfiles or { "*.afm", "*.enc", "*.etx", "*.fd", "*.lig", 
   "*.make", "*.map", "*.mtx", "*.nam", "*.otf", "*.pe", "*.tex" , "*.tfm" }
-buildsuppfiles_sys = buildsuppfiles_sys or {}
+fnt.buildsuppfiles_sys = fnt.buildsuppfiles_sys or {}
 -- sys replaces defaults; add ads to them
-checksuppfiles_sys = checksuppfiles_sys or {}
-checksuppfiles_add = checksuppfiles_add or {}
-cleanfiles = {keeptempfiles}  -- ** changed default
+fnt.checksuppfiles_sys = fnt.checksuppfiles_sys or {}
+fnt.checksuppfiles_add = fnt.checksuppfiles_add or {}
 -- \TeX{} files to compile to produce pl, vpl etc.
 ---@see fontinst()
 ---@usage public
-familymakers = familymakers or {"*-drv.tex"}
-fntdir = fntdir or builddir .. "/fnt"
+fnt.familymakers = fnt.familymakers or {"*-drv.tex"}
+fnt.fntdir = fnt.fntdir or builddir .. "/fnt"
 -- font definitions to use when auto-generating tests
----@see fnt_test() checkinit_hook() autotestfds
+---@see fnt_test() checkinit_hook() fnt.autotestfds
 ---@usage public
-fnttestfds = fnttestfds or {}
-mapfiles_sys = mapfiles_sys or {}
-mapfiles_add = mapfiles_add or {}
+fnt.fnttestfds = fnt.fnttestfds or {}
+fnt.mapfiles_sys = fnt.mapfiles_sys or {}
+fnt.mapfiles_add = fnt.mapfiles_add or {}
 -- sourcefiledir must be specified first
 -- directory to store build products
 ---@usage public
-keepdir = keepdir or sourcefiledir .. "/keep"
+fnt.keepdir = fnt.keepdir or sourcefiledir .. "/keep"
 -- directory to store keeptempfiles
 ---@usage public
-keeptempdir = keeptempdir or sourcefiledir .. "/keeptemp"
+fnt.keeptempdir = fnt.keeptempdir or sourcefiledir .. "/keeptemp"
 -- build products
 ---@usage public
-keepfiles = keepfiles or {"*.enc", "*.fd", "*.map", "*.tfm", "*.vf"}
+fnt.keepfiles = fnt.keepfiles or {"*.enc", "*.fd", "*.map", "*.tfm", "*.vf"}
 -- files to keep for diagnostics, but which shouldn't be packaged
 ---@usage public
-keeptempfiles = keeptempfiles or {"*.mtx", "*.pl", "*-pltotf.sh", "*-rec.tex", 
+fnt.keeptempfiles = fnt.keeptempfiles or {"*.mtx", "*.pl", "*-pltotf.sh", "*-rec.tex", 
   "*.vpl", "*.zz"}
+cleanfiles = {fnt.keeptempfiles}  -- ** changed default
 -- \TeX{} files to compile to produce map file fragments etc.
 ---@see fontinst()
 ---@usage public
-mapmakers = mapmakers or {"*-map.tex"}
+fnt.mapmakers = fnt.mapmakers or {"*-map.tex"}
 ---@see fntsubsetter()
 ---@usage public
 ---@boolean
----@description whether to add subset defns to fd files for TC encodings
-subset = false
+---@description whether to add fnt.subset defns to fd files for TC encodings
+fnt.subset = false
 ---@see fntsubsetter()
 ---@usage public
----@usage subsetdefns.<family> = <subset>
----@description table: list of TC fds to insert subset defns into
+---@usage fnt.subsetdefns.<family> = <fnt.subset>
+---@description table: list of TC fds to insert fnt.subset defns into
 ---@description entry keys should be family names; entry values should be values
----@description for subsetdefns.<key> = <value>,
+---@description for fnt.subsetdefns.<key> = <value>,
 ---@description   <key>   will be substituted for $FONTFAMILY and 
----@description   <value> will be substituted for $SUBSET into the subsettemplate
-subsetdefns = subsetdefns or {}
+---@description   <value> will be substituted for $SUBSET into the fnt.subsettemplate
+fnt.subsetdefns = fnt.subsetdefns or {}
 ---@see fntsubsetter()
 ---@usage public
 ---@usage value should be list of filenames as table
----@description list of font defn files to insert subset defns into
+---@description list of font defn files to insert fnt.subset defns into
 ---@description defaults to all fds matching [Tt][Ss]1.*\.fd
-subsetfiles = subsetfiles or {}
+fnt.subsetfiles = fnt.subsetfiles or {}
 ---@see fntsubsetter()
 ---@description $FONTFAMILY and $SUBSET may be used as placeholders 
 ---@description template for inserted lines specifying TS1 encoding subsets in 
----@description subsetfiles
+---@description fnt.subsetfiles
 ---@usage public
-subsettemplate = subsettemplate or 
+fnt.subsettemplate = fnt.subsettemplate or 
   "\\DeclareEncodingSubset{TS1}{$FONTFAMILY}{$SUBSET}"
 -------------------------------------------------
--- vendor and module must be specified before tdslocations
+-- fnt.vendor and module must be specified before tdslocations
 ---@usage public
-vendor = vendor or "public"
+fnt.vendor = fnt.vendor or "public"
 tdslocations = {  -- ** changed default
-	"fonts/afm/" .. vendor .. "/" .. module .. "/" .. "*.afm",
+	"fonts/afm/" .. fnt.vendor .. "/" .. module .. "/" .. "*.afm",
 	"fonts/enc/dvips/" .. module .. "/" .. "*.enc",
 	"fonts/map/dvips/" .. module .. "/" .. "*.map",
-	"fonts/opentype/" .. vendor .. "/" .. module .. "/" .. "*.otf",
-	"fonts/tfm/" .. vendor .. "/" .. module .. "/" .. "*.tfm",
-	"fonts/truetype/" .. vendor .. "/" .. module .. "/" .. "*.ttf",
-	"fonts/type1/" .. vendor .. "/" .. module .. "/" .. "*.pfb",
-	"fonts/type1/" .. vendor .. "/" .. module .. "/" .. "*.pfm",
-	"fonts/vf/" .. vendor .. "/" .. module .. "/" .. "*.vf",
+	"fonts/opentype/" .. fnt.vendor .. "/" .. module .. "/" .. "*.otf",
+	"fonts/tfm/" .. fnt.vendor .. "/" .. module .. "/" .. "*.tfm",
+	"fonts/truetype/" .. fnt.vendor .. "/" .. module .. "/" .. "*.ttf",
+	"fonts/type1/" .. fnt.vendor .. "/" .. module .. "/" .. "*.pfb",
+	"fonts/type1/" .. fnt.vendor .. "/" .. module .. "/" .. "*.pfm",
+	"fonts/vf/" .. fnt.vendor .. "/" .. module .. "/" .. "*.vf",
 	"source/fonts/" .. module .. "/" .. "*.etx",
 	"source/fonts/" .. module .. "/" .. "*.mtx",
 	"source/fonts/" .. module .. "/" .. "*-drv.tex",
@@ -140,7 +139,7 @@ tdslocations = {  -- ** changed default
 	"tex/latex/" .. module .. "/" .. "*.fd",
 	"tex/latex/" .. module .. "/" .. "*.sty"
 }
-typesetsourcefiles = {keepdir .. "/*"}  -- ** changed default
+typesetsourcefiles = {fnt.keepdir .. "/*"}  -- ** changed default
 -- }}}
 -------------------------------------------------
 -------------------------------------------------

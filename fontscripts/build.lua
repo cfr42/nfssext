@@ -1,4 +1,4 @@
--- $Id: build.lua 10728 2025-01-25 06:25:05Z cfrees $
+-- $Id: build.lua 10743 2025-01-29 02:29:53Z cfrees $
 -------------------------------------------------------------------------------
 -- This work, which consists of all files listed in manifest.txt, is released 
 -- under the LaTeX Project Public Licence version 1.3c or later. See individual 
@@ -88,7 +88,7 @@ unpackexe = "pdflatex"
 uploadconfig = {
   -- *required* --
   -- announcement (don't include here?)
-  announcement  = "Restructuring and update. An attempt has been made to make the script more modular. Insertion of Text Companion encoding subset declarations into font definition files is now supported. This functionality must be explicitly enabled. Basic support for sandboxing font builds is provided. This is enabled by default for fontinst, but can be used independently if other tools are utilised.",
+  announcement  = "Restructuring and update. An attempt has been made to make the script more modular. Insertion of Text Companion encoding fnt.subset declarations into font definition files is now supported. This functionality must be explicitly enabled. Basic support for sandboxing font builds is provided. This is enabled by default for fontinst, but can be used independently if other tools are utilised.",
 	author        = "Clea F. Rees",
   -- email (don't include here!)
 	ctanPath      = "/fonts/utilities/fontscripts",

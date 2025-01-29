@@ -1,4 +1,4 @@
--- $Id: fntbuild.lua 10718 2025-01-14 01:55:38Z cfrees $
+-- $Id: fntbuild.lua 10743 2025-01-29 02:29:53Z cfrees $
 -------------------------------------------------
 -------------------------------------------------
 -- I don't know how to bootstrap this ... 
@@ -7,29 +7,32 @@
 sourcefiledir = sourcefiledir or "."
 maindir = maindir or sourcefiledir
 -------------------------------------------------
+-- namespace
+---@usage ??
+fnt = fnt or {}
 -- error-tracking
 ---@usage private
-nifergwall = 0
+fnt.nifergwall = 0
 -- target names
 -- fnttarg
 ---@usage private
-ntarg = "fnttarg"
+local ntarg = "fnttarg"
 -- uniquifyencs
 ---@usage private
-utarg = "uniquifyencs"
+local utarg = "uniquifyencs"
 -------------------------------------------------
--- gwall {{{
+-- fnt.gwall {{{
 ---@param msg string 
 ---@param file string
 ---@param rtn number 
 ---@see 
 ---@usage private
-function gwall (msg,file,rtn)
+function fnt.gwall (msg,file,rtn)
   file = file or "current file"
   msg = msg or "Error:"
   rtn = rtn or 0
   if rtn ~= 0 then 
-    nifergwall = nifergwall + rtn
+    fnt.nifergwall = fnt.nifergwall + rtn
     print (msg, file, "failed (" .. rtn .. ")\n")
   end
 end
@@ -39,28 +42,28 @@ end
 local possplaces = { sourcefiledir, maindir, maindir .. "/fontscripts" }
 for _,i in ipairs (possplaces) do
   if fileexists( i .. "/fntbuild.lua" ) then
-    fntbuild_home = i
+    fnt.fntbuild_home = i
     break
   end
 end
-print("fntbuild_home:", fntbuild_home)
-if fntbuild_home == nil then
+print("fnt.fntbuild_home:", fnt.fntbuild_home)
+if fnt.fntbuild_home == nil then
   -- dwyn o Joseph Wright: l3build.lua
   -- ar gael am fod Joseph yn wneud kpse.set_program_name("kpsewhich")
   -- gweler texdoc luatex
   local p = kpse.find_file("fntbuild.lua", "lua")
   if p ~= nil and p ~= "" then
-    fntbuild_home = dirname(p)
+    fnt.fntbuild_home = dirname(p)
   else
-    gwall("Search for ","self",1)
+    fnt.gwall("Search for ","self",1)
   end
 end
 -------------------------------------------------
-print("Found myself in", fntbuild_home)
+print("Found myself in", fnt.fntbuild_home)
 -------------------------------------------------
 -- dwyn o Joseph Wright: l3build.lua
 local function fntbuild_require (frag)
-  require(kpse.lookup("fntbuild-" .. frag .. ".lua", { path = fntbuild_home }))
+  require(kpse.lookup("fntbuild-" .. frag .. ".lua", { path = fnt.fntbuild_home }))
 end
 -------------------------------------------------
 fntbuild_require("vars")
@@ -71,18 +74,18 @@ fntbuild_require("doc")
 fntbuild_require("ctan")
 -------------------------------------------------
 -- load user config
--- local (if buildsearch) - maindir -- sourcefiledir
+-- local (if fnt.buildsearch) - maindir -- sourcefiledir
 -------------------------------------------------
 -- execute before testing afmtotfm so fnttarg is correct in case the 
 -- config sets it true
-build_config()
+fnt.build_config()
 -------------------------------------------------
 -------------------------------------------------
 -- fontinst must be specified first
 -- it just ain't TeX
 -- ntarg {{{
 target_list[ntarg] = {
-	func = fontinst,
+	func = fnt.fontinst,
   desc = "Creates TeX font file",
   pre = function(names)
     if names then
@@ -96,7 +99,7 @@ target_list[ntarg] = {
 -- }}}
 -- utarg {{{
 target_list[utarg] = {
-  func = uniquify,
+  func = fnt.uniquify,
   desc = "Uniquifies encodings ONLY",
   pre = function(names)
     standalone = true
@@ -114,10 +117,10 @@ target_list[utarg] = {
 -- diwedd targets
 -------------------------------------------------
 -------------------------------------------------
--- fnt_afmtotfm -> fnttarg {{{
-if afmtotfm then
+-- fnt.afmtotfm -> fnttarg {{{
+if fnt.afmtotfm then
   target_list[ntarg] = {
-    func = fnt_afmtotfm,
+    func = fnt.afm2tfm,
     desc = "Creates TeX font files",
     pre = function(names)
       if names then
@@ -133,8 +136,18 @@ end
 -------------------------------------------------
 -------------------------------------------------
 if options["target"] == "install" then
-  table.insert(sourcefiles,keepdir .. "/*.*")
+  table.insert(sourcefiles,fnt.keepdir .. "/*.*")
 end
+-------------------------------------------------
+-------------------------------------------------
+-- override l3build functions {{{
+checkinit_hook = fnt.checkinit_hook
+copyctan = fnt.copyctan
+docinit_hook = fnt.docinit_hook
+-- }}}
+-- other exports {{{
+fnt.ntarg = ntarg
+-- }}}
 -------------------------------------------------
 -------------------------------------------------
 -- vim: ts=2:sw=2:et:foldmethod=marker:

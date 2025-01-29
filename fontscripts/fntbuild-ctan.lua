@@ -1,26 +1,26 @@
--- $Id: fntbuild-ctan.lua 10718 2025-01-14 01:55:38Z cfrees $
+-- $Id: fntbuild-ctan.lua 10743 2025-01-29 02:29:53Z cfrees $
 -------------------------------------------------
 local exts = {}
 
 -------------------------------------------------
 -- origcopyctan()
 -- copy David Carlisle
-origcopyctan = copyctan
+local origcopyctan = copyctan
 
 -------------------------------------------------
--- extname(filename) {{{
-function extname(filename)
+-- local extname(filename) {{{
+local function extname(filename)
   local b = basename(filename)
   ext = string.gsub(b, "^[^%.]*%.", "")
   if ext == nil then
-    gwall("Failed to get extension ",ext,1)
+    fnt.gwall("Failed to get extension ",ext,1)
   end 
   return ext
 end
 -- }}}
 -------------------------------------------------
--- copysubctan(files,srcdir,targdir)
-function copysubctan(files,srcdir,targdir)
+-- local copysubctan(files,srcdir,targdir) {{{
+local function copysubctan(files,srcdir,targdir)
   local errorlevel
   local extdir
   if not direxists(targdir) then
@@ -44,10 +44,11 @@ function copysubctan(files,srcdir,targdir)
   end
   return 0
 end
+-- }}}
 -------------------------------------------------
--- copyctan() {{{
-function copyctan()
-  local keepdir = keepdir or sourcefiledir .. "/keep" 
+-- local copy_ctan() {{{
+local function copy_ctan()
+  local keepdir = fnt.keepdir or sourcefiledir .. "/keep" 
   local errorlevel
   local targdir = ctandir .. "/" .. ctanpkg
   keptfiles = {}
@@ -104,5 +105,10 @@ function copyctan()
 end
 -- end copyctan() }}}
 -------------------------------------------------
-
+-------------------------------------------------
+-- exports {{{
+fnt.copyctan = copy_ctan
+-- }}}
+-------------------------------------------------
+-------------------------------------------------
 -- vim: ts=2:sw=2:et:foldmethod=marker:

@@ -1,4 +1,4 @@
--- $Id: fntbuild-utils.lua 10718 2025-01-14 01:55:38Z cfrees $
+-- $Id: fntbuild-utils.lua 10743 2025-01-29 02:29:53Z cfrees $
 -------------------------------------------------
 -- fntbuild-utils
 -------------------------------------------------
@@ -12,7 +12,7 @@
 -- should these all be local?  or renamed? or both?
 -------------------------------------------------
 -- os_newline_cp {{{
-os_newline_cp = "\n"
+local os_newline_cp = "\n"
 if os.type == "windows" then
   if tonumber(status.luatex_version) < 100 or
      (tonumber(status.luatex_version) == 100
@@ -26,7 +26,7 @@ end
 -- from l3build-aux.lua
 -- Construct a localtexmf including any tdsdirs
 -- Needed for checking and typesetting, hence global
-function localtexmf()
+local function localtexmf()
   local paths = ""
   for src,_ in pairs(tdsdirs) do
     paths = paths .. os_pathsep .. abspath(src) .. "//"
@@ -53,7 +53,7 @@ end
 ---@return 
 ---@see 
 ---@usage 
-function dep_install(deps)
+local function dep_install(deps)
   local error_level
   for _, dep in ipairs(deps) do
     print("Installing dependency:", dep)
@@ -75,7 +75,7 @@ end
 ---@return table 
 ---@see 
 ---@usage private
-function lsrdir_aux (path,filenames)
+local function lsrdir_aux (path,filenames)
   for file in lfs.dir(path) do
     if file ~= "." and file ~= ".." then
       local f = path .. "/" .. file
@@ -102,7 +102,7 @@ end
 ---@return table 
 ---@see 
 ---@usage public
-function lsrdir (path,filenames)
+local function lsrdir (path,filenames)
   local filenames = filenames or {}
   filenames = lsrdir_aux (path,filenames)
   return filenames
@@ -112,11 +112,11 @@ end
 -- build_config() {{{
 ---use fntbuild-config.lua if found
 ---@usage private
-function build_config()
+local function build_config()
   local configs = {}
   -- not sure what the correct test is here?
   -- if options["target"] .. "search" then
-  if buildsearch then
+  if fnt.buildsearch then
     local f = kpse.find_file("fntbuild-config.lua")
     if f ~= nil then
       dofile(f)
@@ -143,6 +143,14 @@ function build_config()
   return 0
 end
 -- }}}
+-------------------------------------------------
+-------------------------------------------------
+-- exports {{{
+fnt.build_config = build_config
+fnt.dep_install = dep_install
+fnt.localtexmf = localtexmf
+fnt.lsrdir = lsrdir
+fnt.os_newline_cp = os_newline_cp
 -------------------------------------------------
 -------------------------------------------------
 -- vim: ts=2:sw=2:et:foldmethod=marker:

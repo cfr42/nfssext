@@ -1,4 +1,4 @@
--- $Id: build.lua 10649 2024-11-19 06:08:49Z cfrees $
+-- $Id: build.lua 10743 2025-01-29 02:29:53Z cfrees $
 -- Build configuration for baskervaldadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -14,8 +14,9 @@ ctanpkg = "baskervaldadf"
 maindir = "../.."
 module = "baskervald"
 textfiles = {"*.md","*.txt","COPYING"}
-vendor = "arkandis"
-autotestfds = {  "t1ybv.fd", "t1ybvw.fd" }
+fnt = {}
+fnt.vendor = "arkandis"
+fnt.autotestfds = {  "t1ybv.fd", "t1ybvw.fd" }
 dofile(maindir .. "/fontscripts/fntbuild.lua")
 -- local srcfiles = {"dotsc2.etx", "dotscbuild.mtx", "dotscmisc.mtx", "newlatin-dotsc.mtx", "t1-dotinf.etx", "t1-dotsup.etx", "ts1-dotinf.etx", "ts1-dotsup.etx"}
 -- for i,j in ipairs(srcfiles) do table.insert(sourcefiles,j) end

@@ -1,4 +1,4 @@
--- $Id: build.lua 10705 2025-01-02 07:47:44Z cfrees $
+-- $Id: build.lua 10743 2025-01-29 02:29:53Z cfrees $
 -- Build configuration for venturisadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -13,11 +13,12 @@
 ctanpkg = "venturisadf"
 maindir = "../.."
 module = "venturisadf"
-vendor = "arkandis"
-fnttestfds = {}
-fnttestfds.venturis = { "t1yvt.fd", "t1yvtajw.fd", "t1yvtaw.fd", "t1yvtd.fd", "t1yvtj.fd", "t1yvtjw.fd", "t1yvtw.fd" , "t1yv1.fd", "t1yv1d.fd" } 
-fnttestfds.venturis2 = { "t1yv2.fd" , "t1yv3.fd" } 
-fnttestfds.venturisold = { "t1yvo.fd", "t1yvoa.fd", "t1yvoad.fd", "t1yvod.fd" } 
+fnt = {}
+fnt.vendor = "arkandis"
+fnt.fnttestfds = {}
+fnt.fnttestfds.venturis = { "t1yvt.fd", "t1yvtajw.fd", "t1yvtaw.fd", "t1yvtd.fd", "t1yvtj.fd", "t1yvtjw.fd", "t1yvtw.fd" , "t1yv1.fd", "t1yv1d.fd" } 
+fnt.fnttestfds.venturis2 = { "t1yv2.fd" , "t1yv3.fd" } 
+fnt.fnttestfds.venturisold = { "t1yvo.fd", "t1yvoa.fd", "t1yvoad.fd", "t1yvod.fd" } 
 typesetfiles = { module .. ".dtx", "*-imp.dtx", "*-example.tex", "*-tables.tex" }
 dofile(maindir .. "/fontscripts/fntbuild.lua")
 -- local srcfiles = { "lining.etx", "oldstyle.etx", "t1-dotalt-f_f.enc", "t1-dotalt-f_f.etx", "t1-f_f.enc", "t1-f_f.etx", "t1j-f_f.etx", "ts1-euro.enc", "ts1-euro.etx", "ucdotalt.etx" }
@@ -27,6 +28,7 @@ dofile(maindir .. "/fontscripts/fntbuild.lua")
 packtdszip = true
 typesetdeps = {maindir .. "/nfssext-cfr"}
 unpackdeps = {maindir .. "/fontscripts"}
+local vendor = fnt.vendor
 tdslocations = {
 	"fonts/afm/" .. vendor .. "/venturis/" .. "yvt*.afm",
 	"fonts/afm/" .. vendor .. "/venturis2/" .. "yv2*.afm",
