@@ -1,4 +1,4 @@
--- $Id: fntbuild-check.lua 10745 2025-01-29 06:17:47Z cfrees $
+-- $Id: fntbuild-check.lua 10747 2025-01-29 08:32:45Z cfrees $
 -------------------------------------------------
 -- fntbuild-check
 -------------------------------------------------
@@ -323,12 +323,14 @@ local function check_init ()
   -- but remember fnt.fnttestfds may be pairs and/or ipairs ...
   -- there must be a better way to do this ...
   if #fnt.fnttestfds == 0 then
-    for i,j in ipairs(fntpkgnames) do 
-      if fnt.fnttestfds[j] == nil then
-        print("\nAuto-assigning fnt.autotestfds to fnt.fnttestfds[" .. j .. "].\n")
-        fnt.fnttestfds[j] = {}
-        for a,b in ipairs(fnt.autotestfds) do
-          table.insert(fnt.fnttestfds[j],b)
+    if #fnt.autotestfds ~= 0 then
+      for i,j in ipairs(fntpkgnames) do 
+        if fnt.fnttestfds[j] == nil then
+          print("\nAuto-assigning fnt.autotestfds to fnt.fnttestfds[" .. j .. "].\n")
+          fnt.fnttestfds[j] = {}
+          for a,b in ipairs(fnt.autotestfds) do
+            table.insert(fnt.fnttestfds[j],b)
+          end
         end
       end
     end
@@ -355,7 +357,7 @@ local function check_init ()
     maps = maps .. "\n\\pdfmapfile{-" .. j .. "}\n\\pdfmapfile{+" .. j .. "}"
   end
   -- maps = maps .. "\n\\pdfmapfile{+pdftex.map}"
-  if not fileexists(fnttestdir .. "/" .. filename) then
+  if #fnt.fnttestfds == 0 or not fileexists(fnttestdir .. "/" .. filename) then
     print("Skipping test creation.\n")
   else
     print("Creating (additional) test file(s).\n")
