@@ -110,7 +110,7 @@ local function build_fnt (dir,cmd,file)
   file = file or ""
   cmd = cmd or ""
   dir = dir or unpackdir
-  local build_fnt_env = build_fnt_env or {} 
+  local build_fnt_env = fnt.build_fnt_env or {} 
   local build_fnt_envset = ""
   if #build_fnt_env ~= 0 then
     for _,i in ipairs(build_fnt_env) do
@@ -283,8 +283,8 @@ end
 ---@usage public
 local function uniquify (tag)
   local dir = ""
-  tag = tag or encodingtag or ""
-  local pkgbase = pkgbase or ""
+  tag = tag or fnt.encodingtag or ""
+  local pkgbase = fnt.pkgbase or ""
   local pkglist = {}
   if standalone then
     dir = fnt.keepdir
@@ -467,7 +467,7 @@ local function fontinst (dir,mode)
   dir = dir or fnt.fntdir
   mode = mode or "errorstopmode --halt-on-error"
   standalone = false
-  encodingtag = encodingtag or ""
+  fnt.encodingtag = fnt.encodingtag or ""
   if #fnt.buildsuppfiles_sys == 0 then
     print("Assuming all fontinst files should be available during build.\n")
     local path = kpse.var_value("TEXMFDIST") .. "/tex/fontinst"
@@ -572,10 +572,10 @@ local function fontinst (dir,mode)
       f:close()
     end
   end
-  local errorlevel = uniquify(encodingtag)
+  local errorlevel = uniquify(fnt.encodingtag)
   if errorlevel ~= 0 then
     fnt.gwall("Encodings not uniquified! Do not submit to CTAN! uniquify(" 
-      .. encodingtag .. ")","",errorlevel)
+      .. fnt.encodingtag .. ")","",errorlevel)
   end
   errorlevel = fntsubsetter()
   if errorlevel ~= 0 then
@@ -605,7 +605,7 @@ local function afm2tfm (dir)
   local map = mapfile or fntbasename .. ".map"
   local fntencs = fnt.encs or {}
   standalone = false
-  encodingtag = encodingtag or ""
+  fnt.encodingtag = fnt.encodingtag or ""
   buildinit ()
   print("Running afm2tfm. Please be patient ...\n")
   local afms = filelist(dir,"*.afm")
@@ -661,6 +661,7 @@ end
 -------------------------------------------------
 -- exports {{{
 fnt.build_fnt = build_fnt
+fnt.buildinit = buildinit
 fnt.buildinit_hook = buildinit_hook
 fnt.finst = finst
 fnt.fntkeeper = fntkeeper

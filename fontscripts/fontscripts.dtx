@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10742 2025-01-28 07:41:01Z cfrees $}[v0.2 \revinfo][\filebase DTX: l3build scripts for font installation]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10744 2025-01-29 04:45:55Z cfrees $}[v0.2 \revinfo][\filebase DTX: l3build scripts for font installation]
 \DefineFileInfoSVN[fontscripts]
 \documentclass[10pt,british,lm-default=false]{l3doc}
 % l3doc loads fancyvrb
@@ -192,6 +192,7 @@
 % \fi
 %
 % \changes{v0.1}{2024-09-24}{First public release.}
+% \changes{v0.2}{2025-01-28}{Use \texttt{fnt} prefix in Lua scripts.}
 % 
 % \maketitle\thispagestyle{empty}
 % \pdfinfo{%
@@ -221,7 +222,7 @@
 %   For tools which do not otherwise support it, such as \lpack{fontinst}, the scripts enable the automatic addition of variable scaling in font definition files. 
 %   A semi-automatic system tries to ensure font encoding names are unique.\smallskip
 % 
-%   The script fragments originally designed for \lpack{fontinst}, but support for \texttt{afmtotfm} (intended for fonts consisting entirely of ornaments etc.) is provided and a modular approach enables easy modification for other tools.
+%   The script fragments originally designed for \lpack{fontinst}, but support for \texttt{afm2tfm} (intended for fonts consisting entirely of ornaments etc.) is provided and a modular approach enables easy modification for other tools.
 %   The default configuration is intended to be cross-platform and requires only tools included in \TeX{} Live, but the documentation includes a simple adaption for integration with FontForge and \textsc{gnu} make.
 % \end{abstract}
 %
@@ -263,10 +264,10 @@ require(kpse.lookup("fntbuild.lua"))
 %   Unless you are reading a version which includes the implementation section.
 %   In that case, \emph{most} of the document is just code listing and it is the first bit of what remains explains how to actually use the scripts.%^^A
 % }.
-% You also need to tell the scripts if you want to override the defaults e.g.~if you would like \texttt{fntbuild} to insert subset encoding declarations and/or variable scaling factors into font definition files\footnote{%
+% You also need to tell the scripts if you want to override the defaults e.g.~if you would like \texttt{fntbuild} to insert subset encoding declarations and/or variable scaling factors\footnote{%
 %   \texttt{fontinst} only.
 %   As far as I know, this is simply an oversight on \lpack{fontinst}'s part -- fixed scaling factors are supported out-of-the-box -- and I assume other tools have the ability to include variable scaling without \texttt{fntbuild}'s interference.%^^A
-% } or to auto-generate tests and/or font tables.
+% } into font definition files or to auto-generate tests and/or font tables.
 %
 % \section{Lua Script Fragments}\label{sec:lua}
 %
@@ -278,26 +279,26 @@ require(kpse.lookup("fntbuild.lua"))
 % \subsection{\lpack{l3build} Targets}\label{subsec:targs}
 %
 % \changes{v0.2}{2025-01-25}{\texttt{fnttarg} may now be ‘sandboxed’.
-%   The default build recipes (based on \lpack{fontinst} and \texttt{afm2tfm}) are configured to do this and \texttt{buildsearch} is disabled by default.
+%   The default build recipes (based on \lpack{fontinst} and \texttt{afm2tfm}) are configured to do this and \texttt{fnt.buildsearch} is disabled by default.
 %   At present, isolation only affects \TeX-based build tools. 
 %   FontForge and \textsc{gnu} \texttt{make} are unaffected, for example.}
 % \DescribeTarg{fnttarg}
-% Runs \texttt{fontinst ()} by default or \verb|fnt_afmtotfm ()| if \texttt{afmtotfm} is \texttt{true}.
+% Runs \texttt{fnt.fontinst ()} by default or \verb|fnt.afm2tfm ()| if \texttt{fnt.afmtotfm} is \texttt{true}.
 % 
 % Builds traditional \TeX{} font files for 8-bit engines.
-% The building is done in \texttt{fntdir}.
-% The results are copied to \texttt{keepdir} and the intermediate results to \texttt{keeptempdir}.
+% The building is done in \texttt{fnt.fntdir}.
+% The results are copied to \texttt{fnt.keepdir} and the intermediate results to \texttt{fnt.keeptempdir}.
 % Files in the former are copied back into the \texttt{builddir} when building documentation, running tests etc.
 %
 % This target may be redefined if another tool chain is used for font creation\footnote{^^A
-%   \verb|fnt_afmtotfm ()| in \file{fntbuild.lua} and \file{build.lua} in \lpack{berenisadf} provide examples.^^A
+%   \verb|fnt.afm2tfm ()| in \file{fntbuild.lua} and \file{build.lua} in \lpack{berenisadf} provide examples.^^A
 % }.
 %
-% If additional setup is required, this may be done by defining \verb|buildinit_hook ()|, which is empty by default.
+% If additional setup is required, this may be done by defining \verb|fnt.buildinit_hook ()|, which is empty by default.
 % See \cref{subsubsec:new}.
 % 
 % \DescribeTarg{uniquifyencs} \meta{encoding tag}\par\noindent
-% Tries to ensure that the names of encoding files and font encodings are unique by editing font definition files and map file fragments in \texttt{keepdir}.
+% Tries to ensure that the names of encoding files and font encodings are unique by editing font definition files and map file fragments in \texttt{fnt.keepdir}.
 % \meta{encoding tag} is optional.
 % If no argument is given and \texttt{encodingtag} is empty, a suitable tag will be determined automatically\footnote{Hopefully.}.
 %
@@ -307,41 +308,41 @@ require(kpse.lookup("fntbuild.lua"))
 %
 % \subsubsection{New Functions}\label{subsubsec:new}
 %
-% \changes{v0.2}{2025-01-26}{New function: \texttt{buildinit()}.}
-% \DescribelFn{buildinit()} \texttt{buildinit}\plarg{}\par\noindent
+% \changes{v0.2}{2025-01-26}{New function: \texttt{fnt.buildinit()}.}
+% \DescribelFn{fnt.buildinit()} \texttt{fnt.buildinit}\plarg{}\par\noindent
 % Sets up the build environment in preparation for building by unpacking and copying files, installing dependencies etc.\ in preparation for building.
 % Workflows supported out-of-the-box use this function, so there is no need to invoke it explicitly in these cases\footnote{^^A
-%   See \verb|fontinst()| and \verb|fnt_afmtotfm()| in \file{fntbuild-build.lua}.^^A
+%   See \verb|fnt.fontinst()| and \verb|fnt.afm2tfm()| in \file{fntbuild-build.lua}.^^A
 % }.
 % It can be used in the definition of custom functions.
 % See \cref{sec:custom} for an example.
 %
-% \changes{v0.2}{2025-01-25}{New function: \texttt{buildinit\_hook()}.}
-% \DescribelFn{buildinit_hook()} \texttt{buildinit\_hook}\plarg{}\par\noindent
+% \changes{v0.2}{2025-01-25}{New function: \texttt{fnt.buildinit\_hook()}.}
+% \DescribelFn{fnt.buildinit_hook()} \texttt{fnt.buildinit\_hook}\plarg{}\par\noindent
 % A function which does nothing successfully by default, similar to the hooks provided by \lpack{l3build}.
 % May be redefined to perform additional tasks when setting up the environment for \texttt{fnttarg}.
 % The function should return an error level.
 %
-% The hook is executed after unpacking, copying etc.\ at the end of \texttt{buildinit()} so it can be used to modify those preparations, if necessary.
+% The hook is executed after unpacking, copying etc.\ at the end of \texttt{fnt.buildinit()} so it can be used to modify those preparations, if necessary.
 %
-% \changes{v0.2}{2025-01-25}{New function: \texttt{fnt\_afmtotfm()}.}
-% \DescribelFn{fnt_afmtotfm()} \texttt{fnt\_afmtoafm}\plarg{dir}\par\noindent
+% \changes{v0.2}{2025-01-25}{New function: \texttt{fnt.afm2tfm()}.}
+% \DescribelFn{fnt.afm2tfm()} \texttt{fnt.afm2afm}\plarg{dir}\par\noindent
 % A function to generate support files for simple symbolic fonts in \meta{dir} using \texttt{afm2tfm}.
 % The function generates \tfm s, \fd s and a \map.
 % It requires \afm s and, optionally, \enc s.
-% If \meta{dir} is unspecified, \texttt{fntdir} is used.
+% If \meta{dir} is unspecified, \texttt{fnt.fntdir} is used.
 %
-% If \texttt{afmtotfm} is \texttt{true}, a call to \verb|fnt_afmtotfm()| replaces the default call to \texttt{fontinst()} when the \texttt{fnttarg} target is used.
+% If \texttt{fnt.afmtotfm} is \texttt{true}, a call to \verb|fnt.afm2tfm()| replaces the default call to \texttt{fnt.fontinst()} when the \texttt{fnttarg} target is used.
 %
-% Like \texttt{fontinst()}, \verb|fnt_afmtotfm()| calls \verb|build_fnt()| and \texttt{fntkeeper()}, but it does \textbf{not} call \texttt{uniquify()}.
+% Like \texttt{fnt.fontinst()}, \verb|fnt.afm2tfm()| calls \verb|build_fnt()| and \texttt{fnt.fntkeeper()}, but it does \textbf{not} call \texttt{fnt.uniquify()}.
 %
 % Note this function is designed for only very simple cases.
 % The target \TeX{} fonts must each correspond to a unique \file{.afm} (though it would not be hard to extend the function to support a one-many mapping).
 %
-% \changes{v0.2}{2025-01-25}{New function: \texttt{build\_fnt()}.}
-% \DescribelFn{build_fnt()} \verb|build_fnt|\plarg{dir,cmd,file}\par\noindent
+% \changes{v0.2}{2025-01-25}{New function: \texttt{fnt.build\_fnt()}.}
+% \DescribelFn{fnt.build_fnt()} \verb|fnt.build_fnt|\plarg{dir,cmd,file}\par\noindent
 % A wrapper around \texttt{runcmd()} which runs \meta{cmd} \meta{file} in \meta{dir}.
-% If \texttt{buildsearch} is \texttt{false} (the default), the function first sets up a restricted environment designed to avoid contaminating the build with undesirable elements from \TeX{} search paths. 
+% If \texttt{fnt.buildsearch} is \texttt{false} (the default), the function first sets up a restricted environment designed to avoid contaminating the build with undesirable elements from \TeX{} search paths. 
 %
 % Note that the restrictions are designed to avoid contamination resulting from searches using \texttt{kpathsea}.
 % If you use this function with a different tool chain, you may need to take additional steps to isolate the build.
@@ -351,7 +352,7 @@ require(kpse.lookup("fntbuild.lua"))
 %   Since this is inherently less reliable, you should not depend on the effectiveness of isolation.}
 % This means you should check what actually happens e.g.~which paths actually end up in your \texttt{.log} files or test the effectiveness of the isolation.
 % 
-% \verb|build_fnt_envset| may be used to selectively adapt the default sandboxing, which is sets the \texttt{kpathsea} variables shown in \cref{tab:build-env}.
+% The table \verb|fnt.build_fnt_env| may be used to selectively adapt the default sandboxing, which is sets the \texttt{kpathsea} variables shown in \cref{tab:build-env}.
 % \begin{table}
 %   \centering
 %   \caption{Default environment for ‘sandboxed’ build.}\label{tab:build-env}
@@ -378,18 +379,18 @@ require(kpse.lookup("fntbuild.lua"))
 %   \end{tabular}
 % \end{table}
 % 
-% \DescribelFn{finst()} \texttt{finst}\plarg{patt,dir,mode}\par\noindent
-% A wrapper around \verb|build_fnt()| whcih runs \verb|pdftex --interaction| \meta{mode} in directory \meta{dir} on each file in \meta{dir} matching the pattern \meta{patt}. 
+% \DescribelFn{fnt.finst()} \texttt{fnt.finst}\plarg{patt,dir,mode}\par\noindent
+% A wrapper around \verb|fnt.build_fnt()| which runs \verb|pdftex --interaction| \meta{mode} in directory \meta{dir} on each file in \meta{dir} matching the pattern \meta{patt}. 
 %
-% Called by \texttt{fontinst()}.
+% Called by \texttt{fnt.fontinst()}.
 % There is usually no need to call this function directly.
 % 
-% \DescribelFn{fontinst()} \texttt{fontinst}\plarg{dir,mode}\par\noindent
+% \DescribelFn{fnt.fontinst()} \texttt{fnt.fontinst}\plarg{dir,mode}\par\noindent
 % Executes a \lpack{fontinst} workflow to generate \TeX{} fonts and associated files in directory \meta{dir}, executing \texttt{pdftex} with the option \verb|--interaction| \meta{mode}.
 % 
 % This is the default build function called by \texttt{fnttarg}.
 %
-% The function calls \texttt{finst()}, \texttt{fntkeeper()} and \texttt{uniquify()} in addition to performing initial compilation.
+% The function calls \texttt{fnt.finst()}, \texttt{fntkeeper()} and \texttt{uniquify()} in addition to performing initial compilation.
 % The process requires the usual \lpack{fontinst} setup i.e.~a driver to generate the initial files and a second file to create map file fragments.
 %
 % If a variable scaling factor is used, the font definition files will be edited to ensure this works, since \lpack{fontinst} apparently supports scaling only by a fixed factor.
@@ -420,20 +421,20 @@ require(kpse.lookup("fntbuild.lua"))
 % If \lpack{fontinst} is setup to produce a shell script for converting \file{.pl} and \file{.vpl} files to \file{.tfm} and \file{.vf}, the function executes the commands contained in this script.
 % In order to maintain compatibility on Windows, the commands are extracted and run by Lua rather than calling the shell to execute the commands directly.
 % 
-% \DescribelFn{fntsubsetter ()} \texttt{fntsubsetter}\plarg{}\par\noindent
+% \DescribelFn{fnt.fntsubsetter ()} \texttt{fnt.fntsubsetter}\plarg{}\par\noindent
 % Inserts a font encoding subset declarations into font definition files.
 % Explicit use is only required for custom build functions, as the standard options for \verb|build_fnt ()| incorporate this function.
 % Returns an error level, but this may not be accurate.
 %
 % Note that, by default, the presence of this function does nothing because subset declarations are disabled by default.
-% To insert declarations, not only must \texttt{fntsubsetter ()} be executed by the build function.
-% \texttt{subset} must also be set to a non-\texttt{nil} value other than \texttt{false}.
+% To insert declarations, not only must \texttt{fnt.fntsubsetter ()} be executed by the build function.
+% \texttt{fnt.subset} must also be set to a non-\texttt{nil} value other than \texttt{false}.
 %
 % \DescribelFn{fnt_test()} \verb|fnt_test|\plarg{fntpkgname,fds,content,maps,fdsdir}\par\noindent
 % Auto-generates \texttt{lvt} files suitable for use with \texttt{l3build check} from a template.
 %
-% \DescribelFn{fntkeeper()} \texttt{fntkeeper}\plarg{dir}\par\noindent
-% Copies generated files in \meta{dir} to \texttt{keepdir} and/or \texttt{keeptempdir} to prevent deletion by \texttt{l3build}.
+% \DescribelFn{fnt.fntkeeper()} \texttt{fnt.fntkeeper}\plarg{dir}\par\noindent
+% Copies generated files in \meta{dir} to \texttt{fnt.keepdir} and/or \texttt{fnt.keeptempdir} to prevent deletion by \texttt{l3build}.
 % Returns an error level.
 %
 % This function is called by the function executed by the default functions called by \texttt{fnttarg()} and may be useful if that target is redefined to call a different function.
@@ -448,7 +449,7 @@ require(kpse.lookup("fntbuild.lua"))
 % \DescribelFn{uniquify()} \texttt{uniquify}\plarg{tag}\par\noindent
 % Tries to ensure the names of font encodings and encoding files are unique by editing font definition files and map file fragments. 
 %
-% This function is used by \texttt{fontinst()} and \verb|fnt_afmtotfm()|, may be utilised in a custom definition of \verb|build_fnt()| or may be called directly using the \texttt{uniquifyencs} target.
+% This function is used by \texttt{fnt.fontinst()} and \verb|fnt.afm2tfm()|, may be utilised in a custom definition of \verb|fnt.build_fnt()| or may be called directly using the \texttt{uniquifyencs} target.
 % 
 % \subsubsection{Redefined Functions}\label{subsubsec:redef}
 % 
@@ -464,8 +465,8 @@ require(kpse.lookup("fntbuild.lua"))
 %
 % The default environment for testing does the following:
 % \begin{itemize}
-%   \item concatenates all files specified in \verb|mapfiles_sys| and writes the result to \file{pdftex.map} in \texttt{testdir};
-%   \item copies the contents of \texttt{keepdir} to \texttt{testdir};
+%   \item concatenates all files specified in \verb|fnt.mapfiles_sys| and writes the result to \file{pdftex.map} in \texttt{testdir};
+%   \item copies the contents of \texttt{fnt.keepdir} to \texttt{testdir};
 %   \item copies either the files specified in \verb|checksuppfiles_sys| or the contents of the directories listed in \cref{tab:check-suppdirs} to \texttt{testdir};
 % \begin{table}
 %   \centering
@@ -536,7 +537,7 @@ require(kpse.lookup("fntbuild.lua"))
 % \end{table}
 % 
 % \DescribelFn{copyctan()} \texttt{copyctan}\plarg{}\par\noindent
-% This is extended to copy files from \texttt{keepdir} and to impose a single-layer of sub-directories of the kind required by \ctan{} for font distributions.
+% This is extended to copy files from \texttt{fnt.keepdir} and to impose a single-layer of sub-directories of the kind required by \ctan{} for font distributions.
 %
 % \DescribelFn{docinit_hook()} \verb|docinit_hook|\plarg{}\par\noindent
 % This is a standard \lpack{l3build} function which does nothing by default.
@@ -552,24 +553,25 @@ require(kpse.lookup("fntbuild.lua"))
 %     \toprule
 %     \normalfont\textbf{Variable} & \multicolumn{1}{c}{} & \normalfont\textbf{Value} \\
 %     \midrule
+%       binaryfiles && \{''*.pdf'', ''*.zip'', ''*.vf'', ''*.tfm'', ''*.pfb'', ''*.pfm'', ''*.ttf'', ''*.otf'', ''*.tar.gz''\}\\
 %       checkdeps && \{maindir .. ''/fnt-tests''\}\\
 %       checkengines && \{''pdftex''\}\\
 %       checkformat && ''latex''\\
 %       checksearch &&  false \\
-%       cleanfiles && \{keeptempfiles\}\\
+%       cleanfiles && \{fnt.keeptempfiles\}\\
 %       installfiles && \{''*.afm'', ''*.cls'', ''*.enc'', ''*.fd'', ''*.map'', ''*.otf'', ''*.pfb'', ''*.pfm'', ''*.sty'', ''*.tfm'', ''*.ttf'', ''*.vf''\}\\
 %       sourcefiledir && sourcefiledir or ''.''\\
 %       sourcefiles && \{''*.afm'', ''afm/*.afm'', ''*.pfb'', ''*.pfm'', ''*.dtx'', ''*.ins'', ''opentype/*.otf'', ''*.otf'', ''tfm/*.tfm'', ''truetype/*.ttf'', ''*.ttf'', ''type1/*.pfb'', ''type1/*.pfm''\}\\
 %       tdslocations && \{%
-%       	''fonts/afm/'' .. vendor .. ''/'' .. module .. ''/'' .. ''*.afm'',\newline
+%       	''fonts/afm/'' .. fnt.vendor .. ''/'' .. module .. ''/'' .. ''*.afm'',\newline
 %       	''fonts/enc/dvips/'' .. module .. ''/'' .. ''*.enc'',\newline
 %       	''fonts/map/dvips/'' .. module .. ''/'' .. ''*.map'',\newline
-%       	''fonts/opentype/'' .. vendor .. ''/'' .. module .. ''/'' .. ''*.otf'',\newline
-%       	''fonts/tfm/'' .. vendor .. ''/'' .. module .. ''/'' .. ''*.tfm'',\newline
-%       	''fonts/truetype/'' .. vendor .. ''/'' .. module .. ''/'' .. ''*.ttf'',\newline
-%       	''fonts/type1/'' .. vendor .. ''/'' .. module .. ''/'' .. ''*.pfb'',\newline
-%       	''fonts/type1/'' .. vendor .. ''/'' .. module .. ''/'' .. ''*.pfm'',\newline
-%       	''fonts/vf/'' .. vendor .. ''/'' .. module .. ''/'' .. ''*.vf'',\newline
+%       	''fonts/opentype/'' .. fnt.vendor .. ''/'' .. module .. ''/'' .. ''*.otf'',\newline
+%       	''fonts/tfm/'' .. fnt.vendor .. ''/'' .. module .. ''/'' .. ''*.tfm'',\newline
+%       	''fonts/truetype/'' .. fnt.vendor .. ''/'' .. module .. ''/'' .. ''*.ttf'',\newline
+%       	''fonts/type1/'' .. fnt.vendor .. ''/'' .. module .. ''/'' .. ''*.pfb'',\newline
+%       	''fonts/type1/'' .. fnt.vendor .. ''/'' .. module .. ''/'' .. ''*.pfm'',\newline
+%       	''fonts/vf/'' .. fnt.vendor .. ''/'' .. module .. ''/'' .. ''*.vf'',\newline
 %       	''source/fonts/'' .. module .. ''/'' .. ''*.etx'',\newline
 %       	''source/fonts/'' .. module .. ''/'' .. ''*.mtx'',\newline
 %       	''source/fonts/'' .. module .. ''/'' .. ''*-drv.tex'',\newline
@@ -579,7 +581,7 @@ require(kpse.lookup("fntbuild.lua"))
 %       \} \\
 %       typesetexe && ''TEXMFDOTDIR=.:../local: pdflatex''\\
 %       typesetfiles && typesetfiles or  \{''*.dtx'', ''*-tables.tex'', ''*-example.tex''\}\\
-%       typesetsourcefiles && \{keepdir .. ''/*''\}\\
+%       typesetsourcefiles && \{fnt.keepdir .. ''/*''\}\\
 %     \bottomrule
 %   \end{tabularx}
 % \end{table}
@@ -590,126 +592,133 @@ require(kpse.lookup("fntbuild.lua"))
 %     \toprule
 %     \normalfont\textbf{Variable} & \multicolumn{1}{c}{} & \normalfont\textbf{Value} \\
 %     \midrule
-%       afmtotfm && nil \\
-%       autotestfds && autotestfds or \{\}\\
-%       binaryfiles && \{''*.pdf'', ''*.zip'', ''*.vf'', ''*.tfm'', ''*.pfb'', ''*.pfm'', ''*.ttf'', ''*.otf'', ''*.tar.gz''\}\\
-%       binmakers && binmakers or \{''*-pltotf.sh''\}\\
-%       builddeps && builddeps or \{\} \\
-%       buildfiles && buildfiles or \{ ''*.afm'', ''*.enc'', ''*.etx'', ''*.fd'', ''*.lig'', ''*.make'', ''*.map'', ''*.mtx'', ''*.nam'', ''*.otf'', ''*.pe'', ''*.tex'' , ''*.tfm'' \} \\
-%       buildsearch && false \\
-%       buildsuppfiles\_sys && buildsuppfiles\_sys or \{\} \\
-%       checksuppfiles\_sys && checksuppfiles\_sys or \{\} \\
-%       checksuppfiles\_add && checksuppfiles\_add or \{\} \\
-%       familymakers && familymakers or \{''*-drv.tex''\}\\
-%       fntdir  && fntdir or builddir .. ''/fnt'' \\
-%       fnttestfds && fnttestfds or \{\}\\
-%       keepdir && keepdir or sourcefiledir .. ''/keep''\\
-%       keepfiles && keepfiles or \{''*.enc'', ''*.fd'', ''*.map'', ''*.tfm'', ''*.vf''\}\\
-%       keeptempdir && keeptempdir or sourcefiledir .. ''/keeptemp''\\
-%       keeptempfiles && keeptempfiles or \{''*.mtx'', ''*.pl'', ''*-pltotf.sh'', ''*-rec.tex'', ''*.vpl'', ''*.zz''\}\\
-%       mapmakers && \{''*-map.tex''\}\\
-%       mapfiles\_sys && mapfiles\_sys or \{\} \\
-%       mapfiles\_add && mapfiles\_add or \{\} \\
-%       subset && false \\
-%       subsetdefns && subsetdefns or \{\} \\
-%       subsetfiles && subsetfiles or \{\} \\
-%       subsettemplate && subsettemplate or ''\cmd{DeclareEncodingSubset}\{TS1\}\{\$FONTFAMILY\}\{\$SUBSET\}'' \\
-%       vendor && vendor or ''public''\\
+%       fnt.afmtotfm && nil \\
+%       fnt.autotestfds && fnt.autotestfds or \{\}\\
+%       fnt.binmakers && fnt.binmakers or \{''*-pltotf.sh''\}\\
+%       fnt.builddeps && fnt.builddeps or \{\} \\
+%       fnt.buildfiles && fnt.buildfiles or \{ ''*.afm'', ''*.enc'', ''*.etx'', ''*.fd'', ''*.lig'', ''*.make'', ''*.map'', ''*.mtx'', ''*.nam'', ''*.otf'', ''*.pe'', ''*.tex'' , ''*.tfm'' \} \\
+%       fnt.buildsearch && false \\
+%       fnt.buildsuppfiles\_sys && fnt.buildsuppfiles\_sys or \{\} \\
+%       fnt.checksuppfiles\_sys && fnt.checksuppfiles\_sys or \{\} \\
+%       fnt.checksuppfiles\_add && fnt.checksuppfiles\_add or \{\} \\
+%       fnt.familymakers && fnt.familymakers or \{''*-drv.tex''\}\\
+%       fnt.fntdir  && fnt.fntdir or builddir .. ''/fnt'' \\
+%       fnt.fnttestfds && fnt.fnttestfds or \{\}\\
+%       fnt.keepdir && fnt.keepdir or sourcefiledir .. ''/keep''\\
+%       fnt.keepfiles && fnt.keepfiles or \{''*.enc'', ''*.fd'', ''*.map'', ''*.tfm'', ''*.vf''\}\\
+%       fnt.keeptempdir && fnt.keeptempdir or sourcefiledir .. ''/keeptemp''\\
+%       fnt.keeptempfiles && fnt.keeptempfiles or \{''*.mtx'', ''*.pl'', ''*-pltotf.sh'', ''*-rec.tex'', ''*.vpl'', ''*.zz''\}\\
+%       fnt.mapmakers && \{''*-map.tex''\}\\
+%       fnt.mapfiles\_sys && fnt.mapfiles\_sys or \{\} \\
+%       fnt.mapfiles\_add && fnt.mapfiles\_add or \{\} \\
+%       fnt.pkgbase && fnt.pkgbase or '''' \\
+%       fnt.subset && false \\
+%       fnt.subsetdefns && fnt.subsetdefns or \{\} \\
+%       fnt.subsetfiles && fnt.subsetfiles or \{\} \\
+%       fnt.subsettemplate && fnt.subsettemplate or ''\cmd{DeclareEncodingSubset}\{TS1\}\{\$FONTFAMILY\}\{\$SUBSET\}'' \\
+%       fnt.vendor && fnt.vendor or ''public''\\
 %     \bottomrule
 %   \end{tabularx}
 % \end{table}
 %
 % Defaults assigned by \file{fntbuild.lua} to both \lpack{l3build} and \lpack{fontscripts} variables are listed in \cref{tab:varia} and \cref{tab:varia-n} respectively.
 %
-% \changes{v0.2}{2025-01-25}{New variable: \texttt{afmtotfm}.}
-% \DescribelVar{afmtotfm}\texttt{afmtotfm}\isbool
+% \changes{v0.2}{2025-01-25}{New variable: \texttt{fnt.afmtotfm}.}
+% \DescribelVar{fnt.afmtotfm}\texttt{fnt.afmtotfm}\isbool
 % \texttt{nil} by default.
-% Setting this to anything other than \texttt{false} or \texttt{nil} will use \texttt{afmtotfm} rather than \lpack{fontinst} to build the fonts.
+% Setting this to anything other than \texttt{false} or \texttt{nil} will use \texttt{afm2tfm} rather than \lpack{fontinst} to build the fonts.
 % This is only designed for \textbf{\em extremely} simple fonts such as those which contain only text symbols.
 %
-% \DescribelVar{autotestfds}\texttt{autotestfds} \istable{globs}
+% \DescribelVar{fnt.autotestfds}\texttt{fnt.autotestfds} \istable{globs}
 %
-% See also \texttt{testfds}.
+%^^A See also \texttt{testfds}.
 %
-% \DescribelVar{binmakers}\texttt{binmakers} \istable{globs}
+% \DescribelVar{fnt.binmakers}\texttt{fnt.binmakers} \istable{globs}
 % Scripts to run to convert human-readable \TeX{} font metrics/virtual font metrics into binary \TeX{} font metrics and virtual fonts.
 %
-% \changes{v0.2}{2025-01-25}{New variable: \texttt{buildsearch}.}
-% \DescribelVar{buildsearch}\texttt{buildsearch}\isbool
+% \changes{v0.2}{2025-01-25}{New variable: \texttt{fnt.buildsearch}.}
+% \DescribelVar{fnt.buildsearch}\texttt{fnt.buildsearch}\isbool
 % Whether to search the \texttt{texmf} trees while generating font files.
 %
 % Defaults to \texttt{false}.
 %
 % Note that this is akin to \pkg{l3build}'s \texttt{checksearch} etc.\ but for the additional build step required when preparing fonts.
 %
-% \changes{v0.2}{2025-01-25}{New variable: \texttt{builddeps}.}
-% \DescribelVar{builddeps}\texttt{builddeps} \istable{}
+% \changes{v0.2}{2025-01-25}{New variable: \texttt{fnt.builddeps}.}
+% \DescribelVar{fnt.builddeps}\texttt{fnt.builddeps} \istable{}
 % Dependencies to install when building fonts in a sandbox.
 % If empty, some basic dependencies are installed to ensure straightforward cases work out-of-the-box.
 %
-% \changes{v0.2}{2025-01-25}{New variable: \texttt{buildfiles}.}
-% \DescribelVar{buildfiles}\texttt{buildfiles} \istable{globs}
+% \changes{v0.2}{2025-01-25}{New variable: \texttt{fnt.buildfiles}.}
+% \DescribelVar{fnt.buildfiles}\texttt{fnt.buildfiles} \istable{globs}
 % Source files to copy to the build directory when generating font files.
 %
-% \changes{v0.2}{2025-01-25}{New variable: \texttt{buildsuppfiles\_sys}.}
-% \DescribelVar{buildsuppfiles_sys}\texttt{buildsuppfiles\_sys} \istable{globs}
+% \changes{v0.2}{2025-01-25}{New variable: \texttt{fnt.buildsuppfiles\_sys}.}
+% \DescribelVar{fnt.buildsuppfiles_sys}\texttt{fnt.buildsuppfiles\_sys} \istable{globs}
 % 
-% \changes{v0.2}{2025-01-25}{New variable: \texttt{checksuppfiles\_sys}.}
-% \DescribelVar{checksuppfiles_sys}\texttt{checksuppfiles\_sys} \istable{globs}
+% \changes{v0.2}{2025-01-25}{New variable: \texttt{fnt.checksuppfiles\_sys}.}
+% \DescribelVar{fnt.checksuppfiles_sys}\texttt{fnt.checksuppfiles\_sys} \istable{globs}
 % Dependencies to install when checking.
 % Overrides default list.
 % 
-% \changes{v0.2}{2025-01-25}{New variable: \texttt{checksuppfiles\_add}.}
-% \DescribelVar{checksuppfiles_add}\texttt{checksuppfiles\_add} \istable{globs}
+% \changes{v0.2}{2025-01-25}{New variable: \texttt{fnt.checksuppfiles\_add}.}
+% \DescribelVar{fnt.checksuppfiles_add}\texttt{fnt.checksuppfiles\_add} \istable{globs}
 % Dependencies to install when checking.
 % Supplements default list.
 % 
-% \DescribelVar{familymakers}\texttt{familymakers} \istable{globs}
-% Source files \texttt{fontinst()} should compile to generate \TeX{} support files.
+% \DescribelVar{fnt.familymakers}\texttt{fnt.familymakers} \istable{globs}
+% Source files \texttt{fnt.fontinst()} should compile to generate \TeX{} support files.
 % 
-% For the default definition of \texttt{fontinst()} this variable should specify the driver or drivers to be compiled.
+% For the default definition of \texttt{fnt.fontinst()} this variable should specify the driver or drivers to be compiled.
 % 
-% \changes{v0.2}{2025-01-25}{New variable: \texttt{fntdir}.}
-% \DescribelVar{fntdir}\texttt{fntdir}\isstring{directory path}
+% \changes{v0.2}{2025-01-25}{New variable: \texttt{fnt.fntdir}.}
+% \DescribelVar{fnt.fntdir}\texttt{fnt.fntdir}\isstring{directory path}
 % Directory in which to build fonts.
 % 
-% \DescribelVar{fnttestfds}\texttt{fnttestfds} \istable{globs}
+% \DescribelVar{fnt.fnttestfds}\texttt{fnt.fnttestfds} \istable{globs}
 % Files to use when generating test files for \texttt{l3build}.
 % 
-% \DescribelVar{keepdir}\texttt{keepdir} \isstring{dir}
+% \DescribelVar{fnt.keepdir}\texttt{fnt.keepdir} \isstring{dir}
 % Directory to store final products of font creation e.g.~font definitions, map file fragments, \TeX{} font metrics, virtual fonts etc.
 % 
-% \DescribelVar{keeptempdir}\texttt{keeptempdir} \isstring{dir}
+% \DescribelVar{fnt.keeptempdir}\texttt{fnt.keeptempdir} \isstring{dir}
 % Directory to store intermediat products of font creation e.g.~human-readable \TeX{} font metrics, virtual font metrics etc.
 % 
-% \DescribelVar{keepfiles}\texttt{keepfiles} \istable{globs}
-% Files to copy to \texttt{keepdir}.
+% \DescribelVar{fnt.keepfiles}\texttt{fnt.keepfiles} \istable{globs}
+% Files to copy to \texttt{fnt.keepdir}.
 % 
-% \DescribelVar{keeptempfiles}\texttt{keeptempfiles} \istable{globs}
-% Files to copy to \texttt{keeptempdir}.
+% \DescribelVar{fnt.keeptempfiles}\texttt{fnt.keeptempfiles} \istable{globs}
+% Files to copy to \texttt{fnt.keeptempdir}.
 % 
-% \changes{v0.2}{2025-01-25}{New variable: \texttt{mapfiles\_sys}.}
-% \DescribelVar{mapfiles_sys}\texttt{mapfiles\_sys} \istable{globs}
+% \changes{v0.2}{2025-01-25}{New variable: \texttt{fnt.mapfiles\_sys}.}
+% \DescribelVar{fnt.mapfiles_sys}\texttt{fnt.mapfiles\_sys} \istable{globs}
 % Map file fragments to install when checking.
 % If unset, \file{cm.map}, \file{cm-super-t1.map}, \file{cm-super-ts1.map} and \file{lm.map} are used.
 % 
-% \changes{v0.2}{2025-01-25}{New variable: \texttt{mapfiles\_add}.}
-% \DescribelVar{mapfiles_add}\texttt{mapfiles\_add} \istable{globs}
+% \changes{v0.2}{2025-01-25}{New variable: \texttt{fnt.mapfiles\_add}.}
+% \DescribelVar{fnt.mapfiles_add}\texttt{fnt.mapfiles\_add} \istable{globs}
 % Additional map file fragments to install when checking.
 % 
-% \DescribelVar{mapmakers}\texttt{mapmakers} \istable{globs}
-% Source files \texttt{finst()} should compile to generate map file fragments etc.
+% \DescribelVar{fnt.mapmakers}\texttt{fnt.mapmakers} \istable{globs}
+% Source files \texttt{fnt.finst()} should compile to generate map file fragments etc.
 % 
-% \changes{v0.2}{2025-01-25}{New variable: \texttt{subset}.}
-% \DescribelVar{subset}\texttt{subset}\isbool \par\noindent
+% \changes{v0.2}{2025-01-28}{Newly documented variable: \texttt{fnt.pkgbase}.}
+% \DescribelVar{fnt.pkgbase}\texttt{fnt.pkgbase} \isstring{identifier}
+% May be used to set a string identifying the package if \texttt{fntbuild} has trouble determining one automatically\footnote{%
+%   None of the packages I've prepared with \texttt{fntbuild} have required this.
+%   Usually, the script should do a reasonable job of discovering a suitable value automatically.%
+% }.
+%
+% \changes{v0.2}{2025-01-25}{New variable: \texttt{fnt.subset}.}
+% \DescribelVar{fnt.subset}\texttt{fnt.subset}\isbool \par\noindent
 % \texttt{nil} by default.
 % Set to any value other than \texttt{nil} or \texttt{false} to enable subset declarations.
 %
 % \textbf{Note this variable must be given a non-default value if subset encoding declarations should be added.
 %   Specifying definitions, files and templates only determines what will be done IF anything is done at all.}
 %
-% \changes{v0.2}{2025-01-25}{New variable: \texttt{subsetdefns}.}
-% \DescribelVar{subsetdefns}\texttt{subsetdefns} \istable{}
+% \changes{v0.2}{2025-01-25}{New variable: \texttt{fnt.subsetdefns}.}
+% \DescribelVar{fnt.subsetdefns}\texttt{fnt.subsetdefns} \istable{}
 % If different families should get different subset values, the various settings should be configured here.
 %
 % For example, the following code sets the subset for \meta{family 1} to \texttt{1} and that for \meta{family 2} to \texttt{3}.
@@ -717,19 +726,19 @@ require(kpse.lookup("fntbuild.lua"))
 %<*verb>
 % \fi
 \begin{verbatim}
-subsetdefns.<family 1> = "1"
-subsetdefns.<family 2> = "3"
+fnt.subsetdefns.<family 1> = "1"
+fnt.subsetdefns.<family 2> = "3"
 \end{verbatim}
 % \iffalse
 %</verb>
 % \fi
 % 
-% \changes{v0.2}{2025-01-25}{New variable: \texttt{subsetfiles}.}
-% \DescribelVar{subsetfiles}\texttt{subsetfiles} \istable{globs}
+% \changes{v0.2}{2025-01-25}{New variable: \texttt{fnt.subsetfiles}.}
+% \DescribelVar{fnt.subsetfiles}\texttt{fnt.subsetfiles} \istable{globs}
 % Font definition files into which encoding subset declarations should be inserted.
 % 
-% \changes{v0.2}{2025-01-25}{New variable: \texttt{subsettemplate}.}
-% \DescribelVar{subsettemplate}\texttt{subsettemplate} \isstring{}
+% \changes{v0.2}{2025-01-25}{New variable: \texttt{fnt.subsettemplate}.}
+% \DescribelVar{fnt.subsettemplate}\texttt{fnt.subsettemplate} \isstring{}
 % Template to use when constructing subset declarations.
 % 
 % By default, the template simply plugs family and value pairs into a standard declaration as shown in \cref{tab:varia-n}.
@@ -745,7 +754,7 @@ subsetdefns.<family 2> = "3"
 %<*verb>
 % \fi
 \begin{verbatim}
-subsettemplate = "\\ExpandArgs {nnc} \\DeclareEncodingSubset {TS1} {$FONTFAMILY} {TS1:$SUBSET}"
+fnt.subsettemplate = "\\ExpandArgs {nnc} \\DeclareEncodingSubset {TS1} {$FONTFAMILY} {TS1:$SUBSET}"
 \end{verbatim}
 % \iffalse
 %</verb>
@@ -755,14 +764,14 @@ subsettemplate = "\\ExpandArgs {nnc} \\DeclareEncodingSubset {TS1} {$FONTFAMILY}
 %<*verb>
 % \fi
 \begin{verbatim}
-subsetdefns.clms = "lmss" 
+fnt.subsetdefns.clms = "lmss" 
 \end{verbatim}
 % \iffalse
 %</verb>
 % \fi
 % The result is that \LaTeXe{} will use whichever subset is declared for \texttt{lmss} for \texttt{clms}, which, after all, is no more than a fancy alias for \texttt{lmss} in the \texttt{TS1} encoding.
 %
-% \DescribelVar{vendor}\texttt{vendor} \isstring{vendor}
+% \DescribelVar{fnt.vendor}\texttt{fnt.vendor} \isstring{fnt.vendor}
 % Vendor directory for font installation such as \texttt{public} or \texttt{arkandis}.
 % 
 % \section{Configuration}\label{sec:config}
@@ -819,7 +828,7 @@ subsetdefns.clms = "lmss"
 % \section{Customisation}\label{sec:custom}
 %
 % As in the case of \lpack{l3build}, you can replace functions and targets at will, albeit on a much more limited scale.
-% Although it would be better to just not use \file{fntbuild.lua} at all if you want to redefine everything, it can make sense to replace \texttt{fontinst()} if, say, you want to use different font creation tools but make use of the functions for stashing generated files, generating font tables, testing etc.
+% Although it would be better to just not use \file{fntbuild.lua} at all if you want to redefine everything, it can make sense to replace \texttt{fnt.fontinst()} if, say, you want to use different font creation tools but make use of the functions for stashing generated files, generating font tables, testing etc.
 %
 % For example, \lpack{berenisadf} was built using a \file{build.lua} containing 
 % \newcommand*\FancyVerbStopString{-- STOP doc eg}
@@ -827,10 +836,10 @@ subsetdefns.clms = "lmss"
 % \VerbatimInput[gobble=0,numbers=left,numberblanklines=true]{berenis-build.lua}
 % \let\FancyVerbStopString\relax
 % \let\FancyVerbStartString\relax
-% That is, \lpack{berenisadf} doesn't use \texttt{fontinst()} at all, but \texttt{fntmake()}, which simply invokes \texttt{gnu} \texttt{make} and calls \texttt{fntkeeper()}\footnote{%
+% That is, \lpack{berenisadf} doesn't use \texttt{fnt.fontinst()} at all, but \texttt{fnt.fntmake()}, which simply invokes \texttt{gnu} \texttt{make} and calls \texttt{fnt.fntkeeper()}\footnote{%
 %   It does not ensure encoding names are unique, but it should.%
 % }.
-% Note the use of \texttt{buildinit()} to setup the build environment.
+% Note the use of \texttt{fnt.buildinit()} to setup the build environment.
 %
 % \subsection{Examples}\label{subsec:eeiau}
 % 
@@ -867,7 +876,7 @@ subsetdefns.clms = "lmss"
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2\nil{#1}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName doc]{$Id: fontscripts.dtx 10742 2025-01-28 07:41:01Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName doc]{$Id: fontscripts.dtx 10744 2025-01-29 04:45:55Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \AddToHook{begindocument}{\OnlyDescription}
 \input{\MyFileBaseName.dtx}
@@ -878,7 +887,7 @@ subsetdefns.clms = "lmss"
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2\nil{#1}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName code]{$Id: fontscripts.dtx 10742 2025-01-28 07:41:01Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName code]{$Id: fontscripts.dtx 10744 2025-01-29 04:45:55Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \input{\MyFileBaseName.dtx}
 %</doc-code>
@@ -891,7 +900,7 @@ subsetdefns.clms = "lmss"
 %    \begin{macrocode}
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10742 2025-01-28 07:41:01Z cfrees $}[v0.2 \revinfo][\outFileName]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10744 2025-01-29 04:45:55Z cfrees $}[v0.2 \revinfo][\outFileName]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % \iffalse
@@ -924,117 +933,6 @@ subsetdefns.clms = "lmss"
 % \begin{luafrag}{fntbuild.lua}
 %   Use \texttt{dofile()} in \file{build.lua} to add to \lpack{l3build}.
 %   \VerbatimInput[gobble=0,numbers=left]{fntbuild.lua}
-% ^^A   \newcommand*\FancyVerbStopString{ntarg = "fnttarg"}
-% ^^A   \VerbatimInput[gobble=0,numbers=left,numberblanklines=true,firstline=12]{fntbuild.lua}
-% ^^A   \newcommand*\FancyVerbStartString{nifergwall = 0}
-% ^^A   \begin{target}{fnttarg}
-% ^^A     Create fonts.
-% ^^A     Default assumes \lpack{fontinst}.
-% ^^A     Redefine element in target list for alternative tools.
-% ^^A     For example, \lpack{berenisadf}'s \texttt{build.lua} redefines it to use \textsc{gnu} \texttt{make}, \textsc{FontForge} etc.
-% ^^A     \renewcommand*\FancyVerbStopString{utarg = "uniquifyencs"}
-% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true]{fntbuild.lua}
-% ^^A   \end{target}
-% ^^A   \begin{target}{uniquifyencs}
-% ^^A     To ensure unique encodings without rebuilding fonts.
-% ^^A     \renewcommand*\FancyVerbStartString{ntarg = "fnttarg"}
-% ^^A     \renewcommand*\FancyVerbStopString{function gwall (msg,file,rtn)}
-% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true]{fntbuild.lua}
-% ^^A   \end{target}
-% ^^A   \renewcommand*\FancyVerbStartString{utarg = "uniquifyencs"}
-% ^^A   \renewcommand*\FancyVerbStopString{function finst (patt,dir,mode)}
-% ^^A   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true]{fntbuild.lua}
-% ^^A   \begin{luafunction}{finst()}
-% ^^A     Is to \texttt{finst} what \texttt{fontinst} is to \texttt{fontinst}.
-% ^^A     \renewcommand*\FancyVerbStartString{utarg = "uniquifyencs"}
-% ^^A     \renewcommand*\FancyVerbStopString{function fntkeeper ()}
-% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=38]{fntbuild.lua}
-% ^^A   \end{luafunction}
-% ^^A   \begin{luafunction}{fntkeeper()}
-% ^^A     Keep fonts between \texttt{l3build} runs unless \texttt{fnttarg} explicitly called.
-% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=52,lastline=102]{fntbuild.lua}
-% ^^A   \end{luafunction}
-% ^^A   \begin{luafunction}{uniquify()}
-% ^^A     Ensure encoding names are unique.
-% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=105,lastline=222]{fntbuild.lua}
-% ^^A   \end{luafunction}
-% ^^A   \begin{luafunction}{fontinst()}
-% ^^A     Configured for \lpack{fontinst}.
-% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=223,lastline=321]{fntbuild.lua}
-% ^^A   \end{luafunction}
-% ^^A   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=322,lastline=323]{fntbuild.lua}
-% ^^A   \begin{luafunction}{fnt_test()}
-% ^^A     Assumes a suitable template is available for testing.
-% ^^A     \renewcommand*\FancyVerbStartString{-- fnt_test}
-% ^^A     \renewcommand*\FancyVerbStopString{-- checkinit_hook}
-% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true]{fntbuild.lua}
-% ^^A   \end{luafunction}
-% ^^A   \begin{luafunction}{checkinit_hook()}
-% ^^A     Redefinition of standard \lpack{l3build} function.
-% ^^A     \renewcommand*\FancyVerbStartString{-- checkinit_hook}
-% ^^A     \renewcommand*\FancyVerbStopString{-- doc_init}
-% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true]{fntbuild.lua}
-% ^^A   \end{luafunction}
-% ^^A   \begin{luafunction}{docinit_hook()}
-% ^^A     Redefinition of standard \lpack{l3build} function.
-% ^^A     \renewcommand*\FancyVerbStartString{-- doc_init}
-% ^^A     \renewcommand*\FancyVerbStopString{-- fontinst must be specified first}
-% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true]{fntbuild.lua}
-% ^^A   \end{luafunction}
-% ^^A   \begin{target}{fnttarg}
-% ^^A     Main target definition.
-% ^^A     \renewcommand*\FancyVerbStartString{-- ntarg}
-% ^^A     \renewcommand*\FancyVerbStopString{-- utarg}
-% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,]{fntbuild.lua}
-% ^^A   \end{target}
-% ^^A   \begin{target}{uniquifyencs}
-% ^^A     Secondary target.
-% ^^A     It is not normally necessary to invoke this target separately if using the default definition of \texttt{fnttarg}.
-% ^^A     \renewcommand*\FancyVerbStartString{-- utarg}
-% ^^A     \renewcommand*\FancyVerbStopString{-- diwedd targets}
-% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true]{fntbuild.lua}
-% ^^A   \end{target}
-% ^^A   \begin{luavariable}{autotestfds}
-% ^^A     \texttt{fd} files to use when auto-generating build tests.
-% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=631,lastline=631]{fntbuild.lua}
-% ^^A   \end{luavariable}
-% ^^A   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=633,lastline=634]{fntbuild.lua}
-% ^^A   \begin{luavariable}{binmakers}
-% ^^A     Scripts to create binary \texttt{tfm} and/or \texttt{vf} from \texttt{pl} and/or \texttt{vpl}.
-% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=635,lastline=635]{fntbuild.lua}
-% ^^A   \end{luavariable}
-% ^^A   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=638,lastline=644]{fntbuild.lua}
-% ^^A   \begin{luavariable}{familymakers}
-% ^^A     Files to compile to generate font definition files, human-readable metrics etc.
-% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=645,lastline=645]{fntbuild.lua}
-% ^^A   \end{luavariable}
-% ^^A   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,lastline=646,firstline=647]{fntbuild.lua}
-% ^^A   \begin{luavariable}{fnttestfds}
-% ^^A     Font definition files to use when auto-generating tests.
-% ^^A     May be either a table of globs or a table of tables of package names and lists of globs.
-% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,lastline=648,firstline=648]{fntbuild.lua}
-% ^^A   \end{luavariable}
-% ^^A   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,lastline=652,firstline=650]{fntbuild.lua}
-% ^^A   \begin{luavariable}{keepdir,keeptempdir}
-% ^^A     Directories to stash generated font files and intermediate build products.
-% ^^A     These should \textbf{not} be subdirectories of \texttt{builddir}.
-% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=653,lastline=654]{fntbuild.lua}
-% ^^A   \end{luavariable}
-% ^^A   \begin{luavariable}{keepfiles,keeptempfiles}
-% ^^A     Globs for generated font files and intermediate build products to stash in \path{keepdir} and \path{keeptempdir} respectively.
-% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=655,lastline=656]{fntbuild.lua}
-% ^^A   \end{luavariable}
-% ^^A   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=657,lastline=657]{fntbuild.lua}
-% ^^A   \begin{luavariable}{mapmakers}
-% ^^A     Files to compile to generate map file fragments.
-% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=658,lastline=658]{fntbuild.lua}
-% ^^A   \end{luavariable}
-% ^^A   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=659,lastline=662]{fntbuild.lua}
-% ^^A   \begin{luavariable}{vendor}
-% ^^A     Vendor directory when installing.
-% ^^A     \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=663,lastline=664]{fntbuild.lua}
-% ^^A   \end{luavariable}
-% ^^A   \VerbatimInput[gobble=0,numbers=left,firstnumber=last,numberblanklines=true,firstline=665]{fntbuild.lua}
 % \end{luafrag}
 %
 % \changes{v0.2}{2025-01-25}{Split most of \texttt{fntbuild.lua} into other files, similar to the existing \texttt{fntbuild-ctan.lua}.}
@@ -1060,25 +958,6 @@ subsetdefns.clms = "lmss"
 %   Included by \file{fntbuild.lua}.
 %   Changes the way the \texttt{ctan} target builds the archive to match \ctan{} requirements for font distributions.
 %   \VerbatimInput[gobble=0,numbers=left]{fntbuild-ctan.lua}
-% ^^A   \VerbatimInput[gobble=0,numbers=left,numberblanklines=true,firstline=2,lastline=8,firstnumber=last]{fntbuild-ctan.lua}
-% ^^A   \begin{luafunction}{extname()}
-% ^^A     Get extension from filename.
-% ^^A     \newcommand*\FancyVerbStartString{-- extname(filename)}
-% ^^A     \newcommand*\FancyVerbStopString{-- copysubctan(files,srcdir,targdir)}
-% ^^A     \VerbatimInput[gobble=0,numbers=left,numberblanklines=true,firstnumber=last]{fntbuild-ctan.lua}
-% ^^A   \end{luafunction}
-% ^^A   \begin{luafunction}{copysubctan()}
-% ^^A     Sub-directories for \ctan.
-% ^^A     \newcommand*\FancyVerbStartString{-- copysubctan(files,srcdir,targdir)}
-% ^^A     \newcommand*\FancyVerbStopString{-- copyctan()}
-% ^^A     \VerbatimInput[gobble=0,numbers=left,numberblanklines=true,firstnumber=last]{fntbuild-ctan.lua}
-% ^^A   \end{luafunction}
-% ^^A   \begin{luafunction}{copyctan()}
-% ^^A     Redefine function used by \texttt{ctan}.
-% ^^A     \newcommand*\FancyVerbStartString{-- copyctan()}
-% ^^A     \newcommand*\FancyVerbStopString{-- end copyctan()}
-% ^^A     \VerbatimInput[gobble=0,numbers=left,numberblanklines=true,firstnumber=last]{fntbuild-ctan.lua}
-% ^^A   \end{luafunction}
 % \end{luafrag} 
 % 
 % \subsubsection{fntbuild-doc.lua}\label{subsubsec:fntbuild-doc-lua}
