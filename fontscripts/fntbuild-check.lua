@@ -1,4 +1,4 @@
--- $Id: fntbuild-check.lua 10743 2025-01-29 02:29:53Z cfrees $
+-- $Id: fntbuild-check.lua 10745 2025-01-29 06:17:47Z cfrees $
 -------------------------------------------------
 -- fntbuild-check
 -------------------------------------------------
@@ -312,7 +312,7 @@ local function check_init ()
     fnt.gwall("Attempt to locate fd files ", ".fd", 1)
   elseif #fnt.autotestfds == 0 then
     for i, j in ipairs(autotestfdstmp) do
-      if not string.match(j,"^ts1") then
+      if not ( string.match(j,"^ts1") or string.match(j,"^u") )  then
         table.insert (fnt.autotestfds, j)
       end
     end
