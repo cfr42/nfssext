@@ -1,4 +1,4 @@
--- $Id: build.lua 10743 2025-01-29 02:29:53Z cfrees $
+-- $Id: build.lua 10753 2025-02-03 06:48:38Z cfrees $
 -- Build configuration for venturisadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -123,7 +123,10 @@ uploadconfig = {
 }
 --
 date = "2008-2025"
-dofile(maindir .. "/arkandis/arkandis-manifest.lua")
+if fileexists(maindir .. "/arkandis/arkandis-manifest.lua") then
+  dofile(maindir .. "/arkandis/arkandis-manifest.lua")
+end
+-- dofile(maindir .. "/arkandis/arkandis-manifest.lua")
 function manifest_write_opening(filehandle)
   local date  = date or os.date()
   filehandle:write( "# Manifest for " .. ctanpkg .. "\n\nCopyright (C) " .. date .. " Clea F. Rees\n\n" )

@@ -1,4 +1,4 @@
--- $Id: arkandis-manifest.lua 10743 2025-01-29 02:29:53Z cfrees $
+-- $Id: arkandis-manifest.lua 10753 2025-02-03 06:48:38Z cfrees $
 ---------------------------------------------------------------------
 ---------------------------------------------------------------------
 -- local derivedfiles = derivedfiles or {"*.cls","*.enc","*.fd","*.map","*.sty","*.tfm","*.vf"}
@@ -18,14 +18,14 @@
 ----------------------------------------------------------------------
 ----------------------------------------------------------------------
 local arkandis = arkandis or {}
-local fnttestfiles = fnttestfiles or "* fnt-tests.tex\n* fnt-test.lvt"
-local fnttablestemplate = fnttablestemplate or "\n* fnt-tables.tex"
+local fnttestfiles = fnt.testfiles or "* fnt-tests.tex\n* fnt-test.lvt"
+local fnttablestemplate = fnt.tablestemplate or "\n* fnt-tables.tex"
 local sourcefiledir = sourcefiledir or "."
 local builddir = builddir or maindir .. "/build"
 local unpackdir = unpackdir or builddir .. "/unpacked"
-local arkandisfiles = arkandisfiles or {"*.afm","COPYING","NOTICE","*.otf","*.pfb","*.pfm"}
-local arkandisders = arkandisders or {}
-local derivedfiles = derivedfiles or {}
+local arkandisfiles = arkandis.files or {"*.afm","COPYING","NOTICE","*.otf","*.pfb","*.pfm"}
+local arkandisders = arkandis.ders or {}
+local derivedfiles = arkandis.derivedfiles or {}
 table.insert(derivedfiles,"*-tables.tex")
 ----------------------------------------------------------------------
 ----------------------------------------------------------------------
@@ -127,7 +127,7 @@ local function populatescripts()
   if buildscripts == nil then
     -- local bldscripts = {}
     local bldscripts = ""
-    local possscripts = {sourcefiledir .. "/build.lua", maindir .. "/fntbuild.lua", maindir .. "/tag.lua", arkandisdir .. "/arkandis-manifest.lua"}
+    local possscripts = {sourcefiledir .. "/build.lua",  maindir .. "/tag.lua", arkandisdir .. "/arkandis-manifest.lua", maindir .. "/fntbuild-config.lua"}
     for i,j in ipairs(possscripts) do
       if fileexists(j) then
         bldscripts = bldscripts .. "\n* " .. basename(j) 
@@ -202,7 +202,7 @@ function manifest_setup ()
   local m_srcpkgfiles = idxexcl(sourcefiledir,srclist,{fntmklist})
   local srcpkgfiles = idxtable(m_srcpkgfiles)
   -- generated
-  local m_genfntfiles = idxexcl(keepdir,{"*.*"},arkandisders) 
+  local m_genfntfiles = idxexcl(fnt.keepdir,{"*.*"},arkandisders) 
   local genlist = idxtable(m_genfntfiles)
   -- derived development
   local m_devder = idxexcl(unpackdir, {"Makefile.*", "*.etx","*.lig","*.mtx","*.nam","*.pe","*-drv.tex","*-encs.tex","*-map.tex","*-tables.tex","*-auto-test*.lvt"}, {srclist, sourcefiles, typesetfiles, typesetsourcefiles, typesetdemofiles, fnttablestemplate, genlist})
