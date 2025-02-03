@@ -1,4 +1,4 @@
--- $Id: build.lua 10753 2025-02-03 06:48:38Z cfrees $
+-- $Id: build.lua 10755 2025-02-03 07:39:57Z cfrees $
 -- Build configuration for venturisadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -30,6 +30,12 @@ typesetdeps = {maindir .. "/nfssext-cfr"}
 unpackdeps = {maindir .. "/fontscripts"}
 local vendor = fnt.vendor
 tdslocations = {
+  "doc/fonts/" .. module .. "/" .. "COPYING*",
+  "doc/fonts/" .. module .. "/" .. "LICENSE*",
+  "doc/fonts/" .. module .. "/" .. "*.md",
+  "doc/fonts/" .. module .. "/" .. "*.pdf",
+  "doc/fonts/" .. module .. "/" .. "*.txt",
+  "doc/fonts/" .. module .. "/" .. "venturis*.tex",
 	"fonts/afm/" .. vendor .. "/venturis/" .. "yvt*.afm",
 	"fonts/afm/" .. vendor .. "/venturis2/" .. "yv2*.afm",
 	"fonts/afm/" .. vendor .. "/venturisold/" .. "yvo*.afm",
@@ -58,16 +64,11 @@ tdslocations = {
 	"fonts/tfm/" .. vendor .. "/venturisold/" .. "yvo*.tfm",
 	"fonts/tfm/" .. vendor .. "/venturissans/" .. "yv1*.tfm",
 	"fonts/tfm/" .. vendor .. "/venturissans2/" .. "yv3*.tfm",
-  "fonts/pfb/" .. vendor .. "/venturis/" .. "yvt*.pfb",
-	"fonts/pfb/" .. vendor .. "/venturis2/" .. "yv2*.pfb",
-	"fonts/pfb/" .. vendor .. "/venturisold/" .. "yvo*.pfb",
-	"fonts/pfb/" .. vendor .. "/venturissans/" .. "yv1*.pfb",
-	"fonts/pfb/" .. vendor .. "/venturissans2/" .. "yv3*.pfb",
-  "fonts/pfm/" .. vendor .. "/venturis/" .. "yvt*.pfm",
-	"fonts/pfm/" .. vendor .. "/venturis2/" .. "yv2*.pfm",
-	"fonts/pfm/" .. vendor .. "/venturisold/" .. "yvo*.pfm",
-	"fonts/pfm/" .. vendor .. "/venturissans/" .. "yv1*.pfm",
-	"fonts/pfm/" .. vendor .. "/venturissans2/" .. "yv3*.pfm",
+  "fonts/type1/" .. vendor .. "/venturis/" .. "yvt*.pfb",
+	"fonts/type1/" .. vendor .. "/venturis2/" .. "yv2*.pfb",
+	"fonts/type1/" .. vendor .. "/venturisold/" .. "yvo*.pfb",
+	"fonts/type1/" .. vendor .. "/venturissans/" .. "yv1*.pfb",
+	"fonts/type1/" .. vendor .. "/venturissans2/" .. "yv3*.pfb",
   "fonts/vf/" .. vendor .. "/venturis/" .. "yvt*.vf",
 	"fonts/vf/" .. vendor .. "/venturis2/" .. "yv2*.vf",
 	"fonts/vf/" .. vendor .. "/venturisold/" .. "yvo*.vf",
@@ -77,6 +78,8 @@ tdslocations = {
 	"source/fonts/" .. module .. "/" .. "*.mtx",
 	"source/fonts/" .. module .. "/" .. "*-drv.tex",
 	"source/fonts/" .. module .. "/" .. "*-map.tex",
+	"source/fonts/" .. module .. "/" .. "*.dtx",
+	"source/fonts/" .. module .. "/" .. "*.ins",
   "tex/latex/venturis/" .. "t1yvt*.fd",
 	"tex/latex/venturis2/" .. "t1yv2*.fd",
 	"tex/latex/venturisold/" .. "t1yvo*.fd",
@@ -89,7 +92,7 @@ tdslocations = {
 	"tex/latex/venturissans2/" .. "ts1yv3*.fd",
 	"tex/latex/" .. module .. "/" .. "*.sty"
 }
-textfiles = {"*.md", "*.txt", "COPYING"}
+textfiles = {"*.md", "*.txt", "COPYING*", "LICENSE*", "licences/COPYTING*", "licences/LICENSE*" }
 typesetruns = 5
 --
 uploadconfig = {
