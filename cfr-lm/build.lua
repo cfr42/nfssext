@@ -1,4 +1,4 @@
--- $Id: build.lua 10743 2025-01-29 02:29:53Z cfrees $
+-- $Id: build.lua 10752 2025-02-03 02:08:58Z cfrees $
 -- Build configuration for cfr-lm
 -------------------------------------------------------------------------------
 -- l3build.pdf listing 1 tudalen 9
@@ -70,7 +70,7 @@ uploadconfig = {
 	pkg        = ctanpkg,
 	summary    = "Extended support for Latin Modern on 8-bit engines",
   uploader   = "Clea F. Rees",
-	version    = "v1.7",
+	version    = "v1.8",
   -- optional --
 	bugtracker = {"https://codeberg.org/cfr/nfssext/issues"},
   -- description
