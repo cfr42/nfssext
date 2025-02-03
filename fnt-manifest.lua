@@ -1,4 +1,4 @@
--- $Id: fnt-manifest.lua 10743 2025-01-29 02:29:53Z cfrees $
+-- $Id: fnt-manifest.lua 10754 2025-02-03 06:50:01Z cfrees $
 ---------------------------------------------------------------------
 -- local derivedfiles = derivedfiles or {"*.cls","*.enc","*.fd","*.map","*.sty","*.tfm","*.vf"}
 -- local origfntfiles = origfntfiles or {"*.afm","*.otf","*.pfb",".pfm","*.ttf","NOTICE.txt","COPYING"}
@@ -15,7 +15,7 @@ local function populatescripts()
   if buildscripts == nil then
     -- local bldscripts = {}
     local bldscripts = ""
-    local possscripts = {sourcefiledir .. "/build.lua", maindir .. "/fntbuild.lua", maindir .. "/fnt-manifest.lua", maindir .. "/tag.lua"}
+    local possscripts = {sourcefiledir .. "/build.lua", maindir .. "/fnt-manifest.lua", maindir .. "/tag.lua", maindir .. "/fntbuild-config.lua", sourcefiledir .. "/fntbuild-config.lua"}
     for i,j in ipairs(possscripts) do
       if fileexists(j) then
         bldscripts = bldscripts .. "\n* " .. basename(j) 
@@ -33,7 +33,7 @@ local function populatefontsupp(fontglob)
   -- if fontsupp == nil then
     -- local fontsupport = {}
     local fontsupport = ""
-    local fontsupporttemp = filelist(keepdir, fontglob)
+    local fontsupporttemp = filelist(fnt.keepdir, fontglob)
     for i,j in ipairs(fontsupporttemp) do
       -- if not ( j == "." or j == ".." ) then
         fontsupport = fontsupport .. "\n* " .. j 
@@ -114,15 +114,25 @@ function manifest_setup ()
   if not ( fileexists(unpackdir .. "/" .. module .. ".sty") or fileexists(unpackdir .. "/" .. ctanpkg .. ".sty") ) then
     unpack()
   end
+  print("pops")
   local buildscripts = populatescripts()
+  print("fnt")
   local derfntfiles = populatefontsupp()
+  print("enc")
   local derencfiles = populatefontsupp("*.enc")
+  print("fd")
   local derfdfiles = populatefontsupp("*.fd")
+  print("map")
   local dermapfiles = populatefontsupp("*.map")
+  print("fm")
   local dertfmfiles = populatefontsupp("*.tfm")
+  print("vf")
   local dervffiles = populatefontsupp("*.vf")
+  print("doc")
   local docfiles = populatedoc()
+  print("txt")
   local txtfiles = populatetxt() 
+  print("groups next")
   local groups = {
     {
       subheading = "Source files",
@@ -191,7 +201,7 @@ function manifest_setup ()
     {
       name = "Miscellaneous Font Support Files",
       files = {derfntfiles},
-      dir = keepdir,
+      dir = fnt.keepdir,
       exclude = {derfntexcfiles},
     },
     {
