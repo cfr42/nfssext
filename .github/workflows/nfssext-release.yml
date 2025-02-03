@@ -106,6 +106,10 @@ jobs:
             ~/.texlive
             ~/texmf
           key: clm-${{ github.sha }}
+      - name: List zip
+        if: ${{ contains(github.ref_name, 'cfr-lm-') || contains(github.ref_name, 'clm-') }}
+        run: |
+          unzip -l cfr-lm/cfr-lm-ctan.zip
       - name: Archive zip
         if: ${{ contains(github.ref_name, 'cfr-lm-') || contains(github.ref_name, 'clm-') }}
         # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
@@ -229,6 +233,12 @@ jobs:
           name: testfiles-${{ matrix.module }}
           # Decide how long to keep the test output artefact:
           retention-days: 7
+      - name: List zip
+        if: ${{ contains(github.ref_name, matrix.module) }}
+        env:
+          modname: ${{ matrix.module }}
+        run: |
+          unzip -l ${modname}/${modname}-ctan.zip
       - name: Archive release zip
         if: ${{ contains(github.ref_name, matrix.module) }}
         # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
@@ -349,6 +359,12 @@ jobs:
         if: ${{ contains(github.ref_name, matrix.module) && matrix.tds }}
         working-directory: ${{ matrix.working_directory }}
         run:  l3build manifest && l3build ctan
+      - name: List zip
+        if: ${{ contains(github.ref_name, matrix.module) }}
+        env:
+          modname: ${{ matrix.module }}
+        run: |
+          unzip -l ${modname}/${modname}-ctan.zip
       - name: Archive release zip
         if: ${{ contains(github.ref_name, matrix.module) }}
         # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
