@@ -1,4 +1,4 @@
-$Id: README.md 10710 2025-01-03 17:10:49Z cfrees $
+$Id: README.md 10756 2025-02-03 15:27:37Z cfrees $
 =================================================
 Copyright (C) 2008-2025 Clea F. Rees.
 
@@ -87,9 +87,9 @@ completely horrible. As documentation, the kindest thing one can say about it is
 that it exists, whereas the source was previously not in the typeset
 documentaton at all. The document is so ghastly, however, that I strongly
 recommend reading cfr-lm-build.dtx instead. The only reason to include the PDF
-at all is that it contains an index of the code. Auch indexes are automatically
-generated with all the usual limitations consequent on that and this one is no
-exception. It is, however, arguably better than no index at all.
+at all is that it contains an index of the code. All such indexes are 
+automatically generated with all the usual limitations consequent on that and 
+this one is no exception. It is, however, arguably better than no index at all.
 
 # Code Repositories
 
@@ -109,7 +109,7 @@ If you have comments about the fonts themselves, please contact GUST.
 
 Clea F. Rees
 Version 1.8
-2025-01-03
+2025-02-03
 
 =================================================
 vim: et:tw=80:sw=2:
