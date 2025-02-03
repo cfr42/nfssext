@@ -1,4 +1,4 @@
--- $Id: fnt-manifest.lua 10754 2025-02-03 06:50:01Z cfrees $
+-- $Id: fnt-manifest.lua 10757 2025-02-03 15:37:47Z cfrees $
 ---------------------------------------------------------------------
 -- local derivedfiles = derivedfiles or {"*.cls","*.enc","*.fd","*.map","*.sty","*.tfm","*.vf"}
 -- local origfntfiles = origfntfiles or {"*.afm","*.otf","*.pfb",".pfm","*.ttf","NOTICE.txt","COPYING"}
@@ -13,13 +13,11 @@ local function populatescripts()
   -- local vendordir = vendordir or maindir .. "/public"
   local sourcefiledir = sourcefiledir or "."
   if buildscripts == nil then
-    -- local bldscripts = {}
     local bldscripts = ""
     local possscripts = {sourcefiledir .. "/build.lua", maindir .. "/fnt-manifest.lua", maindir .. "/tag.lua", maindir .. "/fntbuild-config.lua", sourcefiledir .. "/fntbuild-config.lua"}
     for i,j in ipairs(possscripts) do
       if fileexists(j) then
         bldscripts = bldscripts .. "\n* " .. basename(j) 
-        -- table.insert(bldscripts, basename(j))
       end
     end
     return bldscripts
@@ -28,23 +26,14 @@ local function populatescripts()
   end
 end
 local function populatefontsupp(fontglob)
-  -- local sourcefiledir = sourcefiledir or "."
   fontglob = fontglob or "*.*" 
-  -- if fontsupp == nil then
-    -- local fontsupport = {}
-    local fontsupport = ""
-    local fontsupporttemp = filelist(fnt.keepdir, fontglob)
-    for i,j in ipairs(fontsupporttemp) do
-      -- if not ( j == "." or j == ".." ) then
-        fontsupport = fontsupport .. "\n* " .. j 
-        -- table.insert(derfntexcfiles,j)
-        derfntexcfiles = derfntexcfiles .. "," .. j
-      -- end
-    end
-    return fontsupport
-  -- else
-    -- return fontsupp
-  -- end
+  local fontsupport = ""
+  local fontsupporttemp = filelist(fnt.keepdir, fontglob)
+  for i,j in ipairs(fontsupporttemp) do
+    fontsupport = fontsupport .. "\n* " .. j 
+    derfntexcfiles = derfntexcfiles .. "," .. j
+  end
+  return fontsupport
 end
 local function populatedoc()
   local docs = docs  or {typesetfiles,typesetdemofiles}
@@ -114,25 +103,15 @@ function manifest_setup ()
   if not ( fileexists(unpackdir .. "/" .. module .. ".sty") or fileexists(unpackdir .. "/" .. ctanpkg .. ".sty") ) then
     unpack()
   end
-  print("pops")
   local buildscripts = populatescripts()
-  print("fnt")
   local derfntfiles = populatefontsupp()
-  print("enc")
   local derencfiles = populatefontsupp("*.enc")
-  print("fd")
   local derfdfiles = populatefontsupp("*.fd")
-  print("map")
   local dermapfiles = populatefontsupp("*.map")
-  print("fm")
   local dertfmfiles = populatefontsupp("*.tfm")
-  print("vf")
   local dervffiles = populatefontsupp("*.vf")
-  print("doc")
   local docfiles = populatedoc()
-  print("txt")
   local txtfiles = populatetxt() 
-  print("groups next")
   local groups = {
     {
       subheading = "Source files",
@@ -215,4 +194,4 @@ function manifest_setup ()
   return groups
 end
 ---------------------------------------------------------------------
--- vim: ts=2:sw=2:tw=80:nospell:
+-- vim: ts=2:sw=2:
