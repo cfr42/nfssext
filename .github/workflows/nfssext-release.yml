@@ -16,18 +16,6 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
 
-  info:
-    runs-on: ubuntu-latest
-    name: Info gathering
-    steps:
-      - name: info
-        env: 
-          tagname: ${{github.ref_name}}
-          fulltag: ${{github.ref}}
-        run: |
-          echo "${tagname}"
-          echo "${fulltag}"
-
   # addaswyd o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
   # update TL tree if needed
   texlive-cache:
