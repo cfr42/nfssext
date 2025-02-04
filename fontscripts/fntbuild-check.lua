@@ -249,8 +249,8 @@ local function check_init ()
       }
     end
     copio(fnt.checksuppfiles_sys,testdir,"TEXMFDIST")
-    if not fileexists(testdir .. "/" fnt.regress) then
-      if fileexists(unpackdir .. "/" fnt.regress) then
+    if not fileexists(testdir .. "/" .. fnt.regress) then
+      if fileexists(unpackdir .. "/" .. fnt.regress) then
         cp(fnt.regress,unpackdir,testdir)
       else
         table.insert(fnt.checksuppfiles_add,fnt.regress)
