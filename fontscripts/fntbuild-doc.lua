@@ -27,8 +27,8 @@ local function doc_init ()
     maps = maps .. "\n\\pdfmapfile{-" .. j .. "}\n\\pdfmapfile{+" .. j .. "}"
   end
   if not fileexists(unpackdir .. "/" .. filename) then
-    if fileexists(docdir .. "/" .. filename) then
-      cp(filename,docdir,unpackdir)
+    if fileexists(typesetdir .. "/" .. filename) then
+      cp(filename,typesetdir,unpackdir)
     elseif fileexists(localdir .. "/" .. filename) then
       cp(filename,localdir,unpackdir)
     else
