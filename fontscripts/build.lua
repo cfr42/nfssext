@@ -1,4 +1,4 @@
--- $Id: build.lua 10743 2025-01-29 02:29:53Z cfrees $
+-- $Id: build.lua 10762 2025-02-04 04:26:57Z cfrees $
 -------------------------------------------------------------------------------
 -- This work, which consists of all files listed in manifest.txt, is released 
 -- under the LaTeX Project Public Licence version 1.3c or later. See individual 
@@ -27,7 +27,7 @@ function docinit_hook()
   for _,i in ipairs(docfiles) do
     local errorlevel = cp(i,sourcefiledir,typesetdir)
     if not errorlevel == 0 then
-      print("Could not copy fntbuild.lua!\n")
+      print("Could not copy " .. i .. " from " .. sourcefiledir .. " to " .. typesetdir .. ".")
       return 1
     end
   end
