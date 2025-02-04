@@ -192,9 +192,9 @@ end
 ---@see l3build
 ---@usage N/A
 local function check_init ()
-  local filename = "fnt-test.lvt"
+  local filename = fnt.testtemp 
   local file = unpackdir .. "/" .. filename
-  local fnttestdir = maindir .. "/fnt-tests"
+  -- local fnttestdir = maindir .. "/fnt-tests"
   local maps = ""
   local mapfiles=filelist(fnt.keepdir, "*.map")
   local mapsdir = ""
@@ -357,16 +357,26 @@ local function check_init ()
     maps = maps .. "\n\\pdfmapfile{-" .. j .. "}\n\\pdfmapfile{+" .. j .. "}"
   end
   -- maps = maps .. "\n\\pdfmapfile{+pdftex.map}"
-  if #fnt.fnttestfds == 0 or not fileexists(fnttestdir .. "/" .. filename) then
+  if #fnt.fnttestfds == 0  then
     print("Skipping test creation.\n")
   else
     print("Creating (additional) test file(s).\n")
-    local errorlevel = cp(filename,fnttestdir,unpackdir)
-    -- local errorlevel = ren(unpackdir, filename, targname)
-    if errorlevel ~= 0 then
-      fnt.gwall("Copy ", filename, errorlevel)
-      return errorlevel
+    if not fileexists(unpackdir .. "/" .. filename) then
+      local ffeil = kpse.find_file(filename)
+      if ffeil ~= nil then
+        cp(filename,dirname(ffeil),unpackdir)
+        print("Using " .. filename .. " from " .. dirname(ffeil) .. " ...\n")
+      else
+        print("Skipping test creation. This is probably not what you want if I've come this far.\n")
+        filename = 0
+        fnt.gwall("Copy ", filename, 1)
+      end
     else
+      print("Using local " .. filename .. " ...\n")
+    end
+    -- local errorlevel = cp(filename,fnttestdir,unpackdir)
+    -- local errorlevel = ren(unpackdir, filename, targname)
+    if filename ~= 0 then
       -- need to get content here
       -- copy this from l3build-tagging.lua
       local f = assert(io.open(file,"rb"))

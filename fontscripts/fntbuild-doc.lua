@@ -14,23 +14,31 @@
 local function doc_init ()
   -- local fdfiles = filelist(fnt.keepdir, "*.fd")
   local fdfiles = filelist(unpackdir, "*.fd")
-  local filename = "fnt-tables.tex"
+  local filename = fnt.tablestemp 
   local targname = ctanpkg .. "-tables.tex"
   local file = unpackdir .. "/" .. filename
   local targfile = unpackdir .. "/" .. targname
   local coll = ""
-  local fnttestdir = maindir .. "/fnt-tests"
+  -- local fnttestdir = maindir .. "/fnt-tests"
   local maps = ""
   local mapfiles=filelist(unpackdir, "*.map")
   local yy = 0
   for i, j in ipairs(mapfiles) do
     maps = maps .. "\n\\pdfmapfile{-" .. j .. "}\n\\pdfmapfile{+" .. j .. "}"
   end
-  if not fileexists(fnttestdir .. "/" .. filename) then
-    print("Skipping font tables.\n")
-  else
+  if not fileexists(unpackdir .. "/" .. filename) then
+    local ffeil = kpse.find_file(filename)
+    if ffeil ~= nil then 
+      cp(filename,dirname(ffeil),unpackdir)
+      -- if not fileexists(fnttestdir .. "/" .. filename) then
+    else
+      print("Skipping font tables.\n")
+      filename = nil
+    end
+  end
+  if filename then
     print("Creating font tables ...\n")
-    local errorlevel = cp(filename,fnttestdir,unpackdir)
+    -- local errorlevel = cp(filename,fnttestdir,unpackdir)
     -- local errorlevel = ren(unpackdir, filename, targname)
     if errorlevel ~= 0 then
       fnt.gwall("Copy ", filename, errorlevel)

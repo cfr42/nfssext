@@ -91,6 +91,10 @@ cleanfiles = {fnt.keeptempfiles}  -- ** changed default
 ---@see fontinst()
 ---@usage public
 fnt.mapmakers = fnt.mapmakers or {"*-map.tex"}
+-- file containing regression tests
+---@see check_init() in fntbuild-check.lua
+---@usage public
+fnt.regress = fnt.regress or "fnt-tests.tex"
 ---@see fntsubsetter()
 ---@usage public
 ---@boolean
@@ -118,6 +122,14 @@ fnt.subsetfiles = fnt.subsetfiles or {}
 ---@usage public
 fnt.subsettemplate = fnt.subsettemplate or 
   "\\DeclareEncodingSubset{TS1}{$FONTFAMILY}{$SUBSET}"
+-- file to use as template for tables
+---@see doc_init() in fntbuild-doc.lua
+---@usage public
+fnt.tablestemp = fnt.tablestemp or "fnt-tables.tex"
+-- file to use as template for tests
+---@see check_init() in fntbuild-check.lua
+---@usage public
+fnt.testtemp = fnt.testtemp or "fnt-test.lvt"
 -------------------------------------------------
 -- fnt.vendor and module must be specified before tdslocations
 ---@usage public

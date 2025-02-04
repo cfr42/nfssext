@@ -14,7 +14,7 @@ ctanpkg = "fontscripts"
 maindir = ".."
 sourcefiledir = "."
 sourcefiles = {"*.dtx", "*.ins"}
-installfiles = {"*.etx", "*.mtx", "*.lua"}
+installfiles = {"*.etx", "*.mtx", "*.lua", "*.lvt", "*.tes"}
 manifestfile = "manifest.txt"
 typesetdeps = {maindir .. "/nfssext-cfr", maindir .. "/cfr-lm"}
 typesetfiles = {"*-doc.tex", "*-code.tex"}
@@ -66,7 +66,7 @@ function manifest_setup ()
     {
       name = "Package files",
       dir = unpackdir,
-      files = {"*.cls","*.etx","*.mtx","*.sty","*.tex","*.txt"},
+      files = {"*.cls","*.etx","fnt-test.lvt","*.mtx","*.sty","*.tex","*.txt"},
       exclude = sourcefiles,
       description = "* manifest.txt",
     },
@@ -109,11 +109,14 @@ uploadconfig = {
     "doc/latex/fontscripts/*.md",
     "doc/latex/fontscripts/*.pdf",
     "doc/latex/fontscripts/*.txt",
-    "tex/fontinst/fontscripts/*.etx",
-    "tex/fontinst/fontscripts/*.mtx",
     "scripts/fontscripts/fntbuild*.lua",
     "source/latex/fontscripts/*.dtx",
     "source/latex/fontscripts/*.ins",
+    "tex/fontinst/fontscripts/*.etx",
+    "tex/fontinst/fontscripts/*.mtx",
+    "tex/latex/fontscripts/fnt-tables.tex",
+    "tex/latex/fontscripts/fnt-test.lvt",
+    "tex/latex/fontscripts/fnt-tests.tex",
   },
 	topic         = {"font-cvt", "package-devel", "ctan"},
 	update        = true,
