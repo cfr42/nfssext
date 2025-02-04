@@ -20,7 +20,7 @@ binaryfiles = {"*.pdf", "*.zip", "*.vf", "*.tfm", "*.pfb", "*.pfm", "*.ttf",
 checksearch = false
 -- maindir before checkdeps
 -- maindir = "../.."
-checkdeps = { maindir .. "/fnt-tests" }
+-- checkdeps = { maindir .. "/fnt-tests" }
 checkengines = { "pdftex" } 
 checkformat = "latex"
 -- cleanfiles changed below 

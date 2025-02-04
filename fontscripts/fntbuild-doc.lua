@@ -27,13 +27,19 @@ local function doc_init ()
     maps = maps .. "\n\\pdfmapfile{-" .. j .. "}\n\\pdfmapfile{+" .. j .. "}"
   end
   if not fileexists(unpackdir .. "/" .. filename) then
-    local ffeil = kpse.find_file(filename)
-    if ffeil ~= nil then 
-      cp(filename,dirname(ffeil),unpackdir)
-      -- if not fileexists(fnttestdir .. "/" .. filename) then
+    if fileexists(docdir .. "/" .. filename) then
+      cp(filename,docdir,unpackdir)
+    elseif fileexists(localdir .. "/" .. filename) then
+      cp(filename,localdir,unpackdir)
     else
-      print("Skipping font tables.\n")
-      filename = nil
+      local ffeil = kpse.find_file(filename)
+      if ffeil ~= nil then 
+        cp(filename,dirname(ffeil),unpackdir)
+        -- if not fileexists(fnttestdir .. "/" .. filename) then
+      else
+        print("Skipping font tables.\n")
+        filename = nil
+      end
     end
   end
   if filename then

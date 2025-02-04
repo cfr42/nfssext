@@ -249,6 +249,13 @@ local function check_init ()
       }
     end
     copio(fnt.checksuppfiles_sys,testdir,"TEXMFDIST")
+    if not fileexists(testdir .. "/" fnt.regress) then
+      if fileexists(unpackdir .. "/" fnt.regress) then
+        cp(fnt.regress,unpackdir,testdir)
+      else
+        table.insert(fnt.checksuppfiles_add,fnt.regress)
+      end
+    end
     if #fnt.checksuppfiles_add ~= 0 then
       local str = kpse.var_value("TEXMFDIST")
       if string.match(str,"%-") then str = string.gsub(str,"%-","%%-") end
@@ -362,14 +369,22 @@ local function check_init ()
   else
     print("Creating (additional) test file(s).\n")
     if not fileexists(unpackdir .. "/" .. filename) then
-      local ffeil = kpse.find_file(filename)
-      if ffeil ~= nil then
-        cp(filename,dirname(ffeil),unpackdir)
-        print("Using " .. filename .. " from " .. dirname(ffeil) .. " ...\n")
+      if fileexists(testdir .. "/" .. filename) then
+        cp(filename,testdir,unpackdir)
+        print("Using local " .. filename .. " from " .. testdir .. "...\n")
+      elseif fileexists(localdir .. "/" .. filename) then
+        cp(filename,localdir,unpackdir)
+        print("Using " .. filename .. " from " .. localdir .. "...\n")
       else
-        print("Skipping test creation. This is probably not what you want if I've come this far.\n")
-        filename = 0
-        fnt.gwall("Copy ", filename, 1)
+        local ffeil = kpse.find_file(filename)
+        if ffeil ~= nil then
+          cp(filename,dirname(ffeil),unpackdir)
+          print("Using " .. filename .. " from " .. dirname(ffeil) .. " ...\n")
+        else
+          print("Skipping test creation. This is probably not what you want if I've come this far.\n")
+          filename = 0
+          fnt.gwall("Copy ", filename, 1)
+        end
       end
     else
       print("Using local " .. filename .. " ...\n")

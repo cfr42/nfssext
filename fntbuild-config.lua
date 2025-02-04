@@ -4,7 +4,7 @@
 sourcefiledir = sourcefiledir or "."
 maindir = maindir or ".." 
 bakext = ".bkup"
-checkdeps = {maindir .. "/nfssext-cfr", maindir .. "/fnt-tests"}
+checkdeps = {maindir .. "/nfssext-cfr", maindir .. "/fontscripts"}
 ctanreadme = "README.md"
 demofiles = {"*-example.tex"}
 flatten = true
@@ -12,7 +12,7 @@ flattentds = false
 manifestfile = "manifest.txt"
 packtdszip = false
 tagfiles = {"*.dtx", "*.ins", "manifest.txt", "MANIFEST.txt", "README", "README.md"}
-typesetdeps = {maindir .. "/nfssext-cfr"}
+typesetdeps = {maindir .. "/nfssext-cfr", maindir .. "/fontscripts"}
 typesetsourcefiles = {fnt.keepdir .. "/*", "nfssext-cfr*.sty"}
 unpackexe = "pdflatex"
 unpackfiles = {"*.ins"}
