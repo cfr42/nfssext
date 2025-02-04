@@ -1,4 +1,4 @@
--- $Id: build.lua 10763 2025-02-04 20:28:32Z cfrees $
+-- $Id: build.lua 10765 2025-02-04 22:11:26Z cfrees $
 -------------------------------------------------------------------------------
 -- This work, which consists of all files listed in manifest.txt, is released 
 -- under the LaTeX Project Public Licence version 1.3c or later. See individual 
@@ -51,6 +51,7 @@ if direxists(sourcefiledir .. "/../../adnoddau/l3build") then
   dofile(sourcefiledir .. "/../../adnoddau/l3build/manifest.lua")
 end
 function manifest_setup ()
+  unpack()
   local groups = {
     {
       subheading = "Source files",
