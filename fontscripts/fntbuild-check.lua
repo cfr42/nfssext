@@ -193,6 +193,7 @@ end
 ---@usage N/A
 local function check_init ()
   local filename = fnt.testtemp 
+  local regfile = fnt.regress
   local file = unpackdir .. "/" .. filename
   -- local fnttestdir = maindir .. "/fnt-tests"
   local maps = ""
@@ -249,12 +250,16 @@ local function check_init ()
       }
     end
     copio(fnt.checksuppfiles_sys,testdir,"TEXMFDIST")
-    if not fileexists(testdir .. "/" .. fnt.regress) then
-      if fileexists(unpackdir .. "/" .. fnt.regress) then
-        cp(fnt.regress,unpackdir,testdir)
+    if not fileexists(testdir .. "/" .. regfile) then
+      if fileexists(unpackdir .. "/" .. regfile) then
+        cp(regfile,unpackdir,testdir)
+        print("Using regression tests from " .. unpackdir .. "/" .. regfile .. ".\n")
       else
-        table.insert(fnt.checksuppfiles_add,fnt.regress)
+        table.insert(fnt.checksuppfiles_add,regfile)
+        print("Adding " .. regfile .. "to fnt.checksuppfiles_add.\n")
       end
+    else
+      print("Using regression tests from " .. testdir .. "/" .. regfile .. ".\n")
     end
     if #fnt.checksuppfiles_add ~= 0 then
       local str = kpse.var_value("TEXMFDIST")
@@ -330,10 +335,12 @@ local function check_init ()
   -- but remember fnt.fnttestfds may be pairs and/or ipairs ...
   -- there must be a better way to do this ...
   if #fnt.fnttestfds == 0 then
+    print("\n#fnt.fnttestfds:", #fnt.fnttestfds)
     if #fnt.autotestfds ~= 0 then
+      print("#fnt.autotestfds:",#fnt.autotestfds)
       for i,j in ipairs(fntpkgnames) do 
         if fnt.fnttestfds[j] == nil then
-          print("\nAuto-assigning fnt.autotestfds to fnt.fnttestfds[" .. j .. "].\n")
+          print("Auto-assigning fnt.autotestfds to fnt.fnttestfds[" .. j .. "] ...\n")
           fnt.fnttestfds[j] = {}
           for a,b in ipairs(fnt.autotestfds) do
             table.insert(fnt.fnttestfds[j],b)
@@ -364,7 +371,7 @@ local function check_init ()
     maps = maps .. "\n\\pdfmapfile{-" .. j .. "}\n\\pdfmapfile{+" .. j .. "}"
   end
   -- maps = maps .. "\n\\pdfmapfile{+pdftex.map}"
-  if #fnt.fnttestfds == 0  then
+  if next(fnt.fnttestfds) == nil  then
     print("Skipping test creation.\n")
   else
     print("Creating (additional) test file(s).\n")
