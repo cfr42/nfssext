@@ -1,4 +1,4 @@
-$Id: README.md 10727 2025-01-25 06:03:54Z cfrees $
+$Id: README.md 10772 2025-02-05 23:38:41Z cfrees $
 
 =================================================
 # fontscripts
@@ -38,7 +38,17 @@ small-caps, for example, rather than placing these characters in separate fonts.
 ## Revision History
 =================================================
 
-Initial release.
+- v0.1 Initial release.
+- v0.2 Restructuring of code to use a more modular and (hopefully) flexible
+approach. Other tool chains can now use functions to build and keep font support
+files and ensure unique encoding names. Facilities for 'sandboxing' the 
+building and testing of font packages are now provided and utilised by default.  
+Almost all package functions and variables are now in a dedicated namespace to 
+prevent any possible conflicts. TDS locations are suggested to facilitate use 
+if installed and default templates are provided for the template system. 
+fntbuild.lua can now insert font subset encoding declarations into font 
+definition files, as recently requested by the LaTeX Project. Changes are
+detailed in the documentation.
 
 =================================================
 ## Code Repositories
@@ -59,7 +69,7 @@ Bug reports, feature requests etc.  should be filed at
 
 Clea F. Rees 
 Version 0.2
-2025-01-25
+2025-02-05
 
 =================================================
 vim: et:tw=80:sw=0:
