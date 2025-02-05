@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10770 2025-02-05 22:53:12Z cfrees $}[v0.2 \revinfo][\filebase DTX: l3build scripts for font installation]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10771 2025-02-05 22:55:06Z cfrees $}[v0.2 \revinfo][\filebase DTX: l3build scripts for font installation]
 \DefineFileInfoSVN[fontscripts]
 \documentclass[10pt,british,lm-default=false]{l3doc}
 % l3doc loads fancyvrb
@@ -222,7 +222,7 @@
 %   For tools which do not otherwise support it, such as \lpack{fontinst}, the scripts enable the automatic addition of variable scaling in font definition files. 
 %   A semi-automatic system tries to ensure font encoding names are unique.\smallskip
 % 
-%   The script fragments originally designed for \lpack{fontinst}, but support for \texttt{afm2tfm} (intended for fonts consisting entirely of ornaments etc.) is provided and a modular approach enables easy modification for other tools.
+%   The script fragments were originally designed for \lpack{fontinst}, but support for \texttt{afm2tfm} (intended for fonts consisting entirely of ornaments etc.) is provided and a modular approach enables easy modification for other tools.
 %   The default configuration is intended to be cross-platform and requires only tools included in \TeX{} Live, but the documentation includes a simple adaption for integration with FontForge and \textsc{gnu} make.
 % \end{abstract}
 %
@@ -262,7 +262,7 @@ require(kpse.lookup("fntbuild.lua"))
 % For example, if you want to build fonts this way, you may need to specify which build tool you use and which files contain the code to compile or commands to execute.
 % The remainder of this document explains how to do this\footnote{%^^A
 %   Unless you are reading a version which includes the implementation section.
-%   In that case, \emph{most} of the document is just code listing and it is the first bit of what remains explains how to actually use the scripts.%^^A
+%   In that case, \emph{most} of the document is just code listing and it is the first bit of what remains which explains how to actually use the scripts.%^^A
 % }.
 % You also need to tell the scripts if you want to override the defaults e.g.~if you would like \texttt{fntbuild} to insert subset encoding declarations and/or variable scaling factors\footnote{%
 %   \texttt{fontinst} only.
@@ -926,7 +926,7 @@ fnt.subsetdefns.clms = "lmss"
 %    \begin{macrocode}
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN[fnt-tables.tex]{$Id: fontscripts.dtx 10770 2025-02-05 22:53:12Z cfrees $}[v0.2 \revinfo][\filebase: font table template]
+\ProvidesFileSVN[fnt-tables.tex]{$Id: fontscripts.dtx 10771 2025-02-05 22:55:06Z cfrees $}[v0.2 \revinfo][\filebase: font table template]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % \iffalse
@@ -958,7 +958,7 @@ TABLES
 % \begin{template}{fnt-test.lvt}
 %    \begin{macrocode}
 \RequirePackage{svn-prov}
-\ProvidesFileSVN[fnt-test.lvt]{$Id: fontscripts.dtx 10770 2025-02-05 22:53:12Z cfrees $}[v0.0 \revinfo][fontscripts: l3build test template]
+\ProvidesFileSVN[fnt-test.lvt]{$Id: fontscripts.dtx 10771 2025-02-05 22:55:06Z cfrees $}[v0.0 \revinfo][fontscripts: l3build test template]
 \listfiles
 \input regression-test.tex\relax
 \input fnt-tests.tex\relax
@@ -992,7 +992,7 @@ SAMP
 %    \begin{macrocode}
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN[fnt-tests.tex]{$Id: fontscripts.dtx 10770 2025-02-05 22:53:12Z cfrees $}[v0.0 \revinfo][fontscripts: l3build tests]
+\ProvidesFileSVN[fnt-tests.tex]{$Id: fontscripts.dtx 10771 2025-02-05 22:55:06Z cfrees $}[v0.0 \revinfo][fontscripts: l3build tests]
 \documentclass[10pt,a4paper]{article}
 \usepackage{fonttable}
 \usepackage{tracefnt}% infoshow is default; debugshow traces maths fonts, too
@@ -1204,7 +1204,7 @@ SAMP
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2\nil{#1}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName doc]{$Id: fontscripts.dtx 10770 2025-02-05 22:53:12Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName doc]{$Id: fontscripts.dtx 10771 2025-02-05 22:55:06Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \AddToHook{begindocument}{\OnlyDescription}
 \input{\MyFileBaseName.dtx}
@@ -1215,7 +1215,7 @@ SAMP
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2\nil{#1}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName code]{$Id: fontscripts.dtx 10770 2025-02-05 22:53:12Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName code]{$Id: fontscripts.dtx 10771 2025-02-05 22:55:06Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \input{\MyFileBaseName.dtx}
 %</doc-code>
