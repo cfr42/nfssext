@@ -119,6 +119,7 @@ jobs:
           name: testfiles-clm
           path: |
             build/test/*.log
+            build/test/*.tlg
             build/test/*-auto-test.lvt
             build/test/*.diff
           # Decide how long to keep the test output artefact:
@@ -258,6 +259,7 @@ jobs:
           name: testfiles-${{ matrix.module }}
           path: |
             build/test/*.log
+            build/test/*.tlg
             build/test/*-auto-test.lvt
             build/test/*.diff
           # Decide how long to keep the test output artefact:
@@ -380,6 +382,7 @@ jobs:
           name: testfiles-${{ matrix.module }}
           path: |
             build/test/*.log
+            build/test/*.tlg
             build/test/*-auto-test.lvt
             build/test/*.diff
           retention-days: 7
