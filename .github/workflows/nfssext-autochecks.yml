@@ -103,28 +103,29 @@ jobs:
         run: l3build install
       - name: Update map
         run: updmap --user --enable Map=clm.map
-      # - name: Archive failed test output for clm
-      #   # run even if previous step failed
-      #   if: ${{ !cancelled() }}
-      #   uses: zauguin/l3build-failure-artifacts@v1
-      #   with:
-      #     name: testfiles-clm
-      #     # Decide how long to keep the test output artefact:
-      #     retention-days: 7
-      - name: Archive failed test output for clm workaround
-      # probably not as good as the zauguin action 
-      # run even iff previous step failed
-        if: ${{ !cancelled() && !(steps.ctan-clm.outputs.CTAN_RET) }}
-        uses: actions/upload-artifact@v4
+      - name: Archive failed test output for clm
+        # run even if previous step failed
+        if: ${{ !cancelled() }}
+        uses: zauguin/l3build-failure-artifacts@v1
         with:
           name: testfiles-clm
-          path: |
-            build/test/*.log
-            build/test/*.tlg
-            build/test/*-auto-test.lvt
-            build/test/*.diff
           # Decide how long to keep the test output artefact:
           retention-days: 7
+      # - name: Archive failed test output for clm workaround
+      # # probably not as good as the zauguin action 
+      # ddim yn gweithio
+      # # run even iff previous step failed
+      #   if: ${{ !cancelled() && !(steps.ctan-clm.outputs.CTAN_RET) }}
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: testfiles-clm
+      #     path: |
+      #       build/test/*.log
+      #       build/test/*.tlg
+      #       build/test/*-auto-test.lvt
+      #       build/test/*.diff
+      #     # Decide how long to keep the test output artefact:
+      #     retention-days: 7
       - name: Cache build results
         id: clm-cache
         uses: actions/cache/save@v4
@@ -173,29 +174,29 @@ jobs:
           - module: baskervaldadf
             working_directory: arkandis/baskervaldadf
             pre_target: fnttarg
-            fnttarg_id: fnttarg-baskervaldadf
+            # fnttarg_id: fnttarg-baskervaldadf
           - module: berenisadf
             working_directory: arkandis/berenisadf
             # berenis needs make, ff
             extra_packages: make fontforge
             pre_target: fnttarg
-            fnttarg_id: fnttarg-berenisadf
+            # fnttarg_id: fnttarg-berenisadf
           - module: electrumadf
             working_directory: arkandis/electrumadf
             pre_target: fnttarg
-            fnttarg_id: fnttarg-electrumadf
+            # fnttarg_id: fnttarg-electrumadf
           - module: librisadf
             working_directory: arkandis/librisadf
             pre_target: fnttarg
-            fnttarg_id: fnttarg-librisadf
+            # fnttarg_id: fnttarg-librisadf
           - module: romandeadf
             working_directory: arkandis/romandeadf
             pre_target: fnttarg
-            fnttarg_id: fnttarg-romandeadf
+            # fnttarg_id: fnttarg-romandeadf
           - module: venturisadf
             working_directory: arkandis/venturisadf
             pre_target: fnttarg
-            fnttarg_id: fnttarg-venturisadf
+            # fnttarg_id: fnttarg-venturisadf
     name: "Test build: ${{ matrix.module }}"
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -243,28 +244,29 @@ jobs:
           module="${{ matrix.module }}"
           (l3build ctan && echo -e "CTAN_RET=0\nctan_ret_${module}=0" >> "$GITHUB_OUTPUT") || echo -e "CTAN_RET=1\nctan_ret_${module}=1" >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
-      # - name: Archive failed test output
-      # # run even if previous step failed
-      #   if: ${{ !cancelled() }}
-      #   uses: zauguin/l3build-failure-artifacts@v1
-      #   with:
-      #     name: testfiles-${{ matrix.module }}
-      #     # Decide how long to keep the test output artefact:
-      #     retention-days: 7
-      - name: Archive failed test output workaround
-      # run iff previous step failed
-        if: ${{ !cancelled() && !(steps.ctan.outputs.CTAN_RET) }}
-      # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
-        uses: actions/upload-artifact@v4
+      - name: Archive failed test output
+      # run even if previous step failed
+        if: ${{ !cancelled() }}
+        uses: zauguin/l3build-failure-artifacts@v1
         with:
           name: testfiles-${{ matrix.module }}
-          path: |
-            build/test/*.log
-            build/test/*.tlg
-            build/test/*-auto-test.lvt
-            build/test/*.diff
           # Decide how long to keep the test output artefact:
           retention-days: 7
+      # - name: Archive failed test output workaround
+      # ddim yn gweithio
+      # # run iff previous step failed
+      #   if: ${{ !cancelled() && !(steps.ctan.outputs.CTAN_RET) }}
+      # # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: testfiles-${{ matrix.module }}
+      #     path: |
+      #       build/test/*.log
+      #       build/test/*.tlg
+      #       build/test/*-auto-test.lvt
+      #       build/test/*.diff
+      #     # Decide how long to keep the test output artefact:
+      #     retention-days: 7
       - name: Archive docs
       # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
         uses: actions/upload-artifact@v4
@@ -367,26 +369,27 @@ jobs:
           module="${{ matrix.module }}"
           (l3build ctan && echo -e "CTAN_RET=0\nctan_ret_${module}=0" >> "$GITHUB_OUTPUT") || echo -e "CTAN_RET=1\nctan_ret_${module}=1" >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
-      # - name: Archive failed test output
-      # # run even if previous step failed
-      #   if: ${{ !cancelled() }}
-      #   uses: zauguin/l3build-failure-artifacts@v1
-      #   with:
-      #     name: testfiles-${{ matrix.module }}
-      #     # Decide how long to keep the test output artefact:
-      #     retention-days: 7
       - name: Archive failed test output
-      # run iff previous step failed
-        if: ${{ !cancelled() && !(steps.ctan.outputs.CTAN_RET) }}
-        uses: actions/upload-artifact@v4
+      # run even if previous step failed
+        if: ${{ !cancelled() }}
+        uses: zauguin/l3build-failure-artifacts@v1
         with:
           name: testfiles-${{ matrix.module }}
-          path: |
-            build/test/*.log
-            build/test/*.tlg
-            build/test/*-auto-test.lvt
-            build/test/*.diff
+          # Decide how long to keep the test output artefact:
           retention-days: 7
+      # - name: Archive failed test output
+      # ddim yn gweithio
+      # # run iff previous step failed
+      #   if: ${{ !cancelled() && !(steps.ctan.outputs.CTAN_RET) }}
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: testfiles-${{ matrix.module }}
+      #     path: |
+      #       build/test/*.log
+      #       build/test/*.tlg
+      #       build/test/*-auto-test.lvt
+      #       build/test/*.diff
+      #     retention-days: 7
       - name: Archive docs
       # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
         uses: actions/upload-artifact@v4
