@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10769 2025-02-05 20:41:12Z cfrees $}[v0.2 \revinfo][\filebase DTX: l3build scripts for font installation]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10770 2025-02-05 22:53:12Z cfrees $}[v0.2 \revinfo][\filebase DTX: l3build scripts for font installation]
 \DefineFileInfoSVN[fontscripts]
 \documentclass[10pt,british,lm-default=false]{l3doc}
 % l3doc loads fancyvrb
@@ -379,14 +379,14 @@ require(kpse.lookup("fntbuild.lua"))
 %   \end{tabular}
 % \end{table}
 % 
-% \changes{v0.2}{2025-02-05}{Renamed function: \texttt{fnt.finst()} (was \texttt{finst()).}
+% \changes{v0.2}{2025-02-05}{Renamed function: \texttt{fnt.finst()} (was \texttt{finst()}.}
 % \DescribelFn{fnt.finst()} \texttt{fnt.finst}\plarg{patt,dir,mode}\par\noindent
 % A wrapper around \verb|fnt.build_fnt()| which runs \verb|pdftex --interaction| \meta{mode} in directory \meta{dir} on each file in \meta{dir} matching the pattern \meta{patt}. 
 %
-% \changes{v0.2}{2025-02-05}{Renamed function: \texttt{fnt.fontinst()} (was \texttt{fontinst()).}
 % Called by \texttt{fnt.fontinst()}.
 % There is usually no need to call this function directly.
 % 
+% \changes{v0.2}{2025-02-05}{Renamed function: \texttt{fnt.fontinst()} (was \texttt{fontinst()}.}
 % \DescribelFn{fnt.fontinst()} \texttt{fnt.fontinst}\plarg{dir,mode}\par\noindent
 % Executes a \lpack{fontinst} workflow to generate \TeX{} fonts and associated files in directory \meta{dir}, executing \texttt{pdftex} with the option \verb|--interaction| \meta{mode}.
 % 
@@ -423,6 +423,7 @@ require(kpse.lookup("fntbuild.lua"))
 % If \lpack{fontinst} is setup to produce a shell script for converting \file{.pl} and \file{.vpl} files to \file{.tfm} and \file{.vf}, the function executes the commands contained in this script.
 % In order to maintain compatibility on Windows, the commands are extracted and run by Lua rather than calling the shell to execute the commands directly.
 % 
+% \changes{v0.2}{2025-02-05}{New function: \texttt{fnt.fntsubsetter()}.}
 % \DescribelFn{fnt.fntsubsetter ()} \texttt{fnt.fntsubsetter}\plarg{}\par\noindent
 % Inserts a font encoding subset declarations into font definition files.
 % Explicit use is only required for custom build functions, as the standard options for \verb|fnt.build_fnt ()| incorporate this function.
@@ -432,7 +433,7 @@ require(kpse.lookup("fntbuild.lua"))
 % To insert declarations, not only must \texttt{fnt.fntsubsetter ()} be executed by the build function.
 % \texttt{fnt.subset} must also be set to a non-\texttt{nil} value other than \texttt{false}.
 %
-% \changes{v0.2}{2025-02-05}{Renamed function: \texttt{fnt.fntkeeper()} (was \texttt{fntkeeper()).}
+% \changes{v0.2}{2025-02-05}{Renamed function: \texttt{fnt.fntkeeper()} (was \texttt{fntkeeper()}.}
 % \DescribelFn{fnt.fntkeeper()} \texttt{fnt.fntkeeper}\plarg{dir}\par\noindent
 % Copies generated files in \meta{dir} to \texttt{fnt.keepdir} and/or \texttt{fnt.keeptempdir} to prevent deletion by \texttt{l3build}.
 % Returns an error level.
@@ -446,7 +447,7 @@ require(kpse.lookup("fntbuild.lua"))
 % If specified, \texttt{filenames} should be a table. 
 % Note that the function appends entries to \texttt{filenames} rather than replacing them.
 %
-% \changes{v0.2}{2025-02-05}{Renamed function: \texttt{fnt.test()} (was \texttt{fnt_test()).}
+% \changes{v0.2}{2025-02-05}{Renamed function: \texttt{fnt.test()} (was \texttt{fnt_test()}.}
 % \DescribelFn{fnt.test()} \verb|fnt.test|\plarg{fntpkgname,fds,content,maps,fdsdir}\par\noindent
 % Auto-generates \texttt{lvt} files suitable for use with \texttt{l3build check} from a template.
 %
@@ -925,7 +926,7 @@ fnt.subsetdefns.clms = "lmss"
 %    \begin{macrocode}
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN[fnt-tables.tex]{$Id: fontscripts.dtx 10769 2025-02-05 20:41:12Z cfrees $}[v0.2 \revinfo][\filebase: font table template]
+\ProvidesFileSVN[fnt-tables.tex]{$Id: fontscripts.dtx 10770 2025-02-05 22:53:12Z cfrees $}[v0.2 \revinfo][\filebase: font table template]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % \iffalse
@@ -957,7 +958,7 @@ TABLES
 % \begin{template}{fnt-test.lvt}
 %    \begin{macrocode}
 \RequirePackage{svn-prov}
-\ProvidesFileSVN[fnt-test.lvt]{$Id: fontscripts.dtx 10769 2025-02-05 20:41:12Z cfrees $}[v0.0 \revinfo][fontscripts: l3build test template]
+\ProvidesFileSVN[fnt-test.lvt]{$Id: fontscripts.dtx 10770 2025-02-05 22:53:12Z cfrees $}[v0.0 \revinfo][fontscripts: l3build test template]
 \listfiles
 \input regression-test.tex\relax
 \input fnt-tests.tex\relax
@@ -991,7 +992,7 @@ SAMP
 %    \begin{macrocode}
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN[fnt-tests.tex]{$Id: fontscripts.dtx 10769 2025-02-05 20:41:12Z cfrees $}[v0.0 \revinfo][fontscripts: l3build tests]
+\ProvidesFileSVN[fnt-tests.tex]{$Id: fontscripts.dtx 10770 2025-02-05 22:53:12Z cfrees $}[v0.0 \revinfo][fontscripts: l3build tests]
 \documentclass[10pt,a4paper]{article}
 \usepackage{fonttable}
 \usepackage{tracefnt}% infoshow is default; debugshow traces maths fonts, too
@@ -1203,7 +1204,7 @@ SAMP
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2\nil{#1}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName doc]{$Id: fontscripts.dtx 10769 2025-02-05 20:41:12Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName doc]{$Id: fontscripts.dtx 10770 2025-02-05 22:53:12Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \AddToHook{begindocument}{\OnlyDescription}
 \input{\MyFileBaseName.dtx}
@@ -1214,7 +1215,7 @@ SAMP
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2\nil{#1}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName code]{$Id: fontscripts.dtx 10769 2025-02-05 20:41:12Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName code]{$Id: fontscripts.dtx 10770 2025-02-05 22:53:12Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \input{\MyFileBaseName.dtx}
 %</doc-code>
