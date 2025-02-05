@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10766 2025-02-05 05:06:21Z cfrees $}[v0.2 \revinfo][\filebase DTX: l3build scripts for font installation]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10769 2025-02-05 20:41:12Z cfrees $}[v0.2 \revinfo][\filebase DTX: l3build scripts for font installation]
 \DefineFileInfoSVN[fontscripts]
 \documentclass[10pt,british,lm-default=false]{l3doc}
 % l3doc loads fancyvrb
@@ -308,6 +308,20 @@ require(kpse.lookup("fntbuild.lua"))
 %
 % \subsubsection{New Functions}\label{subsubsec:new}
 %
+% \changes{v0.2}{2025-01-25}{New function: \texttt{fnt.afm2tfm()}.}
+% \DescribelFn{fnt.afm2tfm()} \texttt{fnt.afm2afm}\plarg{dir}\par\noindent
+% A function to generate support files for simple symbolic fonts in \meta{dir} using \texttt{afm2tfm}.
+% The function generates \tfm s, \fd s and a \map.
+% It requires \afm s and, optionally, \enc s.
+% If \meta{dir} is unspecified, \texttt{fnt.fntdir} is used.
+%
+% If \texttt{fnt.afmtotfm} is \texttt{true}, a call to \verb|fnt.afm2tfm()| replaces the default call to \texttt{fnt.fontinst()} when the \texttt{fnttarg} target is used.
+%
+% Like \texttt{fnt.fontinst()}, \verb|fnt.afm2tfm()| calls \verb|build_fnt()| and \texttt{fnt.fntkeeper()}, but it does \textbf{not} call \texttt{fnt.uniquify()}.
+%
+% Note this function is designed for only very simple cases.
+% The target \TeX{} fonts must each correspond to a unique \file{.afm} (though it would not be hard to extend the function to support a one-many mapping).
+%
 % \changes{v0.2}{2025-01-26}{New function: \texttt{fnt.buildinit()}.}
 % \DescribelFn{fnt.buildinit()} \texttt{fnt.buildinit}\plarg{}\par\noindent
 % Sets up the build environment in preparation for building by unpacking and copying files, installing dependencies etc.\ in preparation for building.
@@ -324,20 +338,6 @@ require(kpse.lookup("fntbuild.lua"))
 % The function should return an error level.
 %
 % The hook is executed after unpacking, copying etc.\ at the end of \texttt{fnt.buildinit()} so it can be used to modify those preparations, if necessary.
-%
-% \changes{v0.2}{2025-01-25}{New function: \texttt{fnt.afm2tfm()}.}
-% \DescribelFn{fnt.afm2tfm()} \texttt{fnt.afm2afm}\plarg{dir}\par\noindent
-% A function to generate support files for simple symbolic fonts in \meta{dir} using \texttt{afm2tfm}.
-% The function generates \tfm s, \fd s and a \map.
-% It requires \afm s and, optionally, \enc s.
-% If \meta{dir} is unspecified, \texttt{fnt.fntdir} is used.
-%
-% If \texttt{fnt.afmtotfm} is \texttt{true}, a call to \verb|fnt.afm2tfm()| replaces the default call to \texttt{fnt.fontinst()} when the \texttt{fnttarg} target is used.
-%
-% Like \texttt{fnt.fontinst()}, \verb|fnt.afm2tfm()| calls \verb|build_fnt()| and \texttt{fnt.fntkeeper()}, but it does \textbf{not} call \texttt{fnt.uniquify()}.
-%
-% Note this function is designed for only very simple cases.
-% The target \TeX{} fonts must each correspond to a unique \file{.afm} (though it would not be hard to extend the function to support a one-many mapping).
 %
 % \changes{v0.2}{2025-01-25}{New function: \texttt{fnt.build\_fnt()}.}
 % \DescribelFn{fnt.build_fnt()} \verb|fnt.build_fnt|\plarg{dir,cmd,file}\par\noindent
@@ -360,7 +360,7 @@ require(kpse.lookup("fntbuild.lua"))
 %     \toprule
 %       kpathsea \textsf{variable} & \textsf{value} \\
 %     \midrule
-%       TEXINPUTS & . localtexmf() \\
+%       TEXINPUTS & . fnt.localtexmf() \\
 %       TEXMFAUXTREES & \{\} \\
 %       TEXMFHOME & \{\} \\
 %       TEXMFLOCAL & \{\} \\
@@ -379,9 +379,11 @@ require(kpse.lookup("fntbuild.lua"))
 %   \end{tabular}
 % \end{table}
 % 
+% \changes{v0.2}{2025-02-05}{Renamed function: \texttt{fnt.finst()} (was \texttt{finst()).}
 % \DescribelFn{fnt.finst()} \texttt{fnt.finst}\plarg{patt,dir,mode}\par\noindent
 % A wrapper around \verb|fnt.build_fnt()| which runs \verb|pdftex --interaction| \meta{mode} in directory \meta{dir} on each file in \meta{dir} matching the pattern \meta{patt}. 
 %
+% \changes{v0.2}{2025-02-05}{Renamed function: \texttt{fnt.fontinst()} (was \texttt{fontinst()).}
 % Called by \texttt{fnt.fontinst()}.
 % There is usually no need to call this function directly.
 % 
@@ -390,7 +392,7 @@ require(kpse.lookup("fntbuild.lua"))
 % 
 % This is the default build function called by \texttt{fnttarg}.
 %
-% The function calls \texttt{fnt.finst()}, \texttt{fntkeeper()} and \texttt{uniquify()} in addition to performing initial compilation.
+% The function calls \texttt{fnt.finst()}, \texttt{fnt.fntkeeper()} and \texttt{fnt.uniquify()} in addition to performing initial compilation.
 % The process requires the usual \lpack{fontinst} setup i.e.~a driver to generate the initial files and a second file to create map file fragments.
 %
 % If a variable scaling factor is used, the font definition files will be edited to ensure this works, since \lpack{fontinst} apparently supports scaling only by a fixed factor.
@@ -423,33 +425,35 @@ require(kpse.lookup("fntbuild.lua"))
 % 
 % \DescribelFn{fnt.fntsubsetter ()} \texttt{fnt.fntsubsetter}\plarg{}\par\noindent
 % Inserts a font encoding subset declarations into font definition files.
-% Explicit use is only required for custom build functions, as the standard options for \verb|build_fnt ()| incorporate this function.
+% Explicit use is only required for custom build functions, as the standard options for \verb|fnt.build_fnt ()| incorporate this function.
 % Returns an error level, but this may not be accurate.
 %
 % Note that, by default, the presence of this function does nothing because subset declarations are disabled by default.
 % To insert declarations, not only must \texttt{fnt.fntsubsetter ()} be executed by the build function.
 % \texttt{fnt.subset} must also be set to a non-\texttt{nil} value other than \texttt{false}.
 %
-% \DescribelFn{fnt_test()} \verb|fnt_test|\plarg{fntpkgname,fds,content,maps,fdsdir}\par\noindent
-% Auto-generates \texttt{lvt} files suitable for use with \texttt{l3build check} from a template.
-%
+% \changes{v0.2}{2025-02-05}{Renamed function: \texttt{fnt.fntkeeper()} (was \texttt{fntkeeper()).}
 % \DescribelFn{fnt.fntkeeper()} \texttt{fnt.fntkeeper}\plarg{dir}\par\noindent
 % Copies generated files in \meta{dir} to \texttt{fnt.keepdir} and/or \texttt{fnt.keeptempdir} to prevent deletion by \texttt{l3build}.
 % Returns an error level.
 %
 % This function is called by the function executed by the default functions called by \texttt{fnttarg()} and may be useful if that target is redefined to call a different function.
 % 
-% \changes{v0.2}{2025-01-25}{New function: \texttt{lsrdir()}.}
-% \DescribelFn{lsrdir()} \texttt{lsrdir}\plarg{path,filenames}\par\noindent
+% \changes{v0.2}{2025-01-25}{New function: \texttt{fnt.lsrdir()}.}
+% \DescribelFn{fnt.lsrdir()} \texttt{fnt.lsrdir}\plarg{path,filenames}\par\noindent
 % Adds a recursive list of files in \texttt{path} to the list of files in \texttt{filenames} and returns \texttt{filenames} and returns the resulting table.
 % \texttt{path} should be a string containing the fully-qualified path to a directory.
 % If specified, \texttt{filenames} should be a table. 
 % Note that the function appends entries to \texttt{filenames} rather than replacing them.
 %
-% \DescribelFn{uniquify()} \texttt{uniquify}\plarg{tag}\par\noindent
+% \changes{v0.2}{2025-02-05}{Renamed function: \texttt{fnt.test()} (was \texttt{fnt_test()).}
+% \DescribelFn{fnt.test()} \verb|fnt.test|\plarg{fntpkgname,fds,content,maps,fdsdir}\par\noindent
+% Auto-generates \texttt{lvt} files suitable for use with \texttt{l3build check} from a template.
+%
+% \DescribelFn{fnt.uniquify()} \texttt{fnt.uniquify}\plarg{tag}\par\noindent
 % Tries to ensure the names of font encodings and encoding files are unique by editing font definition files and map file fragments. 
 %
-% This function is used by \texttt{fnt.fontinst()} and \verb|fnt.afm2tfm()|, may be utilised in a custom definition of \verb|fnt.build_fnt()| or may be called directly using the \texttt{uniquifyencs} target.
+% This function is used by \texttt{fnt.fontinst()} and \verb|fnt.afm2tfm ()|, may be utilised in a custom definition of \verb|fnt.build_fnt ()| or may be called directly using the \texttt{uniquifyencs} target.
 % 
 % \subsubsection{Redefined Functions}\label{subsubsec:redef}
 % 
@@ -467,7 +471,7 @@ require(kpse.lookup("fntbuild.lua"))
 % \begin{itemize}
 %   \item concatenates all files specified in \verb|fnt.mapfiles_sys| and writes the result to \file{pdftex.map} in \texttt{testdir};
 %   \item copies the contents of \texttt{fnt.keepdir} to \texttt{testdir};
-%   \item copies either the files specified in \verb|checksuppfiles_sys| or the contents of the directories listed in \cref{tab:check-suppdirs} to \texttt{testdir};
+%   \item copies either the files specified in \verb|fnt.checksuppfiles_sys| or the contents of the directories listed in \cref{tab:check-suppdirs} to \texttt{testdir};
 % \begin{table}
 %   \centering
 %   \caption{Default additions to ‘sandbox’ if none are specified.
@@ -504,8 +508,9 @@ require(kpse.lookup("fntbuild.lua"))
 %     \bottomrule
 %   \end{tabular}
 % \end{table}
-%   \item copies the files listed in the file specified as \verb|checksuppfiles_addlist| to \texttt{testdir}, if the file exists;
-%   \item copies any files specified in \verb|checksuppfiles_add| to \texttt{testdir};
+%   \item copies any files specified in \verb|fnt.checksuppfiles_add| to \texttt{testdir};
+%   \item copies the file specified by \texttt{fnt.regress} to \texttt{testdir};
+%   \item copies the template specified by \texttt{fnt.testtemp} to \texttt{unpackdir} for use in auto-generating tests;
 %   \item restricts the environment by setting the variables listed in \cref{tab:check-env}.
 % \end{itemize}
 % \begin{table}
@@ -523,15 +528,15 @@ require(kpse.lookup("fntbuild.lua"))
 %     TEXMFLOCAL & \{\} \\
 %     TEXMFCONFIG & . \\
 %     TEXMFVAR & . \\
-%     VFFONTS & .  localtexmf()   \\
-%     TFMFONTS & . localtexmf()   \\
-%     TEXFONTMAPS & . localtexmf()   \\
-%     T1FONTS & . localtexmf()   \\
-%     AFMFONTS & . localtexmf()   \\
-%     TTFFONTS & . localtexmf()   \\
-%     OPENTYPEFONTS & . localtexmf()   \\
-%     LIGFONTS & . localtexmf()   \\
-%     ENCFONTS & . localtexmf()  \\
+%     VFFONTS & .  fnt.localtexmf()   \\
+%     TFMFONTS & . fnt.localtexmf()   \\
+%     TEXFONTMAPS & . fnt.localtexmf()   \\
+%     T1FONTS & . fnt.localtexmf()   \\
+%     AFMFONTS & . fnt.localtexmf()   \\
+%     TTFFONTS & . fnt.localtexmf()   \\
+%     OPENTYPEFONTS & . fnt.localtexmf()   \\
+%     LIGFONTS & . fnt.localtexmf()   \\
+%     ENCFONTS & . fnt.localtexmf()  \\
 %     \bottomrule
 %   \end{tabular}
 % \end{table}
@@ -608,7 +613,7 @@ require(kpse.lookup("fntbuild.lua"))
 %       fnt.keepfiles && fnt.keepfiles or \{''*.enc'', ''*.fd'', ''*.map'', ''*.tfm'', ''*.vf''\}\\
 %       fnt.keeptempdir && fnt.keeptempdir or sourcefiledir .. ''/keeptemp''\\
 %       fnt.keeptempfiles && fnt.keeptempfiles or \{''*.mtx'', ''*.pl'', ''*-pltotf.sh'', ''*-rec.tex'', ''*.vpl'', ''*.zz''\}\\
-%       fnt.mapmakers && \{''*-map.tex''\}\\
+%       fnt.mapmakers && fnt.mapmakers or \{''*-map.tex''\}\\
 %       fnt.mapfiles\_sys && fnt.mapfiles\_sys or \{\} \\
 %       fnt.mapfiles\_add && fnt.mapfiles\_add or \{\} \\
 %       fnt.pkgbase && fnt.pkgbase or '''' \\
@@ -616,7 +621,7 @@ require(kpse.lookup("fntbuild.lua"))
 %       fnt.subset && false \\
 %       fnt.subsetdefns && fnt.subsetdefns or \{\} \\
 %       fnt.subsetfiles && fnt.subsetfiles or \{\} \\
-%       fnt.subsettemplate && fnt.subsettemplate or ''\cmd{DeclareEncodingSubset}\{TS1\}\{\$FONTFAMILY\}\{\$SUBSET\}'' \\
+%       fnt.subsettemplate && fnt.subsettemplate or ''\textbackslash DeclareEncodingSubset\{TS1\}\{\$FONTFAMILY\}\{\$SUBSET\}'' \\
 %       fnt.tablestemp && fnt.tablestemp or ''fnt-tables.tex'' \\
 %       fnt.testtemp && fnt.testtemp or ''fnt-test.lvt'' \\
 %       fnt.vendor && fnt.vendor or ''public''\\
@@ -632,10 +637,12 @@ require(kpse.lookup("fntbuild.lua"))
 % Setting this to anything other than \texttt{false} or \texttt{nil} will use \texttt{afm2tfm} rather than \lpack{fontinst} to build the fonts.
 % This is only designed for \textbf{\em extremely} simple fonts such as those which contain only text symbols.
 %
+% \changes{v0.2}{2025-02-05}{Renamed variable: \texttt{fnt.autotestfds} (was \texttt{autotestfds}).}
 % \DescribelVar{fnt.autotestfds}\texttt{fnt.autotestfds} \istable{globs}
 %
 %^^A See also \texttt{testfds}.
 %
+% \changes{v0.2}{2025-02-05}{Renamed variable: \texttt{fnt.binmakers} (was \texttt{binmakers}).}
 % \DescribelVar{fnt.binmakers}\texttt{fnt.binmakers} \istable{globs}
 % Scripts to run to convert human-readable \TeX{} font metrics/virtual font metrics into binary \TeX{} font metrics and virtual fonts.
 %
@@ -659,16 +666,17 @@ require(kpse.lookup("fntbuild.lua"))
 % \changes{v0.2}{2025-01-25}{New variable: \texttt{fnt.buildsuppfiles\_sys}.}
 % \DescribelVar{fnt.buildsuppfiles_sys}\texttt{fnt.buildsuppfiles\_sys} \istable{globs}
 % 
-% \changes{v0.2}{2025-01-25}{New variable: \texttt{fnt.checksuppfiles\_sys}.}
-% \DescribelVar{fnt.checksuppfiles_sys}\texttt{fnt.checksuppfiles\_sys} \istable{globs}
-% Dependencies to install when checking.
-% Overrides default list.
-% 
 % \changes{v0.2}{2025-01-25}{New variable: \texttt{fnt.checksuppfiles\_add}.}
 % \DescribelVar{fnt.checksuppfiles_add}\texttt{fnt.checksuppfiles\_add} \istable{globs}
 % Dependencies to install when checking.
 % Supplements default list.
 % 
+% \changes{v0.2}{2025-01-25}{New variable: \texttt{fnt.checksuppfiles\_sys}.}
+% \DescribelVar{fnt.checksuppfiles_sys}\texttt{fnt.checksuppfiles\_sys} \istable{globs}
+% Dependencies to install when checking.
+% Overrides default list.
+% 
+% \changes{v0.2}{2025-02-05}{Renamed variable: \texttt{fnt.familymakers} (was \texttt{familymakers}).}
 % \DescribelVar{fnt.familymakers}\texttt{fnt.familymakers} \istable{globs}
 % Source files \texttt{fnt.fontinst()} should compile to generate \TeX{} support files.
 % 
@@ -678,18 +686,23 @@ require(kpse.lookup("fntbuild.lua"))
 % \DescribelVar{fnt.fntdir}\texttt{fnt.fntdir}\isstring{directory path}
 % Directory in which to build fonts.
 % 
+% \changes{v0.2}{2025-02-05}{Renamed variable: \texttt{fnt.fnttestfds} (was \texttt{fnttestfds}).}
 % \DescribelVar{fnt.fnttestfds}\texttt{fnt.fnttestfds} \istable{globs}
 % Files to use when generating test files for \texttt{l3build}.
 % 
+% \changes{v0.2}{2025-02-05}{Renamed variable: \texttt{fnt.keepdir} (was \texttt{keepdir}).}
 % \DescribelVar{fnt.keepdir}\texttt{fnt.keepdir} \isstring{dir}
 % Directory to store final products of font creation e.g.~font definitions, map file fragments, \TeX{} font metrics, virtual fonts etc.
 % 
-% \DescribelVar{fnt.keeptempdir}\texttt{fnt.keeptempdir} \isstring{dir}
-% Directory to store intermediat products of font creation e.g.~human-readable \TeX{} font metrics, virtual font metrics etc.
-% 
+% \changes{v0.2}{2025-02-05}{Renamed variable: \texttt{fnt.keepfiles} (was \texttt{keepfiles}).}
 % \DescribelVar{fnt.keepfiles}\texttt{fnt.keepfiles} \istable{globs}
 % Files to copy to \texttt{fnt.keepdir}.
 % 
+% \changes{v0.2}{2025-02-05}{Renamed variable: \texttt{fnt.keeptempdir} (was \texttt{keeptempdir}).}
+% \DescribelVar{fnt.keeptempdir}\texttt{fnt.keeptempdir} \isstring{dir}
+% Directory to store intermediat products of font creation e.g.~human-readable \TeX{} font metrics, virtual font metrics etc.
+% 
+% \changes{v0.2}{2025-02-05}{Renamed variable: \texttt{fnt.keeptempfiles} (was \texttt{keeptempfiles}).}
 % \DescribelVar{fnt.keeptempfiles}\texttt{fnt.keeptempfiles} \istable{globs}
 % Files to copy to \texttt{fnt.keeptempdir}.
 % 
@@ -702,6 +715,7 @@ require(kpse.lookup("fntbuild.lua"))
 % \DescribelVar{fnt.mapfiles_add}\texttt{fnt.mapfiles\_add} \istable{globs}
 % Additional map file fragments to install when checking.
 % 
+% \changes{v0.2}{2025-02-05}{Renamed variable: \texttt{fnt.mapmakers} (was \texttt{mapmakers}).}
 % \DescribelVar{fnt.mapmakers}\texttt{fnt.mapmakers} \istable{globs}
 % Source files \texttt{fnt.finst()} should compile to generate map file fragments etc.
 % 
@@ -792,6 +806,7 @@ fnt.subsetdefns.clms = "lmss"
 % The file containing the template to use when auto-generating font tests.
 % \file{fnt-test.lvt} provides the default template.
 %
+% \changes{v0.2}{2025-02-05}{Renamed variable: \texttt{fnt.vendor} (was \texttt{vendor}).}
 % \DescribelVar{fnt.vendor}\texttt{fnt.vendor} \isstring{fnt.vendor}
 % Vendor directory for font installation such as \texttt{public} or \texttt{arkandis}.
 % 
@@ -813,30 +828,29 @@ fnt.subsetdefns.clms = "lmss"
 %
 % \section{Templates}\label{sec:templates}
 %
+% \changes{v0.2}{2025-02-05}{Default templates. Simplified template configuration and search.}
 % By default, \file{fntbuild.lua} is able to utilise two kinds of \texttt{tex} template.
-% By default, it is assumed these templates are located in \path{maindir .. ''fnt-tests''}.
-% In order for this to work, this directory must include a \file{build.lua} even though there is nothing to build.
-% Otherwise, \texttt{l3build} cannot recognise the directory's contents as legitimate and fails to copy them correctly into the \texttt{build} directory.
-% \iffalse
-%<*verb>
-% \fi
-%    \begin{verbatim}
-% module = "fnt-tests"
-% maindir = ".."
-% sourcefiles = {"*.tex"}
-% installfiles = {"*.tex"}
-%    \end{verbatim}
-% \iffalse
-%</verb>
-% \fi
-% 
-% Font packages should then be located in subdirectories or sub-subdirectories of \texttt{maindir} with \file{build.lua} scripts configured appropriately.
+% The names of these files are stored in \texttt{fnt.testtemp} and \texttt{fnt.tablestemp}.
+% If no local alternatives are provided, \texttt{fntbuild.lua} will use \lpack{kpathsea} to locate them, falling back to those included in the package and installed in \path{tex/latex/fontscripts/} under the \texttt{TEXMFDIST} tree by default.
+%
+% The default files may be overridden by either or both of the following methods:
+% \begin{enumerate}
+%   \item altering the values of \texttt{fnt.testtemp} and/or \texttt{fnt.tablestemp};
+%   \item providing local copies of the files named in \texttt{fnt.testtemp} and/or \texttt{fnt.tablestemp}.
+% \end{enumerate}
+%
+% The default contents are listed in \cref{subsec:temp}.
 %
 % \subsection{Font Tables}\label{subsec:tables}
 %
 % A template for producing font tables as part of package documentation is provided.
 % The template is used in \file{fntbuild.lua}'s \texttt{doc\_init()} hook to generate \texttt{tex} files populated with font information from font definition files.
 % This is then compiled by \texttt{l3build doc} to produce font tables.
+%
+% Alternative content may be provided by supplying a local copy of \file{fnt-tables.tex} or specifying an alternative template in \texttt{fnt.tablestemp}. 
+% If \texttt{TABLES} occurs in the template, \file{fntbuild.lua} will replace it with a \env{document} environment containing a series of commands of the form \cs{sampletable}\marg{encoding}\marg{family}\marg{series}\marg{shape}, where \meta{encoding}, \meta{family}, \meta{series} and \meta{shape} are  derived from the font definition files.
+%
+% The default template is listed in \cref{subsubsec:tablestemp}.
 %
 % \subsection{Font Tests}\label{subsec:tests}
 %
@@ -845,6 +859,20 @@ fnt.subsetdefns.clms = "lmss"
 % Certain file patterns are excluded from testing.
 % In particular, separate tests are not generated for \texttt{ts1} \texttt{fd} files because these families are typically better tested along with their \texttt{t1} counterparts.
 %
+% Alternative content may be provided by supplying a local copy of \file{fnt-test.lvt} or specifying an alternative template in \texttt{fnt.testtemp}. 
+% If \texttt{SAMP} occurs in the template, \file{fntbuild.lua} will replace it with a series of tests derived from the font definition files.
+% These tests should typically use commands provided explicitly or implicitly by the file specified in \texttt{fnt.regress}.
+% By default, tests utilise a macro \cs{sampler} defined to absorb four arguments of the form \marg{encoding}\marg{family}\marg{series}\marg{shape}.
+% The result is a document containing various pieces supplied by \lpack{fonttable}.
+%
+% A custom test suite may be specified by supplying a local copy of \file{fnt-tests.tex}, giving an alternative in \texttt{fnt.regress} or defining a different set of tests in the template specified by \texttt{fnt.testtemp}.
+%
+% \textbf{Note that you MUST supply a custom template if you change \texttt{fnt.regress}.}
+% It is, however, fine to supply a customised \file{fnt-tests.tex} for use with the default template.
+% Only if you want to use a different filename for the test suite is a custom template required.
+%
+% The default template is listed in \cref{subsubsec:testtemp}.
+% The default test suite is listed in \cref{subsec:regress}.
 %
 % \section{Customisation}\label{sec:custom}
 %
@@ -857,8 +885,8 @@ fnt.subsetdefns.clms = "lmss"
 % \VerbatimInput[gobble=0,numbers=left,numberblanklines=true]{berenis-build.lua}
 % \let\FancyVerbStopString\relax
 % \let\FancyVerbStartString\relax
-% That is, \lpack{berenisadf} doesn't use \texttt{fnt.fontinst()} at all, but \texttt{fnt.fntmake()}, which simply invokes \texttt{gnu} \texttt{make} and calls \texttt{fnt.fntkeeper()}\footnote{%
-%   It does not ensure encoding names are unique, but it should.%
+% That is, \lpack{berenisadf} doesn't use any built-in build function at all, but \texttt{fnt.fntmake()}, which simply invokes \texttt{gnu} \texttt{make} and calls \texttt{fnt.fntkeeper()}\footnote{%
+%   It does not ensure encoding names are unique because it uses no custom encodings of its own.%
 % }.
 % Note the use of \texttt{fnt.buildinit()} to setup the build environment.
 %
@@ -884,39 +912,11 @@ fnt.subsetdefns.clms = "lmss"
 %   \end{itemize}
 % \end{itemize}
 %
-%
-% \MaybeStop{%
-% \PrintChanges
-% \PrintIndex
-% }
-% 
-% \section{Implementation}
-%
-% \iffalse
-%<*doc>
-\RequirePackage{svn-prov}
-\def\GetFileBaseName#1-#2\nil{#1}
-\edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName doc]{$Id: fontscripts.dtx 10766 2025-02-05 05:06:21Z cfrees $}[v0.0 \revinfo]
-\DefineFileInfoSVN
-\AddToHook{begindocument}{\OnlyDescription}
-\input{\MyFileBaseName.dtx}
-%</doc>
-% \fi
-% \iffalse
-%<*doc-code>
-\RequirePackage{svn-prov}
-\def\GetFileBaseName#1-#2\nil{#1}
-\edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName code]{$Id: fontscripts.dtx 10766 2025-02-05 05:06:21Z cfrees $}[v0.0 \revinfo]
-\DefineFileInfoSVN
-\input{\MyFileBaseName.dtx}
-%</doc-code>
-% \fi
-%
 % \subsection{Templates}\label{subsec:temp}
 %
 % Templates for auto-generating font tables and regression tests.
+%
+% \subsubsection{Font Tables Template}\label{subsubsec:tablestemp}
 %
 % \iffalse
 %<*tables>
@@ -925,7 +925,7 @@ fnt.subsetdefns.clms = "lmss"
 %    \begin{macrocode}
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN[fnt-tables.tex]{$Id: fontscripts.dtx 10766 2025-02-05 05:06:21Z cfrees $}[v0.2 \revinfo][\filebase: font table template]
+\ProvidesFileSVN[fnt-tables.tex]{$Id: fontscripts.dtx 10769 2025-02-05 20:41:12Z cfrees $}[v0.2 \revinfo][\filebase: font table template]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % \iffalse
@@ -940,11 +940,16 @@ fnt.subsetdefns.clms = "lmss"
   \xfonttable{#1}{#2}{#3}{#4}%
   \clearpage
 }
+
+TABLES
+
 %    \end{macrocode}
 % \end{template}
 % \iffalse
 %</tables>
 % \fi
+%
+% \subsubsection{Test Template}\label{subsubsec:testtemp}
 % 
 % \iffalse
 %<*lvt>
@@ -952,7 +957,7 @@ fnt.subsetdefns.clms = "lmss"
 % \begin{template}{fnt-test.lvt}
 %    \begin{macrocode}
 \RequirePackage{svn-prov}
-\ProvidesFileSVN[fnt-test.lvt]{$Id: fontscripts.dtx 10766 2025-02-05 05:06:21Z cfrees $}[v0.0 \revinfo][fontscripts: l3build test template]
+\ProvidesFileSVN[fnt-test.lvt]{$Id: fontscripts.dtx 10769 2025-02-05 20:41:12Z cfrees $}[v0.0 \revinfo][fontscripts: l3build test template]
 \listfiles
 \input regression-test.tex\relax
 \input fnt-tests.tex\relax
@@ -986,7 +991,7 @@ SAMP
 %    \begin{macrocode}
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN[fnt-tests.tex]{$Id: fontscripts.dtx 10766 2025-02-05 05:06:21Z cfrees $}[v0.0 \revinfo][fontscripts: l3build tests]
+\ProvidesFileSVN[fnt-tests.tex]{$Id: fontscripts.dtx 10769 2025-02-05 20:41:12Z cfrees $}[v0.0 \revinfo][fontscripts: l3build tests]
 \documentclass[10pt,a4paper]{article}
 \usepackage{fonttable}
 \usepackage{tracefnt}% infoshow is default; debugshow traces maths fonts, too
@@ -1185,6 +1190,36 @@ SAMP
 % \fi
 % 
 % 
+%
+% \MaybeStop{%
+% \PrintChanges
+% \PrintIndex
+% }
+% 
+% \section{Implementation}
+%
+% \iffalse
+%<*doc>
+\RequirePackage{svn-prov}
+\def\GetFileBaseName#1-#2\nil{#1}
+\edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
+\ProvidesFileSVN[\MyFileBaseName doc]{$Id: fontscripts.dtx 10769 2025-02-05 20:41:12Z cfrees $}[v0.0 \revinfo]
+\DefineFileInfoSVN
+\AddToHook{begindocument}{\OnlyDescription}
+\input{\MyFileBaseName.dtx}
+%</doc>
+% \fi
+% \iffalse
+%<*doc-code>
+\RequirePackage{svn-prov}
+\def\GetFileBaseName#1-#2\nil{#1}
+\edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
+\ProvidesFileSVN[\MyFileBaseName code]{$Id: fontscripts.dtx 10769 2025-02-05 20:41:12Z cfrees $}[v0.0 \revinfo]
+\DefineFileInfoSVN
+\input{\MyFileBaseName.dtx}
+%</doc-code>
+% \fi
+%
 % 
 % \subsection{Script Fragments}\label{subsec:lua}
 % 
