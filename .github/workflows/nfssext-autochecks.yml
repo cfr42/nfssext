@@ -241,7 +241,7 @@ jobs:
         id: ctan
         run: |
           module="${{ matrix.module }}"
-          (l3build ctan && echo -e "BUILD_RET=0\nctan_ret_${module}=0" >> "$GITHUB_OUTPUT") || echo -e "BUILD_RET=1\nctan_ret_${module}=1" >> "$GITHUB_OUTPUT"
+          (l3build ctan && echo -e "CTAN_RET=0\nctan_ret_${module}=0" >> "$GITHUB_OUTPUT") || echo -e "CTAN_RET=1\nctan_ret_${module}=1" >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
       # - name: Archive failed test output
       # # run even if previous step failed
@@ -253,7 +253,7 @@ jobs:
       #     retention-days: 7
       - name: Archive failed test output workaround
       # run iff previous step failed
-        if: ${{ !cancelled() && !(steps.ctan.outputs.BUILD_RET) }}
+        if: ${{ !cancelled() && !(steps.ctan.outputs.CTAN_RET) }}
       # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
         uses: actions/upload-artifact@v4
         with:
@@ -365,7 +365,7 @@ jobs:
         id: ctan
         run: |
           module="${{ matrix.module }}"
-          (l3build ctan && echo -e "BUILD_RET=0\nctan_ret_${module}=0" >> "$GITHUB_OUTPUT") || echo -e "BUILD_RET=1\nctan_ret_${module}=1" >> "$GITHUB_OUTPUT"
+          (l3build ctan && echo -e "CTAN_RET=0\nctan_ret_${module}=0" >> "$GITHUB_OUTPUT") || echo -e "CTAN_RET=1\nctan_ret_${module}=1" >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
       # - name: Archive failed test output
       # # run even if previous step failed
@@ -377,7 +377,7 @@ jobs:
       #     retention-days: 7
       - name: Archive failed test output
       # run iff previous step failed
-        if: ${{ !cancelled() && !(steps.ctan.outputs.BUILD_RET) }}
+        if: ${{ !cancelled() && !(steps.ctan.outputs.CTAN_RET) }}
         uses: actions/upload-artifact@v4
         with:
           name: testfiles-${{ matrix.module }}
