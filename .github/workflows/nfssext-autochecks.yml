@@ -96,7 +96,8 @@ jobs:
       - name: Run l3build ctan 
         working-directory: cfr-lm
         id: ctan-clm
-        run: l3build ctan
+        # run: l3build ctan
+        run: (l3build ctan && echo "CTAN_RET=0" >> "$GITHUB_OUTPUT") || echo "CTAN_RET=1" >> "$GITHUB_OUTPUT"
       - name: Run l3build install 
         working-directory: cfr-lm
         run: l3build install
@@ -113,7 +114,7 @@ jobs:
       - name: Archive failed test output for clm workaround
       # probably not as good as the zauguin action 
       # run even iff previous step failed
-        if: ${{ !cancelled() && !(steps.ctan-clm.outputs.BUILD_RET) }}
+        if: ${{ !cancelled() && !(steps.ctan-clm.outputs.CTAN_RET) }}
         uses: actions/upload-artifact@v4
         with:
           name: testfiles-clm
