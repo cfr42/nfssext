@@ -1,4 +1,4 @@
--- $Id: build.lua 10765 2025-02-04 22:11:26Z cfrees $
+-- $Id: build.lua 10775 2025-02-06 01:32:49Z cfrees $
 -------------------------------------------------------------------------------
 -- This work, which consists of all files listed in manifest.txt, is released 
 -- under the LaTeX Project Public Licence version 1.3c or later. See individual 
@@ -85,6 +85,19 @@ function manifest_setup ()
 end
 -- see if this helps ...
 packtdszip = true
+tdslocations  = {
+  "doc/latex/fontscripts/*.md",
+  "doc/latex/fontscripts/*.pdf",
+  "doc/latex/fontscripts/*.txt",
+  "scripts/fontscripts/fntbuild*.lua",
+  "source/latex/fontscripts/*.dtx",
+  "source/latex/fontscripts/*.ins",
+  "tex/fontinst/fontscripts/*.etx",
+  "tex/fontinst/fontscripts/*.mtx",
+  "tex/latex/fontscripts/fnt-tables.tex",
+  "tex/latex/fontscripts/fnt-test.lvt",
+  "tex/latex/fontscripts/fnt-tests.tex",
+},
 unpackexe = "pdflatex"
 --
 uploadconfig = {
@@ -107,19 +120,6 @@ uploadconfig = {
 	-- note          = "The catalogue currently shows the package as included only in MikTeX, but it is also included in TeX Live. Any chance this could be corrected?",
 	repository    = {"https://codeberg.org/cfr/nfssext", "https://github.com/cfr42/nfssext"},
   -- support {}
-  tdslocations  = {
-    "doc/latex/fontscripts/*.md",
-    "doc/latex/fontscripts/*.pdf",
-    "doc/latex/fontscripts/*.txt",
-    "scripts/fontscripts/fntbuild*.lua",
-    "source/latex/fontscripts/*.dtx",
-    "source/latex/fontscripts/*.ins",
-    "tex/fontinst/fontscripts/*.etx",
-    "tex/fontinst/fontscripts/*.mtx",
-    "tex/latex/fontscripts/fnt-tables.tex",
-    "tex/latex/fontscripts/fnt-test.lvt",
-    "tex/latex/fontscripts/fnt-tests.tex",
-  },
 	topic         = {"font-cvt", "package-devel", "ctan"},
 	update        = true,
   -- files --
