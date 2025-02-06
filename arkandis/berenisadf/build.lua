@@ -1,4 +1,4 @@
--- $Id: build.lua 10773 2025-02-06 00:20:26Z cfrees $
+-- $Id: build.lua 10774 2025-02-06 00:24:31Z cfrees $
 -------------------------------------------------
 -- Build configuration for berenisadf
 -------------------------------------------------
@@ -24,55 +24,37 @@ local function fntmake (dir,mode)
   -- set up the build environment
   assert(fnt.buildinit(), "Setting up build environment failed!")
   print("Running make. Please be patient ...\n")
-  -- local errorlevel = run(dir, "chmod +x ff-ybd.pe")
   assert(run(dir, "chmod +x ff-ybd.pe"),"Attempt to make fontforge script executable in " .. dir .. " failed.")
-  -- if errorlevel ~=0 then
-    -- fnt.gwall("Attempt to make fontforge script executable ", dir, errorlevel)
-  -- else
   assert(run(dir, "make -f Makefile.make all"), '"make -f Makefile.make all" failed in ' .. dir .. '.')
-    -- errorlevel = run(dir, "make -f Makefile.make all")
-    -- if errorlevel ~= 0 then
-      -- fnt.gwall("make ", dir, errorlevel)
-    -- end
-    -- make ts1 swash families so tc commands pick up the characters in ly1
-    -- we don't need t1 versions of these families as there's no room for swash
-    -- there
-    -- ideally, we could just tell latex to use the non-swash families for the
-    -- tc encoding, but that doesn't seem possible without rewriting more
-    -- internal stuff than seems altogether wise ...
-    for i, j in ipairs(autotcfds) do
-      local jfam = string.gsub(j, "^ts1(.*)%.fd$", "%1")
-      local jnewfam = jfam .. "w"
-      local jnew = string.gsub(j, "(%.fd)$", "w%1")
-      local f = assert(io.open(dir .. "/" .. j,"rb"))
-      local content = f:read("*all")
-      f:close()
-      -- normalise line endings to be platform-agnostic
-      -- copied from l3build
-      content = string.gsub(content .. (string.match(content,"\n$") and "" or "\n"),
-        "\r\n", "\n"
-      ) 
-      local new_content = string.gsub(content, 
-        "{" .. jfam .. "}", "{" .. jnewfam .. "}"
-      )
-      new_content = string.gsub(new_content, "(ts1[^%.]*)(%.fd)", "%1w%2")
-      new_content = string.gsub(new_content, "(TS1/ybd[a-z0-9]*)", "%1w")
-      f = assert(io.open(dir .. "/" .. jnew,"w"))
-      f:write((string.gsub(new_content,"\n",fnt.os_newline_cp)))
-      f:close()
-    end
-    -- call fnt.fntkeeper() to save the build results into fnt.keepdir else
-    -- l3build deletes them before testing or compilation!
-    assert(fnt.fntkeeper(),"FONT KEEPER FAILED IN " .. dir .. "! DO NOT MAKE STANDARD TARGETS WITHOUT RESOLVING!! ")
-    -- errorlevel = fnt.fntkeeper()
-    -- if errorlevel ~= 0 then
-      -- fnt.gwall("FONT KEEPER FAILED! DO NOT MAKE STANDARD TARGETS WITHOUT RESOLVING!! ",
-        -- dir, errorlevel
-      -- )
-    -- end
-  -- end
+  -- make ts1 swash families so tc commands pick up the characters in ly1
+  -- we don't need t1 versions of these families as there's no room for swash
+  -- there
+  -- ideally, we could just tell latex to use the non-swash families for the
+  -- tc encoding, but that doesn't seem possible without rewriting more
+  -- internal stuff than seems altogether wise ...
+  for i, j in ipairs(autotcfds) do
+    local jfam = string.gsub(j, "^ts1(.*)%.fd$", "%1")
+    local jnewfam = jfam .. "w"
+    local jnew = string.gsub(j, "(%.fd)$", "w%1")
+    local f = assert(io.open(dir .. "/" .. j,"rb"))
+    local content = f:read("*all")
+    f:close()
+    -- normalise line endings to be platform-agnostic
+    -- copied from l3build
+    content = string.gsub(content .. (string.match(content,"\n$") and "" or "\n"),
+    "\r\n", "\n") 
+    local new_content = string.gsub(content, 
+    "{" .. jfam .. "}", "{" .. jnewfam .. "}")
+    new_content = string.gsub(new_content, "(ts1[^%.]*)(%.fd)", "%1w%2")
+    new_content = string.gsub(new_content, "(TS1/ybd[a-z0-9]*)", "%1w")
+    f = assert(io.open(dir .. "/" .. jnew,"w"))
+    f:write((string.gsub(new_content,"\n",fnt.os_newline_cp)))
+    f:close()
+  end
+  -- call fnt.fntkeeper() to save the build results into fnt.keepdir else
+  -- l3build deletes them before testing or compilation!
+  assert(fnt.fntkeeper(),"FONT KEEPER FAILED IN " .. dir .. "! DO NOT MAKE STANDARD TARGETS WITHOUT RESOLVING!! ")
   return 0
-  -- return fnt.nifergwall
 end
 -- make local function available in table bt
 bt = {}
