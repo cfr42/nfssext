@@ -1,4 +1,4 @@
--- $Id: build.lua 10775 2025-02-06 01:32:49Z cfrees $
+-- $Id: build.lua 10776 2025-02-06 02:43:08Z cfrees $
 -------------------------------------------------------------------------------
 -- This work, which consists of all files listed in manifest.txt, is released 
 -- under the LaTeX Project Public Licence version 1.3c or later. See individual 
@@ -97,7 +97,7 @@ tdslocations  = {
   "tex/latex/fontscripts/fnt-tables.tex",
   "tex/latex/fontscripts/fnt-test.lvt",
   "tex/latex/fontscripts/fnt-tests.tex",
-},
+}
 unpackexe = "pdflatex"
 --
 uploadconfig = {
