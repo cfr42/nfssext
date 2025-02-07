@@ -1,4 +1,4 @@
-$Id: README.md 10756 2025-02-03 15:27:37Z cfrees $
+$Id: README.md 10778 2025-02-07 05:23:50Z cfrees $
 =================================================
 Copyright (C) 2008-2025 Clea F. Rees.
 
@@ -90,6 +90,9 @@ recommend reading cfr-lm-build.dtx instead. The only reason to include the PDF
 at all is that it contains an index of the code. All such indexes are 
 automatically generated with all the usual limitations consequent on that and 
 this one is no exception. It is, however, arguably better than no index at all.
+
+As noted above, cfr-lm-tables.pdf is automatically generated. Please see
+fontscripts.
 
 # Code Repositories
 
