@@ -82,6 +82,12 @@ local function buildinit ()
           cp(basename(j),dirname(j),fnt.fntdir)
         else
           local jpath = kpse.find_file(j)
+          if jpath == nil then
+            jpath = kpse.lookup(j)
+          end
+          if jpath == nil then
+            fnt.gwall("Locating ",j,1)
+          end
           local jdir = dirname(jpath)
           cp(j,jdir,fnt.fntdir)
         end
