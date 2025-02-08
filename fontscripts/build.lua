@@ -1,4 +1,4 @@
--- $Id: build.lua 10776 2025-02-06 02:43:08Z cfrees $
+-- $Id: build.lua 10781 2025-02-08 01:23:14Z cfrees $
 -------------------------------------------------------------------------------
 -- This work, which consists of all files listed in manifest.txt, is released 
 -- under the LaTeX Project Public Licence version 1.3c or later. See individual 
@@ -117,7 +117,7 @@ uploadconfig = {
   description   = "Font encodings, metrics and Lua script fragments for generating font support packages for 8-bit engines with l3build. Optional template-based system enables the automatic generation of font tables and l3build tests. Easy addition of variable scaling to fd files (unsupported by some tools). Primarily designed for fontinst, but can be adapted for use with other programmes. Default configuration is intended to be cross-platform and require only tools included in TeX Live, but the documentation includes a simple adaption for integration with FontForge and GNU make.",
   -- development {}
   -- home {}
-	-- note          = "The catalogue currently shows the package as included only in MikTeX, but it is also included in TeX Live. Any chance this could be corrected?",
+	note          = "Non-standard layout; please retain TDS archive. Thanks.",
 	repository    = {"https://codeberg.org/cfr/nfssext", "https://github.com/cfr42/nfssext"},
   -- support {}
 	topic         = {"font-cvt", "package-devel", "ctan"},
