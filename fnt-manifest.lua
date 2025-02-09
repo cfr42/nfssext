@@ -1,14 +1,14 @@
--- $Id: fnt-manifest.lua 10757 2025-02-03 15:37:47Z cfrees $
+-- $Id: fnt-manifest.lua 10787 2025-02-09 18:55:34Z cfrees $
 ---------------------------------------------------------------------
 -- local derivedfiles = derivedfiles or {"*.cls","*.enc","*.fd","*.map","*.sty","*.tfm","*.vf"}
 -- local origfntfiles = origfntfiles or {"*.afm","*.otf","*.pfb",".pfm","*.ttf","NOTICE.txt","COPYING"}
--- local fnttestfiles = fnttestfiles or {"fnt-tests.tex", "fnt-test.lvt"} 
+-- local fnttestfiles = fnttestfiles or {"fntbuild-regression-test.tex", "fntbuild-test.lvt"} 
 -- local buildscripts = buildscripts or  {"*.lua", "Makefile", "../vendor/*.lua", "../../fntbuild.lua"}
 -- local fnttestdir = fnttestdir or maindir .. "/fnt-tests"
 -- local testfiles = testfiles or {"*.lvt","*.pvt","*.tlg","*.lve","*.tpf"}
-local fnttestfiles = fnttestfiles or "* fnt-tables.tex\n* fnt-tests.tex\n* fnt-test.lvt"
+local fnttestfiles = fnttestfiles or "* fntbuild-tables.tex\n* fntbuild-regression-test.tex\n* fntbuild-test.lvt"
 local derfntexcfiles = derfntexcfiles or '".",".."'
--- local fnttablestemplate = fnttablestemplate or "* fnt-tables.tex"
+-- local fnttablestemplate = fnttablestemplate or "* fntbuild-tables.tex"
 local function populatescripts()
   -- local vendordir = vendordir or maindir .. "/public"
   local sourcefiledir = sourcefiledir or "."

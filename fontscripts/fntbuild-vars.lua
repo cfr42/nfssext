@@ -1,4 +1,4 @@
--- $Id: fntbuild-vars.lua 10763 2025-02-04 20:28:32Z cfrees $
+-- $Id: fntbuild-vars.lua 10787 2025-02-09 18:55:34Z cfrees $
 -- fntbuild variables
 -------------------------------------------------
 -------------------------------------------------
@@ -94,7 +94,7 @@ fnt.mapmakers = fnt.mapmakers or {"*-map.tex"}
 -- file containing regression tests
 ---@see check_init() in fntbuild-check.lua
 ---@usage public
-fnt.regress = fnt.regress or "fnt-tests.tex"
+fnt.regress = fnt.regress or "fntbuild-regression-test.tex"
 ---@see fntsubsetter()
 ---@usage public
 ---@boolean
@@ -125,11 +125,11 @@ fnt.subsettemplate = fnt.subsettemplate or
 -- file to use as template for tables
 ---@see doc_init() in fntbuild-doc.lua
 ---@usage public
-fnt.tablestemp = fnt.tablestemp or "fnt-tables.tex"
+fnt.tablestemp = fnt.tablestemp or "fntbuild-tables.tex"
 -- file to use as template for tests
 ---@see check_init() in fntbuild-check.lua
 ---@usage public
-fnt.testtemp = fnt.testtemp or "fnt-test.lvt"
+fnt.testtemp = fnt.testtemp or "fntbuild-test.lvt"
 -------------------------------------------------
 -- fnt.vendor and module must be specified before tdslocations
 ---@usage public

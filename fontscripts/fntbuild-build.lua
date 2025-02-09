@@ -115,7 +115,7 @@ end
 local function build_fnt (dir,cmd,file)
   file = file or ""
   cmd = cmd or ""
-  dir = dir or unpackdir
+  dir = dir or fnt.fntdir
   local build_fnt_env = fnt.build_fnt_env or {} 
   local build_fnt_envset = ""
   if #build_fnt_env ~= 0 then

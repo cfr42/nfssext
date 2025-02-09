@@ -2,7 +2,7 @@
 % !TEX encoding = UTF-8 Unicode
 \listfiles
 \input regression-test.tex\relax
-\input fnt-tests.tex\relax
+\input fntbuild-regression-test.tex\relax
 	
 \usepackage[T1]{fontenc}
 \pdfmapfile{+xxx.map}

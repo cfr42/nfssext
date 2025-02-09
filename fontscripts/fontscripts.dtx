@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10771 2025-02-05 22:55:06Z cfrees $}[v0.2 \revinfo][\filebase DTX: l3build scripts for font installation]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10787 2025-02-09 18:55:34Z cfrees $}[v0.2 \revinfo][\filebase DTX: l3build scripts for font installation]
 \DefineFileInfoSVN[fontscripts]
 \documentclass[10pt,british,lm-default=false]{l3doc}
 % l3doc loads fancyvrb
@@ -618,13 +618,13 @@ require(kpse.lookup("fntbuild.lua"))
 %       fnt.mapfiles\_sys && fnt.mapfiles\_sys or \{\} \\
 %       fnt.mapfiles\_add && fnt.mapfiles\_add or \{\} \\
 %       fnt.pkgbase && fnt.pkgbase or '''' \\
-%       fnt.regress && fnt.regress or ''fnt-tests.tex'' \\
+%       fnt.regress && fnt.regress or ''fntbuild-regression-test.tex'' \\
 %       fnt.subset && false \\
 %       fnt.subsetdefns && fnt.subsetdefns or \{\} \\
 %       fnt.subsetfiles && fnt.subsetfiles or \{\} \\
 %       fnt.subsettemplate && fnt.subsettemplate or ''\textbackslash DeclareEncodingSubset\{TS1\}\{\$FONTFAMILY\}\{\$SUBSET\}'' \\
-%       fnt.tablestemp && fnt.tablestemp or ''fnt-tables.tex'' \\
-%       fnt.testtemp && fnt.testtemp or ''fnt-test.lvt'' \\
+%       fnt.tablestemp && fnt.tablestemp or ''fntbuild-tables.tex'' \\
+%       fnt.testtemp && fnt.testtemp or ''fntbuild-test.lvt'' \\
 %       fnt.vendor && fnt.vendor or ''public''\\
 %     \bottomrule
 %   \end{tabularx}
@@ -731,7 +731,7 @@ require(kpse.lookup("fntbuild.lua"))
 % \DescribelVar{fnt.regress}\texttt{fnt.regress}\isstring{filename} \par\noindent
 %
 % The file containing regression tests for use in auto-generating tests.
-% \file{fnt-tests.tex} provides a set used by default.
+% \file{fntbuild-regression-test.tex} provides a set used by default.
 %
 % \changes{v0.2}{2025-01-25}{New variable: \texttt{fnt.subset}.}
 % \DescribelVar{fnt.subset}\texttt{fnt.subset}\isbool \par\noindent
@@ -799,13 +799,13 @@ fnt.subsetdefns.clms = "lmss"
 % \DescribelVar{fnt.tablestemp}\texttt{fnt.tablestemp}\isstring{filename} \par\noindent
 %
 % The file containing the template to use when auto-generating font tables.
-% \file{fnt-tables.tex} provides the default template.
+% \file{fntbuild-tables.tex} provides the default template.
 %
 % \changes{v0.2}{2025-02-04}{New variable: \texttt{fnt.testtemp}.}
 % \DescribelVar{fnt.testtemp}\texttt{fnt.testtemp}\isstring{filename} \par\noindent
 %
 % The file containing the template to use when auto-generating font tests.
-% \file{fnt-test.lvt} provides the default template.
+% \file{fntbuild-test.lvt} provides the default template.
 %
 % \changes{v0.2}{2025-02-05}{Renamed variable: \texttt{fnt.vendor} (was \texttt{vendor}).}
 % \DescribelVar{fnt.vendor}\texttt{fnt.vendor} \isstring{fnt.vendor}
@@ -848,7 +848,7 @@ fnt.subsetdefns.clms = "lmss"
 % The template is used in \file{fntbuild.lua}'s \texttt{doc\_init()} hook to generate \texttt{tex} files populated with font information from font definition files.
 % This is then compiled by \texttt{l3build doc} to produce font tables.
 %
-% Alternative content may be provided by supplying a local copy of \file{fnt-tables.tex} or specifying an alternative template in \texttt{fnt.tablestemp}. 
+% Alternative content may be provided by supplying a local copy of \file{fntbuild-tables.tex} or specifying an alternative template in \texttt{fnt.tablestemp}. 
 % If \texttt{TABLES} occurs in the template, \file{fntbuild.lua} will replace it with a \env{document} environment containing a series of commands of the form \cs{sampletable}\marg{encoding}\marg{family}\marg{series}\marg{shape}, where \meta{encoding}, \meta{family}, \meta{series} and \meta{shape} are  derived from the font definition files.
 %
 % The default template is listed in \cref{subsubsec:tablestemp}.
@@ -860,16 +860,16 @@ fnt.subsetdefns.clms = "lmss"
 % Certain file patterns are excluded from testing.
 % In particular, separate tests are not generated for \texttt{ts1} \texttt{fd} files because these families are typically better tested along with their \texttt{t1} counterparts.
 %
-% Alternative content may be provided by supplying a local copy of \file{fnt-test.lvt} or specifying an alternative template in \texttt{fnt.testtemp}. 
+% Alternative content may be provided by supplying a local copy of \file{fntbuild-test.lvt} or specifying an alternative template in \texttt{fnt.testtemp}. 
 % If \texttt{SAMP} occurs in the template, \file{fntbuild.lua} will replace it with a series of tests derived from the font definition files.
 % These tests should typically use commands provided explicitly or implicitly by the file specified in \texttt{fnt.regress}.
 % By default, tests utilise a macro \cs{sampler} defined to absorb four arguments of the form \marg{encoding}\marg{family}\marg{series}\marg{shape}.
 % The result is a document containing various pieces supplied by \lpack{fonttable}.
 %
-% A custom test suite may be specified by supplying a local copy of \file{fnt-tests.tex}, giving an alternative in \texttt{fnt.regress} or defining a different set of tests in the template specified by \texttt{fnt.testtemp}.
+% A custom test suite may be specified by supplying a local copy of \file{fntbuild-regression-test.tex}, giving an alternative in \texttt{fnt.regress} or defining a different set of tests in the template specified by \texttt{fnt.testtemp}.
 %
 % \textbf{Note that you MUST supply a custom template if you change \texttt{fnt.regress}.}
-% It is, however, fine to supply a customised \file{fnt-tests.tex} for use with the default template.
+% It is, however, fine to supply a customised \file{fntbuild-regression-test.tex} for use with the default template.
 % Only if you want to use a different filename for the test suite is a custom template required.
 %
 % The default template is listed in \cref{subsubsec:testtemp}.
@@ -922,11 +922,11 @@ fnt.subsetdefns.clms = "lmss"
 % \iffalse
 %<*tables>
 % \fi
-% \begin{template}{fnt-tables.tex}
+% \begin{template}{fntbuild-tables.tex}
 %    \begin{macrocode}
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN[fnt-tables.tex]{$Id: fontscripts.dtx 10771 2025-02-05 22:55:06Z cfrees $}[v0.2 \revinfo][\filebase: font table template]
+\ProvidesFileSVN[fnt-tables.tex]{$Id: fontscripts.dtx 10787 2025-02-09 18:55:34Z cfrees $}[v0.2 \revinfo][\filebase: font table template]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % \iffalse
@@ -955,13 +955,13 @@ TABLES
 % \iffalse
 %<*lvt>
 % \fi
-% \begin{template}{fnt-test.lvt}
+% \begin{template}{fntbuild-test.lvt}
 %    \begin{macrocode}
 \RequirePackage{svn-prov}
-\ProvidesFileSVN[fnt-test.lvt]{$Id: fontscripts.dtx 10771 2025-02-05 22:55:06Z cfrees $}[v0.0 \revinfo][fontscripts: l3build test template]
+\ProvidesFileSVN[fnt-test.lvt]{$Id: fontscripts.dtx 10787 2025-02-09 18:55:34Z cfrees $}[v0.0 \revinfo][fontscripts: l3build test template]
 \listfiles
 \input regression-test.tex\relax
-\input fnt-tests.tex\relax
+\input fntbuild-regression-test.tex\relax
 \setlength{\parindent}{0pt}
 \textheight=250mm
 \textwidth=160mm
@@ -988,11 +988,11 @@ SAMP
 % \iffalse
 %<*tests>
 % \fi
-% \begin{template}{fnt-tests.tex}
+% \begin{template}{fntbuild-regression-test.tex}
 %    \begin{macrocode}
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN[fnt-tests.tex]{$Id: fontscripts.dtx 10771 2025-02-05 22:55:06Z cfrees $}[v0.0 \revinfo][fontscripts: l3build tests]
+\ProvidesFileSVN[fnt-tests.tex]{$Id: fontscripts.dtx 10787 2025-02-09 18:55:34Z cfrees $}[v0.0 \revinfo][fontscripts: l3build tests]
 \documentclass[10pt,a4paper]{article}
 \usepackage{fonttable}
 \usepackage{tracefnt}% infoshow is default; debugshow traces maths fonts, too
@@ -1204,7 +1204,7 @@ SAMP
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2\nil{#1}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName doc]{$Id: fontscripts.dtx 10771 2025-02-05 22:55:06Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName doc]{$Id: fontscripts.dtx 10787 2025-02-09 18:55:34Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \AddToHook{begindocument}{\OnlyDescription}
 \input{\MyFileBaseName.dtx}
@@ -1215,7 +1215,7 @@ SAMP
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2\nil{#1}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName code]{$Id: fontscripts.dtx 10771 2025-02-05 22:55:06Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName code]{$Id: fontscripts.dtx 10787 2025-02-09 18:55:34Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \input{\MyFileBaseName.dtx}
 %</doc-code>

@@ -1,4 +1,4 @@
--- $Id: build.lua 10781 2025-02-08 01:23:14Z cfrees $
+-- $Id: build.lua 10787 2025-02-09 18:55:34Z cfrees $
 -------------------------------------------------------------------------------
 -- This work, which consists of all files listed in manifest.txt, is released 
 -- under the LaTeX Project Public Licence version 1.3c or later. See individual 
@@ -68,7 +68,7 @@ function manifest_setup ()
     {
       name = "Package files",
       dir = unpackdir,
-      files = {"*.cls","*.etx","fnt-test.lvt","*.mtx","*.sty","*.tex","*.txt"},
+      files = {"*.cls","*.etx","fntbuild-test.lvt","*.mtx","*.sty","*.tex","*.txt"},
       exclude = sourcefiles,
       description = "* manifest.txt",
     },
@@ -94,9 +94,9 @@ tdslocations  = {
   "source/latex/fontscripts/*.ins",
   "tex/fontinst/fontscripts/*.etx",
   "tex/fontinst/fontscripts/*.mtx",
-  "tex/latex/fontscripts/fnt-tables.tex",
-  "tex/latex/fontscripts/fnt-test.lvt",
-  "tex/latex/fontscripts/fnt-tests.tex",
+  "tex/latex/fontscripts/fntbuild-tables.tex",
+  "tex/latex/fontscripts/fntbuild-test.lvt",
+  "tex/latex/fontscripts/fntbuild-regression-test.tex",
 }
 unpackexe = "pdflatex"
 --
