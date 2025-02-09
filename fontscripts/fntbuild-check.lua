@@ -1,4 +1,4 @@
--- $Id: fntbuild-check.lua 10763 2025-02-04 20:28:32Z cfrees $
+-- $Id: fntbuild-check.lua 10788 2025-02-09 19:44:32Z cfrees $
 -------------------------------------------------
 -- fntbuild-check
 -------------------------------------------------
@@ -250,16 +250,14 @@ local function check_init ()
       }
     end
     copio(fnt.checksuppfiles_sys,testdir,"TEXMFDIST")
-    if not fileexists(testdir .. "/" .. regfile) then
-      if fileexists(unpackdir .. "/" .. regfile) then
-        cp(regfile,unpackdir,testdir)
-        print("Using regression tests from " .. unpackdir .. "/" .. regfile .. ".\n")
-      else
-        table.insert(fnt.checksuppfiles_add,regfile)
-        print("Adding " .. regfile .. "to fnt.checksuppfiles_add.\n")
-      end
-    else
+    if fileexists(testdir .. "/" .. regfile) then
       print("Using regression tests from " .. testdir .. "/" .. regfile .. ".\n")
+    elseif fileexists(unpackdir .. "/" .. regfile) then
+      cp(regfile,unpackdir,testdir)
+      print("Using regression tests from " .. unpackdir .. "/" .. regfile .. ".\n")
+    else
+      table.insert(fnt.checksuppfiles_add,regfile)
+      print("Adding " .. regfile .. "to fnt.checksuppfiles_add.\n")
     end
     if #fnt.checksuppfiles_add ~= 0 then
       local str = kpse.var_value("TEXMFDIST")

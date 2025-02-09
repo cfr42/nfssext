@@ -1,4 +1,4 @@
--- $Id: build.lua 10787 2025-02-09 18:55:34Z cfrees $
+-- $Id: build.lua 10788 2025-02-09 19:44:32Z cfrees $
 -------------------------------------------------------------------------------
 -- This work, which consists of all files listed in manifest.txt, is released 
 -- under the LaTeX Project Public Licence version 1.3c or later. See individual 
@@ -14,7 +14,7 @@ ctanpkg = "fontscripts"
 maindir = ".."
 sourcefiledir = "."
 sourcefiles = {"*.dtx", "*.ins"}
-installfiles = {"*.etx", "*.mtx", "*.lvt", "fnt-*.tex"}
+installfiles = {"*.etx", "*.mtx", "*.lvt", "fntbuild-*.tex"}
 manifestfile = "manifest.txt"
 scriptfiles = {"*.lua"}
 typesetdeps = {maindir .. "/nfssext-cfr", maindir .. "/cfr-lm"}
