@@ -1,4 +1,4 @@
--- $Id: build.lua 10752 2025-02-03 02:08:58Z cfrees $
+-- $Id: build.lua 10790 2025-02-10 23:41:43Z cfrees $
 -- Build configuration for cfr-lm
 -------------------------------------------------------------------------------
 -- l3build.pdf listing 1 tudalen 9
@@ -62,7 +62,7 @@ typesetruns = 5
 uploadconfig = {
   -- *required* --
   -- announcement (don't include here?)
-  announcement  = "Belated update for (N)NFSS (marginally improve consistency for some documents). Remove dependency on xkeyval. Switch to dtx/ins. Use l3build.",
+  announcement  = "Correct sty",
 	author     = "Clea F. Rees",
   -- email (don't include here!)
 	ctanPath   = "/fonts/cfr-lm",
@@ -70,7 +70,7 @@ uploadconfig = {
 	pkg        = ctanpkg,
 	summary    = "Extended support for Latin Modern on 8-bit engines",
   uploader   = "Clea F. Rees",
-	version    = "v1.8",
+	version    = "v1.8a",
   -- optional --
 	bugtracker = {"https://codeberg.org/cfr/nfssext/issues"},
   -- description
