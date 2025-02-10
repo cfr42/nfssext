@@ -45,6 +45,21 @@ fnt.checksuppfiles_add = {
   "ts1lmvtt.fd",
 }
 -------------------------------------------------
+-- fnt.buildinit_hook() {{{
+function fnt.buildinit_hook()
+  for _,i in ipairs({"etx","mtx"}) do
+    local files = filelist(fnt.fntdir,"fontscripts-*." .. i)
+    for _,j in ipais(files) do
+      local k = (string.gsub(j,"^fontscripts-",""))
+      if not fileexists(fnt.fntdir .. "/" .. k) then
+        cp(fnt.fntdir,j,k)
+      end
+    end
+  end
+  return 0
+end
+-- }}}
+-------------------------------------------------
 -- tag.lua
 tagfile = tagfile or maindir .. "/tag.lua"
 if fileexists(tagfile) then

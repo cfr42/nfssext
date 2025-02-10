@@ -1292,12 +1292,13 @@ SAMP
 % For example, they may construct otherwise missing glyphs or adjust kerning pairs.
 %
 % 
-% \subsubsection{dotscbuild.mtx}\label{subsubsec:dotscbuild}
+% \subsubsection{fontscripts-dotscbuild.mtx}\label{subsubsec:dotscbuild}
 % 
 % \iffalse
 %<*dotscbuild>
 % \fi
-% \begin{metrics}{dotscbuild.mtx}
+% \begin{metrics}{fontscripts-dotscbuild.mtx}
+% \changes{v0.0}{2025-02-10}{Filename prefix for Karl.}
 %    \begin{macrocode}
 \relax
 
@@ -1472,13 +1473,14 @@ be typeset as
 % \fi
 % 
 % 
-% \subsubsection{newlatin-dotsc.mtx}\label{subsubsec:newlatin-dotsc}
+% \subsubsection{fontscripts-newlatin-dotsc.mtx}\label{subsubsec:newlatin-dotsc}
 % 
 % \iffalse
 %<*newlatin-dotsc>
 % \fi
-% \begin{metrics}{newlatin-dotsc.mtx}
+% \begin{metrics}{fontscripts-newlatin-dotsc.mtx}
 % based on \file{newlatin.mtx} - because I couldn't figure out how to pass options...
+% \changes{v0.0}{2025-02-10}{Filename prefix for Karl.}
 % \changes{v0.2}{2025-01-25}{Re-remove load of \file{lsfake}.}
 %    \begin{macrocode}
 \relax
@@ -1550,12 +1552,13 @@ be typeset as
 % \fi
 % 
 % 
-% \subsubsection{dotscmisc.mtx}\label{subsubsec:dotscmisc}
+% \subsubsection{fontscripts-dotscmisc.mtx}\label{subsubsec:dotscmisc}
 % 
 % \iffalse
 %<*dotscmisc>
 % \fi
-% \begin{metrics}{dotscmisc.mtx}
+% \begin{metrics}{fontscripts-dotscmisc.mtx}
+% \changes{v0.0}{2025-02-10}{Filename prefix for Karl.}
 % \changes{v0.2}{2025-01-25}{Re-remove spurious kerning adjustments for triple ligatures.}
 %    \begin{macrocode}
 \relax
@@ -1687,21 +1690,22 @@ be typeset as
 %</dotscmisc>
 % \fi
 % 
-% \subsubsection{unfakable.mtx}\label{subsubsec:unfakable}
+% \subsubsection{fontscripts-unfakable.mtx}\label{subsubsec:unfakable}
 % 
 % This metrics file prevents \pkg{fontinst} from inserting ‘gravestones’ into virtual fonts when a glyph is missing.
-% \textbf{It should be used only for the \texttt{TS1}.
+% \textbf{It should be used only for \texttt{TS1}.
 % It should NOT be used when using the \texttt{T1} encoding.}
 % 
 % \iffalse
 %<*unfakable>
 % \fi
-% \begin{metrics}{unfakable.mtx}
+% \begin{metrics}{fontscripts-unfakable.mtx}
+% \changes{v0.0}{2025-02-10}{Filename prefix for Karl.}
 %    \begin{macrocode}
 \relax
 \metrics
 
-\ProvidesMtxPackage{unfakable}
+\ProvidesMtxPackage{fontscripts-unfakable}
 
 \setcommand\unfakableaccent#1{%
   \message{Missing glyph `#1'}%
@@ -1724,12 +1728,13 @@ be typeset as
 % Rather, they are converted to \texttt{.enc} files, renamed and automatically edited to ensure unique encoding names.
 % These names are then substituted into \texttt{.map} files.
 % 
-% \subsubsection{dotoldstyle.etx}\label{subsubsec:dotoldstyle}
+% \subsubsection{fontscripts-dotoldstyle.etx}\label{subsubsec:dotoldstyle}
 % 
 % \iffalse
 %<*dotoldstyle>
 % \fi
-% \begin{encoding}{dotoldstyle.etx}
+% \begin{encoding}{fontscripts-dotoldstyle.etx}
+% \changes{v0.0}{2025-02-10}{Filename prefix for Karl.}
 %    \begin{macrocode}
 \relax
 \encoding
@@ -1742,12 +1747,13 @@ be typeset as
 % \fi
 % 
 % 
-% \subsubsection{dotsc2.etx}\label{subsubsec:dotsc2}
+% \subsubsection{fontscripts-dotsc2.etx}\label{subsubsec:dotsc2}
 % 
 % \iffalse
 %<*dotsc2>
 % \fi
-% \begin{encoding}{dotsc2.etx}
+% \begin{encoding}{fontscripts-dotsc2.etx}
+% \changes{v0.0}{2025-02-10}{Filename prefix for Karl.}
 %    \begin{macrocode}
 \relax
 
@@ -1773,12 +1779,13 @@ be typeset as
 % \fi
 % 
 % 
-% \subsubsection{dottaboldstyle.etx}\label{subsubsec:dottaboldstyle}
+% \subsubsection{fontscripts-dottaboldstyle.etx}\label{subsubsec:dottaboldstyle}
 % 
 % \iffalse
 %<*dottaboldstyle>
 % \fi
-% \begin{encoding}{dottaboldstyle.etx}
+% \begin{encoding}{fontscripts-dottaboldstyle.etx}
+% \changes{v0.0}{2025-02-10}{Filename prefix for Karl.}
 %    \begin{macrocode}
 \relax
 \encoding
@@ -1791,12 +1798,13 @@ be typeset as
 % \fi
 % 
 % 
-% \subsubsection{lining.etx}\label{subsubsec:lining}
+% \subsubsection{fontscripts-lining.etx}\label{subsubsec:lining}
 % 
 % \iffalse
 %<*lining>
 % \fi
-% \begin{encoding}{lining.etx}
+% \begin{encoding}{fontscripts-lining.etx}
+% \changes{v0.0}{2025-02-10}{Filename prefix for Karl.}
 %    \begin{macrocode}
 \relax
 \encoding
@@ -1809,12 +1817,13 @@ be typeset as
 % \fi
 % 
 % 
-% \subsubsection{oldstyle.etx}\label{subsubsec:oldstyle}
+% \subsubsection{fontscripts-oldstyle.etx}\label{subsubsec:oldstyle}
 % 
 % \iffalse
 %<*oldstyle>
 % \fi
-% \begin{encoding}{oldstyle.etx}
+% \begin{encoding}{fontscripts-oldstyle.etx}
+% \changes{v0.0}{2025-02-10}{Filename prefix for Karl.}
 %    \begin{macrocode}
 \relax
 \encoding
@@ -1827,12 +1836,13 @@ be typeset as
 % \fi
 % 
 % 
-% \subsubsection{t1-cfr.etx}\label{subsubsec:t1-cfr}
+% \subsubsection{fontscripts-t1-cfr.etx}\label{subsubsec:t1-cfr}
 % 
 % \iffalse
 %<*t1-cfr>
 % \fi
-% \begin{encoding}{t1-cfr.etx}
+% \begin{encoding}{fontscripts-t1-cfr.etx}
+% \changes{v0.0}{2025-02-10}{Filename prefix for Karl.}
 %    \begin{macrocode}
 %%
 %% - The commentary in the original is deleted in this version. For 
@@ -3122,12 +3132,13 @@ be typeset as
 % \fi
 % 
 % 
-% \subsubsection{t1-dotalt-f\_f.etx}\label{subsubsec:t1-dotalt-f-f}
+% \subsubsection{fontscripts-t1-dotalt-f\_f.etx}\label{subsubsec:t1-dotalt-f-f}
 % 
 % \iffalse
 %<*t1-dotalt-f-f>
 % \fi
 % \begin{encoding}{t1-dotalt-f_f}
+% \changes{v0.0}{2025-02-10}{Filename prefix for Karl.}
 %    \begin{macrocode}
 %%
 %% - The commentary in the original is deleted in this version. For
@@ -4419,12 +4430,13 @@ be typeset as
 % \fi
 % 
 % 
-% \subsubsection{t1-dotinf.etx}\label{subsubsec:t1-dotinf}
+% \subsubsection{fontscripts-t1-dotinf.etx}\label{subsubsec:t1-dotinf}
 % 
 % \iffalse
 %<*t1-dotinf>
 % \fi
-% \begin{encoding}{t1-dotinf.etx}
+% \begin{encoding}{fontscripts-t1-dotinf.etx}
+% \changes{v0.0}{2025-02-10}{Filename prefix for Karl.}
 %    \begin{macrocode}
 %%
 %% - The original notices at the top of that file concerning authors,
@@ -5710,12 +5722,13 @@ be typeset as
 % \fi
 % 
 % 
-% \subsubsection{t1-dotinferior.etx}\label{subsubsec:t1-dotinferior}
+% \subsubsection{fontscripts-t1-dotinferior.etx}\label{subsubsec:t1-dotinferior}
 % 
 % \iffalse
 %<*t1-dotinferior>
 % \fi
-% \begin{encoding}{t1-dotinferior.etx}
+% \begin{encoding}{fontscripts-t1-dotinferior.etx}
+% \changes{v0.0}{2025-02-10}{Filename prefix for Karl.}
 %    \begin{macrocode}
 %%
 %% - The original notices at the top of that file concerning authors,
@@ -7001,12 +7014,13 @@ be typeset as
 % \fi
 % 
 % 
-% \subsubsection{t1-dotsup.etx}\label{subsubsec:t1-dotsup}
+% \subsubsection{fontscripts-t1-dotsup.etx}\label{subsubsec:t1-dotsup}
 % 
 % \iffalse
 %<*t1-dotsup>
 % \fi
-% \begin{encoding}{t1-dotsup.etx}
+% \begin{encoding}{fontscripts-t1-dotsup.etx}
+% \changes{v0.0}{2025-02-10}{Filename prefix for Karl.}
 %    \begin{macrocode}
 %%
 %% - The original notices at the top of that file concerning authors,
@@ -8292,12 +8306,13 @@ be typeset as
 % \fi
 % 
 % 
-% \subsubsection{t1-dotsuperior.etx}\label{subsubsec:t1-dotsuperior}
+% \subsubsection{fontscripts-t1-dotsuperior.etx}\label{subsubsec:t1-dotsuperior}
 % 
 % \iffalse
 %<*t1-dotsuperior>
 % \fi
-% \begin{encoding}{t1-dotsuperior.etx}
+% \begin{encoding}{fontscripts-t1-dotsuperior.etx}
+% \changes{v0.0}{2025-02-10}{Filename prefix for Karl.}
 %    \begin{macrocode}
 %%
 %% - The original notices at the top of that file concerning authors,
@@ -9583,12 +9598,13 @@ be typeset as
 % \fi
 % 
 % 
-% \subsubsection{t1-f\_f.etx}\label{subsubsec:t1-f-f}
+% \subsubsection{fontscripts-t1-f\_f.etx}\label{subsubsec:t1-f-f}
 % 
 % \iffalse
 %<*t1-f-f>
 % \fi
-% \begin{encoding}{t1-f_f.etx}
+% \begin{encoding}{fontscripts-t1-f_f.etx}
+% \changes{v0.0}{2025-02-10}{Filename prefix for Karl.}
 %    \begin{macrocode}
 %%
 %% - The commentary in the original is deleted in this version. For 
@@ -10882,21 +10898,22 @@ be typeset as
 % \fi
 % 
 % 
-% \subsubsection{t1j-f\_f.etx}\label{subsubsec:t1j-f-f}
+% \subsubsection{fontscripts-t1j-f\_f.etx}\label{subsubsec:t1j-f-f}
 % 
 % \iffalse
 %<*t1j-f-f>
 % \fi
-% \begin{encoding}{t1j-f_f.etx}
+% \begin{encoding}{fontscripts-t1j-f_f.etx}
+% \changes{v0.0}{2025-02-10}{Filename prefix for Karl.}
 %    \begin{macrocode}
 \relax
 
 %    \end{macrocode}
-% \file{t1j-f\_f.etx} -- install a T1-encoded roman font with oldstyle 
+% \file{fontscripts-t1j-f\_f.etx} -- install a T1-encoded roman font with oldstyle 
 % and f-ligatures named "f\_f" etc.
 %
 % We do not need to distinguish between roman and italic in T1,
-% hence we simply call t1-f\_f.etx with oldstyle parameters.
+% hence we simply call fontscripts-t1-f\_f.etx with oldstyle parameters.
 %    \begin{macrocode}
 
 \encoding
@@ -10919,12 +10936,13 @@ be typeset as
 % \fi
 % 
 % 
-% \subsubsection{ts1-dotinf.etx}\label{subsubsec:ts1-dotinf}
+% \subsubsection{fontscripts-ts1-dotinf.etx}\label{subsubsec:ts1-dotinf}
 % 
 % \iffalse
 %<*ts1-dotinf>
 % \fi
-% \begin{encoding}{ts1-dotinf.etx}
+% \begin{encoding}{fontscripts-ts1-dotinf.etx}
+% \changes{v0.0}{2025-02-10}{Filename prefix for Karl.}
 %    \begin{macrocode}
 %%
 %% - The commentary in the original is deleted in this version. For 
@@ -11619,12 +11637,13 @@ be typeset as
 % \fi
 % 
 % 
-% \subsubsection{ts1-dotsup.etx}\label{subsubsec:ts1-dotsup}
+% \subsubsection{fontscripts-ts1-dotsup.etx}\label{subsubsec:ts1-dotsup}
 % 
 % \iffalse
 %<*ts1-dotsup>
 % \fi
-% \begin{encoding}{ts1-dotsup.etx}
+% \begin{encoding}{fontscripts-ts1-dotsup.etx}
+% \changes{v0.0}{2025-02-10}{Filename prefix for Karl.}
 %    \begin{macrocode}
 %%
 %% - The commentary in the original is deleted in this version. For 
@@ -12319,12 +12338,13 @@ be typeset as
 % \fi
 % 
 % 
-% \subsubsection{ts1-euro.etx}\label{subsubsec:ts1-euro}
+% \subsubsection{fontscripts-ts1-euro.etx}\label{subsubsec:ts1-euro}
 % 
 % \iffalse
 %<*ts1-euro>
 % \fi
-% \begin{encoding}{ts1-euro.etx}
+% \begin{encoding}{fontscripts-ts1-euro.etx}
+% \changes{v0.0}{2025-02-10}{Filename prefix for Karl.}
 %    \begin{macrocode}
 %%
 %% - The original notices at the top of that file concerning authors,
@@ -13035,12 +13055,13 @@ be typeset as
 % \fi
 % 
 % 
-% \subsubsection{ucdotalt.etx}\label{subsubsec:ucdotalt}
+% \subsubsection{fontscripts-ucdotalt.etx}\label{subsubsec:ucdotalt}
 % 
 % \iffalse
 %<*ucdotalt>
 % \fi
-% \begin{encoding}{ucdotalt.etx}
+% \begin{encoding}{fontscripts-ucdotalt.etx}
+% \changes{v0.0}{2025-02-10}{Filename prefix for Karl.}
 %    \begin{macrocode}
 \relax
 \encoding
