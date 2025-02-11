@@ -18,6 +18,8 @@ on:
       - '.github/workflows/nfssext-autochecks.yml'
       - '!licences/**'
       - '!test/**'
+    tags:
+      - '*'
   pull_request:
     branches: 
       - "*"
