@@ -1,4 +1,4 @@
-$Id: README.md 10778 2025-02-07 05:23:50Z cfrees $
+$Id: README.md 10794 2025-02-11 05:59:23Z cfrees $
 =================================================
 Copyright (C) 2008-2025 Clea F. Rees.
 
@@ -76,6 +76,8 @@ likely regressions due to the 2020 changes).
 
 Version 1.8 moves TS1 encoding subset declarations into font definition files.
 
+Version 1.8a reverts the changes made in 1.8.
+
 A more detailed history is included in the documentation and sources.
 
 # Documentation
@@ -111,8 +113,8 @@ If you have comments about the fonts themselves, please contact GUST.
 
 
 Clea F. Rees
-Version 1.8
-2025-02-03
+Version 1.8a
+2025-02-11
 
 =================================================
 vim: et:tw=80:sw=2:
