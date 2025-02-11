@@ -65,9 +65,6 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repo
         uses: actions/checkout@v4
-      # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
-      # We need Ghostscript for XeTeX tests.
-      - run: sudo apt-get update #&& sudo apt-get install ghostscript 
       # Steps represent a sequence of tasks that will be executed as part of the job
       - name: Restore TeX Live from cache
         uses: actions/cache/restore@v4
@@ -204,11 +201,12 @@ jobs:
         uses: actions/checkout@v4
       # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
       # We need Ghostscript for XeTeX tests.
-      - name: Update system 
-        run: sudo apt-get update
       - name: Install additional packages if needed
         if: ${{ matrix.extra_packages }}
-        run: sudo apt-get install ${{ matrix.extra_packages }}
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: ${{ matrix.extra_packages }}
+          version: 1.0
       - name: Restore TeX Live from cache
         uses: actions/cache/restore@v4
         with:
@@ -320,11 +318,12 @@ jobs:
         uses: actions/checkout@v4
       # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
       # We need Ghostscript for XeTeX tests.
-      - name: Update system 
-        run: sudo apt-get update
       - name: Install additional packages if needed
         if: ${{ matrix.extra_packages }}
-        run: sudo apt-get install ${{ matrix.extra_packages }}
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: ${{ matrix.extra_packages }}
+          version: 1.0
       - name: Restore TeX Live from cache
         uses: actions/cache/restore@v4
         with:
