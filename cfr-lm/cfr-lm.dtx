@@ -42,7 +42,7 @@
   \char_set_catcode_letter:N \:
 }
 \ExplSyntaxOff
-\ProvidesFileSVN{$Id: cfr-lm.dtx 10790 2025-02-10 23:41:43Z cfrees $}[v1.8 \revinfo][\filebase DTX: Latin Modern for 8-bit engines]
+\ProvidesFileSVN{$Id: cfr-lm.dtx 10791 2025-02-11 02:15:02Z cfrees $}[v1.8 \revinfo][\filebase DTX: Latin Modern for 8-bit engines]
 \DefineFileInfoSVN[cfr-lm]
 \documentclass[10pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -1348,7 +1348,7 @@ updmap --sys --enable Map=clm.map
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: cfr-lm.dtx 10790 2025-02-10 23:41:43Z cfrees $}[v1.8 \revinfo][Extended support for Latin Modern 2.004]
+\ProvidesPackageSVN[\filebase.sty]{$Id: cfr-lm.dtx 10791 2025-02-11 02:15:02Z cfrees $}[v1.8 \revinfo][Extended support for Latin Modern 2.004]
 \DefineFileInfoSVN[clm]
 \RequirePackage[T1]{fontenc}
 \RequirePackage{nfssext-cfr}[2024/01/01]
@@ -1368,10 +1368,58 @@ updmap --sys --enable Map=clm.map
 \IfFormatAtLeastTF {2020-02-02}{%
 %    \end{macrocode}
 % \changes{v1.8}{2025-01-03}{Determine TC encoding subset declarations dynamically and include in font definition files.}
-% \changes{v1.8a}{2025-02-10}{Remove stray lines in sty.}
+% \changes{v1.8a}{2025-02-10}{Remove TS1 subset defns from fd files and put them back into the sty where they actually work.}
 %^^A To get the oldstyle numbers etc.\ used from TS1, we need to set the subset to 0 or 1.
 %^^A We follow the kernel's handling of Latin Modern and eschew the builtin circle.
+%%^^A  \DeclareEncodingSubset{TS1}{clm}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clm2}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clm2d}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clm2dj}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clm2j}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clm2jqs}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clm2js}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clm2jt}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clm2jv}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clm2qs}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clm2s}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clm2t}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clm2v}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clmd}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clmdj}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clmj}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clmjqs}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clmjs}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clmjt}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clmjv}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clmqs}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clms}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clmt}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clmv}{1}%
 %    \begin{macrocode}
+  \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clm}{TS1:lmr} 
+  \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clm2}{TS1:lmr} 
+  \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clm2d}{TS1:lmdh}
+  \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clm2dj}{TS1:lmdh}
+  \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clm2j}{TS1:lmr}
+  \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clm2jqs}{TS1:lmssq}
+  \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clm2js}{TS1:lmssq}
+  \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clm2jt}{TS1:lmtt}
+  \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clm2jv}{TS1:lmvtt}
+  \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clm2qs}{TS1:lmssq}
+  \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clm2s}{TS1:lmss} 
+  \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clm2t}{TS1:lmtt} 
+  \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clm2v}{TS1:lmvtt} 
+  \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clmd}{TS1:lmdh} 
+  \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clmdj}{TS1:lmdh} 
+  \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clmj}{TS1:lmr} 
+  \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clmjqs}{TS1:lmssq} 
+  \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clmjs}{TS1:lmss} 
+  \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clmjt}{TS1:lmtt} 
+  \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clmjv}{TS1:lmvtt} 
+  \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clmqs}{TS1:lmssq} 
+  \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clms}{TS1:lmss} 
+  \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clmt}{TS1:lmtt} 
+  \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clmv}{TS1:lmvtt} 
 }{%
   \RequirePackage{textcomp}}
 \UndeclareTextCommand{\textperthousand}{T1}

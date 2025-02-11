@@ -1,4 +1,4 @@
--- $Id: build.lua 10790 2025-02-10 23:41:43Z cfrees $
+-- $Id: build.lua 10791 2025-02-11 02:15:02Z cfrees $
 -- Build configuration for cfr-lm
 -------------------------------------------------------------------------------
 -- l3build.pdf listing 1 tudalen 9
@@ -28,32 +28,32 @@ dofile(maindir .. "/fontscripts/fntbuild.lua")
 -- add subset defns to fds, but don't hardcode them 
 -- note that this relies on implementation details, so maybe some fallback in the stys would be good, too?
 -- I just can't come up with a better idea right now
-fnt.subset = true
-fnt.subsetdefns.clm = "lmr" 
-fnt.subsetdefns.clm2 = "lmr" 
-fnt.subsetdefns.clm2d = "lmdh"
-fnt.subsetdefns.clm2dj = "lmdh"
-fnt.subsetdefns.clm2j = "lmr"
-fnt.subsetdefns.clm2jqs = "lmssq"
-fnt.subsetdefns.clm2js = "lmssq"
-fnt.subsetdefns.clm2jt = "lmtt"
-fnt.subsetdefns.clm2jv = "lmvtt"
-fnt.subsetdefns.clm2qs = "lmssq"
-fnt.subsetdefns.clm2s = "lmss" 
-fnt.subsetdefns.clm2t = "lmtt" 
-fnt.subsetdefns.clm2v = "lmvtt" 
-fnt.subsetdefns.clmd = "lmdh" 
-fnt.subsetdefns.clmdj = "lmdh" 
-fnt.subsetdefns.clmj = "lmr" 
-fnt.subsetdefns.clmjqs = "lmssq" 
-fnt.subsetdefns.clmjs = "lmss" 
-fnt.subsetdefns.clmjt = "lmtt" 
-fnt.subsetdefns.clmjv = "lmvtt" 
-fnt.subsetdefns.clmqs = "lmssq" 
-fnt.subsetdefns.clms = "lmss" 
-fnt.subsetdefns.clmt = "lmtt" 
-fnt.subsetdefns.clmv = "lmvtt" 
-fnt.subsettemplate = "\\ExpandArgs {nnc} \\DeclareEncodingSubset {TS1} {$FONTFAMILY} {TS1:$SUBSET}"
+-- fnt.subset = true
+-- fnt.subsetdefns.clm = "lmr" 
+-- fnt.subsetdefns.clm2 = "lmr" 
+-- fnt.subsetdefns.clm2d = "lmdh"
+-- fnt.subsetdefns.clm2dj = "lmdh"
+-- fnt.subsetdefns.clm2j = "lmr"
+-- fnt.subsetdefns.clm2jqs = "lmssq"
+-- fnt.subsetdefns.clm2js = "lmssq"
+-- fnt.subsetdefns.clm2jt = "lmtt"
+-- fnt.subsetdefns.clm2jv = "lmvtt"
+-- fnt.subsetdefns.clm2qs = "lmssq"
+-- fnt.subsetdefns.clm2s = "lmss" 
+-- fnt.subsetdefns.clm2t = "lmtt" 
+-- fnt.subsetdefns.clm2v = "lmvtt" 
+-- fnt.subsetdefns.clmd = "lmdh" 
+-- fnt.subsetdefns.clmdj = "lmdh" 
+-- fnt.subsetdefns.clmj = "lmr" 
+-- fnt.subsetdefns.clmjqs = "lmssq" 
+-- fnt.subsetdefns.clmjs = "lmss" 
+-- fnt.subsetdefns.clmjt = "lmtt" 
+-- fnt.subsetdefns.clmjv = "lmvtt" 
+-- fnt.subsetdefns.clmqs = "lmssq" 
+-- fnt.subsetdefns.clms = "lmss" 
+-- fnt.subsetdefns.clmt = "lmtt" 
+-- fnt.subsetdefns.clmv = "lmvtt" 
+-- fnt.subsettemplate = "\\ExpandArgs {nnc} \\DeclareEncodingSubset {TS1} {$FONTFAMILY} {TS1:$SUBSET}"
 typesetdeps = {maindir .. "/nfssext-cfr"}
 typesetruns = 5
 -------------------------------------------------------------------------------
