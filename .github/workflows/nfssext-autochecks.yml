@@ -60,11 +60,11 @@ jobs:
     # cfr-lm uses nfssext-cfr but there's nothing to build
     # outputs:
     #   clm_cache_key: $(( steps.clm-cache.outputs.cache_key }}
+    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repo
         uses: actions/checkout@v4
-      # Steps represent a sequence of tasks that will be executed as part of the job
       - name: Restore TeX Live from cache
         # This step re-uses the cache generated at "texlive-cache"
         uses: zauguin/install-texlive@v3
