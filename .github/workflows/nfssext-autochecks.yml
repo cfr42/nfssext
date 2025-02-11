@@ -66,11 +66,10 @@ jobs:
         uses: actions/checkout@v4
       # Steps represent a sequence of tasks that will be executed as part of the job
       - name: Restore TeX Live from cache
-        uses: actions/cache/restore@v4
-        with: 
-          path: ~/texlive
-          key: ${{ needs.texlive-cache.outputs.cache_key }}
-          fail-on-cache-miss: true
+        # This step re-uses the cache generated at "texlive-cache"
+        uses: zauguin/install-texlive@v3
+        with:
+          package_file: .github/tl_packages
       # oes angen hwn?
       # oes!
       - name: Set PATH
@@ -207,11 +206,10 @@ jobs:
           packages: ${{ matrix.extra_packages }}
           version: 1.0
       - name: Restore TeX Live from cache
-        uses: actions/cache/restore@v4
+        # This step re-uses the cache generated at "texlive-cache"
+        uses: zauguin/install-texlive@v3
         with:
-          path: ~/texlive
-          key: ${{ needs.texlive-cache.outputs.cache_key }}
-          fail-on-cache-miss: true
+          package_file: .github/tl_packages
         # oes angen hwn?
         # oes!
       - name: Set PATH
