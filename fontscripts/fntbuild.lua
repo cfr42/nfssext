@@ -1,4 +1,4 @@
--- $Id: fntbuild.lua 10743 2025-01-29 02:29:53Z cfrees $
+-- $Id: fntbuild.lua 10802 2025-02-12 20:11:33Z cfrees $
 -------------------------------------------------
 -------------------------------------------------
 -- I don't know how to bootstrap this ... 
@@ -102,13 +102,13 @@ target_list[utarg] = {
   func = fnt.uniquify,
   desc = "Uniquifies encodings ONLY",
   pre = function(names)
-    standalone = true
+    fnt.standalone = true
     if names and #names > 1 then
       print("Too many encoding tags specified; no more than one allowed")
       help()
       exit(1)
     else
-      names = names or encodingtag or ""
+      names = names or fnt.encodingtag or ""
     end
     return 0
   end

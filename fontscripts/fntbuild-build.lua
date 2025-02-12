@@ -1,4 +1,4 @@
--- $Id: 
+-- $Id: fntbuild-build.lua 10802 2025-02-12 20:11:33Z cfrees $ 
 -------------------------------------------------
 -- fntbuild-build
 -------------------------------------------------
@@ -101,6 +101,43 @@ local function buildinit ()
     io.open(fnt.fntdir .. "/pdftex.map", "w"):close()
   end
   return fnt.buildinit_hook()
+end
+-- }}}
+-------------------------------------------------
+-- buildinit_fontinst {{{
+---@return 0, table of filenames on success, error level o/w
+---@usage public
+local function buildinit_fontinst ()
+  if not fnt.needs_fontinst then return 0 end
+  print("Copying all fontinst files should be available during build.\n")
+  local t = {}
+  local path = { "/tex/fontinst" }
+  local e,l = fnt.copio(path,fnt.fntdir,"TEXMFDIST","%.[em]tx$")
+  fnt.gwall("Copying ",path,e)
+  for _,j in ipairs(l) do
+    local k = (string.gsub(j,"^fontscripts%-",""))
+    if not fileexists(fnt.fntdir .. "/" .. k) then
+      ren(fnt.fntdir,j,k)
+      table.insert(t,k)
+    else
+      table.insert(t,j)
+    end
+  end
+  return 0,t
+end
+-- }}}
+-------------------------------------------------
+-------------------------------------------------
+-- build_tidy {{{
+---@usage public
+---@return 0 on success, errorlevel otherwise
+local function build_tidy ()
+  print("Tidying up build directory ...\n")
+  for _,i in ipairs(fnt.buildsuppfiles_sys) do
+    local errorlevel = rm(fnt.fntdir,i) 
+    fnt.gwall("Removal of ",fnt.fntdir .. "/" .. i,errorlevel)
+  end
+  return 0
 end
 -- }}}
 -------------------------------------------------
@@ -292,7 +329,7 @@ local function uniquify (tag)
   tag = tag or fnt.encodingtag or ""
   local pkgbase = fnt.pkgbase or ""
   local pkglist = {}
-  if standalone then
+  if fnt.standalone then
     dir = fnt.keepdir
   else
     dir = fnt.fntdir
@@ -304,7 +341,7 @@ local function uniquify (tag)
   end
   if pkgbase == "" then 
     print("pkgbase unspecified. Trying to guess ... ")
-    if not standalone then 
+    if not fnt.standalone then 
       pkglist = filelist(dir,"*.sty")
       if #pkglist == 0 then
         pkglist = filelist(unpackdir,"*.sty")
@@ -472,14 +509,25 @@ local function fontinst (dir,mode)
   -- dir = dir or unpackdir
   dir = dir or fnt.fntdir
   mode = mode or "errorstopmode --halt-on-error"
-  standalone = false
+  fnt.standalone = false
   fnt.encodingtag = fnt.encodingtag or ""
-  if #fnt.buildsuppfiles_sys == 0 then
-    print("Assuming all fontinst files should be available during build.\n")
-    local path = kpse.var_value("TEXMFDIST") .. "/tex/fontinst"
-    fnt.buildsuppfiles_sys = fnt.lsrdir(path)
+  local ffiles = {}
+  if fnt.needs_fontinst then 
+    ffiles = buildinit_fontinst() 
+  else
+    print("Are you sure you don't want fontinst files when building with fontinst?\n")
   end
+  -- if #fnt.buildsuppfiles_sys == 0 then
+  --   print("Assuming all fontinst files should be available during build.\n")
+  --   local path = kpse.var_value("TEXMFDIST") .. "/tex/fontinst"
+  --   fnt.buildsuppfiles_sys = fnt.lsrdir(path)
+  -- end
   buildinit ()
+  if #ffiles ~= 0 then
+    for _,i in ipairs(ffiles) do
+      table.insert(fnt.buildsuppfiles_sys,i)
+    end
+  end
   local tfmfiles = filelist(dir,"*.tfm")
   for i,j in ipairs(tfmfiles) do
     local plname = string.gsub(j, "%.tfm$", ".pl")
@@ -508,11 +556,13 @@ local function fontinst (dir,mode)
     fnt.gwall("Compilation of map ", j, errorlevel)
   end
   if fnt.nifergwall ~= 0 then return fnt.nifergwall end
-  print("Tidying up build directory ...\n")
-  for _,i in ipairs(fnt.buildsuppfiles_sys) do
-    local errorlevel = rm(dir,i) 
-    fnt.gwall("Removal of ",dir .. "/" .. i,errorlevel)
-  end
+  local errorlevel = build_tidy ()
+  fnt.gwall("Tidying ",fnt.fntdir,errorlevel)
+  -- print("Tidying up build directory ...\n")
+  -- for _,i in ipairs(fnt.buildsuppfiles_sys) do
+  --   local errorlevel = rm(dir,i) 
+  --   fnt.gwall("Removal of ",dir .. "/" .. i,errorlevel)
+  -- end
   for i,j in ipairs(fnt.binmakers) do
     local targs = filelist(dir,j)
     -- https://www.lua.org/pil/21.1.html
@@ -610,7 +660,7 @@ local function afm2tfm (dir)
   local fntbasename = fntbasename or module
   local map = mapfile or fntbasename .. ".map"
   local fntencs = fnt.encs or {}
-  standalone = false
+  fnt.standalone = false
   fnt.encodingtag = fnt.encodingtag or ""
   buildinit ()
   print("Running afm2tfm. Please be patient ...\n")
@@ -667,7 +717,9 @@ end
 -------------------------------------------------
 -- exports {{{
 fnt.build_fnt = build_fnt
+fnt.build_tidy = build_tidy
 fnt.buildinit = buildinit
+fnt.buildinit_fontinst = buildinit_fontinst
 fnt.buildinit_hook = buildinit_hook
 fnt.finst = finst
 fnt.fntkeeper = fntkeeper

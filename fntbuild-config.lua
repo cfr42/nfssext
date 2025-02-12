@@ -46,27 +46,27 @@ fnt.checksuppfiles_add = {
 }
 -------------------------------------------------
 -- local buildinit_hook() {{{
-local function buildinit_hook()
-  local t = {"etx","mtx"}
-  for _,i in ipairs(t) do
-    local files = filelist(fnt.fntdir,"fontscripts-*." .. i)
-    for _,j in ipairs(files) do
-      local k = (string.gsub(j,"^fontscripts%-",""))
-      if not fileexists(fnt.fntdir .. "/" .. k) then
-        ren(fnt.fntdir,j,k)
-        for n,m in ipairs(fnt.buildsuppfiles_sys) do
-          if m == j then
-            fnt.buildsuppfiles_sys[n] = k
-          end
-        end
-      end
-    end
-  end
-  return 0
-end
+-- local function buildinit_hook()
+--   local t = {"etx","mtx"}
+--   for _,i in ipairs(t) do
+--     local files = filelist(fnt.fntdir,"fontscripts-*." .. i)
+--     for _,j in ipairs(files) do
+--       local k = (string.gsub(j,"^fontscripts%-",""))
+--       if not fileexists(fnt.fntdir .. "/" .. k) then
+--         ren(fnt.fntdir,j,k)
+--         for n,m in ipairs(fnt.buildsuppfiles_sys) do
+--           if m == j then
+--             fnt.buildsuppfiles_sys[n] = k
+--           end
+--         end
+--       end
+--     end
+--   end
+--   return 0
+-- end
 -- }}}
 -------------------------------------------------
-fnt.buildinit_hook = buildinit_hook
+-- fnt.buildinit_hook = buildinit_hook
 -------------------------------------------------
 -- tag.lua
 tagfile = tagfile or maindir .. "/tag.lua"

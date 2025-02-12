@@ -1,4 +1,4 @@
--- $Id: fntbuild-utils.lua 10743 2025-01-29 02:29:53Z cfrees $
+-- $Id: fntbuild-utils.lua 10802 2025-02-12 20:11:33Z cfrees $
 -------------------------------------------------
 -- fntbuild-utils
 -------------------------------------------------
@@ -109,6 +109,77 @@ local function lsrdir (path,filenames)
 end
 -- }}}
 -------------------------------------------------
+-- local copio_aux {{{
+---Copy files or directory contents recursively.
+---@return 0, table of names on success, error level otherwise 
+---@see 
+---@param locs table
+---@param dest string
+---@param kpsevar string
+---@param indent string
+---@param patt string
+---@usage private
+local function copio_aux (locs,dest,kpsevar,indent,patt)
+  indent = indent .. "  "
+  patt = patt or ".*"
+  local t = {}
+  for _,i in ipairs(locs) do
+    local path = kpse.var_value(kpsevar) .. i
+    local attr = lfs.attributes (path)
+    if type(attr) == "table" then
+      if attr.mode == "directory" then
+        print(indent .. i .. "/")
+        local tmpls = filelist(path)
+        for _,j in ipairs(tmpls) do
+          if j ~= "." and j ~= ".." then
+            local att = lfs.attributes (path .. "/" .. j)
+            assert (type(att) == "table")
+            if att.mode == "directory" then
+              copio_aux({path .. "/" .. j},dest,kpsevar,indent,patt)
+            elseif string.match(j,patt) then
+              local errorlevel = cp(j,path,dest)
+              fnt.gwall("Copying ",path .. "/" .. j,errorlevel)
+              table.insert(t,j)
+            end
+          end
+        end
+      elseif fileexists(path) then
+        print("  " .. i)
+        if string.match(basename(path),patt) then
+          local errorlevel = cp(basename(path),dirname(path),dest)
+          fnt.gwall("Copying ",path,errorlevel)
+          table.insert(t,basename(path))
+        end
+      else
+        fnt.gwall("Lookup ",path,1)
+      end
+    else
+      fnt.gwall("Getting information about ",i,1)
+    end
+  end
+  return 0, t
+end
+-- }}}
+-- local copio {{{
+---Copy files or directory contents recursively.
+---@return table of names on success, error otherwise 
+---@see 
+---@param locs table
+---@param dest string
+---@param kpsevar string
+---@param patt string
+---@usage private
+local function copio (locs,dest,kpsevar,patt)
+  if locs == nil then return 0 end
+  if #locs == 0 then return 0 end
+  kpsevar = kpsevar or "TEXMFDIST"
+  patt = patt or ".*"
+  local e,t = copio_aux(locs,dest,kpsevar,"",patt)
+  fnt.gwall("Copying files for build to ",dest,e)
+  return t 
+end
+-- }}}
+-------------------------------------------------
 -- build_config() {{{
 ---use fntbuild-config.lua if found
 ---@usage private
@@ -147,6 +218,7 @@ end
 -------------------------------------------------
 -- exports {{{
 fnt.build_config = build_config
+fnt.copio = copio
 fnt.dep_install = dep_install
 fnt.localtexmf = localtexmf
 fnt.lsrdir = lsrdir

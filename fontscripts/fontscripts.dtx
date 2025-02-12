@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10793 2025-02-11 04:28:20Z cfrees $}[v0.2 \revinfo][\filebase DTX: l3build scripts for font installation]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10802 2025-02-12 20:11:33Z cfrees $}[v0.2 \revinfo][\filebase DTX: l3build scripts for font installation]
 \DefineFileInfoSVN[fontscripts]
 \documentclass[10pt,british,lm-default=false]{l3doc}
 % l3doc loads fancyvrb
@@ -331,6 +331,16 @@ require(kpse.lookup("fntbuild.lua"))
 % It can be used in the definition of custom functions.
 % See \cref{sec:custom} for an example.
 %
+% \changes{v0.3}{2025-02-12}{New function: \texttt{fnt.buildinit\_fontinst()}.}
+% \DescribelFn{fnt.buildinit_fontinst()} \texttt{fnt.buildinit\_fontinst}\plarg{}\par\noindent
+% Copies the files in \texttt{\$\{TEXMFDIST\}/tex/fontinst} to \texttt{fnt.fntdir} if \texttt{fnt.needs_fontinst} is \texttt{true}, which it is by default.
+% The prefix \texttt{fontscripts-} is removed unless doing so conflicts with an existing file name.
+%
+% This function is intended for use in defining custom build functions.
+% It is called, if needed, by those provided out-of-the-box such as \texttt{fnt.fontinst()}.
+% Note that these files may be used by tools other than \lpack{fontinst}.
+% For example, \lpack{otftotfm} can use converted \lpack{fontinst} encoding files.
+%
 % \changes{v0.2}{2025-01-25}{New function: \texttt{fnt.buildinit\_hook()}.}
 % \DescribelFn{fnt.buildinit_hook()} \texttt{fnt.buildinit\_hook}\plarg{}\par\noindent
 % A function which does nothing successfully by default, similar to the hooks provided by \lpack{l3build}.
@@ -378,6 +388,14 @@ require(kpse.lookup("fntbuild.lua"))
 %     \bottomrule
 %   \end{tabular}
 % \end{table}
+%
+% \changes{v0.3}{2025-02-12}{New function: \texttt{fnt.buildinit\_tidy()}.}
+% \DescribelFn{fnt.buildinit_tidy()} \texttt{fnt.buildinit\_tidy}\plarg{}\par\noindent
+% Removes \texttt{fnt.buildsuppfiles_sys} from \texttt{fnt.fntdir}.
+% Note that this does not remove files installed by \texttt{fnt.buildinit_fontinst()}.
+%
+% This function is intended for use in defining custom build functions.
+% It is called, if needed, by those provided out-of-the-box such as \texttt{fnt.fontinst()}.
 % 
 % \changes{v0.2}{2025-02-05}{Renamed function: \texttt{fnt.finst()} (was \texttt{finst()}.}
 % \DescribelFn{fnt.finst()} \texttt{fnt.finst}\plarg{patt,dir,mode}\par\noindent
@@ -617,6 +635,7 @@ require(kpse.lookup("fntbuild.lua"))
 %       fnt.mapmakers && fnt.mapmakers or \{''*-map.tex''\}\\
 %       fnt.mapfiles\_sys && fnt.mapfiles\_sys or \{\} \\
 %       fnt.mapfiles\_add && fnt.mapfiles\_add or \{\} \\
+%       fnt.needs_fontinst  &&  true \\
 %       fnt.pkgbase && fnt.pkgbase or '''' \\
 %       fnt.regress && fnt.regress or ''fntbuild-regression-test.tex'' \\
 %       fnt.subset && false \\
@@ -720,6 +739,14 @@ require(kpse.lookup("fntbuild.lua"))
 % \DescribelVar{fnt.mapmakers}\texttt{fnt.mapmakers} \istable{globs}
 % Source files \texttt{fnt.finst()} should compile to generate map file fragments etc.
 % 
+% \changes{v0.3}{2025-02-12}{Newly documented variable: \texttt{fnt.needs_fontinst}.}
+% \DescribelVar{fnt.needs_fontinst}\texttt{fnt.needs_fontinst} \isbool \par\noindent
+% \texttt{true} by default.
+% Determines whether \file{.etx} and \file{.mtx} files under \path{tex/fontinst} in the distribution's \textsc{tds} tree are copied to \texttt{fnt.fntdir} if \texttt{fnt.buildinit_fontinst()} is called.
+% 
+% Unless you are using files with conflicting names (or whose names would conflict if the prefix \texttt{fontscripts-} was removed from those supplied by this package), it is probably best to change the default only if you are certain you do not need the files, you have set \texttt{fnt.buildsearch} \texttt{true} or you run into trouble.
+% Note that not only \texttt{fontinst} make use of the files installed by \lpack{fontinst} and \lpack{afm2pl}.
+%
 % \changes{v0.2}{2025-01-28}{Newly documented variable: \texttt{fnt.pkgbase}.}
 % \DescribelVar{fnt.pkgbase}\texttt{fnt.pkgbase} \isstring{identifier}
 % May be used to set a string identifying the package if \texttt{fntbuild} has trouble determining one automatically\footnote{%
@@ -926,7 +953,7 @@ fnt.subsetdefns.clms = "lmss"
 %    \begin{macrocode}
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN[fnt-tables.tex]{$Id: fontscripts.dtx 10793 2025-02-11 04:28:20Z cfrees $}[v0.2 \revinfo][\filebase: font table template]
+\ProvidesFileSVN[fnt-tables.tex]{$Id: fontscripts.dtx 10802 2025-02-12 20:11:33Z cfrees $}[v0.2 \revinfo][\filebase: font table template]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % \iffalse
@@ -958,7 +985,7 @@ TABLES
 % \begin{template}{fntbuild-test.lvt}
 %    \begin{macrocode}
 \RequirePackage{svn-prov}
-\ProvidesFileSVN[fnt-test.lvt]{$Id: fontscripts.dtx 10793 2025-02-11 04:28:20Z cfrees $}[v0.0 \revinfo][fontscripts: l3build test template]
+\ProvidesFileSVN[fnt-test.lvt]{$Id: fontscripts.dtx 10802 2025-02-12 20:11:33Z cfrees $}[v0.0 \revinfo][fontscripts: l3build test template]
 \listfiles
 \input regression-test.tex\relax
 \input fntbuild-regression-test.tex\relax
@@ -992,7 +1019,7 @@ SAMP
 %    \begin{macrocode}
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN[fnt-tests.tex]{$Id: fontscripts.dtx 10793 2025-02-11 04:28:20Z cfrees $}[v0.0 \revinfo][fontscripts: l3build tests]
+\ProvidesFileSVN[fnt-tests.tex]{$Id: fontscripts.dtx 10802 2025-02-12 20:11:33Z cfrees $}[v0.0 \revinfo][fontscripts: l3build tests]
 \documentclass[10pt,a4paper]{article}
 \usepackage{fonttable}
 \usepackage{tracefnt}% infoshow is default; debugshow traces maths fonts, too
@@ -1204,7 +1231,7 @@ SAMP
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2\nil{#1}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName doc]{$Id: fontscripts.dtx 10793 2025-02-11 04:28:20Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName doc]{$Id: fontscripts.dtx 10802 2025-02-12 20:11:33Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \AddToHook{begindocument}{\OnlyDescription}
 \input{\MyFileBaseName.dtx}
@@ -1215,7 +1242,7 @@ SAMP
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2\nil{#1}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName code]{$Id: fontscripts.dtx 10793 2025-02-11 04:28:20Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName code]{$Id: fontscripts.dtx 10802 2025-02-12 20:11:33Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \input{\MyFileBaseName.dtx}
 %</doc-code>

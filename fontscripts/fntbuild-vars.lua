@@ -1,4 +1,4 @@
--- $Id: fntbuild-vars.lua 10787 2025-02-09 18:55:34Z cfrees $
+-- $Id: fntbuild-vars.lua 10802 2025-02-12 20:11:33Z cfrees $
 -- fntbuild variables
 -------------------------------------------------
 -------------------------------------------------
@@ -95,6 +95,16 @@ fnt.mapmakers = fnt.mapmakers or {"*-map.tex"}
 ---@see check_init() in fntbuild-check.lua
 ---@usage public
 fnt.regress = fnt.regress or "fntbuild-regression-test.tex"
+-- should fontinst files be available during build?
+-- @see buildinit_fontinst() in fntbuild-build.lua
+---@usage public
+---@boolean
+---@description whether to copy contents of texmf-dist/tex/fontinst to fnt.fntdir during build
+fnt.needs_fontinst = true
+---@see utarg in fntbuild.lua
+---@usage private
+---@boolean
+fnt.standalone = false
 ---@see fntsubsetter()
 ---@usage public
 ---@boolean
