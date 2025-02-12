@@ -100,7 +100,7 @@ local function buildinit ()
     -- https://rosettacode.org/wiki/Create_a_file
     io.open(fnt.fntdir .. "/pdftex.map", "w"):close()
   end
-  return buildinit_hook()
+  return fnt.buildinit_hook()
 end
 -- }}}
 -------------------------------------------------

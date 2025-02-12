@@ -1,4 +1,4 @@
--- $Id: fntbuild-config.lua 10793 2025-02-11 04:28:20Z cfrees $
+-- $Id: fntbuild-config.lua 10801 2025-02-12 07:16:37Z cfrees $
 -- configuration for nfssext
 -------------------------------------------------
 sourcefiledir = sourcefiledir or "."
@@ -45,20 +45,28 @@ fnt.checksuppfiles_add = {
   "ts1lmvtt.fd",
 }
 -------------------------------------------------
--- fnt.buildinit_hook() {{{
-function fnt.buildinit_hook()
-  for _,i in ipairs({"etx","mtx"}) do
+-- local buildinit_hook() {{{
+local function buildinit_hook()
+  local t = {"etx","mtx"}
+  for _,i in ipairs(t) do
     local files = filelist(fnt.fntdir,"fontscripts-*." .. i)
-    for _,j in ipais(files) do
-      local k = (string.gsub(j,"^fontscripts-",""))
+    for _,j in ipairs(files) do
+      local k = (string.gsub(j,"^fontscripts%-",""))
       if not fileexists(fnt.fntdir .. "/" .. k) then
-        cp(fnt.fntdir,j,k)
+        ren(fnt.fntdir,j,k)
+        for n,m in ipairs(fnt.buildsuppfiles_sys) do
+          if m == j then
+            fnt.buildsuppfiles_sys[n] = k
+          end
+        end
       end
     end
   end
   return 0
 end
 -- }}}
+-------------------------------------------------
+fnt.buildinit_hook = buildinit_hook
 -------------------------------------------------
 -- tag.lua
 tagfile = tagfile or maindir .. "/tag.lua"
