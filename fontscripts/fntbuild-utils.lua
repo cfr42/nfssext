@@ -1,4 +1,4 @@
--- $Id: fntbuild-utils.lua 10802 2025-02-12 20:11:33Z cfrees $
+-- $Id: fntbuild-utils.lua 10803 2025-02-14 02:10:09Z cfrees $
 -------------------------------------------------
 -- fntbuild-utils
 -------------------------------------------------
@@ -112,73 +112,82 @@ end
 -- local copio_aux {{{
 ---Copy files or directory contents recursively.
 ---@return 0, table of names on success, error level otherwise 
----@see 
----@param locs table
+---@see copio
+---@param path string
 ---@param dest string
----@param kpsevar string
+---@param filenames table
 ---@param indent string
 ---@param patt string
 ---@usage private
-local function copio_aux (locs,dest,kpsevar,indent,patt)
+local function copio_aux (path,dest,filenames,indent,patt)
   indent = indent .. "  "
   patt = patt or ".*"
-  local t = {}
-  for _,i in ipairs(locs) do
-    local path = kpse.var_value(kpsevar) .. i
-    local attr = lfs.attributes (path)
-    if type(attr) == "table" then
-      if attr.mode == "directory" then
-        print(indent .. i .. "/")
-        local tmpls = filelist(path)
-        for _,j in ipairs(tmpls) do
-          if j ~= "." and j ~= ".." then
-            local att = lfs.attributes (path .. "/" .. j)
-            assert (type(att) == "table")
-            if att.mode == "directory" then
-              copio_aux({path .. "/" .. j},dest,kpsevar,indent,patt)
-            elseif string.match(j,patt) then
-              local errorlevel = cp(j,path,dest)
-              fnt.gwall("Copying ",path .. "/" .. j,errorlevel)
-              table.insert(t,j)
-            end
-          end
+  local attr = lfs.attributes (path)
+  if attr.mode == "directory" then
+    for file in lfs.dir(path) do
+      if file ~="." and file ~=".." then
+        local attri = lfs.attributes (path .. "/" .. file)
+        assert (type(attri) == "table")
+        if attri.mode == "directory" then
+          copio_aux (path .. "/" .. file,dest,filenames,"",patt)
+        elseif string.match(file,patt) then
+          table.insert(filenames,file)
+          cp(file,path,dest)
         end
-      elseif fileexists(path) then
-        print("  " .. i)
-        if string.match(basename(path),patt) then
-          local errorlevel = cp(basename(path),dirname(path),dest)
-          fnt.gwall("Copying ",path,errorlevel)
-          table.insert(t,basename(path))
-        end
-      else
-        fnt.gwall("Lookup ",path,1)
       end
-    else
-      fnt.gwall("Getting information about ",i,1)
     end
   end
-  return 0, t
+  return filenames
 end
 -- }}}
+-------------------------------------------------
 -- local copio {{{
----Copy files or directory contents recursively.
----@return table of names on success, error otherwise 
----@see 
+---@description Copy files or directory contents recursively.
+---@description Optionally use kpse lookup if not found.
+---@return 0 on success 
+---@see copio_aux, fntbuild-check, fntbuild-build (buildinit_fontinst) 
 ---@param locs table
 ---@param dest string
 ---@param kpsevar string
 ---@param patt string
+---@param ls boolean
+---@param filenames table
 ---@usage private
 local function copio (locs,dest,kpsevar,patt)
-  if locs == nil then return 0 end
-  if #locs == 0 then return 0 end
+  assert(locs ~= nil)
+  if type(locs) == "string" then locs = { locs } end
+  assert(#locs > 0)
+  assert(direxists(dest))
   kpsevar = kpsevar or "TEXMFDIST"
   patt = patt or ".*"
-  local e,t = copio_aux(locs,dest,kpsevar,"",patt)
-  fnt.gwall("Copying files for build to ",dest,e)
-  return t 
+  local filenames = {}
+  local root = ""
+  if kpsevar ~= "" then
+    root = kpse.var_value(kpsevar) .. "/"
+  end
+  for _,path in ipairs(locs) do
+    local file = basename(path)
+    local attr = lfs.attributes (path)
+    if type(attr) ~= "table" then
+      path = root .. (string.gsub(path,"^/",""))
+      attr = lfs.attributes (path)
+    end
+    assert(type(attr) == "table")
+    if attr.mode == "directory" then
+      copio_aux(path,dest,filenames,"",patt)
+    elseif file ~= "." and file ~= ".." and string.match(file,patt) then
+      table.insert(filenames,file)
+      cp(file,dirname(path),dest)
+    end
+  end
+  if ls then 
+    return filenames, 0
+  else
+    return 0
+  end
 end
 -- }}}
+-------------------------------------------------
 -------------------------------------------------
 -- build_config() {{{
 ---use fntbuild-config.lua if found

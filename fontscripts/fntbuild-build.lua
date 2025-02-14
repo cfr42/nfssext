@@ -1,4 +1,4 @@
--- $Id: fntbuild-build.lua 10802 2025-02-12 20:11:33Z cfrees $ 
+-- $Id: fntbuild-build.lua 10803 2025-02-14 02:10:09Z cfrees $ 
 -------------------------------------------------
 -- fntbuild-build
 -------------------------------------------------
@@ -68,31 +68,47 @@ local function buildinit ()
   print("Unpacking ...\n")
   -- direct usage is legitimate ...
   -- https://chat.stackexchange.com/transcript/message/66617079#66617079
-  local errorlevel = unpack() 
-  if errorlevel ~= 0 then 
-    fnt.gwall("Unpacking ",module,errorlevel)
-    return fnt.nifergwall
-  else
-    for i,j in ipairs(fnt.buildfiles) do
-      cp(j,unpackdir,fnt.fntdir)
+  assert(unpack(),"Unpacking failed in buildinit()!") 
+  for i,j in ipairs(fnt.buildfiles) do
+    cp(j,unpackdir,fnt.fntdir)
+  end
+  if #fnt.buildsuppfiles_sys ~= 0 then
+    for _,j in ipairs(fnt.buildsuppfiles_sys) do
+      if fileexists(j) then
+        cp(basename(j),dirname(j),fnt.fntdir)
+      else
+        local jpath = kpse.find_file(j)
+        if jpath == nil then
+          jpath = kpse.lookup(j)
+        end
+        if jpath == nil then
+          fnt.gwall("Locating ",j,1)
+        end
+        local jdir = dirname(jpath)
+        cp(j,jdir,fnt.fntdir)
+      end
     end
-    if #fnt.buildsuppfiles_sys ~= 0 then
-      for _,j in ipairs(fnt.buildsuppfiles_sys) do
-        if fileexists(j) then
-          cp(basename(j),dirname(j),fnt.fntdir)
+  end
+  if fnt.needs_fontinst then
+    local path = kpse.var_value("TEXMFDIST") .. "/tex/fontinst"
+    local t = fnt.lsrdir(path)
+    for _,i in ipairs(t) do
+      local s = i
+      if string.match(i,"^fontscripts%-") then
+        s = (string.gsub(i,"^fontscripts%-",""))
+      end
+      local file = kpse.find_file(i)
+      if not fileexists(fnt.fntdir .. "/" .. i) then
+        cp(basename(file),dirname(file),fnt.fntdir)
+        if i ~= s and not fileexists(fnt.fntdir .. "/" .. s) then 
+          ren(fnt.fntdir,i,s) 
+          table.insert(fnt.buildsuppfiles_sys,s)
         else
-          local jpath = kpse.find_file(j)
-          if jpath == nil then
-            jpath = kpse.lookup(j)
-          end
-          if jpath == nil then
-            fnt.gwall("Locating ",j,1)
-          end
-          local jdir = dirname(jpath)
-          cp(j,jdir,fnt.fntdir)
+          table.insert(fnt.buildsuppfiles_sys,i)
         end
       end
     end
+    print("Copied fontinst files to " .. fnt.fntdir)
   end
   if not fnt.buildsearch then
     -- we aren't typesetting, so we really don't need a map file
@@ -100,30 +116,8 @@ local function buildinit ()
     -- https://rosettacode.org/wiki/Create_a_file
     io.open(fnt.fntdir .. "/pdftex.map", "w"):close()
   end
+  print("Initialised build.")
   return fnt.buildinit_hook()
-end
--- }}}
--------------------------------------------------
--- buildinit_fontinst {{{
----@return 0, table of filenames on success, error level o/w
----@usage public
-local function buildinit_fontinst ()
-  if not fnt.needs_fontinst then return 0 end
-  print("Copying all fontinst files should be available during build.\n")
-  local t = {}
-  local path = { "/tex/fontinst" }
-  local e,l = fnt.copio(path,fnt.fntdir,"TEXMFDIST","%.[em]tx$")
-  fnt.gwall("Copying ",path,e)
-  for _,j in ipairs(l) do
-    local k = (string.gsub(j,"^fontscripts%-",""))
-    if not fileexists(fnt.fntdir .. "/" .. k) then
-      ren(fnt.fntdir,j,k)
-      table.insert(t,k)
-    else
-      table.insert(t,j)
-    end
-  end
-  return 0,t
 end
 -- }}}
 -------------------------------------------------
@@ -511,23 +505,8 @@ local function fontinst (dir,mode)
   mode = mode or "errorstopmode --halt-on-error"
   fnt.standalone = false
   fnt.encodingtag = fnt.encodingtag or ""
-  local ffiles = {}
-  if fnt.needs_fontinst then 
-    ffiles = buildinit_fontinst() 
-  else
-    print("Are you sure you don't want fontinst files when building with fontinst?\n")
-  end
-  -- if #fnt.buildsuppfiles_sys == 0 then
-  --   print("Assuming all fontinst files should be available during build.\n")
-  --   local path = kpse.var_value("TEXMFDIST") .. "/tex/fontinst"
-  --   fnt.buildsuppfiles_sys = fnt.lsrdir(path)
-  -- end
+  local errorlevel = 0
   buildinit ()
-  if #ffiles ~= 0 then
-    for _,i in ipairs(ffiles) do
-      table.insert(fnt.buildsuppfiles_sys,i)
-    end
-  end
   local tfmfiles = filelist(dir,"*.tfm")
   for i,j in ipairs(tfmfiles) do
     local plname = string.gsub(j, "%.tfm$", ".pl")
@@ -537,7 +516,7 @@ local function fontinst (dir,mode)
     else
       local cmd = "tftopl " .. j .. " " .. plname
       -- safe or not?
-      local errorlevel = runcmd(cmd,dir)
+      errorlevel = runcmd(cmd,dir)
       -- necessary or not?
       -- local errorlevel = build_fnt(cmd,dir)
       fnt.gwall("Conversion to pl from tfm ",j,errorlevel)
@@ -546,17 +525,18 @@ local function fontinst (dir,mode)
       fnt.gwall("Deletion of tfm ", j, errorlevel)
     end
   end
+  print("Creating families ...\n")
   for i,j in ipairs(fnt.familymakers) do
-    local errorlevel = finst(j,dir,mode)
+    errorlevel = finst(j,dir,mode)
     fnt.gwall("Compilation of driver ", j, errorlevel)
   end
   if fnt.nifergwall ~= 0 then return fnt.nifergwall end
   for i,j in ipairs(fnt.mapmakers) do
-    local errorlevel = finst (j,dir,mode)
+    errorlevel = finst (j,dir,mode)
     fnt.gwall("Compilation of map ", j, errorlevel)
   end
   if fnt.nifergwall ~= 0 then return fnt.nifergwall end
-  local errorlevel = build_tidy ()
+  errorlevel = build_tidy ()
   fnt.gwall("Tidying ",fnt.fntdir,errorlevel)
   -- print("Tidying up build directory ...\n")
   -- for _,i in ipairs(fnt.buildsuppfiles_sys) do
@@ -574,7 +554,7 @@ local function fontinst (dir,mode)
       for line in io.lines(targ) do
         if string.match(line,"^pltotf [a-zA-Z0-9%-]+%.pl [a-zA-Z0-9%-]+%.tfm$") then
           -- local errorlevel = runcmd(line,dir)
-          local errorlevel = build_fnt(dir,line)
+          errorlevel = build_fnt(dir,line)
           fnt.gwall("Creation of TFM using " .. line .. " from ", j, errorlevel)
         else
           print("Ignoring unexpected line \"" .. line .. "\" in", j .. ".\n")
@@ -589,7 +569,7 @@ local function fontinst (dir,mode)
     -- local cmd = "vptovf " .. j
     -- local errorlevel = runcmd(cmd,dir)
     local cmd = "vptovf"
-    local errorlevel = build_fnt(dir,cmd,j)
+    errorlevel = build_fnt(dir,cmd,j)
     fnt.gwall("Creation of virtual font from ", j, errorlevel)
   end
   -- edit the .fd files if a scale factor is declared because fontinst 
@@ -628,7 +608,7 @@ local function fontinst (dir,mode)
       f:close()
     end
   end
-  local errorlevel = uniquify(fnt.encodingtag)
+  errorlevel = uniquify(fnt.encodingtag)
   if errorlevel ~= 0 then
     fnt.gwall("Encodings not uniquified! Do not submit to CTAN! uniquify(" 
       .. fnt.encodingtag .. ")","",errorlevel)
