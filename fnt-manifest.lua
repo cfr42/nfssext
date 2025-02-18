@@ -1,4 +1,4 @@
--- $Id: fnt-manifest.lua 10787 2025-02-09 18:55:34Z cfrees $
+-- $Id: fnt-manifest.lua 10817 2025-02-18 05:03:52Z cfrees $
 ---------------------------------------------------------------------
 -- local derivedfiles = derivedfiles or {"*.cls","*.enc","*.fd","*.map","*.sty","*.tfm","*.vf"}
 -- local origfntfiles = origfntfiles or {"*.afm","*.otf","*.pfb",".pfm","*.ttf","NOTICE.txt","COPYING"}
@@ -6,7 +6,7 @@
 -- local buildscripts = buildscripts or  {"*.lua", "Makefile", "../vendor/*.lua", "../../fntbuild.lua"}
 -- local fnttestdir = fnttestdir or maindir .. "/fnt-tests"
 -- local testfiles = testfiles or {"*.lvt","*.pvt","*.tlg","*.lve","*.tpf"}
-local fnttestfiles = fnttestfiles or "* fntbuild-tables.tex\n* fntbuild-regression-test.tex\n* fntbuild-test.lvt"
+local fnttestfiles = fnttestfiles or "* " .. fnt.tablestemp .. "\n* " .. fnt.regress .. "\n* " .. fnt.testtemp
 local derfntexcfiles = derfntexcfiles or '".",".."'
 -- local fnttablestemplate = fnttablestemplate or "* fntbuild-tables.tex"
 local function populatescripts()
@@ -130,7 +130,7 @@ function manifest_setup ()
       dir = testfiledir,
       files = {"*" .. lvtext, "*" .. lveext, "*" .. tlgext, "*" .. pvtext, "*" .. tpfext},
       description = fnttestfiles .. buildscripts, 
-      exclude = {ctanpkg .. "-test.lvt", module .. "-test.lvt"},
+      exclude = {ctanpkg .. "-auto-test.lvt", module .. "-auto-test.lvt"},
     },
     {
       subheading = "Derived files",
