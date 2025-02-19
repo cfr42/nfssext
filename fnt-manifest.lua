@@ -1,4 +1,4 @@
--- $Id: fnt-manifest.lua 10817 2025-02-18 05:03:52Z cfrees $
+-- $Id: fnt-manifest.lua 10821 2025-02-19 07:51:11Z cfrees $
 ---------------------------------------------------------------------
 -- local derivedfiles = derivedfiles or {"*.cls","*.enc","*.fd","*.map","*.sty","*.tfm","*.vf"}
 -- local origfntfiles = origfntfiles or {"*.afm","*.otf","*.pfb",".pfm","*.ttf","NOTICE.txt","COPYING"}
@@ -37,13 +37,15 @@ local function populatefontsupp(fontglob)
 end
 local function populatedoc()
   local docs = docs  or {typesetfiles,typesetdemofiles}
-  local tmpdocs = ""
+  local tmpdocs = {module .. "-tables.pdf"}
   for i,j in ipairs(docs) do
     for k,l in ipairs(j) do
-      tmpdocs = tmpdocs .. "\n* " .. l
+      for _,f in ipairs(filelist(unpackdir,l)) do
+        table.insert(tmpdocs, f)
+      end
     end
   end
-  return string.gsub(tmpdocs, "%.$w+$", ".pdf")
+  return tmpdocs 
 end
 local function populatetxt()
   local txts = textfiles or {}
@@ -185,9 +187,11 @@ function manifest_setup ()
     },
     {
       name = "Typeset documentation",
-      files = {typesetfiles,typesetdemofiles},
+      -- files = {typesetfiles,typesetdemofiles},
+      files = {docfiles},
       excludefiles = {".",".."},
       dir = sourcefiledir,
+      description = "Note that font tables are automatically generated.\n",
       rename = {"%.%w+$",".pdf"},
     },
   }
