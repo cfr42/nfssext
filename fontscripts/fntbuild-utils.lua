@@ -1,4 +1,4 @@
--- $Id: fntbuild-utils.lua 10803 2025-02-14 02:10:09Z cfrees $
+-- $Id: fntbuild-utils.lua 10818 2025-02-19 05:44:13Z cfrees $
 -------------------------------------------------
 -- fntbuild-utils
 -------------------------------------------------
@@ -224,6 +224,106 @@ local function build_config()
 end
 -- }}}
 -------------------------------------------------
+-- map_cat_aux (frags,dir,mapfile,append) {{{
+---@param frags table
+---@param dir string 
+---@param mapfile string
+---@param append boolean
+---@return 0 on success, number of errors otherwise
+---@see 
+---@usage private
+local function map_cat_aux (frags,dir,mapfile,append)
+  mapfile = mapfile or "pdftex.map"
+  append = append or false
+  if #frags == 0 then return 0 end
+  if fileexists(dir .. "/" .. mapfile) and not append then 
+    local errorlevel = rm(dir,mapfile) 
+    fnt.gwall("Removal of ",dir .. "/" .. mapfile,errorlevel)
+  end
+  local m = assert(io.open(dir .. "/" .. mapfile,"a"))
+  for _,i in ipairs(frags) do
+    local f = assert(io.open(i,"rb"))
+    local l = f:read("*all")
+    f:close()
+    m:write(l)
+  end
+  m:close()
+  return 0
+end
+-- }}}
+-------------------------------------------------
+-- map_cat_sys (frags,dir,mapfile,append) {{{
+---@param frags table
+---@param dir string 
+---@param mapfile string
+---@param append boolean
+---@return 0 on success, number of errors otherwise
+---@see 
+---@usage private
+local function map_cat_sys (frags,dir,mapfile,append)
+  mapfile = mapfile or "pdftex.map"
+  append = append or false
+  local n = 0
+  if #frags == 0 then 
+    frags = { "cm.map", "cm-super-t1.map", "cm-super-ts1.map", "lm.map" }
+  end
+  if #fnt.mapfiles_add ~= 0 then
+    for _,i in ipairs(fnt.mapfiles_add) do
+      table.insert(frags,i)
+    end
+  end
+  local ffrags = {}
+  if #frags ~= 0 then
+    for _,i in ipairs(frags) do
+      -- kpse.find_file assumes filetype tex i.e. ignores file ext.
+      local ff = kpse.find_file(i,"map")
+      if ff ~= "" then
+        table.insert(ffrags,ff)
+      else
+        fnt.gwall("Search for map fragment ",i,1)
+        n = n + 1
+      end
+    end
+    frags = ffrags
+  end
+  n = n + map_cat_aux(frags,dir,mapfile,append)
+  return n
+end
+-- }}}
+-------------------------------------------------
+-- map_cat_pkg (frags,dir,mapfile,append) {{{
+---@param frags table
+---@param fragdir string 
+---@param dir string 
+---@param mapfile string
+---@param append boolean
+---@return 0 on success, number of errors otherwise
+---@see 
+---@usage private
+local function map_cat_pkg (frags,fragdir,dir,mapfile,append)
+  mapfile = mapfile or "pdftex.map"
+  append = append or true
+  local n = 0
+  if #frags == 0 then return 0 end
+  -- abspath() only works for directories
+  for i,j in ipairs(frags) do 
+    if fileexists(j) then 
+      frags[i] = abspath(dirname(j) .. "/" .. basename(j))
+    elseif fileexists(fragdir .. "/" .. j) then
+      frags[i] = abspath(fragdir) .. "/" .. j
+    elseif fileexists(dir .. "/" .. j) then
+      frags[i] = abspath(dir) .. "/" .. j 
+    else
+      fnt.gwall("Finding mapfile fragment ",j,1)
+      frags[i] = nil
+      n = n + 1
+    end
+  end
+  if #frags == 0 then return n end
+  return map_cat_aux(frags,dir,mapfile,append)
+end
+-- }}}
+-------------------------------------------------
 -------------------------------------------------
 -- exports {{{
 fnt.build_config = build_config
@@ -232,6 +332,8 @@ fnt.dep_install = dep_install
 fnt.localtexmf = localtexmf
 fnt.lsrdir = lsrdir
 fnt.os_newline_cp = os_newline_cp
+fnt.map_cat_pkg = map_cat_pkg
+fnt.map_cat_sys = map_cat_sys
 -------------------------------------------------
 -------------------------------------------------
 -- vim: ts=2:sw=2:et:foldmethod=marker:

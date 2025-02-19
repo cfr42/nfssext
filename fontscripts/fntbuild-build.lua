@@ -1,50 +1,7 @@
--- $Id: fntbuild-build.lua 10803 2025-02-14 02:10:09Z cfrees $ 
+-- $Id: fntbuild-build.lua 10818 2025-02-19 05:44:13Z cfrees $ 
 -------------------------------------------------
 -- fntbuild-build
 -------------------------------------------------
--------------------------------------------------
--- map_cat (frags,dir,mapfile) {{{
----@param frags table
----@param dir string 
----@param mapfile string
----@return 0 on success, number of errors otherwise
----@see 
----@usage private
-local function map_cat (frags,dir,mapfile)
-  mapfile = mapfile or "pdftex.map"
-  local n = 0
-  if #frags == 0 then 
-    frags = { "cm.map", "cm-super-t1.map", "cm-super-ts1.map", "lm.map" }
-  end
-  if #fnt.mapfiles_add ~= 0 then
-    for _,i in ipairs(fnt.mapfiles_add) do
-      table.insert(frags,i)
-    end
-  end
-  if fileexists(dir .. "/" .. mapfile) then 
-    local errorlevel = rm(dir,mapfile) 
-    fnt.gwall("Removal of ",dir .. "/" .. mapfile,errorlevel)
-  end
-  if #frags ~= 0 then
-    local m = assert(io.open(dir .. "/" .. mapfile,"a"))
-    for _,i in ipairs(frags) do
-      -- kpse.find_file assumes filetype tex i.e. ignores file ext.
-      local ff = kpse.find_file(i,"map")
-      if ff ~= "" then
-        local f = assert(io.open(ff),"rb")
-        local l = f:read("*all")
-        f:close()
-        m:write(l)
-      else
-        fnt.gwall("Search for map fragment ",i,1)
-        n = n + 1
-      end
-    end
-    m:close()
-  end
-  return n
-end
--- }}}
 -------------------------------------------------
 -- buildinit_hook
 ---@return 0
@@ -110,12 +67,12 @@ local function buildinit ()
     end
     print("Copied fontinst files to " .. fnt.fntdir)
   end
-  if not fnt.buildsearch then
-    -- we aren't typesetting, so we really don't need a map file
-    -- not sure this is really needed - do any tools use this anyway?
-    -- https://rosettacode.org/wiki/Create_a_file
-    io.open(fnt.fntdir .. "/pdftex.map", "w"):close()
-  end
+  -- if not fnt.buildsearch then
+  --   -- we aren't typesetting, so we really don't need a map file
+  --   -- not sure this is really needed - do any tools use this anyway?
+  --   -- https://rosettacode.org/wiki/Create_a_file
+  --   io.open(fnt.fntdir .. "/pdftex.map", "w"):close()
+  -- end
   print("Initialised build.")
   return fnt.buildinit_hook()
 end
@@ -199,6 +156,10 @@ end
 ---@usage public
 local function fntkeeper (dir)
   dir = dir or fnt.fntdir
+  if fileexists(dir .. "/pdftex.map") then
+    local errorlevel = rm(dir,"pdftex.map") 
+    fnt.gwall("Removing ","pdftex.map",errorlevel)
+  end
   local rtn = direxists(fnt.keepdir)
   if not rtn then
     local errorlevel = mkdir(fnt.keepdir)
@@ -328,11 +289,11 @@ local function uniquify (tag)
   else
     dir = fnt.fntdir
   end
-  if fileexists(dir .. "/pdftex.map") then
-    print("\nRemoving temporary pdftex.map from ", dir, "...\n")
-    local errorlevel = rm(dir,"pdftex.map")
-    fnt.gwall("Removing ","pdftex.map",errorlevel)
-  end
+  -- if fileexists(dir .. "/pdftex.map") then
+  --   print("\nRemoving temporary pdftex.map from ", dir, "...\n")
+  --   local errorlevel = rm(dir,"pdftex.map")
+  --   fnt.gwall("Removing ","pdftex.map",errorlevel)
+  -- end
   if pkgbase == "" then 
     print("pkgbase unspecified. Trying to guess ... ")
     if not fnt.standalone then 
@@ -677,10 +638,10 @@ local function afm2tfm (dir)
   -- need to do this as uniquify() isn't used
   -- otherwise the file ends up in localdir (and probably the package)
   -- catching this is the only benefit I can see in my inability to clean localdir
-  if fileexists(dir .. "/pdftex.map") then
-    local errorlevel = rm(dir,"pdftex.map") 
-    fnt.gwall("Removing ","pdftex.map",errorlevel)
-  end
+  -- if fileexists(dir .. "/pdftex.map") then
+  --   local errorlevel = rm(dir,"pdftex.map") 
+  --   fnt.gwall("Removing ","pdftex.map",errorlevel)
+  -- end
   local f
   f = assert(io.open(dir .. "/" .. map, "w"))
   f:write((string.gsub(content,"\n",fnt.os_newline_cp)))
@@ -706,7 +667,6 @@ fnt.fntkeeper = fntkeeper
 fnt.fntsubsetter = fntsubsetter
 fnt.afm2tfm = afm2tfm
 fnt.fontinst = fontinst
-fnt.map_cat = map_cat
 fnt.uniquify = uniquify
 -- }}}
 -------------------------------------------------
