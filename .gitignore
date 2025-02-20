@@ -381,9 +381,6 @@ arkandis/cmds-templed
 arkandis/templed-cmds
 arkandis/electrumadf/cfr
 arkandis/electrumadf/electrumadf.pdf
-test/testadf-tables.pdf
-test/testadf-tables.tex
-test/testadf.pdf
 arkandis/librisadf/librisadf.pdf
 arkandis/librisadf/librisadf-build.pdf
 arkandis/librisadf/librisadf-example.pdf
@@ -421,8 +418,4 @@ fontscripts/fontscripts-*.pdf
 nfssext-cfr/nfssext-cfr.pdf
 nfssext-cfr/pre-dtx
 nfssext-cfr/timeout
-test/README.md
-test/manifest.txt
-test/testfiles/*.tlg
-test/afm
-test/type1
+fnt-prawf
