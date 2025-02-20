@@ -8,10 +8,11 @@ name: Build release for  nfssext
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
+  # Triggers the workflow on push for any tag but only for the "main" branch
   push:
     tags: 
       - '*'
+  # how can I also run if this workflow is updated as or rather than and?
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -45,7 +46,7 @@ jobs:
     # nfssext-cfr uses cfr-lm (though it falls back if built first)
     # cfr-lm uses nfssext-cfr but there's nothing to build
     outputs:
-    #   clm_cache_key: $(( steps.clm-cache.outputs.cache_key }}
+    # don't cache when releasing
       fnttarg_clm_output: ${{ steps.fnttarg-clm.outputs.build_ret_clm }}
       ctan_clm_output: ${{ steps.ctan-clm.outputs.ctan_ret_clm }}
     steps:
@@ -84,10 +85,12 @@ jobs:
           # Decide how long to keep the test output artefact:
           retention-days: 7
       - name: Create manifest
+      # only for release if build succeeded
         if: ${{ (contains(github.ref_name, 'cfr-lm-') || contains(github.ref_name, 'clm-')) && (steps.fnttarg-clm.outputs_BUILD_RET) }}
         working-directory: cfr-lm
         run: l3build check && l3build doc && l3build manifest
       - name: Run l3build ctan 
+      # build whether releasing or not i osgoi problemau annisgwyl
         if: ${{ !cancelled() && (steps.fnttarg-clm.outputs.BUILD_RET) }}
         working-directory: cfr-lm
         # run: l3build ctan
@@ -95,11 +98,7 @@ jobs:
         run: |
           (l3build ctan && echo -e "CTAN_RET=0\nctan_ret_clm=0" >> "$GITHUB_OUTPUT") || echo -e "CTAN_RET=1\nctan_ret_clm=1" >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
-      # - name: Run l3build install 
-      #   working-directory: cfr-lm
-      #   run: l3build install
-      # - name: Update map
-      #   run: updmap --user --enable Map=clm.map
+      # not caching so no need to install
       - name: Archive failed test output for clm
         # run even if previous step failed
         if: ${{ !cancelled() }}
@@ -108,19 +107,14 @@ jobs:
           name: testfiles-clm
           # Decide how long to keep the test output artefact:
           retention-days: 7
-      # - name: Cache build results
-      #   id: clm-cache
-      #   uses: actions/cache/save@v4
-      #   with:
-      #     path: |
-      #       ~/.texlive
-      #       ~/texmf
-      #     key: clm-${{ github.sha }}
+      # don't cache clm for release
       - name: List zip
-        if: ${{ contains(github.ref_name, 'cfr-lm-') || contains(github.ref_name, 'clm-') }}
+      # list archive only if releasing clm and ctan build succeeded
+        if: ${{ (contains(github.ref_name, 'cfr-lm-') || contains(github.ref_name, 'clm-')) && (steps.ctan-clm.outputs_CTAN_RET) }}
         run: |
           unzip -l cfr-lm/cfr-lm-ctan.zip
       - name: Archive zip
+      # archive only if releasing clm and ctan build succeeded
         if: ${{ (contains(github.ref_name, 'cfr-lm-') || contains(github.ref_name, 'clm-')) && (steps.ctan-clm.outputs_CTAN_RET) }}
         # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
         uses: actions/upload-artifact@v4
@@ -153,7 +147,8 @@ jobs:
     # don't abandon other builds if one module fails
     # continue-on-error: true
     strategy:
-      # fail-fast: false
+      # fail immediately if releasing
+      fail-fast: true
       matrix:
         # include indicates that we want to set explicitly these combinations
         # and don't want full matrix testing.
@@ -224,10 +219,12 @@ jobs:
           # Decide how long to keep the test output artefact:
           retention-days: 7
       - name: Create manifest
+      # should be more conditional
         if: ${{ contains(github.ref_name, matrix.module) }}
         working-directory: ${{ matrix.working_directory }}
         run: l3build check && l3build doc && l3build manifest
       - name: Run l3build
+      # should be conditional
         working-directory: ${{ matrix.working_directory }}
         id: ctan
         run: |
@@ -243,12 +240,14 @@ jobs:
           # Decide how long to keep the test output artefact:
           retention-days: 7
       - name: List zip
+      # should be more conditional
         if: ${{ contains(github.ref_name, matrix.module) }}
         env:
           modname: ${{ matrix.module }}
         run: |
           unzip -l ${modname}/${modname}-ctan.zip
       - name: Archive release zip
+      # should be more conditional
         if: ${{ contains(github.ref_name, matrix.module) }}
         # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
         uses: actions/upload-artifact@v4
@@ -273,10 +272,9 @@ jobs:
       ctan_adfsymbols_output: ${{ steps.ctan.outputs.ctan_ret_adfsymbols }}
       ctan_fontscripts_output: ${{ steps.ctan.outputs.ctan_ret_fontscripts }}
       ctan_nfssext_cfr_output: ${{ steps.ctan.outputs.ctan_ret_nfssext-cfr }}
-    # don't abandon other builds if one module fails
-    # continue-on-error: true
     strategy:
-      # fail-fast: false
+      # fail immediately if releasing
+      fail-fast: true
       matrix:
         # include indicates that we want to set explicitly these combinations
         # and don't want full matrix testing.
@@ -302,7 +300,6 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
       # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
-      # We need Ghostscript for XeTeX tests.
       - name: Update system 
         run: sudo apt-get update
       - name: Install additional packages if needed
@@ -318,15 +315,7 @@ jobs:
         # oes!
       - name: Set PATH
         run: echo $HOME/texlive/bin/x86_64-linux >> $GITHUB_PATH
-      # - name: Restore cfr-lm from cache
-      #   if: ${{ matrix.extra_needs }}
-      #   uses: actions/cache/restore@v4
-      #   with:
-      #     path: |
-      #       ~/.texlive
-      #       ~/texmf
-      #     key: clm-${{ github.sha }}
-      #     fail-on-cache-miss: true
+      # don't use cached clm for release
       - name: Run l3build fnttarg
         if: ${{ matrix.pre_target }}
         working-directory: ${{ matrix.working_directory }}
@@ -346,10 +335,12 @@ jobs:
           # Decide how long to keep the test output artefact:
           retention-days: 7
       - name: Create manifest only if module is in release tag and TDS false
+      # should be more conditional
         if: '${{ contains(github.ref_name, matrix.module) && !(matrix.tds) }}'
         working-directory: ${{ matrix.working_directory }}
         run: l3build check && l3build doc && l3build manifest
       - name: Run l3build
+      # should be conditional
         working-directory: ${{ matrix.working_directory }}
         id: ctan
         run: |
@@ -369,12 +360,14 @@ jobs:
         working-directory: ${{ matrix.working_directory }}
         run:  l3build manifest && l3build ctan
       - name: List zip
+      # should be conditional
         if: ${{ contains(github.ref_name, matrix.module) }}
         env:
           modname: ${{ matrix.module }}
         run: |
           unzip -l ${modname}/${modname}-ctan.zip
       - name: Archive release zip
+      # should be conditional
         if: ${{ contains(github.ref_name, matrix.module) }}
         # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
         uses: actions/upload-artifact@v4
