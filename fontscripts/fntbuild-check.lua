@@ -1,4 +1,4 @@
--- $Id: fntbuild-check.lua 10818 2025-02-19 05:44:13Z cfrees $
+-- $Id: fntbuild-check.lua 10834 2025-02-20 18:57:33Z cfrees $
 -------------------------------------------------
 -- fntbuild-check
 -------------------------------------------------
@@ -81,16 +81,16 @@ local function test (fntpkgname,fds,content,maps,fdsdir)
         end
       end
     end
-    -- the two skipped lines keep the line numbers the same in the log even though I've removed the lines subtracting/adding map lines
-    coll = "\n\n%% map file lines in local pdftex.map\n\\usepackage[enc=t1]{" .. fntpkgname 
+    -- changes to no. of lines here affect logs if they include non-normalised line nos 
+    coll = "\n%% map file lines in local pdftex.map\n\\usepackage[enc=t1]{" .. fntpkgname 
     .. "}\n\\begin{document}\n\\START\n" 
     .. coll .. "\n\\END\n\\end{document}\n"
-    collly = "\n\n%% map file lines in local pdftex.map\n\\usepackage[enc=ly1]{" .. fntpkgname 
+    collly = "\n%% map file lines in local pdftex.map\n\\usepackage[enc=ly1]{" .. fntpkgname 
     .. "}\n\\begin{document}\n\\START\n" .. collly 
     .. "\n\\END\n\\end{document}\n"
   else
     -- assume package doesn't have an encoding option and is t1/ts1 only
-    coll = "\n\n%% map file lines in local pdftex.map\n\\usepackage{" .. fntpkgname 
+    coll = "\n%% map file lines in local pdftex.map\n\\usepackage{" .. fntpkgname 
     .. "}\n\\begin{document}\n\\START\n" .. coll 
     .. "\n\\END\n\\end{document}\n"
   end
@@ -307,10 +307,6 @@ local function check_init ()
     end
   end
   -------
-  -- for i, j in ipairs(mapfiles) do
-  --   maps = maps .. "\n\\pdfmapfile{-" .. j .. "}\n\\pdfmapfile{+" .. j .. "}"
-  -- end
-  -- maps = maps .. "\n\\pdfmapfile{+pdftex.map}"
   if next(fnt.fnttestfds) == nil  then
     print("Skipping test creation.\n")
   else
@@ -336,8 +332,6 @@ local function check_init ()
     else
       print("Using local " .. filename .. " ...\n")
     end
-    -- local errorlevel = cp(filename,fnttestdir,unpackdir)
-    -- local errorlevel = ren(unpackdir, filename, targname)
     if filename ~= 0 then
       -- need to get content here
       -- copy this from l3build-tagging.lua

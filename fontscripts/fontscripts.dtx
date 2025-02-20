@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10804 2025-02-14 08:48:00Z cfrees $}[v0.2 \revinfo][\filebase DTX: l3build scripts for font installation]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10834 2025-02-20 18:57:33Z cfrees $}[v0.2 \revinfo][\filebase DTX: l3build scripts for font installation]
 \DefineFileInfoSVN[fontscripts]
 \documentclass[10pt,british,lm-default=false]{l3doc}
 % l3doc loads fancyvrb
@@ -757,6 +757,13 @@ require(kpse.lookup("fntbuild.lua"))
 % The file containing regression tests for use in auto-generating tests.
 % \file{fntbuild-regression-test.tex} provides a set used by default.
 %
+% \changes{0.3}{2025-02-20}{Include warning re.\ use of subset declarations in \file{.fd} files. \href{https://github.com/latex3/latex2e/issues/1669}{GitHub \#1669}.}
+% \textbf{Warning!
+%   The implementation of subset declarations in font definition files appears to be broken in current \LaTeX{}\footnote{%
+%     \href{https://github.com/latex3/latex2e/issues/1669}{GitHub \#1669}.%
+%   }.
+%   Do NOT remove declarations from \file{.sty} files unless present in the format itself.}
+%
 % \changes{v0.2}{2025-01-25}{New variable: \texttt{fnt.subset}.}
 % \DescribelVar{fnt.subset}\texttt{fnt.subset}\isbool \par\noindent
 % \texttt{nil} by default.
@@ -950,7 +957,7 @@ fnt.subsetdefns.clms = "lmss"
 %    \begin{macrocode}
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN[fnt-tables.tex]{$Id: fontscripts.dtx 10804 2025-02-14 08:48:00Z cfrees $}[v0.2 \revinfo][\filebase: font table template]
+\ProvidesFileSVN[fnt-tables.tex]{$Id: fontscripts.dtx 10834 2025-02-20 18:57:33Z cfrees $}[v0.2 \revinfo][\filebase: font table template]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % \iffalse
@@ -982,7 +989,7 @@ TABLES
 % \begin{template}{fntbuild-test.lvt}
 %    \begin{macrocode}
 \RequirePackage{svn-prov}
-\ProvidesFileSVN[fnt-test.lvt]{$Id: fontscripts.dtx 10804 2025-02-14 08:48:00Z cfrees $}[v0.0 \revinfo][fontscripts: l3build test template]
+\ProvidesFileSVN[fnt-test.lvt]{$Id: fontscripts.dtx 10834 2025-02-20 18:57:33Z cfrees $}[v0.0 \revinfo][fontscripts: l3build test template]
 \listfiles
 \input regression-test.tex\relax
 \input fntbuild-regression-test.tex\relax
@@ -1016,7 +1023,7 @@ SAMP
 %    \begin{macrocode}
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN[fnt-tests.tex]{$Id: fontscripts.dtx 10804 2025-02-14 08:48:00Z cfrees $}[v0.0 \revinfo][fontscripts: l3build tests]
+\ProvidesFileSVN[fnt-tests.tex]{$Id: fontscripts.dtx 10834 2025-02-20 18:57:33Z cfrees $}[v0.0 \revinfo][fontscripts: l3build tests]
 \documentclass[10pt,a4paper]{article}
 \usepackage{fonttable}
 \usepackage{tracefnt}% infoshow is default; debugshow traces maths fonts, too
@@ -1228,7 +1235,7 @@ SAMP
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2\nil{#1}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName doc]{$Id: fontscripts.dtx 10804 2025-02-14 08:48:00Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName doc]{$Id: fontscripts.dtx 10834 2025-02-20 18:57:33Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \AddToHook{begindocument}{\OnlyDescription}
 \input{\MyFileBaseName.dtx}
@@ -1239,7 +1246,7 @@ SAMP
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2\nil{#1}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName code]{$Id: fontscripts.dtx 10804 2025-02-14 08:48:00Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName code]{$Id: fontscripts.dtx 10834 2025-02-20 18:57:33Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \input{\MyFileBaseName.dtx}
 %</doc-code>
