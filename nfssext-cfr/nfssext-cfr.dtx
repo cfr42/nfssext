@@ -41,7 +41,7 @@
   \char_set_catcode_letter:N \:
 }
 \ExplSyntaxOff
-\ProvidesFileSVN{$Id: nfssext-cfr.dtx 10713 2025-01-04 04:32:14Z cfrees $}[v1.2 \revinfo][\filebase DTX: Extended font selection for NFSS and NNFSS]
+\ProvidesFileSVN{$Id: nfssext-cfr.dtx 10840 2025-02-21 19:06:45Z cfrees $}[v1.2 \revinfo][\filebase DTX: Extended font selection for NFSS and NNFSS]
 \DefineFileInfoSVN[nfssext-cfr]
 \documentclass[10pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -49,6 +49,8 @@
 % restore \fileversion \filerev in case we're using l3doc
 \GetFileInfoSVN{nfssext-cfr}
 \usepackage[debug]{nfssext-cfr}
+\pdfmapfile{-clm.map}
+\pdfmapfile{+clm.map}
 \usepackage[rm={prop,osf},sf={prop,osf},tt={mono,tab,lf}]{cfr-lm}
 \EnableCrossrefs
 \CodelineIndex
@@ -804,7 +806,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: nfssext-cfr.dtx 10713 2025-01-04 04:32:14Z cfrees $}[v1.2 \revinfo{} extensions for NFSS and NNFSS; based on 2003/03/14 v1.2 Experimental NFSS Extensions]
+\ProvidesPackageSVN[\filebase.sty]{$Id: nfssext-cfr.dtx 10840 2025-02-21 19:06:45Z cfrees $}[v1.2 \revinfo{} extensions for NFSS and NNFSS; based on 2003/03/14 v1.2 Experimental NFSS Extensions]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % ^^A Paid â defnyddio \GetFileInfoSVN*/\GetFileInfoSVN{} yn y fan hon!!
@@ -1154,7 +1156,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase-nnfss.sty]{$Id: nfssext-cfr.dtx 10713 2025-01-04 04:32:14Z cfrees $}[v1.2 \revinfo{} extended New New Font Selection Scheme (NNFSS) based on 2003/03/14 v1.2 Experimental NFSS Extensions]
+\ProvidesPackageSVN[\filebase-nnfss.sty]{$Id: nfssext-cfr.dtx 10840 2025-02-21 19:06:45Z cfrees $}[v1.2 \revinfo{} extended New New Font Selection Scheme (NNFSS) based on 2003/03/14 v1.2 Experimental NFSS Extensions]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % ^^A Paid â defnyddio \GetFileInfoSVN*/\GetFileInfoSVN{} yn y fan hon!!
@@ -2594,7 +2596,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase-nfss.sty]{$Id: nfssext-cfr.dtx 10713 2025-01-04 04:32:14Z cfrees $}[v1.2 \revinfo{} specially mangled by cfr; based on 2003/03/14 v1.2 Experimental NFSS Extensions; for old NFSS]
+\ProvidesPackageSVN[\filebase-nfss.sty]{$Id: nfssext-cfr.dtx 10840 2025-02-21 19:06:45Z cfrees $}[v1.2 \revinfo{} specially mangled by cfr; based on 2003/03/14 v1.2 Experimental NFSS Extensions; for old NFSS]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % ^^A Paid â defnyddio \GetFileInfoSVN*/\GetFileInfoSVN{} yn y fan hon!!

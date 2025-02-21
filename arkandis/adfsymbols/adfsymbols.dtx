@@ -31,7 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: adfsymbols.dtx 10703 2025-01-02 05:41:50Z cfrees $}[v1.3 \revinfo][\filebase DTX: FONT for 8-bit engines]
+\ProvidesFileSVN{$Id: adfsymbols.dtx 10840 2025-02-21 19:06:45Z cfrees $}[v1.3 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[adfsymbols]
 \documentclass[10pt,british]{ltxdoc}
 %^^A l3doc loads fancyvrb
@@ -46,6 +46,8 @@
 \usepackage{babel}
 \pdfmapfile{-adfsymbols.map}
 \pdfmapfile{+adfsymbols.map}
+\pdfmapfile{-clm.map}
+\pdfmapfile{+clm.map}
 \usepackage[tt={monowidth,tabular,lining}]{cfr-lm}
 \usepackage{adfarrows}
 \usepackage{adfbullets}
