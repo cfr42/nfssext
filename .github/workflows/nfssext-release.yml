@@ -100,7 +100,22 @@ jobs:
         run: |
           (l3build ctan && echo -e "CTAN_RET=0\nctan_ret_clm=0" >> "$GITHUB_OUTPUT") || echo -e "CTAN_RET=1\nctan_ret_clm=1" >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
-      # not caching so no need to install
+      # need clm available for nfssext-needy, but not sure how to do this without caching?
+      - name: Run l3build install 
+      # run only if ctan succeeded
+        if: ${{ !cancelled() && (steps.ctan-clm.outputs.CTAN_RET) }}
+        working-directory: cfr-lm
+        id: install-clm
+        run: |
+          (l3build install && echo "INSTALL_RET=0" >> "$GITHUB_OUTPUT") || echo "INSTALL_RET=1" >> "$GITHUB_OUTPUT"
+          cat "$GITHUB_OUTPUT"
+      - name: Update map
+      # run only if install succeeded
+        if: ${{ !cancelled() && (steps.install-clm.outputs.INSTALL_RET) }}
+        id: updmap-clm
+        run: |
+          (updmap --user --enable Map=clm.map && echo "UPDMAP_RET=0" >> "$GITHUB_OUTPUT") || echo "UPDMAP_RET=1" >> "GITHUB_OUTPUT"
+          cat "$GITHUB_OUTPUT"
       - name: Archive failed test output for clm
         # run even if previous step failed
         if: ${{ !cancelled() }}
