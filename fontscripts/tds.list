@@ -1,0 +1,42 @@
+Archive:  fontscripts.tds.zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+     3792  2025-02-21 03:42   scripts/fontscripts/fntbuild-doc.lua
+    23559  2025-02-21 03:42   scripts/fontscripts/fntbuild-build.lua
+     7354  2025-02-21 03:42   scripts/fontscripts/fntbuild-vars.lua
+     3733  2025-02-21 03:42   scripts/fontscripts/fntbuild-ctan.lua
+    14430  2025-02-21 03:42   scripts/fontscripts/fntbuild-check.lua
+     4354  2025-02-21 03:42   scripts/fontscripts/fntbuild.lua
+    10251  2025-02-21 03:42   scripts/fontscripts/fntbuild-utils.lua
+     1324  2025-02-21 03:42   tex/fontinst/fontscripts/fontscripts-unfakable.mtx
+     6310  2025-02-21 03:42   tex/fontinst/fontscripts/fontscripts-dotscbuild.mtx
+    20187  2025-02-21 03:42   tex/fontinst/fontscripts/fontscripts-ts1-euro.etx
+    29990  2025-02-21 03:42   tex/fontinst/fontscripts/fontscripts-t1-dotalt-f_f.etx
+     1388  2025-02-21 03:42   tex/fontinst/fontscripts/fontscripts-dotsc2.etx
+    30297  2025-02-21 03:42   tex/fontinst/fontscripts/fontscripts-t1-dotsup.etx
+    30322  2025-02-21 03:42   tex/fontinst/fontscripts/fontscripts-t1-dotinferior.etx
+    29814  2025-02-21 03:42   tex/fontinst/fontscripts/fontscripts-t1-cfr.etx
+    20645  2025-02-21 03:42   tex/fontinst/fontscripts/fontscripts-ts1-dotsup.etx
+     1175  2025-02-21 03:42   tex/fontinst/fontscripts/fontscripts-lining.etx
+    30325  2025-02-21 03:42   tex/fontinst/fontscripts/fontscripts-t1-dotsuperior.etx
+    20645  2025-02-21 03:42   tex/fontinst/fontscripts/fontscripts-ts1-dotinf.etx
+     1542  2025-02-21 03:42   tex/fontinst/fontscripts/fontscripts-ucdotalt.etx
+    29876  2025-02-21 03:42   tex/fontinst/fontscripts/fontscripts-t1-f_f.etx
+     1205  2025-02-21 03:42   tex/fontinst/fontscripts/fontscripts-dottaboldstyle.etx
+    30297  2025-02-21 03:42   tex/fontinst/fontscripts/fontscripts-t1-dotinf.etx
+     3959  2025-02-21 03:42   tex/fontinst/fontscripts/fontscripts-dotscmisc.mtx
+     1353  2025-02-21 03:42   tex/fontinst/fontscripts/fontscripts-t1j-f_f.etx
+     1183  2025-02-21 03:42   tex/fontinst/fontscripts/fontscripts-oldstyle.etx
+     1193  2025-02-21 03:42   tex/fontinst/fontscripts/fontscripts-dotoldstyle.etx
+     2500  2025-02-21 03:42   tex/fontinst/fontscripts/fontscripts-newlatin-dotsc.mtx
+     1547  2025-02-21 03:42   tex/latex/fontscripts/fntbuild-test.lvt
+     1506  2025-02-21 03:42   tex/latex/fontscripts/fntbuild-tables.tex
+     6721  2025-02-21 03:42   tex/latex/fontscripts/fntbuild-regression-test.tex
+    12423  2025-02-21 03:42   source/latex/fontscripts/fontscripts.ins
+   337579  2025-02-21 03:42   source/latex/fontscripts/fontscripts.dtx
+     1311  2025-02-21 03:42   doc/latex/fontscripts/manifest.txt
+   317725  2025-02-21 03:42   doc/latex/fontscripts/fontscripts-doc.pdf
+     3141  2025-02-21 03:42   doc/latex/fontscripts/README.md
+  1287411  2025-02-21 03:42   doc/latex/fontscripts/fontscripts-code.pdf
+---------                     -------
+  2332367                     37 files
