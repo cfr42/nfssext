@@ -1,4 +1,5 @@
-# This is a basic workflow to help you get started with Actions
+# nfssext-autochecks.yml
+# standard l3build testing for packages in nfssext repo
 
 # https://github.com/latex3/hyperref/blob/adc36adbc3650db73329469b43afb0ee86e3c807/.github/workflows/main.yaml
 # https://github.com/josephwright/siunitx/blob/main/.github/workflows/main.yaml
@@ -7,7 +8,7 @@ name: Automatic Checks for nfssext
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events for all branches
+  # Triggers the workflow on push request events for all branches if changes are not confined to excluded paths
   push:
     branches: 
       # - "*"
@@ -21,6 +22,7 @@ on:
       - '.github/workflows/nfssext-autochecks.yml'
       - '!licences/**'
       - '!test/**'
+  # Triggers the workflow on pull request events for all branches
   pull_request:
     branches: 
       - "*"
@@ -89,7 +91,7 @@ jobs:
           (l3build fnttarg && echo -e "BUILD_RET=0\nbuild_ret_clm=0" >> "$GITHUB_OUTPUT") || echo -e "BUILD_RET=1\nbuild_ret_clm=1" >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
       - name: Archive failed build output
-      # run even iff previous step failed
+      # run iff previous step failed
         if: ${{ !cancelled() && !(steps.fnttarg-clm.outputs.BUILD_RET) }}
       # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
         uses: actions/upload-artifact@v4
@@ -103,7 +105,6 @@ jobs:
         if: ${{ !cancelled() && (steps.fnttarg-clm.outputs.BUILD_RET) }}
         working-directory: cfr-lm
         id: ctan-clm
-        # run: l3build ctan
         run: | 
           (l3build ctan && echo -e "CTAN_RET=0\nctan_ret_clm=0" >> "$GITHUB_OUTPUT") || echo -e "CTAN_RET=1\nctan_ret_clm=1" >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
@@ -112,7 +113,6 @@ jobs:
         if: ${{ !cancelled() && (steps.ctan-clm.outputs.CTAN_RET) }}
         working-directory: cfr-lm
         id: install-clm
-        # run: l3build install
         run: |
           (l3build install && echo "INSTALL_RET=0" >> "$GITHUB_OUTPUT") || echo "INSTALL_RET=1" >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
@@ -181,36 +181,29 @@ jobs:
           - module: baskervaldadf
             working_directory: arkandis/baskervaldadf
             pre_target: fnttarg
-            # fnttarg_id: fnttarg-baskervaldadf
           - module: berenisadf
             working_directory: arkandis/berenisadf
             # berenis needs make, ff
             extra_packages: make fontforge
             pre_target: fnttarg
-            # fnttarg_id: fnttarg-berenisadf
           - module: electrumadf
             working_directory: arkandis/electrumadf
             pre_target: fnttarg
-            # fnttarg_id: fnttarg-electrumadf
           - module: librisadf
             working_directory: arkandis/librisadf
             pre_target: fnttarg
-            # fnttarg_id: fnttarg-librisadf
           - module: romandeadf
             working_directory: arkandis/romandeadf
             pre_target: fnttarg
-            # fnttarg_id: fnttarg-romandeadf
           - module: venturisadf
             working_directory: arkandis/venturisadf
             pre_target: fnttarg
-            # fnttarg_id: fnttarg-venturisadf
     name: "Test build: ${{ matrix.module }}"
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repo
         uses: actions/checkout@v4
       # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
-      # We need Ghostscript for XeTeX tests.
       - name: Update system 
         run: sudo apt-get update
       - name: Install additional packages if needed
@@ -227,6 +220,7 @@ jobs:
       - name: Set PATH
         run: echo $HOME/texlive/bin/x86_64-linux >> $GITHUB_PATH
       - name: Run l3build fnttarg
+      # oes pwrpas ddefnyddio if yma? am fod bob un yn cynnwys pre_target yn y matrix hwn, ond ydyn nhw?
         if: ${{ matrix.pre_target }}
         working-directory: ${{ matrix.working_directory }}
         id: fnttarg
@@ -259,21 +253,6 @@ jobs:
           name: testfiles-${{ matrix.module }}
           # Decide how long to keep the test output artefact:
           retention-days: 7
-      # - name: Archive failed test output workaround
-      # ddim yn gweithio
-      # # run iff previous step failed
-      #   if: ${{ !cancelled() && !(steps.ctan.outputs.CTAN_RET) }}
-      # # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: testfiles-${{ matrix.module }}
-      #     path: |
-      #       build/test/*.log
-      #       build/test/*.tlg
-      #       build/test/*-auto-test.lvt
-      #       build/test/*.diff
-      #     # Decide how long to keep the test output artefact:
-      #     retention-days: 7
       - name: Archive docs
       # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
         uses: actions/upload-artifact@v4
@@ -384,19 +363,6 @@ jobs:
           name: testfiles-${{ matrix.module }}
           # Decide how long to keep the test output artefact:
           retention-days: 7
-      # - name: Archive failed test output
-      # ddim yn gweithio
-      # # run iff previous step failed
-      #   if: ${{ !cancelled() && !(steps.ctan.outputs.CTAN_RET) }}
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: testfiles-${{ matrix.module }}
-      #     path: |
-      #       build/test/*.log
-      #       build/test/*.tlg
-      #       build/test/*-auto-test.lvt
-      #       build/test/*.diff
-      #     retention-days: 7
       - name: Archive docs
       # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
         uses: actions/upload-artifact@v4
@@ -408,6 +374,7 @@ jobs:
 
   summary:
     name: summary
+    # how to make this fail if the output isn't 0?
     needs: [ clm, nfssext, nfssext-needy ]
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
