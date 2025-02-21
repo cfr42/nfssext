@@ -105,7 +105,7 @@ jobs:
         id: ctan-clm
         # run: l3build ctan
         run: | 
-          (l3build ctan && echo "CTAN_RET=0" >> "$GITHUB_OUTPUT") || echo "CTAN_RET=1" >> "$GITHUB_OUTPUT"
+          (l3build ctan && echo -e "CTAN_RET=0\nctan_ret_clm=0" >> "$GITHUB_OUTPUT") || echo -e "CTAN_RET=1\nctan_ret_clm=1" >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
       - name: Run l3build install 
       # run only if ctan succeeded
