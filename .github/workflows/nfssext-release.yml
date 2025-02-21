@@ -212,7 +212,7 @@ jobs:
           cat "$GITHUB_OUTPUT"
       - name: Archive failed build output
       # run iff previous step failed
-        if: ${{ !cancelled() && !(steps.fnttarg.outputs.BUILD_RET) }}
+        if: ${{ !cancelled() && (matrix.pre_target) && !(steps.fnttarg.outputs.BUILD_RET) }}
       # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
         uses: actions/upload-artifact@v4
         with:
@@ -222,12 +222,12 @@ jobs:
           retention-days: 7
       - name: Create manifest
       # only if releasing and build succeeded 
-        if: ${{ contains(github.ref_name, matrix.module) &&  (steps.fnttarg.outputs.BUILD_RET)  }}
+        if: ${{ contains(github.ref_name, matrix.module) && ( !(matrix.pre_target) || (steps.fnttarg.outputs.BUILD_RET) ) }}
         working-directory: ${{ matrix.working_directory }}
         run: l3build check && l3build doc && l3build manifest
       - name: Run l3build
       # build only if earlier build succeeded
-        if: ${{ (steps.fnttarg.outputs.BUILD_RET) }}
+        if: ${{ (steps.fnttarg.outputs.BUILD_RET) || !(matrix.pre_target) }}
         working-directory: ${{ matrix.working_directory }}
         id: ctan
         run: |
@@ -244,14 +244,14 @@ jobs:
           retention-days: 7
       - name: List zip
       # archive only if releasing and build success
-        if: ${{ contains(github.ref_name, matrix.module) && (steps.ctan.outputs.CTAN_RET) }}
+        if: ${{ contains(github.ref_name, matrix.module) && ( !(matrix.pre_target) || (steps.ctan.outputs.CTAN_RET)) }}
         env:
           modname: ${{ matrix.module }}
         run: |
           unzip -l ${modname}/${modname}-ctan.zip
       - name: Archive release zip
       # archive only if releasing and build success
-        if: ${{ contains(github.ref_name, matrix.module) && (steps.ctan.outputs.CTAN_RET) }}
+        if: ${{ contains(github.ref_name, matrix.module) && ( !(matrix.pre_target) || (steps.ctan.outputs.CTAN_RET)) }}
         # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
         uses: actions/upload-artifact@v4
         with:
@@ -329,7 +329,7 @@ jobs:
           cat "$GITHUB_OUTPUT"
       - name: Archive failed build output
       # run iff previous step failed
-        if: ${{ !cancelled() && !(steps.fnttarg.outputs.BUILD_RET) && matrix.pre_target }}
+        if: ${{ !cancelled() && (matrix.pre_target) && !(steps.fnttarg.outputs.BUILD_RET) }}
       # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
         uses: actions/upload-artifact@v4
         with:
@@ -338,12 +338,12 @@ jobs:
           # Decide how long to keep the test output artefact:
           retention-days: 7
       - name: Create manifest only if module is in release tag, TDS false and build succeeded
-        if: ${{ contains(github.ref_name, matrix.module) && !(matrix.tds) && !(steps.fnttarg.outputs.BUILD_RET) }}
+        if: ${{ contains(github.ref_name, matrix.module) && !(matrix.tds) && ( !(matrix.pre_target) || (steps.fnttarg.outputs.BUILD_RET)) }}
         working-directory: ${{ matrix.working_directory }}
         run: l3build check && l3build doc && l3build manifest
       - name: Run l3build
       # build only if earlier build succeeded
-        if: ${{ (steps.fnttarg.outputs.BUILD_RET) }}
+        if: ${{ (steps.fnttarg.outputs.BUILD_RET) || !(matrix.pre_target) }}
         working-directory: ${{ matrix.working_directory }}
         id: ctan
         run: |
@@ -364,14 +364,14 @@ jobs:
         run:  l3build manifest && l3build ctan
       - name: List zip
       # only if releasing and build succeeded
-        if: ${{ contains(github.ref_name, matrix.module) && (steps.ctan.outputs.CTAN_RET) }}
+        if: ${{ contains(github.ref_name, matrix.module) && ( !(matrix.pre_target) || (steps.ctan.outputs.CTAN_RET)) }}
         env:
           modname: ${{ matrix.module }}
         run: |
           unzip -l ${modname}/${modname}-ctan.zip
       - name: Archive release zip
       # only if releasing and build succeeded
-        if: ${{ contains(github.ref_name, matrix.module) && (steps.ctan.outputs.CTAN_RET) }}
+        if: ${{ contains(github.ref_name, matrix.module) && ( !(matrix.pre_target) || (steps.ctan.outputs.CTAN_RET)) }}
         # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
         uses: actions/upload-artifact@v4
         with:
