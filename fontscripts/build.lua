@@ -1,4 +1,4 @@
--- $Id: build.lua 10788 2025-02-09 19:44:32Z cfrees $
+-- $Id: build.lua 10839 2025-02-21 06:54:34Z cfrees $
 -------------------------------------------------------------------------------
 -- This work, which consists of all files listed in manifest.txt, is released 
 -- under the LaTeX Project Public Licence version 1.3c or later. See individual 
@@ -46,8 +46,14 @@ function docinit_hook()
   return 0
 end
 date = "2024-2025"
-if direxists(sourcefiledir .. "/../../adnoddau/l3build") then
+if fileexists(maindir .. "tag.lua") then
   dofile(maindir .. "/tag.lua")
+elseif direxists(sourcefiledir .. "/../../adnoddau/l3build") then
+  dofile(sourcefiledir .. "/../../adnoddau/l3build/tag.lua")
+end
+if fileexists(maindir .. "/manifest.lua") then
+  dofile(maindir .. "/manifest.lua")
+elseif direxists(sourcefiledir .. "/../../adnoddau/l3build") then
   dofile(sourcefiledir .. "/../../adnoddau/l3build/manifest.lua")
 end
 function manifest_setup ()
@@ -103,7 +109,7 @@ unpackexe = "pdflatex"
 uploadconfig = {
   -- *required* --
   -- announcement (don't include here?)
-  announcement  = "Restructuring and update. An attempt has been made to make the script more modular. Insertion of Text Companion encoding fnt.subset declarations into font definition files is now supported. This functionality must be explicitly enabled. Basic support for sandboxing font builds is provided. This is enabled by default for fontinst, but can be used independently if other tools are utilised.",
+  announcement  = "Mostly renaming at Karl Berry's request. Minor bug fixes. Warning in docs not to put TS1 subset declarations into fd files yet due to LaTeX bug.",
 	author        = "Clea F. Rees",
   -- email (don't include here!)
 	ctanPath      = "/fonts/utilities/fontscripts",
@@ -111,7 +117,7 @@ uploadconfig = {
 	pkg           = ctanpkg,
 	summary       = "Font encodings, metrics and Lua script fragments for generating font support packages for 8-bit engines with l3build.",
   uploader      = "Clea F. Rees",
-	version       = "v0.2",
+	version       = "v0.3",
   -- optional --
 	bugtracker    = {"https://codeberg.org/cfr/nfssext/issues"},
   description   = "Font encodings, metrics and Lua script fragments for generating font support packages for 8-bit engines with l3build. Optional template-based system enables the automatic generation of font tables and l3build tests. Easy addition of variable scaling to fd files (unsupported by some tools). Primarily designed for fontinst, but can be adapted for use with other programmes. Default configuration is intended to be cross-platform and require only tools included in TeX Live, but the documentation includes a simple adaption for integration with FontForge and GNU make.",
