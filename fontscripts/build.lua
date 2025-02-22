@@ -1,4 +1,4 @@
--- $Id: build.lua 10839 2025-02-21 06:54:34Z cfrees $
+-- $Id: build.lua 10841 2025-02-22 01:26:31Z cfrees $
 -------------------------------------------------------------------------------
 -- This work, which consists of all files listed in manifest.txt, is released 
 -- under the LaTeX Project Public Licence version 1.3c or later. See individual 
@@ -42,6 +42,15 @@ function docinit_hook()
   else
     print("Could not copy " .. maindir .. "/arkandis/berenisadf/build.lua to " .. typesetdir .. ".")
     return 1
+  end
+  if not kpse.find_file("clm.map","map") then
+    if direxists(maindir .. "/cfr-lm/keep") then
+      cp("*.*",maindir .. "/cfr-lm/keep",typesetdir) or print("Warning: could not copy cfr-lm keepfiles to typesetdir.")
+    else
+      print("Warning: could not find directory cfr-lm in " .. maindir .. ".")
+    end
+  else
+    print("Warning: using installed copy of cfr-lm.")
   end
   return 0
 end

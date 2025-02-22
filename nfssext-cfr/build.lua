@@ -1,4 +1,4 @@
--- $Id: build.lua 10712 2025-01-03 18:09:59Z cfrees $
+-- $Id: build.lua 10841 2025-02-22 01:26:31Z cfrees $
 -- Build configuration for nfssext-cfr
 -------------------------------------------------------------------------------
 -- l3build.pdf listing 1 tudalen 9
@@ -51,4 +51,16 @@ uploadconfig = {
   -- curlopt_file
 }
 -------------------------------------------------------------------------------
+function docinit_hook ()
+  if not kpse.find_file("clm.map","map") then
+    if direxists(maindir .. "/cfr-lm/keep") then
+      cp("*.*",maindir .. "/cfr-lm/keep",typesetdir) or print("Warning: could not copy cfr-lm keepfiles to typesetdir.")
+    else
+      print("Warning: could not find directory cfr-lm in " .. maindir .. ".")
+    end
+  else
+    print("Warning: using installed copy of cfr-lm.")
+  end
+  return 0
+end
 -- vim: ts=2:sw=2:tw=80:nospell
