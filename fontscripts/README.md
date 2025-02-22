@@ -1,4 +1,4 @@
-$Id: README.md 10837 2025-02-21 03:21:27Z cfrees $
+$Id: README.md 10844 2025-02-22 05:08:08Z cfrees $
 
 =================================================
 # fontscripts
@@ -69,7 +69,7 @@ Bug reports, feature requests etc.  should be filed at
 
 Clea F. Rees 
 Version 0.3
-2025-02-21
+2025-02-22
 
 =================================================
 vim: et:tw=80:sw=0:
