@@ -1,4 +1,4 @@
--- $Id: build.lua 10841 2025-02-22 01:26:31Z cfrees $
+-- $Id: build.lua 10842 2025-02-22 01:44:16Z cfrees $
 -------------------------------------------------------------------------------
 -- This work, which consists of all files listed in manifest.txt, is released 
 -- under the LaTeX Project Public Licence version 1.3c or later. See individual 
@@ -45,7 +45,10 @@ function docinit_hook()
   end
   if not kpse.find_file("clm.map","map") then
     if direxists(maindir .. "/cfr-lm/keep") then
-      cp("*.*",maindir .. "/cfr-lm/keep",typesetdir) or print("Warning: could not copy cfr-lm keepfiles to typesetdir.")
+      local errorlevel = cp("*.*",maindir .. "/cfr-lm/keep",typesetdir) 
+      if errorlevel ~= 0 then 
+        print("Warning: could not copy cfr-lm keepfiles to typesetdir.") 
+      end
     else
       print("Warning: could not find directory cfr-lm in " .. maindir .. ".")
     end

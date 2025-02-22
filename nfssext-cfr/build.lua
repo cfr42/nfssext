@@ -1,4 +1,4 @@
--- $Id: build.lua 10841 2025-02-22 01:26:31Z cfrees $
+-- $Id: build.lua 10842 2025-02-22 01:44:16Z cfrees $
 -- Build configuration for nfssext-cfr
 -------------------------------------------------------------------------------
 -- l3build.pdf listing 1 tudalen 9
@@ -54,7 +54,10 @@ uploadconfig = {
 function docinit_hook ()
   if not kpse.find_file("clm.map","map") then
     if direxists(maindir .. "/cfr-lm/keep") then
-      cp("*.*",maindir .. "/cfr-lm/keep",typesetdir) or print("Warning: could not copy cfr-lm keepfiles to typesetdir.")
+      local errorlevel = cp("*.*",maindir .. "/cfr-lm/keep",typesetdir) 
+      if errorlevel ~= 0 then 
+        print("Warning: could not copy cfr-lm keepfiles to typesetdir.") 
+      end
     else
       print("Warning: could not find directory cfr-lm in " .. maindir .. ".")
     end
