@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10840 2025-02-21 19:06:45Z cfrees $}[v0.3 \revinfo][\filebase DTX: l3build scripts for font installation]
+\ProvidesFileSVN{$Id: fontscripts.dtx 10843 2025-02-22 05:01:11Z cfrees $}[v0.3 \revinfo][\filebase DTX: l3build scripts for font installation]
 \DefineFileInfoSVN[fontscripts]
 \documentclass[10pt,british,lm-default=false]{l3doc}
 % l3doc loads fancyvrb
@@ -929,7 +929,8 @@ fnt.subsetdefns.clms = "lmss"
 % The latest versions of the following packages were developed using \lpack{fontscripts} and build using \lpack{l3build}\footnote{%
 %   Note that it is in no sense a dependency; it contains nothing ever required in typesetting.%
 % }.
-% Full details, including the use of templates and scaling are available on \codeberg{} or \github{}.
+% Full details, including the use of templates and scaling are available on \codeberg{} or \github{} as part of the code repository.
+% \href{https://codeberg.org/cfr/ebgaramond-maths}{\lpack{ebgaramond-maths}} provides a further example.
 % \begin{itemize}
 %   \item \textsc{Gust}:
 %   \begin{itemize}
@@ -959,7 +960,7 @@ fnt.subsetdefns.clms = "lmss"
 %    \begin{macrocode}
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN[fnt-tables.tex]{$Id: fontscripts.dtx 10840 2025-02-21 19:06:45Z cfrees $}[v0.2 \revinfo][\filebase: font table template]
+\ProvidesFileSVN[fnt-tables.tex]{$Id: fontscripts.dtx 10843 2025-02-22 05:01:11Z cfrees $}[v0.2 \revinfo][\filebase: font table template]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % \iffalse
@@ -991,7 +992,7 @@ TABLES
 % \begin{template}{fntbuild-test.lvt}
 %    \begin{macrocode}
 \RequirePackage{svn-prov}
-\ProvidesFileSVN[fnt-test.lvt]{$Id: fontscripts.dtx 10840 2025-02-21 19:06:45Z cfrees $}[v0.0 \revinfo][fontscripts: l3build test template]
+\ProvidesFileSVN[fnt-test.lvt]{$Id: fontscripts.dtx 10843 2025-02-22 05:01:11Z cfrees $}[v0.0 \revinfo][fontscripts: l3build test template]
 \listfiles
 \input regression-test.tex\relax
 \input fntbuild-regression-test.tex\relax
@@ -1025,7 +1026,7 @@ SAMP
 %    \begin{macrocode}
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN[fnt-tests.tex]{$Id: fontscripts.dtx 10840 2025-02-21 19:06:45Z cfrees $}[v0.0 \revinfo][fontscripts: l3build tests]
+\ProvidesFileSVN[fnt-tests.tex]{$Id: fontscripts.dtx 10843 2025-02-22 05:01:11Z cfrees $}[v0.0 \revinfo][fontscripts: l3build tests]
 \documentclass[10pt,a4paper]{article}
 \usepackage{fonttable}
 \usepackage{tracefnt}% infoshow is default; debugshow traces maths fonts, too
@@ -1226,6 +1227,7 @@ SAMP
 % 
 %
 % \MaybeStop{%
+% \def\glossaryname{Change History}%
 % \PrintChanges
 % \PrintIndex
 % }
@@ -1237,7 +1239,7 @@ SAMP
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2\nil{#1}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName doc]{$Id: fontscripts.dtx 10840 2025-02-21 19:06:45Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName doc]{$Id: fontscripts.dtx 10843 2025-02-22 05:01:11Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \AddToHook{begindocument}{\OnlyDescription}
 \input{\MyFileBaseName.dtx}
@@ -1248,7 +1250,7 @@ SAMP
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2\nil{#1}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName code]{$Id: fontscripts.dtx 10840 2025-02-21 19:06:45Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName code]{$Id: fontscripts.dtx 10843 2025-02-22 05:01:11Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \input{\MyFileBaseName.dtx}
 %</doc-code>
