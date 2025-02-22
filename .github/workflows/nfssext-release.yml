@@ -334,6 +334,11 @@ jobs:
       - name: Set PATH
         run: echo $HOME/texlive/bin/x86_64-linux >> $GITHUB_PATH
       # don't use cached clm for release
+      - name: Build cfr-lm iff releasing
+        if: ${{ contains(github.ref_name, matrix.module) }}
+        working-directory: cfr-lm 
+        id: clmbuild
+        run : l3build fnttarg
       - name: Run l3build fnttarg
         if: ${{ matrix.pre_target }}
         working-directory: ${{ matrix.working_directory }}
