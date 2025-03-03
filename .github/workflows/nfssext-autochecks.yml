@@ -126,7 +126,7 @@ jobs:
       - name: Archive failed test output for clm
         # run even if previous step failed
         if: ${{ !cancelled() }}
-        uses: zauguin/l4build-failure-artifacts@v1
+        uses: zauguin/l3build-failure-artifacts@v1
         with:
           name: testfiles-clm
           # Decide how long to keep the test output artefact:
@@ -248,7 +248,7 @@ jobs:
       - name: Archive failed test output
       # run even if previous step failed
         if: ${{ !cancelled() }}
-        uses: zauguin/l4build-failure-artifacts@v1
+        uses: zauguin/l3build-failure-artifacts@v1
         with:
           name: testfiles-${{ matrix.module }}
           # Decide how long to keep the test output artefact:
@@ -358,7 +358,7 @@ jobs:
       - name: Archive failed test output
       # run even if previous step failed
         if: ${{ !cancelled() }}
-        uses: zauguin/l4build-failure-artifacts@v1
+        uses: zauguin/l3build-failure-artifacts@v1
         with:
           name: testfiles-${{ matrix.module }}
           # Decide how long to keep the test output artefact:
