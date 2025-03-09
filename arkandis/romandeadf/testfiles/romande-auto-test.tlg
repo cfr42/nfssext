@@ -14539,7 +14539,7 @@ Completed box being shipped out [4]
 ============================================================
 TEST 5: test-T1-yrd-db-n
 ============================================================
-Overfull \hbox (1.26537pt too wide) in paragraph at lines 68--68
+Overfull \hbox (1.26537pt too wide) in paragraph at lines ...
 \T1/yrd/db/n/10 (yrdd8t) N[]ata^^aa[]^^Ye ^^d8c-tave Pauline Qu^^eaneau Rox-anne Sabine T^^e3[]^^Za Ur^^b2ula Vi-vian Wendy Xan-thippe Yv^^f8nne
 \hbox(7.87+2.35498)x455.24408, glue set - 1.0
 .\T1/yrd/db/n/10 (yrdd8t) N
@@ -40072,7 +40072,7 @@ Completed box being shipped out [11]
 ============================================================
 TEST 12: test-T1-yrda-db-n
 ============================================================
-Overfull \hbox (1.00536pt too wide) in paragraph at lines 89--89
+Overfull \hbox (1.00536pt too wide) in paragraph at lines ...
 \T1/yrda/db/n/10 (yrdda8t) N[]ata^^aa[]^^Ye ^^d8c-tave Pauline Qu^^eaneau Rox-anne Sabine T^^e3[]^^Za Ur^^b2ula Vi-vian Wendy Xan-thippe Yv^^f8nne
 \hbox(7.87+2.35498)x455.24408, glue set - 1.0
 .\T1/yrda/db/n/10 (yrdda8t) N
