@@ -31,7 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: adfarrows.dtx 10953 2025-03-23 17:22:47Z cfrees $}[v1.3 \revinfo][\filebase DTX: FONT for 8-bit engines]
+\ProvidesFileSVN{$Id: adfarrows.dtx 10954 2025-03-23 18:24:01Z cfrees $}[v1.3 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[adfarrows]
 \documentclass[11pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -225,31 +225,21 @@
 % \date{\fileversion~\filedate}
 % 
 % \maketitle\thispagestyle{empty}
-%^^A \pdfinfo{%
-%^^A 	/Creator		(TeX)
-%^^A 	/Producer	(pdfTeX)
-%^^A 	/Author		(Clea F. Rees)
-%^^A 	/Title			(adfarrows)
-%^^A 	/Subject		(TeX)
-%^^A 	/Keywords		(TeX,LaTeX,font,fonts,tex,latex,Arrows,ornements,ornementsadf,adfarrows,ArrowsADF,ADF,adf,Arkandis,Digital,Foundry,arkandis,digital,foundry,Hirwen,Harendal,Clea,Rees)}
 % \setlength{\parindent}{0pt}
 % \setlength{\parskip}{0.5em}
 %	
+%^^A ateb wipet: https://tex.stackexchange.com/a/406420/
+% \DeclareUnicodeCharacter{21C0}{right arrow top half}
+% \DeclareUnicodeCharacter{21BC}{left arrow top half}
+% \DeclareUnicodeCharacter{2192}{\textrightarrow}
+% \DeclareUnicodeCharacter{2198}{$\searrow$}
+% \DeclareUnicodeCharacter{2193}{\textdownarrow}
+% \DeclareUnicodeCharacter{2199}{$\swarrow$}
+% \DeclareUnicodeCharacter{2190}{\textleftarrow}
+% \DeclareUnicodeCharacter{2196}{$\nwarrow$}
+% \DeclareUnicodeCharacter{2191}{\textuparrow}
+% \DeclareUnicodeCharacter{2197}{$\nearrow$}
 %	
-%
-%^^A \appendix
-% 
-% 
-%^^A \MaybeStop{%
-%^^A \PrintChanges
-%^^A \PrintIndex
-%^^A }
-% 
-%^^A \section{Implementation}
-%
-%^^A You do not need to read the remainder of this document in order to install or use the fonts.
-%
-%^^A \subsection{Package}\label{subsec:sty-arr}
 %
 % \iffalse
 %<*sty>
@@ -257,7 +247,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: adfarrows.dtx 10953 2025-03-23 17:22:47Z cfrees $}[v1.3 \revinfo  ArrowsADF]
+\ProvidesPackageSVN[\filebase.sty]{$Id: adfarrows.dtx 10954 2025-03-23 18:24:01Z cfrees $}[v1.3 \revinfo  ArrowsADF]
 \DefineFileInfoSVN[adfarrows]
 \newif\if@adfarrows@digonnew
 %    \end{macrocode}
