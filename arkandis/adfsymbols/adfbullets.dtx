@@ -31,7 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: adfbullets.dtx 10957 2025-03-24 01:55:18Z cfrees $}[v1.3 \revinfo][\filebase DTX: FONT for 8-bit engines]
+\ProvidesFileSVN{$Id: adfbullets.dtx 10959 2025-03-24 07:24:59Z cfrees $}[v1.3 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[adfbullets]
 \documentclass[11pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -249,7 +249,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: adfbullets.dtx 10957 2025-03-24 01:55:18Z cfrees $}[v1.3 \revinfo]
+\ProvidesPackageSVN[\filebase.sty]{$Id: adfbullets.dtx 10959 2025-03-24 07:24:59Z cfrees $}[v1.3 \revinfo]
 \DefineFileInfoSVN[adfbullets]
 \newif\if@adfbullets@digonnew
 %    \end{macrocode}
@@ -309,6 +309,7 @@
 % 
 % Lua\TeX{} manual page 49.
 %    \begin{macrocode}
+\ExplSyntaxOn
 \bool_if:nT { \sys_if_engine_luatex_p: }
 { 
   \protected\def\pdfglyphtounicode {\pdfextension glyphtounicode }
@@ -466,6 +467,7 @@
   \seq_map_pairwise_function:NNN \l__adfbullets_glyphtounicode_seq 
     \l__adfbullets_tounicode_seq \__adfbullets_tounicode:nn
 }
+\ExplSyntaxOff
 %    \end{macrocode}
 % \begin{macro}{\adfbullet}
 % \changes{v1.3}{2024-10-03}{Remove \lpack{pifont} dependency.}
