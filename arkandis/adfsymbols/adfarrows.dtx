@@ -31,7 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: adfarrows.dtx 10954 2025-03-23 18:24:01Z cfrees $}[v1.3 \revinfo][\filebase DTX: FONT for 8-bit engines]
+\ProvidesFileSVN{$Id: adfarrows.dtx 10956 2025-03-24 01:23:43Z cfrees $}[v1.3 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[adfarrows]
 \documentclass[11pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -56,6 +56,7 @@
 %   \selectfont}
 % \DeclareTextFontCommand{\textorigrm}{\origrmfamily}
 \usepackage[]{adfarrows}
+\input{adfsymbols-uni}
 \usepackage{fancyhdr}
 \usepackage{fixfoot}
 \usepackage{array,verbatim,tabularx}
@@ -228,18 +229,6 @@
 % \setlength{\parindent}{0pt}
 % \setlength{\parskip}{0.5em}
 %	
-%^^A ateb wipet: https://tex.stackexchange.com/a/406420/
-% \DeclareUnicodeCharacter{21C0}{right arrow top half}
-% \DeclareUnicodeCharacter{21BC}{left arrow top half}
-% \DeclareUnicodeCharacter{2192}{\textrightarrow}
-% \DeclareUnicodeCharacter{2198}{$\searrow$}
-% \DeclareUnicodeCharacter{2193}{\textdownarrow}
-% \DeclareUnicodeCharacter{2199}{$\swarrow$}
-% \DeclareUnicodeCharacter{2190}{\textleftarrow}
-% \DeclareUnicodeCharacter{2196}{$\nwarrow$}
-% \DeclareUnicodeCharacter{2191}{\textuparrow}
-% \DeclareUnicodeCharacter{2197}{$\nearrow$}
-%	
 %
 % \iffalse
 %<*sty>
@@ -247,7 +236,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: adfarrows.dtx 10954 2025-03-23 18:24:01Z cfrees $}[v1.3 \revinfo  ArrowsADF]
+\ProvidesPackageSVN[\filebase.sty]{$Id: adfarrows.dtx 10956 2025-03-24 01:23:43Z cfrees $}[v1.3 \revinfo  ArrowsADF]
 \DefineFileInfoSVN[adfarrows]
 \newif\if@adfarrows@digonnew
 %    \end{macrocode}
@@ -957,6 +946,24 @@
 % \end{fntdefn}
 % \iffalse
 %</fd>
+% \fi
+%
+% \iffalse
+%<*uni>
+% \fi
+%^^A ateb wipet: https://tex.stackexchange.com/a/406420/
+\DeclareUnicodeCharacter{21C0}{right arrow top half}
+\DeclareUnicodeCharacter{21BC}{left arrow top half}
+\DeclareUnicodeCharacter{2192}{\textrightarrow}
+\DeclareUnicodeCharacter{2198}{$\searrow$}
+\DeclareUnicodeCharacter{2193}{\textdownarrow}
+\DeclareUnicodeCharacter{2199}{$\swarrow$}
+\DeclareUnicodeCharacter{2190}{\textleftarrow}
+\DeclareUnicodeCharacter{2196}{$\nwarrow$}
+\DeclareUnicodeCharacter{2191}{\textuparrow}
+\DeclareUnicodeCharacter{2197}{$\nearrow$}
+% \iffalse
+%</uni>
 % \fi
 %
 %\Finale

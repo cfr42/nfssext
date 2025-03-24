@@ -31,7 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: adfbullets.dtx 10703 2025-01-02 05:41:50Z cfrees $}[v1.3 \revinfo][\filebase DTX: FONT for 8-bit engines]
+\ProvidesFileSVN{$Id: adfbullets.dtx 10956 2025-03-24 01:23:43Z cfrees $}[v1.3 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[adfbullets]
 \documentclass[11pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -248,7 +248,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: adfbullets.dtx 10703 2025-01-02 05:41:50Z cfrees $}[v1.3 \revinfo]
+\ProvidesPackageSVN[\filebase.sty]{$Id: adfbullets.dtx 10956 2025-03-24 01:23:43Z cfrees $}[v1.3 \revinfo]
 \DefineFileInfoSVN[adfbullets]
 \newif\if@adfbullets@digonnew
 %    \end{macrocode}
@@ -303,6 +303,169 @@
 }
 %    \end{macrocode}
 % \end{macro}
+% \changes{v0.0}{0000-00-00}{Add \texttt{/ToUnicode} values (\lpack{adfbullets}).}
+% I don't know why somebody would use these fonts with a Unicode engine, but, just in case, map for that as well as pdf\TeX.
+% 
+% Lua\TeX{} manual page 49.
+%    \begin{macrocode}
+\bool_if:nT { \sys_if_engine_luatex_p: }
+{ 
+  \protected\def\pdfglyphtounicode {\pdfextension glyphtounicode }
+}
+\bool_if:nT { \sys_if_engine_luatex_p: || \sys_if_engine_pdftex_p: }
+{
+%    \end{macrocode}
+% \begin{macro}{\l__adfbullets_glyphtounicode_seq}
+% This seems \dots{} insane?
+% 
+% It would be more efficient to just set everything directly, but this is easier to set up and only read once.
+% First, a sequence to hold glyph names.
+%    \begin{macrocode}
+  \seq_new:N \l__adfbullets_glyphtounicode_seq
+  \seq_set_from_clist:Nn \l__adfbullets_glyphtounicode_seq
+  {
+    A, %% A     
+    B, %% B  
+    C, %% C  
+    D, %% D  
+    E, %% E  
+    F, %% F 
+    G, %% G 
+    H, %% H
+    I, %% I  ✠ 2720   filled
+    J, %% J  ✠ 2720   open
+    K, %% K  
+    L, %% L  
+    M, %% M  
+    N, %% N  
+    O, %% O  
+    P, %% P  
+    Q, %% Q  
+    R, %% R  
+    S, %% S  
+    T, %% T  
+    U, %% U  
+    V, %% V  
+    W, %% W  
+    X, %% X  
+    Y, %% Y  
+    Z, %% Z  
+    a, %% a  ◌ 25CC
+    b, %% b  ◌ 25CC
+    c, %% c  ⬛ 2B1B
+    d, %% d  ⯁ 2BC1
+    e, %% e  ⯇ 2BC7
+    f, %% f  ⯈ 2BC8
+    g, %% g  ⯅ 2BC5
+    h, %% h  ⯆ 2BC6
+    i, %% i  ⮘ 2B98
+    j, %% j  ⮚ 2B9A
+    k, %% k   
+    l, %% l   
+    m, %% m  ⮘ 2B98 larger/darker
+    n, %% n  ⮚ 2B9A larger/darker
+    o, %% o   
+    p, %% p  ⬬ 2B2C
+    q, %% q  ◎ 25CE
+    r, %% r  · 00B7
+    s, %% s  ⊙ 2299
+    t, %% t  
+    u, %% u  ⯀ 2BC0
+    v, %% v  ⯌ 2BCC small
+    w, %% w  ⯌ 2BCC med
+    x, %% x  ⯌ 2BCC large
+    y, %% y  ⯎ 2BCE
+    z, %% z  ○ 25CB
+  }
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\l__adfbullets_tounicode_seq}
+% A sequence to hold Unicode targets.
+% These are not incredibly detailed, but hopefully more useful than none. 
+%    \begin{macrocode}
+  \seq_new:N \l__adfbullets_tounicode_seq
+  \seq_set_from_clist:Nn \l__adfbullets_tounicode_seq
+  {
+    0    , %% A  
+    0    , %% B  
+    0    , %% C  
+    0    , %% D  
+    0    , %% E  
+    0    , %% F  
+    0    , %% G  
+    0    , %% H  
+    2720 , %% I  
+    2720 , %% J  
+    0    , %% K  
+    0    , %% L  
+    0    , %% M  
+    0    , %% N  
+    0    , %% O  
+    0    , %% P  
+    0    , %% Q  
+    0    , %% R  
+    0    , %% S  
+    0    , %% T  
+    0    , %% U  
+    0    , %% V  
+    0    , %% W  
+    0    , %% X  
+    0    , %% Y  
+    0    , %% Z  
+    25CC , %% a  
+    25CC , %% b  
+    2B1B , %% c  
+    2BC1 , %% d  
+    2BC7 , %% e  
+    2BC8 , %% f  
+    2BC5 , %% g  
+    2BC6 , %% h  
+    2B98 , %% i  
+    2B9A , %% j  
+    0    , %% k  
+    0    , %% l  
+    2B98 , %% m  
+    2B9A , %% n  
+    0    , %% o  
+    2B2C , %% p  
+    25CE , %% q  
+    00B7 , %% r  
+    2299 , %% s  
+    0    , %% t  
+    2BC0 , %% u  
+    2BCC , %% v  
+    2BCC , %% w  
+    2BCC , %% x  
+    2BCE , %% y  
+    25CB , %% z  
+  }
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\__adfbullets_tounicode:nn}
+% TFM-specific mapping.
+%
+% pdf\TeX{} manual page 33.
+%    \begin{macrocode}
+  \cs_new_nopar:Npn \__adfbullets_tounicode:nn #1#2
+  {
+    \int_compare:nNnTF { #2 } = { 0 }
+    {
+      \exp_args:Nne \pdfglyphtounicode { tfm:BulletsADF/#1 } { \int_to_Hex:n { \l_tmpa_int } }
+      \int_incr:N \l_tmpa_int
+    } {
+      \pdfglyphtounicode { tfm:BulletsADF/#1 } { #2 }
+    }
+  }
+%    \end{macrocode}
+% \end{macro}
+% Generate the actual mappings.
+% \texttt{E000} is the first code point in the PUA.
+%    \begin{macrocode}
+  \int_set:Nn \l_tmpa_int { \int_from_hex:n { E000 } }
+  \seq_map_pairwise_function:NNN \l__adfbullets_glyphtounicode_seq 
+    \l__adfbullets_tounicode_seq \__adfbullets_tounicode:nn
+}
+%    \end{macrocode}
 % \begin{macro}{\adfbullet}
 % \changes{v1.3}{2024-10-03}{Remove \lpack{pifont} dependency.}
 % \mbox{}
@@ -368,6 +531,14 @@
 % \end{fntdefn}
 % \iffalse
 %</fd>
+% \fi
+%
+% \iffalse
+%<*uni>
+% \fi
+%^^A ateb wipet: https://tex.stackexchange.com/a/406420/
+% \iffalse
+%</uni>
 % \fi
 %
 %\Finale
