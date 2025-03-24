@@ -31,7 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: adfbullets.dtx 10959 2025-03-24 07:24:59Z cfrees $}[v1.3 \revinfo][\filebase DTX: FONT for 8-bit engines]
+\ProvidesFileSVN{$Id: adfbullets.dtx 10960 2025-03-24 16:03:09Z cfrees $}[v1.3 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[adfbullets]
 \documentclass[11pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -47,7 +47,7 @@
 \pdfmapfile{-adfbullets.map}
 \pdfmapfile{+adfbullets.map}
 \usepackage[tt={monowidth,tabular,lining}]{cfr-lm}
-\usepackage[]{adfbullets}
+\usepackage{adfbullets}
 \input{adfsymbols-uni}
 \usepackage{fancyhdr}
 \usepackage{fixfoot}
@@ -158,9 +158,6 @@
 \date{\fileversion~\filedate}
 \pagestyle{fancy}
 \fancyhf{}
-% \fancyhf[lh]{\filebase~\fileversion}
-% \fancyhf[rh]{\itshape\filetoday}
-% \fancyhf[rh]{\filedate}
 \fancyhf[ch]{}
 \fancyhf[lf]{}
 \fancyhf[rf]{}
@@ -199,7 +196,6 @@
 \newcommand*{\fname}[1]{\textsf{#1}}
 \newcommand*{\file}[1]{\texttt{#1}}
 
-
 \begin{document}
   \DocInput{\filename}
 \end{document}
@@ -217,31 +213,8 @@
 % }}
 % \date{\fileversion~\filedate}
 % \maketitle\thispagestyle{empty}
-%^^A \pdfinfo{%
-%^^A 	/Creator		(TeX)
-%^^A 	/Producer	(pdfTeX)
-%^^A 	/Author		(Clea F. Rees)
-%^^A 	/Title			(adfbullets)
-%^^A 	/Subject		(TeX)
-%^^A 	/Keywords		(TeX,LaTeX,font,fonts,tex,latex,Bullets,ornements,ornementsadf,adfbullets,BulletsADF,ADF,adf,Arkandis,Digital,Foundry,arkandis,digital,foundry,Hirwen,Harendal,Clea,Rees)}
 % \setlength{\parindent}{0pt}
 % \setlength{\parskip}{0.5em}
-%	
-%	
-%
-%^^A \appendix
-% 
-% 
-%^^A \MaybeStop{%
-%^^A \PrintChanges
-%^^A \PrintIndex
-%^^A }
-% 
-%^^A \section{Implementation}
-%
-%^^A You do not need to read the remainder of this document in order to install or use the fonts.
-%
-%^^A \subsection{Package}\label{subsec:sty-bul}
 %
 % \iffalse
 %<*sty>
@@ -249,7 +222,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: adfbullets.dtx 10959 2025-03-24 07:24:59Z cfrees $}[v1.3 \revinfo]
+\ProvidesPackageSVN[\filebase.sty]{$Id: adfbullets.dtx 10960 2025-03-24 16:03:09Z cfrees $}[v1.3 \revinfo]
 \DefineFileInfoSVN[adfbullets]
 \newif\if@adfbullets@digonnew
 %    \end{macrocode}
@@ -548,8 +521,7 @@
 %^^A   \DeclareUnicodeCharacter{}{} %% F, %% F 
 %^^A   \DeclareUnicodeCharacter{}{} %% G, %% G 
 %^^A   \DeclareUnicodeCharacter{}{} %% H, %% H
-  \DeclareUnicodeCharacter{2720}{$\maltese$ filled}
-  \DeclareUnicodeCharacter{2720}{$\maltese$ open}
+  \DeclareUnicodeCharacter{2720}{$\maltese$}
 %^^A   \DeclareUnicodeCharacter{}{} %% K, %% K  
 %^^A   \DeclareUnicodeCharacter{}{} %% L, %% L  
 %^^A   \DeclareUnicodeCharacter{}{} %% M, %% M  
@@ -567,7 +539,6 @@
 %^^A   \DeclareUnicodeCharacter{}{} %% Y, %% Y  
 %^^A   \DeclareUnicodeCharacter{}{} %% Z, %% Z  
   \DeclareUnicodeCharacter{25CC}{\circle{} filled}
-  \DeclareUnicodeCharacter{25CC}{\circle{} filled}
   \DeclareUnicodeCharacter{2B1B}{$\blacksquare$}
   \DeclareUnicodeCharacter{2BC1}{$\diamond$}
   \DeclareUnicodeCharacter{2BC7}{$\triangleleft$}
@@ -578,8 +549,6 @@
   \DeclareUnicodeCharacter{2B9A}{arrowhead right top highlighted}
 %^^A   \DeclareUnicodeCharacter{}{} %% k, %% k   
 %^^A   \DeclareUnicodeCharacter{}{} %% l, %% l   
-  \DeclareUnicodeCharacter{2B98}{arrowhead left top highlighted}
-  \DeclareUnicodeCharacter{2B9A}{arrowhead right top highlighted}
 %^^A   \DeclareUnicodeCharacter{}{} %% o, %% o   
   \DeclareUnicodeCharacter{2B2C}{ellipse}
   \DeclareUnicodeCharacter{25CE}{dot large}
@@ -587,9 +556,7 @@
   \DeclareUnicodeCharacter{2299}{circled dot}
 %^^A   \DeclareUnicodeCharacter{}{} %% t, %% t  
   \DeclareUnicodeCharacter{2BC0}{$\blacksquare$}
-  \DeclareUnicodeCharacter{2BCC}{cusp small}
-  \DeclareUnicodeCharacter{2BCC}{cusp med}
-  \DeclareUnicodeCharacter{2BCC}{cusp large}
+  \DeclareUnicodeCharacter{2BCC}{cusp}
   \DeclareUnicodeCharacter{2BCE}{cusp open}
   \DeclareUnicodeCharacter{25CB}{\circle{} open}
 % \iffalse
