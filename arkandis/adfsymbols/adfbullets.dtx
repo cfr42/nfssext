@@ -31,7 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: adfbullets.dtx 10956 2025-03-24 01:23:43Z cfrees $}[v1.3 \revinfo][\filebase DTX: FONT for 8-bit engines]
+\ProvidesFileSVN{$Id: adfbullets.dtx 10957 2025-03-24 01:55:18Z cfrees $}[v1.3 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[adfbullets]
 \documentclass[11pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -48,6 +48,7 @@
 \pdfmapfile{+adfbullets.map}
 \usepackage[tt={monowidth,tabular,lining}]{cfr-lm}
 \usepackage[]{adfbullets}
+\input{adfsymbols-uni}
 \usepackage{fancyhdr}
 \usepackage{fixfoot}
 \usepackage{array,verbatim,tabularx}
@@ -248,7 +249,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: adfbullets.dtx 10956 2025-03-24 01:23:43Z cfrees $}[v1.3 \revinfo]
+\ProvidesPackageSVN[\filebase.sty]{$Id: adfbullets.dtx 10957 2025-03-24 01:55:18Z cfrees $}[v1.3 \revinfo]
 \DefineFileInfoSVN[adfbullets]
 \newif\if@adfbullets@digonnew
 %    \end{macrocode}
@@ -537,6 +538,58 @@
 %<*uni>
 % \fi
 %^^A ateb wipet: https://tex.stackexchange.com/a/406420/
+%^^A   \DeclareUnicodeCharacter{}{} %% A, %% A     
+%^^A   \DeclareUnicodeCharacter{}{} %% B, %% B  
+%^^A   \DeclareUnicodeCharacter{}{} %% C, %% C  
+%^^A   \DeclareUnicodeCharacter{}{} %% D, %% D  
+%^^A   \DeclareUnicodeCharacter{}{} %% E, %% E  
+%^^A   \DeclareUnicodeCharacter{}{} %% F, %% F 
+%^^A   \DeclareUnicodeCharacter{}{} %% G, %% G 
+%^^A   \DeclareUnicodeCharacter{}{} %% H, %% H
+  \DeclareUnicodeCharacter{2720}{$\maltese$ filled}
+  \DeclareUnicodeCharacter{2720}{$\maltese$ open}
+%^^A   \DeclareUnicodeCharacter{}{} %% K, %% K  
+%^^A   \DeclareUnicodeCharacter{}{} %% L, %% L  
+%^^A   \DeclareUnicodeCharacter{}{} %% M, %% M  
+%^^A   \DeclareUnicodeCharacter{}{} %% N, %% N  
+%^^A   \DeclareUnicodeCharacter{}{} %% O, %% O  
+%^^A   \DeclareUnicodeCharacter{}{} %% P, %% P  
+%^^A   \DeclareUnicodeCharacter{}{} %% Q, %% Q  
+%^^A   \DeclareUnicodeCharacter{}{} %% R, %% R  
+%^^A   \DeclareUnicodeCharacter{}{} %% S, %% S  
+%^^A   \DeclareUnicodeCharacter{}{} %% T, %% T  
+%^^A   \DeclareUnicodeCharacter{}{} %% U, %% U  
+%^^A   \DeclareUnicodeCharacter{}{} %% V, %% V  
+%^^A   \DeclareUnicodeCharacter{}{} %% W, %% W  
+%^^A   \DeclareUnicodeCharacter{}{} %% X, %% X  
+%^^A   \DeclareUnicodeCharacter{}{} %% Y, %% Y  
+%^^A   \DeclareUnicodeCharacter{}{} %% Z, %% Z  
+  \DeclareUnicodeCharacter{25CC}{\circle{} filled}
+  \DeclareUnicodeCharacter{25CC}{\circle{} filled}
+  \DeclareUnicodeCharacter{2B1B}{$\blacksquare$}
+  \DeclareUnicodeCharacter{2BC1}{$\diamond$}
+  \DeclareUnicodeCharacter{2BC7}{$\triangleleft$}
+  \DeclareUnicodeCharacter{2BC8}{$\triangleright$}
+  \DeclareUnicodeCharacter{2BC5}{triangle up}
+  \DeclareUnicodeCharacter{2BC6}{triangle down}
+  \DeclareUnicodeCharacter{2B98}{arrowhead left top highlighted}
+  \DeclareUnicodeCharacter{2B9A}{arrowhead right top highlighted}
+%^^A   \DeclareUnicodeCharacter{}{} %% k, %% k   
+%^^A   \DeclareUnicodeCharacter{}{} %% l, %% l   
+  \DeclareUnicodeCharacter{2B98}{arrowhead left top highlighted}
+  \DeclareUnicodeCharacter{2B9A}{arrowhead right top highlighted}
+%^^A   \DeclareUnicodeCharacter{}{} %% o, %% o   
+  \DeclareUnicodeCharacter{2B2C}{ellipse}
+  \DeclareUnicodeCharacter{25CE}{dot large}
+  \DeclareUnicodeCharacter{00B7}{dot}
+  \DeclareUnicodeCharacter{2299}{circled dot}
+%^^A   \DeclareUnicodeCharacter{}{} %% t, %% t  
+  \DeclareUnicodeCharacter{2BC0}{$\blacksquare$}
+  \DeclareUnicodeCharacter{2BCC}{cusp small}
+  \DeclareUnicodeCharacter{2BCC}{cusp med}
+  \DeclareUnicodeCharacter{2BCC}{cusp large}
+  \DeclareUnicodeCharacter{2BCE}{cusp open}
+  \DeclareUnicodeCharacter{25CB}{\circle{} open}
 % \iffalse
 %</uni>
 % \fi
