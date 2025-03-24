@@ -1,4 +1,4 @@
--- $Id: build.lua 10746 2025-01-29 06:47:44Z cfrees $
+-- $Id: build.lua 10961 2025-03-24 17:05:54Z cfrees $
 -- Build configuration for adfsymbols
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -35,7 +35,7 @@ fnt.afmtotfm = true
 fnt.encs = fnt.encs or {}
 fnt.encs["ArrowsADF"] = "SymbolsADF.enc"
 fnt.encs["BulletsADF"] = "SymbolsADF.enc"
-print(fnt.encs["ArrowsADF"])
+-- print(fnt.encs["ArrowsADF"])
 dofile(maindir .. "/fontscripts/fntbuild.lua")
 function fnt.test (fntpkgname,fds,content,maps,fdsdir)
   return 0
@@ -74,5 +74,11 @@ uploadconfig = {
 arkandis = arkandis or {}
 arkandis.noautotest = true
 dofile(maindir .. "/arkandis/arkandis-manifest.lua")
--- os.execute ("printenv")
+-- there must be a variable for this, surely?
+function docinit_hook ()
+  fnt.docinit_hook ()
+  if fileexists(unpackdir .. "/adfsymbols-uni.tex") then
+    cp("adfsymbols-uni.tex",unpackdir,typesetdir)
+  end
+end
 -- vim: ts=2:sw=2:tw=80:nospell
