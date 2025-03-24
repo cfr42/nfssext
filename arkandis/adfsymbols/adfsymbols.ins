@@ -1,4 +1,4 @@
-%% $Id: adfsymbols.ins 10956 2025-03-24 01:23:43Z cfrees $
+%% $Id: adfsymbols.ins 10958 2025-03-24 02:26:05Z cfrees $
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% adfsymbols.ins
 %% Additions and changes Copyright (C) 2024-2025 Clea F. Rees.
@@ -110,7 +110,7 @@ This work consists of all files listed in manifest.txt.^^J\DoubleperCent\space
 % https://www.ctan.org/pkg/\maybenoexpand\basePkgName. See \maybenoexpand\baseFileName for commentary.^^J\DoubleperCent\space
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % }
-% \endgroup
+\endgroup
 
 \def\targDates{2019-2025}
 \expandafter\declarepreamble\expandafter\safonol\mkpreamble
@@ -153,8 +153,8 @@ This work consists of all files listed in manifest.txt.^^J\DoubleperCent\space
 \usepreamble\safonol
 
 \generate{%
-  \file{adfbullets.sty}{\from{adfbullets.dtx}{sty}}
   \file{adfarrows.sty}{\from{adfarrows.dtx}{sty}}
+  \file{adfbullets.sty}{\from{adfbullets.dtx}{sty}}
   \file{adfsymbols-uni.tex}{%
     \from{adfarrows.dtx}{uni}%
     \from{adfbullets.dtx}{uni}%
