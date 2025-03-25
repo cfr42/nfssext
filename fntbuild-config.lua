@@ -1,4 +1,4 @@
--- $Id: fntbuild-config.lua 10801 2025-02-12 07:16:37Z cfrees $
+-- $Id: fntbuild-config.lua 10962 2025-03-25 02:15:04Z cfrees $
 -- configuration for nfssext
 -------------------------------------------------
 sourcefiledir = sourcefiledir or "."
@@ -13,6 +13,7 @@ manifestfile = "manifest.txt"
 packtdszip = false
 tagfiles = {"*.dtx", "*.ins", "manifest.txt", "MANIFEST.txt", "README", "README.md"}
 typesetdeps = {maindir .. "/nfssext-cfr", maindir .. "/fontscripts"}
+typesetopts = "-interaction=nonstopmode -cnf-line='TEXMFHOME=.' -cnf-line='TEXMFLOCAL=.' -cnf-line='TEXMFARCH=.'"
 typesetsourcefiles = {fnt.keepdir .. "/*", "nfssext-cfr*.sty"}
 unpackexe = "pdflatex"
 unpackfiles = {"*.ins"}

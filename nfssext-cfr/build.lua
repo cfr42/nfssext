@@ -1,4 +1,4 @@
--- $Id: build.lua 10842 2025-02-22 01:44:16Z cfrees $
+-- $Id: build.lua 10962 2025-03-25 02:15:04Z cfrees $
 -- Build configuration for nfssext-cfr
 -------------------------------------------------------------------------------
 -- l3build.pdf listing 1 tudalen 9
@@ -14,6 +14,7 @@ checkformat = "latex"
 checksuppfiles = {"*.fd"}
 manifestfile = "manifest.txt"
 typesetdeps = {maindir .. "/cfr-lm"}
+typesetopts = "-interaction=nonstopmode -cnf-line='TEXMFHOME=.' -cnf-line='TEXMFLOCAL=.' -cnf-line='TEXMFARCH=.'"
 typesetsourcefiles = {"cfr-lm.sty", maindir .. "/cfr-lm/keep/*"}
 typesetruns = 5
 -------------------------------------------------------------------------------

@@ -31,7 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: adfbullets.dtx 10960 2025-03-24 16:03:09Z cfrees $}[v1.3 \revinfo][\filebase DTX: FONT for 8-bit engines]
+\ProvidesFileSVN{$Id: adfbullets.dtx 10962 2025-03-25 02:15:04Z cfrees $}[v1.3 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[adfbullets]
 \documentclass[11pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -222,7 +222,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: adfbullets.dtx 10960 2025-03-24 16:03:09Z cfrees $}[v1.3 \revinfo]
+\ProvidesPackageSVN[\filebase.sty]{$Id: adfbullets.dtx 10962 2025-03-25 02:15:04Z cfrees $}[v1.3 \revinfo]
 \DefineFileInfoSVN[adfbullets]
 \newif\if@adfbullets@digonnew
 %    \end{macrocode}
@@ -423,7 +423,7 @@
 %    \begin{macrocode}
   \cs_new_nopar:Npn \__adfbullets_tounicode:nn #1#2
   {
-    \int_compare:nNnTF { #2 } = { 0 }
+    \str_compare:nNnTF { #2 } = { 0 }
     {
       \exp_args:Nne \pdfglyphtounicode { tfm:BulletsADF/#1 } { \int_to_Hex:n { \l_tmpa_int } }
       \int_incr:N \l_tmpa_int
@@ -513,6 +513,7 @@
 %<*uni>
 % \fi
 %^^A ateb wipet: https://tex.stackexchange.com/a/406420/
+%    \begin{macrocode}
 %^^A   \DeclareUnicodeCharacter{}{} %% A, %% A     
 %^^A   \DeclareUnicodeCharacter{}{} %% B, %% B  
 %^^A   \DeclareUnicodeCharacter{}{} %% C, %% C  
@@ -559,6 +560,7 @@
   \DeclareUnicodeCharacter{2BCC}{cusp}
   \DeclareUnicodeCharacter{2BCE}{cusp open}
   \DeclareUnicodeCharacter{25CB}{\circle{} open}
+%    \end{macrocode}
 % \iffalse
 %</uni>
 % \fi

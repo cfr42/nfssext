@@ -1,4 +1,4 @@
--- $Id: build.lua 10842 2025-02-22 01:44:16Z cfrees $
+-- $Id: build.lua 10962 2025-03-25 02:15:04Z cfrees $
 -------------------------------------------------------------------------------
 -- This work, which consists of all files listed in manifest.txt, is released 
 -- under the LaTeX Project Public Licence version 1.3c or later. See individual 
@@ -19,6 +19,7 @@ manifestfile = "manifest.txt"
 scriptfiles = {"*.lua"}
 typesetdeps = {maindir .. "/nfssext-cfr", maindir .. "/cfr-lm"}
 typesetfiles = {"*-doc.tex", "*-code.tex"}
+typesetopts = "-interaction=nonstopmode -cnf-line='TEXMFHOME=.' -cnf-line='TEXMFLOCAL=.' -cnf-line='TEXMFARCH=.'"
 typesetruns = 5
 --
 docfiles = filelist(sourcefiledir,"fntbuild-*.lua")

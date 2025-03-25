@@ -1,4 +1,4 @@
--- $Id: build.lua 10961 2025-03-24 17:05:54Z cfrees $
+-- $Id: build.lua 10962 2025-03-25 02:15:04Z cfrees $
 -- Build configuration for adfsymbols
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -80,5 +80,6 @@ function docinit_hook ()
   if fileexists(unpackdir .. "/adfsymbols-uni.tex") then
     cp("adfsymbols-uni.tex",unpackdir,typesetdir)
   end
+  return 0
 end
 -- vim: ts=2:sw=2:tw=80:nospell
