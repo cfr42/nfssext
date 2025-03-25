@@ -149,6 +149,8 @@ jobs:
           path: cfr-lm/*.pdf
           # Decide how long to keep the test output artefact:
           retention-days: 30
+      - name: Info
+        run: cat ~/.texlive/texmf-var/web2c/updmap.log
 
 
   # addaswyd o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
