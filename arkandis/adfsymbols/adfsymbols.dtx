@@ -31,7 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: adfsymbols.dtx 10956 2025-03-24 01:23:43Z cfrees $}[v1.3 \revinfo][\filebase DTX: FONT for 8-bit engines]
+\ProvidesFileSVN{$Id: adfsymbols.dtx 10973 2025-03-27 17:37:28Z cfrees $}[v1.3 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[adfsymbols]
 \documentclass[10pt,british]{ltxdoc}
 %^^A l3doc loads fancyvrb
@@ -46,8 +46,8 @@
 \usepackage{babel}
 \pdfmapfile{-adfsymbols.map}
 \pdfmapfile{+adfsymbols.map}
-\pdfmapfile{-clm.map}
-\pdfmapfile{+clm.map}
+%^^A \pdfmapfile{-clm.map}
+%^^A \pdfmapfile{+clm.map}
 \usepackage[tt={monowidth,tabular,lining}]{cfr-lm}
 \usepackage{amssymb}%^^A for ne/se/nw/sw arrows in source listings
 \usepackage{adfarrows}
@@ -61,7 +61,6 @@
 \usepackage{xcolor}
 \usepackage{xurl}
 \urlstyle{tt}
-\usepackage{multicol}
 \usepackage{microtype}
 %^^A \usepackage[a4paper,headheight=14pt,marginparwidth=45mm,reversemp=true]{geometry}	% use 14pt for 11pt text, 15pt for 12pt text
 \usepackage{csquotes}
@@ -182,6 +181,8 @@
 \def\@xobeysp{\leavevmode\penalty100\ }
 \c@IndexColumns=2
 \makeatother
+%^^A default: 50pt
+\premulticols=75pt
 \begin{document}
   \DocInput{\filename}
   \addcontentsline{toc}{section}{ArrowsADF}
