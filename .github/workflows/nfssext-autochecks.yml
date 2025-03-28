@@ -332,6 +332,11 @@ jobs:
             ~/texmf
           key: clm-${{ github.sha }}
           fail-on-cache-miss: true
+      - name: Update map
+        id: updmap-clm
+        run: |
+          (updmap --user --enable Map=clm.map && echo "UPDMAP_RET=0" >> "$GITHUB_OUTPUT") || echo "UPDMAP_RET=1" >> "GITHUB_OUTPUT"
+          cat "$GITHUB_OUTPUT"
       - name: Run l3build fnttarg
         if: ${{ matrix.pre_target }}
         working-directory: ${{ matrix.working_directory }}
