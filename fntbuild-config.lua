@@ -1,4 +1,4 @@
--- $Id: fntbuild-config.lua 10962 2025-03-25 02:15:04Z cfrees $
+-- $Id: fntbuild-config.lua 10974 2025-03-28 20:14:48Z cfrees $
 -- configuration for nfssext
 -------------------------------------------------
 sourcefiledir = sourcefiledir or "."
@@ -13,7 +13,9 @@ manifestfile = "manifest.txt"
 packtdszip = false
 tagfiles = {"*.dtx", "*.ins", "manifest.txt", "MANIFEST.txt", "README", "README.md"}
 typesetdeps = {maindir .. "/nfssext-cfr", maindir .. "/fontscripts"}
-typesetopts = "-interaction=nonstopmode -cnf-line='TEXMFHOME=.' -cnf-line='TEXMFLOCAL=.' -cnf-line='TEXMFARCH=.'"
+-- use only where we don't need to find clm
+-- typesetopts = "-interaction=nonstopmode -cnf-line='TEXMFHOME=.' -cnf-line='TEXMFLOCAL=.' -cnf-line='TEXMFARCH=.'"
+typesetopts = "-interaction=nonstopmode -cnf-line='TEXMFARCH=.'"
 typesetsourcefiles = {fnt.keepdir .. "/*", "nfssext-cfr*.sty"}
 unpackexe = "pdflatex"
 unpackfiles = {"*.ins"}

@@ -1,4 +1,4 @@
--- $Id: build.lua 10791 2025-02-11 02:15:02Z cfrees $
+-- $Id: build.lua 10974 2025-03-28 20:14:48Z cfrees $
 -- Build configuration for cfr-lm
 -------------------------------------------------------------------------------
 -- l3build.pdf listing 1 tudalen 9
@@ -55,6 +55,7 @@ dofile(maindir .. "/fontscripts/fntbuild.lua")
 -- fnt.subsetdefns.clmv = "lmvtt" 
 -- fnt.subsettemplate = "\\ExpandArgs {nnc} \\DeclareEncodingSubset {TS1} {$FONTFAMILY} {TS1:$SUBSET}"
 typesetdeps = {maindir .. "/nfssext-cfr"}
+typesetopts = "-interaction=nonstopmode -cnf-line='TEXMFHOME=.' -cnf-line='TEXMFLOCAL=.' -cnf-line='TEXMFARCH=.'"
 typesetruns = 5
 -------------------------------------------------------------------------------
 -- CTAN upload 

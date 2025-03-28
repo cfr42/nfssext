@@ -1,4 +1,4 @@
--- $Id: build.lua 10743 2025-01-29 02:29:53Z cfrees $
+-- $Id: build.lua 10974 2025-03-28 20:14:48Z cfrees $
 -- Build configuration for romandeadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -20,9 +20,10 @@ dofile(maindir .. "/fontscripts/fntbuild.lua")
 -- local srcfiles = { "ts1-euro.etx", "ts1-euro.enc" }
 -- for i,j in ipairs(srcfiles) do table.insert(sourcefiles,j) end
 -- angen TODO new TL installation
-typesetdeps = {maindir .. "/nfssext-cfr"}
 unpackdeps = {maindir .. "/fontscripts"}
 textfiles = {"*.md", "*.txt", "COPYING"}
+typesetdeps = {maindir .. "/nfssext-cfr"}
+typesetopts = "-interaction=nonstopmode -cnf-line='TEXMFHOME=.' -cnf-line='TEXMFLOCAL=.' -cnf-line='TEXMFARCH=.'"
 typesetruns = 5
 --
 uploadconfig = {

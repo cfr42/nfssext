@@ -1,4 +1,4 @@
--- $Id: build.lua 10743 2025-01-29 02:29:53Z cfrees $
+-- $Id: build.lua 10974 2025-03-28 20:14:48Z cfrees $
 -- Build configuration for librisadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -20,9 +20,10 @@ dofile(maindir .. "/fontscripts/fntbuild.lua")
 -- local srcfiles = {"t1-cfr.etx", "ts1-euro.etx", "t1-cfr.enc", "ts1-euro.enc"}
 -- for i,j in ipairs(srcfiles) do table.insert(sourcefiles,j) end
 textfiles = {"*.md", "*.txt", "COPYING"}
-typesetruns = 5
 -- angen ../../TODO
 typesetdeps = {maindir .. "/nfssext-cfr"}
+typesetopts = "-interaction=nonstopmode -cnf-line='TEXMFHOME=.' -cnf-line='TEXMFLOCAL=.' -cnf-line='TEXMFARCH=.'"
+typesetruns = 5
 unpackdeps = {maindir .. "/fontscripts"}
 --
 uploadconfig = {

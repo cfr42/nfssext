@@ -1,4 +1,4 @@
--- $Id: build.lua 10774 2025-02-06 00:24:31Z cfrees $
+-- $Id: build.lua 10974 2025-03-28 20:14:48Z cfrees $
 -------------------------------------------------
 -- Build configuration for berenisadf
 -------------------------------------------------
@@ -79,6 +79,7 @@ target_list[fnt.ntarg] = {
 unpackdeps = {maindir .. "/fontscripts"}
 textfiles = {"*.md", "*.txt", "COPYING"}
 typesetdeps = {maindir .. "/nfssext-cfr"}
+typesetopts = "-interaction=nonstopmode -cnf-line='TEXMFHOME=.' -cnf-line='TEXMFLOCAL=.' -cnf-line='TEXMFARCH=.'"
 typesetruns = 5
 -------------------------------------------------
 uploadconfig = {

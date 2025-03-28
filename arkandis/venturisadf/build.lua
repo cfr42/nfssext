@@ -1,4 +1,4 @@
--- $Id: build.lua 10755 2025-02-03 07:39:57Z cfrees $
+-- $Id: build.lua 10974 2025-03-28 20:14:48Z cfrees $
 -- Build configuration for venturisadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -26,8 +26,6 @@ dofile(maindir .. "/fontscripts/fntbuild.lua")
 -- angen TODO new TL installation
 -- make tds archive for this one 
 packtdszip = true
-typesetdeps = {maindir .. "/nfssext-cfr"}
-unpackdeps = {maindir .. "/fontscripts"}
 local vendor = fnt.vendor
 tdslocations = {
   "doc/fonts/" .. module .. "/" .. "COPYING*",
@@ -93,7 +91,10 @@ tdslocations = {
 	"tex/latex/" .. module .. "/" .. "*.sty"
 }
 textfiles = {"*.md", "*.txt", "COPYING*", "LICENSE*", "licences/COPYTING*", "licences/LICENSE*" }
+typesetdeps = {maindir .. "/nfssext-cfr"}
+typesetopts = "-interaction=nonstopmode -cnf-line='TEXMFHOME=.' -cnf-line='TEXMFLOCAL=.' -cnf-line='TEXMFARCH=.'"
 typesetruns = 5
+unpackdeps = {maindir .. "/fontscripts"}
 --
 uploadconfig = {
   -- *required* --
