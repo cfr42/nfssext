@@ -31,7 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: adfsymbols.dtx 10973 2025-03-27 17:37:28Z cfrees $}[v1.3 \revinfo][\filebase DTX: FONT for 8-bit engines]
+\ProvidesFileSVN{$Id: adfsymbols.dtx 10982 2025-03-30 16:37:00Z cfrees $}[v1.3 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[adfsymbols]
 \documentclass[10pt,british]{ltxdoc}
 %^^A l3doc loads fancyvrb
@@ -181,14 +181,20 @@
 \def\@xobeysp{\leavevmode\penalty100\ }
 \c@IndexColumns=2
 \makeatother
+\newlength\origparindent
+\newlength\origparskip
 %^^A default: 50pt
-\premulticols=75pt
+%^^A \premulticols=75pt
 \begin{document}
+  \let\origparindent\parindent
+  \let\origparskip\parskip
   \DocInput{\filename}
   \addcontentsline{toc}{section}{ArrowsADF}
   \DocInput{adfarrows.dtx}
   \addcontentsline{toc}{section}{BulletsADF}
   \DocInput{adfbullets.dtx}
+  \let\parindent\origparindent
+  \let\parskip\origparskip
   \PrintChanges
   \PrintIndex
 \end{document}

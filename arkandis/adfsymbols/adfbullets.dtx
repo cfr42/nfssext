@@ -31,7 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: adfbullets.dtx 10962 2025-03-25 02:15:04Z cfrees $}[v1.3 \revinfo][\filebase DTX: FONT for 8-bit engines]
+\ProvidesFileSVN{$Id: adfbullets.dtx 10982 2025-03-30 16:37:00Z cfrees $}[v1.3 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[adfbullets]
 \documentclass[11pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -222,7 +222,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: adfbullets.dtx 10962 2025-03-25 02:15:04Z cfrees $}[v1.3 \revinfo]
+\ProvidesPackageSVN[\filebase.sty]{$Id: adfbullets.dtx 10982 2025-03-30 16:37:00Z cfrees $}[v1.3 \revinfo]
 \DefineFileInfoSVN[adfbullets]
 \newif\if@adfbullets@digonnew
 %    \end{macrocode}
@@ -305,7 +305,7 @@
     D, %% D  
     E, %% E  
     F, %% F 
-    G, %% G 
+    G, %% G  ✤ 2724
     H, %% H
     I, %% I  ✠ 2720   filled
     J, %% J  ✠ 2720   open
@@ -323,7 +323,7 @@
     V, %% V  
     W, %% W  
     X, %% X  
-    Y, %% Y  
+    Y, %% Y  ✷ 2737
     Z, %% Z  
     a, %% a  ◌ 25CC
     b, %% b  ◌ 25CC
@@ -343,7 +343,7 @@
     p, %% p  ⬬ 2B2C
     q, %% q  ◎ 25CE
     r, %% r  · 00B7
-    s, %% s  ⊙ 2299
+    s, %% s  ⦿ 29BF circled bullet
     t, %% t  
     u, %% u  ⯀ 2BC0
     v, %% v  ⯌ 2BCC small
@@ -367,7 +367,7 @@
     0    , %% D  
     0    , %% E  
     0    , %% F  
-    0    , %% G  
+    2724 , %% G  
     0    , %% H  
     2720 , %% I  
     2720 , %% J  
@@ -385,7 +385,7 @@
     0    , %% V  
     0    , %% W  
     0    , %% X  
-    0    , %% Y  
+    2737 , %% Y  
     0    , %% Z  
     25CC , %% a  
     25CC , %% b  
@@ -405,7 +405,7 @@
     2B2C , %% p  
     25CE , %% q  
     00B7 , %% r  
-    2299 , %% s  
+    29BF , %% s  
     0    , %% t  
     2BC0 , %% u  
     2BCC , %% v  
@@ -424,9 +424,13 @@
   \cs_new_nopar:Npn \__adfbullets_tounicode:nn #1#2
   {
     \str_compare:nNnTF { #2 } = { 0 }
-    {
-      \exp_args:Nne \pdfglyphtounicode { tfm:BulletsADF/#1 } { \int_to_Hex:n { \l_tmpa_int } }
-      \int_incr:N \l_tmpa_int
+    { 
+%    \end{macrocode}
+% Map to bullet if nothing better.
+%    \begin{macrocode}
+      \pdfglyphtounicode { tfm:BulletsADF/#1 } { 2022 }
+%^^A      \exp_args:Nne \pdfglyphtounicode { tfm:BulletsADF/#1 } { \int_to_Hex:n { \l_tmpa_int } }
+%^^A      \int_incr:N \l_tmpa_int
     } {
       \pdfglyphtounicode { tfm:BulletsADF/#1 } { #2 }
     }
@@ -514,13 +518,14 @@
 % \fi
 %^^A ateb wipet: https://tex.stackexchange.com/a/406420/
 %    \begin{macrocode}
+  \DeclareUnicodeCharacter{2022}{\textbullet}
 %^^A   \DeclareUnicodeCharacter{}{} %% A, %% A     
 %^^A   \DeclareUnicodeCharacter{}{} %% B, %% B  
 %^^A   \DeclareUnicodeCharacter{}{} %% C, %% C  
 %^^A   \DeclareUnicodeCharacter{}{} %% D, %% D  
 %^^A   \DeclareUnicodeCharacter{}{} %% E, %% E  
 %^^A   \DeclareUnicodeCharacter{}{} %% F, %% F 
-%^^A   \DeclareUnicodeCharacter{}{} %% G, %% G 
+  \DeclareUnicodeCharacter{2724}{balloon 4-pointed asterisk}
 %^^A   \DeclareUnicodeCharacter{}{} %% H, %% H
   \DeclareUnicodeCharacter{2720}{$\maltese$}
 %^^A   \DeclareUnicodeCharacter{}{} %% K, %% K  
@@ -537,7 +542,7 @@
 %^^A   \DeclareUnicodeCharacter{}{} %% V, %% V  
 %^^A   \DeclareUnicodeCharacter{}{} %% W, %% W  
 %^^A   \DeclareUnicodeCharacter{}{} %% X, %% X  
-%^^A   \DeclareUnicodeCharacter{}{} %% Y, %% Y  
+  \DeclareUnicodeCharacter{2737}{8-pointed rectilinear star}
 %^^A   \DeclareUnicodeCharacter{}{} %% Z, %% Z  
   \DeclareUnicodeCharacter{25CC}{\circle{} filled}
   \DeclareUnicodeCharacter{2B1B}{$\blacksquare$}
@@ -554,7 +559,7 @@
   \DeclareUnicodeCharacter{2B2C}{ellipse}
   \DeclareUnicodeCharacter{25CE}{dot large}
   \DeclareUnicodeCharacter{00B7}{dot}
-  \DeclareUnicodeCharacter{2299}{circled dot}
+  \DeclareUnicodeCharacter{29BF}{circled bullet}
 %^^A   \DeclareUnicodeCharacter{}{} %% t, %% t  
   \DeclareUnicodeCharacter{2BC0}{$\blacksquare$}
   \DeclareUnicodeCharacter{2BCC}{cusp}
