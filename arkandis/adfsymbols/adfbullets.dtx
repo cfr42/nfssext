@@ -31,7 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: adfbullets.dtx 10982 2025-03-30 16:37:00Z cfrees $}[v1.3 \revinfo][\filebase DTX: FONT for 8-bit engines]
+\ProvidesFileSVN{$Id: adfbullets.dtx 10983 2025-03-31 03:02:39Z cfrees $}[v1.3 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[adfbullets]
 \documentclass[11pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -222,7 +222,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: adfbullets.dtx 10982 2025-03-30 16:37:00Z cfrees $}[v1.3 \revinfo]
+\ProvidesPackageSVN[\filebase.sty]{$Id: adfbullets.dtx 10983 2025-03-31 03:02:39Z cfrees $}[v1.3 \revinfo]
 \DefineFileInfoSVN[adfbullets]
 \newif\if@adfbullets@digonnew
 %    \end{macrocode}
@@ -391,7 +391,7 @@
     25CC , %% b  
     2B1B , %% c  
     2BC1 , %% d  
-    2BC7 , %% e  
+    2BC7 , %% e or 25C0 etc.? 
     2BC8 , %% f  
     2BC5 , %% g  
     2BC6 , %% h  
@@ -406,7 +406,7 @@
     25CE , %% q  
     00B7 , %% r  
     29BF , %% s  
-    0    , %% t  
+    25B0 , %% t  
     2BC0 , %% u  
     2BCC , %% v  
     2BCC , %% w  
@@ -429,8 +429,6 @@
 % Map to bullet if nothing better.
 %    \begin{macrocode}
       \pdfglyphtounicode { tfm:BulletsADF/#1 } { 2022 }
-%^^A      \exp_args:Nne \pdfglyphtounicode { tfm:BulletsADF/#1 } { \int_to_Hex:n { \l_tmpa_int } }
-%^^A      \int_incr:N \l_tmpa_int
     } {
       \pdfglyphtounicode { tfm:BulletsADF/#1 } { #2 }
     }
@@ -438,9 +436,7 @@
 %    \end{macrocode}
 % \end{macro}
 % Generate the actual mappings.
-% \texttt{E000} is the first code point in the PUA.
 %    \begin{macrocode}
-  \int_set:Nn \l_tmpa_int { \int_from_hex:n { E000 } }
   \seq_map_pairwise_function:NNN \l__adfbullets_glyphtounicode_seq 
     \l__adfbullets_tounicode_seq \__adfbullets_tounicode:nn
 }

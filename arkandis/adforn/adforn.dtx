@@ -1,7 +1,7 @@
 % \iffalse meta-comment
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % adforn.dtx
-% Additions and changes Copyright (C) YYYY-2025 Clea F. Rees.
+% Additions and changes Copyright (C) 2010-2025 Clea F. Rees.
 % Code from skeleton.dtx Copyright (C) 2015-2024 Scott Pakin (see below).
 %
 % This work may be distributed and/or modified under the
@@ -31,7 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: adforn.dtx 10840 2025-02-21 19:06:45Z cfrees $}[v1.2 \revinfo][\filebase DTX: FONT for 8-bit engines]
+\ProvidesFileSVN{$Id: adforn.dtx 10983 2025-03-31 03:02:39Z cfrees $}[v1.2 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[adforn]
 \documentclass[11pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -216,7 +216,7 @@
 % \newcommand*{\fname}[1]{\textsf{#1}}
 % \newcommand*{\file}[1]{\texttt{#1}}
 %
-% \changes{v??}{YYYY/??/??}{First public release.}
+% \changes{v??}{2010/08/01}{First public release.}
 % \changes{v1.2}{2024-09-29}{Belated update for (New) NFSS and revised nfssext-cfr.
 % Try switching to DTX/INS.}
 %
@@ -488,7 +488,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: adforn.dtx 10840 2025-02-21 19:06:45Z cfrees $}[v1.2 \revinfo]
+\ProvidesPackageSVN[\filebase.sty]{$Id: adforn.dtx 10983 2025-03-31 03:02:39Z cfrees $}[v1.2 \revinfo]
 \DefineFileInfoSVN[adforn]
 \newif\if@adforn@digonnew
 %    \end{macrocode}
@@ -950,6 +950,227 @@
 \newcommand*{\adfgee}{\adforn{75}}
 %    \end{macrocode}
 % \end{macro}
+% \changes{v0.0}{0000-00-00}{Add \texttt{/ToUnicode} values (\lpack{adforn}).}
+% I don't know why somebody would use these fonts with a Unicode engine, but, just in case, map for that as well as pdf\TeX.
+% 
+% Lua\TeX{} manual page 49.
+%    \begin{macrocode}
+\ExplSyntaxOn
+\bool_if:nT { \sys_if_engine_luatex_p: }
+{ 
+  \protected\def\pdfglyphtounicode {\pdfextension glyphtounicode }
+}
+\bool_if:nT { \sys_if_engine_luatex_p: || \sys_if_engine_pdftex_p: }
+{
+%    \end{macrocode}
+% \begin{macro}{\l__adforn_glyphtounicode_seq}
+% This seems \dots{} insane?
+% 
+% It would be more efficient to just set everything directly, but this is easier to set up and only read once.
+% First, a sequence to hold glyph names.
+%    \begin{macrocode}
+  \seq_new:N \l__adforn_glyphtounicode_seq
+  \seq_set_from_clist:Nn \l__adforn_glyphtounicode_seq
+  {
+    parenleft, %% parenleft
+    parenright, %% parenright
+    zero, %% zero
+    one, %% one
+    two, %% two
+    three, %% three
+    four, %% four
+    five, %% five
+    six, %% six
+    seven, %% seven
+    eight, %% eight
+    nine, %% nine
+    less, %% less
+    equal, %% equal
+    greater, %% greater
+    A, %% A  
+    B, %% B  
+    C, %% C  
+    D, %% D  
+    E, %% E  
+    F, %% F 
+    G, %% G  
+    H, %% H
+    I, %% I  
+    J, %% J  
+    K, %% K  
+    L, %% L  
+    M, %% M  
+    N, %% N  
+    O, %% O  
+    P, %% P  
+    Q, %% Q  
+    R, %% R  
+    S, %% S  
+    T, %% T  
+    U, %% U  
+    V, %% V  
+    W, %% W  
+    X, %% X  
+    Y, %% Y  
+    Z, %% Z  
+    bracketleft, %% bracketleft
+    bracketright, %% bracketright
+    a, %% a  
+    b, %% b  
+    c, %% c  
+    d, %% d  
+    e, %% e  
+    f, %% f  
+    g, %% g  
+    h, %% h  
+    i, %% i  
+    j, %% j  
+    k, %% k  
+    l, %% l  
+    m, %% m  
+    n, %% n  
+    o, %% o  
+    p, %% p  
+    q, %% q  
+    r, %% r  
+    s, %% s  
+    t, %% t  
+    u, %% u  
+    v, %% v  
+    w, %% w  
+    x, %% x  
+    y, %% y  
+    z, %% z  
+    braceleft, %% braceleft
+    bar, %% bar
+    braceright, %% braceright
+    bullet, %% bullet
+    section, %% section
+    paragraph, %% paragraph
+  }
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\l__adforn_tounicode_seq}
+% A sequence to hold Unicode targets.
+% These are, for the most part, simply arbitrary.
+% I frankly have no idea what these should map to.
+% I don't know whether there are corresponding Unicode points.
+% If there are, I don't know where they are or how to find them.
+% If I can find them, I have no idea whether to count most of these are the same symbol or which of several codepoints to choose.
+%    \begin{macrocode}
+  \seq_new:N \l__adforn_tounicode_seq
+  \seq_set_from_clist:Nn \l__adforn_tounicode_seq
+  {
+    2B98 , %% 1 hightlight left arrowhead 
+    2B9A , %% 2 hightlight right arrowhead
+    273F , %% 3 BLACK FLORETTE (Dingbats)
+    2748 , %% 4 heavy sparkle
+    2747 , %% 5 sparkle
+    274A , %% 6 8 teardrop-spoked propeller asterisk
+    274B , %% 7 heavy 8 teardrop-spoked propeller asterisk
+    2747 , %% 8 sparkle
+    2748 , %% 9 heavy sparkle
+    274A , %%10 8 teardrop-spoked propeller asterisk
+    273F , %%11 BLACK FLORETTE (Dingbats)
+    273F , %%12 BLACK FLORETTE (Dingbats)
+    2619 , %%13 REVERSED ROTATED FLORAL HEART BULLET 
+    2B26 , %%14 White Medium Diamond? or 25C7? or 1F754?
+    2767 , %%15 rotated floral heart bullet? 
+%    \end{macrocode}
+% These are not characters.
+% No idea what to do with them.
+%    \begin{macrocode}
+    2FFFE, %%16 <Not A Character> 
+    2FFFE, %%17 <Not A Character> 
+    2FFFE, %%18 <Not A Character> 
+    2FFFE, %%19 <Not A Character> 
+    2FFFE, %%20 <Not A Character> 
+    2FFFE, %%21 <Not A Character> 
+    2FFFE, %%22 <Not A Character> 
+    2FFFE, %%23 <Not A Character> 
+    2FFFE, %%24 <Not A Character> 
+    2FFFE, %%25 <Not A Character> 
+    2FFFE, %%26 <Not A Character> 
+%    \end{macrocode}
+% Arbitrary, but back to characters, at least.
+%    \begin{macrocode}
+    1F654, %%27 Turned North West Pointing Leaf  
+    1F654, %%28 Turned North West Pointing Leaf  white
+    1F65B, %%29 South East Pointing Vine Leaf
+    2767 , %%30 rotated floral heart bullet? white
+    2767 , %%31 rotated floral heart bullet? black
+    1F660, %%32 NORTH WEST POINTING BUD
+    2766 , %%33 FLORAL HEART (Dingbats)
+    2767 , %%34 rotated floral heart bullet? 
+    2766 , %%35 FLORAL HEART (Dingbats)
+    2767 , %%36 rotated floral heart bullet? 
+    2767 , %%37 rotated floral heart bullet? 
+    2767 , %%38 rotated floral heart bullet?
+    2766 , %%39 FLORAL HEART (Dingbats)?
+    2767 , %%40 rotated floral heart bullet? 
+    2767 , %%41 rotated floral heart bullet?
+    2B9C , %%42 Black Leftwards Equilateral Arrowhead
+    2B9E , %%43 black rightwards equilateral arrowhead
+%    \end{macrocode}
+% Not characters.
+% See above.
+%    \begin{macrocode}
+    2FFFF, %%44 <Not A Character> 
+    2FFFF, %%45 <Not A Character> 
+    2FFFF, %%46 <Not A Character> 
+    2FFFF, %%47 <Not A Character> 
+    2FFFF, %%48 <Not A Character> 
+    2FFFF, %%49 <Not A Character> 
+    2FFFF, %%50 <Not A Character> 
+    2FFFF, %%51 <Not A Character> 
+    2FFFF, %%52 <Not A Character> 
+    2FFFF, %%53 <Not A Character> 
+    2FFFF, %%54 <Not A Character> 
+%    \end{macrocode}
+% Arbitrary, but back to characters, at least.
+%    \begin{macrocode}
+    1F651, %%55 southwest pointing leaf
+    1F651, %%56 southwest pointing leaf
+    1F658, %%57	North West Pointing Vine Leaf white 
+    2619 , %%58 REVERSED ROTATED FLORAL HEART BULLET white
+    2619 , %%59 REVERSED ROTATED FLORAL HEART BULLET 
+    1F662, %%60 NORTH EAST POINTING BUD
+    2766 , %%61 FLORAL HEART (Dingbats)
+    2619 , %%62 REVERSED ROTATED FLORAL HEART BULLET 
+    2766 , %%63 FLORAL HEART (Dingbats)
+    2619 , %%64 REVERSED ROTATED FLORAL HEART BULLET 
+    2619 , %%65 REVERSED ROTATED FLORAL HEART BULLET 
+    2619 , %%66 REVERSED ROTATED FLORAL HEART BULLET 
+    2619 , %%67 REVERSED ROTATED FLORAL HEART BULLET 
+    2619 , %%68 REVERSED ROTATED FLORAL HEART BULLET 
+    2619 , %%69 REVERSED ROTATED FLORAL HEART BULLET 
+    1F66C, %%70 Leftwards Rocket
+    274F , %%71 shadowed square
+    1F66E, %%72 Rightwards Rocket
+    2022 , %%73 bullet
+    00A7 , %%74 section
+    2761 , %%75 curved stem paragraph ornament?
+  }
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\__adforn_tounicode:nn}
+% TFM-specific mapping.
+%
+% pdf\TeX{} manual page 33.
+%    \begin{macrocode}
+  \cs_new_nopar:Npn \__adforn_tounicode:nn #1#2
+  {
+    \pdfglyphtounicode { tfm:OrnementsADF/#1 } { #2 }
+  }
+%    \end{macrocode}
+% \end{macro}
+% Generate the actual mappings.
+%    \begin{macrocode}
+  \seq_map_pairwise_function:NNN \l__adforn_glyphtounicode_seq 
+    \l__adforn_tounicode_seq \__adforn_tounicode:nn
+}
+\ExplSyntaxOff
+%    \end{macrocode}
 %^^A paid â chynnwys \endinput - docstrip yn chwilio amddo fe yn arbennigol
 %^^A & bydd doctrip yn ei ychwanegu fe beth bynnag
 %^^A (Martin Scharrer: https://tex.stackexchange.com/a/28997/)
@@ -1284,13 +1505,5 @@
 %</fd>
 % \fi
 %
-% \iffalse
-% \fi
-% \iffalse
-% \fi
-% \iffalse
-% \fi
-% \iffalse
-% \fi
 %\Finale
 %^^A vim: sw=2:et:tw=0:
