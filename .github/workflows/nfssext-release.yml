@@ -338,7 +338,7 @@ jobs:
         if: ${{ contains(github.ref_name, matrix.module) }}
         working-directory: cfr-lm 
         id: clmbuild
-        run : l3build fnttarg
+        run : l3build fnttarg && l3build install && updmap --user --enable Map=clm.map
       - name: Run l3build fnttarg
         if: ${{ matrix.pre_target }}
         working-directory: ${{ matrix.working_directory }}
