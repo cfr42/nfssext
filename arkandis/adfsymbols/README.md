@@ -1,4 +1,4 @@
-$Id: README.md 10464 2024-10-03 19:29:14Z cfrees $
+$Id: README.md 10985 2025-03-31 05:35:43Z cfrees $
 
 # adfsymbols
 
@@ -41,7 +41,7 @@ If you have comments about the fonts themselves, please contact Hirwen
 Harendal (harendalh <at> hotmail <dot> com). 
 
 Clea F. Rees
-Version 1.3
-2024-10-03
+Version 1.4
+2025-03-31
 
 vim: tw=80:sw=2:et:
