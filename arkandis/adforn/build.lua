@@ -1,4 +1,4 @@
--- $Id: build.lua 10746 2025-01-29 06:47:44Z cfrees $
+-- $Id: build.lua 10991 2025-04-01 18:04:29Z cfrees $
 -- Build configuration for adfornadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -50,7 +50,7 @@ uploadconfig = {
 	pkg        = ctanpkg,
 	summary    = "Support for OrnementsADF on 8-bit engines",
   uploader   = "Clea F. Rees",
-	version    = "v1.2",
+	version    = "v1.3",
   -- optional --
 	bugtracker = {"https://codeberg.org/cfr/nfssext/issues"},
   -- description
