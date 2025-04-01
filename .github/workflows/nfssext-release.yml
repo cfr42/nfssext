@@ -387,8 +387,9 @@ jobs:
         if: ${{ contains(github.ref_name, matrix.module) && ( !(matrix.pre_target) || (steps.ctan.outputs.CTAN_RET)) }}
         env:
           modname: ${{ matrix.module }}
+          dirname: ${{ matrix.working_directory }}
         run: |
-          unzip -l ${modname}/${modname}-ctan.zip
+          unzip -l ${dirname}/${modname}-ctan.zip
       - name: Archive release zip
       # only if releasing and build succeeded
         if: ${{ contains(github.ref_name, matrix.module) && ( !(matrix.pre_target) || (steps.ctan.outputs.CTAN_RET)) }}
