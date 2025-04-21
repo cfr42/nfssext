@@ -31,7 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: adforn.dtx 10986 2025-03-31 05:38:02Z cfrees $}[v1.3 \revinfo][\filebase DTX: FONT for 8-bit engines]
+\ProvidesFileSVN{$Id: adforn.dtx 11009 2025-04-21 00:09:11Z cfrees $}[v1.3 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[adforn]
 \documentclass[11pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -298,7 +298,7 @@
 % 		71		%&	\adforn{71}
 % 						&	\verb|\adfsquare|	&	\adfsquare\\
 % 		73		%&	\adforn{73}
-% 						&	\verb|\adfbullet|	&	\adfbullet\\%\midrule
+% 						&	\verb|\adftextbullet|	&	\adftextbullet\\%\midrule
 % 
 % 	\multicolumn{6}{l}{\adforngroup{fancy asterisks \& bullets}}\\\midrule		
 % 		3		%&	\adforn{3}
@@ -488,7 +488,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: adforn.dtx 10986 2025-03-31 05:38:02Z cfrees $}[v1.3 \revinfo]
+\ProvidesPackageSVN[\filebase.sty]{$Id: adforn.dtx 11009 2025-04-21 00:09:11Z cfrees $}[v1.3 \revinfo]
 \DefineFileInfoSVN[adforn]
 \newif\if@adforn@digonnew
 %    \end{macrocode}
@@ -937,10 +937,12 @@
 \newcommand*{\adfhalfrightarrow}{\adforn{72}}
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{\adfbullet}
+% \changes{v0.0}{0000-00-00}{\cs{adfbullet} renamed to \cs{adftextbullet} to
+% avoid conflict with (\lpack{adfbullet}).}
+% \begin{macro}{\adftextbullet}
 % \mbox{}
 %    \begin{macrocode}
-\newcommand*{\adfbullet}{\adforn{73}}
+\newcommand*{\adftextbullet}{\adforn{73}}
 \newcommand*{\adfS}{\adforn{74}}
 %    \end{macrocode}
 % \end{macro}
