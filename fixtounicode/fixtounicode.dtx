@@ -1,0 +1,406 @@
+% \iffalse meta-comment
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% fixtounicode.dtx
+% Additions and changes Copyright (C) 2025 Clea F. Rees.
+% Code from skeleton.dtx Copyright (C) 2015-2024 Scott Pakin (see below).
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   https://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2008-05-04 or later.
+%
+% This work has the LPPL maintenance status 'muaintained'.
+%
+% The Current Maintainer of this work is Clea F. Rees.
+%
+% This work consists of all files listed in manifest.txt.
+%
+% The file fixtounicode.dtx is a derived work under the terms of the
+% LPPL. It is based on version 2.4 of skeleton.dtx which is part of
+% dtxtut by Scott Pakin. A copy of dtxtut, including the
+% unmodified version of skeleton.dtx is available from
+% https://www.ctan.org/pkg/dtxtut and released under the LPPL.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \fi
+%
+% \iffalse
+%<*driver>
+\RequirePackage{svn-prov}
+% ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
+\def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
+\ExplSyntaxOff
+\ProvidesFileSVN{$Id: fixtounicode.dtx 11011 2025-04-21 16:37:21Z cfrees $}[v0.0 \revinfo][\filename: \filebase]
+\revinfo][\filebase DTX: ]
+\DefineFileInfoSVN[fixtounicode]
+\documentclass[11pt,british]{ltxdoc}
+% l3doc loads fancyvrb
+% fancyvrb overwrites svn-prov's macros without warning
+% restore \fileversion \filerev in case we're using l3doc
+\GetFileInfoSVN{fixtounicode}
+\usepackage{fixtounicode}
+\EnableCrossrefs
+\CodelineIndex
+\RecordChanges
+% \OnlyDescription
+\DoNotIndex{\verb,\ProvidesPackageSVN,\NeedsTeXFormat,\ProcessKeyOptions}
+\usepackage{babel}
+\usepackage{fancyhdr}
+\usepackage[plain]{fancyref}
+\usepackage{fixfoot}
+\usepackage{array,tabularx}
+\usepackage{longtable}
+\usepackage{enumitem}
+\usepackage[referable]{threeparttablex}
+\makeatletter
+\def\TPT@measurement{% ateb David Carlisle: https://tex.stackexchange.com/a/370691/
+  \ifdim\wd\@tempboxb<\TPTminimum
+    \hsize \TPTminimum
+  \else
+    \hsize\wd\@tempboxb
+  \fi
+  \xdef\TPT@hsize{\hsize\the\hsize \noexpand\@parboxrestore}\TPT@hsize
+  \ifx\TPT@docapt\@undefined\else
+    \TPT@docapt \vskip.2\baselineskip
+  \fi \par
+  \dimen@\dp\@tempboxb % new
+  \box\@tempboxb
+  \ifvmode \prevdepth\dimen@ \fi% was \z@ not \dimen@
+}
+\renewlist{tablenotes}{enumerate}{1}
+\setlist[tablenotes]{label=\tnote{\alph*},ref=\alph*,itemsep=\z@,topsep=\z@skip,partopsep=\z@skip,parsep=\z@,itemindent=\z@,labelindent=\tabcolsep,labelsep=.2em,leftmargin=*,align=left,before={\unskip\medskip\footnotesize}}
+\makeatother
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{xurl}
+% \urlstyle{tt}
+\urlstyle{sf}
+\usepackage{microtype}
+\usepackage[a4paper,headheight=14pt,marginparwidth=45mm,hmarginratio=4:1,vscale=.8,hscale=.7,verbose]{geometry}	% use 14pt for 11pt text, 15pt for 12pt text
+% addaswyd o chronos.tex
+\newlength\tewadjust
+\newlength\chronosdoctemplgth
+\AddToHook {begindocument/after}[.]
+{%
+  \setlength\tewadjust{\marginparwidth+\marginparsep-\paperwidth+\textwidth+\oddsidemargin+1in}%
+  \setlength\chronosdoctemplgth{0pt}%
+}
+\usepackage{csquotes}
+\MakeAutoQuote{‘}{’}
+\MakeAutoQuote*{“}{”}
+\usepackage{caption}
+\DeclareCaptionFont{lf}{\lstyle}
+\captionsetup[table]{labelfont=lf}
+% sicrhau hyperindex=false: llwytho CYN bookmark
+\usepackage{hypdoc}% ateb Ulrike Fischer: https://tex.stackexchange.com/a/695555/
+\usepackage{bookmark}
+\hypersetup{%
+  colorlinks=true,
+  citecolor={moss},
+  extension=pdf,
+  linkcolor={strawberry},
+  linktocpage=true,
+  pdfcreator={TeX},
+  pdfproducer={pdfeTeX},
+  urlcolor={blueberry}%
+}
+\NewDocElement[%
+  idxtype=opt.,
+  idxgroup=options,
+  printtype=\textit{opt.},
+]{Opt}{option}
+\NewDocElement[%
+  idxtype=alt.,
+  idxgroup=alternates,
+  printtype=\textit{alt.},
+]{Alt}{alternate}
+\NewDocElement[%
+  idxtype=lig.,
+  idxgroup=ligatures,
+  printtype=\textit{lig.},
+]{Lig}{ligature}
+\NewDocElement[%
+  idxtype=sw.,
+  idxgroup=swashes,
+  printtype=\textit{sw.},
+]{Sw}{swash}
+\NewDocElement[%
+  idxtype=pkg.,
+  idxgroup=,
+  printtype=\textit{pkg.},
+]{Pkg}{package}
+\NewDocElement[%
+  printtype=\textdagger,
+  idxtype=,
+  idxgroup=,
+  macrolike,
+]{DMacro}{dmacro}
+\NewDocElement[%
+  idxtype=fd.,
+  idxgroup=fds,
+  printtype=\textit{fd.},
+]{Fd}{fdfile}
+\NewDocElement[%
+  idxtype=drv.,
+  idxgroup=drivers,
+  printtype=\textit{drv.},
+]{Drv}{driver}
+\NewDocElement[%
+  idxtype=map,
+  idxgroup=map files,
+  printtype=\textit{map},
+]{Map}{mapfile}
+\NewDocElement[%
+  idxtype=etx,
+  idxgroup=font encodings,
+  printtype=\textit{etx},
+]{Etx}{encoding}
+\NewDocumentCommand \val { m }
+{%
+  {\ttfamily =\,\meta{#1}}%
+}
+\ExplSyntaxOn
+\NewDocumentCommand \vals { m }
+{
+  {
+    \ttfamily = \, 
+    \clist_use:nn { #1 } { \textbar }
+  }
+} 
+\keys_define:nn { fixtounicode / doc }
+{
+  unknown .code:n = {
+    \cs_if_free:cT { \l_keys_key_str }
+    {
+      \tl_gset:cn { \l_keys_key_str } { #1 }
+    }
+  },
+}
+\NewDocumentCommand \fixtounicodedocset { +m }
+{
+  \keys_set:nn { fixtounicode / doc } { #1 }
+}
+\ExplSyntaxOff
+\fixtounicodedocset{%
+  bug={\href{https://codeberg.org/cfr/REPO/issues}{\textsc{bugtracker}}},
+  codeberg={\href{https://codeberg.org/cfr/REPO}{\textsc{codeberg}}},
+  github={\href{https://github.com/cfr42/REPO}{\textsc{github}}},
+  ctan={\href{https://ctan.org/}{\textsc{ctan}}},
+}
+% \usepackage{cleveref}
+\newcommand*{\gust}{\textsc{Gust}}
+\newcommand*{\lpack}[1]{\textsf{#1}}
+\newcommand*{\fgroup}[1]{\textsf{#1}}
+\newcommand*{\fname}[1]{\textsf{#1}}
+\newcommand*{\file}[1]{\texttt{#1}}
+\title{\filebase}
+\author{Clea F. Rees\thanks{%
+    Bug tracker:
+    \href{https://codeberg.org/cfr/REPO/issues}{\url{codeberg.org/cfr/REPO/issues}}
+    \textbar{} Code:
+    \href{https://codeberg.org/cfr/REPO}{\url{codeberg.org/cfr/REPO}}
+    \textbar{} Mirror:
+    \href{https://github.com/cfr42/REPO}{\url{github.com/cfr42/REPO}}% 
+}}
+% \date{\fileversion~\filetoday}
+\date{\fileversion~\filedate}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhf[lh]{\itshape\filebase}
+% ^^A \fancyhf[rh]{\itshape\filetoday}
+\fancyhf[rh]{\itshape\fileversion}
+% ^^A \fancyhf[ch]{\itshape Support for Latin Modern}
+% ^^A\fancyhf[lf]{\itshape\fileversion}
+\fancyhf[cf]{\itshape--- \thepage~/~\lastpage{} ---}
+\ExplSyntaxOn
+\hook_gput_code:nnn {shipout/lastpage} {.}
+{
+  \property_record:nn {t:lastpage}{abspage,page,pagenum}
+}
+\cs_new_protected_nopar:Npn \lastpage 
+{
+  \property_ref:nn {t:lastpage}{page}
+}
+\cs_new_eq:NN \OrigMakePrivateLetters \MakePrivateLetters
+\ExplSyntaxOff
+\definecolor{strawberry}{rgb}{1.000,0.000,0.502}
+\definecolor{blueberry}{rgb}{0.000,0.000,1.000}
+\definecolor{moss}{rgb}{0.000,0.502,0.251}
+\begin{document}
+\let\MakePrivateLetters\MyMakePrivateLetters
+\DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+%
+% \changes{v0.0}{0000-00-00{First public release.}
+% ^^A lua will replace v0.0 and 0000/00/00 when tagging
+% \changes{v0.0}{0000/00/00}{}
+% 
+% \maketitle\thispagestyle{empty}
+% \pdfinfo{%
+% 	/Creator		(TeX)
+% 	/Producer		(pdfTeX)
+% 	/Author			(Clea F. Rees)
+% 	/Title			(fixtounicode)
+% 	/Subject		(TeX)
+% 	/Keywords		(TeX,LaTeX,Clea,Rees)}
+% \pdfcatalog{%
+% 	/URL				()
+% 	/PageMode	/UseOutlines}	
+% \setlength{\parindent}{0pt}
+% \setlength{\parskip}{0.5em}
+% 
+% 
+% \begin{abstract}
+%   \noindent\lpack{fixtounicode}
+% \end{abstract}
+%
+% \tableofcontents
+% 
+% 
+% \MaybeStop{%
+% \PrintChanges
+% \PrintIndex
+% }
+% 
+% \section{Implementation}
+%
+% You do not need to read the remainder of this document in order to install or use the package.
+%
+% \iffalse
+%<*sty>
+% \fi
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}
+\RequirePackage{svn-prov}
+\ProvidesPackageSVN[\filebase.sty]{$Id: fixtounicode.dtx 11011 2025-04-21 16:37:21Z cfrees $}[v0.0 \revinfo]
+\DefineFileInfoSVN
+%    \end{macrocode}
+% \iffalse
+% ^^A Paid â defnyddio \GetFileInfoSVN*/\GetFileInfoSVN{} yn y fan hon!!
+% \fi
+%    \begin{macrocode}
+\ExplSyntaxOn
+\seq_new:N \l__fixtounicode_glyphtounicode_seq
+\seq_new:N \l__fixtounicode_tounicode_seq
+\seq_new:N \l__fixtounicode_glyphs_seq
+\seq_new:N \l__fixtounicode_unicodes_seq
+\cs_new_protected_nopar:Npn \__fixtounicode_tounicode_pair:nn #1#2 {}
+\sys_if_engine_pdftex:T
+{
+  \cs_new_protected_nopar:Npn \__fixtounicode_tounicode:nNN #1#2#3
+  {
+    \cs_set_nopar:Npn \__fixtounicode_tounicode_pair:nn ##1##2
+    {
+      \pdfglyphtounicode { tfm:#1/##1 } { ##2 }
+    }
+    \seq_set_eq:NN \l__fixtounicode_glyphtounicode_seq #2
+    \seq_set_eq:NN \l__fixtounicode_tounicode_seq #3
+    \seq_map_pairwise_function:NNN \l__fixtounicode_glyphtounicode_seq
+      \l__fixtounicode_tounicode_seq \__fixtounicode_tounicode_pair:nn
+  }
+}
+\sys_if_engine_luatex:T
+{
+  \lua_load_module:n { fixtounicode }
+  \cs_set_nopar:Npn \__fixtounicode_tounicode_pair:nn #1#2
+  {
+    \lua_now:n{
+      %^^A fixtounicodeTab["#1"] = tonumber("#2",16)
+      table.insert(fixtounicodeTab,tonumber("#2",16))
+    }
+  }
+  \cs_new_protected_nopar:Npn \__fixtounicode_tounicode:nnNN #1#2#3#4
+  {
+    \lua_now:n { fixtounicodeTab = {} }
+    \seq_set_eq:NN \l__fixtounicode_glyphtounicode_seq #3
+    \seq_set_eq:NN \l__fixtounicode_tounicode_seq #4
+    \seq_map_pairwise_function:NNN \l__fixtounicode_glyphtounicode_seq
+      \l__fixtounicode_tounicode_seq \__fixtounicode_tounicode_pair:nn
+    \lua_now:e {
+      fixtounicode.tounicodes("#1","#2",fixtounicodeTab)
+    }
+  }
+}
+\cs_new_eq:NN \fixtounicode_tounicode:nnNN \__fixtounicode_tounicode:nnNN
+\cs_new_protected_nopar:Npn \fixtounicode_tounicode:nNN  #1#2#3
+{
+  \__fixtounicode_tounicode:nnNN { #1 } { #1 } #2 #3
+}
+\cs_new_protected_nopar:Npn \fixtounicode_tounicode:nnnn #1#2#3#4
+{
+  \seq_set_split:Nnn \l__fixtounicode_glyphs_seq { , } { #3 }
+  \seq_set_split:Nnn \l__fixtounicode_unicodes_seq { , } { #4 }
+  \__fixtounicode_tounicode:nnNN { #1 } { #2 } \l__fixtounicode_glyphs_seq \l__fixtounicode_unicodes_seq
+}
+\cs_new_protected_nopar:Npn \fixtounicode_tounicode:nnn #1#2#3
+{
+  \seq_set_split:Nnn \l__fixtounicode_glyphs_seq { , } { #3 }
+  \seq_set_split:Nnn \l__fixtounicode_unicodes_seq { , } { #4 }
+  \__fixtounicode_tounicode:nnNN { #1 } { #1 } \l__fixtounicode_glyphs_seq \l__fixtounicode_unicodes_seq
+}
+\keys_define:nn { fixtounicode }
+{
+  glyphs .clist_set:N = \l__fixtounicode_glyphs_clist,
+  glyphs .value_required:n = true,
+  pfb .tl_set:N = \l__fixtounicode_pfb_tl,
+  pfb .initial:V = \c_empty_tl,
+  tfm .tl_set:N = \l__fixtounicode_tfm_tl,
+  tfm .initial:V = \c_empty_tl,
+  unicodes .clist_set:N = \l__fixtounicode_unicodes_clist,
+  unicodes .value_required:n = true,
+}
+\cs_new_protected:Npn \__fixtounicode_tounicode:n #1
+{
+  \group_begin:
+    \keys_set:nn { fixtounicode } { #1 }
+    \tl_if_empty:NT \l__fixtounicode_tfm_tl
+    {
+      \tl_if_empty:NTF \l__fixtounicode_pfb_tl
+      {
+        % error
+      }{
+        \tl_set_eq:NN \l__fixtounicode_tfm_tl \l__fixtounicode_pfb_tl
+      }
+    }
+    \tl_if_empty:NT \l__fixtounicode_pfb_tl
+    {
+      \tl_set_eq:NN \l__fixtounicode_pfb_tl \l__fixtounicode_tfm_tl
+    }
+    \seq_set_split:NnV \l__fixtounicode_glyphs_seq { , } \l__fixtounicode_glyphs_clist
+    \seq_set_split:NnV \l__fixtounicode_unicodes_seq { , } \l__fixtounicode_unicodes_clist
+    \__fixtounicode_tounicode:VVNN \l__fixtounicode_tfm_tl \l__fixtounicode_pfb_tl \l__fixtounicode_glyphs_seq \l__fixtounicode_unicodes_seq
+  \group_end:
+}
+\cs_generate_variant:Nn \__fixtounicode_tounicode:nnNN { VVNN }
+\cs_set_eq:NN \fixtounicode \__fixtounicode_tounicode:n 
+\ExplSyntaxOff
+%    \end{macrocode}
+% \iffalse
+%</sty>
+% \fi
+% 
+% \subsection{??}
+% 
+% \iffalse
+%<*??>
+% \fi
+%    \begin{macrocode}
+%    \end{macrocode}
+% \iffalse
+%</??>
+% \fi
+% \subsection{Other}
+% \iffalse
+%<*other>
+% \fi
+%    \begin{macrocode}
+%    \end{macrocode}
+% \iffalse
+%</other>
+% \fi
+%\Finale
