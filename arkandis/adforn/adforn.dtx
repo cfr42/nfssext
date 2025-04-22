@@ -31,7 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: adforn.dtx 11009 2025-04-21 00:09:11Z cfrees $}[v1.3 \revinfo][\filebase DTX: FONT for 8-bit engines]
+\ProvidesFileSVN{$Id: adforn.dtx 11014 2025-04-22 03:54:00Z cfrees $}[v1.3 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[adforn]
 \documentclass[11pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -488,7 +488,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: adforn.dtx 11009 2025-04-21 00:09:11Z cfrees $}[v1.3 \revinfo]
+\ProvidesPackageSVN[\filebase.sty]{$Id: adforn.dtx 11014 2025-04-22 03:54:00Z cfrees $}[v1.3 \revinfo]
 \DefineFileInfoSVN[adforn]
 \newif\if@adforn@digonnew
 %    \end{macrocode}
@@ -530,6 +530,10 @@
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \ExplSyntaxOff
+%    \end{macrocode}
+% \changes{v0.0}{0000-00-00}{Use \cs{fixtounicode}.}
+%    \begin{macrocode}
+\RequirePackage{fixtounicode}
 %    \end{macrocode}
 % \begin{macro}{\adforn@style}
 % \mbox{}
@@ -955,13 +959,9 @@
 % \changes{v1.3}{2025-03-31}{Add \texttt{/ToUnicode} values (\lpack{adforn}).}
 % I don't know why somebody would use these fonts with a Unicode engine, but, just in case, map for that as well as pdf\TeX.
 % 
-% Lua\TeX{} manual page 49.
+% \changes{v0.0}{0000-00-00}{Don't use the non-working method from the Lua\TeX{} manual.}
 %    \begin{macrocode}
 \ExplSyntaxOn
-\bool_if:nT { \sys_if_engine_luatex_p: }
-{ 
-  \protected\def\pdfglyphtounicode {\pdfextension glyphtounicode }
-}
 \bool_if:nT { \sys_if_engine_luatex_p: || \sys_if_engine_pdftex_p: }
 {
 %    \end{macrocode}
@@ -1155,21 +1155,11 @@
   }
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{\__adforn_tounicode:nn}
-% TFM-specific mapping.
-%
-% pdf\TeX{} manual page 33.
-%    \begin{macrocode}
-  \cs_new_nopar:Npn \__adforn_tounicode:nn #1#2
-  {
-    \pdfglyphtounicode { tfm:OrnementsADF/#1 } { #2 }
-  }
-%    \end{macrocode}
-% \end{macro}
 % Generate the actual mappings.
+% \changes{v0.0}{0000-00-00}{Use \lpack{fixtounicode}, which does better for lua\TeX{}.}
 %    \begin{macrocode}
-  \seq_map_pairwise_function:NNN \l__adforn_glyphtounicode_seq 
-    \l__adforn_tounicode_seq \__adforn_tounicode:nn
+  \fixtounicode_tounicode:nNN { OrnementsADF } \l__adforn_glyphtounicode_seq 
+    \l__adforn_tounicode_seq 
 }
 \ExplSyntaxOff
 %    \end{macrocode}

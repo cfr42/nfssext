@@ -1,4 +1,4 @@
--- $Id: build.lua 10991 2025-04-01 18:04:29Z cfrees $
+-- $Id: build.lua 11014 2025-04-22 03:54:00Z cfrees $
 -- Build configuration for adfornadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -24,6 +24,7 @@
 ctanpkg = "adforn"
 maindir = "../.."
 module = "adforn"
+checkconfigs = { "build", "config-lua" }
 textfiles = {"*.md","*.txt","COPYING","NOTICE"}
 fnt = {}
 fnt.vendor = "arkandis"
@@ -34,10 +35,12 @@ fnt.keepfiles = { "*.map", "*.tfm" }
 -- RHAID ei osod cyn i ddarllen fntbuild.lua!
 fnt.afmtotfm = true
 dofile(maindir .. "/fontscripts/fntbuild.lua")
+checkdeps = checkdeps or {}
+table.insert(checkdeps,maindir .. "/fixtounicode")
 function fnt.test (fntpkgname,fds,content,maps,fdsdir)
   return 0
 end
-typesetdeps = {maindir .. "/nfssext-cfr", maindir .. "/cfr-lm"}
+typesetdeps = {maindir .. "/nfssext-cfr", maindir .. "/cfr-lm", maindir .. "/fixtounicode"}
 typesetruns = 5
 --
 uploadconfig = {
