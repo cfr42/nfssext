@@ -1,4 +1,4 @@
--- $Id: build.lua 10985 2025-03-31 05:35:43Z cfrees $
+-- $Id: build.lua 11015 2025-04-22 03:54:12Z cfrees $
 -- Build configuration for adfsymbols
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -24,6 +24,7 @@
 ctanpkg = "adfsymbols"
 maindir = "../.."
 module = "adfsymbols"
+checkconfigs = { "build", "config-lua" }
 textfiles = {"*.md","*.txt","COPYING","NOTICE"}
 fnt = {}
 fnt.vendor = "arkandis"
@@ -37,10 +38,13 @@ fnt.encs["ArrowsADF"] = "SymbolsADF.enc"
 fnt.encs["BulletsADF"] = "SymbolsADF.enc"
 -- print(fnt.encs["ArrowsADF"])
 dofile(maindir .. "/fontscripts/fntbuild.lua")
+-- require(kpse.lookup("fntbuild.lua"))
+checkdeps = checkdeps or {}
+table.insert(checkdeps,maindir .. "/fixtounicode")
 function fnt.test (fntpkgname,fds,content,maps,fdsdir)
   return 0
 end
-typesetdeps = {maindir .. "/nfssext-cfr", maindir .. "/cfr-lm"}
+typesetdeps = {maindir .. "/nfssext-cfr", maindir .. "/cfr-lm", maindir .. "/fixtounicode"}
 typesetfiles = { module .. ".dtx" }
 typesetruns = 4
 --

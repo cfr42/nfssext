@@ -31,7 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: adfbullets.dtx 10985 2025-03-31 05:35:43Z cfrees $}[v1.4 \revinfo][\filebase DTX: FONT for 8-bit engines]
+\ProvidesFileSVN{$Id: adfbullets.dtx 11015 2025-04-22 03:54:12Z cfrees $}[v1.4 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[adfbullets]
 \documentclass[11pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -222,7 +222,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: adfbullets.dtx 10985 2025-03-31 05:35:43Z cfrees $}[v1.4 \revinfo]
+\ProvidesPackageSVN[\filebase.sty]{$Id: adfbullets.dtx 11015 2025-04-22 03:54:12Z cfrees $}[v1.4 \revinfo]
 \DefineFileInfoSVN[adfbullets]
 \newif\if@adfbullets@digonnew
 %    \end{macrocode}
@@ -268,6 +268,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \ExplSyntaxOff
 %    \end{macrocode}
+% \changes{v0.0}{0000-00-00}{Use \lpack{fixtounicode}.}
+%    \begin{macrocode}
+\RequirePackage{fixtounicode}
+%    \end{macrocode}
 % \begin{macro}{\adfbullets@style}
 % \mbox{}
 %    \begin{macrocode}
@@ -280,13 +284,9 @@
 % \changes{v1.4}{2025-03-31}{Add \texttt{/ToUnicode} values (\lpack{adfbullets}).}
 % I don't know why somebody would use these fonts with a Unicode engine, but, just in case, map for that as well as pdf\TeX.
 % 
-% Lua\TeX{} manual page 49.
+% \changes{v0.0}{0000-00-00}{Avoid broken implementation of \cs{pdfglyphtounicode} recommended in Lua\TeX{} manual page 49.}
 %    \begin{macrocode}
 \ExplSyntaxOn
-\bool_if:nT { \sys_if_engine_luatex_p: }
-{ 
-  \protected\def\pdfglyphtounicode {\pdfextension glyphtounicode }
-}
 \bool_if:nT { \sys_if_engine_luatex_p: || \sys_if_engine_pdftex_p: }
 {
 %    \end{macrocode}
@@ -361,32 +361,32 @@
   \seq_new:N \l__adfbullets_tounicode_seq
   \seq_set_from_clist:Nn \l__adfbullets_tounicode_seq
   {
-    0    , %% A  
-    0    , %% B  
-    0    , %% C  
-    0    , %% D  
-    0    , %% E  
-    0    , %% F  
+    2022 , %% A <fallback: text bullet>  
+    2022 , %% B <fallback: text bullet>  
+    2022 , %% C <fallback: text bullet>  
+    2022 , %% D <fallback: text bullet>  
+    2022 , %% E <fallback: text bullet>  
+    2022 , %% F <fallback: text bullet>  
     2724 , %% G  
-    0    , %% H  
+    2022 , %% H <fallback: text bullet>  
     2720 , %% I  
     2720 , %% J  
-    0    , %% K  
-    0    , %% L  
-    0    , %% M  
-    0    , %% N  
-    0    , %% O  
-    0    , %% P  
-    0    , %% Q  
-    0    , %% R  
-    0    , %% S  
-    0    , %% T  
-    0    , %% U  
-    0    , %% V  
-    0    , %% W  
-    0    , %% X  
+    2022 , %% K <fallback: text bullet>  
+    2022 , %% L <fallback: text bullet>  
+    2022 , %% M <fallback: text bullet>  
+    2022 , %% N <fallback: text bullet>  
+    2022 , %% O <fallback: text bullet>  
+    2022 , %% P <fallback: text bullet>  
+    2022 , %% Q <fallback: text bullet>  
+    2022 , %% R <fallback: text bullet>  
+    2022 , %% S <fallback: text bullet>  
+    2022 , %% T <fallback: text bullet>  
+    2022 , %% U <fallback: text bullet>  
+    2022 , %% V <fallback: text bullet>  
+    2022 , %% W <fallback: text bullet>  
+    2022 , %% X <fallback: text bullet>  
     2737 , %% Y  
-    0    , %% Z  
+    2022 , %% Z <fallback: text bullet>  
     25CC , %% a  
     25CC , %% b  
     2B1B , %% c  
@@ -397,11 +397,11 @@
     2BC6 , %% h  
     2B98 , %% i  
     2B9A , %% j  
-    0    , %% k  
-    0    , %% l  
+    2022 , %% k <fallback: text bullet>  
+    2022 , %% l <fallback: text bullet>  
     2B98 , %% m  
     2B9A , %% n  
-    0    , %% o  
+    2022 , %% o <fallback: text bullet>  
     2B2C , %% p  
     25CE , %% q  
     00B7 , %% r  
@@ -416,29 +416,11 @@
   }
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{\__adfbullets_tounicode:nn}
-% TFM-specific mapping.
-%
-% pdf\TeX{} manual page 33.
-%    \begin{macrocode}
-  \cs_new_nopar:Npn \__adfbullets_tounicode:nn #1#2
-  {
-    \str_compare:nNnTF { #2 } = { 0 }
-    { 
-%    \end{macrocode}
-% Map to bullet if nothing better.
-%    \begin{macrocode}
-      \pdfglyphtounicode { tfm:BulletsADF/#1 } { 2022 }
-    } {
-      \pdfglyphtounicode { tfm:BulletsADF/#1 } { #2 }
-    }
-  }
-%    \end{macrocode}
-% \end{macro}
+% \changes{v0.0}{0000-00-00}{Use \lpack{fixtounicode}.}
 % Generate the actual mappings.
 %    \begin{macrocode}
-  \seq_map_pairwise_function:NNN \l__adfbullets_glyphtounicode_seq 
-    \l__adfbullets_tounicode_seq \__adfbullets_tounicode:nn
+  \fixtounicode_tounicode:nnNN { BulletsADF } { BulletsADF } 
+    \l__adfbullets_glyphtounicode_seq \l__adfbullets_tounicode_seq 
 }
 \ExplSyntaxOff
 %    \end{macrocode}
