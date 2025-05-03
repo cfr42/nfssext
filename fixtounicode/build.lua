@@ -1,4 +1,4 @@
--- $Id: build.lua 11028 2025-05-03 20:49:06Z cfrees $
+-- $Id: build.lua 11029 2025-05-03 21:08:49Z cfrees $
 -- Build configuration for fixtounicode
 -------------------------------------------------------------------------------
 -- l3build.pdf listing 1 tudalen 9
@@ -77,13 +77,6 @@ test_types = {
   },
 }
 test_order = {"uni", "log"}
-      -- local f = assert(io.open(gentxt,"rb"))
-      -- local c = f:read("*all")
-      -- f:close()
-      -- f = assert(io.open(normtxt,"w"))
-      -- -- ddim yn gweithio | doesn't work
-      -- f:write((string.gsub(c,"%s*%^L","")))
-      -- f:close()
 -------------------------------------------------------------------------------
 -- rhaid i vars addasol fodoli? | suitable vars must exist?
 function checkinit_hook ()
