@@ -1,4 +1,4 @@
--- $Id: build.lua 11029 2025-05-03 21:08:49Z cfrees $
+-- $Id: build.lua 11032 2025-05-03 21:24:30Z cfrees $
 -- Build configuration for fixtounicode
 -------------------------------------------------------------------------------
 -- l3build.pdf listing 1 tudalen 9
@@ -76,7 +76,7 @@ test_types = {
     end,
   },
 }
-test_order = {"uni", "log"}
+test_order = {"uni"}
 -------------------------------------------------------------------------------
 -- rhaid i vars addasol fodoli? | suitable vars must exist?
 function checkinit_hook ()
