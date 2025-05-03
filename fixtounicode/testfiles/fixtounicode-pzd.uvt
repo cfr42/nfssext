@@ -1,0 +1,71 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+\DocumentMetadata{uncompress}
+\listfiles
+\ExplSyntaxOn
+\sys_if_engine_pdftex:T
+{
+  \pdftracingfonts=1
+}
+\sys_if_engine_luatex:T
+{
+  \tracingfonts=1
+}
+\ExplSyntaxOff
+\RequirePackage{svn-prov}
+\ProvidesFileSVN{$Id: fixtounicode-pzd.uvt 11022 2025-05-03 02:09:56Z cfrees $}[v0.0 \revinfo][\filebase: subs test]
+\input regression-test.tex\relax
+\documentclass{article}
+\usepackage{tracefnt}% infoshow is default; debugshow traces maths fonts, too
+\parindent=0pt
+\pagestyle{empty}
+	
+\usepackage{pifont}
+\usepackage{pzd-data}
+\usepackage[dev]{fixtounicode}
+\ExplSyntaxOn
+% #1 {<enw'r TFM>}
+% #2 {<enw'r PFB>}
+% #3 enwau glyphs
+% #4 pwyntiau côd
+\fixtounicode_tounicode:nnNN { pzdr } { uzdr } \l_pzd_glyphs_seq \l_pzd_unis_seq
+\ExplSyntaxOff
+
+\begin{document}
+% RHAID ddefnyddio'r llinell isod tu allan i'r \TEST
+\ExplSyntaxOn
+
+\sys_if_engine_pdftex:T
+{
+  \makeatletter
+  \tracinglostchars\thr@@
+  \makeatother
+}
+\sys_if_engine_luatex:T
+{
+  \tracinglostchars=5
+}
+\START
+\TEST{fixtounicode-pzd-33-126}{
+  \int_step_inline:nnn { 33 } { 126 }
+  {
+    \ding { #1 } \c_space_tl
+  }
+}
+\TEST{fixtounicode-pzd-161-239}{
+  \int_step_inline:nnn { 161 } { 239 }
+  {
+    \ding { #1 } \c_space_tl
+  }
+}
+\TEST{fixtounicode-pzd-241-254}{
+  \int_step_inline:nnn { 241 } { 254 }
+  {
+    \ding { #1 } \c_space_tl
+  }
+}
+\ExplSyntaxOff
+
+\end{document} 
+\END
+% vim: ts=2:sw=2:ft=tex:

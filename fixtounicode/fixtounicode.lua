@@ -1,7 +1,8 @@
--- $Id: fixtounicode.lua 11011 2025-04-21 16:37:21Z cfrees $
+-- $Id: fixtounicode.lua 11020 2025-04-30 16:43:27Z cfrees $
 -- addaswyd o ateb Max Chernoff: ihttps://tex.stackexchange.com/a/740937/
 -- gweler ateb-max-chernoff-ee-4-tfm-workaround.tex ateb-max-chernoff.md
 
+pdf.setgentounicode(1) -- oes pwrpas?
 local function fnt_tounicodes (targtexfont,targfont,targtab)
   -- Register the callback. We need "luaotfload.patch_font_unsafe" since only
   -- the unsafe version applies to TFM fonts.

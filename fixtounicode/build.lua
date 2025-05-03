@@ -1,4 +1,4 @@
--- $Id: build.lua 11011 2025-04-21 16:37:21Z cfrees $
+-- $Id: build.lua 11027 2025-05-03 17:23:15Z cfrees $
 -- Build configuration for fixtounicode
 -------------------------------------------------------------------------------
 -- l3build.pdf listing 1 tudalen 9
@@ -8,15 +8,20 @@ ctanpkg = module
 -- maindir **must** be shared with dependencies
 maindir = ".."
 sourcefiledir = "."
+-- none of these actually work for lua fragments, so they get copied by hand
+-- below
 sourcefiles = {"*.dtx","*.ins","*.lua"}
--- checkengines = {"pdftex"}
+scriptfiles = {"*.lua"}
+checksuppfiles = {"*.lua"}
+typesetsuppfiles = {"*.lua"}
+checkdeps = { maindir .. "/arkandis/adforn", maindir .. "/arkandis/adfsymbols" }
+checkengines = {"pdftex", "luatex"}
 checkformat = "latex"
--- checksuppfiles = {"*.fd"}
+specialformats = specialformats or {}
+specialformats["latex-dev"] = {
+  luatex = {binary = "luahbtex-dev", format = "lualatex-dev"}
+}
 manifestfile = "manifest.txt"
--- typesetdeps = {maindir .. "/cfr-lm"}
--- typesetopts = "-interaction=nonstopmode -cnf-line='TEXMFHOME=.' -cnf-line='TEXMFLOCAL=.' -cnf-line='TEXMFARCH=.'"
--- typesetsourcefiles = {"cfr-lm.sty", maindir .. "/cfr-lm/keep/*"}
--- typesetruns = 5
 -------------------------------------------------------------------------------
 dofile(maindir .. "/tag.lua")
 date = "2025"
@@ -52,19 +57,40 @@ uploadconfig = {
   -- curlopt_file
 }
 -------------------------------------------------------------------------------
--- function docinit_hook ()
---   if not kpse.find_file("clm.map","map") then
---     if direxists(maindir .. "/cfr-lm/keep") then
---       local errorlevel = cp("*.*",maindir .. "/cfr-lm/keep",typesetdir) 
---       if errorlevel ~= 0 then 
---         print("Warning: could not copy cfr-lm keepfiles to typesetdir.") 
---       end
---     else
---       print("Warning: could not find directory cfr-lm in " .. maindir .. ".")
---     end
---   else
---     print("Warning: using installed copy of cfr-lm.")
---   end
---   return 0
--- end
--- vim: ts=2:sw=2:tw=80:nospell
+-- l3build manual tudalennau 24-25
+-- l3build reads l3build-variables.lua *ar ôl* i'r ffeil hwn | *after* this file
+test_types = {
+  uni = {
+    test = ".uvt",
+    reference = ".uref",
+    generated = ".pdf",
+    rewrite = function(source, normalized, engine, errorcode)
+      local gentxt = string.gsub(source, string.gsub(pdfext, "%.", "%%.") .. "$", ".txt")
+      os.execute(string.format("pdftotext %s %s", source, gentxt))
+      local normtxt = string.gsub(source, string.gsub(pdfext, "%.", "%%.") .. "$", "." .. engine .. ".txt")
+      local f = assert(io.open(gentxt,"rb"))
+      local c = f:read("*all")
+      f:close()
+      f = assert(io.open(normtxt,"w"))
+      -- ddim yn gweithio | doesn't work
+      f:write((string.gsub(c,"%s*%^L","")))
+      f:close()
+    end,
+    compare = function (difffile, tlgfile, logfile, cleanup, name, engine)
+      local normtxtfile = string.gsub(logfile, string.gsub(pdfext, "%.", "%%.") .. "$", ".txt")
+      return compare_tlg (difffile, tlgfile, normtxtfile, cleanup, name, engine)
+    end,
+  },
+}
+test_order = {"uni", "log"}
+-------------------------------------------------------------------------------
+-- rhaid i vars addasol fodoli? | suitable vars must exist?
+function checkinit_hook ()
+  return cp("fixtounicode.lua",unpackdir,testdir)
+end
+function docinit_hook ()
+  return cp("fixtounicode.lua",unpackdir,typesetdir)
+end
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-- vim: ts=2:sw=2:tw=80
