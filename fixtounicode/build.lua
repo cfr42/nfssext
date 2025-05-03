@@ -1,4 +1,4 @@
--- $Id: build.lua 11027 2025-05-03 17:23:15Z cfrees $
+-- $Id: build.lua 11028 2025-05-03 20:49:06Z cfrees $
 -- Build configuration for fixtounicode
 -------------------------------------------------------------------------------
 -- l3build.pdf listing 1 tudalen 9
@@ -68,21 +68,22 @@ test_types = {
       local gentxt = string.gsub(source, string.gsub(pdfext, "%.", "%%.") .. "$", ".txt")
       os.execute(string.format("pdftotext %s %s", source, gentxt))
       local normtxt = string.gsub(source, string.gsub(pdfext, "%.", "%%.") .. "$", "." .. engine .. ".txt")
-      local f = assert(io.open(gentxt,"rb"))
-      local c = f:read("*all")
-      f:close()
-      f = assert(io.open(normtxt,"w"))
-      -- ddim yn gweithio | doesn't work
-      f:write((string.gsub(c,"%s*%^L","")))
-      f:close()
+      os.execute(string.format("cp %s %s", gentxt, normtxt))
     end,
     compare = function (difffile, tlgfile, logfile, cleanup, name, engine)
       local normtxtfile = string.gsub(logfile, string.gsub(pdfext, "%.", "%%.") .. "$", ".txt")
-      return compare_tlg (difffile, tlgfile, normtxtfile, cleanup, name, engine)
+      return compare_tlg (difffile, tlgfile, normtxtfile, cleanup, name, "wibble")
     end,
   },
 }
 test_order = {"uni", "log"}
+      -- local f = assert(io.open(gentxt,"rb"))
+      -- local c = f:read("*all")
+      -- f:close()
+      -- f = assert(io.open(normtxt,"w"))
+      -- -- ddim yn gweithio | doesn't work
+      -- f:write((string.gsub(c,"%s*%^L","")))
+      -- f:close()
 -------------------------------------------------------------------------------
 -- rhaid i vars addasol fodoli? | suitable vars must exist?
 function checkinit_hook ()
