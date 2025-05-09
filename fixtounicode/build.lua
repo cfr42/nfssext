@@ -1,4 +1,4 @@
--- $Id: build.lua 11032 2025-05-03 21:24:30Z cfrees $
+-- $Id: build.lua 11034 2025-05-09 07:35:13Z cfrees $
 -- Build configuration for fixtounicode
 -------------------------------------------------------------------------------
 -- l3build.pdf listing 1 tudalen 9
@@ -15,6 +15,7 @@ scriptfiles = {"*.lua"}
 checksuppfiles = {"*.lua"}
 typesetsuppfiles = {"*.lua"}
 checkdeps = { maindir .. "/arkandis/adforn", maindir .. "/arkandis/adfsymbols" }
+checkconfigs = { "build", "config-dev" }
 checkengines = {"pdftex", "luatex"}
 checkformat = "latex"
 specialformats = specialformats or {}

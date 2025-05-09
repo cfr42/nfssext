@@ -32,7 +32,7 @@
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
 \ExplSyntaxOff
-\ProvidesFileSVN{$Id: fixtounicode.dtx 11022 2025-05-03 02:09:56Z cfrees $}[v0.0 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: fixtounicode.dtx 11034 2025-05-09 07:35:13Z cfrees $}[v0.0 \revinfo][\filename: \filebase]
 \revinfo][\filebase DTX: ]
 \DefineFileInfoSVN[fixtounicode]
 \documentclass[11pt,british]{ltxdoc}
@@ -277,7 +277,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: fixtounicode.dtx 11022 2025-05-03 02:09:56Z cfrees $}[v0.0 \revinfo]
+\ProvidesPackageSVN[\filebase.sty]{$Id: fixtounicode.dtx 11034 2025-05-09 07:35:13Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % \iffalse
@@ -315,6 +315,18 @@
 %    \end{macrocode}
 % \end{macro}
 %    \begin{macrocode}
+\msg_new:nnn { fixtounicode } { mapping } 
+{
+  \msg_info_text:n { fixtounicode } :: ~ 
+  Mapping ~ ##1 ~ -> ~ ##2 ~ \msg_context:
+}
+\msg_new:nnn { fixtounicode } { luatex ~ limitations } 
+{
+  \msg_warn_text:n { fixtounicode } :: ~
+  Sorry, ~ use ~ of ~ ##1 ~ is ~ not ~ supported ~ this ~ version ~ of ~ LuaTeX ~ \msg_context:. ~
+  Use ~ the ~ keys ~ glyphs ~ and ~ unicodes ~ or ~ equivalent ~ expl3 ~ functions. ~
+  Alternatively, ~ compile ~ with ~ pdfTeX. ~
+}
 \cs_new_protected_nopar:Npn \__fixtounicode_tounicode_pair:nn #1#2 {}
 %    \end{macrocode}
 % If we're using pdf\TeX{}, things are straightforward: we simply use the \texttt{tfm:} syntax for the primitive \cs{pdfglyphtounicode}.
@@ -337,6 +349,7 @@
 % pdf\TeX{} manual page 33.
 %    \begin{macrocode}
       \pdfglyphtounicode { tfm:#1/##1 } { ##2 }
+      \typeout{Mapping: ~ tfm:#1/##1 ~ -> ~ ##2}
     }
     \seq_set_eq:NN \l__fixtounicode_glyphtounicode_seq #2
     \seq_set_eq:NN \l__fixtounicode_tounicode_seq #3
@@ -420,6 +433,9 @@
   default .default:V = \c_empty_tl,
   glyphs .clist_set:N = \l__fixtounicode_glyphs_clist,
   glyphs .value_required:n = true,
+  mappings .code:n = {
+    \prop_put_from_keyval:Nn \l__fixtounicode_mappings_prop { #1 }
+  },
   pfb .tl_set:N = \l__fixtounicode_pfb_tl,
   pfb .initial:V = \c_empty_tl,
   tfm .tl_set:N = \l__fixtounicode_tfm_tl,
@@ -427,6 +443,7 @@
   unicodes .clist_set:N = \l__fixtounicode_unicodes_clist,
   unicodes .value_required:n = true,
 }
+\prop_new:N \l__fixtounicode_mappings_prop
 %    \end{macrocode}
 % \begin{macro}{\__fixtounicode_tounicode:n}
 % Generic interface.
@@ -459,6 +476,31 @@
         \tl_if_eq:nnT { ##2 } { 0 }
         {
           \seq_set_item:NnV \l__fixtounicode_unicodes_seq { ##1 } \l__fixtounicode_default_tl
+        }
+      }
+    }
+%    \end{macrocode}
+% We now use any key-value mappings set \emph{via} the \texttt{mappings} key.
+% This is intended for cases where only a few mappings are needed from a particular font.
+% Font support packages providing mappings for symbol fonts should preferably use the public \lpack{expl3} functions or, failing that, the keys \texttt{glyphs} and \texttt{unicodes} as I expect the implementation of \texttt{mappings} to be significantly slower.
+%
+% Note that this method is \textbf{NOT} currently supported on Lua\TeX{}. 
+% To test on LuaTeX\{}, install a development binary, (re)generate appropriate formats and load this package with the \texttt{dev} option.
+% Note this should \textbf{not} be used for real documents.
+%
+% On pdf\TeX{} this method should work just fine.
+%    \begin{macrocode}
+    \prop_if_empty:NF \l__fixtounicode_mappings_prop
+    {
+      \bool_lazy_and:nnTF { \sys_if_engine_luatex_p: } { ! \l__fixtounicode_dev_bool }
+      {
+        \msg_warn:nnn { fixtounicode } { luatex limitations } 
+        { key ~ mappings }
+      }{
+        \prop_map_inline:Nn \l__fixtounicode_mappings_prop 
+        {
+          \seq_put_right:Nn \l__fixtounicode_glyphs_seq { ##1 }
+          \seq_put_right:Nn \l__fixtounicode_unicodes_seq { ##2 }
         }
       }
     }

@@ -1,0 +1,61 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+\DocumentMetadata{uncompress}
+\listfiles
+\ExplSyntaxOn
+\sys_if_engine_pdftex:T
+{
+  \pdftracingfonts=1
+}
+\sys_if_engine_luatex:T
+{
+  \tracingfonts=1
+}
+\ExplSyntaxOff
+\RequirePackage{svn-prov}
+\ProvidesFileSVN{$Id: fixtounicode-marvosym.uvt 11034 2025-05-09 07:35:13Z cfrees $}[v1.1 \revinfo][\filebase: subs test]
+\input regression-test.tex\relax
+\documentclass{article}
+\usepackage{tracefnt}% infoshow is default; debugshow traces maths fonts, too
+\parindent=0pt
+\pagestyle{empty}
+	
+\usepackage{fixtounicode}
+\usepackage{marvosym}
+\START
+\fixtounicode{%
+  tfm = umvs,
+  mappings = {%
+    111 = 26BD,
+    75 = 2615,
+    106 = 2622,
+    Coffeecup = 26BD,
+    Radioactivity = 2615,
+    Football = 2622,
+  },
+}
+\OMIT
+\begin{document}
+% RHAID ddefnyddio'r llinell isod tu allan i'r \TEST
+\ExplSyntaxOn
+{
+  \makeatletter
+  \tracinglostchars\thr@@
+  \makeatother
+}
+\sys_if_engine_luatex:T
+{
+  \tracinglostchars=5
+}
+\TIMO
+% \START
+\TEST{fixtounicode-marvosym}{
+  \Coffeecup\quad
+  \Radioactivity\quad
+  \Football
+}
+\ExplSyntaxOff
+
+\end{document} 
+\END
+% vim: ts=2:sw=2:ft=tex:
