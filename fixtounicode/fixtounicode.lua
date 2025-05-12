@@ -2,6 +2,14 @@
 -- addaswyd o ateb Max Chernoff: ihttps://tex.stackexchange.com/a/740937/
 -- gweler ateb-max-chernoff-ee-4-tfm-workaround.tex ateb-max-chernoff.md
 
+luatexbase.provides_module({
+  name = "fixtounicode",
+  date = "2025/05/10",
+  version = "0.1",
+  description = [[Provides functions to add tounicode mappings for SOME type1 
+    symbol fonts in LuaLaTeX. Whether this works for any particular font or 
+    not depends on the configuration.]] 
+})
 pdf.setgentounicode(1) -- oes pwrpas?
 local function fnt_tounicodes (targtexfont,targfont,targtab)
   -- Register the callback. We need "luaotfload.patch_font_unsafe" since only
@@ -17,8 +25,12 @@ local function fnt_tounicodes (targtexfont,targfont,targtab)
         -- Max's solution needed them in tfm order, but don't assume this
         -- so we would like have a table not an array
         -- but that doesn't work because you can't get the names
+        -- there is a more complicated way, but meh
+        -- this will be obsolete in a few months anyhow
 
         -- angen error check 
+        -- ditto - chances of anybody else using this version are essentially
+        -- zero
 
         -- For Type 1 fonts, you need to set the index of the character.
         -- This isn't done for TFM fonts, so we need to do it here.

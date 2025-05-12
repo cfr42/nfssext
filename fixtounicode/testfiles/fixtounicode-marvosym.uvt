@@ -25,13 +25,10 @@
 \START
 \fixtounicode{%
   tfm = umvs,
-  mappings = {%
+  mappings by index = {%
     111 = 26BD,
     75 = 2615,
     106 = 2622,
-    Coffeecup = 26BD,
-    Radioactivity = 2615,
-    Football = 2622,
   },
 }
 \OMIT
