@@ -89,7 +89,7 @@ jobs:
           retention-days: 7
       - name: Create manifest
       # only for release if build succeeded
-        if: ${{ (contains(github.ref_name, 'cfr-lm-') || contains(github.ref_name, 'clm-')) && (steps.fnttarg-clm.outputs_BUILD_RET) }}
+        if: ${{ (contains(github.ref_name, 'cfr-lm-') || contains(github.ref_name, 'clm-')) && (steps.fnttarg-clm.outputs.BUILD_RET) }}
         working-directory: cfr-lm
         run: l3build check && l3build doc && l3build manifest
       - name: Run l3build ctan 
@@ -127,12 +127,12 @@ jobs:
       # don't cache clm for release
       - name: List zip
       # list archive only if releasing clm and ctan build succeeded
-        if: ${{ (contains(github.ref_name, 'cfr-lm-') || contains(github.ref_name, 'clm-')) && (steps.ctan-clm.outputs_CTAN_RET) }}
+        if: ${{ (contains(github.ref_name, 'cfr-lm-') || contains(github.ref_name, 'clm-')) && (steps.ctan-clm.outputs.CTAN_RET) }}
         run: |
           unzip -l cfr-lm/cfr-lm-ctan.zip
       - name: Archive zip
       # archive only if releasing clm and ctan build succeeded
-        if: ${{ (contains(github.ref_name, 'cfr-lm-') || contains(github.ref_name, 'clm-')) && (steps.ctan-clm.outputs_CTAN_RET) }}
+        if: ${{ (contains(github.ref_name, 'cfr-lm-') || contains(github.ref_name, 'clm-')) && (steps.ctan-clm.outputs.CTAN_RET) }}
         # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
         uses: actions/upload-artifact@v4
         with:
