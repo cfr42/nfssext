@@ -1,0 +1,30 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+\RequirePackage{svn-prov}
+\ProvidesFileSVN{$Id: clm-maths.lvt 11036 2025-06-21 16:58:32Z cfrees $}[\revinfo][\filebase: maths test]
+\pdfmapfile{-clm.map}
+\pdfmapfile{+clm.map}
+\input regression-test.tex\relax
+\documentclass{article}
+	
+\usepackage{cfr-lm}
+
+\begin{document}
+\START
+% RHAID ddefnyddio'r llinell isod tu allan i'r \TEST
+\ExplSyntaxOn
+\TEST{clm-maths-test}{
+  \hbox_set:Nn \l_tmpa_box 
+  {
+    \normalfont
+    $
+        \sin{\theta^{2}} + \cos{\theta^{2}} = 1
+    $
+  }
+  \box_show:N \l_tmpa_box
+}
+\ExplSyntaxOff
+\END
+
+\end{document} 
+% vim: ts=2:sw=2:

@@ -42,7 +42,7 @@
   \char_set_catcode_letter:N \:
 }
 \ExplSyntaxOff
-\ProvidesFileSVN{$Id: cfr-lm.dtx 11012 2025-04-21 17:58:54Z cfrees $}[v1.8a \revinfo][\filebase DTX: Latin Modern for 8-bit engines]
+\ProvidesFileSVN{$Id: cfr-lm.dtx 11036 2025-06-21 16:58:32Z cfrees $}[v1.8a \revinfo][\filebase DTX: Latin Modern for 8-bit engines]
 \DefineFileInfoSVN[cfr-lm]
 \documentclass[10pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -541,7 +541,9 @@
 % 				&	\texttt{tabular}/\texttt{tab}				&				& \tabularnewline\cmidrule{2-4}
 % 				&	\texttt{monowidth}/\texttt{mono}			&	\texttt{true}, \texttt{false}			&	default typewriter family \tabularnewline
 % 				&	\texttt{variable}/\texttt{var}				&		& \tabularnewline\midrule
-% 		qt	&	---	&	\texttt{true}, \texttt{false}	&	nothing unless \verb|\qtfont| is defined	\tabularnewline
+% 		qt	&	---	&	\texttt{true}, \texttt{false}	&	nothing unless \verb|\qtfont| is defined	\tabularnewline\midrule
+%     nomaths & maths & \texttt{true}, \texttt{false} & default is \texttt{false} \tabularnewline
+%     nomath & & & \tabularnewline
 %       \bottomrule
 %     \end{tabular}
 %     \begin{tablenotes}
@@ -554,7 +556,7 @@
 %     \end{tablenotes}
 %   \end{threeparttable}
 % \end{table}
-% The package recognises four keys summarised in \fref{tab:opts} and detailed below.
+% The package recognises five keys summarised in \fref{tab:opts} and detailed below.
 % Three of these keys take various options which take the value true or false.
 % These control the default style of figures to be used for each of roman/serif, sans and typewriter text, and whether variable or monowidth typewriter will be used by default.
 %
@@ -701,7 +703,14 @@ tt={var=false}
 % The fourth key itself takes a true or false value but has no effect unless \verb|\qtfont| is already defined\footnote{This key is designed to control use of LM Sans Quotation in conjunction with prior redefinitions of appropriate environments.
 % Since this is not the sort of redefining a font package should be doing, the option will have absolutely no effect unless you do some prior work to make use of it.
 % In any case, the font can still be accessed directly using the commands explained in \fref{sec:commands}.}.
-
+%
+% \DescribeOpt{nomaths}\vals{true,false}
+% \DescribeOpt{nomath}
+% 
+% Whether to forgo configuration of maths fonts.
+% Setting this option \texttt{true} or giving it without a value skips that setup.
+% If the option is not used, the default is to configure the maths fonts i.e.~the default is \texttt{false}.
+%
 % The default value in all cases is \verb|true| if an option is given without a value.
 % For example, \verb|rm={oldstyle=true}| is equivalent to \verb|rm={oldstyle}|.
 % Many of the options are provided for ease of use but are essentially equivalent.
@@ -714,13 +723,15 @@ tt={var=false}
 \usepackage[%
   rm={lining=true,tabular=false},%
   sf={oldstyle,proportional},%
-  tt={oldstyle=false,proportional=true,monowidth}%
+  tt={oldstyle=false,proportional=true,monowidth},%
+  nomaths%
 ]{cfr-lm}
 
 \usepackage[%
   rm={oldstyle=false, proportional=true},%
   sf={lining=false,tabular=false},%
-  tt={lining,proportional,variable=false}%
+  tt={lining,proportional,variable=false},%
+  nomaths=true
 ]{cfr-lm}
 % 		\end{verbatim}
 % \iffalse
@@ -736,17 +747,18 @@ tt={var=false}
   rm={oldstyle=true,proportional=true},%
   sf={oldstyle=true,proportional=true},%
   tt={oldstyle=true,proportional=true,variable=true},%
-  qt=false%
+  qt=false,%
+  nomaths=false%
 ]{cfr-lm}
 %    \end{verbatim}
 % \iffalse
 %</verb>
 % \fi
-% That is, by default, oldstyle, proportional figures for roman, sans and typewriter text and variable width typewriter will be selected.
+% That is, by default, oldstyle, proportional figures for roman, sans and typewriter text and variable width typewriter will be selected and fonts for mathematics will be configured as for the \lpack{lmodern} package.
 % 
 % \section{Additional font commands}\label{sec:commands}
 % 
-% \lpack{cfr=lm}\ loads \lpack{nfssext-cfr}\ which is an extension of the package \lpack{nfssext}\ supplied by Philipp Lehman as part of The Font Installation Guide.
+% \lpack{cfr-lm}\ loads \lpack{nfssext-cfr}\ which is an extension and modification of the package \lpack{nfssext}\ supplied by Philipp Lehman as part of The Font Installation Guide.
 % The file extends the font selection commands to facilitate access to various font features.
 % Both the original and the extension are designed for use with a wide range of fonts.
 % For this reason, only a subset of the additional commands are relevant to any particular font support package.
@@ -1348,7 +1360,7 @@ updmap --sys --enable Map=clm.map
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: cfr-lm.dtx 11012 2025-04-21 17:58:54Z cfrees $}[v1.8a \revinfo][Extended support for Latin Modern 2.004]
+\ProvidesPackageSVN[\filebase.sty]{$Id: cfr-lm.dtx 11036 2025-06-21 16:58:32Z cfrees $}[v1.8a \revinfo][Extended support for Latin Modern 2.004]
 \DefineFileInfoSVN[clm]
 \RequirePackage[T1]{fontenc}
 \RequirePackage{nfssext-cfr}[2024/01/01]
@@ -1369,57 +1381,60 @@ updmap --sys --enable Map=clm.map
 %    \end{macrocode}
 % \changes{v1.8}{2025-01-03}{Determine TC encoding subset declarations dynamically and include in font definition files.}
 % \changes{v1.8a}{2025-02-10}{Remove TS1 subset defns from fd files and put them back into the sty where they actually work.}
+% \changes{v1.9}{2025-06-21}{Re-put TS1 subset defns into fd files and skip them in the sty for current \LaTeXe.}
+%    \begin{macrocode}
 %^^A To get the oldstyle numbers etc.\ used from TS1, we need to set the subset to 0 or 1.
 %^^A We follow the kernel's handling of Latin Modern and eschew the builtin circle.
-%%^^A \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clm}{TS1:lmr} 
-%%^^A \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clm2}{TS1:lmr} 
-%%^^A \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clm2d}{TS1:lmdh}
-%%^^A \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clm2dj}{TS1:lmdh}
-%%^^A \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clm2j}{TS1:lmr}
-%%^^A \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clm2jqs}{TS1:lmssq}
-%%^^A \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clm2js}{TS1:lmssq}
-%%^^A \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clm2jt}{TS1:lmtt}
-%%^^A \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clm2jv}{TS1:lmvtt}
-%%^^A \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clm2qs}{TS1:lmssq}
-%%^^A \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clm2s}{TS1:lmss} 
-%%^^A \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clm2t}{TS1:lmtt} 
-%%^^A \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clm2v}{TS1:lmvtt} 
-%%^^A \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clmd}{TS1:lmdh} 
-%%^^A \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clmdj}{TS1:lmdh} 
-%%^^A \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clmj}{TS1:lmr} 
-%%^^A \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clmjqs}{TS1:lmssq} 
-%%^^A \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clmjs}{TS1:lmss} 
-%%^^A \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clmjt}{TS1:lmtt} 
-%%^^A \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clmjv}{TS1:lmvtt} 
-%%^^A \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clmqs}{TS1:lmssq} 
-%%^^A \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clms}{TS1:lmss} 
-%%^^A \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clmt}{TS1:lmtt} 
-%%^^A \ExpandArgs{nnc}DeclareEncodingSubset{TS1}{clmv}{TS1:lmvtt} 
-%    \begin{macrocode}
-  \DeclareEncodingSubset{TS1}{clm}{1}%
-  \DeclareEncodingSubset{TS1}{clm2}{1}%
-  \DeclareEncodingSubset{TS1}{clm2d}{1}%
-  \DeclareEncodingSubset{TS1}{clm2dj}{1}%
-  \DeclareEncodingSubset{TS1}{clm2j}{1}%
-  \DeclareEncodingSubset{TS1}{clm2jqs}{1}%
-  \DeclareEncodingSubset{TS1}{clm2js}{1}%
-  \DeclareEncodingSubset{TS1}{clm2jt}{1}%
-  \DeclareEncodingSubset{TS1}{clm2jv}{1}%
-  \DeclareEncodingSubset{TS1}{clm2qs}{1}%
-  \DeclareEncodingSubset{TS1}{clm2s}{1}%
-  \DeclareEncodingSubset{TS1}{clm2t}{1}%
-  \DeclareEncodingSubset{TS1}{clm2v}{1}%
-  \DeclareEncodingSubset{TS1}{clmd}{1}%
-  \DeclareEncodingSubset{TS1}{clmdj}{1}%
-  \DeclareEncodingSubset{TS1}{clmj}{1}%
-  \DeclareEncodingSubset{TS1}{clmjqs}{1}%
-  \DeclareEncodingSubset{TS1}{clmjs}{1}%
-  \DeclareEncodingSubset{TS1}{clmjt}{1}%
-  \DeclareEncodingSubset{TS1}{clmjv}{1}%
-  \DeclareEncodingSubset{TS1}{clmqs}{1}%
-  \DeclareEncodingSubset{TS1}{clms}{1}%
-  \DeclareEncodingSubset{TS1}{clmt}{1}%
-  \DeclareEncodingSubset{TS1}{clmv}{1}%
+  \IfFormatAtLeastTF {2025-06-01}{}{%
+    \ExpandArgs{nnc}\DeclareEncodingSubset{TS1}{clm}{TS1:lmr}%
+    \ExpandArgs{nnc}\DeclareEncodingSubset{TS1}{clm2}{TS1:lmr}%
+    \ExpandArgs{nnc}\DeclareEncodingSubset{TS1}{clm2d}{TS1:lmdh}%
+    \ExpandArgs{nnc}\DeclareEncodingSubset{TS1}{clm2dj}{TS1:lmdh}%
+    \ExpandArgs{nnc}\DeclareEncodingSubset{TS1}{clm2j}{TS1:lmr}%
+    \ExpandArgs{nnc}\DeclareEncodingSubset{TS1}{clm2jqs}{TS1:lmssq}%
+    \ExpandArgs{nnc}\DeclareEncodingSubset{TS1}{clm2js}{TS1:lmssq}%
+    \ExpandArgs{nnc}\DeclareEncodingSubset{TS1}{clm2jt}{TS1:lmtt}%
+    \ExpandArgs{nnc}\DeclareEncodingSubset{TS1}{clm2jv}{TS1:lmvtt}%
+    \ExpandArgs{nnc}\DeclareEncodingSubset{TS1}{clm2qs}{TS1:lmssq}%
+    \ExpandArgs{nnc}\DeclareEncodingSubset{TS1}{clm2s}{TS1:lmss}%
+    \ExpandArgs{nnc}\DeclareEncodingSubset{TS1}{clm2t}{TS1:lmtt}%
+    \ExpandArgs{nnc}\DeclareEncodingSubset{TS1}{clm2v}{TS1:lmvtt}%
+    \ExpandArgs{nnc}\DeclareEncodingSubset{TS1}{clmd}{TS1:lmdh}%
+    \ExpandArgs{nnc}\DeclareEncodingSubset{TS1}{clmdj}{TS1:lmdh}%
+    \ExpandArgs{nnc}\DeclareEncodingSubset{TS1}{clmj}{TS1:lmr}%
+    \ExpandArgs{nnc}\DeclareEncodingSubset{TS1}{clmjqs}{TS1:lmssq}%
+    \ExpandArgs{nnc}\DeclareEncodingSubset{TS1}{clmjs}{TS1:lmss}%
+    \ExpandArgs{nnc}\DeclareEncodingSubset{TS1}{clmjt}{TS1:lmtt}%
+    \ExpandArgs{nnc}\DeclareEncodingSubset{TS1}{clmjv}{TS1:lmvtt}%
+    \ExpandArgs{nnc}\DeclareEncodingSubset{TS1}{clmqs}{TS1:lmssq}%
+    \ExpandArgs{nnc}\DeclareEncodingSubset{TS1}{clms}{TS1:lmss}%
+    \ExpandArgs{nnc}\DeclareEncodingSubset{TS1}{clmt}{TS1:lmtt}%
+    \ExpandArgs{nnc}\DeclareEncodingSubset{TS1}{clmv}{TS1:lmvtt}%
+%%^^A  \DeclareEncodingSubset{TS1}{clm}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clm2}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clm2d}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clm2dj}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clm2j}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clm2jqs}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clm2js}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clm2jt}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clm2jv}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clm2qs}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clm2s}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clm2t}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clm2v}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clmd}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clmdj}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clmj}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clmjqs}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clmjs}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clmjt}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clmjv}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clmqs}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clms}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clmt}{1}%
+%%^^A  \DeclareEncodingSubset{TS1}{clmv}{1}%
+  }%
 }{%
   \RequirePackage{textcomp}}
 \UndeclareTextCommand{\textperthousand}{T1}
@@ -1806,13 +1821,28 @@ updmap --sys --enable Map=clm.map
   qt .default:n = true,
   qt .initial:n = false,
   qt .usage:n = load,
+%    \end{macrocode}
+% \end{option}
+% \begin{option}{nomaths,nomath}
+% \changes{v1.9}{2025-06-21}{Follow \file{lmodern.sty}: add \texttt{nomaths}/
+%   \texttt{nomath} option.}
+% Make maths configuration optional.
+%    \begin{macrocode}
+  nomaths .bool_set:N = \l__clm_nomaths_bool,
+  nomaths .default:n = true,
+  nomaths .initial:n = false,
+  nomaths .usage:n = load,
+  nomath .bool_set:N = \l__clm_nomaths_bool,
+  nomath .default:n = true,
+  nomath .initial:n = false,
+  nomath .usage:n = load,
 }
 %    \end{macrocode}
 % \end{option}
-% ^^A Joseph Wright: from siunitx.sty ; https://chat.stackexchange.com/transcript/message/64327823#64327823
-%    \begin{macrocode}
-\providecommand \IfFormatAtLeastTF { \@ifl@t@r \fmtversion }
-%    \end{macrocode}
+% \changes{v1.9}{2025-06-21}{Remove redundant provision of 
+%   \cs{IfFormatAtLeastTF} as \lpack{nfssext-cfr} takes care of this, as noted
+%   above.%
+% }
 % options override defaults
 %    \begin{macrocode}
 \IfFormatAtLeastTF { 2022-06-01 }
@@ -1885,44 +1915,48 @@ updmap --sys --enable Map=clm.map
   }
 }
 %
-\ExplSyntaxOff
 %    \end{macrocode}
 % \end{macro}
 % Maths setup is ‘based on’ (i.e.~filched from) lmodern.sty
+% \changes{v1.9}{2025-06-21}{Maths configuration now optionally disabled.}
 %    \begin{macrocode}
-\SetSymbolFont{operators}   {normal}{OT1}{lmr} {m}{n}
-\SetSymbolFont{letters}     {normal}{OML}{lmm} {m}{it}
-\SetSymbolFont{symbols}     {normal}{OMS}{lmsy}{m}{n}
-\SetSymbolFont{largesymbols}{normal}{OMX}{lmex}{m}{n}
-\SetSymbolFont{operators}   {bold}  {OT1}{lmr} {bx}{n}
-\SetSymbolFont{letters}     {bold}  {OML}{lmm} {b}{it}
-\SetSymbolFont{symbols}     {bold}  {OMS}{lmsy}{b}{n}
-\SetSymbolFont{largesymbols}{bold}  {OMX}{lmex}{m}{n}
+\bool_if:NF \l__clm_nomaths_bool
+{
+  \SetSymbolFont{operators}   {normal}{OT1}{lmr} {m}{n}
+  \SetSymbolFont{letters}     {normal}{OML}{lmm} {m}{it}
+  \SetSymbolFont{symbols}     {normal}{OMS}{lmsy}{m}{n}
+  \SetSymbolFont{largesymbols}{normal}{OMX}{lmex}{m}{n}
+  \SetSymbolFont{operators}   {bold}  {OT1}{lmr} {bx}{n}
+  \SetSymbolFont{letters}     {bold}  {OML}{lmm} {b}{it}
+  \SetSymbolFont{symbols}     {bold}  {OMS}{lmsy}{b}{n}
+  \SetSymbolFont{largesymbols}{bold}  {OMX}{lmex}{m}{n}
 % 
-\DeclareFontSubstitution{OT1}{lmr}{m}{n}
-\DeclareFontSubstitution{OML}{lmm}{m}{it}
-\DeclareFontSubstitution{OMS}{lmsy}{m}{n}
-\DeclareFontSubstitution{OMX}{lmex}{m}{n}
+  \DeclareFontSubstitution{OT1}{lmr}{m}{n}
+  \DeclareFontSubstitution{OML}{lmm}{m}{it}
+  \DeclareFontSubstitution{OMS}{lmsy}{m}{n}
+  \DeclareFontSubstitution{OMX}{lmex}{m}{n}
 % 
 %    \end{macrocode}
 % \begin{macro}{\mathbf,\mathsf,\mathit,\mathtt}
 % maths alphabets
 %    \begin{macrocode}
-\SetMathAlphabet{\mathbf}{normal}{OT1}{lmr}{bx}{n}
-\SetMathAlphabet{\mathsf}{normal}{OT1}{lmss}{m}{n}
-\SetMathAlphabet{\mathit}{normal}{OT1}{lmr}{m}{it}
-\SetMathAlphabet{\mathtt}{normal}{OT1}{lmtt}{m}{n}
-\SetMathAlphabet{\mathbf}{bold}  {OT1}{lmr}{bx}{n}
-\SetMathAlphabet{\mathsf}{bold}  {OT1}{lmss}{bx}{n}
-\SetMathAlphabet{\mathit}{bold}  {OT1}{lmr}{bx}{it}
-\SetMathAlphabet{\mathtt}{bold}  {OT1}{lmtt}{m}{n}
+  \SetMathAlphabet{\mathbf}{normal}{OT1}{lmr}{bx}{n}
+  \SetMathAlphabet{\mathsf}{normal}{OT1}{lmss}{m}{n}
+  \SetMathAlphabet{\mathit}{normal}{OT1}{lmr}{m}{it}
+  \SetMathAlphabet{\mathtt}{normal}{OT1}{lmtt}{m}{n}
+  \SetMathAlphabet{\mathbf}{bold}  {OT1}{lmr}{bx}{n}
+  \SetMathAlphabet{\mathsf}{bold}  {OT1}{lmss}{bx}{n}
+  \SetMathAlphabet{\mathit}{bold}  {OT1}{lmr}{bx}{it}
+  \SetMathAlphabet{\mathtt}{bold}  {OT1}{lmtt}{m}{n}
 % 
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\mathsterling}
 % \mbox{}
 %    \begin{macrocode}
-\def\mathsterling{\mathit{\mathchar"70BF}}
+  \def\mathsterling{\mathit{\mathchar"70BF}}
+}
+\ExplSyntaxOff
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\dotdigitenc,\textdde}
