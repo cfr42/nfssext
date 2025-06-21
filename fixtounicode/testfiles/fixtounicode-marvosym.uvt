@@ -13,7 +13,7 @@
 }
 \ExplSyntaxOff
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fixtounicode-marvosym.uvt 11034 2025-05-09 07:35:13Z cfrees $}[v1.1 \revinfo][\filebase: subs test]
+\ProvidesFileSVN{$Id: fixtounicode-marvosym.uvt 11039 2025-06-21 21:23:24Z cfrees $}[v1.1 \revinfo][\filebase: subs test]
 \input regression-test.tex\relax
 \documentclass{article}
 \usepackage{tracefnt}% infoshow is default; debugshow traces maths fonts, too
