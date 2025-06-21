@@ -1,4 +1,4 @@
-$Id: README.md 10794 2025-02-11 05:59:23Z cfrees $
+$Id: README.md 11038 2025-06-21 18:26:04Z cfrees $
 =================================================
 Copyright (C) 2008-2025 Clea F. Rees.
 
@@ -78,6 +78,13 @@ Version 1.8 moves TS1 encoding subset declarations into font definition files.
 
 Version 1.8a reverts the changes made in 1.8.
 
+Version 1.9 moves TS1 encoding subset declarations into font definition files.
+An option nomaths/nomath is provided to skip configuration of maths fonts,
+following the setup in current lmodern.sty. For versions of LaTeX prior to 
+2025-06-01, TC subset declarations are repeated in cfr-lm.sty. For older 
+versions, nfssext-cfr ensures they are tolerated in the fd files, even though 
+they are likely to be ineffective.
+
 A more detailed history is included in the documentation and sources.
 
 # Documentation
@@ -113,8 +120,8 @@ If you have comments about the fonts themselves, please contact GUST.
 
 
 Clea F. Rees
-Version 1.8a
-2025-02-11
+Version 1.9
+2025-06-21
 
 =================================================
 vim: et:tw=80:sw=2:

@@ -1,4 +1,4 @@
--- $Id: fixtounicode.lua 11020 2025-04-30 16:43:27Z cfrees $
+-- $Id: fixtounicode.lua 11037 2025-06-21 18:14:45Z cfrees $
 -- addaswyd o ateb Max Chernoff: ihttps://tex.stackexchange.com/a/740937/
 -- gweler ateb-max-chernoff-ee-4-tfm-workaround.tex ateb-max-chernoff.md
 
