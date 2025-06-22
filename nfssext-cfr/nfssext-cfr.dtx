@@ -41,7 +41,7 @@
   \char_set_catcode_letter:N \:
 }
 \ExplSyntaxOff
-\ProvidesFileSVN{$Id: nfssext-cfr.dtx 10840 2025-02-21 19:06:45Z cfrees $}[v1.2 \revinfo][\filebase DTX: Extended font selection for NFSS and NNFSS]
+\ProvidesFileSVN{$Id: nfssext-cfr.dtx 11042 2025-06-22 22:34:34Z cfrees $}[v1.3 \revinfo][\filebase DTX: Extended font selection for NFSS and NNFSS]
 \DefineFileInfoSVN[nfssext-cfr]
 \documentclass[10pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -453,7 +453,7 @@
 %       \cs{textos}\tnotex{tn:orig}\DescribeMacro[noprint]{\textos} & \cs{osstyle}\tnotex{tn:orig}\DescribeMacro[noprint]{\osstyle} & j &  oldstyle  (cf.~\cs{ostyle} below)\\
 %       \cs{textinf}\DescribeMacro[noprint]{\textinf} & \cs{infstyle}\DescribeMacro[noprint]{\infstyle} & 0 &  inferior \\
 %       & \cs{instyle}\DescribeMacro[noprint]{\instyle} & & \\
-%       \textcolor{gray}{\cs{textin}\tnotex{tn:textin-dep}}\DescribeDMacro[noprint]{\textin} & & & \textcolor{gray}{if \lpack{hyperref} is not loaded} \\
+%       \cs{textin}\DescribeDMacro[noprint]{\textin} & & & if \lpack{hyperref} is at least v7.01m or not loaded \\
 %       \cs{textsu}\DescribeMacro[noprint]{\textsu} & \cs{sustyle}\DescribeMacro[noprint]{\sustyle} & 1 &  superior \\
 %       \cs{textl}\tnotex{tn:new}\DescribeMacro[noprint]{\textl} & \cs{lstyle}\tnotex{tn:new}\DescribeMacro[noprint]{\lstyle} & -j &  lining  (cf.~\cs{lnstyle} above)\\
 %       \cs{texto}\tnotex{tn:new}\DescribeMacro[noprint]{\texto} & \cs{ostyle}\tnotex{tn:new}\DescribeMacro[noprint]{\ostyle} & +j &  oldstyle  (cf.~\cs{osstyle} above)\\
@@ -468,7 +468,6 @@
 %     \begin{tablenotes}
 %       \item\label{tn:orig}This macro is the original \lpack{nfssext} command.
 %       The result is independent of the current style of figures.
-%       \item\label{tn:textin-dep}Deprecated.
 %       \item\label{tn:new}This macro changes precisely one aspect of the current figure style.
 %       That is, the result depends on the current style of figures.
 %       \item\label{tn:both}This macro ensures a specific fully-specified figure style.
@@ -806,7 +805,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: nfssext-cfr.dtx 10840 2025-02-21 19:06:45Z cfrees $}[v1.2 \revinfo{} extensions for NFSS and NNFSS; based on 2003/03/14 v1.2 Experimental NFSS Extensions]
+\ProvidesPackageSVN[\filebase.sty]{$Id: nfssext-cfr.dtx 11042 2025-06-22 22:34:34Z cfrees $}[v1.3 \revinfo{} extensions for NFSS and NNFSS; based on 2003/03/14 v1.2 Experimental NFSS Extensions]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % ^^A Paid â defnyddio \GetFileInfoSVN*/\GetFileInfoSVN{} yn y fan hon!!
@@ -1156,7 +1155,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase-nnfss.sty]{$Id: nfssext-cfr.dtx 10840 2025-02-21 19:06:45Z cfrees $}[v1.2 \revinfo{} extended New New Font Selection Scheme (NNFSS) based on 2003/03/14 v1.2 Experimental NFSS Extensions]
+\ProvidesPackageSVN[\filebase-nnfss.sty]{$Id: nfssext-cfr.dtx 11042 2025-06-22 22:34:34Z cfrees $}[v1.3 \revinfo{} extended New New Font Selection Scheme (NNFSS) based on 2003/03/14 v1.2 Experimental NFSS Extensions]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % ^^A Paid â defnyddio \GetFileInfoSVN*/\GetFileInfoSVN{} yn y fan hon!!
@@ -1553,10 +1552,10 @@
 \DeclareRobustCommand{\osstyle}{%% anniffiniedig
   \not@math@alphabet\osstyle\relax
   \exfs@try@family{\expandafter\exfs@get@base\f@family\@nil j}}
-\DeclareRobustCommand{\infstyle}{%% anniffiniedig
-  \not@math@alphabet\infstyle\relax
+\DeclareRobustCommand{\instyle}{%% anniffiniedig
+  \not@math@alphabet\instyle\relax
   \exfs@try@family{\expandafter\exfs@get@base\f@family\@nil 0}}
-\let\instyle\infstyle
+\let\infstyle\instyle
 \DeclareRobustCommand{\sustyle}{%% anniffiniedig
   \not@math@alphabet\sustyle\relax
   \exfs@try@family{\expandafter\exfs@get@base\f@family\@nil 1}}
@@ -2434,19 +2433,25 @@
 % \end{macro}
 % \begin{macro}{\textin} 
 %   Conditional definition.
+%   \changes{v1.3}{2025-06-22}{All \cs{textin} if \lpack{hyperref} is new enough to avoid conflict.}
 %    \begin{macrocode}
   \@ifpackageloaded{hyperref}{
-    \hook_gput_code:nnn { cmd/textin/before } { . }
-    {
-      \exfs@info{
-        Note ~ that ~ '\protect\textin' ~ is ~ defined ~ by ~ hyperref.\MessageBreak
-        Use ~ for ~ inferior ~ digits ~ will ~ yield ~ an\MessageBreak
-        undefined ~ command ~ error ~ in ~ document ~ font ~ encodings.\MessageBreak
-        Use ~ '\protect\textinf' ~ to ~ access ~ inferior ~ digits
+    \expandafter\@ifl@t@r \csname ver@hyperref.sty\endcsname {2025/05/20}{
+      \DeclareTextFontCommand{\textin}{\instyle}
+    }{
+      \hook_gput_code:nnn { cmd/textin/before } { . }
+      {
+        \exfs@info{
+          Note ~ that ~ '\protect\textin' ~ is ~ defined ~ by ~ hyperref.\MessageBreak
+          Use ~ for ~ inferior ~ digits ~ will ~ yield ~ an\MessageBreak
+          undefined ~ command ~ error ~ in ~ document ~ font ~ encodings.\MessageBreak
+          Use ~ '\protect\textinf' ~ to ~ access ~ inferior ~ digits.\MessageBreak
+          Alternatively, ~ update ~ hyperref ~ to ~ 2025-05-20 ~ or ~ later 
+        }
       }
     }
   }{
-    \DeclareTextFontCommand{\textin}{\infstyle}
+    \DeclareTextFontCommand{\textin}{\instyle}
   }
 %    \end{macrocode}
 % \end{macro}
@@ -2459,7 +2464,7 @@
 %    \begin{macrocode}
 \DeclareTextFontCommand{\textln}{\lnstyle}% anniffiniedig
 \DeclareTextFontCommand{\textos}{\osstyle}% anniffiniedig
-\DeclareTextFontCommand{\textinf}{\infstyle}% anniffiniedig
+\DeclareTextFontCommand{\textinf}{\instyle}% anniffiniedig
 \DeclareTextFontCommand{\textsu}{\sustyle}% anniffiniedig
 \DeclareTextFontCommand{\textsi}{\sishape}% anniffiniedig
 \DeclareTextFontCommand{\textdf}{\dfshape}% anniffiniedig
@@ -2596,7 +2601,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase-nfss.sty]{$Id: nfssext-cfr.dtx 10840 2025-02-21 19:06:45Z cfrees $}[v1.2 \revinfo{} specially mangled by cfr; based on 2003/03/14 v1.2 Experimental NFSS Extensions; for old NFSS]
+\ProvidesPackageSVN[\filebase-nfss.sty]{$Id: nfssext-cfr.dtx 11042 2025-06-22 22:34:34Z cfrees $}[v1.3 \revinfo{} specially mangled by cfr; based on 2003/03/14 v1.2 Experimental NFSS Extensions; for old NFSS]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % ^^A Paid â defnyddio \GetFileInfoSVN*/\GetFileInfoSVN{} yn y fan hon!!
