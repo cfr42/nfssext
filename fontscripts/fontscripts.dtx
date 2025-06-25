@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 10843 2025-02-22 05:01:11Z cfrees $}[v0.3 \revinfo][\filebase DTX: l3build scripts for font installation]
+\ProvidesFileSVN{$Id: fontscripts.dtx 11047 2025-06-25 08:20:08Z cfrees $}[v0.3 \revinfo][\filebase DTX: l3build scripts for font installation]
 \DefineFileInfoSVN[fontscripts]
 \documentclass[10pt,british,lm-default=false]{l3doc}
 % l3doc loads fancyvrb
@@ -165,9 +165,11 @@
 }
 \NewDocumentCommand \plarg {+m} {{\ttfamily (\ivals{#1})}}
 \ExplSyntaxOff
-\NewDocumentCommand \istable{m}{\texttt{= \{}\ivals{#1}\texttt{\}}\par\noindent} 
-\NewDocumentCommand \isstring{m}{\texttt{= ''}\meta{#1}\texttt{''}\par\noindent} 
-\NewDocumentCommand \isbool{}{\texttt{= }\meta{true\textbar false}\par\noindent} 
+\makeatletter
+%^^A sylwad david carlisle: https://tex.stackexchange.com/questions/329949/ignore-par-after-the-end-of-a-macro-then-insert-noindent#comment808392_329949
+\NewDocumentCommand \istable{m}{\texttt{= \{}\ivals{#1}\texttt{\}}\@afterindentfalse\@afterheading\par} 
+\NewDocumentCommand \isstring{m}{\texttt{= ''}\meta{#1}\texttt{''}\@afterindentfalse\@afterheading\par} 
+\NewDocumentCommand \isbool{}{\texttt{= }\meta{true\textbar false}\@afterindentfalse\@afterheading\par} 
 \newcommand*\afm{\textsc{afm}}
 \newcommand*\enc{\textsc{enc}}
 \newcommand*\etx{\textsc{etx}}
@@ -182,7 +184,6 @@
 \definecolor{strawberry}{rgb}{1.000,0.000,0.502}
 \definecolor{blueberry}{rgb}{0.000,0.000,1.000}
 \definecolor{moss}{rgb}{0.000,0.502,0.251}
-\makeatletter
 \def\@xobeysp{\leavevmode\penalty100\ }
 \makeatother
 \newcolumntype{T}{>{\ttfamily\arraybackslash}l}
@@ -195,6 +196,7 @@
 %
 % \changes{v0.1}{2024-09-24}{First public release.}
 % \changes{v0.2}{2025-01-28}{Use \texttt{fnt} prefix in Lua scripts.}
+% \changes{v0.4}{2025-06-25}{Minor documentation corrections.}
 % 
 % \maketitle\thispagestyle{empty}
 % \pdfinfo{%
@@ -414,35 +416,68 @@ require(kpse.lookup("fntbuild.lua"))
 %
 % If a variable scaling factor is used, the font definition files will be edited to ensure this works, since \lpack{fontinst} apparently supports scaling only by a fixed factor.
 % For a simple demonstration of how to set this up, see, for example, \lpack{baskervaldadf}'s driver which includes
-% \begin{verbatim}
-% \declaresize{}{<-> \string\ybv@@scale}
-% \end{verbatim}
-% Shape declarations should then be written without scaling,
-% \begin{verbatim}
-% \installfont{ybvr8t}{ybvr8r,ybvr8sr,newlatin}{t1-baskervald}{T1}{ybv}{m}{n}{}
-% \end{verbatim}
-% since scaling will be added after the font definition files are created,
-% \begin{verbatim}
-% \expandafter\ifx\csname ybv@scale\endcsname\relax
-%   \let\ybv@@scale\@empty
-% \else
-%   \edef\ybv@@scale{s*[\csname ybv@scale\endcsname]}%
+% \changes{v0.0}{2025-06-24}{Fix code markup for scaling example; add lines from \texttt{.sty} for completeness.}
+% \iffalse
+%<*verb>
 % \fi
-%
-% \DeclareFontFamily{T1}{ybv}{}
-%
-% \DeclareFontShape{T1}{ybv}{m}{n}{
-%   <-> \ybv@@scale ybvr8t
-% }{}
-% \end{verbatim}
-% to enable a suitable option in the \texttt{sty} file.
+\begin{verbatim}
+\declaresize{}{<-> \string\ybv@@scale}
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% Shape declarations should then be written without scaling,
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+\installfont{ybvr8t}{ybvr8r,ybvr8sr,newlatin}{t1-baskervald}{T1}{ybv}{m}{n}{}
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% since scaling will be added after the font definition files are created.
+% For example, the result of the above lines in the font definition file is
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+\expandafter\ifx\csname ybv@scale\endcsname\relax
+  \let\ybv@@scale\@empty
+\else
+  \edef\ybv@@scale{s*[\csname ybv@scale\endcsname]}%
+\fi
+
+\DeclareFontFamily{T1}{ybv}{}
+
+\DeclareFontShape{T1}{ybv}{m}{n}{
+  <-> \ybv@@scale ybvr8t
+}{}
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% which supports an option provided in the \texttt{sty} file.
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+\keys_define:nn {  baskervald }
+{
+  scale .tl_set:N = \ybv@scale,
+  scale .initial:V = \@empty,
+}
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
 %
 % If \lpack{fontinst} is setup to produce a shell script for converting \file{.pl} and \file{.vpl} files to \file{.tfm} and \file{.vf}, the function executes the commands contained in this script.
 % In order to maintain compatibility on Windows, the commands are extracted and run by Lua rather than calling the shell to execute the commands directly.
 % 
 % \changes{v0.2}{2025-02-05}{New function: \texttt{fnt.fntsubsetter()}.}
 % \DescribelFn{fnt.fntsubsetter ()} \texttt{fnt.fntsubsetter}\plarg{}\par\noindent
-% Inserts a font encoding subset declarations into font definition files.
+% Inserts font encoding subset declarations into font definition files.
 % Explicit use is only required for custom build functions, as the standard options for \verb|fnt.build_fnt ()| incorporate this function.
 % Returns an error level, but this may not be accurate.
 %
@@ -458,11 +493,12 @@ require(kpse.lookup("fntbuild.lua"))
 % This function is called by the function executed by the default functions called by \texttt{fnttarg()} and may be useful if that target is redefined to call a different function.
 % 
 % \changes{v0.2}{2025-01-25}{New function: \texttt{fnt.lsrdir()}.}
+% \changes{v0.0}{2025-06-24}{Correct description of \texttt{fnt.lsrdir()}.}
 % \DescribelFn{fnt.lsrdir()} \texttt{fnt.lsrdir}\plarg{path,filenames}\par\noindent
-% Adds a recursive list of files in \texttt{path} to the list of files in \texttt{filenames} and returns \texttt{filenames} and returns the resulting table.
+% Adds a recursive list of files in \texttt{path} to the list of files in the table \texttt{filenames} and returns the resulting table.
 % \texttt{path} should be a string containing the fully-qualified path to a directory.
-% If specified, \texttt{filenames} should be a table. 
-% Note that the function appends entries to \texttt{filenames} rather than replacing them.
+% If \texttt{filenames} is unspecified, a new table is returned.
+% Otherwise, the function appends entries to \texttt{filenames} rather than replacing them.
 %
 % \changes{v0.2}{2025-02-05}{Renamed function: \texttt{fnt.test()} (was \texttt{fnt_test()}.}
 % \DescribelFn{fnt.test()} \verb|fnt.test|\plarg{fntpkgname,fds,content,maps,fdsdir}\par\noindent
@@ -666,7 +702,7 @@ require(kpse.lookup("fntbuild.lua"))
 % Scripts to run to convert human-readable \TeX{} font metrics/virtual font metrics into binary \TeX{} font metrics and virtual fonts.
 %
 % \changes{v0.2}{2025-01-25}{New variable: \texttt{fnt.buildsearch}.}
-% \DescribelVar{fnt.buildsearch}\texttt{fnt.buildsearch}\isbool
+% \DescribelVar{fnt.buildsearch}\texttt{fnt.buildsearch} \isbool
 % Whether to search the \texttt{texmf} trees while generating font files.
 %
 % Defaults to \texttt{false}.
@@ -759,12 +795,13 @@ require(kpse.lookup("fntbuild.lua"))
 % The file containing regression tests for use in auto-generating tests.
 % \file{fntbuild-regression-test.tex} provides a set used by default.
 %
-% \changes{0.3}{2025-02-20}{Include warning re.\ use of subset declarations in \file{.fd} files. \href{https://github.com/latex3/latex2e/issues/1669}{GitHub \#1669}.}
+% \changes{v0.3}{2025-02-20}{Include warning re.\ use of subset declarations in \file{.fd} files. \href{https://github.com/latex3/latex2e/issues/1669}{GitHub \#1669}.}
+% \changes{v0.4}{2025-06-25}{Update warning re.\ subset declarations with date of fix in format.}
 % \textbf{Warning!
-%   The implementation of subset declarations in font definition files appears to be broken in current \LaTeX{}\footnote{%
+%   The implementation of subset declarations in font definition files is broken in \LaTeX{} prior to 2025-06-01\footnote{%
 %     \href{https://github.com/latex3/latex2e/issues/1669}{GitHub \#1669}.%
 %   }.
-%   Do NOT remove declarations from \file{.sty} files unless present in the format itself.}
+%   If your package should work on older versions of \LaTeX{}, do NOT remove declarations from \file{.sty} files unless present in the format itself.}
 %
 % \changes{v0.2}{2025-01-25}{New variable: \texttt{fnt.subset}.}
 % \DescribelVar{fnt.subset}\texttt{fnt.subset}\isbool \par\noindent
@@ -811,7 +848,8 @@ fnt.subsetdefns.<family 2> = "3"
 %<*verb>
 % \fi
 \begin{verbatim}
-fnt.subsettemplate = "\\ExpandArgs {nnc} \\DeclareEncodingSubset {TS1} {$FONTFAMILY} {TS1:$SUBSET}"
+fnt.subsettemplate = 
+  "\\ExpandArgs {nnc} \\DeclareEncodingSubset {TS1} {$FONTFAMILY} {TS1:$SUBSET}"
 \end{verbatim}
 % \iffalse
 %</verb>
@@ -850,6 +888,8 @@ fnt.subsetdefns.clms = "lmss"
 %
 % For simple cases, configuration may be done in \file{build.lua}, along with generic \pkg{l3build} customisation.
 % For more elaborate modifications --- or cases where a subset of configuration options should be shared between modules --- settings may be placed in one or more \file{fntbuild-config.lua} files.
+%
+% Variables are set sequentially from the following files:
 % \begin{enumerate}
 %   \item \file{fntbuild-vars.lua} is loaded.
 %     This ensures required variables get default values and modifies a number of \pkg{l3build} defaults.
@@ -957,10 +997,11 @@ fnt.subsetdefns.clms = "lmss"
 %<*tables>
 % \fi
 % \begin{template}{fntbuild-tables.tex}
+% Default content:
 %    \begin{macrocode}
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN[fnt-tables.tex]{$Id: fontscripts.dtx 10843 2025-02-22 05:01:11Z cfrees $}[v0.2 \revinfo][\filebase: font table template]
+\ProvidesFileSVN[fnt-tables.tex]{$Id: fontscripts.dtx 11047 2025-06-25 08:20:08Z cfrees $}[v0.2 \revinfo][\filebase: font table template]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % \iffalse
@@ -990,9 +1031,10 @@ TABLES
 %<*lvt>
 % \fi
 % \begin{template}{fntbuild-test.lvt}
+% Default content:
 %    \begin{macrocode}
 \RequirePackage{svn-prov}
-\ProvidesFileSVN[fnt-test.lvt]{$Id: fontscripts.dtx 10843 2025-02-22 05:01:11Z cfrees $}[v0.0 \revinfo][fontscripts: l3build test template]
+\ProvidesFileSVN[fnt-test.lvt]{$Id: fontscripts.dtx 11047 2025-06-25 08:20:08Z cfrees $}[v0.0 \revinfo][fontscripts: l3build test template]
 \listfiles
 \input regression-test.tex\relax
 \input fntbuild-regression-test.tex\relax
@@ -1017,16 +1059,15 @@ SAMP
 % 
 % \subsection{Regression Tests}\label{subsec:regress}
 % 
-% Simple regression test suite for fonts focused on T1 and TS1 encodings.
-% 
 % \iffalse
 %<*tests>
 % \fi
 % \begin{template}{fntbuild-regression-test.tex}
+% Simple regression test suite for fonts focused on T1 and TS1 encodings.
 %    \begin{macrocode}
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN[fnt-tests.tex]{$Id: fontscripts.dtx 10843 2025-02-22 05:01:11Z cfrees $}[v0.0 \revinfo][fontscripts: l3build tests]
+\ProvidesFileSVN[fnt-tests.tex]{$Id: fontscripts.dtx 11047 2025-06-25 08:20:08Z cfrees $}[v0.0 \revinfo][fontscripts: l3build tests]
 \documentclass[10pt,a4paper]{article}
 \usepackage{fonttable}
 \usepackage{tracefnt}% infoshow is default; debugshow traces maths fonts, too
@@ -1239,7 +1280,7 @@ SAMP
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2\nil{#1}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName doc]{$Id: fontscripts.dtx 10843 2025-02-22 05:01:11Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName doc]{$Id: fontscripts.dtx 11047 2025-06-25 08:20:08Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \AddToHook{begindocument}{\OnlyDescription}
 \input{\MyFileBaseName.dtx}
@@ -1250,7 +1291,7 @@ SAMP
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2\nil{#1}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName code]{$Id: fontscripts.dtx 10843 2025-02-22 05:01:11Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName code]{$Id: fontscripts.dtx 11047 2025-06-25 08:20:08Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \input{\MyFileBaseName.dtx}
 %</doc-code>
