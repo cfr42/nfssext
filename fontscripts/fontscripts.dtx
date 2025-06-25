@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 11047 2025-06-25 08:20:08Z cfrees $}[v0.3 \revinfo][\filebase DTX: l3build scripts for font installation]
+\ProvidesFileSVN{$Id: fontscripts.dtx 11048 2025-06-25 10:18:03Z cfrees $}[v0.3 \revinfo][\filebase DTX: l3build scripts for font installation]
 \DefineFileInfoSVN[fontscripts]
 \documentclass[10pt,british,lm-default=false]{l3doc}
 % l3doc loads fancyvrb
@@ -167,9 +167,14 @@
 \ExplSyntaxOff
 \makeatletter
 %^^A sylwad david carlisle: https://tex.stackexchange.com/questions/329949/ignore-par-after-the-end-of-a-macro-then-insert-noindent#comment808392_329949
-\NewDocumentCommand \istable{m}{\texttt{= \{}\ivals{#1}\texttt{\}}\@afterindentfalse\@afterheading\par} 
-\NewDocumentCommand \isstring{m}{\texttt{= ''}\meta{#1}\texttt{''}\@afterindentfalse\@afterheading\par} 
-\NewDocumentCommand \isbool{}{\texttt{= }\meta{true\textbar false}\@afterindentfalse\@afterheading\par} 
+%^^A \NewDocumentCommand \istable{m}{\texttt{= \{}\ivals{#1}\texttt{\}}\@afterindentfalse\@afterheading\par} 
+%^^A \NewDocumentCommand \isstring{m}{\texttt{= ''}\meta{#1}\texttt{''}\@afterindentfalse\@afterheading\par} 
+%^^A \NewDocumentCommand \isbool{}{\texttt{= }\meta{true\textbar false}\@afterindentfalse\@afterheading\par} 
+%^^A ateb egreg: https://tex.stackexchange.com/a/746766/
+\newcommand*\is@rhywbeth{\ifx\next\par\else\noindent\expandafter\ignorespaces\fi}
+\NewDocumentCommand \istable{m}{\texttt{= \{}\ivals{#1}\texttt{\}}\par\futurelet\next\is@rhywbeth} 
+\NewDocumentCommand \isstring{m}{\texttt{= ''}\meta{#1}\texttt{''}\par\futurelet\next\is@rhywbeth} 
+\NewDocumentCommand \isbool{}{\texttt{= }\meta{true\textbar false}\par\futurelet\next\is@rhywbeth} 
 \newcommand*\afm{\textsc{afm}}
 \newcommand*\enc{\textsc{enc}}
 \newcommand*\etx{\textsc{etx}}
@@ -1001,7 +1006,7 @@ fnt.subsetdefns.clms = "lmss"
 %    \begin{macrocode}
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN[fnt-tables.tex]{$Id: fontscripts.dtx 11047 2025-06-25 08:20:08Z cfrees $}[v0.2 \revinfo][\filebase: font table template]
+\ProvidesFileSVN[fnt-tables.tex]{$Id: fontscripts.dtx 11048 2025-06-25 10:18:03Z cfrees $}[v0.2 \revinfo][\filebase: font table template]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % \iffalse
@@ -1034,7 +1039,7 @@ TABLES
 % Default content:
 %    \begin{macrocode}
 \RequirePackage{svn-prov}
-\ProvidesFileSVN[fnt-test.lvt]{$Id: fontscripts.dtx 11047 2025-06-25 08:20:08Z cfrees $}[v0.0 \revinfo][fontscripts: l3build test template]
+\ProvidesFileSVN[fnt-test.lvt]{$Id: fontscripts.dtx 11048 2025-06-25 10:18:03Z cfrees $}[v0.0 \revinfo][fontscripts: l3build test template]
 \listfiles
 \input regression-test.tex\relax
 \input fntbuild-regression-test.tex\relax
@@ -1067,7 +1072,7 @@ SAMP
 %    \begin{macrocode}
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN[fnt-tests.tex]{$Id: fontscripts.dtx 11047 2025-06-25 08:20:08Z cfrees $}[v0.0 \revinfo][fontscripts: l3build tests]
+\ProvidesFileSVN[fnt-tests.tex]{$Id: fontscripts.dtx 11048 2025-06-25 10:18:03Z cfrees $}[v0.0 \revinfo][fontscripts: l3build tests]
 \documentclass[10pt,a4paper]{article}
 \usepackage{fonttable}
 \usepackage{tracefnt}% infoshow is default; debugshow traces maths fonts, too
@@ -1280,7 +1285,7 @@ SAMP
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2\nil{#1}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName doc]{$Id: fontscripts.dtx 11047 2025-06-25 08:20:08Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName doc]{$Id: fontscripts.dtx 11048 2025-06-25 10:18:03Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \AddToHook{begindocument}{\OnlyDescription}
 \input{\MyFileBaseName.dtx}
@@ -1291,7 +1296,7 @@ SAMP
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2\nil{#1}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName code]{$Id: fontscripts.dtx 11047 2025-06-25 08:20:08Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName code]{$Id: fontscripts.dtx 11048 2025-06-25 10:18:03Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \input{\MyFileBaseName.dtx}
 %</doc-code>
