@@ -131,6 +131,12 @@ jobs:
           name: testfiles-clm
           # Decide how long to keep the test output artefact:
           retention-days: 7
+      - name: Debug info
+      # run only if updmap succeeded
+        if: ${{ !cancelled() && (steps.updmap-clm.outputs.UPDMAP_RET) }}
+        run: |
+          ls -R ~/.texlive ~/texmf
+          kpsewhich clm.map
       - name: Cache build results
       # run only if updmap succeeded
         if: ${{ !cancelled() && (steps.updmap-clm.outputs.UPDMAP_RET) }}
@@ -337,6 +343,10 @@ jobs:
         run: |
           (updmap --user --enable Map=clm.map && echo "UPDMAP_RET=0" >> "$GITHUB_OUTPUT") || echo "UPDMAP_RET=1" >> "GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
+      - name: Debug info
+        run: |
+          ls -R ~/.texlive ~/texmf
+          kpsewhich clm.map
       - name: Run l3build fnttarg
         if: ${{ matrix.pre_target }}
         working-directory: ${{ matrix.working_directory }}
