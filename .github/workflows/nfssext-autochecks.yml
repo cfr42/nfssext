@@ -146,6 +146,7 @@ jobs:
           path: |
             ~/.texlive
             ~/texmf
+            ~/nfssext/cfr-lm/keep
           key: clm-${{ github.sha }}
       - name: Archive docs
       # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
@@ -336,6 +337,7 @@ jobs:
           path: |
             ~/.texlive
             ~/texmf
+            ~/nfssext/cfr-lm/keep
           key: clm-${{ github.sha }}
           fail-on-cache-miss: true
       - name: Update map
@@ -345,7 +347,7 @@ jobs:
           cat "$GITHUB_OUTPUT"
       - name: Debug info
         run: |
-          ls -R ~/.texlive ~/texmf
+          ls -R ~/.texlive ~/texmf ~/nfssext/cfr-lm/keep
           kpsewhich clm.map
       - name: Run l3build fnttarg
         if: ${{ matrix.pre_target }}
@@ -370,7 +372,7 @@ jobs:
         id: ctan
         run: |
           module="${{ matrix.module }}"
-          (l3build ctan --texmfhome ~/texmf && echo -e "CTAN_RET=0\nctan_ret_${module}=0" >> "$GITHUB_OUTPUT") || echo -e "CTAN_RET=1\nctan_ret_${module}=1" >> "$GITHUB_OUTPUT"
+          (l3build ctan && echo -e "CTAN_RET=0\nctan_ret_${module}=0" >> "$GITHUB_OUTPUT") || echo -e "CTAN_RET=1\nctan_ret_${module}=1" >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
       - name: Archive failed test output
       # run even if previous step failed

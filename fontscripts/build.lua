@@ -19,7 +19,10 @@ manifestfile = "manifest.txt"
 scriptfiles = {"*.lua"}
 typesetdeps = {maindir .. "/nfssext-cfr", maindir .. "/cfr-lm"}
 typesetfiles = {"*-doc.tex", "*-code.tex"}
+-- local info = os.uname()
+-- if not string.match(info.release, "ubuntu") then
 typesetopts = "-interaction=nonstopmode -cnf-line='TEXMFHOME=.' -cnf-line='TEXMFLOCAL=.' -cnf-line='TEXMFARCH=.'"
+-- end
 typesetruns = 5
 --
 docfiles = filelist(sourcefiledir,"fntbuild-*.lua")
