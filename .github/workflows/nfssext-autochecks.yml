@@ -370,7 +370,7 @@ jobs:
         id: ctan
         run: |
           module="${{ matrix.module }}"
-          (l3build ctan && echo -e "CTAN_RET=0\nctan_ret_${module}=0" >> "$GITHUB_OUTPUT") || echo -e "CTAN_RET=1\nctan_ret_${module}=1" >> "$GITHUB_OUTPUT"
+          (l3build ctan --texmfhome ~/texmf && echo -e "CTAN_RET=0\nctan_ret_${module}=0" >> "$GITHUB_OUTPUT") || echo -e "CTAN_RET=1\nctan_ret_${module}=1" >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
       - name: Archive failed test output
       # run even if previous step failed
