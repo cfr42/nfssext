@@ -135,7 +135,7 @@ jobs:
       # run only if updmap succeeded
         if: ${{ !cancelled() && (steps.updmap-clm.outputs.UPDMAP_RET) }}
         run: |
-          ls -R ~/.texlive ~/texmf ~/nfssext/cfr-lm/keep
+          ls -R ~/.texlive ~/texmf ~/work/nfssext/nfssext/cfr-lm/keep
           kpsewhich clm.map
       - name: Cache build results
       # run only if updmap succeeded
@@ -146,7 +146,7 @@ jobs:
           path: |
             ~/.texlive
             ~/texmf
-            ~/nfssext/cfr-lm/keep
+            ~/work/nfssext/nfssext/cfr-lm/keep
           key: clm-${{ github.sha }}
       - name: Archive docs
       # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
@@ -337,7 +337,7 @@ jobs:
           path: |
             ~/.texlive
             ~/texmf
-            ~/nfssext/cfr-lm/keep
+            ~/work/nfssext/nfssext/cfr-lm/keep
           key: clm-${{ github.sha }}
           fail-on-cache-miss: true
       - name: Update map
@@ -347,7 +347,7 @@ jobs:
           cat "$GITHUB_OUTPUT"
       - name: Debug info
         run: |
-          ls -R ~/.texlive ~/texmf ~/nfssext/cfr-lm/keep
+          ls -R ~/.texlive ~/texmf ~/work/nfssext/nfssext/cfr-lm/keep
           kpsewhich clm.map
       - name: Run l3build fnttarg
         if: ${{ matrix.pre_target }}
