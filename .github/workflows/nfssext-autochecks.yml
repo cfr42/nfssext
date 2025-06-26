@@ -135,7 +135,7 @@ jobs:
       # run only if updmap succeeded
         if: ${{ !cancelled() && (steps.updmap-clm.outputs.UPDMAP_RET) }}
         run: |
-          ls -R ~/.texlive ~/texmf
+          ls -R ~/.texlive ~/texmf ~/nfssext/cfr-lm/keep
           kpsewhich clm.map
       - name: Cache build results
       # run only if updmap succeeded
