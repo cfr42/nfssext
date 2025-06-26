@@ -124,6 +124,7 @@ jobs:
           path: |
             ~/.texlive
             ~/texmf
+            ~/nfssext/cfr-lm/keep
           key: clm-${{ github.sha }}-dev
       - name: Archive docs
       # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
@@ -310,6 +311,7 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: |
+            ~/nfssext/cfr-lm/keep
             ~/.texlive
             ~/texmf
           key: clm-${{ github.sha }}-dev
