@@ -143,10 +143,11 @@ jobs:
         id: clm-cache
         uses: actions/cache/save@v4
         with:
-          path: |
-            ~/.texlive
-            ~/texmf
-            ~/work/nfssext/nfssext/cfr-lm/keep
+          path: ~/work/nfssext/nfssext/cfr-lm/keep
+          # path: |
+            # ~/work/nfssext/nfssext/cfr-lm/keep
+            # ~/.texlive
+            # ~/texmf
           key: clm-${{ github.sha }}
       - name: Archive docs
       # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
@@ -334,21 +335,22 @@ jobs:
         if: ${{ matrix.extra_needs }}
         uses: actions/cache/restore@v4
         with:
-          path: |
-            ~/.texlive
-            ~/texmf
-            ~/work/nfssext/nfssext/cfr-lm/keep
+          # path: |
+          #   ~/.texlive
+          #   ~/texmf
+          #   ~/work/nfssext/nfssext/cfr-lm/keep
+          path: ~/work/nfssext/nfssext/cfr-lm/keep
           key: clm-${{ github.sha }}
           fail-on-cache-miss: true
-      - name: Update map
-        id: updmap-clm
-        run: |
-          (updmap --user --enable Map=clm.map && echo "UPDMAP_RET=0" >> "$GITHUB_OUTPUT") || echo "UPDMAP_RET=1" >> "GITHUB_OUTPUT"
-          cat "$GITHUB_OUTPUT"
-      - name: Debug info
-        run: |
-          ls -R ~/.texlive ~/texmf ~/work/nfssext/nfssext/cfr-lm/keep
-          kpsewhich clm.map
+      # - name: Update map
+      #   id: updmap-clm
+      #   run: |
+      #     (updmap --user --enable Map=clm.map && echo "UPDMAP_RET=0" >> "$GITHUB_OUTPUT") || echo "UPDMAP_RET=1" >> "GITHUB_OUTPUT"
+      #     cat "$GITHUB_OUTPUT"
+      # - name: Debug info
+      #   run: |
+      #     ls -R ~/.texlive ~/texmf ~/work/nfssext/nfssext/cfr-lm/keep
+      #     kpsewhich clm.map
       - name: Run l3build fnttarg
         if: ${{ matrix.pre_target }}
         working-directory: ${{ matrix.working_directory }}
