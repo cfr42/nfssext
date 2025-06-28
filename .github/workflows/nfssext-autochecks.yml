@@ -335,10 +335,6 @@ jobs:
         if: ${{ matrix.extra_needs }}
         uses: actions/cache/restore@v4
         with:
-          # path: |
-          #   ~/.texlive
-          #   ~/texmf
-          #   ~/work/nfssext/nfssext/cfr-lm/keep
           path: ~/work/nfssext/nfssext/cfr-lm/keep
           key: clm-${{ github.sha }}
           fail-on-cache-miss: true
@@ -376,6 +372,10 @@ jobs:
           module="${{ matrix.module }}"
           (l3build ctan && echo -e "CTAN_RET=0\nctan_ret_${module}=0" >> "$GITHUB_OUTPUT") || echo -e "CTAN_RET=1\nctan_ret_${module}=1" >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
+      - name: Debug info 1
+        run: |
+          echo -e "BUILD_RET is ${BUILD_RET}"
+          echo -e "CTAN_RET is ${CTAN_RET}"
       - name: Archive failed test output
       # run even if previous step failed
         if: ${{ !cancelled() }}
@@ -384,6 +384,10 @@ jobs:
           name: testfiles-${{ matrix.module }}
           # Decide how long to keep the test output artefact:
           retention-days: 7
+      - name: Debug info 2
+        run: |
+          echo -e "BUILD_RET is ${BUILD_RET}"
+          echo -e "CTAN_RET is ${CTAN_RET}"
       - name: Archive failed docs output
       # run even iff previous step failed
         if: ${{ !cancelled() && !(steps.ctan.outputs.CTAN_RET) }}
