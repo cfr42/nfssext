@@ -1,4 +1,4 @@
--- $Id: fntbuild-doc.lua 11050 2025-06-28 01:24:12Z cfrees $
+-- $Id: fntbuild-doc.lua 11051 2025-06-28 01:26:51Z cfrees $
 -------------------------------------------------
 -- fntbuild-doc
 -------------------------------------------------
@@ -112,7 +112,7 @@ local function doc_init ()
         print("Copied all files for typeset dependency " .. i .. "\nfrom " .. ddir .. " to " .. typesetdir .. ".\n")
       end
     else
-      print("No saved files for typeset dependency " .. i .. ".\nThis is expected if the dependency is not a font package.\n"
+      print("No saved files for typeset dependency " .. i .. ".\nThis is expected if the dependency is not a font package.\n")
     end
   end
   return 0
