@@ -1,4 +1,4 @@
--- $Id: fntbuild-doc.lua 10769 2025-02-05 20:41:12Z cfrees $
+-- $Id: fntbuild-doc.lua 11051 2025-06-28 01:26:51Z cfrees $
 -------------------------------------------------
 -- fntbuild-doc
 -------------------------------------------------
@@ -23,6 +23,7 @@ local function doc_init ()
   local maps = ""
   local mapfiles=filelist(unpackdir, "*.map")
   local yy = 0
+  local typesetdeps = typesetdeps or {}
   for i, j in ipairs(mapfiles) do
     maps = maps .. "\n\\pdfmapfile{-" .. j .. "}\n\\pdfmapfile{+" .. j .. "}"
   end
@@ -90,6 +91,29 @@ local function doc_init ()
   f:close()
   rm(unpackdir,filename)
   cp(targname,unpackdir,typesetdir)
+  end
+  -- try to find and copy keepdir files for dependencies in typesetdeps
+  -- this relies on 
+  -- either both modules setting fnt.keepdir = sourcefiledir .. "/<name>"  
+  -- or the dependency using fnt.keepdir = sourcefiledir .. "/keep"
+  for _,i in ipairs(typesetdeps) do
+    local ddir = (string.gsub(fnt.keepdir,sourcefiledir,i))
+    if not direxists(ddir) then
+      ddir = i .. "/keep"
+      if not direxists(ddir) then
+        ddir = nil
+      end
+    end
+    if ddir ~= nil then
+      local errorlevel = cp("*.*",ddir,typesetdir)
+      if errorlevel ~= 0 then
+        print("Failed to copy keep files for typeset dependency " .. i .. ".\nPerhaps I failed to find the correct directory or no files were saved?\n")
+      else
+        print("Copied all files for typeset dependency " .. i .. "\nfrom " .. ddir .. " to " .. typesetdir .. ".\n")
+      end
+    else
+      print("No saved files for typeset dependency " .. i .. ".\nThis is expected if the dependency is not a font package.\n")
+    end
   end
   return 0
 end
