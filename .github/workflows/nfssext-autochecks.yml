@@ -372,10 +372,8 @@ jobs:
           module="${{ matrix.module }}"
           (l3build ctan && echo -e "CTAN_RET=0\nctan_ret_${module}=0" >> "$GITHUB_OUTPUT") || echo -e "CTAN_RET=1\nctan_ret_${module}=1" >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
-      - name: Debug info 1
-        run: |
-          echo -e "BUILD_RET is ${BUILD_RET}"
-          echo -e "CTAN_RET is ${CTAN_RET}"
+          . "$GITHUB_OUTPUT"
+          [[ $CTAN_RET != 0 ]] && exit 1
       - name: Archive failed test output
       # run even if previous step failed
         if: ${{ !cancelled() }}
@@ -384,13 +382,10 @@ jobs:
           name: testfiles-${{ matrix.module }}
           # Decide how long to keep the test output artefact:
           retention-days: 7
-      - name: Debug info 2
-        run: |
-          echo -e "BUILD_RET is ${BUILD_RET}"
-          echo -e "CTAN_RET is ${CTAN_RET}"
       - name: Archive failed docs output
       # run even iff previous step failed
-        if: ${{ !cancelled() && !(steps.ctan.outputs.CTAN_RET) }}
+      # https://docs.github.com/en/actions/reference/evaluate-expressions-in-workflows-and-actions#status-check-functions
+        if: ${{ !cancelled() && steps.ctan.conclusion == 'failure' }}
       # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
         uses: actions/upload-artifact@v4
         with:
@@ -440,7 +435,7 @@ jobs:
         run: |
           ([[ $fnttargclm != 0 || $ctanclm != 0 || $fnttargbaskervaldadf != 0 || $fnttargberenisadf != 0 || $fnttargelectrumadf != 0 || $fnttarglibrisadf != 0 || $fnttargromandeadf != 0 || $fnttargventurisadf != 0 || $ctanbaskervaldadf != 0 || $ctanberenisadf != 0 || $ctanelectrumadf != 0 || $ctanlibrisadf != 0 || $ctanromandeadf != 0 || $ctanventurisadf != 0 || $fnttargadforn != 0 || $fnttargadfsymbols != 0 || $ctanadforn != 0 || $ctanadfsymbols != 0 || $ctanfontscripts != 0 || $ctannfssextcfr != 0 ]] && echo -e "BUILD_RET=1" >> "$GITHUB_OUTPUT") || echo -e "BUILD_RET=0" >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
-          [[ $GITHUB_OUTPUT != 0 ]] && ERROR
+          [[ $GITHUB_OUTPUT != 0 ]] && exit 1
 
 
 # vim: sw=2:et:ts=2:
