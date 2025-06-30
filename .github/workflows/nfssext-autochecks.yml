@@ -368,10 +368,10 @@ jobs:
       - name: Run l3build
         working-directory: ${{ matrix.working_directory }}
         id: ctan
-          # (l3build ctan && (echo -e "ctan_ret_${module}=0" >> "$GITHUB_OUTPUT" ; echo -e "CTAN_RET=0 >> "$GITHUB_ENV") || (echo -e "ctan_ret_${module}=1" >> "$GITHUB_OUTPUT" ; echo "CTAN_RET=1" >> "$GITHUB_ENV"))
+          # (l3build ctan && (echo -e "ctan_ret_${module}=0" >> "$GITHUB_OUTPUT" ; echo -e "CTAN_RET=0" >> "$GITHUB_ENV") || (echo -e "ctan_ret_${module}=1" >> "$GITHUB_OUTPUT" ; echo "CTAN_RET=1" >> "$GITHUB_ENV"))
         run: |
           module="${{ matrix.module }}"
-          (l3build ctan && (echo -e "ctan_ret_${module}=0" >> "$GITHUB_OUTPUT" ; echo -e "CTAN_RET=0 >> "$GITHUB_OUPUT") || (echo -e "ctan_ret_${module}=1" >> "$GITHUB_OUTPUT" ; echo "CTAN_RET=1" >> "$GITHUB_OUPUT"))
+          (l3build ctan && (echo -e "ctan_ret_${module}=0" >> "$GITHUB_OUTPUT" ; echo -e "CTAN_RET=0" >> "$GITHUB_OUPUT") || (echo -e "ctan_ret_${module}=1" >> "$GITHUB_OUTPUT" ; echo "CTAN_RET=1" >> "$GITHUB_OUPUT"))
           cat "$GITHUB_OUTPUT"
       - name: Archive failed test output
       # run even if previous step failed
