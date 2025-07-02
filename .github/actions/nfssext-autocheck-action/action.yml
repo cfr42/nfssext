@@ -29,9 +29,9 @@ outputs:
 runs:
   using: "composite"
   steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - name: Checkout repo
-      uses: actions/checkout@v4
+    # # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    # - name: Checkout repo
+    #   uses: actions/checkout@v4
     # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
     - name: Update system 
       run: sudo apt-get update
