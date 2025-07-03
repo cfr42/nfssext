@@ -10,6 +10,9 @@ name: Automatic Checks for nfssext with LaTeX dev
 on:
   schedule: 
     - cron: '17 2 * * *'
+  push:
+    paths:
+      - '.github/workflows/nfssext-autochecks-dev.yml'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
