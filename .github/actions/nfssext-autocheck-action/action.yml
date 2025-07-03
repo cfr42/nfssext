@@ -83,7 +83,6 @@ runs:
         l3build ctan || allan=1
         echo -e "CTAN_RET=${allan}\nctan_ret_${module}=${allan}" >> "$GITHUB_OUTPUT" 
         cat "$GITHUB_OUTPUT"
-        exit "$allan"
     - name: Archive failed test output
     # run even if previous step failed
       if: ${{ !cancelled() }}
