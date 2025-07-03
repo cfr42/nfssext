@@ -34,9 +34,11 @@ runs:
     #   uses: actions/checkout@v4
     # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
     - name: Update system 
+      shell: bash
       run: sudo apt-get update
     - name: Install additional packages if needed
       if: ${{ inputs.extra_packages }}
+      shell: bash
       run: sudo apt-get install ${{ inputs.extra_packages }}
     - name: Restore TeX Live from cache
       uses: actions/cache/restore@v4
@@ -47,12 +49,14 @@ runs:
       # oes angen hwn?
       # oes!
     - name: Set PATH
+      shell: bash
       run: echo $HOME/texlive/bin/x86_64-linux >> $GITHUB_PATH
     - name: Run l3build fnttarg
     # oes pwrpas ddefnyddio if yma? am fod bob un yn cynnwys pre_target yn y matrix hwn, ond ydyn nhw?
       if: ${{ inputs.pre_target }}
       working-directory: ${{ inputs.working_directory }}
       id: fnttarg
+      shell: bash
       run: |
         module="${{ inputs.module }}"
         allan=0
@@ -72,6 +76,7 @@ runs:
     - name: Run l3build
       working-directory: ${{ inputs.working_directory }}
       id: ctan
+      shell: bash
       run: |
         module="${{ inputs.module }}"
         allan=0
