@@ -11,6 +11,8 @@ on:
   schedule: 
     - cron: '17 2 * * *'
   push:
+    branches:
+      - "*"
     paths:
       - '.github/workflows/nfssext-autochecks-dev.yml'
   # Allows you to run this workflow manually from the Actions tab
@@ -70,16 +72,19 @@ jobs:
       # oes!
       - name: Set PATH
         run: echo $HOME/texlive/bin/x86_64-linux >> $GITHUB_PATH
-      - name: Run l3build fnttarg 
+      - name: Run l3build fnttarg dev
         id: fnttarg-clm-dev
         working-directory: cfr-lm
         # run: (l3build fnttarg && echo "BUILD_RET=0" >> "$GITHUB_OUTPUT") || echo "BUILD_RET=1" >> "$GITHUB_OUTPUT"
         run: |
-          (l3build fnttarg && echo -e "BUILD_RET=0\nbuild_ret_clm=0" >> "$GITHUB_OUTPUT") || echo -e "BUILD_RET=1\nbuild_ret_clm=1" >> "$GITHUB_OUTPUT"
+          allan=0
+          l3build fnttarg --dev || allan=1
+          echo -e "BUILD_RET=${allan}\nbuild_ret_clm=${allan}" >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
+          exit $allan
       - name: Archive failed build output
       # run iff previous step failed
-        if: ${{ !cancelled() && !(steps.fnttarg-clm-dev.outputs.BUILD_RET) }}
+        if: ${{ !cancelled() && steps.fnttarg-clm-dev.outcome == 'failure' }}
       # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
         uses: actions/upload-artifact@v4
         with:
@@ -87,29 +92,38 @@ jobs:
           path: build/fnt/*.log
           # Decide how long to keep the test output artefact:
           retention-days: 7
-      - name: Run l3build ctan 
+      - name: Run l3build ctan dev
       # run only if build succeeded
-        if: ${{ !cancelled() && (steps.fnttarg-clm-dev.outputs.BUILD_RET) }}
+        if: ${{ !cancelled() && steps.fnttarg-clm-dev.outcome == 'success' }}
         working-directory: cfr-lm
         id: ctan-clm-dev
         run: | 
-          (l3build ctan --dev && echo -e "CTAN_RET=0\nctan_ret_clm=0" >> "$GITHUB_OUTPUT") || echo -e "CTAN_RET=1\nctan_ret_clm=1" >> "$GITHUB_OUTPUT"
+          allan=0
+          l3build ctan --dev || allan=1
+          echo -e "CTAN_RET=${allan}\nctan_ret_clm=${allan}" >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
+          exit $allan
       - name: Run l3build install 
       # run only if ctan succeeded
-        if: ${{ !cancelled() && (steps.ctan-clm-dev.outputs.CTAN_RET) }}
+        if: ${{ !cancelled() && steps.ctan-clm-dev.outcome == 'success' }}
         working-directory: cfr-lm
         id: install-clm-dev
         run: |
-          (l3build install && echo "INSTALL_RET=0" >> "$GITHUB_OUTPUT") || echo "INSTALL_RET=1" >> "$GITHUB_OUTPUT"
+          allan=0
+          l3build install || allan=1
+          echo "INSTALL_RET=${allan}" >> "$GITHUB_OUTPUT" 
           cat "$GITHUB_OUTPUT"
+          exit $allan
       - name: Update map
       # run only if install succeeded
-        if: ${{ !cancelled() && (steps.install-clm-dev.outputs.INSTALL_RET) }}
+        if: ${{ !cancelled() && steps.install-clm-dev.outcome == 'success' }}
         id: updmap-clm-dev
         run: |
-          (updmap --user --enable Map=clm.map && echo "UPDMAP_RET=0" >> "$GITHUB_OUTPUT") || echo "UPDMAP_RET=1" >> "GITHUB_OUTPUT"
+          allan=0
+          updmap --user --enable Map=clm.map || allan=1
+          echo "UPDMAP_RET=${allan}" >> "$GITHUB_OUTPUT" 
           cat "$GITHUB_OUTPUT"
+          exit $allan
       - name: Archive failed test output for clm
         # run even if previous step failed
         if: ${{ !cancelled() }}
@@ -120,7 +134,7 @@ jobs:
           retention-days: 7
       - name: Cache build results
       # run only if updmap succeeded
-        if: ${{ !cancelled() && (steps.updmap-clm-dev.outputs.UPDMAP_RET) }}
+        if: ${{ !cancelled() && steps.updmap-clm-dev.outcome == 'success' }}
         id: clm-cache-dev
         uses: actions/cache/save@v4
         with:
@@ -128,7 +142,7 @@ jobs:
             ~/.texlive
             ~/texmf
             ~/nfssext/cfr-lm/keep
-          key: clm-${{ github.sha }}-${{ github.run_id }}-${{ github.run_number}}-${{ github.run_attempt }}-dev
+          key: clm-${{ github.sha }}-${{ needs.texlive-cache.outputs.cache_key }}-${{ github.run_id }}-${{ github.run_number}}-dev
       - name: Archive docs
       # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
         uses: actions/upload-artifact@v4
@@ -207,18 +221,21 @@ jobs:
         # oes!
       - name: Set PATH
         run: echo $HOME/texlive/bin/x86_64-linux >> $GITHUB_PATH
-      - name: Run l3build fnttarg
+      - name: Run l3build fnttarg dev
       # oes pwrpas ddefnyddio if yma? am fod bob un yn cynnwys pre_target yn y matrix hwn, ond ydyn nhw?
         if: ${{ matrix.pre_target }}
         working-directory: ${{ matrix.working_directory }}
         id: fnttarg-dev
         run: |
           module="${{ matrix.module }}"
-          (l3build fnttarg && echo -e "BUILD_RET=0\nbuild_ret_${module}=0" >> "$GITHUB_OUTPUT") || echo -e "BUILD_RET=1\nbuild_ret_${module}=1" >> "$GITHUB_OUTPUT"
+          allan=0
+          l3build fnttarg --dev || allan=1
+          echo -e "BUILD_RET=${allan}\nbuild_ret_${module}=${allan}" >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
+          exit $allan
       - name: Archive failed build output
       # run even iff previous step failed
-        if: ${{ !cancelled() && !(steps.fnttarg-dev.outputs.BUILD_RET) }}
+        if: ${{ !cancelled() && steps.fnttarg-dev.outcome == 'failure' }}
       # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
         uses: actions/upload-artifact@v4
         with:
@@ -226,13 +243,16 @@ jobs:
           path: build/fnt/*.log
           # Decide how long to keep the test output artefact:
           retention-days: 7
-      - name: Run l3build
+      - name: Run l3build ctan dev
         working-directory: ${{ matrix.working_directory }}
         id: ctan-dev
         run: |
           module="${{ matrix.module }}"
-          (l3build ctan --dev && echo -e "CTAN_RET=0\nctan_ret_${module}=0" >> "$GITHUB_OUTPUT") || echo -e "CTAN_RET=1\nctan_ret_${module}=1" >> "$GITHUB_OUTPUT"
+          allan=0
+          l3build ctan --dev || allan=0
+          echo -e "CTAN_RET=${allan}\nctan_ret_${module}=${allan}" >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
+          exit $allan
       - name: Archive failed test output
       # run even if previous step failed
         if: ${{ !cancelled() }}
@@ -317,19 +337,22 @@ jobs:
             ~/nfssext/cfr-lm/keep
             ~/.texlive
             ~/texmf
-          key: clm-${{ github.sha }}-dev
+          key: ${{ needs.clm-dev.outputs.clm_cache_key }}
           fail-on-cache-miss: true
-      - name: Run l3build fnttarg
+      - name: Run l3build fnttarg dev
         if: ${{ matrix.pre_target }}
         working-directory: ${{ matrix.working_directory }}
         id: fnttarg-dev
         run: |
           module="${{ matrix.module }}"
-          (l3build fnttarg && echo -e "BUILD_RET=0\nbuild_ret_${module}=0" >> "$GITHUB_OUTPUT") || echo -e "BUILD_RET=1\nbuild_ret_${module}=1" >> "$GITHUB_OUTPUT"
+          allan=0
+          l3build fnttarg --dev || allan=1
+          echo -e "BUILD_RET=${allan}\nbuild_ret_${module}=${allan}" >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
+          exit $allan
       - name: Archive failed build output
       # run even iff previous step failed
-        if: ${{ !cancelled() && !(steps.fnttarg-dev.outputs.BUILD_RET) && matrix.pre_target }}
+        if: ${{ !cancelled() && steps.fnttarg-dev.outcome == 'failure' && matrix.pre_target }}
       # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
         uses: actions/upload-artifact@v4
         with:
@@ -337,13 +360,17 @@ jobs:
           path: build/fnt/*.log
           # Decide how long to keep the test output artefact:
           retention-days: 7
-      - name: Run l3build
+      - name: Run l3build ctan dev
+        if: ${{ !cancelled() && steps.fnttarg-dev.outcome != 'failure' }}
         working-directory: ${{ matrix.working_directory }}
         id: ctan-dev
         run: |
           module="${{ matrix.module }}"
-          (l3build ctan --dev && echo -e "CTAN_RET=0\nctan_ret_${module}=0" >> "$GITHUB_OUTPUT") || echo -e "CTAN_RET=1\nctan_ret_${module}=1" >> "$GITHUB_OUTPUT"
+          allan=0
+          l3build ctan --dev || allan=1
+          echo -e "CTAN_RET=${allan}\nctan_ret_${module}=${allan}" >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
+          exit $allan
       - name: Archive failed test output
       # run even if previous step failed
         if: ${{ !cancelled() }}
@@ -392,8 +419,9 @@ jobs:
           ctanfontscripts: ${{ needs.nfssext-needy-dev.outputs.ctan_fontscripts_output }}
           ctannfssextcfr: ${{ needs.nfssext-needy-dev.outputs.ctan_nfssext_cfr_output }}
         run: |
-          ([[ $fnttargclm != 0 || $ctanclm != 0 || $fnttargbaskervaldadf != 0 || $fnttargberenisadf != 0 || $fnttargelectrumadf != 0 || $fnttarglibrisadf != 0 || $fnttargromandeadf != 0 || $fnttargventurisadf != 0 || $ctanbaskervaldadf != 0 || $ctanberenisadf != 0 || $ctanelectrumadf != 0 || $ctanlibrisadf != 0 || $ctanromandeadf != 0 || $ctanventurisadf != 0 || $fnttargadforn != 0 || $fnttargadfsymbols != 0 || $ctanadforn != 0 || $ctanadfsymbols != 0 || $ctanfontscripts != 0 || $ctannfssextcfr != 0 ]] && echo -e "BUILD_RET=1" >> "$GITHUB_OUTPUT") || echo -e "BUILD_RET=0" >> "$GITHUB_OUTPUT"
-          cat "$GITHUB_OUTPUT"
+          allan=0
+          ([[ $fnttargclm != 0 || $ctanclm != 0 || $fnttargbaskervaldadf != 0 || $fnttargberenisadf != 0 || $fnttargelectrumadf != 0 || $fnttarglibrisadf != 0 || $fnttargromandeadf != 0 || $fnttargventurisadf != 0 || $ctanbaskervaldadf != 0 || $ctanberenisadf != 0 || $ctanelectrumadf != 0 || $ctanlibrisadf != 0 || $ctanromandeadf != 0 || $ctanventurisadf != 0 || $fnttargadforn != 0 || $fnttargadfsymbols != 0 || $ctanadforn != 0 || $ctanadfsymbols != 0 || $ctanfontscripts != 0 || $ctannfssextcfr != 0 ]]) &&  allan=1
+          exit $allan
 
 
 # vim: sw=2:et:ts=2:
