@@ -51,7 +51,7 @@ jobs:
     # nfssext-cfr uses cfr-lm (though it falls back if built first)
     # cfr-lm uses nfssext-cfr but there's nothing to build
     outputs:
-      clm_cache_key: $(( steps.clm-cache-dev.outputs.cache_key }}
+      clm_cache_key: ${{ steps.clm-cache-dev.outputs.cache_key }}
       fnttarg_clm_output: ${{ steps.fnttarg-clm-dev.outputs.build_ret_clm }}
       ctan_clm_output: ${{ steps.ctan-clm-dev.outputs.ctan_ret_clm }}
     steps:
