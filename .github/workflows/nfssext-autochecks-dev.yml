@@ -162,7 +162,6 @@ jobs:
       - name: Cache build results
       # run only if updmap succeeded
         if: ${{ !cancelled() && steps.updmap-clm-dev.outcome == 'success'  && steps.clm-dev-restore.outputs.cache-hit != 'true' }}
-        shell: bash
         id: clm-cache-dev
         uses: actions/cache/save@v4
         with:
