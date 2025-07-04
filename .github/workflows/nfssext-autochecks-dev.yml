@@ -71,10 +71,10 @@ jobs:
       # We need Ghostscript for XeTeX tests.
       - run: sudo apt-get update #&& sudo apt-get install ghostscript 
         shell: bash
-        if: ${{ !cancelled && steps.clm-dev-restore.outputs.cache-hit != 'true' }}
+        if: ${{ !cancelled() && steps.clm-dev-restore.outputs.cache-hit != 'true' }}
       # Steps represent a sequence of tasks that will be executed as part of the job
       - name: Restore TeX Live from cache
-        if: ${{ !cancelled && steps.clm-dev-restore.outputs.cache-hit != 'true' }}
+        if: ${{ !cancelled() && steps.clm-dev-restore.outputs.cache-hit != 'true' }}
         uses: actions/cache/restore@v4
         with: 
           path: ~/texlive
@@ -83,13 +83,13 @@ jobs:
       # oes angen hwn?
       # oes!
       - name: Set PATH
-        if: ${{ !cancelled && steps.clm-dev-restore.outputs.cache-hit != 'true' }}
+        if: ${{ !cancelled() && steps.clm-dev-restore.outputs.cache-hit != 'true' }}
         shell: bash
         run: echo $HOME/texlive/bin/x86_64-linux >> $GITHUB_PATH
       - name: Run l3build fnttarg dev
         id: fnttarg-clm-dev
         working-directory: cfr-lm
-        if: ${{ !cancelled }} 
+        if: ${{ !cancelled() }} 
         shell: bash
         # run: (l3build fnttarg && echo "BUILD_RET=0" >> "$GITHUB_OUTPUT") || echo "BUILD_RET=1" >> "$GITHUB_OUTPUT"
         run: |
