@@ -51,18 +51,30 @@ jobs:
     # nfssext-cfr uses cfr-lm (though it falls back if built first)
     # cfr-lm uses nfssext-cfr but there's nothing to build
     outputs:
-      clm_cache_key: ${{ steps.clm-cache-dev.outputs.cache_key }}
+      # clm_cache_key: ${{ steps.clm-cache-dev.outputs.cache_key }}
+      clm_cache_key: clm-${{ github.sha }}-${{ needs.texlive-cache.outputs.cache_key }}-dev
       fnttarg_clm_output: ${{ steps.fnttarg-clm-dev.outputs.build_ret_clm }}
       ctan_clm_output: ${{ steps.ctan-clm-dev.outputs.ctan_ret_clm }}
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repo
         uses: actions/checkout@v4
+      - name: Restore clm dev from cache
+        id: clm-dev-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/nfssext/cfr-lm/keep
+          lookup-only: true
+          fail-on-cache-miss: false
+          key: clm-${{ github.sha }}-${{ needs.texlive-cache.outputs.cache_key }}-dev
       # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
       # We need Ghostscript for XeTeX tests.
       - run: sudo apt-get update #&& sudo apt-get install ghostscript 
+        shell: bash
+        if: ${{ !cancelled && steps.clm-dev-restore.outputs.cache-hit != 'true' }}
       # Steps represent a sequence of tasks that will be executed as part of the job
       - name: Restore TeX Live from cache
+        if: ${{ !cancelled && steps.clm-dev-restore.outputs.cache-hit != 'true' }}
         uses: actions/cache/restore@v4
         with: 
           path: ~/texlive
@@ -71,20 +83,28 @@ jobs:
       # oes angen hwn?
       # oes!
       - name: Set PATH
+        if: ${{ !cancelled && steps.clm-dev-restore.outputs.cache-hit != 'true' }}
+        shell: bash
         run: echo $HOME/texlive/bin/x86_64-linux >> $GITHUB_PATH
       - name: Run l3build fnttarg dev
         id: fnttarg-clm-dev
         working-directory: cfr-lm
+        if: ${{ !cancelled }} 
+        shell: bash
         # run: (l3build fnttarg && echo "BUILD_RET=0" >> "$GITHUB_OUTPUT") || echo "BUILD_RET=1" >> "$GITHUB_OUTPUT"
         run: |
+          cachehit="${{ steps.clm-dev-restore.outputs.cache-hit }}"
           allan=0
-          l3build fnttarg --dev || allan=1
-          echo -e "BUILD_RET=${allan}\nbuild_ret_clm=${allan}" >> "$GITHUB_OUTPUT"
+          if [ "${cachehit}" != "true" ] 
+          then
+            l3build fnttarg --dev || allan=1
+          fi
+          echo -e "build_ret_clm=${allan}" >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
           exit $allan
       - name: Archive failed build output
       # run iff previous step failed
-        if: ${{ !cancelled() && steps.fnttarg-clm-dev.outcome == 'failure' }}
+        if: ${{ !cancelled() && steps.fnttarg-clm-dev.outcome == 'failure' && steps.clm-dev-restore.outputs.cache-hit != 'true' }}
       # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
         uses: actions/upload-artifact@v4
         with:
@@ -94,18 +114,24 @@ jobs:
           retention-days: 7
       - name: Run l3build ctan dev
       # run only if build succeeded
-        if: ${{ !cancelled() && steps.fnttarg-clm-dev.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.fnttarg-clm-dev.outcome == 'success' && steps.clm-dev-restore.outputs.cache-hit != 'true' }}
         working-directory: cfr-lm
         id: ctan-clm-dev
+        shell: bash
         run: | 
+          cachehit="${{ steps.clm-dev-restore.outputs.cache-hit }}"
           allan=0
-          l3build ctan --dev || allan=1
-          echo -e "CTAN_RET=${allan}\nctan_ret_clm=${allan}" >> "$GITHUB_OUTPUT"
+          if [ "${cachehit}" != "true" ] 
+          then
+            l3build ctan --dev || allan=1
+          fi
+          echo -e "ctan_ret_clm=${allan}" >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
           exit $allan
       - name: Run l3build install 
       # run only if ctan succeeded
-        if: ${{ !cancelled() && steps.ctan-clm-dev.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.ctan-clm-dev.outcome == 'success' && steps.clm-dev-restore.outputs.cache-hit != 'true' }}
+        shell: bash
         working-directory: cfr-lm
         id: install-clm-dev
         run: |
@@ -116,7 +142,8 @@ jobs:
           exit $allan
       - name: Update map
       # run only if install succeeded
-        if: ${{ !cancelled() && steps.install-clm-dev.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.install-clm-dev.outcome == 'success' && steps.clm-dev-restore.outputs.cache-hit != 'true' }}
+        shell: bash
         id: updmap-clm-dev
         run: |
           allan=0
@@ -126,7 +153,7 @@ jobs:
           exit $allan
       - name: Archive failed test output for clm
         # run even if previous step failed
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.clm-dev-restore.outputs.cache-hit != 'true' }}
         uses: zauguin/l3build-failure-artifacts@v1
         with:
           name: testfiles-clm-dev
@@ -134,16 +161,15 @@ jobs:
           retention-days: 7
       - name: Cache build results
       # run only if updmap succeeded
-        if: ${{ !cancelled() && steps.updmap-clm-dev.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.updmap-clm-dev.outcome == 'success'  && steps.clm-dev-restore.outputs.cache-hit != 'true' }}
+        shell: bash
         id: clm-cache-dev
         uses: actions/cache/save@v4
         with:
-          path: |
-            ~/.texlive
-            ~/texmf
-            ~/nfssext/cfr-lm/keep
-          key: clm-${{ github.sha }}-${{ needs.texlive-cache.outputs.cache_key }}-${{ github.run_id }}-${{ github.run_number}}-dev
+          path: ~/nfssext/cfr-lm/keep
+          key: clm-${{ github.sha }}-${{ needs.texlive-cache.outputs.cache_key }}-dev
       - name: Archive docs
+        if: ${{ !cancelled() && steps.clm-dev-restore.outputs.cache-hit != 'true' }}
       # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
         uses: actions/upload-artifact@v4
         with:
@@ -230,7 +256,7 @@ jobs:
           module="${{ matrix.module }}"
           allan=0
           l3build fnttarg --dev || allan=1
-          echo -e "BUILD_RET=${allan}\nbuild_ret_${module}=${allan}" >> "$GITHUB_OUTPUT"
+          echo -e "build_ret_${module}=${allan}" >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
           exit $allan
       - name: Archive failed build output
@@ -250,7 +276,7 @@ jobs:
           module="${{ matrix.module }}"
           allan=0
           l3build ctan --dev || allan=0
-          echo -e "CTAN_RET=${allan}\nctan_ret_${module}=${allan}" >> "$GITHUB_OUTPUT"
+          echo -e "ctan_ret_${module}=${allan}" >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
           exit $allan
       - name: Archive failed test output
@@ -331,23 +357,21 @@ jobs:
         run: echo $HOME/texlive/bin/x86_64-linux >> $GITHUB_PATH
       - name: Restore cfr-lm from cache
         if: ${{ matrix.extra_needs }}
+        id: clm-dev-restore
         uses: actions/cache/restore@v4
         with:
-          path: |
-            ~/nfssext/cfr-lm/keep
-            ~/.texlive
-            ~/texmf
+          path: ~/nfssext/cfr-lm/keep
           key: ${{ needs.clm-dev.outputs.clm_cache_key }}
           fail-on-cache-miss: true
       - name: Run l3build fnttarg dev
-        if: ${{ matrix.pre_target }}
+        if: ${{ !cancelled() && matrix.pre_target }}
         working-directory: ${{ matrix.working_directory }}
         id: fnttarg-dev
         run: |
           module="${{ matrix.module }}"
           allan=0
           l3build fnttarg --dev || allan=1
-          echo -e "BUILD_RET=${allan}\nbuild_ret_${module}=${allan}" >> "$GITHUB_OUTPUT"
+          echo -e "build_ret_${module}=${allan}" >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
           exit $allan
       - name: Archive failed build output
@@ -366,9 +390,10 @@ jobs:
         id: ctan-dev
         run: |
           module="${{ matrix.module }}"
-          allan=0
-          l3build ctan --dev || allan=1
-          echo -e "CTAN_RET=${allan}\nctan_ret_${module}=${allan}" >> "$GITHUB_OUTPUT"
+          allan=1
+          # only try if clm restored ; only succeed if try successful
+          [[ "${{ steps.clm-dev-restore.outputs.cache-hit }}" == "true" ]] && l3build ctan --dev && allan=0
+          echo -e "ctan_ret_${module}=${allan}" >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
           exit $allan
       - name: Archive failed test output
