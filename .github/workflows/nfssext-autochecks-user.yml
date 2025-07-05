@@ -196,18 +196,18 @@ jobs:
     runs-on: ubuntu-latest
     needs: texlive-cache
     outputs:
-      fnttarg_baskervaldadf_output: ${{ steps.fnttarg.outputs.build_ret_baskervaldadf }}
-      fnttarg_berenisadf_output: ${{ steps.fnttarg.outputs.build_ret_berenisadf }}
-      fnttarg_electrumadf_output: ${{ steps.fnttarg.outputs.build_ret_electrumadf }}
-      fnttarg_librisadf_output: ${{ steps.fnttarg.outputs.build_ret_librisadf }}
-      fnttarg_romandeadf_output: ${{ steps.fnttarg.outputs.build_ret_romandeadf }}
-      fnttarg_venturisadf_output: ${{ steps.fnttarg.outputs.build_ret_venturisadf }}
-      ctan_baskervaldadf_output: ${{ steps.ctan.outputs.ctan_ret_baskervaldadf }}
-      ctan_berenisadf_output: ${{ steps.ctan.outputs.ctan_ret_berenisadf }}
-      ctan_electrumadf_output: ${{ steps.ctan.outputs.ctan_ret_electrumadf }}
-      ctan_librisadf_output: ${{ steps.ctan.outputs.ctan_ret_librisadf }}
-      ctan_romandeadf_output: ${{ steps.ctan.outputs.ctan_ret_romandeadf }}
-      ctan_venturisadf_output: ${{ steps.ctan.outputs.ctan_ret_venturisadf }}
+      fnttarg_baskervaldadf_output: ${{ steps.save-outputs.outputs.build_ret_baskervaldadf }}
+      fnttarg_berenisadf_output: ${{ steps.save-outputs.outputs.build_ret_berenisadf }}
+      fnttarg_electrumadf_output: ${{ steps.save-outputs.outputs.build_ret_electrumadf }}
+      fnttarg_librisadf_output: ${{ steps.save-outputs.outputs.build_ret_librisadf }}
+      fnttarg_romandeadf_output: ${{ steps.save-outputs.outputs.build_ret_romandeadf }}
+      fnttarg_venturisadf_output: ${{ steps.save-outputs.outputs.build_ret_venturisadf }}
+      ctan_baskervaldadf_output: ${{ steps.save-outputs.outputs.ctan_ret_baskervaldadf }}
+      ctan_berenisadf_output: ${{ steps.save-outputs.outputs.ctan_ret_berenisadf }}
+      ctan_electrumadf_output: ${{ steps.save-outputs.outputs.ctan_ret_electrumadf }}
+      ctan_librisadf_output: ${{ steps.save-outputs.outputs.ctan_ret_librisadf }}
+      ctan_romandeadf_output: ${{ steps.save-outputs.outputs.ctan_ret_romandeadf }}
+      ctan_venturisadf_output: ${{ steps.save-outputs.outputs.ctan_ret_venturisadf }}
     # don't abandon other builds if one module fails
     # continue-on-error: true
     strategy:
@@ -240,7 +240,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-      - id: build 
+      - name: Build fnttarg and ctan
+        id: build 
         uses: ./.github/actions/nfssext-autocheck-action
         with:
           module: ${{ matrix.module }}
@@ -248,7 +249,9 @@ jobs:
           pre_target: ${{ matrix.pre_target }}
           extra_packages: ${{ matrix.extra_packages }}
           texlive_cache_key: ${{ needs.texlive-cache.outputs.cache_key }}
-      - id: fnttarg
+      - name: Save fnttarg and ctan build results
+        if: ${{ !cancelled() }}
+        id: save-outputs
         shell: bash
         env: 
           BUILD_RET: ${{ steps.build.outputs.fnttarg_ret }}
@@ -259,7 +262,7 @@ jobs:
           echo -e "ctan_ret_${module}=${CTAN_RET}" >> "$GITHUB_OUTPUT" 
           cat "$GITHUB_OUTPUT"
           allan=0
-          ([[ ${BUILD_RET} == 0  ]] && [[ ${CTAN_RET} == 0 ]])  || allan=1
+          ([[ ${BUILD_RET} != 0  || ${CTAN_RET} != 0 ]])  && allan=1
           exit $allan
 
   # # addaswyd o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
@@ -409,42 +412,44 @@ jobs:
   #         # Decide how long to keep the test output artefact:
   #         retention-days: 30
   #
-  # summary:
-  #   name: summary
-  #   # how to make this fail if the output isn't 0?
+  summary:
+    name: summary
   #   needs: [ clm, nfssext, nfssext-needy ]
-  #   if: ${{ !cancelled() }}
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: NFSSEXT Autochecks Summary
-  #     # https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions#jobsjob_idoutputs
-  #       env:
+    needs: nfssext 
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: NFSSEXT Autochecks Summary
+        shell: bash
+      # https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions#jobsjob_idoutputs
+        env:
   #         fnttargclm: ${{ needs.clm.outputs.fnttarg_clm_output }}
   #         ctanclm: ${{ needs.clm.outputs.ctan_clm_output }}
-  #         fnttargbaskervaldadf: ${{ needs.nfssext.outputs.fnttarg_baskervaldadf_output }}
-  #         fnttargberenisadf: ${{ needs.nfssext.outputs.fnttarg_berenisadf_output }}
-  #         fnttargelectrumadf: ${{ needs.nfssext.outputs.fnttarg_electrumadf_output }}
-  #         fnttarglibrisadf: ${{ needs.nfssext.outputs.fnttarg_librisadf_output }}
-  #         fnttargromandeadf: ${{ needs.nfssext.outputs.fnttarg_romandeadf_output }}
-  #         fnttargventurisadf: ${{ needs.nfssext.outputs.fnttarg_venturisadf_output }}
-  #         ctanbaskervaldadf: ${{ needs.nfssext.outputs.ctan_baskervaldadf_output }}
-  #         ctanberenisadf: ${{ needs.nfssext.outputs.ctan_berenisadf_output }}
-  #         ctanelectrumadf: ${{ needs.nfssext.outputs.ctan_electrumadf_output }}
-  #         ctanlibrisadf: ${{ needs.nfssext.outputs.ctan_librisadf_output }}
-  #         ctanromandeadf: ${{ needs.nfssext.outputs.ctan_romandeadf_output }}
-  #         ctanventurisadf: ${{ needs.nfssext.outputs.ctan_venturisadf_output }}
+          fnttargbaskervaldadf: ${{ needs.nfssext.outputs.fnttarg_baskervaldadf_output }}
+          fnttargberenisadf: ${{ needs.nfssext.outputs.fnttarg_berenisadf_output }}
+          fnttargelectrumadf: ${{ needs.nfssext.outputs.fnttarg_electrumadf_output }}
+          fnttarglibrisadf: ${{ needs.nfssext.outputs.fnttarg_librisadf_output }}
+          fnttargromandeadf: ${{ needs.nfssext.outputs.fnttarg_romandeadf_output }}
+          fnttargventurisadf: ${{ needs.nfssext.outputs.fnttarg_venturisadf_output }}
+          ctanbaskervaldadf: ${{ needs.nfssext.outputs.ctan_baskervaldadf_output }}
+          ctanberenisadf: ${{ needs.nfssext.outputs.ctan_berenisadf_output }}
+          ctanelectrumadf: ${{ needs.nfssext.outputs.ctan_electrumadf_output }}
+          ctanlibrisadf: ${{ needs.nfssext.outputs.ctan_librisadf_output }}
+          ctanromandeadf: ${{ needs.nfssext.outputs.ctan_romandeadf_output }}
+          ctanventurisadf: ${{ needs.nfssext.outputs.ctan_venturisadf_output }}
   #         fnttargadforn: ${{ needs.nfssext-needy.outputs.fnttarg_adforn_output }}
   #         fnttargadfsymbols: ${{ needs.nfssext-needy.outputs.fnttarg_adfsymbols_output }}
   #         ctanadforn: ${{ needs.nfssext-needy.outputs.ctan_adforn_output }}
   #         ctanadfsymbols: ${{ needs.nfssext-needy.outputs.ctan_adfsymbols_output }}
   #         ctanfontscripts: ${{ needs.nfssext-needy.outputs.ctan_fontscripts_output }}
   #         ctannfssextcfr: ${{ needs.nfssext-needy.outputs.ctan_nfssext_cfr_output }}
-  #       run: |
-  #         allan=0
+        run: |
+          allan=0
+          ([[ $fnttargbaskervaldadf != 0 || $fnttargberenisadf != 0 || $fnttargelectrumadf != 0 || $fnttarglibrisadf != 0 || $fnttargromandeadf != 0 || $fnttargventurisadf != 0 || $ctanbaskervaldadf != 0 || $ctanberenisadf != 0 || $ctanelectrumadf != 0 || $ctanlibrisadf != 0 || $ctanromandeadf != 0 || $ctanventurisadf != 0 ]]) && allan=1
   #         ([[ $fnttargclm != 0 || $ctanclm != 0 || $fnttargbaskervaldadf != 0 || $fnttargberenisadf != 0 || $fnttargelectrumadf != 0 || $fnttarglibrisadf != 0 || $fnttargromandeadf != 0 || $fnttargventurisadf != 0 || $ctanbaskervaldadf != 0 || $ctanberenisadf != 0 || $ctanelectrumadf != 0 || $ctanlibrisadf != 0 || $ctanromandeadf != 0 || $ctanventurisadf != 0 || $fnttargadforn != 0 || $fnttargadfsymbols != 0 || $ctanadforn != 0 || $ctanadfsymbols != 0 || $ctanfontscripts != 0 || $ctannfssextcfr != 0 ]]) && allan=1
-  #         echo "Summary status: $allan"
-  #         echo -e "BUILD_RET=${allan}" >> "$GITHUB_OUTPUT" 
-  #         exit "$allan"
+          echo "Summary status: $allan"
+          echo -e "BUILD_RET=${allan}" >> "$GITHUB_OUTPUT" 
+          exit "$allan"
 
 
 # vim: sw=2:et:ts=2:

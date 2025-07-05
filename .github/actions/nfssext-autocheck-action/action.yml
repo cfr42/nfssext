@@ -4,19 +4,22 @@
 name: nfssext-autocheck
 description: Automatic check for nfssext modules
 inputs:
-  module: 
-    required: true
-    type: string
-  working_directory: 
-    required: true
+  dep_cache_key:
+    required: false
     type: string
   extra_packages: 
     required: false
+    type: string
+  module: 
+    required: true
     type: string
   pre_target: 
     required: false
     type: string
   texlive_cache_key:
+    required: true
+    type: string
+  working_directory: 
     required: true
     type: string
 outputs:
@@ -29,9 +32,6 @@ outputs:
 runs:
   using: "composite"
   steps:
-    # # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    # - name: Checkout repo
-    #   uses: actions/checkout@v4
     # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
     - name: Update system 
       shell: bash
@@ -61,11 +61,12 @@ runs:
         module="${{ inputs.module }}"
         allan=0
         l3build fnttarg || allan=1
-        echo -e "BUILD_RET=${allan}\nbuild_ret_${module}=${allan}" >> "$GITHUB_OUTPUT" 
+        echo -e "BUILD_RET=${allan}" >> "$GITHUB_OUTPUT" 
         cat "$GITHUB_OUTPUT"
+        exit $allan
     - name: Archive failed build output
     # run even iff previous step failed
-      if: ${{ !cancelled() && !(steps.fnttarg.outputs.BUILD_RET) }}
+      if: ${{ !cancelled() && steps.fnttarg.outcome == 'failure' }}
     # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
       uses: actions/upload-artifact@v4
       with:
@@ -73,7 +74,7 @@ runs:
         path: build/fnt/*.log
         # Decide how long to keep the test output artefact:
         retention-days: 7
-    - name: Run l3build
+    - name: Run l3build ctan
       working-directory: ${{ inputs.working_directory }}
       id: ctan
       shell: bash
@@ -81,8 +82,9 @@ runs:
         module="${{ inputs.module }}"
         allan=0
         l3build ctan || allan=1
-        echo -e "CTAN_RET=${allan}\nctan_ret_${module}=${allan}" >> "$GITHUB_OUTPUT" 
+        echo -e "CTAN_RET=${allan}" >> "$GITHUB_OUTPUT" 
         cat "$GITHUB_OUTPUT"
+        exit $allan
     - name: Archive failed test output
     # run even if previous step failed
       if: ${{ !cancelled() }}
