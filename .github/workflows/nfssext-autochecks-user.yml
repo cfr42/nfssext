@@ -55,138 +55,81 @@ jobs:
           # different workflows.
           package_file: .github/tl_packages
 
-  # clm:
-  #   if: ${{ !cancelled() }}
-  #   # The type of runner that the job will run on
-  #   runs-on: ubuntu-latest
-  #   name: "Test build: cfr-lm"
-  #   needs: texlive-cache
-  #   # nfssext-cfr uses cfr-lm (though it falls back if built first)
-  #   # cfr-lm uses nfssext-cfr but there's nothing to build
-  #   outputs:
-  #     clm_cache_key: $(( steps.clm-cache.outputs.cache_key }}
-  #     fnttarg_clm_output: ${{ steps.fnttarg-clm.outputs.build_ret_clm }}
-  #     ctan_clm_output: ${{ steps.ctan-clm.outputs.ctan_ret_clm }}
-  #   steps:
-  #     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-  #     - name: Checkout repo
-  #       uses: actions/checkout@v4
-  #     # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
-  #     # We need Ghostscript for XeTeX tests.
-  #     - run: sudo apt-get update #&& sudo apt-get install ghostscript 
-  #     # Steps represent a sequence of tasks that will be executed as part of the job
-  #     - name: Restore TeX Live from cache
-  #       uses: actions/cache/restore@v4
-  #       with: 
-  #         path: ~/texlive
-  #         key: ${{ needs.texlive-cache.outputs.cache_key }}
-  #         fail-on-cache-miss: true
-  #     # oes angen hwn?
-  #     # oes!
-  #     - name: Set PATH
-  #       run: echo $HOME/texlive/bin/x86_64-linux >> $GITHUB_PATH
-  #     - name: Run l3build fnttarg 
-  #       id: fnttarg-clm
-  #       working-directory: cfr-lm
-  #         # (l3build fnttarg && echo -e "BUILD_RET=0\nbuild_ret_clm=0" >> "$GITHUB_OUTPUT") || echo -e "BUILD_RET=1\nbuild_ret_clm=1" >> "$GITHUB_OUTPUT"
-  #       run: |
-  #         allan=0
-  #         l3build fnttarg || allan=1
-  #         echo -e "BUILD_RET=${allan}\nbuild_ret_clm=${allan}" >> "$GITHUB_OUTPUT"
-  #         cat "$GITHUB_OUTPUT"
-  #         exit $allan
-  #     - name: Archive failed build output
-  #     # run iff previous step failed
-  #       if: ${{ !cancelled() && !(steps.fnttarg-clm.outputs.BUILD_RET) }}
-  #     # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: buildfiles-clm
-  #         path: build/fnt/*.log
-  #         # Decide how long to keep the test output artefact:
-  #         retention-days: 7
-  #     - name: Run l3build ctan 
-  #     # run only if build succeeded
-  #       if: ${{ !cancelled() && (steps.fnttarg-clm.outputs.BUILD_RET) }}
-  #       working-directory: cfr-lm
-  #       id: ctan-clm
-  #       run: | 
-  #         allan=0
-  #         l3build ctan || allan=1
-  #         # (l3build ctan && echo -e "CTAN_RET=0\nctan_ret_clm=0" >> "$GITHUB_OUTPUT") || echo -e "CTAN_RET=1\nctan_ret_clm=1" >> "$GITHUB_OUTPUT"
-  #         echo -e "CTAN_RET=${allan}\nctan_ret_clm=${allan}" >> "$GITHUB_OUTPUT" 
-  #         cat "$GITHUB_OUTPUT"
-  #         exit "$allan"
-  #     - name: Archive failed docs output
-  #     # run even iff previous step failed
-  #     # https://docs.github.com/en/actions/reference/evaluate-expressions-in-workflows-and-actions#status-check-functions
-  #     # https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#environment-files
-  #     # https://docs.github.com/en/actions/how-tos/writing-workflows/choosing-when-your-workflow-runs/using-conditions-to-control-job-execution
-  #       if: ${{ !cancelled() && steps.ctan-clm.outcome == 'failure' }}
-  #       # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: typeset-logs-clm
-  #         path: build/doc/*.log
-  #         # Decide how long to keep the test output artefact:
-  #         retention-days: 7
-  #     - name: Run l3build install 
-  #     # run only if ctan succeeded
-  #       if: ${{ !cancelled() && steps.ctan-clm.outcome == 'success' }}
-  #       working-directory: cfr-lm
-  #       id: install-clm
-  #       run: |
-  #         allan=0
-  #         l3build install || allan=1
-  #         echo "INSTALL_RET=${allan}" >> "$GITHUB_OUTPUT" 
-  #         cat "$GITHUB_OUTPUT"
-  #         exit $allan
-  #     - name: Update map
-  #     # run only if install succeeded
-  #       if: ${{ !cancelled() && (steps.install-clm.outputs.INSTALL_RET) }}
-  #       id: updmap-clm
-  #       run: |
-  #         allan=0
-  #         updmap --user --enable Map=clm.map || allan=1
-  #         echo "UPDMAP_RET=${allan}" >> "$GITHUB_OUTPUT" 
-  #         cat "$GITHUB_OUTPUT"
-  #         exit $allan
-  #     - name: Archive failed test output for clm
-  #       # run even if previous step failed
-  #       if: ${{ !cancelled() }}
-  #       uses: zauguin/l3build-failure-artifacts@v1
-  #       with:
-  #         name: testfiles-clm
-  #         # Decide how long to keep the test output artefact:
-  #         retention-days: 7
-  #     - name: Debug info
-  #     # run only if updmap succeeded
-  #       if: ${{ !cancelled() && (steps.updmap-clm.outputs.UPDMAP_RET) }}
-  #       run: |
-  #         ls -R ~/.texlive ~/texmf ~/work/nfssext/nfssext/cfr-lm/keep
-  #         kpsewhich clm.map
-  #     - name: Cache build results
-  #     # run only if build succeeded
-  #       if: ${{ !cancelled() && (steps.fnttarg-clm.outputs.BUILD_RET) }}
-  #       id: clm-cache
-  #       uses: actions/cache/save@v4
-  #       with:
-  #         path: ~/work/nfssext/nfssext/cfr-lm/keep
-  #         # path: |
-  #           # ~/work/nfssext/nfssext/cfr-lm/keep
-  #           # ~/.texlive
-  #           # ~/texmf
-  #         key: clm-${{ github.sha }}
-  #     - name: Archive docs
-  #     # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: docs-cfr-lm
-  #         path: cfr-lm/*.pdf
-  #         # Decide how long to keep the test output artefact:
-  #         retention-days: 30
-  #     # - name: Info
-  #     #   run: cat ~/.texlive/texmf-var/web2c/updmap.log
+  clm:
+    if: ${{ !cancelled() }}
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    name: "Test build: cfr-lm"
+    needs: texlive-cache
+    # nfssext-cfr uses cfr-lm (though it falls back if built first)
+    # cfr-lm uses nfssext-cfr but there's nothing to build
+    outputs:
+      clm_cache_key: $(( steps.clm-cache.outputs.cache_key }}
+      fnttarg_clm_output: ${{ steps.build-clm.outputs.fnttarg_ret }}
+      ctan_clm_output: ${{ steps.build-clm.outputs.ctan_ret }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Build fnttarg and ctan
+        id: build-clm 
+        uses: ./.github/actions/nfssext-autocheck-action
+        with:
+          module: clm
+          working_directory: cfr-lm
+          pre_target: fnttarg
+          texlive_cache_key: ${{ needs.texlive-cache.outputs.cache_key }}
+      # - name: Save fnttarg and ctan build results
+      #   if: ${{ !cancelled() }}
+      #   id: save-outputs
+      #   shell: bash
+      #   env: 
+      #     BUILD_RET: ${{ steps.build-clm.outputs.fnttarg_ret }}
+      #     CTAN_RET: ${{ steps.build-clm.outputs.ctan_ret }}
+      #   run: |
+      #     module="clm"
+      #     echo -e "build_ret_${module}=${BUILD_RET}" >> "$GITHUB_OUTPUT" 
+      #     echo -e "ctan_ret_${module}=${CTAN_RET}" >> "$GITHUB_OUTPUT" 
+      #     cat "$GITHUB_OUTPUT"
+      #     allan=0
+      #     ([[ ${BUILD_RET} != 0  || ${CTAN_RET} != 0 ]])  && allan=1
+      #     exit $allan
+      #     - name: Run l3build install 
+      #     # run only if ctan succeeded
+      #       if: ${{ !cancelled() && steps.ctan-clm.outcome == 'success' }}
+      #       working-directory: cfr-lm
+      #       id: install-clm
+      #       run: |
+      #         allan=0
+      #         l3build install || allan=1
+      #         echo "INSTALL_RET=${allan}" >> "$GITHUB_OUTPUT" 
+      #         cat "$GITHUB_OUTPUT"
+      #         exit $allan
+      #     - name: Update map
+      #     # run only if install succeeded
+      #       if: ${{ !cancelled() && (steps.install-clm.outputs.INSTALL_RET) }}
+      #       id: updmap-clm
+      #       run: |
+      #         allan=0
+      #         updmap --user --enable Map=clm.map || allan=1
+      #         echo "UPDMAP_RET=${allan}" >> "$GITHUB_OUTPUT" 
+      #         cat "$GITHUB_OUTPUT"
+      #         exit $allan
+      #     - name: Debug info
+      #     # run only if updmap succeeded
+      #       if: ${{ !cancelled() && (steps.updmap-clm.outputs.UPDMAP_RET) }}
+      #       run: |
+      #         ls -R ~/.texlive ~/texmf ~/work/nfssext/nfssext/cfr-lm/keep
+      #         kpsewhich clm.map
+      - name: Cache build results
+      # run only if fnttarg build succeeded
+        if: ${{ !cancelled() && (steps.build-clm.outputs.fnttarg_ret) }}
+        id: clm-cache
+        uses: actions/cache/save@v4
+        with:
+          path: ~/work/nfssext/nfssext/cfr-lm/keep
+          key: clm-${{ github.sha }}-${{ needs.texlive-cache.outputs.cache_key }}
+      #     # - name: Info
+      #     #   run: cat ~/.texlive/texmf-var/web2c/updmap.log
 
 
   # addaswyd o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
@@ -209,7 +152,7 @@ jobs:
       ctan_romandeadf_output: ${{ steps.save-outputs.outputs.ctan_ret_romandeadf }}
       ctan_venturisadf_output: ${{ steps.save-outputs.outputs.ctan_ret_venturisadf }}
     # don't abandon other builds if one module fails
-    continue-on-error: true
+    # continue-on-error: true
     strategy:
       fail-fast: false
       matrix:
@@ -415,15 +358,15 @@ jobs:
   summary:
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
-    needs: nfssext #    [ clm, nfssext, nfssext-needy ]
+    needs: [ clm, nfssext ] #    [ clm, nfssext, nfssext-needy ]
     name: nfssext summary
     steps:
       - name: nfssext autochecks summary
         shell: bash
         # https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions#jobsjob_idoutputs
-        #         fnttargclm: ${{ needs.clm.outputs.fnttarg_clm_output }}
-        #         ctanclm: ${{ needs.clm.outputs.ctan_clm_output }}
         env:
+          fnttargclm: ${{ needs.clm.outputs.fnttarg_clm_output }}
+          ctanclm: ${{ needs.clm.outputs.ctan_clm_output }}
           fnttargbaskervaldadf: ${{ needs.nfssext.outputs.fnttarg_baskervaldadf_output }}
           fnttargberenisadf: ${{ needs.nfssext.outputs.fnttarg_berenisadf_output }}
           fnttargelectrumadf: ${{ needs.nfssext.outputs.fnttarg_electrumadf_output }}
@@ -444,7 +387,7 @@ jobs:
           #         ctannfssextcfr: ${{ needs.nfssext-needy.outputs.ctan_nfssext_cfr_output }}
         run: |
           allan=0
-          ([[ $fnttargbaskervaldadf != 0 || $fnttargberenisadf != 0 || $fnttargelectrumadf != 0 || $fnttarglibrisadf != 0 || $fnttargromandeadf != 0 || $fnttargventurisadf != 0 || $ctanbaskervaldadf != 0 || $ctanberenisadf != 0 || $ctanelectrumadf != 0 || $ctanlibrisadf != 0 || $ctanromandeadf != 0 || $ctanventurisadf != 0 ]]) && allan=1
+          ([[ $fnttargclm != 0 || $ctanclm != 0 || $fnttargbaskervaldadf != 0 || $fnttargberenisadf != 0 || $fnttargelectrumadf != 0 || $fnttarglibrisadf != 0 || $fnttargromandeadf != 0 || $fnttargventurisadf != 0 || $ctanbaskervaldadf != 0 || $ctanberenisadf != 0 || $ctanelectrumadf != 0 || $ctanlibrisadf != 0 || $ctanromandeadf != 0 || $ctanventurisadf != 0 ]]) && allan=1
           #         ([[ $fnttargclm != 0 || $ctanclm != 0 || $fnttargbaskervaldadf != 0 || $fnttargberenisadf != 0 || $fnttargelectrumadf != 0 || $fnttarglibrisadf != 0 || $fnttargromandeadf != 0 || $fnttargventurisadf != 0 || $ctanbaskervaldadf != 0 || $ctanberenisadf != 0 || $ctanelectrumadf != 0 || $ctanlibrisadf != 0 || $ctanromandeadf != 0 || $ctanventurisadf != 0 || $fnttargadforn != 0 || $fnttargadfsymbols != 0 || $ctanadforn != 0 || $ctanadfsymbols != 0 || $ctanfontscripts != 0 || $ctannfssextcfr != 0 ]]) && allan=1
           echo "Summary status: $allan"
           echo -e "BUILD_RET=${allan}" >> "$GITHUB_OUTPUT" 
