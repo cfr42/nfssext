@@ -64,13 +64,24 @@ jobs:
     # nfssext-cfr uses cfr-lm (though it falls back if built first)
     # cfr-lm uses nfssext-cfr but there's nothing to build
     outputs:
-      clm_cache_key: $(( steps.clm-cache.outputs.cache_key }}
+      # clm_cache_key: $(( steps.clm-cache.outputs.cache_key }}
+      clm_cache_key: clm-${{ github.sha }}-${{ needs.texlive-cache.outputs.cache_key }}
+      lookup_clm_output: ${{ steps.clm-lookup.outputs.cache-hit }}
       fnttarg_clm_output: ${{ steps.build-clm.outputs.fnttarg_ret }}
       ctan_clm_output: ${{ steps.build-clm.outputs.ctan_ret }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+      - name: Restore clm from cache
+        id: clm-lookup
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/work/nfssext/nfssext/cfr-lm/keep
+          lookup-only: true
+          fail-on-cache-miss: false
+          key: clm-${{ github.sha }}-${{ needs.texlive-cache.outputs.cache_key }}
       - name: Build fnttarg and ctan
+        if: ${{ !cancelled() && steps.clm-lookup.outputs.cache-hit != 'true' }}
         id: build-clm 
         uses: ./.github/actions/nfssext-autocheck-action
         with:
@@ -122,7 +133,7 @@ jobs:
       #         kpsewhich clm.map
       - name: Cache build results
       # run only if fnttarg build succeeded
-        if: ${{ !cancelled() && (steps.build-clm.outputs.fnttarg_ret) }}
+        if: ${{ !cancelled() && steps.build-clm.outputs.fnttarg_ret && steps.clm-lookup.outputs.cache-hit != 'true' }}
         id: clm-cache
         uses: actions/cache/save@v4
         with:
@@ -367,6 +378,7 @@ jobs:
         env:
           fnttargclm: ${{ needs.clm.outputs.fnttarg_clm_output }}
           ctanclm: ${{ needs.clm.outputs.ctan_clm_output }}
+          lookupclm: ${{ needs.clm.outputs.lookup_clm_output }}
           fnttargbaskervaldadf: ${{ needs.nfssext.outputs.fnttarg_baskervaldadf_output }}
           fnttargberenisadf: ${{ needs.nfssext.outputs.fnttarg_berenisadf_output }}
           fnttargelectrumadf: ${{ needs.nfssext.outputs.fnttarg_electrumadf_output }}
@@ -387,8 +399,11 @@ jobs:
           #         ctannfssextcfr: ${{ needs.nfssext-needy.outputs.ctan_nfssext_cfr_output }}
         run: |
           allan=0
-          ([[ $fnttargclm != 0 || $ctanclm != 0 || $fnttargbaskervaldadf != 0 || $fnttargberenisadf != 0 || $fnttargelectrumadf != 0 || $fnttarglibrisadf != 0 || $fnttargromandeadf != 0 || $fnttargventurisadf != 0 || $ctanbaskervaldadf != 0 || $ctanberenisadf != 0 || $ctanelectrumadf != 0 || $ctanlibrisadf != 0 || $ctanromandeadf != 0 || $ctanventurisadf != 0 ]]) && allan=1
-          #         ([[ $fnttargclm != 0 || $ctanclm != 0 || $fnttargbaskervaldadf != 0 || $fnttargberenisadf != 0 || $fnttargelectrumadf != 0 || $fnttarglibrisadf != 0 || $fnttargromandeadf != 0 || $fnttargventurisadf != 0 || $ctanbaskervaldadf != 0 || $ctanberenisadf != 0 || $ctanelectrumadf != 0 || $ctanlibrisadf != 0 || $ctanromandeadf != 0 || $ctanventurisadf != 0 || $fnttargadforn != 0 || $fnttargadfsymbols != 0 || $ctanadforn != 0 || $ctanadfsymbols != 0 || $ctanfontscripts != 0 || $ctannfssextcfr != 0 ]]) && allan=1
+          clmres=1
+          [[ $lookupclm == 'true' ]] && clmres=0
+          [[ $fnttargclm == 0 && $ctanclm == 0 ]] && clmres=0
+          ([[ $clmres != 0 || $fnttargbaskervaldadf != 0 || $fnttargberenisadf != 0 || $fnttargelectrumadf != 0 || $fnttarglibrisadf != 0 || $fnttargromandeadf != 0 || $fnttargventurisadf != 0 || $ctanbaskervaldadf != 0 || $ctanberenisadf != 0 || $ctanelectrumadf != 0 || $ctanlibrisadf != 0 || $ctanromandeadf != 0 || $ctanventurisadf != 0 ]]) && allan=1
+          # ([[ $fnttargclm != 0 || $ctanclm != 0 || $fnttargbaskervaldadf != 0 || $fnttargberenisadf != 0 || $fnttargelectrumadf != 0 || $fnttarglibrisadf != 0 || $fnttargromandeadf != 0 || $fnttargventurisadf != 0 || $ctanbaskervaldadf != 0 || $ctanberenisadf != 0 || $ctanelectrumadf != 0 || $ctanlibrisadf != 0 || $ctanromandeadf != 0 || $ctanventurisadf != 0 || $fnttargadforn != 0 || $fnttargadfsymbols != 0 || $ctanadforn != 0 || $ctanadfsymbols != 0 || $ctanfontscripts != 0 || $ctannfssextcfr != 0 ]]) && allan=1
           echo "Summary status: $allan"
           echo -e "BUILD_RET=${allan}" >> "$GITHUB_OUTPUT" 
           exit "$allan"
