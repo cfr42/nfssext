@@ -411,20 +411,20 @@ jobs:
   #         path: ${{ matrix.working_directory }}/*.pdf
   #         # Decide how long to keep the test output artefact:
   #         retention-days: 30
-  #
+
   summary:
-    name: summary
-  #   needs: [ clm, nfssext, nfssext-needy ]
-    needs: nfssext 
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
+    name: nfssext summary
+    needs: nfssext 
+    #   needs: [ clm, nfssext, nfssext-needy ]
     steps:
-      - name: NFSSEXT Autochecks Summary
+      - name: nfssext autochecks summary
         shell: bash
       # https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions#jobsjob_idoutputs
         env:
-  #         fnttargclm: ${{ needs.clm.outputs.fnttarg_clm_output }}
-  #         ctanclm: ${{ needs.clm.outputs.ctan_clm_output }}
+          #         fnttargclm: ${{ needs.clm.outputs.fnttarg_clm_output }}
+          #         ctanclm: ${{ needs.clm.outputs.ctan_clm_output }}
           fnttargbaskervaldadf: ${{ needs.nfssext.outputs.fnttarg_baskervaldadf_output }}
           fnttargberenisadf: ${{ needs.nfssext.outputs.fnttarg_berenisadf_output }}
           fnttargelectrumadf: ${{ needs.nfssext.outputs.fnttarg_electrumadf_output }}
