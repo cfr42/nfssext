@@ -10,6 +10,9 @@ inputs:
   extra_packages: 
     required: false
     type: string
+  extra_needs:
+    required: false
+    type: string
   module: 
     required: true
     type: string
@@ -51,6 +54,13 @@ runs:
     - name: Set PATH
       shell: bash
       run: echo $HOME/texlive/bin/x86_64-linux >> $GITHUB_PATH
+    - name: Restore dependency from cache
+      if: ${{ inputs.dep_cache_key }}
+      uses: actions/cache/restore@v4
+      with:
+        path: ~/work/nfssext/nfssext/cfr-lm/keep
+        key: ${{ inputs.dep_cache_key }}
+        fail-on-cache-miss: false
     - name: Run l3build fnttarg
     # oes pwrpas ddefnyddio if yma? am fod bob un yn cynnwys pre_target yn y matrix hwn, ond ydyn nhw?
       if: ${{ inputs.pre_target }}
@@ -72,7 +82,6 @@ runs:
       with:
         name: buildfiles-${{ inputs.module }}
         path: build/fnt/*.log
-        # Decide how long to keep the test output artefact:
         retention-days: 7
     - name: Run l3build ctan
       working-directory: ${{ inputs.working_directory }}
@@ -86,12 +95,10 @@ runs:
         cat "$GITHUB_OUTPUT"
         exit $allan
     - name: Archive failed test output
-    # run even if previous step failed
       if: ${{ !cancelled() }}
       uses: zauguin/l3build-failure-artifacts@v1
       with:
         name: testfiles-${{ inputs.module }}
-        # Decide how long to keep the test output artefact:
         retention-days: 7
     - name: Archive failed docs output
     # run even iff previous step failed
@@ -104,7 +111,6 @@ runs:
       with:
         name: typeset-logs-${{ inputs.module }}
         path: build/doc/*.log
-        # Decide how long to keep the test output artefact:
         retention-days: 7
     - name: Archive docs
     # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
@@ -112,6 +118,5 @@ runs:
       with:
         name: docs-${{ inputs.module }}
         path: ${{ inputs.working_directory }}/*.pdf
-        # Decide how long to keep the test output artefact:
         retention-days: 30
 
