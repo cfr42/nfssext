@@ -10,6 +10,9 @@ inputs:
   extra_packages: 
     required: false
     type: string
+  extra_needs:
+    required: false
+    type: string
   module: 
     required: true
     type: string
@@ -51,6 +54,13 @@ runs:
     - name: Set PATH
       shell: bash
       run: echo $HOME/texlive/bin/x86_64-linux >> $GITHUB_PATH
+    - name: Restore dependency from cache
+      if: ${{ inputs.dep_cache_key }}
+      uses: actions/cache/restore@v4
+      with:
+        path: ~/work/nfssext/nfssext/cfr-lm/keep
+        key: ${{ inputs.dep_cache_key }}
+        fail-on-cache-miss: false
     - name: Run l3build fnttarg
     # oes pwrpas ddefnyddio if yma? am fod bob un yn cynnwys pre_target yn y matrix hwn, ond ydyn nhw?
       if: ${{ inputs.pre_target }}

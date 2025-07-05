@@ -89,21 +89,6 @@ jobs:
           working_directory: cfr-lm
           pre_target: fnttarg
           texlive_cache_key: ${{ needs.texlive-cache.outputs.cache_key }}
-      # - name: Save fnttarg and ctan build results
-      #   if: ${{ !cancelled() }}
-      #   id: save-outputs
-      #   shell: bash
-      #   env: 
-      #     BUILD_RET: ${{ steps.build-clm.outputs.fnttarg_ret }}
-      #     CTAN_RET: ${{ steps.build-clm.outputs.ctan_ret }}
-      #   run: |
-      #     module="clm"
-      #     echo -e "build_ret_${module}=${BUILD_RET}" >> "$GITHUB_OUTPUT" 
-      #     echo -e "ctan_ret_${module}=${CTAN_RET}" >> "$GITHUB_OUTPUT" 
-      #     cat "$GITHUB_OUTPUT"
-      #     allan=0
-      #     ([[ ${BUILD_RET} != 0  || ${CTAN_RET} != 0 ]])  && allan=1
-      #     exit $allan
       #     - name: Run l3build install 
       #     # run only if ctan succeeded
       #       if: ${{ !cancelled() && steps.ctan-clm.outcome == 'success' }}
@@ -141,6 +126,18 @@ jobs:
           key: clm-${{ github.sha }}-${{ needs.texlive-cache.outputs.cache_key }}
       #     # - name: Info
       #     #   run: cat ~/.texlive/texmf-var/web2c/updmap.log
+      - name: Generate exit code
+        if: ${{ !cancelled() }}
+        id: clm-exit
+        shell: bash
+        env:
+          clmlookup: ${{ steps.clm-lookup.outputs.cache-hit }}
+          clmbuildret: ${{ steps.build-clm.outputs.fnttarg_ret }}
+          clmcache: ${{ steps.clm-cache.outcome }}
+        run: |
+          allan=0
+          ([[ $clmlookup != 'true' ]] && [[ $clmbuildret != 0 || $clmcache == 'failure' ]]) && allan=1
+          exit $allan
 
 
   # addaswyd o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
@@ -198,11 +195,11 @@ jobs:
         id: build 
         uses: ./.github/actions/nfssext-autocheck-action
         with:
-          module: ${{ matrix.module }}
-          working_directory: ${{ matrix.working_directory }}
-          pre_target: ${{ matrix.pre_target }}
           extra_packages: ${{ matrix.extra_packages }}
+          module: ${{ matrix.module }}
+          pre_target: ${{ matrix.pre_target }}
           texlive_cache_key: ${{ needs.texlive-cache.outputs.cache_key }}
+          working_directory: ${{ matrix.working_directory }}
       - name: Save fnttarg and ctan build results
         if: ${{ !cancelled() }}
         id: save-outputs
@@ -219,44 +216,73 @@ jobs:
           ([[ ${BUILD_RET} != 0  || ${CTAN_RET} != 0 ]])  && allan=1
           exit $allan
 
-  # # addaswyd o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
-  # # need cfr-lm
-  # # we don't really need the variable doing it in a separate matrix ...
-  # # but leave for now as may be useful
-  # nfssext-needy:
-  #   if: ${{ !cancelled() }}
-  #   runs-on: ubuntu-latest
-  #   needs: [ texlive-cache, clm ]
-  #   outputs:
-  #     fnttarg_adforn_output: ${{ steps.fnttarg.outputs.build_ret_adforn }}
-  #     fnttarg_adfsymbols_output: ${{ steps.fnttarg.outputs.build_ret_adfsymbols }}
-  #     ctan_adforn_output: ${{ steps.ctan.outputs.ctan_ret_adforn }}
-  #     ctan_adfsymbols_output: ${{ steps.ctan.outputs.ctan_ret_adfsymbols }}
-  #     ctan_fontscripts_output: ${{ steps.ctan.outputs.ctan_ret_fontscripts }}
-  #     ctan_nfssext_cfr_output: ${{ steps.ctan.outputs.ctan_ret_nfssext-cfr }}
-  #   # don't abandon other builds if one module fails
-  #   # continue-on-error: true
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       # include indicates that we want to set explicitly these combinations
-  #       # and don't want full matrix testing.
-  #       include:
-  #         - module: adforn
-  #           working_directory: arkandis/adforn
-  #           pre_target: fnttarg
-  #           extra_needs: clm
-  #         - module: adfsymbols
-  #           working_directory: arkandis/adfsymbols
-  #           pre_target: fnttarg
-  #           extra_needs: clm
-  #         - module: fontscripts
-  #           working_directory: fontscripts
-  #           extra_needs: clm
-  #         - module: nfssext-cfr
-  #           working_directory: nfssext-cfr
-  #           extra_needs: clm
-  #   name: "Test build: ${{ matrix.module }}"
+  # addaswyd o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
+  # need cfr-lm
+  # we don't really need the variable doing it in a separate matrix ...
+  # but leave for now as may be useful
+  nfssext-needy:
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    needs: [ texlive-cache, clm ]
+    outputs:
+      fnttarg_adforn_output: ${{ steps.save-outputs.outputs.build_ret_adforn }}
+      fnttarg_adfsymbols_output: ${{ steps.save-outputs.outputs.build_ret_adfsymbols }}
+      ctan_adforn_output: ${{ steps.save-outputs.outputs.ctan_ret_adforn }}
+      ctan_adfsymbols_output: ${{ steps.save-outputs.outputs.ctan_ret_adfsymbols }}
+      ctan_fontscripts_output: ${{ steps.save-outputs.outputs.ctan_ret_fontscripts }}
+      ctan_nfssext_cfr_output: ${{ steps.save-outputs.outputs.ctan_ret_nfssext-cfr }}
+    # don't abandon other builds if one module fails
+    # continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        # include indicates that we want to set explicitly these combinations
+        # and don't want full matrix testing.
+        include:
+          - module: adforn
+            working_directory: arkandis/adforn
+            pre_target: fnttarg
+            extra_needs: clm
+          - module: adfsymbols
+            working_directory: arkandis/adfsymbols
+            pre_target: fnttarg
+            extra_needs: clm
+          - module: fontscripts
+            working_directory: fontscripts
+            extra_needs: clm
+          - module: nfssext-cfr
+            working_directory: nfssext-cfr
+            extra_needs: clm
+    name: "Test build: ${{ matrix.module }}"
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Build fnttarg and ctan
+        id: build 
+        uses: ./.github/actions/nfssext-autocheck-action
+        with:
+          dep_cache_key: ${{ needs.clm.outputs.clm_cache_key }}
+          extra_needs: ${{ matrix,extra_needs }}
+          # extra_packages: ${{ matrix.extra_packages }}
+          module: ${{ matrix.module }}
+          pre_target: ${{ matrix.pre_target }}
+          texlive_cache_key: ${{ needs.texlive-cache.outputs.cache_key }}
+          working_directory: ${{ matrix.working_directory }}
+      - name: Save fnttarg and ctan build results
+        if: ${{ !cancelled() }}
+        id: save-outputs
+        shell: bash
+        env: 
+          BUILD_RET: ${{ steps.build.outputs.fnttarg_ret }}
+          CTAN_RET: ${{ steps.build.outputs.ctan_ret }}
+        run: |
+          module="${{ matrix.module }}"
+          echo -e "build_ret_${module}=${BUILD_RET}" >> "$GITHUB_OUTPUT" 
+          echo -e "ctan_ret_${module}=${CTAN_RET}" >> "$GITHUB_OUTPUT" 
+          cat "$GITHUB_OUTPUT"
+          allan=0
+          ([[ ${BUILD_RET} != 0  || ${CTAN_RET} != 0 ]])  && allan=1
+          exit $allan
   #   steps:
   #     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
   #     - name: Checkout repo
