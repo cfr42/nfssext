@@ -121,10 +121,7 @@ jobs:
         run: | 
           cachehit="${{ steps.clm-dev-restore.outputs.cache-hit }}"
           allan=0
-          if [ "${cachehit}" != "true" ] 
-          then
-            l3build ctan --dev || allan=1
-          fi
+          l3build ctan --dev || allan=1
           echo -e "ctan_ret_clm=${allan}" >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
           exit $allan
@@ -165,7 +162,7 @@ jobs:
         id: clm-cache-dev
         uses: actions/cache/save@v4
         with:
-          path: ~/work/nfssext//nfssext/cfr-lm/keep
+          path: ~/work/nfssext/nfssext/cfr-lm/keep
           key: clm-${{ github.sha }}-${{ needs.texlive-cache.outputs.cache_key }}-dev
       - name: Archive docs
         if: ${{ !cancelled() && steps.clm-dev-restore.outputs.cache-hit != 'true' }}
@@ -359,7 +356,7 @@ jobs:
         id: clm-dev-restore
         uses: actions/cache/restore@v4
         with:
-          path: ~/work/nfssext//nfssext/cfr-lm/keep
+          path: ~/work/nfssext/nfssext/cfr-lm/keep
           key: ${{ needs.clm-dev.outputs.clm_cache_key }}
           fail-on-cache-miss: true
       - name: Run l3build fnttarg dev
