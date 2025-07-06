@@ -6,7 +6,6 @@
 
 name: Automatic Checks for nfssext 2
 
-# Controls when the workflow will run
 on:
   # Triggers the workflow on push request events for all branches if changes are not confined to excluded paths
   push:
@@ -31,8 +30,6 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
 
   # addaswyd o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
@@ -42,22 +39,17 @@ jobs:
     name: Update TeX Live cache
     outputs: 
       cache_key: ${{ steps.texlive.outputs.cache_key }}
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repo
         uses: actions/checkout@v4
       - name: Install TeX Live
         id: texlive
         uses: zauguin/install-texlive@v4
         with:
-          # List the required TeX Live packages in a separate file to allow reuse in
-          # different workflows.
           package_file: .github/tl_packages
 
   clm:
     if: ${{ !cancelled() }}
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
     name: "Test build: cfr-lm"
     needs: texlive-cache

@@ -82,7 +82,6 @@ runs:
       with:
         name: buildfiles-${{ inputs.module }}
         path: build/fnt/*.log
-        # Decide how long to keep the test output artefact:
         retention-days: 7
     - name: Run l3build ctan
       working-directory: ${{ inputs.working_directory }}
@@ -96,12 +95,10 @@ runs:
         cat "$GITHUB_OUTPUT"
         exit $allan
     - name: Archive failed test output
-    # run even if previous step failed
       if: ${{ !cancelled() }}
       uses: zauguin/l3build-failure-artifacts@v1
       with:
         name: testfiles-${{ inputs.module }}
-        # Decide how long to keep the test output artefact:
         retention-days: 7
     - name: Archive failed docs output
     # run even iff previous step failed
@@ -114,7 +111,6 @@ runs:
       with:
         name: typeset-logs-${{ inputs.module }}
         path: build/doc/*.log
-        # Decide how long to keep the test output artefact:
         retention-days: 7
     - name: Archive docs
     # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
@@ -122,6 +118,5 @@ runs:
       with:
         name: docs-${{ inputs.module }}
         path: ${{ inputs.working_directory }}/*.pdf
-        # Decide how long to keep the test output artefact:
         retention-days: 30
 
