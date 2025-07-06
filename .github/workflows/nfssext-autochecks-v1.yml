@@ -10,16 +10,16 @@ name: Automatic Checks for nfssext v1
 on:
   # Triggers the workflow on push request events for all branches if changes are not confined to excluded paths
   push:
-    # branches: 
-    # - "*"
-    # - "*workflow"
-    - '*'
-  paths:
-    - '!**'
-    # - '**'
-    # - '!**.md'
-    # - '!**.txt'
-    # - '!.github/workflows/*.yml'
+    branches: 
+      - '*'
+      # - "*"
+      # - "*workflow"
+    paths:
+      - '!**'
+      # - '**'
+      # - '!**.md'
+      # - '!**.txt'
+      # - '!.github/workflows/*.yml'
       - '.github/workflows/nfssext-autochecks-v1.yml'
       # - '!licences/**'
       # - '!test/**'
@@ -30,8 +30,8 @@ on:
     paths:
       - '!**'
       - '.github/workflows/nfssext-autochecks-v1.yml'
-      # Allows you to run this workflow manually from the Actions tab
-    workflow_dispatch:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
 
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
