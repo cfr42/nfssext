@@ -4,7 +4,7 @@
 # https://github.com/latex3/hyperref/blob/adc36adbc3650db73329469b43afb0ee86e3c807/.github/workflows/main.yaml
 # https://github.com/josephwright/siunitx/blob/main/.github/workflows/main.yaml
 
-name: Automatic Checks for nfssext 2
+name: Automatic Checks for nfssext v2
 
 on:
   # Triggers the workflow on push request events for all branches if changes are not confined to excluded paths
@@ -19,7 +19,7 @@ on:
       - '!**.txt'
       - '!.github/workflows/*.yml'
       - '!.github/actions/**'
-      - '.github/workflows/nfssext-autochecks-user.yml'
+      - '.github/workflows/nfssext-autochecks-v2.yml'
       - '.github/actions/nfssext-autocheck-action/**'
       - '!licences/**'
       - '!test/**'
