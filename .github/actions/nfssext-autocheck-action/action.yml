@@ -4,6 +4,18 @@
 name: nfssext-autocheck
 description: Automatic check for nfssext modules
 inputs:
+  check:
+    required: true
+    type: boolean
+    default: false
+  ctan:
+    required: true
+    type: boolean
+    default: true
+  doc:
+    required: true
+    type: boolean
+    default: false
   dep_cache_key:
     required: false
     type: string
@@ -15,6 +27,15 @@ inputs:
     type: string
   module: 
     required: true
+    type: string
+  opts_check:
+    required: false
+    type: string
+  opts_ctan:
+    required: false
+    type: string
+  opts_doc:
+    required: false
     type: string
   pre_target: 
     required: false
@@ -29,9 +50,15 @@ outputs:
   fnttarg_ret:
     description: 'l3build fnttarg result'
     value: ${{ steps.fnttarg.outputs.BUILD_RET }}
+  check_ret:
+    description: 'l3build check result'
+    value: ${{ steps.check.outputs.CHECK_RET }}
   ctan_ret:
     description: 'l3build ctan result'
     value: ${{ steps.ctan.outputs.CTAN_RET }}
+  doc_ret:
+    description: 'l3build doc result'
+    value: ${{ steps.doc.outputs.DOC_RET }}
 runs:
   using: "composite"
   steps:
@@ -84,39 +111,75 @@ runs:
         path: build/fnt/*.log
         retention-days: 7
     - name: Run l3build ctan
+      if: ${{ inputs.ctan }}
       working-directory: ${{ inputs.working_directory }}
       id: ctan
       shell: bash
       run: |
         module="${{ inputs.module }}"
+        opts="${{ inputs.opts_ctan }}"
         allan=0
-        l3build ctan || allan=1
+        l3build ctan $opts || allan=1
         echo -e "CTAN_RET=${allan}" >> "$GITHUB_OUTPUT" 
         cat "$GITHUB_OUTPUT"
+        echo -e "CHECK_OPTS=${opts}" >> "$GITHUB_ENV"
+        echo -e "DOC_OPTS=${opts}" >> "$GITHUB_ENV"
+        cat "$GITHUB_ENV"
+        exit $allan
+    - name: Run l3build check
+      if: ${{ inputs.check && !(inputs.ctan) }}
+      working-directory: ${{ inputs.working_directory }}
+      id: check
+      shell: bash
+      run: |
+        module="${{ inputs.module }}"
+        opts="${{ inputs.opts_check }}"
+        allan=0
+        l3build check $opts || allan=1
+        echo -e "CHECK_RET=${allan}" >> "$GITHUB_OUTPUT" 
+        cat "$GITHUB_OUTPUT"
+        echo -e "CHECK_OPTS=${opts}" >> "$GITHUB_ENV"
+        cat "$GITHUB_ENV"
         exit $allan
     - name: Archive failed test output
       if: ${{ !cancelled() }}
       uses: zauguin/l3build-failure-artifacts@v1
       with:
-        name: testfiles-${{ inputs.module }}
+        name: testfiles-${{ inputs.module }}${{ env.CHECK_OPTS }}
         retention-days: 7
+    - name: Run l3build doc
+      if: ${{ inputs.doc && !(inputs.ctan) }}
+      working-directory: ${{ inputs.working_directory }}
+      id: doc
+      shell: bash
+      run: |
+        module="${{ inputs.module }}"
+        opts="${{ inputs.opts_doc }}"
+        allan=0
+        l3build doc $opts || allan=1
+        echo -e "DOC_RET=${allan}" >> "$GITHUB_OUTPUT" 
+        cat "$GITHUB_OUTPUT"
+        echo -e "DOC_OPTS=${opts}" >> "$GITHUB_ENV"
+        cat "$GITHUB_ENV"
+        exit $allan
     - name: Archive failed docs output
     # run even iff previous step failed
     # https://docs.github.com/en/actions/reference/evaluate-expressions-in-workflows-and-actions#status-check-functions
     # https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#environment-files
     # https://docs.github.com/en/actions/how-tos/writing-workflows/choosing-when-your-workflow-runs/using-conditions-to-control-job-execution
-      if: ${{ !cancelled() && steps.ctan.outcome == 'failure' }}
+      if: ${{ !cancelled() && ( steps.ctan.outcome == 'failure' || steps.doc.outcome == 'failure' ) }}
       # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
       uses: actions/upload-artifact@v4
       with:
-        name: typeset-logs-${{ inputs.module }}
+        name: typeset-logs-${{ inputs.module }}${{ env.DOC_OPTS }}
         path: build/doc/*.log
         retention-days: 7
     - name: Archive docs
-    # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
+      # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
+      if: ${{ !cancelled() && ( inputs.ctan || inputs.doc ) }}
       uses: actions/upload-artifact@v4
       with:
-        name: docs-${{ inputs.module }}
+        name: docs-${{ inputs.module }}${{ env.DOC_OPTS }}
         path: ${{ inputs.working_directory }}/*.pdf
         retention-days: 30
 
