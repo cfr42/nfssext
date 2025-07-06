@@ -50,7 +50,7 @@ jobs:
       # clm_cache_key: ${{ steps.clm-cache-dev.outputs.cache_key }}
       clm_cache_key: clm-${{ github.sha }}-${{ needs.texlive-cache.outputs.cache_key }}-dev
       lookup_clm_output: ${{ steps.clm-lookup-dev.outputs.cache-hit }}
-      fnttarg_clm_output: ${{ steps.build-clm-dev.outputs.build_ret }}
+      fnttarg_clm_output: ${{ steps.build-clm-dev.outputs.fnttarg_ret }}
       ctan_clm_output: ${{ steps.build-clm-dev.outputs.ctan_ret }}
     steps:
       - name: Checkout repo
