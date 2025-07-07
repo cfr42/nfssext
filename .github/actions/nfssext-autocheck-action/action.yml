@@ -143,14 +143,21 @@ runs:
         [[ "${{ inputs.manifest }}" == "true" ]] && manifest=0
         [[ "${{ inputs.release }}" == "true" ]] && release=0
         [[ "${{ inputs.tds }}" == "true" ]] && tds=0
-        if [ $release == 1 ] then
-          manifest=1                        # not releasing -> no manifest
-        elif [ $manifest == 1 ] then
-          ctan=0; check=1; doc=1; ctanrel=1 # release but no manifest -> build ctan once only
-        elif [ $tds == 1 ] then 
-          ctan=1; check=0; doc=0; ctanrel=0 # release + manifest but no tds -> build ctan only after check and doc
+        if [ $release == 1 ] 
+        then 
+          # not releasing -> no manifest
+          manifest=1                       
+        elif [ $manifest == 1 ] 
+        then 
+          # release but no manifest -> build ctan once only
+          ctan=0; check=1; doc=1; ctanrel=1 
+        elif [ $tds == 1 ] 
+        then 
+          # release + manifest but no tds -> build ctan only after check and doc
+          ctan=1; check=0; doc=0; ctanrel=0 
         else
-          ctan=0; check=1; doc=1; ctanrel=0 # release + manifest + tds -> build ctan twice
+          # release + manifest + tds -> build ctan twice
+          ctan=0; check=1; doc=1; ctanrel=0 
         fi
         echo -e "CHECK=${check}\nCTAN=${ctan}\nDOC=${doc}\nMANIFEST=${manifest}\nRELEASE=${release}\nCTANREL=${ctanrel}\nTDS=${tds}\n" >> "$GITHUB_ENV
         cat "$GITHUB_ENV"
