@@ -159,7 +159,7 @@ runs:
           # release + manifest + tds -> build ctan twice
           ctan=0; check=1; doc=1; ctanrel=0 
         fi
-        echo -e "CHECK=${check}\nCTAN=${ctan}\nDOC=${doc}\nMANIFEST=${manifest}\nRELEASE=${release}\nCTANREL=${ctanrel}\nTDS=${tds}\n" >> "$GITHUB_ENV
+        echo -e "CHECK=${check}\nCTAN=${ctan}\nDOC=${doc}\nMANIFEST=${manifest}\nRELEASE=${release}\nCTANREL=${ctanrel}\nTDS=${tds}\n" >> "$GITHUB_ENV"
         cat "$GITHUB_ENV"
     - name: Options
       id: opts
