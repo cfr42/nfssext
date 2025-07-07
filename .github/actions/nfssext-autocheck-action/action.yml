@@ -25,8 +25,14 @@ inputs:
   extra_needs:
     required: false
     type: string
+  manifest:
+    required: false
+    type: boolean
   module: 
     required: true
+    type: string
+  opts:
+    required: false
     type: string
   opts_check:
     required: false
@@ -40,6 +46,13 @@ inputs:
   pre_target: 
     required: false
     type: string
+  release:
+    required: false
+    type: boolean
+  tds:
+    required: true
+    type: boolean
+    default: false
   texlive_cache_key:
     required: true
     type: string
@@ -47,18 +60,27 @@ inputs:
     required: true
     type: string
 outputs:
-  fnttarg_ret:
-    description: 'l3build fnttarg result'
-    value: ${{ steps.fnttarg.outputs.BUILD_RET }}
   check_ret:
     description: 'l3build check result'
     value: ${{ steps.check.outputs.CHECK_RET }}
   ctan_ret:
     description: 'l3build ctan result'
     value: ${{ steps.ctan.outputs.CTAN_RET }}
+  ctanrel_ret:
+    description: 'l3build ctan (release) result'
+    value: ${{ steps.ctan-rel.outputs.CTANREL_RET }}
   doc_ret:
     description: 'l3build doc result'
     value: ${{ steps.doc.outputs.DOC_RET }}
+  fnttarg_ret:
+    description: 'l3build fnttarg result'
+    value: ${{ steps.fnttarg.outputs.BUILD_RET }}
+  manifest_ret:
+    description: 'l3build manifest result'
+    value: ${{ steps.ctanrel.outputs.MAN_RET }}
+  release_ret:
+    description: 'l3build release result'
+    value: ${{ steps.release.outputs.RELEASE_RET }}
 runs:
   using: "composite"
   steps:
@@ -110,30 +132,72 @@ runs:
         name: buildfiles-${{ inputs.module }}
         path: build/fnt/*.log
         retention-days: 7
+    - name: Recipe
+      id: recipe
+      shell: bash
+      run: |
+        check=1; ctan=0; ctanrel=0; doc=1; manifest=1; release=1; tds=1
+        [[ "${{ inputs.check }}" == "true" ]] && check=0
+        [[ "${{ inputs.ctan }}" == "false" ]] && ctan=1
+        [[ "${{ inputs.doc }}" == "true" ]] && doc=0
+        [[ "${{ inputs.manifest }}" == "true" ]] && manifest=0
+        [[ "${{ inputs.release }}" == "true" ]] && release=0
+        [[ "${{ inputs.tds }}" == "true" ]] && tds=0
+        if [ $release == 1 ] then
+          manifest=1                        # not releasing -> no manifest
+        elif [ $manifest == 1 ] then
+          ctan=0; check=1; doc=1; ctanrel=1 # release but no manifest -> build ctan once only
+        elif [ $tds == 1 ] then 
+          ctan=1; check=0; doc=0; ctanrel=0 # release + manifest but no tds -> build ctan only after check and doc
+        else
+          ctan=0; check=1; doc=1; ctanrel=0 # release + manifest + tds -> build ctan twice
+        fi
+        echo -e "CHECK=${check}\nCTAN=${ctan}\nDOC=${doc}\nMANIFEST=${manifest}\nRELEASE=${release}\nCTANREL=${ctanrel}\nTDS=${tds}\n" >> "$GITHUB_ENV
+        cat "$GITHUB_ENV"
+    - name: Options
+      id: opts
+      shell: bash
+      run: |
+        opts="${{ inputs.opts }}"
+        optsdoc="${{ inputs.opts_doc }}"
+        optscheck="${{ inputs.opts_check }}"
+        optsctan="${{ inputs.opts_ctan }}"
+        [[ "$optsdoc" == "" && "$opts" != "none" ]] && optsdoc=$opts
+        [[ "$optscheck" == "" && "$opts" != "none" ]] && optscheck=$opts
+        [[ "$optsctan" == "" && "$opts" != "none" ]] && optsctan=$opts
+        echo -e "OPTSCHECK=${optscheck}\nOPTSCTAN=${optsctan}\nOPTSDOC=${optsdoc}\n" >> "$GITHUB_ENV"
+        cat "$GITHUB_ENV"
     - name: Run l3build ctan
-      if: ${{ inputs.ctan }}
+      if: ${{ env.CTAN }}
       working-directory: ${{ inputs.working_directory }}
       id: ctan
       shell: bash
       run: |
         module="${{ inputs.module }}"
-        opts="${{ inputs.opts_ctan }}"
+        opts="${{ env.OPTSCTAN }}"
+        manifest="${{ env.MANIFEST }}"
         allan=0
         l3build ctan $opts || allan=1
         echo -e "CTAN_RET=${allan}" >> "$GITHUB_OUTPUT" 
-        cat "$GITHUB_OUTPUT"
         echo -e "CHECK_OPTS=${opts}" >> "$GITHUB_ENV"
         echo -e "DOC_OPTS=${opts}" >> "$GITHUB_ENV"
+        manres=0
+        if [ $manifest == 0 ] then
+          l3build manifest || manres=1
+        fi
+        echo -e "MAN_RET=${manres}" >> "$GITHUB_ENV"
+        echo -e "MAN_RET=${manres}" >> "$GITHUB_OUTPUT"
+        cat "$GITHUB_OUTPUT"
         cat "$GITHUB_ENV"
         exit $allan
     - name: Run l3build check
-      if: ${{ inputs.check && !(inputs.ctan) }}
+      if: ${{ env.CHECK }}
       working-directory: ${{ inputs.working_directory }}
       id: check
       shell: bash
       run: |
         module="${{ inputs.module }}"
-        opts="${{ inputs.opts_check }}"
+        opts="${{ env.OPTSCHECK }}"
         allan=0
         l3build check $opts || allan=1
         echo -e "CHECK_RET=${allan}" >> "$GITHUB_OUTPUT" 
@@ -148,18 +212,25 @@ runs:
         name: testfiles-${{ inputs.module }}${{ env.CHECK_OPTS }}
         retention-days: 7
     - name: Run l3build doc
-      if: ${{ inputs.doc && !(inputs.ctan) }}
+      if: ${{ env.DOC }}
       working-directory: ${{ inputs.working_directory }}
       id: doc
       shell: bash
       run: |
         module="${{ inputs.module }}"
-        opts="${{ inputs.opts_doc }}"
+        opts="${{ env.OPTSDOC }}"
+        manifest="${{ env.MANIFEST }}"
         allan=0
         l3build doc $opts || allan=1
         echo -e "DOC_RET=${allan}" >> "$GITHUB_OUTPUT" 
-        cat "$GITHUB_OUTPUT"
         echo -e "DOC_OPTS=${opts}" >> "$GITHUB_ENV"
+        manres=0
+        if [ $manifest == 0 ] then
+          l3build manifest || manres=1
+        fi
+        echo -e "MAN_RET=${manres}" >> "$GITHUB_ENV"
+        echo -e "MAN_RET=${manres}" >> "$GITHUB_OUTPUT"
+        cat "$GITHUB_OUTPUT"
         cat "$GITHUB_ENV"
         exit $allan
     - name: Archive failed docs output
@@ -176,10 +247,55 @@ runs:
         retention-days: 7
     - name: Archive docs
       # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
-      if: ${{ !cancelled() && ( inputs.ctan || inputs.doc ) }}
+      if: ${{ !cancelled() && ( env.CTAN || env.DOC ) }}
       uses: actions/upload-artifact@v4
       with:
         name: docs-${{ inputs.module }}${{ env.DOC_OPTS }}
         path: ${{ inputs.working_directory }}/*.pdf
         retention-days: 30
+    - name: (Re-)run l3build ctan
+      if: ${{ env.CTANREL }}
+      working-directory: ${{ inputs.working_directory }}
+      id: ctan-rel
+      run: |
+        module="${{ inputs.module }}"
+        opts="${{ env.OPTSCTAN }}"
+        manifest="${{ env.MAN_RET }}"
+        allan=0
+        l3build ctan $opts || allan=1
+        echo -e "MAN_RET=${manifest}" >> "$GITHUB_OUTPUT" 
+        echo -e "CTANREL_RET=${allan}" >> "$GITHUB_OUTPUT" 
+        echo -e "CTANREL_OPTS=${opts}" >> "$GITHUB_ENV"
+        cat "$GITHUB_OUTPUT"
+        cat "$GITHUB_ENV"
+        exit $allan
+    - name: List zip
+      if: ${{ env.RELEASE && (( steps.ctan-rel.outcome == 'success' ) || ( env.CTANREL == 1 && steps.ctan.outcome == 'success' )) 
+      shell: bash
+      working-directory: ${{ inputs.working_directory }}
+      run: |
+        unzip -l ${{ inputs.working_directory }}-ctan.zip || unzip -l ${{ inputs.module }}-ctan.zip || echo -e "Could not find zip!"
+    - name: Archive zip
+      if: ${{ env.RELEASE && (( steps.ctan-rel.outcome == 'success' ) || ( env.CTANREL == 1 && steps.ctan.outcome == 'success' )) 
+      id: zip
+      # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
+      uses: actions/upload-artifact@v4
+      with:
+        name: ctan-${{ inputs.module }}-${{ github.ref_name }}
+        path: ${{ inputs.working_directory}}/*.zip
+      retention-days: 30
+    - name: Release
+      id: release
+      if: ${{ !cancelled() && env.RELEASE }}
+      shell: bash
+      run: |
+        allan=1
+        [[ "${{ steps.ctan-rel.outcome }}" == "success" && "${{ steps.zip.outcome }}" == "success" ]] && allan=0
+        [[ "${{ env.CTANREL }}" == 1 && "${{ steps.ctan.outcome }}" == "success" && "${{ steps.zip.outcome }}" == "success" ]] && allan=0
+        echo -e "RELEASE_RET=${allan}" >> "$GITHUB_OUTPUT"
+        cat "$GITHUB_OUTPUT"
+        exit $allan
+
+
+
 

@@ -1,13 +1,12 @@
-# nfssext-release.yml
+# nfssext-release-v2.yml
 # full l3build checking for packages in nfssext repo (??!!)
 
 # https://github.com/latex3/hyperref/blob/adc36adbc3650db73329469b43afb0ee86e3c807/.github/workflows/main.yaml
 # https://github.com/josephwright/siunitx/blob/main/.github/workflows/main.yaml
 # https://github.com/latex3/latex2e/blob/develop/.github/workflows/deploy.yaml
 
-name: Build release for  nfssext
+name: Build release for nfssext v2
 
-# Controls when the workflow will run
 on:
   # Triggers the workflow on push for any tag but only for the "main" branch
   push:
@@ -16,10 +15,9 @@ on:
     branches:
       - '*'
     paths:
-      - '.github/workflows/nfssext-release.yml'
-  # how can I also run if this workflow is updated as or rather than and?
+      - '.github/workflows/nfssext-release-v2.yml'
+  workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
 
   # addaswyd o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
@@ -29,117 +27,136 @@ jobs:
     name: Update TeX Live cache
     outputs: 
       cache_key: ${{ steps.texlive.outputs.cache_key }}
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repo
         uses: actions/checkout@v4
       - name: Install TeX Live
         id: texlive
         uses: zauguin/install-texlive@v4
         with:
-          # List the required TeX Live packages in a separate file to allow reuse in
-          # different workflows.
           package_file: .github/tl_packages
 
   clm:
     if: ${{ !cancelled() }}
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
     name: "Test build: cfr-lm"
     needs: texlive-cache
     # nfssext-cfr uses cfr-lm (though it falls back if built first)
     # cfr-lm uses nfssext-cfr but there's nothing to build
     outputs:
-    # don't cache when releasing
-      fnttarg_clm_output: ${{ steps.fnttarg-clm.outputs.build_ret_clm }}
-      ctan_clm_output: ${{ steps.ctan-clm.outputs.ctan_ret_clm }}
+      ctan_clm_output: ${{ steps.build-clm.outputs.ctan_ret }}
+      ctanrel_clm_output: ${{ steps.build-clm.outputs.ctanrel_ret }}
+      fnttarg_clm_output: ${{ steps.build-clm.outputs.fnttarg_ret }}
+      manifest_clm_output: ${{ steps.build-clm.outputs.manifest_ret }}
+      release_clm_output: ${{ steps.build-clm.outputs.release_ret }}
+      # clm_cache_key: $(( steps.clm-cache.outputs.cache_key }}
+      clm_cache_key: clm-${{ github.sha }}-${{ needs.texlive-cache.outputs.cache_key }}-${{ github.ref_name }}
+      lookup_clm_output: ${{ steps.clm-lookup.outputs.cache-hit }}
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repo
         uses: actions/checkout@v4
-      # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
-      - run: sudo apt-get update 
-      # Steps represent a sequence of tasks that will be executed as part of the job
-      - name: Restore TeX Live from cache
+      - name: Restore clm from cache
+        id: clm-lookup
         uses: actions/cache/restore@v4
-        with: 
-          path: ~/texlive
-          key: ${{ needs.texlive-cache.outputs.cache_key }}
-          fail-on-cache-miss: true
-      # oes angen hwn?
-      # oes!
-      - name: Set PATH
-        run: echo $HOME/texlive/bin/x86_64-linux >> $GITHUB_PATH
-      - name: Run l3build fnttarg 
-        id: fnttarg-clm
-        working-directory: cfr-lm
-        run: |
-          (l3build fnttarg && echo -e "BUILD_RET=0\nbuild_ret_clm=0" >> "$GITHUB_OUTPUT") || echo -e "BUILD_RET=1\nbuild_ret_clm=1" >> "$GITHUB_OUTPUT"
-          cat "$GITHUB_OUTPUT"
-      - name: Archive failed build output
-      # run even iff previous step failed
-        if: ${{ !cancelled() && !(steps.fnttarg-clm.outputs.BUILD_RET) }}
-      # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
-        uses: actions/upload-artifact@v4
         with:
-          name: buildfiles-clm
-          path: build/fnt/*.log
-          # Decide how long to keep the test output artefact:
-          retention-days: 7
-      - name: Create manifest
-      # only for release if build succeeded
-        if: ${{ (contains(github.ref_name, 'cfr-lm-') || contains(github.ref_name, 'clm-')) && (steps.fnttarg-clm.outputs.BUILD_RET) }}
-        working-directory: cfr-lm
-        run: l3build check && l3build doc && l3build manifest
-      - name: Run l3build ctan 
-      # build whether releasing or not i osgoi problemau annisgwyl
-        if: ${{ !cancelled() && (steps.fnttarg-clm.outputs.BUILD_RET) }}
-        working-directory: cfr-lm
-        id: ctan-clm
+          path: ~/work/nfssext/nfssext/cfr-lm/keep
+          lookup-only: true
+          fail-on-cache-miss: false
+          key: clm-${{ github.sha }}-${{ needs.texlive-cache.outputs.cache_key }}-${{ github.ref_name }}
+      - name: Recipe
+        id: recipe
+        shell: bash
+        env:
+          isrelease: ${{ contains(github.ref_name, 'cfr-lm-') || contains(github.ref_name, 'clm-') }}
         run: |
-          (l3build ctan && echo -e "CTAN_RET=0\nctan_ret_clm=0" >> "$GITHUB_OUTPUT") || echo -e "CTAN_RET=1\nctan_ret_clm=1" >> "$GITHUB_OUTPUT"
-          cat "$GITHUB_OUTPUT"
-      # need clm available for nfssext-needy, but not sure how to do this without caching?
-      - name: Run l3build install 
-      # run only if ctan succeeded
-        if: ${{ !cancelled() && (steps.ctan-clm.outputs.CTAN_RET) }}
-        working-directory: cfr-lm
-        id: install-clm
-        run: |
-          (l3build install && echo "INSTALL_RET=0" >> "$GITHUB_OUTPUT") || echo "INSTALL_RET=1" >> "$GITHUB_OUTPUT"
-          cat "$GITHUB_OUTPUT"
-      - name: Update map
-      # run only if install succeeded
-        if: ${{ !cancelled() && (steps.install-clm.outputs.INSTALL_RET) }}
-        id: updmap-clm
-        run: |
-          (updmap --user --enable Map=clm.map && echo "UPDMAP_RET=0" >> "$GITHUB_OUTPUT") || echo "UPDMAP_RET=1" >> "GITHUB_OUTPUT"
-          cat "$GITHUB_OUTPUT"
-      - name: Archive failed test output for clm
-        # run even if previous step failed
+          isrel="${{ contains(github.ref_name, 'cfr-lm-') || contains(github.ref_name, 'clm-') }}"
+          releasing="false"
+          [[ "$isrel" == "true" || $isrel == 0 ]] && releasing="true"
+          echo -e "RELEASING=${releasing}" >> "$GITHUB_ENV"
+          cat "$GITHUB_ENV"
+      - name: Build fnttarg and ctan
+      # build regardless of cache status when releasing
         if: ${{ !cancelled() }}
-        uses: zauguin/l3build-failure-artifacts@v1
+        id: build-clm 
+        uses: ./.github/actions/nfssext-autocheck-action
         with:
-          name: testfiles-clm
-          # Decide how long to keep the test output artefact:
-          retention-days: 7
-      # don't cache clm for release
-      - name: List zip
-      # list archive only if releasing clm and ctan build succeeded
-        if: ${{ (contains(github.ref_name, 'cfr-lm-') || contains(github.ref_name, 'clm-')) && (steps.ctan-clm.outputs.CTAN_RET) }}
+          manifest: true
+          module: clm
+          pre_target: fnttarg
+          release: true
+          tds: true
+          texlive_cache_key: ${{ needs.texlive-cache.outputs.cache_key }}
+          working_directory: cfr-lm
+      - name: Cache build results
+      # run only if fnttarg build succeeded and cache lookup failed
+        if: ${{ !cancelled() && steps.build-clm.outputs.fnttarg_ret && steps.clm-lookup.outputs.cache-hit != 'true' }}
+        id: clm-cache
+        uses: actions/cache/save@v4
+        with:
+          path: ~/work/nfssext/nfssext/cfr-lm/keep
+          key: clm-${{ github.sha }}-${{ needs.texlive-cache.outputs.cache_key }}-${{ github.ref_name }}
+      - name: Generate exit code
+        if: ${{ !cancelled() }}
+        id: clm-exit
+        shell: bash
+        # for release, we only continue if clm ctan built - we don't keep going provided only that fnttarg succeeded
+        env:
+          clmfnttargret: ${{ steps.build-clm.outputs.fnttarg_ret }}
+          clmctanret: ${{ steps.build-clm.outputs.ctan_ret }}
+          clmlookup: ${{ steps.clm-lookup.outputs.cache-hit }}
+          clmcache: ${{ steps.clm-cache.outcome }}
         run: |
-          unzip -l cfr-lm/cfr-lm-ctan.zip
-      - name: Archive zip
-      # archive only if releasing clm and ctan build succeeded
-        if: ${{ (contains(github.ref_name, 'cfr-lm-') || contains(github.ref_name, 'clm-')) && (steps.ctan-clm.outputs.CTAN_RET) }}
-        # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
-        uses: actions/upload-artifact@v4
-        with:
-          name: ctan-clm-${{ github.ref_name }}
-          path: cfr-lm/*.zip
-          # Decide how long to keep the test output artefact:
-          retention-days: 30
+          allan=0
+          # fail if either fnttarg or ctan failed to build
+          [[ $clmfnttargret == 0 && $clmctanret == 0 ]] || allan=1
+          # fail if both cache lookup and cache save failed 
+          [[ $clmlookup != 'true' && $clmcache != 'true' ]] || allan=1
+          exit $allan
+
+        # - name: Create manifest
+        # # only for release if build succeeded
+        #   if: ${{ (contains(github.ref_name, 'cfr-lm-') || contains(github.ref_name, 'clm-')) && (steps.fnttarg-clm.outputs.BUILD_RET) }}
+        #   working-directory: cfr-lm
+        #   run: l3build check && l3build doc && l3build manifest
+        # - name: Run l3build ctan 
+        # # build whether releasing or not i osgoi problemau annisgwyl
+        #   if: ${{ !cancelled() && (steps.fnttarg-clm.outputs.BUILD_RET) }}
+        #   working-directory: cfr-lm
+        #   id: ctan-clm
+        #   run: |
+        #     (l3build ctan && echo -e "CTAN_RET=0\nctan_ret_clm=0" >> "$GITHUB_OUTPUT") || echo -e "CTAN_RET=1\nctan_ret_clm=1" >> "$GITHUB_OUTPUT"
+        #     cat "$GITHUB_OUTPUT"
+        # need clm available for nfssext-needy, but not sure how to do this without caching?
+        # - name: Run l3build install 
+        # # run only if ctan succeeded
+        #   if: ${{ !cancelled() && (steps.ctan-clm.outputs.CTAN_RET) }}
+        #   working-directory: cfr-lm
+        #   id: install-clm
+        #   run: |
+        #     (l3build install && echo "INSTALL_RET=0" >> "$GITHUB_OUTPUT") || echo "INSTALL_RET=1" >> "$GITHUB_OUTPUT"
+        #     cat "$GITHUB_OUTPUT"
+        # - name: Update map
+        # # run only if install succeeded
+        #   if: ${{ !cancelled() && (steps.install-clm.outputs.INSTALL_RET) }}
+        #   id: updmap-clm
+        #   run: |
+        #     (updmap --user --enable Map=clm.map && echo "UPDMAP_RET=0" >> "$GITHUB_OUTPUT") || echo "UPDMAP_RET=1" >> "GITHUB_OUTPUT"
+        #     cat "$GITHUB_OUTPUT"
+        # - name: List zip
+        # # list archive only if releasing clm and ctan build succeeded
+        #   if: ${{ (contains(github.ref_name, 'cfr-lm-') || contains(github.ref_name, 'clm-')) && (steps.ctan-clm.outputs.CTAN_RET) }}
+        #   run: |
+        #     unzip -l cfr-lm/cfr-lm-ctan.zip
+        # - name: Archive zip
+        # # archive only if releasing clm and ctan build succeeded
+        #   if: ${{ (contains(github.ref_name, 'cfr-lm-') || contains(github.ref_name, 'clm-')) && (steps.ctan-clm.outputs.CTAN_RET) }}
+        #   # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
+        #   uses: actions/upload-artifact@v4
+        #   with:
+        #     name: ctan-clm-${{ github.ref_name }}
+        #     path: cfr-lm/*.zip
+        #     # Decide how long to keep the test output artefact:
+        #     retention-days: 30
 
 
   # addaswyd o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
