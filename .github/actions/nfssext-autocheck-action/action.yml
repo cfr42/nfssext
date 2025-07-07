@@ -257,6 +257,7 @@ runs:
       if: ${{ env.CTANREL }}
       working-directory: ${{ inputs.working_directory }}
       id: ctan-rel
+      shell: bash
       run: |
         module="${{ inputs.module }}"
         opts="${{ env.OPTSCTAN }}"
@@ -270,20 +271,20 @@ runs:
         cat "$GITHUB_ENV"
         exit $allan
     - name: List zip
-      if: ${{ env.RELEASE && (( steps.ctan-rel.outcome == 'success' ) || ( env.CTANREL == 1 && steps.ctan.outcome == 'success' )) 
+      if: ${{ env.RELEASE && (( steps.ctan-rel.outcome == 'success' ) || ( env.CTANREL == 1 && steps.ctan.outcome == 'success' )) }}
       shell: bash
       working-directory: ${{ inputs.working_directory }}
       run: |
-        unzip -l ${{ inputs.working_directory }}-ctan.zip || unzip -l ${{ inputs.module }}-ctan.zip || echo -e "Could not find zip!"
+        unzip -l "${{ inputs.working_directory }}"-ctan.zip || unzip -l "${{ inputs.module }}"-ctan.zip || echo -e "Could not find zip!"
     - name: Archive zip
-      if: ${{ env.RELEASE && (( steps.ctan-rel.outcome == 'success' ) || ( env.CTANREL == 1 && steps.ctan.outcome == 'success' )) 
+      if: ${{ env.RELEASE && (( steps.ctan-rel.outcome == 'success' ) || ( env.CTANREL == 1 && steps.ctan.outcome == 'success' )) }} 
       id: zip
       # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
       uses: actions/upload-artifact@v4
       with:
         name: ctan-${{ inputs.module }}-${{ github.ref_name }}
         path: ${{ inputs.working_directory}}/*.zip
-      retention-days: 30
+        retention-days: 30
     - name: Release
       id: release
       if: ${{ !cancelled() && env.RELEASE }}
