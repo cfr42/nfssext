@@ -186,10 +186,13 @@ runs:
         allan=0
         l3build ctan $opts || allan=1
         echo -e "CTAN_RET=${allan}" >> "$GITHUB_OUTPUT" 
+        echo -e "DOC_RET=${allan}" >> "$GITHUB_OUTPUT" 
+        echo -e "CHECK_RET=${allan}" >> "$GITHUB_OUTPUT" 
         echo -e "CHECK_OPTS=${opts}" >> "$GITHUB_ENV"
         echo -e "DOC_OPTS=${opts}" >> "$GITHUB_ENV"
         manres=0
-        if [ $manifest == 0 ] then
+        if [ $manifest == 0 ] 
+        then
           l3build manifest || manres=1
         fi
         echo -e "MAN_RET=${manres}" >> "$GITHUB_ENV"
@@ -208,8 +211,8 @@ runs:
         allan=0
         l3build check $opts || allan=1
         echo -e "CHECK_RET=${allan}" >> "$GITHUB_OUTPUT" 
-        cat "$GITHUB_OUTPUT"
         echo -e "CHECK_OPTS=${opts}" >> "$GITHUB_ENV"
+        cat "$GITHUB_OUTPUT"
         cat "$GITHUB_ENV"
         exit $allan
     - name: Archive failed test output
@@ -294,7 +297,7 @@ runs:
         retention-days: 30
     - name: Release
       id: release
-      if: ${{ !cancelled() && env.RELEASE }}
+      if: ${{ !cancelled() && env.RELEASE == 0 }}
       shell: bash
       run: |
         allan=1
