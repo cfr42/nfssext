@@ -12,13 +12,13 @@ inputs:
     required: true
     type: boolean
     default: true
+  dep_cache_key:
+    required: false
+    type: string
   doc:
     required: true
     type: boolean
     default: false
-  dep_cache_key:
-    required: false
-    type: string
   extra_packages: 
     required: false
     type: string
@@ -26,8 +26,9 @@ inputs:
     required: false
     type: string
   manifest:
-    required: false
+    required: true 
     type: boolean
+    default: false
   module: 
     required: true
     type: string
@@ -47,8 +48,9 @@ inputs:
     required: false
     type: string
   release:
-    required: false
+    required: true
     type: boolean
+    default: false
   tds:
     required: true
     type: boolean
@@ -136,17 +138,17 @@ runs:
       id: recipe
       shell: bash
       run: |
-        check=1; ctan=0; ctanrel=0; doc=1; manifest=1; release=1; tds=1
+        art=1; check=1; ctan=1; ctanrel=1; doc=1; manifest=1; release=1; tds=1
         [[ "${{ inputs.check }}" == "true" ]] && check=0
-        [[ "${{ inputs.ctan }}" == "false" ]] && ctan=1
+        [[ "${{ inputs.ctan }}" == "true" ]] && ctan=0
         [[ "${{ inputs.doc }}" == "true" ]] && doc=0
         [[ "${{ inputs.manifest }}" == "true" ]] && manifest=0
         [[ "${{ inputs.release }}" == "true" ]] && release=0
         [[ "${{ inputs.tds }}" == "true" ]] && tds=0
         if [ $release == 1 ] 
         then 
-          # not releasing -> no manifest
-          manifest=1                       
+          # not releasing -> no manifest + save docs
+          manifest=1; art=0
         elif [ $manifest == 1 ] 
         then 
           # release but no manifest -> build ctan once only
@@ -159,7 +161,7 @@ runs:
           # release + manifest + tds -> build ctan twice
           ctan=0; check=1; doc=1; ctanrel=0 
         fi
-        echo -e "CHECK=${check}\nCTAN=${ctan}\nDOC=${doc}\nMANIFEST=${manifest}\nRELEASE=${release}\nCTANREL=${ctanrel}\nTDS=${tds}\n" >> "$GITHUB_ENV"
+        echo -e "ART=${art}\nCHECK=${check}\nCTAN=${ctan}\nDOC=${doc}\nMANIFEST=${manifest}\nRELEASE=${release}\nCTANREL=${ctanrel}\nTDS=${tds}\n" >> "$GITHUB_ENV"
         cat "$GITHUB_ENV"
     - name: Options
       id: opts
@@ -175,7 +177,7 @@ runs:
         echo -e "OPTSCHECK=${optscheck}\nOPTSCTAN=${optsctan}\nOPTSDOC=${optsdoc}\n" >> "$GITHUB_ENV"
         cat "$GITHUB_ENV"
     - name: Run l3build ctan
-      if: ${{ env.CTAN }}
+      if: ${{ env.CTAN == 0 }}
       working-directory: ${{ inputs.working_directory }}
       id: ctan
       shell: bash
@@ -201,7 +203,7 @@ runs:
         cat "$GITHUB_ENV"
         exit $allan
     - name: Run l3build check
-      if: ${{ env.CHECK }}
+      if: ${{ env.CHECK == 0}}
       working-directory: ${{ inputs.working_directory }}
       id: check
       shell: bash
@@ -222,7 +224,7 @@ runs:
         name: testfiles-${{ inputs.module }}${{ env.CHECK_OPTS }}
         retention-days: 7
     - name: Run l3build doc
-      if: ${{ env.DOC }}
+      if: ${{ env.DOC == 0 }}
       working-directory: ${{ inputs.working_directory }}
       id: doc
       shell: bash
@@ -257,14 +259,14 @@ runs:
         retention-days: 7
     - name: Archive docs
       # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
-      if: ${{ !cancelled() && ( env.CTAN || env.DOC ) }}
+      if: ${{ !cancelled() && ( env.CTAN == 0 || env.DOC == 0 ) }}
       uses: actions/upload-artifact@v4
       with:
         name: docs-${{ inputs.module }}${{ env.DOC_OPTS }}
         path: ${{ inputs.working_directory }}/*.pdf
         retention-days: 30
     - name: (Re-)run l3build ctan
-      if: ${{ env.CTANREL }}
+      if: ${{ env.CTANREL == 0 }}
       working-directory: ${{ inputs.working_directory }}
       id: ctan-rel
       shell: bash
@@ -281,13 +283,13 @@ runs:
         cat "$GITHUB_ENV"
         exit $allan
     - name: List zip
-      if: ${{ env.RELEASE && (( steps.ctan-rel.outcome == 'success' ) || ( env.CTANREL == 1 && steps.ctan.outcome == 'success' )) }}
+      if: ${{ env.RELEASE == 0 && (( steps.ctan-rel.outcome == 'success' ) || ( env.CTANREL == 1 && steps.ctan.outcome == 'success' )) }}
       shell: bash
       working-directory: ${{ inputs.working_directory }}
       run: |
         unzip -l "${{ inputs.working_directory }}"-ctan.zip || unzip -l "${{ inputs.module }}"-ctan.zip || echo -e "Could not find zip!"
     - name: Archive zip
-      if: ${{ env.RELEASE && (( steps.ctan-rel.outcome == 'success' ) || ( env.CTANREL == 1 && steps.ctan.outcome == 'success' )) }} 
+      if: ${{ env.RELEASE == 0 && (( steps.ctan-rel.outcome == 'success' ) || ( env.CTANREL == 1 && steps.ctan.outcome == 'success' )) }} 
       id: zip
       # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
       uses: actions/upload-artifact@v4
