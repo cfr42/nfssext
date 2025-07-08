@@ -64,7 +64,7 @@ inputs:
 outputs:
   check_ret:
     description: 'l3build check result'
-    value: ${{ steps.out.outputs.CHECK_RET }}
+    value: ${{ steps.check.outputs.CHECK_RET }}
   ctan_ret:
     description: 'l3build ctan result'
     value: ${{ steps.ctan.outputs.CTAN_RET }}
@@ -73,7 +73,7 @@ outputs:
     value: ${{ steps.ctan-rel.outputs.CTANREL_RET }}
   doc_ret:
     description: 'l3build doc result'
-    value: ${{ steps.out.outputs.DOC_RET }}
+    value: ${{ steps.doc.outputs.DOC_RET }}
   fnttarg_ret:
     description: 'l3build fnttarg result'
     value: ${{ steps.fnttarg.outputs.BUILD_RET }}
@@ -244,26 +244,6 @@ runs:
         fi
         cat "$GITHUB_OUTPUT"
         cat "$GITHUB_ENV"
-        exit $allan
-    - name: Create doc/check outputs for ctan run
-      env:
-        check: ${{ env.CHECK }}
-        ctan: ${{ env.CTAN }}
-        doc: ${{ env.DOC }}
-        checkret: ${{ env.CHECK_RET }}
-        ctanret: ${{ env.CTAN_RET }}
-        docret: ${{ env.DOC_RET }}
-      shell: bash
-      id: out
-      run: |
-        allan=0
-        [[ $check == 0 && $ctan == 1 ]] && echo -e "CHECK_RET=${checkret}" >> "$GITHUB_OUTPUT"
-        [[ $doc == 0 && $ctan == 1 ]] && echo -e "DOC_RET=${docret}" >> "$GITHUB_OUTPUT"
-        [[ $check == 1 && $ctan == 0 ]] && echo -e "CHECK_RET=${ctanret}" >> "$GITHUB_OUTPUT"
-        [[ $doc == 1 && $ctan == 0 ]] && echo -e "DOC_RET=${ctanret}" >> "$GITHUB_OUTPUT"
-        [[ $check == 0 && $ctan == 0 ]] && allan=1
-        [[ $doc == 0 && $ctan == 0 ]] && allan=1
-        [[ $allan != 0 ]] && echo -e "ERROR!!! This should never happen!\n" 
         exit $allan
     - name: Archive failed docs output
     # run even iff previous step failed

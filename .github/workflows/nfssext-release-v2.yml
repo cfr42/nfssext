@@ -81,6 +81,7 @@ jobs:
         id: build-clm 
         uses: ./.github/actions/nfssext-autocheck-action
         with:
+          ctan: true
           manifest: true
           module: clm
           pre_target: fnttarg
@@ -114,14 +115,16 @@ jobs:
           clmcache: ${{ steps.clm-cache.outcome }}
         run: |
           allan=0
-          # fail if either fnttarg or ctan failed to build
+          # fail if fnttarg, check or doc failed (or fnttarg and ctan)
           [[ $clmfnttargret != 0 ]] && allan=1
-          [[ $clmcheckret != 0 || $clmdocret == 0 ]] && allan=1
+          [[ $clmcheckret != 0 && $clmctanret != 0 ]] && allan=1
+          [[ $clmdocret != 0 && $clmctanret != 0 ]] && allan=1
           # fail if both cache lookup and cache save failed 
           [[ $clmlookup != "true" && $clmcache != "true" ]] || allan=1
           if [ $releasing != "false" ]
           then
-            [[ $clmreleaseret != 0 || $clmctanret != 0 || $clmctanrel != 0 || $clmmanifestret != 0 ]] && allan=1
+            [[  $clmctanret == 0 || $clmctanrelret == 0 ]] || allan=1
+            [[ $clmreleaseret == 0 && $clmmanifestret == 0 ]] || allan=1
           fi
           exit $allan
 
@@ -238,9 +241,7 @@ jobs:
         env:
           checkret: ${{ steps.build.outputs.check_ret }}
           ctanret: ${{ steps.build.outputs.ctan_ret }}
-          ctan: ${{ env.CTAN }}
           ctanrelret: ${{ steps.build.outputs.ctanrel_ret }}
-          ctanrel: ${{ env.CTANREL }}
           docret: ${{ steps.build.outputs.doc_ret }}
           fnttargret: ${{ steps.build.outputs.fnttarg_ret }}
           manifestret: ${{ steps.build.outputs.manifest_ret }}
@@ -249,13 +250,14 @@ jobs:
         run: |
           allan=0
           # fail if either fnttarg or ctan failed to build
-          [[ $fnttargret != 0 ]] && allan=1
-          [[ $checkret != 0 || $docret != 0 ]] && allan=1
+          [[ $fnttargret == 0 ]] && allan=1
+          [[ $checkret == "" || $checkret == 0 ]] || allan=1
+          [[ $ctanret == "" || $ctanret == 0 ]] || allan=1
+          [[ $docret == "" || $docret == 0 ]] || allan=1
           if [ $releasing != "false" ]
           then
-            [[ $ctan != 0 || $ctanret == 0 ]] || allan=1
-            [[ $ctanrel != 0 || $ctanrelret == 0 ]] || allan=1
-            [[ $releaseret != 0 || $manifestret != 0 ]] && allan=1
+            [[ $ctanret == 0 || $ctanrelret == 0 ]] || allan=1
+            [[ $releaseret == 0 && $manifestret == 0 ]] || allan=1
           fi
           exit $allan
 
@@ -351,9 +353,7 @@ jobs:
         env:
           checkret: ${{ steps.build.outputs.check_ret }}
           ctanret: ${{ steps.build.outputs.ctan_ret }}
-          ctan: ${{ env.CTAN }}
           ctanrelret: ${{ steps.build.outputs.ctanrel_ret }}
-          ctanrel: ${{ env.CTANREL }}
           docret: ${{ steps.build.outputs.doc_ret }}
           fnttargret: ${{ steps.build.outputs.fnttarg_ret }}
           manifestret: ${{ steps.build.outputs.manifest_ret }}
@@ -364,12 +364,12 @@ jobs:
           allan=0
           # fail if either fnttarg or ctan failed to build
           [[ $pretarget == "" || $fnttargret == 0 ]] || allan=1
-          [[ $checkret != 0 || $docret != 0 ]] && allan=1
+          [[ $checkret == "" || $checkret == 0 ]] || allan=1
+          [[ $docret == "" || $docret == 0 ]] || allan=1
           if [ $releasing != "false" ]
           then
-            [[ $ctan != 0 || $ctanret == 0 ]] || allan=1
-            [[ $ctanrel != 0 || $ctanrelret == 0 ]] || allan=1
-            [[ $releaseret != 0 || $manifestret != 0 ]] && allan=1
+            [[ $ctanret == 0 || $ctanrelret == 0 ]] || allan=1
+            [[ $releaseret == 0 && $manifestret == 0 ]] || allan=1
           fi
           exit $allan
 
