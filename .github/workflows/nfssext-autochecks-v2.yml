@@ -111,11 +111,11 @@ jobs:
     needs: texlive-cache
     outputs:
       fnttarg_baskervaldadf_output: ${{ steps.save-outputs.outputs.build_ret_baskervaldadf }}
-      fnttarg_berenisadf_output: ${{ steps.save-outputs.outputs.build_ret_berenisadf }}
-      fnttarg_electrumadf_output: ${{ steps.save-outputs.outputs.build_ret_electrumadf }}
-      fnttarg_librisadf_output: ${{ steps.save-outputs.outputs.build_ret_librisadf }}
-      fnttarg_romandeadf_output: ${{ steps.save-outputs.outputs.build_ret_romandeadf }}
-      fnttarg_venturisadf_output: ${{ steps.save-outputs.outputs.build_ret_venturisadf }}
+      fnttarg_berenisadf_output: ${{ steps.save-outputs.outputs.fnttarg_ret_berenisadf }}
+      fnttarg_electrumadf_output: ${{ steps.save-outputs.outputs.fnttarg_ret_electrumadf }}
+      fnttarg_librisadf_output: ${{ steps.save-outputs.outputs.fnttarg_ret_librisadf }}
+      fnttarg_romandeadf_output: ${{ steps.save-outputs.outputs.fnttarg_ret_romandeadf }}
+      fnttarg_venturisadf_output: ${{ steps.save-outputs.outputs.fnttarg_ret_venturisadf }}
       ctan_baskervaldadf_output: ${{ steps.save-outputs.outputs.ctan_ret_baskervaldadf }}
       ctan_berenisadf_output: ${{ steps.save-outputs.outputs.ctan_ret_berenisadf }}
       ctan_electrumadf_output: ${{ steps.save-outputs.outputs.ctan_ret_electrumadf }}
@@ -172,7 +172,7 @@ jobs:
           CTAN_RET: ${{ steps.build.outputs.ctan_ret }}
         run: |
           module="${{ matrix.module }}"
-          echo -e "build_ret_${module}=${BUILD_RET}" >> "$GITHUB_OUTPUT" 
+          echo -e "fnttarg_ret_${module}=${BUILD_RET}" >> "$GITHUB_OUTPUT" 
           echo -e "ctan_ret_${module}=${CTAN_RET}" >> "$GITHUB_OUTPUT" 
           cat "$GITHUB_OUTPUT"
           allan=0
@@ -186,8 +186,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ texlive-cache, clm ]
     outputs:
-      fnttarg_adforn_output: ${{ steps.save-outputs.outputs.build_ret_adforn }}
-      fnttarg_adfsymbols_output: ${{ steps.save-outputs.outputs.build_ret_adfsymbols }}
+      fnttarg_adforn_output: ${{ steps.save-outputs.outputs.fnttarg_ret_adforn }}
+      fnttarg_adfsymbols_output: ${{ steps.save-outputs.outputs.fnttarg_ret_adfsymbols }}
       ctan_adforn_output: ${{ steps.save-outputs.outputs.ctan_ret_adforn }}
       ctan_adfsymbols_output: ${{ steps.save-outputs.outputs.ctan_ret_adfsymbols }}
       ctan_fontscripts_output: ${{ steps.save-outputs.outputs.ctan_ret_fontscripts }}
@@ -239,7 +239,7 @@ jobs:
         run: |
           module="${{ matrix.module }}"
           pretarget="${{ matrix.pre_target }}"
-          [[ "$pretarget" != "" ]] && echo -e "build_ret_${module}=${BUILD_RET}" >> "$GITHUB_OUTPUT" 
+          [[ "$pretarget" != "" ]] && echo -e "fnttarg_ret_${module}=${BUILD_RET}" >> "$GITHUB_OUTPUT" 
           echo -e "ctan_ret_${module}=${CTAN_RET}" >> "$GITHUB_OUTPUT" 
           cat "$GITHUB_OUTPUT"
           allan=0
