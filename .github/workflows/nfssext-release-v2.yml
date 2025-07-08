@@ -252,7 +252,7 @@ jobs:
           module="${{ matrix.module }}"
           echo -e "check_ret_${module}=$checkret\nctan_ret_${module}=$ctanret\nctanrel_ret_${module}=$ctanrelret\nfnttarg_ret_${module}=$fnttargret\nmanifest_ret_${module}=$manifestret\nrelease_ret_${module}=$releaseret\n" >> "$GITHUB_OUTPUT"
           # fail if either fnttarg or ctan failed to build
-          [[ $fnttargret == 0 ]] && allan=1
+          [[ $fnttargret == 0 ]] || allan=1
           [[ $checkret == "" || $checkret == 0 ]] || allan=1
           [[ $ctanret == "" || $ctanret == 0 ]] || allan=1
           [[ $docret == "" || $docret == 0 ]] || allan=1
