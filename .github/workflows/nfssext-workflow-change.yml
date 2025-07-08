@@ -1,0 +1,17 @@
+# nfssext-workflow-change.yml
+# this is necessary because github doesn't seem to support tags and paths filters disjunctively on pushes
+
+name: Check release workflow on change
+
+on:
+  push:
+    branches:
+      - '*'
+    paths:
+      - '.github/workflows/nfssext-release-v2.yml'
+      - '.github/actions/nfssext-autocheck-action/**'
+      - '.github/workflows/nfssext-workflow-change.yml'
+
+jobs:
+  workflow-release-check:
+    uses: ./.github/workflows/nfssext-release-v2.yml

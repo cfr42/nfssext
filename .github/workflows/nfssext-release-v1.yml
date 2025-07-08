@@ -9,7 +9,7 @@ name: Build release for nfssext v1
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push for any tag but only for the "main" branch
+  # Triggers the workflow on push for any tag and for all branches
   push:
     # tags: 
     #   - '*'
