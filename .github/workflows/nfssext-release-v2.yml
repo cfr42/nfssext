@@ -250,7 +250,7 @@ jobs:
         run: |
           allan=0
           module="${{ matrix.module }}"
-          echo -e "check_ret_${module}=$check\nctan_ret_${module}=$ctan\nctanrel_ret_${module}=$ctanrel\nfnttarg_ret_${module}=$fnttarg\nmanifest_ret_${module}=$manifest\nrelease_ret_${module}=$release\n" >> "$GITHUB_OUTPUTS"
+          echo -e "check_ret_${module}=$check\nctan_ret_${module}=$ctan\nctanrel_ret_${module}=$ctanrel\nfnttarg_ret_${module}=$fnttarg\nmanifest_ret_${module}=$manifest\nrelease_ret_${module}=$release\n" >> "$GITHUB_OUTPUT"
           # fail if either fnttarg or ctan failed to build
           [[ $fnttargret == 0 ]] && allan=1
           [[ $checkret == "" || $checkret == 0 ]] || allan=1
@@ -261,7 +261,7 @@ jobs:
             [[ $ctanret == 0 || $ctanrelret == 0 ]] || allan=1
             [[ $releaseret == 0 && $manifestret == 0 ]] || allan=1
           fi
-          cat "$GITHUB_OUTPUTS"
+          cat "$GITHUB_OUTPUT"
           exit $allan
 
   # addaswyd o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
@@ -366,7 +366,7 @@ jobs:
         run: |
           allan=0
           module="${{ matrix.module }}"
-          echo -e "check_ret_${module}=$check\nctan_ret_${module}=$ctan\nctanrel_ret_${module}=$ctanrel\nfnttarg_ret_${module}=$fnttarg\nmanifest_ret_${module}=$manifest\nrelease_ret_${module}=$release\n" >> "$GITHUB_OUTPUTS"
+          echo -e "check_ret_${module}=$check\nctan_ret_${module}=$ctan\nctanrel_ret_${module}=$ctanrel\nfnttarg_ret_${module}=$fnttarg\nmanifest_ret_${module}=$manifest\nrelease_ret_${module}=$release\n" >> "$GITHUB_OUTPUT"
           # fail if either fnttarg or ctan failed to build
           [[ $pretarget == "" || $fnttargret == 0 ]] || allan=1
           [[ $checkret == "" || $checkret == 0 ]] || allan=1
@@ -376,7 +376,7 @@ jobs:
             [[ $ctanret == 0 || $ctanrelret == 0 ]] || allan=1
             [[ $releaseret == 0 && $manifestret == 0 ]] || allan=1
           fi
-          cat "$GITHUB_OUTPUTS"
+          cat "$GITHUB_OUTPUT"
           exit $allan
 
   summary:
