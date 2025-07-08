@@ -1,5 +1,6 @@
 # nfssext-release-v2.yml
 # full l3build checking for packages in nfssext repo
+# note that some outputs are here for testing the action rather than for this particular workflow
 
 # https://github.com/latex3/hyperref/blob/adc36adbc3650db73329469b43afb0ee86e3c807/.github/workflows/main.yaml
 # https://github.com/josephwright/siunitx/blob/main/.github/workflows/main.yaml
@@ -135,48 +136,48 @@ jobs:
     runs-on: ubuntu-latest
     needs: texlive-cache
     outputs:
-      check_baskervaldadf_output: ${{ steps.build.outputs.check_ret_baskervaldadf }}
-      check_berenisadf_output: ${{ steps.build.outputs.check_ret_berenisadf }}
-      check_electrumadf_output: ${{ steps.build.outputs.check_ret_electrumadf }}
-      check_librisadf_output: ${{ steps.build.outputs.check_ret_librisadf }}
-      check_romandeadf_output: ${{ steps.build.outputs.check_ret_romandeadf }}
-      check_venturisadf_output: ${{ steps.build.outputs.check_ret_venturisadf }}
-      ctan_baskervaldadf_output: ${{ steps.build.outputs.ctan_ret_baskervaldadf }}
-      ctan_berenisadf_output: ${{ steps.build.outputs.ctan_ret_berenisadf }}
-      ctan_electrumadf_output: ${{ steps.build.outputs.ctan_ret_electrumadf }}
-      ctan_librisadf_output: ${{ steps.build.outputs.ctan_ret_librisadf }}
-      ctan_romandeadf_output: ${{ steps.build.outputs.ctan_ret_romandeadf }}
-      ctan_venturisadf_output: ${{ steps.build.outputs.ctan_ret_venturisadf }}
-      ctanrel_baskervaldadf_output: ${{ steps.build.outputs.ctanrel_ret_baskervaldadf }}
-      ctanrel_berenisadf_output: ${{ steps.build.outputs.ctanrel_ret_berenisadf }}
-      ctanrel_electrumadf_output: ${{ steps.build.outputs.ctanrel_ret_electrumadf }}
-      ctanrel_librisadf_output: ${{ steps.build.outputs.ctanrel_ret_librisadf }}
-      ctanrel_romandeadf_output: ${{ steps.build.outputs.ctanrel_ret_romandeadf }}
-      ctanrel_venturisadf_output: ${{ steps.build.outputs.ctanrel_ret_venturisadf }}
-      doc_baskervaldadf_output: ${{ steps.build.outputs.doc_ret_baskervaldadf }}
-      doc_berenisadf_output: ${{ steps.build.outputs.doc_ret_berenisadf }}
-      doc_electrumadf_output: ${{ steps.build.outputs.doc_ret_electrumadf }}
-      doc_librisadf_output: ${{ steps.build.outputs.doc_ret_librisadf }}
-      doc_romandeadf_output: ${{ steps.build.outputs.doc_ret_romandeadf }}
-      doc_venturisadf_output: ${{ steps.build.outputs.doc_ret_venturisadf }}
-      fnttarg_baskervaldadf_output: ${{ steps.build.outputs.build_ret_baskervaldadf }}
-      fnttarg_berenisadf_output: ${{ steps.build.outputs.build_ret_berenisadf }}
-      fnttarg_electrumadf_output: ${{ steps.build.outputs.build_ret_electrumadf }}
-      fnttarg_librisadf_output: ${{ steps.build.outputs.build_ret_librisadf }}
-      fnttarg_romandeadf_output: ${{ steps.build.outputs.build_ret_romandeadf }}
-      fnttarg_venturisadf_output: ${{ steps.build.outputs.build_ret_venturisadf }}
-      manifest_baskervaldadf_output: ${{ steps.build.outputs.manifest_ret_baskervaldadf }}
-      manifest_berenisadf_output: ${{ steps.build.outputs.manifest_ret_berenisadf }}
-      manifest_electrumadf_output: ${{ steps.build.outputs.manifest_ret_electrumadf }}
-      manifest_librisadf_output: ${{ steps.build.outputs.manifest_ret_librisadf }}
-      manifest_romandeadf_output: ${{ steps.build.outputs.manifest_ret_romandeadf }}
-      manifest_venturisadf_output: ${{ steps.build.outputs.manifest_ret_venturisadf }}
-      release_baskervaldadf_output: ${{ steps.build.outputs.release_ret_baskervaldadf }}
-      release_berenisadf_output: ${{ steps.build.outputs.release_ret_berenisadf }}
-      release_electrumadf_output: ${{ steps.build.outputs.release_ret_electrumadf }}
-      release_librisadf_output: ${{ steps.build.outputs.release_ret_librisadf }}
-      release_romandeadf_output: ${{ steps.build.outputs.release_ret_romandeadf }}
-      release_venturisadf_output: ${{ steps.build.outputs.release_ret_venturisadf }}
+      check_baskervaldadf_output: ${{ steps.exit.outputs.check_ret_baskervaldadf }}
+      check_berenisadf_output: ${{ steps.exit.outputs.check_ret_berenisadf }}
+      check_electrumadf_output: ${{ steps.exit.outputs.check_ret_electrumadf }}
+      check_librisadf_output: ${{ steps.exit.outputs.check_ret_librisadf }}
+      check_romandeadf_output: ${{ steps.exit.outputs.check_ret_romandeadf }}
+      check_venturisadf_output: ${{ steps.exit.outputs.check_ret_venturisadf }}
+      ctan_baskervaldadf_output: ${{ steps.exit.outputs.ctan_ret_baskervaldadf }}
+      ctan_berenisadf_output: ${{ steps.exit.outputs.ctan_ret_berenisadf }}
+      ctan_electrumadf_output: ${{ steps.exit.outputs.ctan_ret_electrumadf }}
+      ctan_librisadf_output: ${{ steps.exit.outputs.ctan_ret_librisadf }}
+      ctan_romandeadf_output: ${{ steps.exit.outputs.ctan_ret_romandeadf }}
+      ctan_venturisadf_output: ${{ steps.exit.outputs.ctan_ret_venturisadf }}
+      ctanrel_baskervaldadf_output: ${{ steps.exit.outputs.ctanrel_ret_baskervaldadf }}
+      ctanrel_berenisadf_output: ${{ steps.exit.outputs.ctanrel_ret_berenisadf }}
+      ctanrel_electrumadf_output: ${{ steps.exit.outputs.ctanrel_ret_electrumadf }}
+      ctanrel_librisadf_output: ${{ steps.exit.outputs.ctanrel_ret_librisadf }}
+      ctanrel_romandeadf_output: ${{ steps.exit.outputs.ctanrel_ret_romandeadf }}
+      ctanrel_venturisadf_output: ${{ steps.exit.outputs.ctanrel_ret_venturisadf }}
+      doc_baskervaldadf_output: ${{ steps.exit.outputs.doc_ret_baskervaldadf }}
+      doc_berenisadf_output: ${{ steps.exit.outputs.doc_ret_berenisadf }}
+      doc_electrumadf_output: ${{ steps.exit.outputs.doc_ret_electrumadf }}
+      doc_librisadf_output: ${{ steps.exit.outputs.doc_ret_librisadf }}
+      doc_romandeadf_output: ${{ steps.exit.outputs.doc_ret_romandeadf }}
+      doc_venturisadf_output: ${{ steps.exit.outputs.doc_ret_venturisadf }}
+      fnttarg_baskervaldadf_output: ${{ steps.exit.outputs.fnttarg_ret_baskervaldadf }}
+      fnttarg_berenisadf_output: ${{ steps.exit.outputs.fnttarg_ret_berenisadf }}
+      fnttarg_electrumadf_output: ${{ steps.exit.outputs.fnttarg_ret_electrumadf }}
+      fnttarg_librisadf_output: ${{ steps.exit.outputs.fnttarg_ret_librisadf }}
+      fnttarg_romandeadf_output: ${{ steps.exit.outputs.fnttarg_ret_romandeadf }}
+      fnttarg_venturisadf_output: ${{ steps.exit.outputs.fnttarg_ret_venturisadf }}
+      manifest_baskervaldadf_output: ${{ steps.exit.outputs.manifest_ret_baskervaldadf }}
+      manifest_berenisadf_output: ${{ steps.exit.outputs.manifest_ret_berenisadf }}
+      manifest_electrumadf_output: ${{ steps.exit.outputs.manifest_ret_electrumadf }}
+      manifest_librisadf_output: ${{ steps.exit.outputs.manifest_ret_librisadf }}
+      manifest_romandeadf_output: ${{ steps.exit.outputs.manifest_ret_romandeadf }}
+      manifest_venturisadf_output: ${{ steps.exit.outputs.manifest_ret_venturisadf }}
+      release_baskervaldadf_output: ${{ steps.exit.outputs.release_ret_baskervaldadf }}
+      release_berenisadf_output: ${{ steps.exit.outputs.release_ret_berenisadf }}
+      release_electrumadf_output: ${{ steps.exit.outputs.release_ret_electrumadf }}
+      release_librisadf_output: ${{ steps.exit.outputs.release_ret_librisadf }}
+      release_romandeadf_output: ${{ steps.exit.outputs.release_ret_romandeadf }}
+      release_venturisadf_output: ${{ steps.exit.outputs.release_ret_venturisadf }}
     # don't abandon other builds if one module fails
     # continue-on-error: true
     strategy:
@@ -234,7 +235,7 @@ jobs:
           tds: true
           texlive_cache_key: ${{ needs.texlive-cache.outputs.cache_key }}
           working_directory: ${{ matrix.working_directory }}
-      - name: Generate exit code
+      - name: Record results and generate exit code
         if: ${{ !cancelled() }}
         id: exit
         shell: bash
@@ -249,8 +250,10 @@ jobs:
           releasing: ${{ env.RELEASING }}
         run: |
           allan=0
+          module="${{ matrix.module }}"
+          echo -e "check_ret_${module}=$check\nctan_ret_${module}=$ctan\nctanrel_ret_${module}=$ctanrel\nfnttarg_ret_${module}=$fnttarg\nmanifest_ret_${module}=$manifest\nrelease_ret_${module}=$release\n" >> "$GITHUB_OUTPUTS"
           # fail if either fnttarg or ctan failed to build
-          [[ $fnttargret == 0 ]] || allan=1
+          [[ $fnttargret == 0 ]] && allan=1
           [[ $checkret == "" || $checkret == 0 ]] || allan=1
           [[ $ctanret == "" || $ctanret == 0 ]] || allan=1
           [[ $docret == "" || $docret == 0 ]] || allan=1
@@ -259,6 +262,7 @@ jobs:
             [[ $ctanret == 0 || $ctanrelret == 0 ]] || allan=1
             [[ $releaseret == 0 && $manifestret == 0 ]] || allan=1
           fi
+          cat "$GITHUB_OUTPUTS"
           exit $allan
 
   # addaswyd o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
@@ -270,32 +274,32 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ texlive-cache, clm ]
     outputs:
-      check_adforn_output: ${{ steps.build.outputs.check_ret_adforn }}
-      check_adfsymbols_output: ${{ steps.build.outputs.check_ret_adfsymbols }}
-      check_fontscripts_output: ${{ steps.build.outputs.check_ret_fontscripts }}
-      check_nfssext_cfr_output: ${{ steps.build.outputs.check_ret_nfssext-cfr }}
-      ctan_adforn_output: ${{ steps.build.outputs.ctan_ret_adforn }}
-      ctan_adfsymbols_output: ${{ steps.build.outputs.ctan_ret_adfsymbols }}
-      ctan_fontscripts_output: ${{ steps.build.outputs.ctan_ret_fontscripts }}
-      ctan_nfssext_cfr_output: ${{ steps.build.outputs.ctan_ret_nfssext-cfr }}
-      ctanrel_adforn_output: ${{ steps.build.outputs.ctanrel_ret_adforn }}
-      ctanrel_adfsymbols_output: ${{ steps.build.outputs.ctanrel_ret_adfsymbols }}
-      ctanrel_fontscripts_output: ${{ steps.build.outputs.ctanrel_ret_fontscripts }}
-      ctanrel_nfssext_cfr_output: ${{ steps.build.outputs.ctanrel_ret_nfssext-cfr }}
-      doc_adforn_output: ${{ steps.build.outputs.doc_ret_adforn }}
-      doc_adfsymbols_output: ${{ steps.build.outputs.doc_ret_adfsymbols }}
-      doc_fontscripts_output: ${{ steps.build.outputs.doc_ret_fontscripts }}
-      doc_nfssext_cfr_output: ${{ steps.build.outputs.doc_ret_nfssext-cfr }}
-      fnttarg_adforn_output: ${{ steps.build.outputs.build_ret_adforn }}
-      fnttarg_adfsymbols_output: ${{ steps.build.outputs.build_ret_adfsymbols }}
-      manifest_adforn_output: ${{ steps.build.outputs.manifest_ret_adforn }}
-      manifest_adfsymbols_output: ${{ steps.build.outputs.manifest_ret_adfsymbols }}
-      manifest_fontscripts_output: ${{ steps.build.outputs.manifest_ret_fontscripts }}
-      manifest_nfssext_cfr_output: ${{ steps.build.outputs.manifest_ret_nfssext-cfr }}
-      release_adforn_output: ${{ steps.build.outputs.release_ret_adforn }}
-      release_adfsymbols_output: ${{ steps.build.outputs.release_ret_adfsymbols }}
-      release_fontscripts_output: ${{ steps.build.outputs.release_ret_fontscripts }}
-      release_nfssext_cfr_output: ${{ steps.build.outputs.release_ret_nfssext-cfr }}
+      check_adforn_output: ${{ steps.exit.outputs.check_ret_adforn }}
+      check_adfsymbols_output: ${{ steps.exit.outputs.check_ret_adfsymbols }}
+      check_fontscripts_output: ${{ steps.exit.outputs.check_ret_fontscripts }}
+      check_nfssext_cfr_output: ${{ steps.exit.outputs.check_ret_nfssext-cfr }}
+      ctan_adforn_output: ${{ steps.exit.outputs.ctan_ret_adforn }}
+      ctan_adfsymbols_output: ${{ steps.exit.outputs.ctan_ret_adfsymbols }}
+      ctan_fontscripts_output: ${{ steps.exit.outputs.ctan_ret_fontscripts }}
+      ctan_nfssext_cfr_output: ${{ steps.exit.outputs.ctan_ret_nfssext-cfr }}
+      ctanrel_adforn_output: ${{ steps.exit.outputs.ctanrel_ret_adforn }}
+      ctanrel_adfsymbols_output: ${{ steps.exit.outputs.ctanrel_ret_adfsymbols }}
+      ctanrel_fontscripts_output: ${{ steps.exit.outputs.ctanrel_ret_fontscripts }}
+      ctanrel_nfssext_cfr_output: ${{ steps.exit.outputs.ctanrel_ret_nfssext-cfr }}
+      doc_adforn_output: ${{ steps.exit.outputs.doc_ret_adforn }}
+      doc_adfsymbols_output: ${{ steps.exit.outputs.doc_ret_adfsymbols }}
+      doc_fontscripts_output: ${{ steps.exit.outputs.doc_ret_fontscripts }}
+      doc_nfssext_cfr_output: ${{ steps.exit.outputs.doc_ret_nfssext-cfr }}
+      fnttarg_adforn_output: ${{ steps.exit.outputs.build_ret_adforn }}
+      fnttarg_adfsymbols_output: ${{ steps.exit.outputs.build_ret_adfsymbols }}
+      manifest_adforn_output: ${{ steps.exit.outputs.manifest_ret_adforn }}
+      manifest_adfsymbols_output: ${{ steps.exit.outputs.manifest_ret_adfsymbols }}
+      manifest_fontscripts_output: ${{ steps.exit.outputs.manifest_ret_fontscripts }}
+      manifest_nfssext_cfr_output: ${{ steps.exit.outputs.manifest_ret_nfssext-cfr }}
+      release_adforn_output: ${{ steps.exit.outputs.release_ret_adforn }}
+      release_adfsymbols_output: ${{ steps.exit.outputs.release_ret_adfsymbols }}
+      release_fontscripts_output: ${{ steps.exit.outputs.release_ret_fontscripts }}
+      release_nfssext_cfr_output: ${{ steps.exit.outputs.release_ret_nfssext-cfr }}
     strategy:
       # fail immediately if releasing
       fail-fast: true
@@ -362,6 +366,8 @@ jobs:
           releasing: ${{ env.RELEASING }}
         run: |
           allan=0
+          module="${{ matrix.module }}"
+          echo -e "check_ret_${module}=$check\nctan_ret_${module}=$ctan\nctanrel_ret_${module}=$ctanrel\nfnttarg_ret_${module}=$fnttarg\nmanifest_ret_${module}=$manifest\nrelease_ret_${module}=$release\n" >> "$GITHUB_OUTPUTS"
           # fail if either fnttarg or ctan failed to build
           [[ $pretarget == "" || $fnttargret == 0 ]] || allan=1
           [[ $checkret == "" || $checkret == 0 ]] || allan=1
@@ -371,6 +377,7 @@ jobs:
             [[ $ctanret == 0 || $ctanrelret == 0 ]] || allan=1
             [[ $releaseret == 0 && $manifestret == 0 ]] || allan=1
           fi
+          cat "$GITHUB_OUTPUTS"
           exit $allan
 
   summary:
