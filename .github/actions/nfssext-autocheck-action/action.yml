@@ -64,7 +64,7 @@ inputs:
 outputs:
   check_ret:
     description: 'l3build check result'
-    value: ${{ steps.check.outputs.CHECK_RET }}
+    value: ${{ steps.check.outputs.CHECK_RET || steps.ctan.outputs.CHECK_RET }}
   ctan_ret:
     description: 'l3build ctan result'
     value: ${{ steps.ctan.outputs.CTAN_RET }}
@@ -73,13 +73,13 @@ outputs:
     value: ${{ steps.ctan-rel.outputs.CTANREL_RET }}
   doc_ret:
     description: 'l3build doc result'
-    value: ${{ steps.doc.outputs.DOC_RET }}
+    value: ${{ steps.doc.outputs.DOC_RET || steps.ctan.outputs.DOC_RET }}
   fnttarg_ret:
     description: 'l3build fnttarg result'
     value: ${{ steps.fnttarg.outputs.BUILD_RET }}
   manifest_ret:
     description: 'l3build manifest result'
-    value: ${{ steps.ctanrel.outputs.MAN_RET }}
+    value: ${{ steps.ctan.outputs.MAN_RET || steps.ctanrel.outputs.MAN_RET }}
   release_ret:
     description: 'l3build release result'
     value: ${{ steps.release.outputs.RELEASE_RET }}
