@@ -250,7 +250,7 @@ jobs:
         run: |
           allan=0
           module="${{ matrix.module }}"
-          echo -e "check_ret_${module}=$check\nctan_ret_${module}=$ctan\nctanrel_ret_${module}=$ctanrel\nfnttarg_ret_${module}=$fnttarg\nmanifest_ret_${module}=$manifest\nrelease_ret_${module}=$release\n" >> "$GITHUB_OUTPUT"
+          echo -e "check_ret_${module}=$checkret\nctan_ret_${module}=$ctanret\nctanrel_ret_${module}=$ctanrelret\nfnttarg_ret_${module}=$fnttargret\nmanifest_ret_${module}=$manifestret\nrelease_ret_${module}=$releaseret\n" >> "$GITHUB_OUTPUT"
           # fail if either fnttarg or ctan failed to build
           [[ $fnttargret == 0 ]] && allan=1
           [[ $checkret == "" || $checkret == 0 ]] || allan=1
@@ -366,7 +366,7 @@ jobs:
         run: |
           allan=0
           module="${{ matrix.module }}"
-          echo -e "check_ret_${module}=$check\nctan_ret_${module}=$ctan\nctanrel_ret_${module}=$ctanrel\nfnttarg_ret_${module}=$fnttarg\nmanifest_ret_${module}=$manifest\nrelease_ret_${module}=$release\n" >> "$GITHUB_OUTPUT"
+          echo -e "check_ret_${module}=$checkret\nctan_ret_${module}=$ctanret\nctanrel_ret_${module}=$ctanrelret\nfnttarg_ret_${module}=$fnttargret\nmanifest_ret_${module}=$manifestret\nrelease_ret_${module}=$releaseret\n" >> "$GITHUB_OUTPUT"
           # fail if either fnttarg or ctan failed to build
           [[ $pretarget == "" || $fnttargret == 0 ]] || allan=1
           [[ $checkret == "" || $checkret == 0 ]] || allan=1
