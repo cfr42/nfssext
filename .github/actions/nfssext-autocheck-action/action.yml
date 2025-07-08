@@ -196,9 +196,9 @@ runs:
         if [ $manifest == 0 ] 
         then
           l3build manifest || manres=1
+          echo -e "MAN_RET=${manres}" >> "$GITHUB_ENV"
+          echo -e "MAN_RET=${manres}" >> "$GITHUB_OUTPUT"
         fi
-        echo -e "MAN_RET=${manres}" >> "$GITHUB_ENV"
-        echo -e "MAN_RET=${manres}" >> "$GITHUB_OUTPUT"
         cat "$GITHUB_OUTPUT"
         cat "$GITHUB_ENV"
         exit $allan
@@ -239,9 +239,9 @@ runs:
         manres=0
         if [ $manifest == 0 ] then
           l3build manifest || manres=1
+          echo -e "MAN_RET=${manres}" >> "$GITHUB_ENV"
+          echo -e "MAN_RET=${manres}" >> "$GITHUB_OUTPUT"
         fi
-        echo -e "MAN_RET=${manres}" >> "$GITHUB_ENV"
-        echo -e "MAN_RET=${manres}" >> "$GITHUB_OUTPUT"
         cat "$GITHUB_OUTPUT"
         cat "$GITHUB_ENV"
         exit $allan

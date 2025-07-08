@@ -44,8 +44,10 @@ jobs:
     # nfssext-cfr uses cfr-lm (though it falls back if built first)
     # cfr-lm uses nfssext-cfr but there's nothing to build
     outputs:
+      check_clm_output: ${{ steps.build-clm.outputs.check_ret }}
       ctan_clm_output: ${{ steps.build-clm.outputs.ctan_ret }}
       ctanrel_clm_output: ${{ steps.build-clm.outputs.ctanrel_ret }}
+      doc_clm_output: ${{ steps.build-clm.outputs.doc_ret }}
       fnttarg_clm_output: ${{ steps.build-clm.outputs.fnttarg_ret }}
       manifest_clm_output: ${{ steps.build-clm.outputs.manifest_ret }}
       release_clm_output: ${{ steps.build-clm.outputs.release_ret }}
@@ -83,7 +85,7 @@ jobs:
           manifest: true
           module: clm
           pre_target: fnttarg
-          release: true
+          release: ${{ env.releasing }}
           tds: true
           texlive_cache_key: ${{ needs.texlive-cache.outputs.cache_key }}
           working_directory: cfr-lm
@@ -101,63 +103,28 @@ jobs:
         shell: bash
         # for release, we only continue if clm ctan built - we don't keep going provided only that fnttarg succeeded
         env:
-          clmfnttargret: ${{ steps.build-clm.outputs.fnttarg_ret }}
+          clmcheckret: ${{ steps.build-clm.outputs.check_ret }}
           clmctanret: ${{ steps.build-clm.outputs.ctan_ret }}
+          clmctanrelret: ${{ steps.build-clm.outputs.ctanrel_ret }}
+          clmdocret: ${{ steps.build-clm.outputs.doc_ret }}
+          clmfnttargret: ${{ steps.build-clm.outputs.fnttarg_ret }}
+          clmmanifestret: ${{ steps.build-clm.outputs.manifest_ret }}
+          clmreleaseret: ${{ steps.build-clm.outputs.release_ret }}
+          releasing: ${{ env.RELEASING }}
           clmlookup: ${{ steps.clm-lookup.outputs.cache-hit }}
           clmcache: ${{ steps.clm-cache.outcome }}
         run: |
           allan=0
           # fail if either fnttarg or ctan failed to build
-          [[ $clmfnttargret == 0 && $clmctanret == 0 ]] || allan=1
+          [[ $clmfnttargret != 0 ]] && allan=1
+          [[ $clmcheckret != 0 || $clmdocret == 0 ]] && allan=1
           # fail if both cache lookup and cache save failed 
-          [[ $clmlookup != 'true' && $clmcache != 'true' ]] || allan=1
+          [[ $clmlookup != "true" && $clmcache != "true" ]] || allan=1
+          if [ $releasing != "false" ]
+          then
+            [[ $clmreleaseret != 0 || $clmctanret != 0 || $clmctanrel != 0 || $clmmanifestret != 0 ]] && allan=1
+          fi
           exit $allan
-
-        # - name: Create manifest
-        # # only for release if build succeeded
-        #   if: ${{ (contains(github.ref_name, 'cfr-lm-') || contains(github.ref_name, 'clm-')) && (steps.fnttarg-clm.outputs.BUILD_RET) }}
-        #   working-directory: cfr-lm
-        #   run: l3build check && l3build doc && l3build manifest
-        # - name: Run l3build ctan 
-        # # build whether releasing or not i osgoi problemau annisgwyl
-        #   if: ${{ !cancelled() && (steps.fnttarg-clm.outputs.BUILD_RET) }}
-        #   working-directory: cfr-lm
-        #   id: ctan-clm
-        #   run: |
-        #     (l3build ctan && echo -e "CTAN_RET=0\nctan_ret_clm=0" >> "$GITHUB_OUTPUT") || echo -e "CTAN_RET=1\nctan_ret_clm=1" >> "$GITHUB_OUTPUT"
-        #     cat "$GITHUB_OUTPUT"
-        # need clm available for nfssext-needy, but not sure how to do this without caching?
-        # - name: Run l3build install 
-        # # run only if ctan succeeded
-        #   if: ${{ !cancelled() && (steps.ctan-clm.outputs.CTAN_RET) }}
-        #   working-directory: cfr-lm
-        #   id: install-clm
-        #   run: |
-        #     (l3build install && echo "INSTALL_RET=0" >> "$GITHUB_OUTPUT") || echo "INSTALL_RET=1" >> "$GITHUB_OUTPUT"
-        #     cat "$GITHUB_OUTPUT"
-        # - name: Update map
-        # # run only if install succeeded
-        #   if: ${{ !cancelled() && (steps.install-clm.outputs.INSTALL_RET) }}
-        #   id: updmap-clm
-        #   run: |
-        #     (updmap --user --enable Map=clm.map && echo "UPDMAP_RET=0" >> "$GITHUB_OUTPUT") || echo "UPDMAP_RET=1" >> "GITHUB_OUTPUT"
-        #     cat "$GITHUB_OUTPUT"
-        # - name: List zip
-        # # list archive only if releasing clm and ctan build succeeded
-        #   if: ${{ (contains(github.ref_name, 'cfr-lm-') || contains(github.ref_name, 'clm-')) && (steps.ctan-clm.outputs.CTAN_RET) }}
-        #   run: |
-        #     unzip -l cfr-lm/cfr-lm-ctan.zip
-        # - name: Archive zip
-        # # archive only if releasing clm and ctan build succeeded
-        #   if: ${{ (contains(github.ref_name, 'cfr-lm-') || contains(github.ref_name, 'clm-')) && (steps.ctan-clm.outputs.CTAN_RET) }}
-        #   # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
-        #   uses: actions/upload-artifact@v4
-        #   with:
-        #     name: ctan-clm-${{ github.ref_name }}
-        #     path: cfr-lm/*.zip
-        #     # Decide how long to keep the test output artefact:
-        #     retention-days: 30
-
 
   # addaswyd o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
   # these do not depend on clm
@@ -166,18 +133,48 @@ jobs:
     runs-on: ubuntu-latest
     needs: texlive-cache
     outputs:
-      fnttarg_baskervaldadf_output: ${{ steps.fnttarg.outputs.build_ret_baskervaldadf }}
-      fnttarg_berenisadf_output: ${{ steps.fnttarg.outputs.build_ret_berenisadf }}
-      fnttarg_electrumadf_output: ${{ steps.fnttarg.outputs.build_ret_electrumadf }}
-      fnttarg_librisadf_output: ${{ steps.fnttarg.outputs.build_ret_librisadf }}
-      fnttarg_romandeadf_output: ${{ steps.fnttarg.outputs.build_ret_romandeadf }}
-      fnttarg_venturisadf_output: ${{ steps.fnttarg.outputs.build_ret_venturisadf }}
-      ctan_baskervaldadf_output: ${{ steps.ctan.outputs.ctan_ret_baskervaldadf }}
-      ctan_berenisadf_output: ${{ steps.ctan.outputs.ctan_ret_berenisadf }}
-      ctan_electrumadf_output: ${{ steps.ctan.outputs.ctan_ret_electrumadf }}
-      ctan_librisadf_output: ${{ steps.ctan.outputs.ctan_ret_librisadf }}
-      ctan_romandeadf_output: ${{ steps.ctan.outputs.ctan_ret_romandeadf }}
-      ctan_venturisadf_output: ${{ steps.ctan.outputs.ctan_ret_venturisadf }}
+      check_baskervaldadf_output: ${{ steps.build.outputs.check_ret_baskervaldadf }}
+      check_berenisadf_output: ${{ steps.build.outputs.check_ret_berenisadf }}
+      check_electrumadf_output: ${{ steps.build.outputs.check_ret_electrumadf }}
+      check_librisadf_output: ${{ steps.build.outputs.check_ret_librisadf }}
+      check_romandeadf_output: ${{ steps.build.outputs.check_ret_romandeadf }}
+      check_venturisadf_output: ${{ steps.build.outputs.check_ret_venturisadf }}
+      ctan_baskervaldadf_output: ${{ steps.build.outputs.ctan_ret_baskervaldadf }}
+      ctan_berenisadf_output: ${{ steps.build.outputs.ctan_ret_berenisadf }}
+      ctan_electrumadf_output: ${{ steps.build.outputs.ctan_ret_electrumadf }}
+      ctan_librisadf_output: ${{ steps.build.outputs.ctan_ret_librisadf }}
+      ctan_romandeadf_output: ${{ steps.build.outputs.ctan_ret_romandeadf }}
+      ctan_venturisadf_output: ${{ steps.build.outputs.ctan_ret_venturisadf }}
+      ctanrel_baskervaldadf_output: ${{ steps.build.outputs.ctanrel_ret_baskervaldadf }}
+      ctanrel_berenisadf_output: ${{ steps.build.outputs.ctanrel_ret_berenisadf }}
+      ctanrel_electrumadf_output: ${{ steps.build.outputs.ctanrel_ret_electrumadf }}
+      ctanrel_librisadf_output: ${{ steps.build.outputs.ctanrel_ret_librisadf }}
+      ctanrel_romandeadf_output: ${{ steps.build.outputs.ctanrel_ret_romandeadf }}
+      ctanrel_venturisadf_output: ${{ steps.build.outputs.ctanrel_ret_venturisadf }}
+      doc_baskervaldadf_output: ${{ steps.build.outputs.doc_ret_baskervaldadf }}
+      doc_berenisadf_output: ${{ steps.build.outputs.doc_ret_berenisadf }}
+      doc_electrumadf_output: ${{ steps.build.outputs.doc_ret_electrumadf }}
+      doc_librisadf_output: ${{ steps.build.outputs.doc_ret_librisadf }}
+      doc_romandeadf_output: ${{ steps.build.outputs.doc_ret_romandeadf }}
+      doc_venturisadf_output: ${{ steps.build.outputs.doc_ret_venturisadf }}
+      fnttarg_baskervaldadf_output: ${{ steps.build.outputs.build_ret_baskervaldadf }}
+      fnttarg_berenisadf_output: ${{ steps.build.outputs.build_ret_berenisadf }}
+      fnttarg_electrumadf_output: ${{ steps.build.outputs.build_ret_electrumadf }}
+      fnttarg_librisadf_output: ${{ steps.build.outputs.build_ret_librisadf }}
+      fnttarg_romandeadf_output: ${{ steps.build.outputs.build_ret_romandeadf }}
+      fnttarg_venturisadf_output: ${{ steps.build.outputs.build_ret_venturisadf }}
+      manifest_baskervaldadf_output: ${{ steps.build.outputs.manifest_ret_baskervaldadf }}
+      manifest_berenisadf_output: ${{ steps.build.outputs.manifest_ret_berenisadf }}
+      manifest_electrumadf_output: ${{ steps.build.outputs.manifest_ret_electrumadf }}
+      manifest_librisadf_output: ${{ steps.build.outputs.manifest_ret_librisadf }}
+      manifest_romandeadf_output: ${{ steps.build.outputs.manifest_ret_romandeadf }}
+      manifest_venturisadf_output: ${{ steps.build.outputs.manifest_ret_venturisadf }}
+      release_baskervaldadf_output: ${{ steps.build.outputs.release_ret_baskervaldadf }}
+      release_berenisadf_output: ${{ steps.build.outputs.release_ret_berenisadf }}
+      release_electrumadf_output: ${{ steps.build.outputs.release_ret_electrumadf }}
+      release_librisadf_output: ${{ steps.build.outputs.release_ret_librisadf }}
+      release_romandeadf_output: ${{ steps.build.outputs.release_ret_romandeadf }}
+      release_venturisadf_output: ${{ steps.build.outputs.release_ret_venturisadf }}
     # don't abandon other builds if one module fails
     # continue-on-error: true
     strategy:
@@ -190,107 +187,78 @@ jobs:
           - module: baskervaldadf
             working_directory: arkandis/baskervaldadf
             pre_target: fnttarg
-            fnttarg_id: fnttarg-baskervaldadf
           - module: berenisadf
             working_directory: arkandis/berenisadf
             # berenis needs make, ff
             extra_packages: make fontforge
             pre_target: fnttarg
-            fnttarg_id: fnttarg-berenisadf
           - module: electrumadf
             working_directory: arkandis/electrumadf
             pre_target: fnttarg
-            fnttarg_id: fnttarg-electrumadf
           - module: librisadf
             working_directory: arkandis/librisadf
             pre_target: fnttarg
-            fnttarg_id: fnttarg-librisadf
           - module: romandeadf
             working_directory: arkandis/romandeadf
             pre_target: fnttarg
-            fnttarg_id: fnttarg-romandeadf
           - module: venturisadf
             working_directory: arkandis/venturisadf
             pre_target: fnttarg
-            fnttarg_id: fnttarg-venturisadf
     name: "Test build: ${{ matrix.module }}"
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repo
         uses: actions/checkout@v4
-      # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
-      - name: Update system 
-        run: sudo apt-get update
-      - name: Install additional packages if needed
-        if: ${{ matrix.extra_packages }}
-        run: sudo apt-get install ${{ matrix.extra_packages }}
-      - name: Restore TeX Live from cache
-        uses: actions/cache/restore@v4
-        with:
-          path: ~/texlive
-          key: ${{ needs.texlive-cache.outputs.cache_key }}
-          fail-on-cache-miss: true
-        # oes angen hwn?
-        # oes!
-      - name: Set PATH
-        run: echo $HOME/texlive/bin/x86_64-linux >> $GITHUB_PATH
-      - name: Run l3build fnttarg
-        if: ${{ matrix.pre_target }}
-        working-directory: ${{ matrix.working_directory }}
-        id: fnttarg
-        run: |
-          module="${{ matrix.module }}"
-          (l3build fnttarg && echo -e "BUILD_RET=0\nbuild_ret_${module}=0" >> "$GITHUB_OUTPUT") || echo -e "BUILD_RET=1\nbuild_ret_${module}=1" >> "$GITHUB_OUTPUT"
-          cat "$GITHUB_OUTPUT"
-      - name: Archive failed build output
-      # run iff previous step failed
-        if: ${{ !cancelled() && (matrix.pre_target) && !(steps.fnttarg.outputs.BUILD_RET) }}
-      # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
-        uses: actions/upload-artifact@v4
-        with:
-          name: buildfiles-${{ matrix.module }}
-          path: build/fnt/*.log
-          # Decide how long to keep the test output artefact:
-          retention-days: 7
-      - name: Create manifest
-      # only if releasing and build succeeded 
-        if: ${{ contains(github.ref_name, matrix.module) && ( !(matrix.pre_target) || (steps.fnttarg.outputs.BUILD_RET) ) }}
-        working-directory: ${{ matrix.working_directory }}
-        run: l3build check && l3build doc && l3build manifest
-      - name: Run l3build
-      # build only if earlier build succeeded
-        if: ${{ (steps.fnttarg.outputs.BUILD_RET) || !(matrix.pre_target) }}
-        working-directory: ${{ matrix.working_directory }}
-        id: ctan
-        run: |
-          module="${{ matrix.module }}"
-          (l3build ctan && echo -e "CTAN_RET=0\nctan_ret_${module}=0" >> "$GITHUB_OUTPUT") || echo -e "CTAN_RET=1\nctan_ret_${module}=1" >> "$GITHUB_OUTPUT"
-          cat "$GITHUB_OUTPUT"
-      - name: Archive failed test output
-      # run even if previous step failed
-        if: ${{ !cancelled() }}
-        uses: zauguin/l3build-failure-artifacts@v1
-        with:
-          name: testfiles-${{ matrix.module }}
-          # Decide how long to keep the test output artefact:
-          retention-days: 7
-      - name: List zip
-      # archive only if releasing and build success
-        if: ${{ contains(github.ref_name, matrix.module) && ( !(matrix.pre_target) || (steps.ctan.outputs.CTAN_RET)) }}
+      # - name: Set PATH
+      #   run: echo $HOME/texlive/bin/x86_64-linux >> $GITHUB_PATH
+      - name: Recipe
+        id: recipe
+        shell: bash
         env:
-          modname: ${{ matrix.module }}
+          isrelease: ${{ contains(github.ref_name, matrix.module) }}
         run: |
-          unzip -l ${modname}/${modname}-ctan.zip
-      - name: Archive release zip
-      # archive only if releasing and build success
-        if: ${{ contains(github.ref_name, matrix.module) && ( !(matrix.pre_target) || (steps.ctan.outputs.CTAN_RET)) }}
-        # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
-        uses: actions/upload-artifact@v4
+          releasing="false"
+          [[ "$isrelease" == "true" || $isrelease == 0 ]] && releasing="true"
+          echo -e "RELEASING=${releasing}" >> "$GITHUB_ENV"
+          cat "$GITHUB_ENV"
+      - name: Build fnttarg and ctan
+        id: build 
+        uses: ./.github/actions/nfssext-autocheck-action
         with:
-          name: ctan-${{ matrix.module }}-${{ github.ref_name }}
-          path: ${{ matrix.working_directory }}/*.zip
-          # Decide how long to keep the test output artefact:
-          retention-days: 30
+          extra_packages: ${{ matrix.extra_packages }}
+          manifest: true
+          module: ${{ matrix.module }}
+          pre_target: ${{ matrix.pre_target }}
+          release: ${{ env.releasing }}
+          tds: true
+          texlive_cache_key: ${{ needs.texlive-cache.outputs.cache_key }}
+          working_directory: ${{ matrix.working_directory }}
+      - name: Generate exit code
+        if: ${{ !cancelled() }}
+        id: exit
+        shell: bash
+        env:
+          checkret: ${{ steps.build.outputs.check_ret }}
+          ctanret: ${{ steps.build.outputs.ctan_ret }}
+          ctan: ${{ env.CTAN }}
+          ctanrelret: ${{ steps.build.outputs.ctanrel_ret }}
+          ctanrel: ${{ env.CTANREL }}
+          docret: ${{ steps.build.outputs.doc_ret }}
+          fnttargret: ${{ steps.build.outputs.fnttarg_ret }}
+          manifestret: ${{ steps.build.outputs.manifest_ret }}
+          releaseret: ${{ steps.build.outputs.release_ret }}
+          releasing: ${{ env.RELEASING }}
+        run: |
+          allan=0
+          # fail if either fnttarg or ctan failed to build
+          [[ $fnttargret != 0 ]] && allan=1
+          [[ $checkret != 0 || $docret != 0 ]] && allan=1
+          if [ $releasing != "false" ]
+          then
+            [[ $ctan != 0 || $ctanret == 0 ]] || allan=1
+            [[ $ctanrel != 0 || $ctanrelret == 0 ]] || allan=1
+            [[ $releaseret != 0 || $manifestret != 0 ]] && allan=1
+          fi
+          exit $allan
 
   # addaswyd o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
   # need cfr-lm
@@ -301,12 +269,32 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ texlive-cache, clm ]
     outputs:
-      fnttarg_adforn_output: ${{ steps.fnttarg.outputs.build_ret_adforn }}
-      fnttarg_adfsymbols_output: ${{ steps.fnttarg.outputs.build_ret_adfsymbols }}
-      ctan_adforn_output: ${{ steps.ctan.outputs.ctan_ret_adforn }}
-      ctan_adfsymbols_output: ${{ steps.ctan.outputs.ctan_ret_adfsymbols }}
-      ctan_fontscripts_output: ${{ steps.ctan.outputs.ctan_ret_fontscripts }}
-      ctan_nfssext_cfr_output: ${{ steps.ctan.outputs.ctan_ret_nfssext-cfr }}
+      check_adforn_output: ${{ steps.build.outputs.check_ret_adforn }}
+      check_adfsymbols_output: ${{ steps.build.outputs.check_ret_adfsymbols }}
+      check_fontscripts_output: ${{ steps.build.outputs.check_ret_fontscripts }}
+      check_nfssext_cfr_output: ${{ steps.build.outputs.check_ret_nfssext-cfr }}
+      ctan_adforn_output: ${{ steps.build.outputs.ctan_ret_adforn }}
+      ctan_adfsymbols_output: ${{ steps.build.outputs.ctan_ret_adfsymbols }}
+      ctan_fontscripts_output: ${{ steps.build.outputs.ctan_ret_fontscripts }}
+      ctan_nfssext_cfr_output: ${{ steps.build.outputs.ctan_ret_nfssext-cfr }}
+      ctanrel_adforn_output: ${{ steps.build.outputs.ctanrel_ret_adforn }}
+      ctanrel_adfsymbols_output: ${{ steps.build.outputs.ctanrel_ret_adfsymbols }}
+      ctanrel_fontscripts_output: ${{ steps.build.outputs.ctanrel_ret_fontscripts }}
+      ctanrel_nfssext_cfr_output: ${{ steps.build.outputs.ctanrel_ret_nfssext-cfr }}
+      doc_adforn_output: ${{ steps.build.outputs.doc_ret_adforn }}
+      doc_adfsymbols_output: ${{ steps.build.outputs.doc_ret_adfsymbols }}
+      doc_fontscripts_output: ${{ steps.build.outputs.doc_ret_fontscripts }}
+      doc_nfssext_cfr_output: ${{ steps.build.outputs.doc_ret_nfssext-cfr }}
+      fnttarg_adforn_output: ${{ steps.build.outputs.build_ret_adforn }}
+      fnttarg_adfsymbols_output: ${{ steps.build.outputs.build_ret_adfsymbols }}
+      manifest_adforn_output: ${{ steps.build.outputs.manifest_ret_adforn }}
+      manifest_adfsymbols_output: ${{ steps.build.outputs.manifest_ret_adfsymbols }}
+      manifest_fontscripts_output: ${{ steps.build.outputs.manifest_ret_fontscripts }}
+      manifest_nfssext_cfr_output: ${{ steps.build.outputs.manifest_ret_nfssext-cfr }}
+      release_adforn_output: ${{ steps.build.outputs.release_ret_adforn }}
+      release_adfsymbols_output: ${{ steps.build.outputs.release_ret_adfsymbols }}
+      release_fontscripts_output: ${{ steps.build.outputs.release_ret_fontscripts }}
+      release_nfssext_cfr_output: ${{ steps.build.outputs.release_ret_nfssext-cfr }}
     strategy:
       # fail immediately if releasing
       fail-fast: true
@@ -331,92 +319,60 @@ jobs:
             extra_needs: clm
     name: "Test build: ${{ matrix.module }}"
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repo
         uses: actions/checkout@v4
-      # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
-      - name: Update system 
-        run: sudo apt-get update
-      - name: Install additional packages if needed
-        if: ${{ matrix.extra_packages }}
-        run: sudo apt-get install ${{ matrix.extra_packages }}
-      - name: Restore TeX Live from cache
-        uses: actions/cache/restore@v4
-        with:
-          path: ~/texlive
-          key: ${{ needs.texlive-cache.outputs.cache_key }}
-          fail-on-cache-miss: true
-        # oes angen hwn?
-        # oes!
-      - name: Set PATH
-        run: echo $HOME/texlive/bin/x86_64-linux >> $GITHUB_PATH
-      # don't use cached clm for release
-      - name: Build cfr-lm iff releasing
-        if: ${{ contains(github.ref_name, matrix.module) }}
-        working-directory: cfr-lm 
-        id: clmbuild
-        run : l3build fnttarg && l3build install && updmap --user --enable Map=clm.map
-      - name: Run l3build fnttarg
-        if: ${{ matrix.pre_target }}
-        working-directory: ${{ matrix.working_directory }}
-        id: fnttarg
-        run: |
-          module="${{ matrix.module }}"
-          (l3build fnttarg && echo -e "BUILD_RET=0\nbuild_ret_${module}=0" >> "$GITHUB_OUTPUT") || echo -e "BUILD_RET=1\nbuild_ret_${module}=1" >> "$GITHUB_OUTPUT"
-          cat "$GITHUB_OUTPUT"
-      - name: Archive failed build output
-      # run iff previous step failed
-        if: ${{ !cancelled() && (matrix.pre_target) && !(steps.fnttarg.outputs.BUILD_RET) }}
-      # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
-        uses: actions/upload-artifact@v4
-        with:
-          name: buildfiles-${{ matrix.module }}
-          path: build/fnt/*.log
-          # Decide how long to keep the test output artefact:
-          retention-days: 7
-      - name: Create manifest only if module is in release tag, TDS false and build succeeded
-        if: ${{ contains(github.ref_name, matrix.module) && !(matrix.tds) && ( !(matrix.pre_target) || (steps.fnttarg.outputs.BUILD_RET)) }}
-        working-directory: ${{ matrix.working_directory }}
-        run: l3build check && l3build doc && l3build manifest
-      - name: Run l3build
-      # build only if earlier build succeeded
-        if: ${{ (steps.fnttarg.outputs.BUILD_RET) || !(matrix.pre_target) }}
-        working-directory: ${{ matrix.working_directory }}
-        id: ctan
-        run: |
-          module="${{ matrix.module }}"
-          (l3build ctan && echo -e "CTAN_RET=0\nctan_ret_${module}=0" >> "$GITHUB_OUTPUT") || echo -e "CTAN_RET=1\nctan_ret_${module}=1" >> "$GITHUB_OUTPUT"
-          cat "$GITHUB_OUTPUT"
-      - name: Archive failed test output
-      # run even if previous step failed
-        if: ${{ !cancelled() }}
-        uses: zauguin/l3build-failure-artifacts@v1
-        with:
-          name: testfiles-${{ matrix.module }}
-          # Decide how long to keep the test output artefact:
-          retention-days: 7
-      - name: Create manifest only if module is in release tag and TDS and build succeeded
-        if: ${{ contains(github.ref_name, matrix.module) && matrix.tds  && (steps.ctan.outputs.CTAN_RET) }}
-        working-directory: ${{ matrix.working_directory }}
-        run:  l3build manifest && l3build ctan
-      - name: List zip
-      # only if releasing and build succeeded
-        if: ${{ contains(github.ref_name, matrix.module) && ( !(matrix.pre_target) || (steps.ctan.outputs.CTAN_RET)) }}
+      - name: Recipe
+        id: recipe
+        shell: bash
         env:
-          modname: ${{ matrix.module }}
-          dirname: ${{ matrix.working_directory }}
+          isrelease: ${{ contains(github.ref_name, matrix.module) }}
         run: |
-          unzip -l ${dirname}/${modname}-ctan.zip
-      - name: Archive release zip
-      # only if releasing and build succeeded
-        if: ${{ contains(github.ref_name, matrix.module) && ( !(matrix.pre_target) || (steps.ctan.outputs.CTAN_RET)) }}
-        # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
-        uses: actions/upload-artifact@v4
+          releasing="false"
+          [[ "$isrelease" == "true" || $isrelease == 0 ]] && releasing="true"
+          echo -e "RELEASING=${releasing}" >> "$GITHUB_ENV"
+          cat "$GITHUB_ENV"
+      - name: Build fnttarg and ctan
+        id: build 
+        uses: ./.github/actions/nfssext-autocheck-action
         with:
-          name: ctan-${{ matrix.module }}-${{ github.ref_name }}
-          path: ${{ matrix.working_directory }}/*.zip
-          # Decide how long to keep the test output artefact:
-          retention-days: 30
+          dep_cache_key: ${{ needs.clm.outputs.clm_cache_key }}
+          extra_needs: ${{ matrix.extra_needs }}
+          # extra_packages: ${{ matrix.extra_packages }}
+          manifest: true
+          module: ${{ matrix.module }}
+          pre_target: ${{ matrix.pre_target }}
+          release: ${{ env.releasing }}
+          tds: ${{ matrix.tds }}
+          texlive_cache_key: ${{ needs.texlive-cache.outputs.cache_key }}
+          working_directory: ${{ matrix.working_directory }}
+      - name: Generate exit code
+        if: ${{ !cancelled() }}
+        id: exit
+        shell: bash
+        env:
+          checkret: ${{ steps.build.outputs.check_ret }}
+          ctanret: ${{ steps.build.outputs.ctan_ret }}
+          ctan: ${{ env.CTAN }}
+          ctanrelret: ${{ steps.build.outputs.ctanrel_ret }}
+          ctanrel: ${{ env.CTANREL }}
+          docret: ${{ steps.build.outputs.doc_ret }}
+          fnttargret: ${{ steps.build.outputs.fnttarg_ret }}
+          manifestret: ${{ steps.build.outputs.manifest_ret }}
+          pretarget: ${{ matrix.pre_target }}
+          releaseret: ${{ steps.build.outputs.release_ret }}
+          releasing: ${{ env.RELEASING }}
+        run: |
+          allan=0
+          # fail if either fnttarg or ctan failed to build
+          [[ $pretarget == "" || $fnttargret == 0 ]] || allan=1
+          [[ $checkret != 0 || $docret != 0 ]] && allan=1
+          if [ $releasing != "false" ]
+          then
+            [[ $ctan != 0 || $ctanret == 0 ]] || allan=1
+            [[ $ctanrel != 0 || $ctanrelret == 0 ]] || allan=1
+            [[ $releaseret != 0 || $manifestret != 0 ]] && allan=1
+          fi
+          exit $allan
 
   summary:
     name: summary
@@ -448,8 +404,11 @@ jobs:
           ctanfontscripts: ${{ needs.nfssext-needy.outputs.ctan_fontscripts_output }}
           ctannfssextcfr: ${{ needs.nfssext-needy.outputs.ctan_nfssext_cfr_output }}
         run: |
-          ([[ $fnttargclm != 0 || $ctanclm != 0 || $fnttargbaskervaldadf != 0 || $fnttargberenisadf != 0 || $fnttargelectrumadf != 0 || $fnttarglibrisadf != 0 || $fnttargromandeadf != 0 || $fnttargventurisadf != 0 || $ctanbaskervaldadf != 0 || $ctanberenisadf != 0 || $ctanelectrumadf != 0 || $ctanlibrisadf != 0 || $ctanromandeadf != 0 || $ctanventurisadf != 0 || $fnttargadforn != 0 || $fnttargadfsymbols != 0 || $ctanadforn != 0 || $ctanadfsymbols != 0 || $ctanfontscripts != 0 || $ctannfssextcfr != 0 ]] && echo -e "BUILD_RET=1" >> "$GITHUB_OUTPUT") || echo -e "BUILD_RET=0" >> "$GITHUB_OUTPUT"
-          cat "$GITHUB_OUTPUT"
+          allan=0
+          ([[ $fnttargclm != 0 || $ctanclm != 0 || $fnttargbaskervaldadf != 0 || $fnttargberenisadf != 0 || $fnttargelectrumadf != 0 || $fnttarglibrisadf != 0 || $fnttargromandeadf != 0 || $fnttargventurisadf != 0 || $ctanbaskervaldadf != 0 || $ctanberenisadf != 0 || $ctanelectrumadf != 0 || $ctanlibrisadf != 0 || $ctanromandeadf != 0 || $ctanventurisadf != 0 || $fnttargadforn != 0 || $fnttargadfsymbols != 0 || $ctanadforn != 0 || $ctanadfsymbols != 0 || $ctanfontscripts != 0 || $ctannfssextcfr != 0 ]]) && allan=1
+          echo "Summary status: $allan"
+          echo -e "BUILD_RET=${allan}" >> "$GITHUB_OUTPUT" 
+          exit "$allan"
 
 
 # vim: sw=2:et:ts=2:
