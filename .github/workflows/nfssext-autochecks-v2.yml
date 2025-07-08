@@ -110,7 +110,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: texlive-cache
     outputs:
-      fnttarg_baskervaldadf_output: ${{ steps.save-outputs.outputs.build_ret_baskervaldadf }}
+      fnttarg_baskervaldadf_output: ${{ steps.save-outputs.outputs.fnttarg_ret_baskervaldadf }}
       fnttarg_berenisadf_output: ${{ steps.save-outputs.outputs.fnttarg_ret_berenisadf }}
       fnttarg_electrumadf_output: ${{ steps.save-outputs.outputs.fnttarg_ret_electrumadf }}
       fnttarg_librisadf_output: ${{ steps.save-outputs.outputs.fnttarg_ret_librisadf }}
