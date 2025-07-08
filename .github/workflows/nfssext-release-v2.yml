@@ -289,8 +289,8 @@ jobs:
       doc_adfsymbols_output: ${{ steps.exit.outputs.doc_ret_adfsymbols }}
       doc_fontscripts_output: ${{ steps.exit.outputs.doc_ret_fontscripts }}
       doc_nfssext_cfr_output: ${{ steps.exit.outputs.doc_ret_nfssext-cfr }}
-      fnttarg_adforn_output: ${{ steps.exit.outputs.build_ret_adforn }}
-      fnttarg_adfsymbols_output: ${{ steps.exit.outputs.build_ret_adfsymbols }}
+      fnttarg_adforn_output: ${{ steps.exit.outputs.fnttarg_ret_adforn }}
+      fnttarg_adfsymbols_output: ${{ steps.exit.outputs.fnttarg_ret_adfsymbols }}
       manifest_adforn_output: ${{ steps.exit.outputs.manifest_ret_adforn }}
       manifest_adfsymbols_output: ${{ steps.exit.outputs.manifest_ret_adfsymbols }}
       manifest_fontscripts_output: ${{ steps.exit.outputs.manifest_ret_fontscripts }}
