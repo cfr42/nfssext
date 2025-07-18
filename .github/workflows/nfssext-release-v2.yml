@@ -1,0 +1,419 @@
+# nfssext-release-v2.yml
+# full l3build checking for packages in nfssext repo
+
+# https://github.com/latex3/hyperref/blob/adc36adbc3650db73329469b43afb0ee86e3c807/.github/workflows/main.yaml
+# https://github.com/josephwright/siunitx/blob/main/.github/workflows/main.yaml
+# https://github.com/latex3/latex2e/blob/develop/.github/workflows/deploy.yaml
+
+name: Build release for nfssext v2
+
+on:
+  # Triggers the workflow on push for any tag but only for the "main" branch
+  push:
+    tags: 
+      - '*'
+    branches:
+      - '*'
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+
+  # addaswyd o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
+  # update TL tree if needed
+  texlive-cache:
+    runs-on: ubuntu-latest
+    name: Update TeX Live cache
+    outputs: 
+      cache_key: ${{ steps.texlive.outputs.cache_key }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Install TeX Live
+        id: texlive
+        uses: zauguin/install-texlive@v4
+        with:
+          package_file: .github/tl_packages
+
+  clm:
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    name: "Test build: cfr-lm"
+    needs: texlive-cache
+    # nfssext-cfr uses cfr-lm (though it falls back if built first)
+    # cfr-lm uses nfssext-cfr but there's nothing to build
+    outputs:
+      check_clm_output: ${{ steps.build-clm.outputs.check_ret }}
+      ctan_clm_output: ${{ steps.build-clm.outputs.ctan_ret }}
+      ctanrel_clm_output: ${{ steps.build-clm.outputs.ctanrel_ret }}
+      doc_clm_output: ${{ steps.build-clm.outputs.doc_ret }}
+      fnttarg_clm_output: ${{ steps.build-clm.outputs.fnttarg_ret }}
+      manifest_clm_output: ${{ steps.build-clm.outputs.manifest_ret }}
+      release_clm_output: ${{ steps.build-clm.outputs.release_ret }}
+      # clm_cache_key: $(( steps.clm-cache.outputs.cache_key }}
+      clm_cache_key: clm-${{ github.sha }}-${{ needs.texlive-cache.outputs.cache_key }}-${{ github.ref_name }}
+      lookup_clm_output: ${{ steps.clm-lookup.outputs.cache-hit }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Restore clm from cache
+        id: clm-lookup
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/work/nfssext/nfssext/cfr-lm/keep
+          lookup-only: true
+          fail-on-cache-miss: false
+          key: clm-${{ github.sha }}-${{ needs.texlive-cache.outputs.cache_key }}-${{ github.ref_name }}
+      - name: Recipe
+        id: recipe
+        shell: bash
+        env:
+          isrelease: ${{ contains(github.ref_name, 'cfr-lm-') || contains(github.ref_name, 'clm-') }}
+        run: |
+          isrel="${{ contains(github.ref_name, 'cfr-lm-') || contains(github.ref_name, 'clm-') }}"
+          releasing="false"
+          [[ "$isrel" == "true" || $isrel == 0 ]] && releasing="true"
+          echo -e "RELEASING=${releasing}" >> "$GITHUB_ENV"
+          cat "$GITHUB_ENV"
+      - name: Build fnttarg and ctan
+      # build regardless of cache status when releasing
+        if: ${{ !cancelled() }}
+        id: build-clm 
+        uses: ./.github/actions/nfssext-autocheck-action
+        with:
+          ctan: true
+          manifest: true
+          module: clm
+          pre_target: fnttarg
+          release: ${{ env.releasing }}
+          tds: true
+          texlive_cache_key: ${{ needs.texlive-cache.outputs.cache_key }}
+          working_directory: cfr-lm
+      - name: Cache build results
+      # run only if fnttarg build succeeded and cache lookup failed
+        if: ${{ !cancelled() && steps.build-clm.outputs.fnttarg_ret && steps.clm-lookup.outputs.cache-hit != 'true' }}
+        id: clm-cache
+        uses: actions/cache/save@v4
+        with:
+          path: ~/work/nfssext/nfssext/cfr-lm/keep
+          key: clm-${{ github.sha }}-${{ needs.texlive-cache.outputs.cache_key }}-${{ github.ref_name }}
+      - name: Generate exit code
+        if: ${{ !cancelled() }}
+        id: clm-exit
+        shell: bash
+        # for release, we only continue if clm ctan built - we don't keep going provided only that fnttarg succeeded
+        env:
+          clmcheckret: ${{ steps.build-clm.outputs.check_ret }}
+          clmctanret: ${{ steps.build-clm.outputs.ctan_ret }}
+          clmctanrelret: ${{ steps.build-clm.outputs.ctanrel_ret }}
+          clmdocret: ${{ steps.build-clm.outputs.doc_ret }}
+          clmfnttargret: ${{ steps.build-clm.outputs.fnttarg_ret }}
+          clmmanifestret: ${{ steps.build-clm.outputs.manifest_ret }}
+          clmreleaseret: ${{ steps.build-clm.outputs.release_ret }}
+          releasing: ${{ env.RELEASING }}
+          clmlookup: ${{ steps.clm-lookup.outputs.cache-hit }}
+          clmcache: ${{ steps.clm-cache.outcome }}
+        run: |
+          allan=0
+          # fail if fnttarg, check or doc failed (or fnttarg and ctan)
+          [[ $clmfnttargret != 0 ]] && allan=1
+          [[ $clmcheckret != 0 && $clmctanret != 0 ]] && allan=1
+          [[ $clmdocret != 0 && $clmctanret != 0 ]] && allan=1
+          # fail if both cache lookup and cache save failed 
+          [[ $clmlookup != "true" && $clmcache != "true" ]] || allan=1
+          if [ $releasing != "false" ]
+          then
+            [[  $clmctanret == 0 || $clmctanrelret == 0 ]] || allan=1
+            [[ $clmreleaseret == 0 && $clmmanifestret == 0 ]] || allan=1
+          fi
+          exit $allan
+
+  # addaswyd o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
+  # these do not depend on clm
+  nfssext:
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    needs: texlive-cache
+    outputs:
+      check_baskervaldadf_output: ${{ steps.exit.outputs.check_ret_baskervaldadf }}
+      check_berenisadf_output: ${{ steps.exit.outputs.check_ret_berenisadf }}
+      check_electrumadf_output: ${{ steps.exit.outputs.check_ret_electrumadf }}
+      check_librisadf_output: ${{ steps.exit.outputs.check_ret_librisadf }}
+      check_romandeadf_output: ${{ steps.exit.outputs.check_ret_romandeadf }}
+      check_venturisadf_output: ${{ steps.exit.outputs.check_ret_venturisadf }}
+      ctan_baskervaldadf_output: ${{ steps.exit.outputs.ctan_ret_baskervaldadf }}
+      ctan_berenisadf_output: ${{ steps.exit.outputs.ctan_ret_berenisadf }}
+      ctan_electrumadf_output: ${{ steps.exit.outputs.ctan_ret_electrumadf }}
+      ctan_librisadf_output: ${{ steps.exit.outputs.ctan_ret_librisadf }}
+      ctan_romandeadf_output: ${{ steps.exit.outputs.ctan_ret_romandeadf }}
+      ctan_venturisadf_output: ${{ steps.exit.outputs.ctan_ret_venturisadf }}
+      ctanrel_baskervaldadf_output: ${{ steps.exit.outputs.ctanrel_ret_baskervaldadf }}
+      ctanrel_berenisadf_output: ${{ steps.exit.outputs.ctanrel_ret_berenisadf }}
+      ctanrel_electrumadf_output: ${{ steps.exit.outputs.ctanrel_ret_electrumadf }}
+      ctanrel_librisadf_output: ${{ steps.exit.outputs.ctanrel_ret_librisadf }}
+      ctanrel_romandeadf_output: ${{ steps.exit.outputs.ctanrel_ret_romandeadf }}
+      ctanrel_venturisadf_output: ${{ steps.exit.outputs.ctanrel_ret_venturisadf }}
+      doc_baskervaldadf_output: ${{ steps.exit.outputs.doc_ret_baskervaldadf }}
+      doc_berenisadf_output: ${{ steps.exit.outputs.doc_ret_berenisadf }}
+      doc_electrumadf_output: ${{ steps.exit.outputs.doc_ret_electrumadf }}
+      doc_librisadf_output: ${{ steps.exit.outputs.doc_ret_librisadf }}
+      doc_romandeadf_output: ${{ steps.exit.outputs.doc_ret_romandeadf }}
+      doc_venturisadf_output: ${{ steps.exit.outputs.doc_ret_venturisadf }}
+      fnttarg_baskervaldadf_output: ${{ steps.exit.outputs.fnttarg_ret_baskervaldadf }}
+      fnttarg_berenisadf_output: ${{ steps.exit.outputs.fnttarg_ret_berenisadf }}
+      fnttarg_electrumadf_output: ${{ steps.exit.outputs.fnttarg_ret_electrumadf }}
+      fnttarg_librisadf_output: ${{ steps.exit.outputs.fnttarg_ret_librisadf }}
+      fnttarg_romandeadf_output: ${{ steps.exit.outputs.fnttarg_ret_romandeadf }}
+      fnttarg_venturisadf_output: ${{ steps.exit.outputs.fnttarg_ret_venturisadf }}
+      manifest_baskervaldadf_output: ${{ steps.exit.outputs.manifest_ret_baskervaldadf }}
+      manifest_berenisadf_output: ${{ steps.exit.outputs.manifest_ret_berenisadf }}
+      manifest_electrumadf_output: ${{ steps.exit.outputs.manifest_ret_electrumadf }}
+      manifest_librisadf_output: ${{ steps.exit.outputs.manifest_ret_librisadf }}
+      manifest_romandeadf_output: ${{ steps.exit.outputs.manifest_ret_romandeadf }}
+      manifest_venturisadf_output: ${{ steps.exit.outputs.manifest_ret_venturisadf }}
+      release_baskervaldadf_output: ${{ steps.exit.outputs.release_ret_baskervaldadf }}
+      release_berenisadf_output: ${{ steps.exit.outputs.release_ret_berenisadf }}
+      release_electrumadf_output: ${{ steps.exit.outputs.release_ret_electrumadf }}
+      release_librisadf_output: ${{ steps.exit.outputs.release_ret_librisadf }}
+      release_romandeadf_output: ${{ steps.exit.outputs.release_ret_romandeadf }}
+      release_venturisadf_output: ${{ steps.exit.outputs.release_ret_venturisadf }}
+    # don't abandon other builds if one module fails
+    # continue-on-error: true
+    strategy:
+      # fail immediately if releasing
+      fail-fast: true
+      matrix:
+        # include indicates that we want to set explicitly these combinations
+        # and don't want full matrix testing.
+        include:
+          - module: baskervaldadf
+            working_directory: arkandis/baskervaldadf
+            pre_target: fnttarg
+          - module: berenisadf
+            working_directory: arkandis/berenisadf
+            # berenis needs make, ff
+            extra_packages: make fontforge
+            pre_target: fnttarg
+          - module: electrumadf
+            working_directory: arkandis/electrumadf
+            pre_target: fnttarg
+          - module: librisadf
+            working_directory: arkandis/librisadf
+            pre_target: fnttarg
+          - module: romandeadf
+            working_directory: arkandis/romandeadf
+            pre_target: fnttarg
+          - module: venturisadf
+            working_directory: arkandis/venturisadf
+            pre_target: fnttarg
+    name: "Test build: ${{ matrix.module }}"
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      # - name: Set PATH
+      #   run: echo $HOME/texlive/bin/x86_64-linux >> $GITHUB_PATH
+      - name: Recipe
+        id: recipe
+        shell: bash
+        env:
+          isrelease: ${{ contains(github.ref_name, matrix.module) }}
+        run: |
+          releasing="false"
+          [[ "$isrelease" == "true" || $isrelease == 0 ]] && releasing="true"
+          echo -e "RELEASING=${releasing}" >> "$GITHUB_ENV"
+          cat "$GITHUB_ENV"
+      - name: Build fnttarg and ctan
+        id: build 
+        uses: ./.github/actions/nfssext-autocheck-action
+        with:
+          extra_packages: ${{ matrix.extra_packages }}
+          manifest: true
+          module: ${{ matrix.module }}
+          pre_target: ${{ matrix.pre_target }}
+          release: ${{ env.releasing }}
+          tds: true
+          texlive_cache_key: ${{ needs.texlive-cache.outputs.cache_key }}
+          working_directory: ${{ matrix.working_directory }}
+      - name: Record results and generate exit code
+        if: ${{ !cancelled() }}
+        id: exit
+        shell: bash
+        env:
+          checkret: ${{ steps.build.outputs.check_ret }}
+          ctanret: ${{ steps.build.outputs.ctan_ret }}
+          ctanrelret: ${{ steps.build.outputs.ctanrel_ret }}
+          docret: ${{ steps.build.outputs.doc_ret }}
+          fnttargret: ${{ steps.build.outputs.fnttarg_ret }}
+          manifestret: ${{ steps.build.outputs.manifest_ret }}
+          releaseret: ${{ steps.build.outputs.release_ret }}
+          releasing: ${{ env.RELEASING }}
+        run: |
+          allan=0
+          module="${{ matrix.module }}"
+          echo -e "check_ret_${module}=$checkret\nctan_ret_${module}=$ctanret\nctanrel_ret_${module}=$ctanrelret\nfnttarg_ret_${module}=$fnttargret\nmanifest_ret_${module}=$manifestret\nrelease_ret_${module}=$releaseret\n" >> "$GITHUB_OUTPUT"
+          # fail if either fnttarg or ctan failed to build
+          [[ $fnttargret == 0 ]] || allan=1
+          [[ $checkret == "" || $checkret == 0 ]] || allan=1
+          [[ $ctanret == "" || $ctanret == 0 ]] || allan=1
+          [[ $docret == "" || $docret == 0 ]] || allan=1
+          if [ $releasing != "false" ]
+          then
+            [[ $ctanret == 0 || $ctanrelret == 0 ]] || allan=1
+            [[ $releaseret == 0 && $manifestret == 0 ]] || allan=1
+          fi
+          cat "$GITHUB_OUTPUT"
+          exit $allan
+
+  # addaswyd o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
+  # need cfr-lm
+  # we don't really need the variable doing it in a separate matrix ...
+  # but leave for now as may be useful
+  nfssext-needy:
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    needs: [ texlive-cache, clm ]
+    outputs:
+      check_adforn_output: ${{ steps.exit.outputs.check_ret_adforn }}
+      check_adfsymbols_output: ${{ steps.exit.outputs.check_ret_adfsymbols }}
+      check_fontscripts_output: ${{ steps.exit.outputs.check_ret_fontscripts }}
+      check_nfssext_cfr_output: ${{ steps.exit.outputs.check_ret_nfssext-cfr }}
+      ctan_adforn_output: ${{ steps.exit.outputs.ctan_ret_adforn }}
+      ctan_adfsymbols_output: ${{ steps.exit.outputs.ctan_ret_adfsymbols }}
+      ctan_fontscripts_output: ${{ steps.exit.outputs.ctan_ret_fontscripts }}
+      ctan_nfssext_cfr_output: ${{ steps.exit.outputs.ctan_ret_nfssext-cfr }}
+      ctanrel_adforn_output: ${{ steps.exit.outputs.ctanrel_ret_adforn }}
+      ctanrel_adfsymbols_output: ${{ steps.exit.outputs.ctanrel_ret_adfsymbols }}
+      ctanrel_fontscripts_output: ${{ steps.exit.outputs.ctanrel_ret_fontscripts }}
+      ctanrel_nfssext_cfr_output: ${{ steps.exit.outputs.ctanrel_ret_nfssext-cfr }}
+      doc_adforn_output: ${{ steps.exit.outputs.doc_ret_adforn }}
+      doc_adfsymbols_output: ${{ steps.exit.outputs.doc_ret_adfsymbols }}
+      doc_fontscripts_output: ${{ steps.exit.outputs.doc_ret_fontscripts }}
+      doc_nfssext_cfr_output: ${{ steps.exit.outputs.doc_ret_nfssext-cfr }}
+      fnttarg_adforn_output: ${{ steps.exit.outputs.fnttarg_ret_adforn }}
+      fnttarg_adfsymbols_output: ${{ steps.exit.outputs.fnttarg_ret_adfsymbols }}
+      manifest_adforn_output: ${{ steps.exit.outputs.manifest_ret_adforn }}
+      manifest_adfsymbols_output: ${{ steps.exit.outputs.manifest_ret_adfsymbols }}
+      manifest_fontscripts_output: ${{ steps.exit.outputs.manifest_ret_fontscripts }}
+      manifest_nfssext_cfr_output: ${{ steps.exit.outputs.manifest_ret_nfssext-cfr }}
+      release_adforn_output: ${{ steps.exit.outputs.release_ret_adforn }}
+      release_adfsymbols_output: ${{ steps.exit.outputs.release_ret_adfsymbols }}
+      release_fontscripts_output: ${{ steps.exit.outputs.release_ret_fontscripts }}
+      release_nfssext_cfr_output: ${{ steps.exit.outputs.release_ret_nfssext-cfr }}
+    strategy:
+      # fail immediately if releasing
+      fail-fast: true
+      matrix:
+        # include indicates that we want to set explicitly these combinations
+        # and don't want full matrix testing.
+        include:
+          - module: adforn
+            working_directory: arkandis/adforn
+            pre_target: fnttarg
+            extra_needs: clm
+          - module: adfsymbols
+            working_directory: arkandis/adfsymbols
+            pre_target: fnttarg
+            extra_needs: clm
+          - module: fontscripts
+            working_directory: fontscripts
+            extra_needs: clm
+            tds: true
+          - module: nfssext-cfr
+            working_directory: nfssext-cfr
+            extra_needs: clm
+    name: "Test build: ${{ matrix.module }}"
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Recipe
+        id: recipe
+        shell: bash
+        env:
+          isrelease: ${{ contains(github.ref_name, matrix.module) }}
+        run: |
+          releasing="false"
+          [[ "$isrelease" == "true" || $isrelease == 0 ]] && releasing="true"
+          echo -e "RELEASING=${releasing}" >> "$GITHUB_ENV"
+          cat "$GITHUB_ENV"
+      - name: Build fnttarg and ctan
+        id: build 
+        uses: ./.github/actions/nfssext-autocheck-action
+        with:
+          dep_cache_key: ${{ needs.clm.outputs.clm_cache_key }}
+          extra_needs: ${{ matrix.extra_needs }}
+          # extra_packages: ${{ matrix.extra_packages }}
+          manifest: true
+          module: ${{ matrix.module }}
+          pre_target: ${{ matrix.pre_target }}
+          release: ${{ env.releasing }}
+          tds: ${{ matrix.tds }}
+          texlive_cache_key: ${{ needs.texlive-cache.outputs.cache_key }}
+          working_directory: ${{ matrix.working_directory }}
+      - name: Generate exit code
+        if: ${{ !cancelled() }}
+        id: exit
+        shell: bash
+        env:
+          checkret: ${{ steps.build.outputs.check_ret }}
+          ctanret: ${{ steps.build.outputs.ctan_ret }}
+          ctanrelret: ${{ steps.build.outputs.ctanrel_ret }}
+          docret: ${{ steps.build.outputs.doc_ret }}
+          fnttargret: ${{ steps.build.outputs.fnttarg_ret }}
+          manifestret: ${{ steps.build.outputs.manifest_ret }}
+          pretarget: ${{ matrix.pre_target }}
+          releaseret: ${{ steps.build.outputs.release_ret }}
+          releasing: ${{ env.RELEASING }}
+        run: |
+          allan=0
+          module="${{ matrix.module }}"
+          echo -e "check_ret_${module}=$checkret\nctan_ret_${module}=$ctanret\nctanrel_ret_${module}=$ctanrelret\nfnttarg_ret_${module}=$fnttargret\nmanifest_ret_${module}=$manifestret\nrelease_ret_${module}=$releaseret\n" >> "$GITHUB_OUTPUT"
+          # fail if either fnttarg or ctan failed to build
+          [[ $pretarget == "" || $fnttargret == 0 ]] || allan=1
+          [[ $checkret == "" || $checkret == 0 ]] || allan=1
+          [[ $docret == "" || $docret == 0 ]] || allan=1
+          if [ $releasing != "false" ]
+          then
+            [[ $ctanret == 0 || $ctanrelret == 0 ]] || allan=1
+            [[ $releaseret == 0 && $manifestret == 0 ]] || allan=1
+          fi
+          cat "$GITHUB_OUTPUT"
+          exit $allan
+
+  summary:
+    name: summary
+    needs: [ clm, nfssext, nfssext-needy ]
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: NFSSEXT Autochecks Summary
+      # https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions#jobsjob_idoutputs
+        env:
+          fnttargclm: ${{ needs.clm.outputs.fnttarg_clm_output }}
+          ctanclm: ${{ needs.clm.outputs.ctan_clm_output }}
+          fnttargbaskervaldadf: ${{ needs.nfssext.outputs.fnttarg_baskervaldadf_output }}
+          fnttargberenisadf: ${{ needs.nfssext.outputs.fnttarg_berenisadf_output }}
+          fnttargelectrumadf: ${{ needs.nfssext.outputs.fnttarg_electrumadf_output }}
+          fnttarglibrisadf: ${{ needs.nfssext.outputs.fnttarg_librisadf_output }}
+          fnttargromandeadf: ${{ needs.nfssext.outputs.fnttarg_romandeadf_output }}
+          fnttargventurisadf: ${{ needs.nfssext.outputs.fnttarg_venturisadf_output }}
+          ctanbaskervaldadf: ${{ needs.nfssext.outputs.ctan_baskervaldadf_output }}
+          ctanberenisadf: ${{ needs.nfssext.outputs.ctan_berenisadf_output }}
+          ctanelectrumadf: ${{ needs.nfssext.outputs.ctan_electrumadf_output }}
+          ctanlibrisadf: ${{ needs.nfssext.outputs.ctan_librisadf_output }}
+          ctanromandeadf: ${{ needs.nfssext.outputs.ctan_romandeadf_output }}
+          ctanventurisadf: ${{ needs.nfssext.outputs.ctan_venturisadf_output }}
+          fnttargadforn: ${{ needs.nfssext-needy.outputs.fnttarg_adforn_output }}
+          fnttargadfsymbols: ${{ needs.nfssext-needy.outputs.fnttarg_adfsymbols_output }}
+          ctanadforn: ${{ needs.nfssext-needy.outputs.ctan_adforn_output }}
+          ctanadfsymbols: ${{ needs.nfssext-needy.outputs.ctan_adfsymbols_output }}
+          ctanfontscripts: ${{ needs.nfssext-needy.outputs.ctan_fontscripts_output }}
+          ctannfssextcfr: ${{ needs.nfssext-needy.outputs.ctan_nfssext_cfr_output }}
+        run: |
+          allan=0
+          ([[ $fnttargclm != 0 || $ctanclm != 0 || $fnttargbaskervaldadf != 0 || $fnttargberenisadf != 0 || $fnttargelectrumadf != 0 || $fnttarglibrisadf != 0 || $fnttargromandeadf != 0 || $fnttargventurisadf != 0 || $ctanbaskervaldadf != 0 || $ctanberenisadf != 0 || $ctanelectrumadf != 0 || $ctanlibrisadf != 0 || $ctanromandeadf != 0 || $ctanventurisadf != 0 || $fnttargadforn != 0 || $fnttargadfsymbols != 0 || $ctanadforn != 0 || $ctanadfsymbols != 0 || $ctanfontscripts != 0 || $ctannfssextcfr != 0 ]]) && allan=1
+          echo "Summary status: $allan"
+          echo -e "BUILD_RET=${allan}" >> "$GITHUB_OUTPUT" 
+          exit "$allan"
+
+
+# vim: sw=2:et:ts=2:
