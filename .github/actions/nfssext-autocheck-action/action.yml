@@ -12,13 +12,17 @@ inputs:
     required: true
     type: boolean
     default: true
+  dep_cache_key:
+    required: false
+    type: string
   doc:
     required: true
     type: boolean
     default: false
-  dep_cache_key:
-    required: false
-    type: string
+  doc_logs:
+    required: true
+    type: boolean
+    default: true
   extra_packages: 
     required: false
     type: string
@@ -167,7 +171,7 @@ runs:
     # https://docs.github.com/en/actions/reference/evaluate-expressions-in-workflows-and-actions#status-check-functions
     # https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#environment-files
     # https://docs.github.com/en/actions/how-tos/writing-workflows/choosing-when-your-workflow-runs/using-conditions-to-control-job-execution
-      if: ${{ !cancelled() && ( steps.ctan.outcome == 'failure' || steps.doc.outcome == 'failure' ) }}
+      if: ${{ !cancelled() && (( steps.ctan.outcome == 'failure' || steps.doc.outcome == 'failure' ) || inputs.doc_logs ) }}
       # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
       uses: actions/upload-artifact@v4
       with:
