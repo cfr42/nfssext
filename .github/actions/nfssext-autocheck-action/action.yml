@@ -2,6 +2,8 @@
 # https://docs.github.com/en/actions/how-tos/sharing-automations/reusing-workflows
 
 name: nfssext-autocheck
+branding:
+  icon: 'type'
 description: Automatic check for nfssext modules
 inputs:
   check:
