@@ -194,8 +194,11 @@ runs:
         allan=0
         l3build ctan $opts || allan=1
         echo -e "CTAN_RET=${allan}" >> "$GITHUB_OUTPUT" 
+        echo -e "CTAN_RET=${allan}" >> "$GITHUB_ENV" 
         echo -e "DOC_RET=${allan}" >> "$GITHUB_OUTPUT" 
+        echo -e "DOC_RET=${allan}" >> "$GITHUB_ENV" 
         echo -e "CHECK_RET=${allan}" >> "$GITHUB_OUTPUT" 
+        echo -e "CHECK_RET=${allan}" >> "$GITHUB_ENV" 
         echo -e "CHECK_OPTS=${opts}" >> "$GITHUB_ENV"
         echo -e "DOC_OPTS=${opts}" >> "$GITHUB_ENV"
         manres=0
@@ -219,6 +222,7 @@ runs:
         allan=0
         l3build check $opts || allan=1
         echo -e "CHECK_RET=${allan}" >> "$GITHUB_OUTPUT" 
+        echo -e "CHECK_RET=${allan}" >> "$GITHUB_ENV" 
         echo -e "CHECK_OPTS=${opts}" >> "$GITHUB_ENV"
         cat "$GITHUB_OUTPUT"
         cat "$GITHUB_ENV"
@@ -241,6 +245,7 @@ runs:
         allan=0
         l3build doc $opts || allan=1
         echo -e "DOC_RET=${allan}" >> "$GITHUB_OUTPUT" 
+        echo -e "DOC_RET=${allan}" >> "$GITHUB_ENV" 
         echo -e "DOC_OPTS=${opts}" >> "$GITHUB_ENV"
         manres=0
         if [ $manifest == 0 ] then
@@ -283,7 +288,9 @@ runs:
         allan=0
         l3build ctan $opts || allan=1
         echo -e "MAN_RET=${manifest}" >> "$GITHUB_OUTPUT" 
+        # echo -e "MAN_RET=${manifest}" >> "$GITHUB_ENV" 
         echo -e "CTANREL_RET=${allan}" >> "$GITHUB_OUTPUT" 
+        echo -e "CTANREL_RET=${allan}" >> "$GITHUB_ENV" 
         echo -e "CTANREL_OPTS=${opts}" >> "$GITHUB_ENV"
         cat "$GITHUB_OUTPUT"
         cat "$GITHUB_ENV"
