@@ -248,7 +248,8 @@ runs:
         echo -e "DOC_RET=${allan}" >> "$GITHUB_ENV" 
         echo -e "DOC_OPTS=${opts}" >> "$GITHUB_ENV"
         manres=0
-        if [ $manifest == 0 ] then
+        if [ $manifest == 0 ] 
+        then
           l3build manifest || manres=1
           echo -e "MAN_RET=${manres}" >> "$GITHUB_ENV"
           echo -e "MAN_RET=${manres}" >> "$GITHUB_OUTPUT"
