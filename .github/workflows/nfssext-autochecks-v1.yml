@@ -48,7 +48,7 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Install TeX Live
         id: texlive
         uses: zauguin/install-texlive@v4
@@ -72,7 +72,7 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
       # We need Ghostscript for XeTeX tests.
       - run: sudo apt-get update #&& sudo apt-get install ghostscript 
@@ -242,7 +242,7 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
       - name: Update system 
         run: sudo apt-get update
@@ -361,7 +361,7 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       # https://github.com/josephwright/siunitx/blob/549cad913591b92a3a199b7477a325866303bf29/.github/workflows/main.yaml
       # We need Ghostscript for XeTeX tests.
       - name: Update system 
