@@ -48,7 +48,7 @@ jobs:
     name: "Test build: ${{ matrix.module }}"
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Update system 
         run: sudo apt-get update
       - name: Return
