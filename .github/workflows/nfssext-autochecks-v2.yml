@@ -41,7 +41,7 @@ jobs:
       cache_key: ${{ steps.texlive.outputs.cache_key }}
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Install TeX Live
         id: texlive
         uses: zauguin/install-texlive@v4
@@ -63,7 +63,7 @@ jobs:
       ctan_clm_output: ${{ steps.build-clm.outputs.ctan_ret }}
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Restore clm from cache
         id: clm-lookup
         uses: actions/cache/restore@v4
@@ -153,7 +153,7 @@ jobs:
     name: "Test build: ${{ matrix.module }}"
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Build fnttarg and ctan
         id: build 
         uses: ./.github/actions/nfssext-autocheck-action
@@ -217,7 +217,7 @@ jobs:
     name: "Test build: ${{ matrix.module }}"
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Build fnttarg and ctan
         id: build 
         uses: ./.github/actions/nfssext-autocheck-action
