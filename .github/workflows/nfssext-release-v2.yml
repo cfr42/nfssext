@@ -28,7 +28,7 @@ jobs:
       cache_key: ${{ steps.texlive.outputs.cache_key }}
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Install TeX Live
         id: texlive
         uses: zauguin/install-texlive@v4
@@ -55,7 +55,7 @@ jobs:
       lookup_clm_output: ${{ steps.clm-lookup.outputs.cache-hit }}
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Restore clm from cache
         id: clm-lookup
         uses: actions/cache/restore@v4
@@ -209,7 +209,7 @@ jobs:
     name: "Test build: ${{ matrix.module }}"
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       # - name: Set PATH
       #   run: echo $HOME/texlive/bin/x86_64-linux >> $GITHUB_PATH
       - name: Recipe
@@ -324,7 +324,7 @@ jobs:
     name: "Test build: ${{ matrix.module }}"
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Recipe
         id: recipe
         shell: bash

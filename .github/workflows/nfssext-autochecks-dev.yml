@@ -30,7 +30,7 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Install TeX Live
         id: texlive
         uses: zauguin/install-texlive@v4
@@ -54,7 +54,7 @@ jobs:
       ctan_clm_output: ${{ steps.build-clm-dev.outputs.ctan_ret }}
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Restore clm dev from cache
         id: clm-lookup-dev
         uses: actions/cache/restore@v4
@@ -144,7 +144,7 @@ jobs:
     name: "Test build: ${{ matrix.module }}"
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Build fnttarg and ctan dev
         id: build-dev
         uses: ./.github/actions/nfssext-autocheck-action
@@ -209,7 +209,7 @@ jobs:
     name: "Test build: ${{ matrix.module }}"
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Build fnttarg and ctan dev
         id: build-dev 
         uses: ./.github/actions/nfssext-autocheck-action
