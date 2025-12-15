@@ -69,7 +69,7 @@ jobs:
           cat "$GITHUB_OUTPUT"
       - name: Archive failed build output
         if: ${{ !cancelled() && !(steps.build_ret.outputs.BUILD_RET) }}
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: buildfiles-${{ matrix.module }}
           path: fontscripts/*.lua
