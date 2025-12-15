@@ -101,7 +101,7 @@ runs:
       shell: bash
       run: sudo apt-get install ${{ inputs.extra_packages }}
     - name: Restore TeX Live from cache
-      uses: actions/cache/restore@v4
+      uses: actions/cache/restore@v5
       with:
         path: ~/texlive
         key: ${{ inputs.texlive_cache_key }}
@@ -113,7 +113,7 @@ runs:
       run: echo $HOME/texlive/bin/x86_64-linux >> $GITHUB_PATH
     - name: Restore dependency from cache
       if: ${{ inputs.dep_cache_key }}
-      uses: actions/cache/restore@v4
+      uses: actions/cache/restore@v5
       with:
         path: ~/work/nfssext/nfssext/cfr-lm/keep
         key: ${{ inputs.dep_cache_key }}
@@ -135,7 +135,7 @@ runs:
     # run even iff previous step failed
       if: ${{ !cancelled() && steps.fnttarg.outcome == 'failure' }}
     # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: buildfiles-${{ inputs.module }}
         path: build/fnt/*.log
@@ -264,7 +264,7 @@ runs:
     # https://docs.github.com/en/actions/how-tos/writing-workflows/choosing-when-your-workflow-runs/using-conditions-to-control-job-execution
       if: ${{ !cancelled() && (( steps.ctan.outcome == 'failure' || steps.doc.outcome == 'failure' ) || inputs.doc_logs ) }}
       # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: typeset-logs-${{ inputs.module }}${{ env.DOC_OPTS }}
         path: build/doc/*.log
@@ -272,7 +272,7 @@ runs:
     - name: Archive docs
       # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
       if: ${{ !cancelled() && ( env.CTAN == 0 || env.DOC == 0 ) }}
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: docs-${{ inputs.module }}${{ env.DOC_OPTS }}
         path: ${{ inputs.working_directory }}/*.pdf
@@ -306,7 +306,7 @@ runs:
       if: ${{ env.RELEASE == 0 && (( steps.ctan-rel.outcome == 'success' ) || ( env.CTANREL == 1 && steps.ctan.outcome == 'success' )) }} 
       id: zip
       # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: ctan-${{ inputs.module }}-${{ github.ref_name }}
         path: ${{ inputs.working_directory}}/*.zip

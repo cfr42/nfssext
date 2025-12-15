@@ -58,7 +58,7 @@ jobs:
         uses: actions/checkout@v6
       - name: Restore clm from cache
         id: clm-lookup
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: ~/work/nfssext/nfssext/cfr-lm/keep
           lookup-only: true
