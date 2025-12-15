@@ -78,7 +78,7 @@ jobs:
       - run: sudo apt-get update #&& sudo apt-get install ghostscript 
       # Steps represent a sequence of tasks that will be executed as part of the job
       - name: Restore TeX Live from cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with: 
           path: ~/texlive
           key: ${{ needs.texlive-cache.outputs.cache_key }}
@@ -171,7 +171,7 @@ jobs:
       # run only if build succeeded
         if: ${{ !cancelled() && (steps.fnttarg-clm.outputs.BUILD_RET) }}
         id: clm-cache
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: ~/work/nfssext/nfssext/cfr-lm/keep
           # path: |
@@ -250,7 +250,7 @@ jobs:
         if: ${{ matrix.extra_packages }}
         run: sudo apt-get install ${{ matrix.extra_packages }}
       - name: Restore TeX Live from cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: ~/texlive
           key: ${{ needs.texlive-cache.outputs.cache_key }}
@@ -370,7 +370,7 @@ jobs:
         if: ${{ matrix.extra_packages }}
         run: sudo apt-get install ${{ matrix.extra_packages }}
       - name: Restore TeX Live from cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: ~/texlive
           key: ${{ needs.texlive-cache.outputs.cache_key }}
@@ -381,7 +381,7 @@ jobs:
         run: echo $HOME/texlive/bin/x86_64-linux >> $GITHUB_PATH
       - name: Restore cfr-lm from cache
         if: ${{ matrix.extra_needs }}
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: ~/work/nfssext/nfssext/cfr-lm/keep
           key: clm-${{ github.sha }}

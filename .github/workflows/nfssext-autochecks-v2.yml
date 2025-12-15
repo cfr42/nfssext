@@ -66,7 +66,7 @@ jobs:
         uses: actions/checkout@v6
       - name: Restore clm from cache
         id: clm-lookup
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: ~/work/nfssext/nfssext/cfr-lm/keep
           lookup-only: true
@@ -85,7 +85,7 @@ jobs:
       # run only if fnttarg build succeeded
         if: ${{ !cancelled() && steps.build-clm.outputs.fnttarg_ret && steps.clm-lookup.outputs.cache-hit != 'true' }}
         id: clm-cache
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: ~/work/nfssext/nfssext/cfr-lm/keep
           key: clm-${{ github.sha }}-${{ needs.texlive-cache.outputs.cache_key }}
