@@ -1,0 +1,21 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+============================================================
+TEST 1: fixtounicode-adforn
+============================================================
+LaTeX Font Info:    Trying to load font information for U+OrnementsADF on input line ....
+============================================================
+============================================================
+TEST 2: fixtounicode-adfbullets
+============================================================
+LaTeX Font Info:    Trying to load font information for U+BulletsADF on input line ....
+============================================================
+============================================================
+TEST 3: fixtounicode-adfarrows
+============================================================
+LaTeX Font Info:    Trying to load font information for U+ArrowsADF on input line ....
+============================================================
+[1
+] (fixtounicode-adf.aux)
+***************
+Compilation 1 of test file completed with exit status 0

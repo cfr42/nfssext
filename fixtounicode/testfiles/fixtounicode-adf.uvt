@@ -1,7 +1,6 @@
 % !TEX TS-program = pdflatex
 % !TEX encoding = UTF-8 Unicode
 \DocumentMetadata{uncompress}
-\listfiles
 \ExplSyntaxOn
 \sys_if_engine_pdftex:T
 {
@@ -13,7 +12,7 @@
 }
 \ExplSyntaxOff
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fixtounicode-adf.uvt 11018 2025-04-28 21:24:55Z cfrees $}[v1.1 \revinfo][\filebase: subs test]
+\ProvidesFileSVN{$Id: fixtounicode-adf.uvt 11554 2026-01-23 22:49:23Z cfrees $}[v1.1 \revinfo][\filebase: subs test]
 \input regression-test.tex\relax
 \documentclass{article}
 \usepackage{tracefnt}% infoshow is default; debugshow traces maths fonts, too

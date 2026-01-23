@@ -1,4 +1,4 @@
--- $Id: build.lua 11034 2025-05-09 07:35:13Z cfrees $
+-- $Id: build.lua 11554 2026-01-23 22:49:23Z cfrees $
 -- Build configuration for fixtounicode
 -------------------------------------------------------------------------------
 -- l3build.pdf listing 1 tudalen 9
@@ -15,17 +15,21 @@ scriptfiles = {"*.lua"}
 checksuppfiles = {"*.lua"}
 typesetsuppfiles = {"*.lua"}
 checkdeps = { maindir .. "/arkandis/adforn", maindir .. "/arkandis/adfsymbols" }
-checkconfigs = { "build", "config-dev" }
-checkengines = {"pdftex", "luatex"}
+checkconfigs = { "build" , "config-dev", "config-dvi" }
 checkformat = "latex"
+recordstatus = true
 specialformats = specialformats or {}
 specialformats["latex-dev"] = {
-  luatex = {binary = "luahbtex-dev", format = "lualatex-dev"}
+  luatex = {
+    binary = "luahbtex-dev", 
+    format = "lualatex-dev", 
+    tokens = "\\PassOptionsToPackage{dev}{fixtounicode}",
+  }
 }
 manifestfile = "manifest.txt"
 -------------------------------------------------------------------------------
 dofile(maindir .. "/tag.lua")
-date = "2025"
+date = "2025-2026"
 if direxists(sourcefiledir .. "/../../adnoddau/l3build") then
   dofile(sourcefiledir .. "/../../adnoddau/l3build/manifest.lua")
 end
@@ -60,27 +64,28 @@ uploadconfig = {
 -------------------------------------------------------------------------------
 -- l3build manual tudalennau 24-25
 -- l3build reads l3build-variables.lua *ar ôl* i'r ffeil hwn | *after* this file
-test_types = {
-  uni = {
-    test = ".uvt",
-    reference = ".uref",
-    generated = ".pdf",
-    rewrite = function(source, normalized, engine, errorcode)
-      local gentxt = string.gsub(source, string.gsub(pdfext, "%.", "%%.") .. "$", ".txt")
-      os.execute(string.format("pdftotext %s %s", source, gentxt))
-      local normtxt = string.gsub(source, string.gsub(pdfext, "%.", "%%.") .. "$", "." .. engine .. ".txt")
-      os.execute(string.format("cp %s %s", gentxt, normtxt))
-    end,
-    compare = function (difffile, tlgfile, logfile, cleanup, name, engine)
-      local normtxtfile = string.gsub(logfile, string.gsub(pdfext, "%.", "%%.") .. "$", ".txt")
-      return compare_tlg (difffile, tlgfile, normtxtfile, cleanup, name, "wibble")
-    end,
-  },
+test_types = test_types or {}
+test_types.uni = {
+  test = ".uvt",
+  reference = ".uref",
+  generated = ".pdf",
+  rewrite = function(source, normalized, engine, errorcode)
+    local gentxt = string.gsub(source, string.gsub(pdfext, "%.", "%%.") .. "$", ".txt")
+    os.execute(string.format("pdftotext %s %s", source, gentxt))
+    local normtxt = string.gsub(source, string.gsub(pdfext, "%.", "%%.") .. "$", "." .. engine .. ".txt")
+    os.execute(string.format("cp %s %s", gentxt, normtxt))
+  end,
+  compare = function (difffile, tlgfile, logfile, cleanup, name, engine)
+    local normtxtfile = string.gsub(logfile, string.gsub(pdfext, "%.", "%%.") .. "$", ".txt")
+    return compare_tlg (difffile, tlgfile, normtxtfile, cleanup, name, "wibble")
+  end,
 }
 test_order = {"uni"}
+-- test_order = {"log", "uni"}
 -------------------------------------------------------------------------------
 -- rhaid i vars addasol fodoli? | suitable vars must exist?
 function checkinit_hook ()
+  -- tests have not yet been copied to testdir
   return cp("fixtounicode.lua",unpackdir,testdir)
 end
 function docinit_hook ()
