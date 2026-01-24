@@ -1,0 +1,11 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+Package fixtounicode Warning: Package fixtounicode Warning:: Sorry, use of key mappings is not supported on pdfTeX or new versions of LuaTeX on line .... Use glyph names with the key mappings, the keys glyphs and unicodes or equivalent expl3 functions.
+============================================================
+TEST 1: fixtounicode-marvosym
+============================================================
+LaTeX Font Info:    Trying to load font information for U+mvs on input line ....
+(../umvs.fd)
+============================================================
+***************
+Compilation 1 of test file completed with exit status 0

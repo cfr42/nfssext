@@ -1,7 +1,6 @@
 % !TEX TS-program = pdflatex
 % !TEX encoding = UTF-8 Unicode
 \DocumentMetadata{uncompress}
-\listfiles
 \ExplSyntaxOn
 \sys_if_engine_pdftex:T
 {
@@ -13,7 +12,7 @@
 }
 \ExplSyntaxOff
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fixtounicode-marvosym.uvt 11039 2025-06-21 21:23:24Z cfrees $}[v1.1 \revinfo][\filebase: subs test]
+\ProvidesFileSVN{$Id: fixtounicode-marvosym.lvt 11555 2026-01-24 01:32:39Z cfrees $}[v1.1 \revinfo][\filebase: subs test]
 \input regression-test.tex\relax
 \documentclass{article}
 \usepackage{tracefnt}% infoshow is default; debugshow traces maths fonts, too
@@ -52,7 +51,7 @@
   \Football
 }
 \ExplSyntaxOff
-
+\OMIT
 \end{document} 
 \END
 % vim: ts=2:sw=2:ft=tex:

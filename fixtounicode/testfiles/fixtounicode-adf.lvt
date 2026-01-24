@@ -1,1 +1,52 @@
-fixtounicode-adf.uvt
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+\DocumentMetadata{uncompress}
+\ExplSyntaxOn
+\sys_if_engine_pdftex:T
+{
+  \pdftracingfonts=1
+}
+\sys_if_engine_luatex:T
+{
+  \tracingfonts=1
+}
+\ExplSyntaxOff
+\RequirePackage{svn-prov}
+\ProvidesFileSVN{$Id: fixtounicode-adf.lvt 11555 2026-01-24 01:32:39Z cfrees $}[v1.1 \revinfo][\filebase: subs test]
+\input regression-test.tex\relax
+\documentclass{article}
+\usepackage{tracefnt}% infoshow is default; debugshow traces maths fonts, too
+\parindent=0pt
+\pagestyle{empty}
+	
+\usepackage{adforn}
+\usepackage{adfbullets}
+\usepackage{adfarrows}
+
+\begin{document}
+% RHAID ddefnyddio'r llinell isod tu allan i'r \TEST
+\ExplSyntaxOn
+{
+  \makeatletter
+  \tracinglostchars\thr@@
+  \makeatother
+}
+\sys_if_engine_luatex:T
+{
+  \tracinglostchars=5
+}
+\START
+\TEST{fixtounicode-adforn}{
+  \adforn4
+}
+\TEST{fixtounicode-adfbullets}{
+  \adfbullet 7
+}
+\TEST{fixtounicode-adfarrows}{
+  \adfarrow 8
+}
+\ExplSyntaxOff
+
+\end{document} 
+\END
+% vim: ts=2:sw=2:ft=tex:
