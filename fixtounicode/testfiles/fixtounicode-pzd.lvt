@@ -12,18 +12,17 @@
 }
 \ExplSyntaxOff
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fixtounicode-pzd.lvt 11555 2026-01-24 01:32:39Z cfrees $}[v0.0 \revinfo][\filebase: subs test]
+\ProvidesFileSVN{$Id: fixtounicode-pzd.lvt 11568 2026-01-28 03:12:06Z cfrees $}[v0.0 \revinfo][\filebase: subs test]
 \input regression-test.tex\relax
 \documentclass{article}
 \usepackage{tracefnt}% infoshow is default; debugshow traces maths fonts, too
 \parindent=0pt
 \pagestyle{empty}
 	
-\usepackage{pifont}
-\usepackage{pzd-data}
-\usepackage{fixtounicode}
-\ExplSyntaxOn
 \START
+\usepackage{pzd-data}
+\usepackage[debug]{fixtounicode}
+\ExplSyntaxOn
 \TEST{fixtounicode-pzd-config}
 {
 % #1 {<enw'r TFM>}
@@ -32,6 +31,7 @@
 % #4 pwyntiau côd
   \fixtounicode_tounicode:nnNN { pzdr } { uzdr } \l_pzd_glyphs_seq \l_pzd_unis_seq
 }
+\usepackage{pifont}
 \OMIT
 \ExplSyntaxOff
 

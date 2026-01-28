@@ -32,7 +32,7 @@
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
 \ExplSyntaxOff
-\ProvidesFileSVN{$Id: fixtounicode.dtx 11554 2026-01-23 22:49:23Z cfrees $}[v0.0 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: fixtounicode.dtx 11568 2026-01-28 03:12:06Z cfrees $}[v0.0 \revinfo][\filename: \filebase]
 \revinfo][\filebase DTX: ]
 \DefineFileInfoSVN[fixtounicode]
 \documentclass[11pt,british]{ltxdoc}
@@ -276,7 +276,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: fixtounicode.dtx 11554 2026-01-23 22:49:23Z cfrees $}[v0.0 \revinfo]
+\ProvidesPackageSVN[\filebase.sty]{$Id: fixtounicode.dtx 11568 2026-01-28 03:12:06Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % \iffalse
@@ -287,9 +287,10 @@
 \typeout{TSIECIO'R ~ FERSIWN ~ YMA!!}
 \keys_define:nn { fixtounicode }
 {
-  dev .bool_set:N = \l_@@_dev_bool,
-  dev .initial:n = false,
-  dev .default:n = true,
+  debug .bool_set:N = \l_@@_debug_bool,
+  debug .initial:n = false,
+  debug .default:n = true,
+  dev .code:n = {},
 }
 \ProcessKeyOptions[fixtounicode]
 \seq_new:N \l_@@_glyphtounicode_seq
@@ -298,25 +299,62 @@
 \seq_new:N \l_@@_unicodes_seq
 \seq_new:N \g_@@_engine_seq
 %    \end{macrocode}
-% Regardless of settings, if the Lua\TeX{} version is less than 1.24, set \texttt{dev} to \texttt{false}.
-% Possibly this code can eventually set it \texttt{true} if the version exceeds some suitable value, perhaps before the package options are processed?
+% \begin{macro}{\@@_debug:n,\@@_debug:N}
+%   \kern0pt
 %    \begin{macrocode}
-\bool_lazy_and:nnT {\sys_if_engine_luatex_p:} {\l_@@_dev_bool}
+\bool_if:NTF \l_@@_debug_bool
 {
-  \seq_gset_split:NnV \g_@@_engine_seq {.} \c_sys_engine_version_str
-  \int_compare:nNnTF { \seq_item:Nn \g_@@_engine_seq {1} } < {1}
-  { \bool_set_false:N \l_@@_dev_bool }
+  \cs_new_protected:Npn \@@_debug:n #1
   {
-    \int_compare:nNnT { \seq_item:Nn \g_@@_engine_seq {2} } < {24} 
-    { \bool_set_false:N \l_@@_dev_bool }
-  }
-  \bool_if:NF \l_@@_dev_bool
-  {
-    \PackageWarning{fixtounicode}{
-      Overriding~dev~option.~
-      LuaHBTeX~too~old.
+    \iow_term:n {
+      [fixtounicode~debug]::~#1
     }
   }
+  \cs_new_protected:Npn \@@_debug:N #1
+  {
+    \@@_debug_aux:eV { \cs_to_str:N #1 } #1
+  }
+  \cs_new_protected:Npn \@@_debug_aux:nn #1#2
+  {
+    \@@_debug:n { #1~->~#2 }
+  }
+  \cs_generate_variant:Nn \@@_debug_aux:nn {eV}
+  \sys_if_engine_luatex:T
+  {
+    \lua_now:n { fixtounicode_debug = true }
+  }
+}{
+  \cs_new_eq:NN \@@_debug:n \use_none:n
+  \cs_new_eq:NN \@@_debug:N \use_none:n
+}
+%    \end{macrocode}
+% \end{macro}
+% If the Lua\TeX{} version is less than 1.24, set \texttt{dev} to \texttt{false}; o/w \texttt{true}.
+%    \begin{macrocode}
+\sys_if_engine_luatex:T 
+{
+  \@@_debug:n {Engine~is~LuaTeX.}
+  \bool_set_true:N \l_@@_dev_bool
+  \seq_gset_split:NnV \g_@@_engine_seq {.} \c_sys_engine_version_str
+  \int_compare:nNnTF { \seq_item:Nn \g_@@_engine_seq {1} } < {1}
+  { 
+    \@@_debug:n {
+      LuaTeX~version~0~or~less:
+      ~you~get~out~too~much.
+      ~Stay~home~and~update!
+    }
+    \bool_set_false:N \l_@@_dev_bool
+  } {
+    \int_compare:nNnT { \seq_item:Nn \g_@@_engine_seq {2} } < {24} 
+    { 
+      \@@_debug:n {
+        LuaTeX~minor~version~less~than~24.
+        ~I'll~do~my~best,~but~binary~too~old~for~full~support.
+      }
+      \bool_set_false:N \l_@@_dev_bool
+    }
+  }
+  \@@_debug:N \l_@@_dev_bool
 }
 %    \end{macrocode}
 % \begin{macro}{\@@_tounicode:nnNN,
@@ -339,13 +377,13 @@
 \msg_new:nnn { fixtounicode } { mapping } 
 {
   \msg_info_text:n { fixtounicode } :: ~ 
-  Mapping ~ ##1 ~ -> ~ ##2 ~ \msg_context:
+  Mapping ~ #1 ~ -> ~ #2 ~ \msg_line_context:
 }
 \msg_new:nnn { fixtounicode } {  limitations } 
 {
-  \msg_warn_text:n { fixtounicode } :: ~
-  Sorry, ~ use ~ of ~ ##1 ~ is ~ not ~ supported ~ on ~ ##2 ~ \msg_context:. ~
-  ##3
+  \msg_warning_text:n { fixtounicode } :: ~
+  Sorry, ~ use ~ of ~ #1 ~ is ~ not ~ supported ~ on ~ #2 ~ \msg_line_context:. ~
+  #3
 }
 \cs_new_protected_nopar:Npn \@@_tounicode_pair:nn #1#2 {}
 %    \end{macrocode}
@@ -367,6 +405,10 @@
     }
   } {\sys_if_output_pdf_p:}
 } {
+  \@@_debug:n {
+    TFM~specific~tounicode~mappings~supported.
+    ~Enabling~support~for~glyph~names.
+  }
   \cs_new_protected_nopar:Npn \@@_tounicode:nNN #1#2#3
   {
     \cs_set_nopar:Npn \@@_tounicode_pair:nn ##1##2
@@ -399,6 +441,12 @@
   {! \l_@@_dev_bool}
   {\sys_if_output_pdf_p:}
 } {
+  \@@_debug:n {
+    TFM~specific~tounicode~mappings~unsupported:~LuaHBTeX~too~old.~
+    Enabling~workaround.~
+    Note~glyph~names~unsupported.~
+    Support~requires~indices.
+  }
   \lua_load_module:n { fixtounicode }
   \cs_set_nopar:Npn \@@_tounicode_pair:nn #1#2
   {
@@ -408,6 +456,13 @@
   }
   \cs_new_protected_nopar:Npn \@@_tounicode:nnNN #1#2#3#4
   {
+    \@@_debug:n {
+      Trying~to~add~tounicode~mappings~for~old~LuaTeX.~
+      Fingers~crossed!
+    }
+    \@@_debug:n {TFM:~#1;~PFB:~#2;} 
+    \@@_debug:N #3
+    \@@_debug:N #4
     \lua_now:n { fixtounicodeTab = {} }
     \seq_set_eq:NN \l_@@_glyphtounicode_seq #3
     \seq_set_eq:NN \l_@@_tounicode_seq #4
@@ -419,7 +474,7 @@
   }
   \cs_new_protected_nopar:Npn \@@_tounicode:nNN #1#2#3
   {
-    \@@_tounicode:nnNN { #1 } { #1 } { #2 } { #3 }
+    \@@_tounicode:nnNN { #1 } { #1 } #2 #3 
   }
 }
 %    \end{macrocode}
@@ -427,6 +482,10 @@
 %    \begin{macrocode}
 \bool_if:nT {\sys_if_output_dvi_p:}
 {
+  \@@_debug:n {
+    tounicode~mappings~unsupported~for~DVI.
+    ~Installing~noop~functions.
+  }
   \cs_new_eq:NN \@@_tounicode:nnNN \use_none:nnnn
   \cs_new_eq:NN \@@_tounicode:nNN \use_none:nnn
 }
@@ -522,7 +581,7 @@
 %
 % Note that this method is \textbf{NOT} currently supported on Lua\TeX{}. 
 % To test on LuaTeX\{}, install a development binary, (re)generate appropriate formats and load this package with the \texttt{dev} option.
-% Note this should \textbf{not} be used for real documents.
+% Note the binary should probably \textbf{not} be used for real documents.
 %
 % On pdf\TeX{} this method should work just fine.
 %    \begin{macrocode}
@@ -530,7 +589,7 @@
     {
       \bool_lazy_and:nnTF { \sys_if_engine_luatex_p: } { ! \l_@@_dev_bool }
       {
-        \msg_warn:nnn { fixtounicode } { limitations } 
+        \msg_warning:nnnnn { fixtounicode } { limitations } 
         { key ~ mappings }
         { this ~ version ~ of ~ LuaTeX }
         { Use ~ indices ~ with ~ the ~ key ~ mappings ~ by ~ index, ~ the ~ keys ~ glyphs ~ and ~ unicodes ~ or ~ equivalent ~ expl3 ~ functions. ~
@@ -571,7 +630,7 @@
           }
         }
       } {
-        \msg_warn:nnn { fixtounicode } { limitations } 
+        \msg_warning:nnnnn { fixtounicode } { limitations } 
         { key ~ mappings }
         { pdfTeX ~ or ~ new ~ versions ~ of ~ LuaTeX }
         { Use ~ glyph ~ names ~ with ~ the ~ key ~ mappings, ~ the ~ keys ~ glyphs ~ and ~ unicodes ~ or ~ equivalent ~ expl3 ~ functions. }

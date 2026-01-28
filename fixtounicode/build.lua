@@ -1,4 +1,4 @@
--- $Id: build.lua 11554 2026-01-23 22:49:23Z cfrees $
+-- $Id: build.lua 11568 2026-01-28 03:12:06Z cfrees $
 -- Build configuration for fixtounicode
 -------------------------------------------------------------------------------
 -- l3build.pdf listing 1 tudalen 9
@@ -80,8 +80,8 @@ test_types.uni = {
     return compare_tlg (difffile, tlgfile, normtxtfile, cleanup, name, "wibble")
   end,
 }
-test_order = {"uni"}
--- test_order = {"log", "uni"}
+-- test_order = {"uni"}
+test_order = {"log", "uni"}
 -------------------------------------------------------------------------------
 -- rhaid i vars addasol fodoli? | suitable vars must exist?
 function checkinit_hook ()

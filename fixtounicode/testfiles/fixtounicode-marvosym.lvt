@@ -12,16 +12,15 @@
 }
 \ExplSyntaxOff
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fixtounicode-marvosym.lvt 11555 2026-01-24 01:32:39Z cfrees $}[v1.1 \revinfo][\filebase: subs test]
+\ProvidesFileSVN{$Id: fixtounicode-marvosym.lvt 11568 2026-01-28 03:12:06Z cfrees $}[v1.1 \revinfo][\filebase: subs test]
 \input regression-test.tex\relax
 \documentclass{article}
 \usepackage{tracefnt}% infoshow is default; debugshow traces maths fonts, too
 \parindent=0pt
 \pagestyle{empty}
 	
-\usepackage{fixtounicode}
-\usepackage{marvosym}
 \START
+\usepackage[debug]{fixtounicode}
 \fixtounicode{%
   tfm = umvs,
   mappings by index = {%
@@ -30,6 +29,7 @@
     106 = 2622,
   },
 }
+\usepackage{marvosym}
 \OMIT
 \begin{document}
 % RHAID ddefnyddio'r llinell isod tu allan i'r \TEST

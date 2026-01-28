@@ -1,12 +1,44 @@
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN{$Id: pzd-data.sty 11017 2025-04-25 03:39:09Z cfrees $}[v0.1 \revinfo{}: pzd Unicode data]
+\ProvidesPackageSVN{$Id: pzd-data.sty 11567 2026-01-28 03:10:49Z cfrees $}[v0.1 \revinfo{}: pzd Unicode data]
 \ExplSyntaxOn
 \seq_new:N \l_pzd_glyphs_seq
 \seq_new:N \l_pzd_unis_seq
 % note these are all taken from the mappings in pdfTeX's glyphtounicode 
 \seq_set_from_clist:Nn \l_pzd_unis_seq
 {
-  2701, % a1
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  0020, % space % 32
+  2701, % a1    % 33
   2702, % a2
   2703, % a202
   2704, % a3
@@ -99,8 +131,42 @@
   275B, % a97
   275C, % a98
   275D, % a99
-  275E, % a100
-  2761, % a101
+  275E, % a100    % 126
+  -1, % missing
+  -1, % missing
+  -1, % missing
+  -1, % missing
+  -1, % missing
+  -1, % missing
+  -1, % missing
+  -1, % missing
+  -1, % missing
+  -1, % missing
+  -1, % missing
+  -1, % missing
+  -1, % missing
+  -1, % missing
+  -1, % missing
+  -1, % missing
+  -1, % missing
+  -1, % missing
+  -1, % missing
+  -1, % missing
+  -1, % missing
+  -1, % missing
+  -1, % missing
+  -1, % missing
+  -1, % missing
+  -1, % missing
+  -1, % missing
+  -1, % missing
+  -1, % missing
+  -1, % missing
+  -1, % missing
+  -1, % missing
+  -1, % missing
+  -1, % missing
+  2761, % a101    % 161
   2762, % a102
   2763, % a103
   2764, % a104
@@ -178,8 +244,9 @@
   27AC, % a199
   27AD, % a181
   27AE, % a200
-  27AF, % a182
-  27B1, % a201
+  27AF, % a182    % 239
+  -1,   % missing
+  27B1, % a201    % 241
   27B2, % a183
   27B3, % a184
   27B4, % a197
@@ -192,26 +259,42 @@
   27BB, % a188
   27BC, % a189
   27BD, % a190
-  27BE, % a191
-  % glyphtounicode.tex includes these but they seem to be non-characters or ...?
-  % not dings, o leiaf?
-  % 2771, % a86
-  % 276F, % a85
-  % 2774, % a95
-  % 276E, % a205
-  % 2768, % a89
-  % 2772, % a87
-  % 276C, % a91
-  % 2769, % a90
-  % 2770, % a206
-  % 276B, % a94
-  % 276A, % a93
-  % 276D, % a92
-  % 2775, % a96
-  % 2773, % a88
+  27BE  % a191    % 254
 } 
 \seq_set_from_clist:Nn \l_pzd_glyphs_seq
 {
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  space, % 0020
   a1, % 2701
   a2, % 2702
   a202, % 2703
@@ -306,7 +389,41 @@
   a98, % 275C
   a99, % 275D
   a100, % 275E
-  a101, % 2761
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  -1,   % missing
+  a101, % 2761   % 161
   a102, % 2762
   a103, % 2763
   a104, % 2764
@@ -385,6 +502,7 @@
   a181, % 27AD
   a200, % 27AE
   a182, % 27AF
+  -1,   % missing
   a201, % 27B1
   a183, % 27B2
   a184, % 27B3
@@ -398,22 +516,6 @@
   a188, % 27BB
   a189, % 27BC
   a190, % 27BD
-  a191, % 27BE
-  % glyphtounicode.tex includes these but they seem to be non-characters or ...?
-  % not dings, o leiaf?
-  % a86, % 2771
-  % a85, % 276F
-  % a95, % 2774
-  % a205, % 276E
-  % a89, % 2768
-  % a87, % 2772
-  % a91, % 276C
-  % a90, % 2769
-  % a206, % 2770
-  % a94, % 276B
-  % a93, % 276A
-  % a92, % 276D
-  % a96, % 2775
-  % a88, % 2773
+  a191  % 27BE  % 254
 } 
 \ExplSyntaxOff

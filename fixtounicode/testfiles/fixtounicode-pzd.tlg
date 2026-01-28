@@ -1,5 +1,12 @@
 This is a generated file for the l3build validation system.
 Don't change this file in any respect.
+(pzd-data.sty
+Package: pzd-data ....-..-.. v... (SVN Rev: 11017){}: pzd Unicode data
+) (fixtounicode.sty
+Package: fixtounicode ....-..-.. v... (SVN Rev: 11554)
+TSIECIO'R FERSIWN YMA!!
+[fixtounicode debug]:: TFM specific tounicode mappings supported.Enabling support for glyph names.
+)
 ============================================================
 TEST 1: fixtounicode-pzd-config
 ============================================================
@@ -191,6 +198,10 @@ Mapping: tfm:pzdr/a189 -> 27BC
 Mapping: tfm:pzdr/a190 -> 27BD
 Mapping: tfm:pzdr/a191 -> 27BE
 ============================================================
+(../pifont.sty
+Package: pifont ....-..-.. PSNFSS-v... Pi font support (SPQR) 
+LaTeX Font Info:    Trying to load font information for U+pzd on input line ....
+LaTeX Font Info:    Trying to load font information for U+psy on input line ....
 ============================================================
 TEST 3: fixtounicode-pzd-161-239
 ============================================================

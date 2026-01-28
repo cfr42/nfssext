@@ -12,7 +12,7 @@
 }
 \ExplSyntaxOff
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fixtounicode-adf.lvt 11555 2026-01-24 01:32:39Z cfrees $}[v1.1 \revinfo][\filebase: subs test]
+\ProvidesFileSVN{$Id: fixtounicode-adf.lvt 11568 2026-01-28 03:12:06Z cfrees $}[v1.1 \revinfo][\filebase: subs test]
 \input regression-test.tex\relax
 \documentclass{article}
 \usepackage{tracefnt}% infoshow is default; debugshow traces maths fonts, too
@@ -46,7 +46,7 @@
   \adfarrow 8
 }
 \ExplSyntaxOff
-
+\OMIT
 \end{document} 
 \END
 % vim: ts=2:sw=2:ft=tex:

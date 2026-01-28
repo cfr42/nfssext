@@ -5,7 +5,9 @@ Package: fixtounicode ....-..-.. v... (SVN Rev: 11554)
 TSIECIO'R FERSIWN YMA!!
 [fixtounicode debug]:: TFM specific tounicode mappings supported.Enabling support for glyph names.
 )
-Package fixtounicode Warning: Package fixtounicode Warning:: Sorry, use of key mappings is not supported on pdfTeX or new versions of LuaTeX on line .... Use glyph names with the key mappings, the keys glyphs and unicodes or equivalent expl3 functions.
+Mapping: tfm:umvs/Coffeecup -> 26BD
+Mapping: tfm:umvs/Radioactivity -> 2615
+Mapping: tfm:umvs/Football -> 2622
 (../marvosym.sty
 Package: marvosym ....-..-.. v... Martin Vogel's Symbols font definitions
 )
