@@ -32,7 +32,7 @@
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
 \ExplSyntaxOff
-\ProvidesFileSVN{$Id: fixtounicode.dtx 11568 2026-01-28 03:12:06Z cfrees $}[v0.0 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: fixtounicode.dtx 11671 2026-02-22 07:50:42Z cfrees $}[v0.0 \revinfo][\filename: \filebase]
 \revinfo][\filebase DTX: ]
 \DefineFileInfoSVN[fixtounicode]
 \documentclass[11pt,british]{ltxdoc}
@@ -80,13 +80,13 @@
 \urlstyle{sf}
 \usepackage{microtype}
 \usepackage[a4paper,headheight=14pt,marginparwidth=45mm,hmarginratio=4:1,vscale=.8,hscale=.7,verbose]{geometry}	% use 14pt for 11pt text, 15pt for 12pt text
-% addaswyd o chronos.tex
+% addaswyd o fixtounicode.tex
 \newlength\tewadjust
-\newlength\chronosdoctemplgth
+\newlength\fixtounicodedoctemplgth
 \AddToHook {begindocument/after}[.]
 {%
   \setlength\tewadjust{\marginparwidth+\marginparsep-\paperwidth+\textwidth+\oddsidemargin+1in}%
-  \setlength\chronosdoctemplgth{0pt}%
+  \setlength\fixtounicodedoctemplgth{0pt}%
 }
 \usepackage{csquotes}
 \MakeAutoQuote{‘}{’}
@@ -108,56 +108,61 @@
   urlcolor={blueberry}%
 }
 \NewDocElement[%
+  idxtype=key,
+  idxgroup=l3keys,
+  printtype=\textit{key},
+]{Key}{key}
+\NewDocElement[%
   idxtype=opt.,
   idxgroup=options,
   printtype=\textit{opt.},
 ]{Opt}{option}
-\NewDocElement[%
-  idxtype=alt.,
-  idxgroup=alternates,
-  printtype=\textit{alt.},
-]{Alt}{alternate}
-\NewDocElement[%
-  idxtype=lig.,
-  idxgroup=ligatures,
-  printtype=\textit{lig.},
-]{Lig}{ligature}
-\NewDocElement[%
-  idxtype=sw.,
-  idxgroup=swashes,
-  printtype=\textit{sw.},
-]{Sw}{swash}
+% ^^A \NewDocElement[%
+% ^^A   idxtype=alt.,
+% ^^A   idxgroup=alternates,
+% ^^A   printtype=\textit{alt.},
+% ^^A ]{Alt}{alternate}
+% ^^A \NewDocElement[%
+% ^^A   idxtype=lig.,
+% ^^A   idxgroup=ligatures,
+% ^^A   printtype=\textit{lig.},
+% ^^A ]{Lig}{ligature}
+% ^^A \NewDocElement[%
+% ^^A   idxtype=sw.,
+% ^^A   idxgroup=swashes,
+% ^^A   printtype=\textit{sw.},
+% ^^A ]{Sw}{swash}
 \NewDocElement[%
   idxtype=pkg.,
   idxgroup=,
   printtype=\textit{pkg.},
 ]{Pkg}{package}
-\NewDocElement[%
-  printtype=\textdagger,
-  idxtype=,
-  idxgroup=,
-  macrolike,
-]{DMacro}{dmacro}
-\NewDocElement[%
-  idxtype=fd.,
-  idxgroup=fds,
-  printtype=\textit{fd.},
-]{Fd}{fdfile}
-\NewDocElement[%
-  idxtype=drv.,
-  idxgroup=drivers,
-  printtype=\textit{drv.},
-]{Drv}{driver}
-\NewDocElement[%
-  idxtype=map,
-  idxgroup=map files,
-  printtype=\textit{map},
-]{Map}{mapfile}
-\NewDocElement[%
-  idxtype=etx,
-  idxgroup=font encodings,
-  printtype=\textit{etx},
-]{Etx}{encoding}
+% ^^A \NewDocElement[%
+% ^^A   printtype=\textdagger,
+% ^^A   idxtype=,
+% ^^A   idxgroup=,
+% ^^A   macrolike,
+% ^^A ]{DMacro}{dmacro}
+% ^^A \NewDocElement[%
+% ^^A   idxtype=fd.,
+% ^^A   idxgroup=fds,
+% ^^A   printtype=\textit{fd.},
+% ^^A ]{Fd}{fdfile}
+% ^^A \NewDocElement[%
+% ^^A   idxtype=drv.,
+% ^^A   idxgroup=drivers,
+% ^^A   printtype=\textit{drv.},
+% ^^A ]{Drv}{driver}
+% ^^A \NewDocElement[%
+% ^^A   idxtype=map,
+% ^^A   idxgroup=map files,
+% ^^A   printtype=\textit{map},
+% ^^A ]{Map}{mapfile}
+% ^^A \NewDocElement[%
+% ^^A   idxtype=etx,
+% ^^A   idxgroup=font encodings,
+% ^^A   printtype=\textit{etx},
+% ^^A ]{Etx}{encoding}
 \NewDocumentCommand \val { m }
 {%
   {\ttfamily =\,\meta{#1}}%
@@ -256,13 +261,15 @@
 % 
 % 
 % \begin{abstract}
-%   \noindent\lpack{fixtounicode}
+%   \noindent\lpack{fixtounicode} provides interfaces for adding ‘tounicode’ mappings to type1 and/or \TeX{} fonts which lack them. 
+%   Equivalent \lpack{expl3}, \LaTeXe{} and key-value interfaces are provided, but the package is primarily designed to support type1 symbol packages.
 % \end{abstract}
 %
 % \tableofcontents
 % 
 % 
 % \MaybeStop{%
+% \renewcommand*\glossaryname{Changes}%
 % \PrintChanges
 % \PrintIndex
 % }
@@ -274,17 +281,16 @@
 %<*sty>
 %<@@=fixtounicode>
 %    \begin{macrocode}
-\NeedsTeXFormat{LaTeX2e}
-\RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: fixtounicode.dtx 11568 2026-01-28 03:12:06Z cfrees $}[v0.0 \revinfo]
-\DefineFileInfoSVN
+\GetIdInfo $Id: fixtounicode.dtx 11671 2026-02-22 07:50:42Z cfrees $ 
+  {Fix missing tounicode values in TeX fonts}
+\ProvidesExplPackage{\ExplFileName}
+  {\ExplFileDate}{v0.0 \ExplFileVersion}{\ExplFileDescription}
 %    \end{macrocode}
 % \iffalse
 % ^^A Paid â defnyddio \GetFileInfoSVN*/\GetFileInfoSVN{} yn y fan hon!!
 % \fi
+% What is the point of \texttt{dev} exactly?
 %    \begin{macrocode}
-\ExplSyntaxOn
-\typeout{TSIECIO'R ~ FERSIWN ~ YMA!!}
 \keys_define:nn { fixtounicode }
 {
   debug .bool_set:N = \l_@@_debug_bool,
@@ -366,10 +372,11 @@
 % \begin{macro}{\pdfglyphtounicode}
 % Lua\TeX{} only, from the manual.
 %    \begin{macrocode}
-\bool_if:nT { \sys_if_engine_luatex_p: }
+\bool_lazy_and:nnT { \sys_if_engine_luatex_p: }{ \sys_if_output_pdf_p: }
 {
   \protected\def\pdfglyphtounicode {\pdfextension glyphtounicode }
   \lua_now:n { pdf.setgentounicode(1) }
+  \bool_if:NT \l_@@_dev_bool { \input glyphtounicode.tex\relax }
 }
 %    \end{macrocode}
 % \end{macro}
@@ -384,6 +391,11 @@
   \msg_warning_text:n { fixtounicode } :: ~
   Sorry, ~ use ~ of ~ #1 ~ is ~ not ~ supported ~ on ~ #2 ~ \msg_line_context:. ~
   #3
+}
+\msg_new:nnn { fixtounicode } { file-awol } 
+{
+  \msg_error_text:n { fixtounicode } :: ~ 
+  #1 ~ not ~ found ~ on ~ \msg_line_context:
 }
 \cs_new_protected_nopar:Npn \@@_tounicode_pair:nn #1#2 {}
 %    \end{macrocode}
@@ -480,11 +492,11 @@
 %    \end{macrocode}
 % On all other engines, the functions are noop.
 %    \begin{macrocode}
-\bool_if:nT {\sys_if_output_dvi_p:}
+\sys_if_output_dvi:T
 {
   \@@_debug:n {
-    tounicode~mappings~unsupported~for~DVI.
-    ~Installing~noop~functions.
+    tounicode~mappings~unsupported~for~DVI.~
+    Installing~noop~functions.~
   }
   \cs_new_eq:NN \@@_tounicode:nnNN \use_none:nnnn
   \cs_new_eq:NN \@@_tounicode:nNN \use_none:nnn
@@ -515,7 +527,31 @@
 }
 %    \end{macrocode}
 % \end{macro}
+% \begin{key}{%
+%   default,
+%   glyphs,
+%   mappings,
+%   mappings~by~index,
+%   pfb,
+%   tfm,
+%   unicodes,
+% }
 % Keys.
+% \begin{description}[font=\ttfamily]
+%   \item[default] Default code point.
+%   \item[glyphs] Comma-separated list of glyph names.
+%     For use with \texttt{unicodes}.
+%   \item[mappings] Key-value list of glyph to Unicode mappings.
+%     pdf\TeX{} and Lua\TeX{} 1.24 and later.
+%     Probably unsuitable for package code.
+%   \item[mappings by index] Key-value list of slot to Unicode mappings.
+%     Lua\TeX{} 1.22 and earlier only.
+%     Probably unsuitable for package code.
+%   \item[pfb] Type1 font.
+%   \item[tfm] TFM.
+%   \item[unicodes] Comma-separated list of code points.
+%     For use with \texttt{glyphs}.
+% \end{description}
 %    \begin{macrocode}
 \keys_define:nn { fixtounicode }
 {
@@ -537,6 +573,9 @@
   unicodes .clist_set:N = \l_@@_unicodes_clist,
   unicodes .value_required:n = true,
 }
+%    \end{macrocode}
+% \end{key}
+%    \begin{macrocode}
 \prop_new:N \l_@@_mappings_prop
 \prop_new:N \l_@@_mappings_ind_prop
 %    \end{macrocode}
@@ -551,7 +590,7 @@
     {
       \tl_if_empty:NTF \l_@@_pfb_tl
       {
-        % error
+        \msg_error:nnnV {fixtounicode} {file-awol} \l_@@_pfb_tl
       }{
         \tl_set_eq:NN \l_@@_tfm_tl \l_@@_pfb_tl
       }
@@ -583,6 +622,8 @@
 % To test on LuaTeX\{}, install a development binary, (re)generate appropriate formats and load this package with the \texttt{dev} option.
 % Note the binary should probably \textbf{not} be used for real documents.
 %
+% For \TeX{} Live, the 2026 pretest contains a version of Lua\TeX{} which supports this functionality, so it is no longer necessary to download a separate binary or regenerate formats.
+%
 % On pdf\TeX{} this method should work just fine.
 %    \begin{macrocode}
     \prop_if_empty:NF \l_@@_mappings_prop
@@ -608,7 +649,7 @@
 % Again, this is intended for cases where only a few mappings are needed from a particular font.
 %
 % This method is \textbf{ONLY} supported on \textbf{CURRENT or OLDER} Lua\TeX{}. 
-% \textbf{It will not work when LuaTeX{} is updated and should NOT be used in package code.}
+% \textbf{It will not work with LuaTeX{} from \TeX{} Live 2026 pretest or later and should NOT be used in package code.}
 %    \begin{macrocode}
     \prop_if_empty:NF \l_@@_mappings_ind_prop
     {
@@ -649,19 +690,7 @@
 %    \end{macrocode}
 % \end{macro}
 %    \begin{macrocode}
-\ExplSyntaxOff
 %    \end{macrocode}
 %</sty>
 % 
-% \subsection{??}
-% 
-%<*??>
-%    \begin{macrocode}
-%    \end{macrocode}
-%</??>
-% \subsection{Other}
-%<*other>
-%    \begin{macrocode}
-%    \end{macrocode}
-%</other>
 %\Finale
