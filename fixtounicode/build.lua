@@ -1,4 +1,4 @@
--- $Id: build.lua 11568 2026-01-28 03:12:06Z cfrees $
+-- $Id: build.lua 11669 2026-02-22 07:48:33Z cfrees $
 -- Build configuration for fixtounicode
 -------------------------------------------------------------------------------
 -- l3build.pdf listing 1 tudalen 9
@@ -85,6 +85,25 @@ test_order = {"log", "uni"}
 -------------------------------------------------------------------------------
 -- rhaid i vars addasol fodoli? | suitable vars must exist?
 function checkinit_hook ()
+  local f
+  if fileexists(testdir,"fixtounicode.sty") then
+    f = testdir .. "/fixtounicode.sty"
+  elseif fileexists(unpackdir,"fixtounicode.sty") then
+    f = unpackdir .. "/fixtounicode.sty"
+  else
+    error("No fixtounicode.sty found!")
+  end
+  local l = {}
+  for line in io.lines(f) do
+    if (string.match(line, "\\ExplFileVersion%}")) then
+      table.insert(l, (string.gsub(line, "\\ExplFileVersion", "ExplFileVersion")))
+    else
+      table.insert(l, line)
+    end
+  end
+  local file = io.open(f,"w")
+  file:write(table.concat(l,"\n") .. "\n")
+  file:close()
   -- tests have not yet been copied to testdir
   return cp("fixtounicode.lua",unpackdir,testdir)
 end
