@@ -1,8 +1,7 @@
 This is a generated file for the l3build validation system.
 Don't change this file in any respect.
 (fixtounicode.sty
-Package: fixtounicode ....-..-.. v... (SVN Rev: 11554)
-TSIECIO'R FERSIWN YMA!!
+Package: fixtounicode ....-..-.. v... ExplFileVersion Fix missing tounicode values in TeX fonts
 [fixtounicode debug]:: TFM specific tounicode mappings supported.Enabling support for glyph names.
 )
 Package fixtounicode Warning: Package fixtounicode Warning:: Sorry, use of key mappings is not supported on pdfTeX or new versions of LuaTeX on line .... Use glyph names with the key mappings, the keys glyphs and unicodes or equivalent expl3 functions.
