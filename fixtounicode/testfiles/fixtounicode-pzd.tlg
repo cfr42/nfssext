@@ -1,15 +1,15 @@
 This is a generated file for the l3build validation system.
 Don't change this file in any respect.
 (pzd-data.sty
-Package: pzd-data ....-..-.. v... (SVN Rev: 11017){}: pzd Unicode data
+Package: pzd-data ....-..-.. v... (SVN Rev: 11567){}: pzd Unicode data
 ) (fixtounicode.sty
-Package: fixtounicode ....-..-.. v... (SVN Rev: 11554)
-TSIECIO'R FERSIWN YMA!!
+Package: fixtounicode ....-..-.. v... ExplFileVersion Fix missing tounicode values in TeX fonts
 [fixtounicode debug]:: TFM specific tounicode mappings supported.Enabling support for glyph names.
 )
 ============================================================
 TEST 1: fixtounicode-pzd-config
 ============================================================
+Mapping: tfm:pzdr/space -> 0020
 Mapping: tfm:pzdr/a1 -> 2701
 Mapping: tfm:pzdr/a2 -> 2702
 Mapping: tfm:pzdr/a202 -> 2703
