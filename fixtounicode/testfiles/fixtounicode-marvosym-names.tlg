@@ -4,9 +4,9 @@ Don't change this file in any respect.
 Package: fixtounicode ....-..-.. v... ExplFileVersion Fix missing tounicode values in TeX fonts
 [fixtounicode debug]:: TFM specific tounicode mappings supported.Enabling support for glyph names.
 )
-Mapping: tfm:umvs/Coffeecup -> 26BD
-Mapping: tfm:umvs/Radioactivity -> 2615
-Mapping: tfm:umvs/Football -> 2622
+Package fixtounicode Info: Package fixtounicode Info:: Mapping tfm:umvs/Coffeecup -> 26BD on line ...
+Package fixtounicode Info: Package fixtounicode Info:: Mapping tfm:umvs/Radioactivity -> 2615 on line ...
+Package fixtounicode Info: Package fixtounicode Info:: Mapping tfm:umvs/Football -> 2622 on line ...
 (../marvosym.sty
 Package: marvosym ....-..-.. v... Martin Vogel's Symbols font definitions
 )

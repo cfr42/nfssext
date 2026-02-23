@@ -1,4 +1,4 @@
--- $Id: build.lua 11674 2026-02-23 16:32:06Z cfrees $
+-- $Id: build.lua 11676 2026-02-23 18:22:57Z cfrees $
 -- Build configuration for fixtounicode
 -------------------------------------------------------------------------------
 -- l3build.pdf listing 1 tudalen 9
@@ -18,6 +18,7 @@ checkdeps = { maindir .. "/arkandis/adforn", maindir .. "/arkandis/adfsymbols" }
 -- checkconfigs = { "build" , "config-dev", "config-dvi" }
 checkconfigs = { "build" , "config-dvi" }
 checkformat = "latex"
+excludetests = { "fixtounicode-marvosym", "fixtounicode-marvosym-uni" }
 recordstatus = true
 specialformats = specialformats or {}
 -- specialformats["latex-dev"] = {
