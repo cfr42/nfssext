@@ -1,4 +1,4 @@
--- $Id: build.lua 11669 2026-02-22 07:48:33Z cfrees $
+-- $Id: build.lua 11674 2026-02-23 16:32:06Z cfrees $
 -- Build configuration for fixtounicode
 -------------------------------------------------------------------------------
 -- l3build.pdf listing 1 tudalen 9
@@ -15,17 +15,18 @@ scriptfiles = {"*.lua"}
 checksuppfiles = {"*.lua"}
 typesetsuppfiles = {"*.lua"}
 checkdeps = { maindir .. "/arkandis/adforn", maindir .. "/arkandis/adfsymbols" }
-checkconfigs = { "build" , "config-dev", "config-dvi" }
+-- checkconfigs = { "build" , "config-dev", "config-dvi" }
+checkconfigs = { "build" , "config-dvi" }
 checkformat = "latex"
 recordstatus = true
 specialformats = specialformats or {}
-specialformats["latex-dev"] = {
-  luatex = {
-    binary = "luahbtex-dev", 
-    format = "lualatex-dev", 
-    tokens = "\\PassOptionsToPackage{dev}{fixtounicode}",
-  }
-}
+-- specialformats["latex-dev"] = {
+--   luatex = {
+--     binary = "luahbtex-dev", 
+--     format = "lualatex-dev", 
+--     tokens = "\\PassOptionsToPackage{dev}{fixtounicode}",
+--   }
+-- }
 manifestfile = "manifest.txt"
 -------------------------------------------------------------------------------
 dofile(maindir .. "/tag.lua")
@@ -85,25 +86,38 @@ test_order = {"log", "uni"}
 -------------------------------------------------------------------------------
 -- rhaid i vars addasol fodoli? | suitable vars must exist?
 function checkinit_hook ()
-  local f
+  local files = {}
   if fileexists(testdir,"fixtounicode.sty") then
-    f = testdir .. "/fixtounicode.sty"
+    table.insert(files, testdir .. "/fixtounicode.sty")
   elseif fileexists(unpackdir,"fixtounicode.sty") then
-    f = unpackdir .. "/fixtounicode.sty"
+    table.insert(files, unpackdir .. "/fixtounicode.sty")
   else
     error("No fixtounicode.sty found!")
   end
-  local l = {}
-  for line in io.lines(f) do
-    if (string.match(line, "\\ExplFileVersion%}")) then
-      table.insert(l, (string.gsub(line, "\\ExplFileVersion", "ExplFileVersion")))
-    else
-      table.insert(l, line)
+  for _,i in ipairs({"adforn","adfbullets","adfarrows"}) do
+    if fileexists(testdir, i .. ".sty") then
+      table.insert(files, testdir .. "/" .. i .. ".sty")
+    elseif fileexists(localdir, i .. ".sty") then
+      table.insert(files, localdir .. "/" .. i .. ".sty")
     end
   end
-  local file = io.open(f,"w")
-  file:write(table.concat(l,"\n") .. "\n")
-  file:close()
+  local l 
+  local f, file
+  for _,f in ipairs(files) do
+    l = {}
+    for line in io.lines(f) do
+      if (string.match(line, "\\ExplFileVersion%}")) then
+        table.insert(l, (string.gsub(line, "\\ExplFileVersion", "ExplFileVersion")))
+      elseif (string.match(line, "\\revinfo")) then
+        table.insert(l, (string.gsub(line, "\\revinfo", "revinfo")))
+      else
+        table.insert(l, line)
+      end
+    end
+    file = io.open(f,"w")
+    file:write(table.concat(l,"\n") .. "\n")
+    file:close()
+  end
   -- tests have not yet been copied to testdir
   return cp("fixtounicode.lua",unpackdir,testdir)
 end

@@ -1,8 +1,10 @@
--- $Id: config-dvi.lua 11554 2026-01-23 22:49:23Z cfrees $
+-- $Id: config-dvi.lua 11674 2026-02-23 16:32:06Z cfrees $
 -------------------------------------------------------------------------------
 checkopts = "-interaction=nonstopmode --output-format=dvi"
+checkengines = { "pdftex", "luatex" }
+testfiledir = "testfiles-dvi"
 test_order = {"log"}
-checkruns = 2
+checkruns = 1
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -- vim: ts=2:sw=2:tw=80
