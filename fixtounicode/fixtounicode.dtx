@@ -30,16 +30,15 @@
 %<*driver>
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
-\def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
+\def\MyMakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
 \ExplSyntaxOff
-\ProvidesFileSVN{$Id: fixtounicode.dtx 11677 2026-02-23 18:38:42Z cfrees $}[v0.0 \revinfo][\filename: \filebase]
-\revinfo][\filebase DTX: ]
-\DefineFileInfoSVN[fixtounicode]
-\documentclass[11pt,british]{ltxdoc}
+\ProvidesFileSVN{$Id: fixtounicode.dtx 11680 2026-02-24 01:37:26Z cfrees $}[v0.0 \revinfo][\filename: \filebase]
+\DefineFileInfoSVN[fixtounicodedoc]
+\documentclass[10pt,british]{ltxdoc}
 % l3doc loads fancyvrb
 % fancyvrb overwrites svn-prov's macros without warning
 % restore \fileversion \filerev in case we're using l3doc
-\GetFileInfoSVN{fixtounicode}
+\GetFileInfoSVN{fixtounicodedoc}
 \usepackage{fixtounicode}
 \EnableCrossrefs
 \CodelineIndex
@@ -48,22 +47,26 @@
 \DoNotIndex{\verb,\ProvidesPackageSVN,\NeedsTeXFormat,\ProcessKeyOptions}
 \usepackage{babel}
 \usepackage{fancyhdr}
+\usepackage[tt={monowidth,tabular,lining}]{cfr-lm}
 \usepackage[plain]{fancyref}
 \usepackage{enumitem}
 \usepackage{booktabs}
 \usepackage{xcolor}
 \usepackage{xurl}
-% \urlstyle{tt}
 \urlstyle{sf}
 \usepackage{microtype}
 \usepackage[a4paper,headheight=14pt,marginparwidth=45mm,hmarginratio=4:1,vscale=.8,hscale=.7,verbose]{geometry}	% use 14pt for 11pt text, 15pt for 12pt text
 % addaswyd o fixtounicode.tex
 \newlength\tewadjust
-\newlength\fixtounicodedoctemplgth
-\AddToHook {begindocument/after}[.]
+\newlength\fixtounicodedocoffset
+\AddToHook {begindocument/end}[.]
 {%
-  \setlength\tewadjust{\marginparwidth+\marginparsep-\paperwidth+\textwidth+\oddsidemargin+1in}%
-  \setlength\fixtounicodedoctemplgth{0pt}%
+  \setlength\tewadjust{\dimexpr\marginparwidth+\marginparsep-\paperwidth+\textwidth+\oddsidemargin+1in\relax}%
+  \setlength\fixtounicodedocoffset{\dimexpr\marginparwidth+\marginparsep\relax}%
+  \newgeometry{hscale=0.8}%
+  \savegeometry{safonol}%
+  \restoregeometry
+  \pagestyle{fancymarg}%
 }
 \usepackage{csquotes}
 \MakeAutoQuote{‘}{’}
@@ -93,10 +96,21 @@
   printtype=\textit{fn.},
 ]{Fn}{fn}
 \NewDocElement[%
+  idxtype=opt.,
+  idxgroup=options,
+  printtype=\textit{opt.},
+]{Opt}{option}
+\NewDocElement[%
   idxtype=pkg.,
-  idxgroup=,
+  idxgroup=packages,
   printtype=\textit{pkg.},
 ]{Pkg}{package}
+\NewDocElement[%
+  macrolike=true,
+  idxtype=var.,
+  idxgroup=expl3 variable,
+  printtype=\textit{var.},
+]{Var}{var}
 % ^^A \NewDocElement[%
 % ^^A   printtype=\textdagger,
 % ^^A   idxtype=,
@@ -148,16 +162,32 @@
     \textbar{} Mirror:
     \href{https://github.com/cfr42/nfssext}{\url{github.com/cfr42/nfssext}}% 
 }}
-% \date{\fileversion~\filetoday}
 \date{\fileversion~\filedate}
+\newcommand*\twmarg{%
+  \restoregeometry
+  \pagestyle{fancymarg}%
+}
+\newcommand*\twreg{%
+  \loadgeometry{safonol}%
+  \pagestyle{fancyreg}%
+}
 \pagestyle{fancy}
-\fancyhf{}
-\fancyhf[lh]{\itshape\filebase}
+\fancyhf{}%
 % ^^A \fancyhf[rh]{\itshape\filetoday}
-\fancyhf[rh]{\itshape\fileversion}
 % ^^A \fancyhf[ch]{\itshape Support for Latin Modern}
 % ^^A\fancyhf[lf]{\itshape\fileversion}
-\fancyhf[cf]{\itshape--- \thepage~/~\lastpage{} ---}
+\fancypagestyle{fancymarg}{%
+  \pagestyle{fancyreg}%
+  \fancyheadoffset[LO,RE]{\fixtounicodedocoffset}%
+}
+\fancypagestyle{fancyreg}{%
+  \fancyhf{}%
+  \fancyhf[lh]{\itshape\filebase}%
+  \fancyhf[rh]{\itshape\fileversion}%
+  \fancyhf[cf]{\itshape--- \thepage~/~\lastpage{} ---}%
+  \fancyheadoffset{0pt}%
+}
+
 \ExplSyntaxOn
 \hook_gput_code:nnn {shipout/lastpage} {.}
 {
@@ -169,6 +199,7 @@
 }
 \cs_new_eq:NN \OrigMakePrivateLetters \MakePrivateLetters
 \ExplSyntaxOff
+\setcounter{IndexColumns}{2}
 \definecolor{strawberry}{rgb}{1.000,0.000,0.502}
 \definecolor{blueberry}{rgb}{0.000,0.000,1.000}
 \definecolor{moss}{rgb}{0.000,0.502,0.251}
@@ -179,9 +210,7 @@
 %</driver>
 % \fi
 %
-% \changes{v0.0}{0000-00-00{First public release.}
-% ^^A lua will replace v0.0 and 0000/00/00 when tagging
-% \changes{v0.0}{0000/00/00}{}
+% \changes{v0.0}{0000-00-00}{First public release.}
 % 
 % \maketitle\thispagestyle{empty}
 % \pdfinfo{%
@@ -204,7 +233,7 @@
 %
 % \section{Usage}\label{sec:usage}
 %
-% \DecribePkg{fixtounicode}\cs{usepackage}\oarg{package options}\marg{fixtounicode}
+% \DescribePkg{fixtounicode}\cs{usepackage}\oarg{package options}\marg{fixtounicode}
 %
 % loads the package with \meta{package options}.
 % 
@@ -244,34 +273,37 @@
 % \end{description}
 %
 % For example, the following adds mappings for three of \pkg{marvosym}'s symbols.
+% \typeout{Clangers}
 % \iffalse
 %<*verb>
 % \fi
-\begin{verbatim}
-\usepackage{fixtounicode}
-\fixtounicode{%
-  tfm = umvs,
-  mappings = {%
-    Coffeecup = 26BD,
-    Radioactivity = 2615,
-    Football = 2622,
-  },
-}
-\usepackage{marvosym}
-\end{verbatim}
+% ^^A Indentation of code is **required** here, but don't ask me why ...
+% \begin{verbatim}
+  \usepackage{fixtounicode}
+  \fixtounicode{%
+    tfm = umvs,
+    mappings = {%
+      Coffeecup = 26BD,
+      Radioactivity = 2615,
+      Football = 2622,
+    },
+  }
+  \usepackage{marvosym}
+% \end{verbatim}
 % \iffalse
 %</verb>
 % \fi
+% \typeout{Bagpuss}
 % 
 % When the corresponding symbols are used in the document,
 % \iffalse
 %<*verb>
 % \fi
-\begin{verbatim}
+% \begin{verbatim}
   \Coffeecup\quad
   \Radioactivity\quad
   \Football
-\end{verbatim}
+% \end{verbatim}
 % \iffalse
 %</verb>
 % \fi
@@ -283,15 +315,15 @@
 %
 % \section{Programming interface}\label{sec:pi}
 %
-% \DescribeMacro{\fixtounicode_tounicode:nnNN}\marg{\textsc{tfm}}\marg{\textsc{pfb}}\meta{sequence 1}\meta{sequence 2}
-% \DescribeMacro{\fixtounicode_tounicode:nNN}\marg{font name}\meta{sequence 1}\meta{sequence 2}
+% \DescribeMacro{\fixtounicode_tounicode:nnNN} \marg{\textsc{tfm}}\marg{\textsc{pfb}}\meta{sequence 1}\meta{sequence 2}\par
+% \DescribeMacro{\fixtounicode_tounicode:nNN} \marg{font name}\meta{sequence 1}\meta{sequence 2}
 % 
 % where \meta{\textsc{tfm}} and \meta{\textsc{pfb}} are the names of the \textsc{tfm} and \textsc{pfb} without extensions, \meta{sequence 1} is the name of a sequence variable containing glyph names and \meta{sequence 2} is the name of a sequence variable containing the corresponding Unicode code points.
 % \verb|\fixtounicode_tounicode:nNN| is a convenience wrapper for the common case in which \meta{\textsc{tfm}} and \meta{\textsc{pfb}} are the same.
 % In that case \meta{font name} is their common name, without extension.
 %
-% \DescribeMacro{\fixtounicode_tounicode:nnnn}\marg{\textsc{tfm}}\marg{\textsc{pfb}}\marg{sequence 1}\marg{sequence 2}
-% \DescribeMacro{\fixtounicode_tounicode:nnn}\marg{font name}\marg{sequence 1}\marg{sequence 2}
+% \DescribeMacro{\fixtounicode_tounicode:nnnn} \marg{\textsc{tfm}}\marg{\textsc{pfb}}\marg{sequence 1}\marg{sequence 2}\par
+% \DescribeMacro{\fixtounicode_tounicode:nnn} \marg{font name}\marg{sequence 1}\marg{sequence 2}
 %
 % Wrappers around \verb|\fixtounicode_tounicode:nnNN| and \verb|\fixtounicode_tounicode:nNN| which accept is comma-separated lists of glyph names and code points in place of variables.
 % These versions simply set sequence variables from the comma-separated lists and pass their names to the underlying functions.
@@ -309,7 +341,7 @@
 %<*sty>
 %<@@=fixtounicode>
 %    \begin{macrocode}
-\GetIdInfo $Id: fixtounicode.dtx 11677 2026-02-23 18:38:42Z cfrees $ 
+\GetIdInfo $Id: fixtounicode.dtx 11680 2026-02-24 01:37:26Z cfrees $ 
   {Fix missing tounicode values in TeX fonts}
 \ProvidesExplPackage{\ExplFileName}
   {\ExplFileDate}{v0.0 \ExplFileVersion}{\ExplFileDescription}
@@ -317,15 +349,14 @@
 % \iffalse
 % ^^A Paid â defnyddio \GetFileInfoSVN*/\GetFileInfoSVN{} yn y fan hon!!
 % \fi
-% \begin{key}{debug,dev,dingbats}
-% What is the point of \texttt{dev} exactly?
+% \begin{key}{debug,dingbats}
+% Keys.
 %    \begin{macrocode}
 \keys_define:nn { fixtounicode }
 {
   debug .bool_set:N = \l_@@_debug_bool,
   debug .initial:n = false,
   debug .default:n = true,
-  dev .code:n = {},
   dingbats .bool_set:N = \l_@@_dingbats_bool,
   dingbats .default:n = true,
   dingbats .initial:n = false,
@@ -335,14 +366,15 @@
 %    \begin{macrocode}
 \ProcessKeyOptions[fixtounicode]
 %    \end{macrocode}
-% \begin{var}{\l_@@_glyphtounicode_seq,\l_@@_tounicode_seq,\l_@@_glyphs_seq,\l_@@_unicode_seq,\l_@@_engine_seq}
-%   Sequence variables.
+% \begin{var}{\l_@@_glyphtounicode_seq,\l_@@_tounicode_seq,\l_@@_glyphs_seq,\l_@@_unicode_seq,\l_@@_engine_seq,\l_@@_luatex_has_fix_bool}
+%   Variables.
 %    \begin{macrocode}
 \seq_new:N \l_@@_glyphtounicode_seq
 \seq_new:N \l_@@_tounicode_seq
 \seq_new:N \l_@@_glyphs_seq
 \seq_new:N \l_@@_unicodes_seq
 \seq_new:N \g_@@_engine_seq
+\bool_new:N \g_@@_luatex_has_fix_bool
 %    \end{macrocode}
 % \end{var}
 % Format variant.
@@ -384,7 +416,7 @@
 \sys_if_engine_luatex:T 
 {
   \@@_debug:n {Engine~is~LuaTeX.}
-  \bool_set_true:N \l_@@_dev_bool
+  \bool_set_true:N \l_@@_luatex_has_fix_bool
   \seq_gset_split:NnV \g_@@_engine_seq {.} \c_sys_engine_version_str
   \int_compare:nNnTF { \seq_item:Nn \g_@@_engine_seq {1} } < {1}
   { 
@@ -393,7 +425,7 @@
       ~you~get~out~too~much.
       ~Stay~home~and~update!
     }
-    \bool_set_false:N \l_@@_dev_bool
+    \bool_set_false:N \l_@@_luatex_has_fix_bool
   } {
     \int_compare:nNnT { \seq_item:Nn \g_@@_engine_seq {2} } < {24} 
     { 
@@ -401,20 +433,26 @@
         LuaTeX~minor~version~less~than~24.
         ~I'll~do~my~best,~but~binary~too~old~for~full~support.
       }
-      \bool_set_false:N \l_@@_dev_bool
+      \bool_set_false:N \l_@@_luatex_has_fix_bool
     }
   }
-  \@@_debug:N \l_@@_dev_bool
+  \@@_debug:N \l_@@_luatex_has_fix_bool
 }
+%    \end{macrocode}
+% This is not good at all \dots.
+%    \begin{macrocode}
+\sys_ensure_backend:
 %    \end{macrocode}
 % \begin{macro}{\pdfglyphtounicode}
 % Lua\TeX{} only, from the manual.
 %    \begin{macrocode}
-\bool_lazy_and:nnT { \sys_if_engine_luatex_p: }{ \sys_if_output_pdf_p: }
+\bool_lazy_and:nnT
+{ \sys_if_engine_luatex_p: }
+{ \sys_if_output_pdf_p: }
 {
   \protected\def\pdfglyphtounicode {\pdfextension glyphtounicode }
   \lua_now:n { pdf.setgentounicode(1) }
-  \bool_if:NT \l_@@_dev_bool { \input glyphtounicode.tex\relax }
+  \bool_if:NT \l_@@_luatex_has_fix_bool { \input glyphtounicode.tex\relax }
   \bool_if:NT \l_@@_dingbats_bool
   {
     \input glyphtounicode.tex \relax
@@ -426,18 +464,18 @@
 \msg_new:nnn { fixtounicode } { mapping } 
 {
   \msg_info_text:n { fixtounicode } :: ~ 
-  Mapping ~ #1 ~ -> ~ #2 ~ \msg_line_context:
+  Mapping~#1~->~#2~\msg_line_context:
 }
 \msg_new:nnn { fixtounicode } {  limitations } 
 {
   \msg_warning_text:n { fixtounicode } :: ~
-  Sorry, ~ use ~ of ~ #1 ~ is ~ not ~ supported ~ on ~ #2 ~ \msg_line_context:. ~
+  Sorry,~use~of~#1~is~not~supported~on~#2~\msg_line_context:. ~
   #3
 }
 \msg_new:nnn { fixtounicode } { file-awol } 
 {
   \msg_error_text:n { fixtounicode } :: ~ 
-  #1 ~ not ~ found ~ on ~ \msg_line_context:
+  #1~not~found~on~\msg_line_context:
 }
 %    \end{macrocode}
 % \begin{fn}{\@@_tounicode:nnNN,
@@ -458,7 +496,9 @@
   {
     \bool_lazy_or_p:nn {\sys_if_engine_pdftex_p:}
     {
-      \bool_lazy_and_p:nn {\sys_if_engine_luatex_p:} {\l_@@_dev_bool}
+      \bool_lazy_and_p:nn
+      {\sys_if_engine_luatex_p:}
+      {\l_@@_luatex_has_fix_bool}
     }
   } {\sys_if_output_pdf_p:}
 } {
@@ -495,7 +535,7 @@
 \bool_lazy_all:nT
 {
   {\sys_if_engine_luatex_p:}
-  {! \l_@@_dev_bool}
+  {! \l_@@_luatex_has_fix_bool}
   {\sys_if_output_pdf_p:}
 } {
   \@@_debug:n {
@@ -562,13 +602,15 @@
 {
   \seq_set_split:Nnn \l_@@_glyphs_seq { , } { #3 }
   \seq_set_split:Nnn \l_@@_unicodes_seq { , } { #4 }
-  \@@_tounicode:nnNN { #1 } { #2 } \l_@@_glyphs_seq \l_@@_unicodes_seq
+  \@@_tounicode:nnNN { #1 } { #2 }
+    \l_@@_glyphs_seq \l_@@_unicodes_seq
 }
 \cs_new_protected_nopar:Npn \fixtounicode_tounicode:nnn #1#2#3
 {
   \seq_set_split:Nnn \l_@@_glyphs_seq { , } { #2 }
   \seq_set_split:Nnn \l_@@_unicodes_seq { , } { #3 }
-  \@@_tounicode:nnNN { #1 } { #1 } \l_@@_glyphs_seq \l_@@_unicodes_seq
+  \@@_tounicode:nnNN { #1 } { #1 }
+    \l_@@_glyphs_seq \l_@@_unicodes_seq
 }
 %    \end{macrocode}
 % \end{fn}
@@ -593,9 +635,11 @@
   mappings .code:n = {
     \prop_put_from_keyval:Nn \l_@@_mappings_prop { #1 }
   },
+%    \end{macrocode}
 % ^^A   mappings ~ by ~ index .code:n = {
 % ^^A     \prop_put_from_keyval:Nn \l_@@_mappings_ind_prop { #1 }
 % ^^A   },
+%    \begin{macrocode}
   pfb .tl_set:N = \l_@@_pfb_tl,
   pfb .initial:V = \c_empty_tl,
   tfm .tl_set:N = \l_@@_tfm_tl,
@@ -607,8 +651,8 @@
 % \end{key}
 %    \begin{macrocode}
 \prop_new:N \l_@@_mappings_prop
-% ^^A \prop_new:N \l_@@_mappings_ind_prop
 %    \end{macrocode}
+% ^^A \prop_new:N \l_@@_mappings_ind_prop
 % \begin{fn}{\@@_tounicode:}
 % Generic interface.
 %    \begin{macrocode}
@@ -647,7 +691,7 @@
 % Font support packages providing mappings for symbol fonts should preferably use the public \lpack{expl3} functions or, failing that, the keys \texttt{glyphs} and \texttt{unicodes} as I expect the implementation of \texttt{mappings} to be significantly slower.
 %
 % Note that this method is \textbf{NOT} currently supported on Lua\TeX{}. 
-% To test on LuaTeX\{}, install a development binary, (re)generate appropriate formats and load this package with the \texttt{dev} option.
+% To test on Lua\TeX{}, install a development binary, (re)generate appropriate formats and load this package with the \texttt{dev} option.
 % Note the binary should probably \textbf{not} be used for real documents.
 %
 % For \TeX{} Live, the 2026 pretest contains a version of Lua\TeX{} which supports this functionality, so it is no longer necessary to download a separate binary or regenerate formats.
@@ -656,14 +700,17 @@
 %    \begin{macrocode}
   \prop_if_empty:NF \l_@@_mappings_prop
   {
-    \bool_lazy_and:nnTF { \sys_if_engine_luatex_p: } { ! \l_@@_dev_bool }
+    \bool_lazy_and:nnTF
+    { \sys_if_engine_luatex_p: }
+    { ! \l_@@_luatex_has_fix_bool }
     {
       \msg_warning:nnnnn { fixtounicode } { limitations } 
       { key ~ mappings }
-      { this ~ version ~ of ~ LuaTeX }
-      { Please ~ update ~ your ~ TeX ~ distribution. ~
-        If ~ you ~ cannot ~ update, ~ use ~ the ~ keys ~ glyphs ~ and ~ unicodes ~ or ~ equivalent ~ expl3 ~ functions. ~
-        Alternatively, ~ compile ~ with ~ pdfTeX. ~
+      { this~version~of~LuaTeX }
+      { Please~update~your~TeX~distribution. ~
+        If~you~cannot~update,~use~the~keys~glyphs~and~unicodes~
+          or~equivalent~expl3~functions. ~
+        Alternatively,~compile~with~pdfTeX. ~
       }
     }{
       \prop_map_inline:Nn \l_@@_mappings_prop 
@@ -673,7 +720,7 @@
       }
     }
   }
-% ^^A    \end{macrocode}
+%    \end{macrocode}
 % ^^A We now use any key-value mappings set \emph{via} the \texttt{mappings by index} key.
 % ^^A Again, this is intended for cases where only a few mappings are needed from a particular font.
 %
@@ -682,7 +729,7 @@
 % ^^A    \begin{macrocode}
 % ^^A     \prop_if_empty:NF \l_@@_mappings_ind_prop
 % ^^A     {
-% ^^A       \bool_lazy_and:nnTF { \sys_if_engine_luatex_p: } { ! \l_@@_dev_bool }
+% ^^A       \bool_lazy_and:nnTF { \sys_if_engine_luatex_p: } { ! \l_@@_luatex_has_fix_bool }
 % ^^A       {
 % ^^A         \prop_map_inline:Nn \l_@@_mappings_prop 
 % ^^A         {
@@ -701,12 +748,14 @@
 % ^^A         }
 % ^^A       } {
 % ^^A         \msg_warning:nnnnn { fixtounicode } { limitations } 
-% ^^A         { key ~ mappings }
-% ^^A         { pdfTeX ~ or ~ new ~ versions ~ of ~ LuaTeX }
-% ^^A         { Use ~ glyph ~ names ~ with ~ the ~ key ~ mappings, ~ the ~ keys ~ glyphs ~ and ~ unicodes ~ or ~ equivalent ~ expl3 ~ functions. }
+% ^^A         { key~mappings }
+% ^^A         { pdfTeX~or~new~versions~of~LuaTeX }
+% ^^A         { Use~glyph~names~with~the~key~mappings,~the~keys~glyphs~and~unicodes~or~equivalent~expl3~functions. }
 % ^^A       }
 % ^^A     }
-  \@@_tounicode:VVNN \l_@@_tfm_tl \l_@@_pfb_tl \l_@@_glyphs_seq \l_@@_unicodes_seq
+%    \begin{macrocode}
+  \@@_tounicode:VVNN \l_@@_tfm_tl \l_@@_pfb_tl 
+    \l_@@_glyphs_seq \l_@@_unicodes_seq
 }
 %    \end{macrocode}
 % \end{fn}
@@ -723,5 +772,7 @@
 %    \end{macrocode}
 % \end{macro}
 %</sty>
+% 
+% \twreg
 % 
 %\Finale

@@ -1,4 +1,4 @@
--- $Id: build.lua 11676 2026-02-23 18:22:57Z cfrees $
+-- $Id: build.lua 11680 2026-02-24 01:37:26Z cfrees $
 -- Build configuration for fixtounicode
 -------------------------------------------------------------------------------
 -- l3build.pdf listing 1 tudalen 9
@@ -13,14 +13,13 @@ sourcefiledir = "."
 sourcefiles = {"*.dtx","*.ins","*.lua"}
 scriptfiles = {"*.lua"}
 checksuppfiles = {"*.lua"}
-typesetsuppfiles = {"*.lua"}
 checkdeps = { maindir .. "/arkandis/adforn", maindir .. "/arkandis/adfsymbols" }
 -- checkconfigs = { "build" , "config-dev", "config-dvi" }
 checkconfigs = { "build" , "config-dvi" }
 checkformat = "latex"
 excludetests = { "fixtounicode-marvosym", "fixtounicode-marvosym-uni" }
 recordstatus = true
-specialformats = specialformats or {}
+-- specialformats = specialformats or {}
 -- specialformats["latex-dev"] = {
 --   luatex = {
 --     binary = "luahbtex-dev", 
@@ -28,12 +27,15 @@ specialformats = specialformats or {}
 --     tokens = "\\PassOptionsToPackage{dev}{fixtounicode}",
 --   }
 -- }
+typesetsuppfiles = {"*.lua"}
+typesetruns = 4
 manifestfile = "manifest.txt"
 -------------------------------------------------------------------------------
-dofile(maindir .. "/tag.lua")
+-- dofile(maindir .. "/tag.lua")
 date = "2025-2026"
 if direxists(sourcefiledir .. "/../../adnoddau/l3build") then
   dofile(sourcefiledir .. "/../../adnoddau/l3build/manifest.lua")
+  dofile(sourcefiledir .. "/../../adnoddau/l3build/tag.lua")
 end
 -------------------------------------------------------------------------------
 uploadconfig = {
@@ -122,7 +124,26 @@ function checkinit_hook ()
   -- tests have not yet been copied to testdir
   return cp("fixtounicode.lua",unpackdir,testdir)
 end
+-------------------------------------------------------------------------------
 function docinit_hook ()
+  local lines = {}
+  local srcs = {}
+  for _,i in ipairs(sourcefiles) do
+    for _,j in ipairs(filelist(typesetdir, i)) do
+      if string.match(j, "%.dtx") then
+        table.insert(srcs,j)
+      end
+    end
+  end
+  for _,i in ipairs(srcs) do
+    lines = {}
+    for line in io.lines(typesetdir .. "/" .. i) do
+      table.insert(lines, (string.gsub(line,"%_*%@%@%_","__fixtounicode_")))
+    end
+    local f = assert(io.open(typesetdir .. "/" .. i, "w"))
+    f:write(table.concat(lines,"\n") .. "\n")
+    f:close()
+  end
   return cp("fixtounicode.lua",unpackdir,typesetdir)
 end
 -------------------------------------------------------------------------------
