@@ -1,4 +1,4 @@
--- $Id: build.lua 11680 2026-02-24 01:37:26Z cfrees $
+-- $Id: build.lua 11683 2026-02-24 03:57:46Z cfrees $
 -- Build configuration for fixtounicode
 -------------------------------------------------------------------------------
 -- l3build.pdf listing 1 tudalen 9
@@ -10,7 +10,7 @@ maindir = ".."
 sourcefiledir = "."
 -- none of these actually work for lua fragments, so they get copied by hand
 -- below
-sourcefiles = {"*.dtx","*.ins","*.lua"}
+sourcefiles = {"*.dtx","*.ins","fixtounicode.lua"}
 scriptfiles = {"*.lua"}
 checksuppfiles = {"*.lua"}
 checkdeps = { maindir .. "/arkandis/adforn", maindir .. "/arkandis/adfsymbols" }
@@ -49,16 +49,16 @@ uploadconfig = {
 	pkg        = ctanpkg,
 	summary    = "Utility functions in expl3 and 2e syntax for setting tounicode mappings for 7/8 bit fonts.",
   uploader   = "Clea F. Rees",
-	version    = "v0.1",
+	version    = "v0.1.1",
   -- optional --
 	bugtracker = {"https://codeberg.org/cfr/nfssext/issues"},
-  description= "Utility functions in expl3 and 2e syntax for setting tounicode mappings for 7/8 bit fonts. The package provides a unified interface which enables mappings for both pdfTeX and luaTeX. The aim is to make it easier to make legacy (text) symbol packages, which often use arbitary glyph names and encodings, accessible for the two engines currently capable of producing accessible PDFs. More specifically, the package works around limitations of LuaTeX which make the provision of such mappings more challenging. No knowledge of Lua is necessary to use the package.",
+  description= "Utility functions in expl3 and 2e syntax for setting tounicode mappings for 7/8 bit fonts. The package provides a unified interface which enables mappings for both pdfTeX and LuaTeX. The aim is to make it easier to make legacy (text) symbol packages, which often use arbitary glyph names and encodings, accessible for the two engines currently capable of producing accessible PDFs. The package provides a limited workaround for LuaTeX 1.22 and earlier, which make the provision of such mappings more challenging. Full support requires pdfTeX or LuaTeX 1.24 or later.",
   -- development {}
   -- home {}
 	note       = "I'm not sure if luatex is an appropriate tag. The package includes luatex-specific and pdftex-specific support.",
 	repository = {"https://codeberg.org/cfr/nfssext", "https://github.com/cfr42/nfssext"},
   -- support {}
-	topic      = {"accessible", "expl3", "font-supp", "latex3", "luatex", "pdf-feat"},
+	topic      = {"accessible", "expl3", "font-supp", "latex3", "luatex", "pdf-feat", "tagged-pdf"},
 	update     = false,
   -- files --
   -- announcement_file
@@ -84,7 +84,6 @@ test_types.uni = {
     return compare_tlg (difffile, tlgfile, normtxtfile, cleanup, name, "wibble")
   end,
 }
--- test_order = {"uni"}
 test_order = {"log", "uni"}
 -------------------------------------------------------------------------------
 -- rhaid i vars addasol fodoli? | suitable vars must exist?

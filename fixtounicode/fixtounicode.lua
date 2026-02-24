@@ -1,6 +1,25 @@
--- $Id: fixtounicode.lua 11568 2026-01-28 03:12:06Z cfrees $
+-- $Id: fixtounicode.lua 11683 2026-02-24 03:57:46Z cfrees $
+--
+-- Copyright (C) 2024-2026 Clea F. Rees.
+--
+-- This work may be distributed and/or modified under the
+-- conditions of the LaTeX Project Public License, either version 1.3c
+-- of this license or (at your option) any later version.
+-- The latest version of this license is in
+--   https://www.latex-project.org/lppl.txt
+-- and version 1.3c or later is part of all distributions of LaTeX
+-- version 2008-05-04 or later.
+--                                                                     
+-- This work has the LPPL maintenance status `maintained'.
+--                                                                     
+-- The Current Maintainer of this work is Clea F. Rees.
+--                                                                     
+-- This work consists of all files listed in manifest.txt.
+--                                                                     
 -- addaswyd o ateb Max Chernoff: ihttps://tex.stackexchange.com/a/740937/
+-- adapted from Max Chernoff's answer : ihttps://tex.stackexchange.com/a/740937/
 -- gweler ateb-max-chernoff-ee-4-tfm-workaround.tex ateb-max-chernoff.md
+-- see ateb-max-chernoff-ee-4-tfm-workaround.tex ateb-max-chernoff.md
 
 luatexbase.provides_module({
   name = "fixtounicode",
