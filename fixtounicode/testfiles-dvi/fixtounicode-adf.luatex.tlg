@@ -5,7 +5,7 @@ Package: adforn ....-..-.. v... revinfo
 (fixtounicode.sty
 Package: fixtounicode ....-..-.. v... ExplFileVersion Fix missing tounicode values in TeX fonts
 [fixtounicode debug]:: Engine is LuaTeX.
-[fixtounicode debug]:: l__fixtounicode_dev_bool -> 1
+[fixtounicode debug]:: l__fixtounicode_luatex_has_fix_bool -> 1
 [fixtounicode debug]:: tounicode mappings unsupported for DVI. Installing noop functions. 
 )) (adfbullets.sty
 Package: adfbullets ....-..-.. v... revinfo
