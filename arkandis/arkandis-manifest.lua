@@ -1,4 +1,4 @@
--- $Id: arkandis-manifest.lua 10787 2025-02-09 18:55:34Z cfrees $
+-- $Id: arkandis-manifest.lua 11694 2026-02-25 05:18:55Z cfrees $
 ---------------------------------------------------------------------
 ---------------------------------------------------------------------
 -- local derivedfiles = derivedfiles or {"*.cls","*.enc","*.fd","*.map","*.sty","*.tfm","*.vf"}
@@ -127,11 +127,23 @@ local function populatescripts()
   if buildscripts == nil then
     -- local bldscripts = {}
     local bldscripts = ""
-    local possscripts = {sourcefiledir .. "/build.lua",  maindir .. "/tag.lua", arkandisdir .. "/arkandis-manifest.lua", maindir .. "/fntbuild-config.lua"}
+    local possscripts = {sourcefiledir .. "/build.lua",  
+      maindir .. "/tag.lua", 
+      arkandisdir .. "/arkandis-manifest.lua", 
+      maindir .. "/fntbuild-config.lua",
+      "config-*.lua",
+    }
     for i,j in ipairs(possscripts) do
       if fileexists(j) then
         bldscripts = bldscripts .. "\n* " .. basename(j) 
         -- table.insert(bldscripts, basename(j))
+      else
+        local p = filelist(sourcefiledir, j)
+        if #p ~= 0 then
+          for _,k in ipairs(p) do
+            bldscripts = bldscripts .. "\n* " .. basename(k)
+          end
+        end
       end
     end
     return bldscripts
@@ -225,6 +237,20 @@ function manifest_setup ()
   local buildscripts = populatescripts()
   ---------------------------------------------------------------------
   if arkandis.noautotest then fnttestfiles = "" end
+  local addtestdirs = filelist(sourcefiledir, "testfiles-*")
+  if #addtestdirs ~= 0 then
+    local f = {}
+    local g = {}
+    for _,d in ipairs(addtestdirs) do
+      f = filelist(sourcefiledir .. "/" .. d, "*.lvt")
+      g = filelist(sourcefiledir .. "/" .. d, "*.tlg")
+      for _,h in ipairs({f,g}) do
+        if #h ~= 0 then
+          fnttestfiles = fnttestfiles .. "\n* " .. table.concat(h, "\n* ")
+        end
+      end
+    end
+  end
   ---------------------------------------------------------------------
   -- I have no idea how to sort them (without gnu, that is)
   local groups = {
