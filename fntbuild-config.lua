@@ -1,4 +1,4 @@
--- $Id: fntbuild-config.lua 10974 2025-03-28 20:14:48Z cfrees $
+-- $Id: fntbuild-config.lua 11686 2026-02-25 01:04:15Z cfrees $
 -- configuration for nfssext
 -------------------------------------------------
 sourcefiledir = sourcefiledir or "."
@@ -69,13 +69,36 @@ local function buildinit_hook()
 end
 -- }}}
 -------------------------------------------------
-fnt.buildinit_hook = buildinit_hook
--------------------------------------------------
 -- tag.lua
 tagfile = tagfile or maindir .. "/tag.lua"
 if fileexists(tagfile) then
   dofile(tagfile)
 end
+-------------------------------------------------
+local function docmetadata ()
+  for _,i in ipairs({
+    "/tex/latex/latex-lab",
+    "/tex/latex/pdfmanagement-testphase",
+    "/tex/latex/tagpdf",
+    "/tex/latex/amsmath",
+    "/tex/luatex/luaotfload",
+    "/tex/luatex/luatexbase",
+    "/tex/luatex/lualibs",
+    "/tex/luatex/lua-uni-algos",
+    "/tex/generic/unicode-data",
+    "ltluatex.lua",
+    "ltluatex.tex",
+    "array.sty",
+    "glyphtounicode.tex",
+    "lualatexquotejobname.lua",
+    "expl3.lua",
+  }) do
+    table.insert(fnt.checksuppfiles_add, i)
+  end
+end
+-------------------------------------------------
+fnt.buildinit_hook = buildinit_hook
+fnt.docmetadata = docmetadata
 -------------------------------------------------
 -------------------------------------------------
 -- vim: ts=2:sw=2:et:foldmethod=marker:
