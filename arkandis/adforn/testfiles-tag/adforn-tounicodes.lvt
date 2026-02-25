@@ -1,0 +1,33 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+\DocumentMetadata{%
+  uncompress,
+  tagging=on,
+  lang=en-GB,
+  pdfversion=2.0,
+  pdfstandard=UA-2,
+}
+\listfiles
+\RequirePackage{svn-prov}
+\ProvidesFileSVN{$Id: adforn-tounicodes.lvt 11687 2026-02-25 01:06:17Z cfrees $}[v1.1 \revinfo][\filebase: subs test]
+\input regression-test.tex\relax
+\documentclass{article}
+\usepackage{tracefnt}% infoshow is default; debugshow traces maths fonts, too
+	
+\START
+\usepackage{adforn}
+\OMIT
+\title{adforn tounicodes test}
+\begin{document}
+\makeatletter
+\tracinglostchars\thr@@
+\makeatother
+\TIMO
+\TEST{adforn-tounicodes}{
+  \adforn{60}%
+}
+\SHOWPDFTAGS
+\OMIT
+\end{document} 
+\END
+% vim: ts=2:sw=2:
