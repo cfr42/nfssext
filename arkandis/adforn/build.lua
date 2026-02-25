@@ -1,4 +1,4 @@
--- $Id: build.lua 11014 2025-04-22 03:54:00Z cfrees $
+-- $Id: build.lua 11688 2026-02-25 01:07:17Z cfrees $
 -- Build configuration for adfornadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -24,7 +24,7 @@
 ctanpkg = "adforn"
 maindir = "../.."
 module = "adforn"
-checkconfigs = { "build", "config-lua" }
+checkconfigs = { "build", "config-dvi", "config-tag" }
 textfiles = {"*.md","*.txt","COPYING","NOTICE"}
 fnt = {}
 fnt.vendor = "arkandis"
