@@ -1,4 +1,4 @@
--- $Id: build.lua 11691 2026-02-25 04:36:47Z cfrees $
+-- $Id: build.lua 11695 2026-02-25 05:23:15Z cfrees $
 -- Build configuration for adfornadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -51,7 +51,7 @@ uploadconfig = {
 	ctanPath   = "/fonts/adforn",
 	license    = {"lppl1.3c","GPL 2 with font exception"},
 	pkg        = ctanpkg,
-	summary    = "Support for OrnementsADF on 8-bit engines",
+	summary    = "Support for OrnementsADF on 8-bit engines with Unicode mappings",
   uploader   = "Clea F. Rees",
 	version    = "v1.3",
   -- optional --
@@ -62,7 +62,7 @@ uploadconfig = {
 	-- note       = "The catalogue currently shows the package as included only in MikTeX, but it is also included in TeX Live. Any chance this could be corrected?",
 	repository = {"https://codeberg.org/cfr/nfssext", "https://github.com/cfr42/nfssext"},
   -- support {}
-	topic      = {"font", "font-type1", "font-ornmnt", "font-supp"},
+	topic      = {"font", "font-type1", "font-ornmnt", "font-supp", "tagged-pdf"},
 	update     = true,
   -- files --
   -- announcement_file
