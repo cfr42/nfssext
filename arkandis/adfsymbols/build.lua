@@ -1,4 +1,4 @@
--- $Id: build.lua 11015 2025-04-22 03:54:12Z cfrees $
+-- $Id: build.lua 11701 2026-02-25 07:37:59Z cfrees $
 -- Build configuration for adfsymbols
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -58,7 +58,7 @@ uploadconfig = {
 	pkg        = ctanpkg,
 	summary    = "Support for SymbolsADF on 8-bit engines",
   uploader   = "Clea F. Rees",
-	version    = "v1.4",
+	version    = "v1.5",
   -- optional --
 	bugtracker = {"https://codeberg.org/cfr/nfssext/issues"},
   -- description
