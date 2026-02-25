@@ -1,0 +1,21 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+(adforn.sty
+Package: adforn ....-..-.. v... (SVN Rev: 11552)
+(fixtounicode.sty
+Package: fixtounicode ....-..-.. v... 11683 Fix missing tounicode values in TeX fonts
+(l3backend-dvips.def
+File: l3backend-dvips.def ....-..-.. L3 backend support: dvips
+\l__pdfannot_backend_content_box=\box...
+\l__pdfannot_backend_model_box=\box...
+\g__pdfannot_backend_int=\count...
+\g__pdfannot_backend_link_int=\count...
+\g__pdfannot_backend_link_sf_int=\count...
+)))
+============================================================
+TEST 1: adforn-dvi
+============================================================
+LaTeX Font Info:    Trying to load font information for U+OrnementsADF on input line ....
+============================================================
+***************
+Compilation 1 of test file completed with exit status 0

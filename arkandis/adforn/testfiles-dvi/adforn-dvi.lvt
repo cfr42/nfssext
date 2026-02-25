@@ -1,0 +1,24 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+\listfiles
+\RequirePackage{svn-prov}
+\ProvidesFileSVN{$Id: adforn-dvi.lvt 11690 2026-02-25 04:09:03Z cfrees $}[v1.1 \revinfo][\filebase: subs test]
+\input regression-test.tex\relax
+\documentclass{article}
+\usepackage{tracefnt}% infoshow is default; debugshow traces maths fonts, too
+	
+\START
+\usepackage{adforn}
+\OMIT
+\begin{document}
+\makeatletter
+\tracinglostchars\thr@@
+\makeatother
+\TIMO
+\TEST{adforn-dvi}{
+  \adforn{60}%
+}
+\OMIT
+\end{document} 
+\END
+% vim: ts=2:sw=2:
