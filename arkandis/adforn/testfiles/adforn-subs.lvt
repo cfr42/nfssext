@@ -3,9 +3,7 @@
 \listfiles
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: adforn-subs.lvt 10442 2024-09-29 18:25:09Z cfrees $}[v1.1 \revinfo][\filebase: subs test]
-\pdfmapfile{-OrnementsADF.map}
-\pdfmapfile{+adforn.map}
+\ProvidesFileSVN{$Id: adforn-subs.lvt 11689 2026-02-25 01:08:17Z cfrees $}[v1.1 \revinfo][\filebase: subs test]
 \input regression-test.tex\relax
 \documentclass{article}
 \usepackage{tracefnt}% infoshow is default; debugshow traces maths fonts, too
