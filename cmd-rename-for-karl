@@ -1,0 +1,3 @@
+find . -type f -regex '.*\.\(\(lua\)\|\(dtx\)\|\(lvt\)\|\(ins\)\|\(tex\)\)' ! -path "./build/*" ! -path "./fnt-tests/*" -execdir sed -i  '/\$.*:.*\$/!{s/fnt-tests\.tex/fntbuild-regression-test.tex/g}' '{}' +
+find . -type f -regex '.*\.\(\(lua\)\|\(dtx\)\|\(lvt\)\|\(ins\)\|\(tex\)\)' ! -path "./build/*" ! -path "./fnt-tests/*" -execdir sed -i  '/\$.*:.*\$/!{s/fnt-test\.lvt/fntbuild-test.lvt/g}' '{}' +
+find . -type f -regex '.*\.\(\(lua\)\|\(dtx\)\|\(lvt\)\|\(ins\)\|\(tex\)\)' ! -path "./build/*" ! -path "./fnt-tests/*" -execdir sed -i   '/\$.*:.*\$/!{s/fnt-tables\.tex/fntbuild-tables.tex/g}' '{}' +

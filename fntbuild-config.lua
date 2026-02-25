@@ -1,4 +1,4 @@
--- $Id: fntbuild-config.lua 11686 2026-02-25 01:04:15Z cfrees $
+-- $Id: fntbuild-config.lua 11692 2026-02-25 04:38:01Z cfrees $
 -- configuration for nfssext
 -------------------------------------------------
 sourcefiledir = sourcefiledir or "."
@@ -96,9 +96,34 @@ local function docmetadata ()
     table.insert(fnt.checksuppfiles_add, i)
   end
 end
+local function suppluafiles ()
+  for _,i in ipairs({
+    "/tex/latex/amsmath",
+    "/tex/luatex/luaotfload",
+    "/tex/luatex/luatexbase",
+    "/tex/luatex/lualibs",
+    "/tex/luatex/lua-uni-algos",
+    "/tex/generic/unicode-data",
+    "ltluatex.lua",
+    "ltluatex.tex",
+    "lualatexquotejobname.lua",
+    "expl3.lua",
+  }) do
+    table.insert(fnt.checksuppfiles_add, i)
+  end
+end
+local function suppxefiles ()
+  for _,i in ipairs({
+    "lmroman10-regular.otf",
+  }) do
+    table.insert(fnt.checksuppfiles_add, i)
+  end
+end
 -------------------------------------------------
 fnt.buildinit_hook = buildinit_hook
 fnt.docmetadata = docmetadata
+fnt.suppluafiles = suppluafiles
+fnt.suppxefiles = suppxefiles
 -------------------------------------------------
 -------------------------------------------------
 -- vim: ts=2:sw=2:et:foldmethod=marker:
