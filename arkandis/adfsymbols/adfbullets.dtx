@@ -31,7 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: adfbullets.dtx 11015 2025-04-22 03:54:12Z cfrees $}[v1.4 \revinfo][\filebase DTX: FONT for 8-bit engines]
+\ProvidesFileSVN{$Id: adfbullets.dtx 11700 2026-02-25 07:11:48Z cfrees $}[v1.5 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[adfbullets]
 \documentclass[11pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -222,7 +222,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: adfbullets.dtx 11015 2025-04-22 03:54:12Z cfrees $}[v1.4 \revinfo]
+\ProvidesPackageSVN[\filebase.sty]{$Id: adfbullets.dtx 11700 2026-02-25 07:11:48Z cfrees $}[v1.5 \revinfo]
 \DefineFileInfoSVN[adfbullets]
 \newif\if@adfbullets@digonnew
 %    \end{macrocode}
@@ -268,7 +268,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \ExplSyntaxOff
 %    \end{macrocode}
-% \changes{v0.0}{0000-00-00}{Use \lpack{fixtounicode}.}
+% \changes{v1.5}{2026-02-25}{Use \lpack{fixtounicode}.}
 %    \begin{macrocode}
 \RequirePackage{fixtounicode}
 %    \end{macrocode}
@@ -284,7 +284,7 @@
 % \changes{v1.4}{2025-03-31}{Add \texttt{/ToUnicode} values (\lpack{adfbullets}).}
 % I don't know why somebody would use these fonts with a Unicode engine, but, just in case, map for that as well as pdf\TeX.
 % 
-% \changes{v0.0}{0000-00-00}{Avoid broken implementation of \cs{pdfglyphtounicode} recommended in Lua\TeX{} manual page 49.}
+% \changes{v1.5}{2026-02-25}{Avoid broken implementation of \cs{pdfglyphtounicode} recommended in Lua\TeX{} manual page 49.}
 %    \begin{macrocode}
 \ExplSyntaxOn
 \bool_if:nT { \sys_if_engine_luatex_p: || \sys_if_engine_pdftex_p: }
@@ -416,7 +416,7 @@
   }
 %    \end{macrocode}
 % \end{macro}
-% \changes{v0.0}{0000-00-00}{Use \lpack{fixtounicode}.}
+% \changes{v1.5}{2026-02-25}{Use \lpack{fixtounicode}.}
 % Generate the actual mappings.
 %    \begin{macrocode}
   \fixtounicode_tounicode:nnNN { BulletsADF } { BulletsADF } 
