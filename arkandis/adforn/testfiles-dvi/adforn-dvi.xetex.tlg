@@ -1,0 +1,19 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+(adforn.sty
+Package: adforn ....-..-.. v... (SVN Rev: 11552)
+(fixtounicode.sty
+Package: fixtounicode ....-..-.. v... 11683 Fix missing tounicode values in TeX fonts
+(l3backend-xetex.def
+File: l3backend-xetex.def ....-..-.. L3 backend support: XeTeX
+\g__graphics_track_int=\count...
+\g__pdfannot_backend_int=\count...
+\g__pdfannot_backend_link_int=\count...
+)))
+============================================================
+TEST 1: adforn-dvi
+============================================================
+LaTeX Font Info:    Trying to load font information for U+OrnementsADF on input line ....
+============================================================
+***************
+Compilation 1 of test file completed with exit status 0
