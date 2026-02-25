@@ -1,4 +1,4 @@
-$Id: README.md 10986 2025-03-31 05:38:02Z cfrees $
+$Id: README.md 11696 2026-02-25 05:39:12Z cfrees $
 
 # adforn
 
@@ -48,7 +48,7 @@ If you have comments about the fonts themselves, please contact Hirwen
 Harendal (harendalh <at> hotmail <dot> com). 
 
 Clea F. Rees
-Version 1.3
-2025-03-31
+Version 1.4
+2026-02-25
 
 <!-- vim: tw=80:et:sw=2: -->

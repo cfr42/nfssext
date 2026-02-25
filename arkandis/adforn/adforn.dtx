@@ -31,7 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: adforn.dtx 11552 2026-01-22 20:14:20Z cfrees $}[v1.3 \revinfo][\filebase DTX: FONT for 8-bit engines]
+\ProvidesFileSVN{$Id: adforn.dtx 11696 2026-02-25 05:39:12Z cfrees $}[v1.4 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[adforn]
 \documentclass[11pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -488,7 +488,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: adforn.dtx 11552 2026-01-22 20:14:20Z cfrees $}[v1.3 \revinfo]
+\ProvidesPackageSVN[\filebase.sty]{$Id: adforn.dtx 11696 2026-02-25 05:39:12Z cfrees $}[v1.4 \revinfo]
 \DefineFileInfoSVN[adforn]
 \newif\if@adforn@digonnew
 %    \end{macrocode}
@@ -531,7 +531,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \ExplSyntaxOff
 %    \end{macrocode}
-% \changes{v0.0}{0000-00-00}{Use \cs{fixtounicode}.}
+% \changes{v1.4}{2026-02-25}{Use \cs{fixtounicode}.}
 %    \begin{macrocode}
 \RequirePackage{fixtounicode}
 %    \end{macrocode}
@@ -941,7 +941,7 @@
 \newcommand*{\adfhalfrightarrow}{\adforn{72}}
 %    \end{macrocode}
 % \end{macro}
-% \changes{v0.0}{0000-00-00}{\cs{adfbullet} renamed to \cs{adftextbullet} to
+% \changes{v1.4}{2026-02-25}{\cs{adfbullet} renamed to \cs{adftextbullet} to
 % avoid conflict with (\lpack{adfbullet}).}
 % \begin{macro}{\adftextbullet}
 % \mbox{}
@@ -959,7 +959,7 @@
 % \changes{v1.3}{2025-03-31}{Add \texttt{/ToUnicode} values (\lpack{adforn}).}
 % I don't know why somebody would use these fonts with a Unicode engine, but, just in case, map for that as well as pdf\TeX.
 % 
-% \changes{v0.0}{0000-00-00}{Don't use the non-working method from the Lua\TeX{} manual.}
+% \changes{v1.4}{2026-02-25}{Don't use the non-working method from the Lua\TeX{} manual.}
 %    \begin{macrocode}
 \ExplSyntaxOn
 \bool_if:nT { \sys_if_engine_luatex_p: || \sys_if_engine_pdftex_p: }
@@ -1158,7 +1158,7 @@
 %    \end{macrocode}
 % \end{macro}
 % Generate the actual mappings.
-% \changes{v0.0}{0000-00-00}{Use \lpack{fixtounicode}, which does better for lua\TeX{}.}
+% \changes{v1.4}{2026-02-25}{Use \lpack{fixtounicode}, which does better for lua\TeX{}.}
 %    \begin{macrocode}
   \fixtounicode_tounicode:nNN { OrnementsADF } \l__adforn_glyphtounicode_seq 
     \l__adforn_tounicode_seq 
