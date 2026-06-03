@@ -1,4 +1,4 @@
--- $Id: fntbuild-config.lua 11692 2026-02-25 04:38:01Z cfrees $
+-- $Id: fntbuild-config.lua 11950 2026-06-03 16:50:19Z cfrees $
 -- configuration for nfssext
 -------------------------------------------------
 sourcefiledir = sourcefiledir or "."
@@ -78,7 +78,7 @@ end
 local function docmetadata ()
   for _,i in ipairs({
     "/tex/latex/latex-lab",
-    "/tex/latex/pdfmanagement-testphase",
+    "/tex/latex/pdfmanagement",
     "/tex/latex/tagpdf",
     "/tex/latex/amsmath",
     "/tex/luatex/luaotfload",
