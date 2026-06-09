@@ -1,4 +1,4 @@
--- $Id: fntbuild-build.lua 10818 2025-02-19 05:44:13Z cfrees $ 
+-- $Id: fntbuild-build.lua 11965 2026-06-08 19:41:56Z cfrees $ 
 -------------------------------------------------
 -- fntbuild-build
 -------------------------------------------------
@@ -430,6 +430,103 @@ end
 -- }}}
 -------------------------------------------------
 -------------------------------------------------
+-- fntuni
+-------------------------------------------------
+-- fntuni {{{
+---@return 
+---@see 
+---@usage public
+--- fnt.transformfds {}
+--- fnt.transformfds.defaults {}
+--- fnt.transformfds.defaults.defeat string
+--- fnt.transformfds.defaults.mappings {}
+--- fnt.transformfds.defaults.mappings.fonts {}
+--- fnt.transformfds.defaults.mappings.enc {}
+--- fnt.transformfds.<index> {}
+--- fnt.transformfds.<index>.fd string
+--- fnt.transformfds.<index>.feat string
+--- fnt.transformfds.<index>.pre(<table>) return <table> (copy of <index>.mappings.fonts)
+local function fntuni ()
+  local transformfds = fnt.transformfds or {}
+  local defaults = transformfds.defaults or {}
+  local keepdir = fnt.keepdir or sourcedir .. "/keep"
+  local fntdir = fnt.fntdir or builddir .. "/fnt"
+  for i,j in pairs(defaults) do
+    for _,t in ipairs(transformfds) do
+      if t[i] == nil then
+        t[i] = j
+      elseif type(t) == "table" then
+        for k,l in pairs(j) do
+          if t[i][k] == nil then
+            t[i][k] = l
+          end
+        end
+      end
+    end
+  end
+  for _,t in ipairs(transformfds) do
+    if t.fd then
+      local fd = t.fd
+      local enc = t.mappings.enc or {
+        t1 = "tu",
+        T1 = "TU",
+        ly1 = "tu",
+        LY1 = "TU",
+      }
+      local defeat = t.defeat or "\\UnicodeFontTeXLigatures"
+      if fileexists(keepdir .. "/" .. fd) then
+        fd = keepdir .. "/" .. fd
+      elseif fileexists(fntdir .. "/" .. fd) then
+        fd = fntdir .. "/" .. fd
+      else 
+        print("No " .. fd .. " found!")
+      end
+      if fileexists(fd) and t.mappings then 
+        print("Transforming " .. fd .. " ...")
+        local lines = {}
+        local feat = "{" .. defeat .. (t.feat or "") .. "}"
+        for line in io.lines(fd) do
+          table.insert(lines, line)
+        end
+        if t.mappings.fonts then
+          local fonts = t.mappings.fonts
+          if t.pre then
+            fonts = t.pre(fonts)
+          end
+          for i,j in pairs(fonts) do
+            for c,line in ipairs(lines) do
+              lines[c] = (string.gsub(line, i, 
+                "\\UnicodeFontFile{" .. j .. "}" .. feat
+                )
+              )
+            end
+          end
+        end
+        for i,j in pairs(t.mappings.enc) do
+          for c,line in ipairs(lines) do
+            lines[c] = (string.gsub(line, i, j))
+          end
+        end
+        local toname
+        if t.toname then
+          toname = t.toname
+        else
+          toname = (string.gsub((string.gsub(fd, "/t1", "/tu")), "/T1", "/TU"))
+          toname = (string.gsub((string.gsub(toname, "/ly1", "/tu")), "/LY1", "/TU"))
+        end
+        assert(toname ~= "" and toname ~= fd, "Improper toname " .. toname .. " for " .. fd .. "\n")
+        print("Writing " .. toname .. " ...")
+        local f=assert(io.open(toname, "w"), "Could not write to " .. toname .. "\n")
+        for _,line in ipairs(lines) do print(line) end
+        f:write(table.concat(lines, fnt.os_newline_cp))
+        f:close()
+      end
+    end
+  end
+end
+-- }}}
+-------------------------------------------------
+-------------------------------------------------
 -- fontinst
 -------------------------------------------------
 -- finst {{{
@@ -668,6 +765,7 @@ fnt.fntsubsetter = fntsubsetter
 fnt.afm2tfm = afm2tfm
 fnt.fontinst = fontinst
 fnt.uniquify = uniquify
+fnt.fntuni = fntuni
 -- }}}
 -------------------------------------------------
 -------------------------------------------------
