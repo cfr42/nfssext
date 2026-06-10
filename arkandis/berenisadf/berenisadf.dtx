@@ -1,7 +1,7 @@
 % \iffalse meta-comment
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % berenisadf.dtx
-% Additions and changes Copyright (C) 2010-2025 Clea F. Rees.
+% Additions and changes Copyright (C) 2010-2026 Clea F. Rees.
 % Code from skeleton.dtx Copyright (C) 2015-2024 Scott Pakin (see below).
 %
 % This work may be distributed and/or modified under the
@@ -31,7 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\ModMakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: berenisadf.dtx 11371 2025-11-30 06:12:25Z cfrees $}[v2.1 \revinfo][\filebase DTX: FONT for 8-bit engines]
+\ProvidesFileSVN{$Id: berenisadf.dtx 11969 2026-06-10 14:27:33Z cfrees $}[v2.1 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[berenisadf]
 \documentclass[11pt,british]{ltxdoc}
 % ltnews42 / ateb David Carlisle: https://tex.stackexchange.com/a/754799/ (sylwad Ulrike Fischer rhywle ond alla i ddim canfod o hyd iddo fe)
@@ -1034,7 +1034,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[berenis.sty]{$Id: berenisadf.dtx 11371 2025-11-30 06:12:25Z cfrees $}[v0.0 \revinfo]
+\ProvidesPackageSVN[berenis.sty]{$Id: berenisadf.dtx 11969 2026-06-10 14:27:33Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN[berenis]
 %    \end{macrocode}
 % Load \lpack{nfssext-cfr}.  
@@ -1057,19 +1057,27 @@
   #2~used~instead.
 }
 %    \end{macrocode}
+% \begin{macro}{\g__berenis_enc_tl}
+%    \begin{macrocode}
+% \tl_new:N \g__berenis_enc_tl
+%    \end{macrocode}
+% Dubious choice of default encoding.
+% \changes{v0.0}{2026-06-10}{Support for Unicode.}
+%    \begin{macrocode}
+\tl_gset:Ne \g__berenis_enc_tl { \sys_if_engine_opentype:TF { TU } { LY1 } }
+%    \end{macrocode}
 % Define package keys.
 %    \begin{macrocode}
 \keys_define:nn { berenis }
 {
 %    \end{macrocode}
 % \begin{option}{enc}
-% \begin{macro}{\g__berenis_enc_tl}
 % Font encoding.
-% Valid choices are T1 or LY1.
+% Valid choices are T1, LY1 or TU.
 % Lower or upper case input is accepted.
 %    \begin{macrocode}
   enc .choice:,
-  enc .choices:nn = { ly1, LY1, t1, T1 }
+  enc .choices:nn = { ly1, LY1, t1, T1, tu, TU }
   {
     \int_case:nn { \l_keys_choice_int }
     {
@@ -1077,6 +1085,12 @@
       { 2 } { \tl_gset:Nn \g__berenis_enc_tl { LY1 } }
       { 3 } { \tl_gset:Nn \g__berenis_enc_tl { T1 } }
       { 4 } { \tl_gset:Nn \g__berenis_enc_tl { T1 } }
+      { 5 } { 
+        \sys_if_engine_opentype:T { \tl_gset:Nn \g__berenis_enc_tl { TU } }
+      }
+      { 6 } {
+        \sys_if_engine_opentype:T { \tl_gset:Nn \g__berenis_enc_tl { TU } } 
+      }
     }
   },
   enc / unknown .code:n = {
@@ -1085,16 +1099,12 @@
 %    \begin{macrocode}
     \msg_error:nneee { berenis } { unknown-choice }
     { enc }
-    { ly1 , LY1 , t1, T1 }
+    { ly1 , LY1 , t1, T1, tu, TU }
     { \exp_not:n {#1} }
   },
 %    \end{macrocode}
-% Dubious choice of default encoding.
-%    \begin{macrocode}
-  enc .initial:n = ly1,
-%    \end{macrocode}
-% \end{macro}
 % \end{option}
+% \end{macro}
 % \begin{option}{lig}
 % \begin{macro}{\g__berenis_lig_bool}
 % Whether to enable additional ligatures by default.
@@ -1180,16 +1190,18 @@
 %    \begin{macrocode}
 \bool_if:NT \g__berenis_lig_bool
 {
-  \tl_if_eq:NnF \g__berenis_enc_tl { LY1 }
+  \tl_if_eq:NnT \g__berenis_enc_tl { T1 }
   {
 %    \end{macrocode}
-% If \texttt{lig} is true and the encoding isn't LY1, the user has explicitly set incompatible options. 
-% There's no way to hazard a guess here, so re-enable LY1 and hope for the best.
+% If \texttt{lig} is true and the encoding is T1, the user has explicitly set incompatible options. 
+% There's no way to hazard a guess here, so re-enable the default and hope for the best.
 %    \begin{macrocode}
     \PackageWarning { berenis } { 
-      Setting ~ font ~ encoding ~ to ~ LY1 ~ to ~ accommodate ~ ligatures 
+      Setting ~ font ~ encoding ~ to ~ LY1 ~ or ~ TU ~ to ~ accommodate ~ ligatures 
     }
-    \tl_gset:Nn \g__berenis_enc_tl { LY1 }
+    \tl_gset:Ne \g__berenis_enc_tl { 
+      \sys_if_engine_opentype:TF { TU } { LY1 }
+    }
   }
 }
 %    \end{macrocode}
@@ -1262,7 +1274,9 @@
 % \end{macro}
 % Load appropriate font encoding 
 %    \begin{macrocode}
-\RequirePackage[\g__berenis_enc_tl]{fontenc}
+\sys_if_engine_opentype:F {
+  \RequirePackage[\g__berenis_enc_tl]{fontenc}
+}
 %    \end{macrocode}
 % \begin{macro}{\g__berenis_enc_tl}
 % Get proper tai bach for W, w, Y, y\footnote{%
@@ -1297,62 +1311,64 @@
     \char13
   }
 } 
-\IfFormatAtLeastTF {2020-02-02}{%
+\sys_if_engine_opentype:F {
+  \IfFormatAtLeastTF {2020-02-02}{%
 %    \end{macrocode}
 % \let\MakePrivateLetters\ModMakePrivateLetters
 % \end{macro}
 % To get the oldstyle numbers etc.\ used from TS1, we need to set the subset to 0 or 1.
 % Unfortunately, this means characters missing from the fonts will not use default symbols as fallback, but this seems to be unavoidable.
 %    \begin{macrocode}
-  \DeclareEncodingSubset{TS1}{ybd}{1}%
-  \DeclareEncodingSubset{TS1}{ybd2}{1}%
-  \DeclareEncodingSubset{TS1}{ybd2j}{1}%
-  \DeclareEncodingSubset{TS1}{ybdj}{1}%
-  \DeclareEncodingSubset{TS1}{ybd0}{1}%
-  \DeclareEncodingSubset{TS1}{ybd1}{1}%
-  \DeclareEncodingSubset{TS1}{ybdw}{1}%
-  \DeclareEncodingSubset{TS1}{ybd2w}{1}%
-  \DeclareEncodingSubset{TS1}{ybd2jw}{1}%
-  \DeclareEncodingSubset{TS1}{ybdjw}{1}%
-}{
-  \RequirePackage{textcomp}
-}
-\UndeclareTextCommand{\textperthousand}{T1}
+    \DeclareEncodingSubset{TS1}{ybd}{1}%
+    \DeclareEncodingSubset{TS1}{ybd2}{1}%
+    \DeclareEncodingSubset{TS1}{ybd2j}{1}%
+    \DeclareEncodingSubset{TS1}{ybdj}{1}%
+    \DeclareEncodingSubset{TS1}{ybd0}{1}%
+    \DeclareEncodingSubset{TS1}{ybd1}{1}%
+    \DeclareEncodingSubset{TS1}{ybdw}{1}%
+    \DeclareEncodingSubset{TS1}{ybd2w}{1}%
+    \DeclareEncodingSubset{TS1}{ybd2jw}{1}%
+    \DeclareEncodingSubset{TS1}{ybdjw}{1}%
+  }{
+    \RequirePackage{textcomp}
+  }
+  \UndeclareTextCommand{\textperthousand}{T1}
 %    \end{macrocode}
 % \begin{macro}{\sfdefault,\ttdefault}
 % Load LM if requested.
 % Don't use \lpack{cfr-lm} in case it isn't available.
 %    \begin{macrocode}
-\bool_if:NT \g__berenis_lm_bool
-{
-  \renewcommand{\sfdefault}{lmss}
-  \renewcommand{\ttdefault}{lmtt}
-}
+  \bool_if:NT \g__berenis_lm_bool
+  {
+    \renewcommand{\sfdefault}{lmss}
+    \renewcommand{\ttdefault}{lmtt}
+  }
 %    \end{macrocode}
 % \end{macro} 
 % \begin{macro}{\zeroslash}
 % Based on definition of \ss from afm2pl manual page
 %    \begin{macrocode}
-\cs_new_nopar:Npn \zeroslash
-{
-  \tl_if_eq:NnTF \g__berenis_enc_tl { LY1 }
+  \cs_new_nopar:Npn \zeroslash
   {
-    \setbox0\hbox{\char184}%
-    \setbox1\hbox{\char24}%
-    \ifnum\wd0=\wd1 \char48
-      \msg_warning:nnnn { berenis } { unavailable }
-      { slashed ~ zero } { zero }
+    \tl_if_eq:NnTF \g__berenis_enc_tl { LY1 }
+    {
+      \setbox0\hbox{\char184}%
+      \setbox1\hbox{\char24}%
+      \ifnum\wd0=\wd1 \char48
+        \msg_warning:nnnn { berenis } { unavailable }
+        { slashed ~ zero } { zero }
       \else
         \ifnum\wd0=0 \char48
           \msg_warning:nnnn { berenis } { unavailable }
           { slashed ~ zero } { zero }
         \else\char184
+        \fi
       \fi
-    \fi
-  } {
-    \char48
-    \msg_warning:nnnn { berenis } { unavailable }
-    { slashed ~ zero } { zero }
+    } {
+      \char48
+      \msg_warning:nnnn { berenis } { unavailable }
+      { slashed ~ zero } { zero }
+    }
   }
 }
 %    \end{macrocode}
