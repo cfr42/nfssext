@@ -1,0 +1,54 @@
+% !TEX TS-program = lualatex
+% !TEX encoding = UTF-8 Unicode
+\RequirePackage{svn-prov}
+\ProvidesFileSVN{$Id: berenis-tu.lvt 11968 2026-06-10 00:56:50Z cfrees $}[v1.1 \revinfo][\filebase: TU test]
+\input regression-test.tex\relax
+\DeclareFontFamily{TU}{lmr}{}
+\DeclareFontShape{TU}{lmr}{m}{n}%
+  {<-5.5>     \UnicodeFontFile{lmroman5-regular.otf}{\UnicodeFontTeXLigatures}
+   <5.5-6.5>  \UnicodeFontFile{lmroman6-regular.otf}{\UnicodeFontTeXLigatures}
+   <6.5-7.5>  \UnicodeFontFile{lmroman7-regular.otf}{\UnicodeFontTeXLigatures}
+   <7.5-8.5>  \UnicodeFontFile{lmroman8-regular.otf}{\UnicodeFontTeXLigatures}
+   <8.5-9.5>  \UnicodeFontFile{lmroman9-regular.otf}{\UnicodeFontTeXLigatures}
+   <9.5-11>   \UnicodeFontFile{lmroman10-regular.otf}{\UnicodeFontTeXLigatures}
+   <11-15>    \UnicodeFontFile{lmroman12-regular.otf}{\UnicodeFontTeXLigatures}
+   <15->      \UnicodeFontFile{lmroman17-regular.otf}{\UnicodeFontTeXLigatures}
+ }{}
+\documentclass{article}
+\pagestyle{empty}	
+% \usepackage[scale=20]{berenis}
+
+\begin{document}
+\START
+% RHAID ddefnyddio'r llinell isod tu allan i'r \TEST
+\ExplSyntaxOn
+\TEST{ybd-tu-test}{
+  % \hbox_set:Nn \l_tmpa_box 
+  {
+    \fontencoding{TU}\fontfamily{ybd}\fontseries{m}\fontshape{n}\selectfont
+    ABCDEFGHIJKLMNOPQRSTUVWXYZ ~
+    abcdefghijklmnopqrstuvwxyz ~
+    \itshape
+    ABCDEFGHIJKLMNOPQRSTUVWXYZ ~
+    abcdefghijklmnopqrstuvwxyz ~
+    \scshape
+    ABCDEFGHIJKLMNOPQRSTUVWXYZ ~
+    abcdefghijklmnopqrstuvwxyz ~
+    \fontseries{b}\selectfont
+    ABCDEFGHIJKLMNOPQRSTUVWXYZ ~
+    abcdefghijklmnopqrstuvwxyz ~
+    \itshape
+    ABCDEFGHIJKLMNOPQRSTUVWXYZ ~
+    abcdefghijklmnopqrstuvwxyz ~
+    \scshape
+    ABCDEFGHIJKLMNOPQRSTUVWXYZ ~
+    abcdefghijklmnopqrstuvwxyz ~
+  }
+  % \box_show:N \l_tmpa_box
+}
+% \box_use:N \l_tmpa_box
+\ExplSyntaxOff
+% \END
+
+\end{document} 
+% vim: ts=2:sw=2:

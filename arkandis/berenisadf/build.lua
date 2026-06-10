@@ -1,4 +1,4 @@
--- $Id: build.lua 10974 2025-03-28 20:14:48Z cfrees $
+-- $Id: build.lua 11968 2026-06-10 00:56:50Z cfrees $
 -------------------------------------------------
 -- Build configuration for berenisadf
 -------------------------------------------------
@@ -8,11 +8,77 @@
 ctanpkg = "berenisadf"
 maindir = "../.."
 module = "berenis"
-fnt = {}
+checkconfigs = { "build", "config-tu" }
+fnt = fnt or {}
 fnt.vendor = "arkandis"
 fnt.autotestfds = {  "ly1ybd.fd", "ly1ybd2.fd", "ly1ybd2j.fd", "ly1ybd2jw.fd", "ly1ybd2w.fd", "ly1ybdj.fd", "ly1ybdjw.fd", "ly1ybdw.fd", "t1ybd.fd", "t1ybd2.fd", "t1ybd2j.fd", "t1ybdj.fd" }
-fnt.keepfiles = { "ybd.map", "*.afm", "*.pfb", "*.tfm" , "ts1ybd2w.fd", "ts1ybd2jw.fd", "ts1ybdjw.fd", "ts1ybdw.fd" }
+fnt.keepfiles = { "ybd.map", "*.afm", "*.pfb", "*.tfm" , "ts1ybd2w.fd", "ts1ybd2jw.fd", "ts1ybdjw.fd", "ts1ybdw.fd", "tu*.fd" }
 fnt.keeptempfiles = { "*.pl" }
+local pre = function(current, pat1, pat2)
+  local t = {}
+  for i,j in pairs(current) do
+    local imod = (string.gsub(i, pat1, pat2))
+    t[imod] = j
+  end
+  return t
+end
+fnt.transformfds = {
+  defaults = {
+    mappings = {
+      fonts = { 
+        ybdr8y = "BerenisADFPro-Regular.otf",
+        ybdri8y = "BerenisADFPro-Italic.otf",
+        ybdb8y = "BerenisADFPro-Bold.otf",
+        ybdbi8y = "BerenisADFPro-BoldItalic.otf",
+        ybdrc8y = "BerenisADFProSC-Regular.otf",
+        ybdrci8y = "BerenisADFProSC-Italic.otf",
+        ybdbc8y = "BerenisADFProSC-Bold.otf",
+        ybdbci8y = "BerenisADFProSC-BoldItalic.otf",
+      },
+      enc = { LY1 = "TU" },
+    },
+    defeat = "\\UnicodeFontTeXLigatures",
+  },
+  { fd = "ly1ybd.fd",
+    feat = "+tnum;+lnum;",
+  },
+  { fd = "ly1ybd0.fd",
+    feat = "+sinf;",
+    pre = function(current) return pre(current, "(ybd[rb])", "%10") end,
+  },
+  { fd = "ly1ybd1.fd",
+    feat = "+sups;",
+    pre = function(current) return pre(current, "(ybd[rb])", "%11") end,
+  },
+  { fd = "ly1ybd2.fd",
+    feat = "+pnum;+lnum;",
+    pre = function(current) return pre(current, "(ybd[rb])", "%12") end,
+  },
+  { fd = "ly1ybd2j.fd",
+    feat = "+pnum;+onum;",
+    pre = function(current) return pre(current, "(ybd[rb])(.*)8y", "%12%2j8y") end,
+  },
+  { fd = "ly1ybdj.fd",
+    feat = "+tnum;+onum;",
+    pre = function(current) return pre(current, "8y", "j8y") end,
+  },
+  { fd = "ly1ybdw.fd",
+    feat = "+tnum;+lnum;+dlig;+hist;+aalt;+ss01;",
+    pre = function(current) return pre(current, "8y", "w8y") end,
+  },
+  { fd = "ly1ybd2w.fd",
+    feat = "+pnum;+lnum;+dlig;+hist;+aalt;+ss01;",
+    pre = function(current) return pre(current, "(ybd[rb])(.*)8y", "%12%2w8y") end,
+  },
+  { fd = "ly1ybd2jw.fd",
+    feat = "+pnum;+onum;+dlig;+hist;+aalt;+ss01;",
+    pre = function(current) return pre(current, "(ybd[rb])(.*)8y", "%12%2jw8y") end,
+  },
+  { fd = "ly1ybdjw.fd",
+    feat = "+tnum;+onum;+dlig;+hist;+aalt;+ss01;",
+    pre = function(current) return pre(current, "8y", "jw8y") end,
+  },
+}
 dofile(maindir .. "/fontscripts/fntbuild.lua")
 -------------------------------------------------
 -- START doc eg
@@ -51,6 +117,9 @@ local function fntmake (dir,mode)
     f:write((string.gsub(new_content,"\n",fnt.os_newline_cp)))
     f:close()
   end
+  -- call fnt.fntuni() to write font definition files for Unicode engines
+  -- this uses the information in the fnt.transformfds table defined above
+  assert(fnt.fntuni(), "TRANSFORMATION OF FONT DEFINITIONS FAILED! NO UNICODE SUPPORT!! ")
   -- call fnt.fntkeeper() to save the build results into fnt.keepdir else
   -- l3build deletes them before testing or compilation!
   assert(fnt.fntkeeper(),"FONT KEEPER FAILED IN " .. dir .. "! DO NOT MAKE STANDARD TARGETS WITHOUT RESOLVING!! ")
@@ -112,7 +181,7 @@ uploadconfig = {
 -------------------------------------------------
 arkandisfiles = {"*.otf","NOTICE*","COPYING"}
 arkandisders = {"*.afm","*.pfb","*.pfm"}
-date = "2010-2025"
+date = "2010-2026"
 dofile(maindir .. "/arkandis/arkandis-manifest.lua")
 -------------------------------------------------
 -- vim: ts=2:sw=2:tw=80:nospell
