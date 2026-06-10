@@ -1,4 +1,4 @@
--- $Id: fntbuild-build.lua 11965 2026-06-08 19:41:56Z cfrees $ 
+-- $Id: fntbuild-build.lua 11967 2026-06-09 20:33:30Z cfrees $ 
 -------------------------------------------------
 -- fntbuild-build
 -------------------------------------------------
@@ -433,24 +433,14 @@ end
 -- fntuni
 -------------------------------------------------
 -- fntuni {{{
----@return 
----@see 
+---@return error level
+---@see fnt.transformfds etc. in variables 
 ---@usage public
---- fnt.transformfds {}
---- fnt.transformfds.defaults {}
---- fnt.transformfds.defaults.defeat string
---- fnt.transformfds.defaults.mappings {}
---- fnt.transformfds.defaults.mappings.fonts {}
---- fnt.transformfds.defaults.mappings.enc {}
---- fnt.transformfds.<index> {}
---- fnt.transformfds.<index>.fd string
---- fnt.transformfds.<index>.feat string
---- fnt.transformfds.<index>.pre(<table>) return <table> (copy of <index>.mappings.fonts)
 local function fntuni ()
-  local transformfds = fnt.transformfds or {}
-  local defaults = transformfds.defaults or {}
   local keepdir = fnt.keepdir or sourcedir .. "/keep"
   local fntdir = fnt.fntdir or builddir .. "/fnt"
+  local transformfds = fnt.transformfds
+  local defaults = transformfds.defaults
   for i,j in pairs(defaults) do
     for _,t in ipairs(transformfds) do
       if t[i] == nil then
@@ -515,14 +505,24 @@ local function fntuni ()
           toname = (string.gsub((string.gsub(toname, "/ly1", "/tu")), "/LY1", "/TU"))
         end
         assert(toname ~= "" and toname ~= fd, "Improper toname " .. toname .. " for " .. fd .. "\n")
+        for c, line in ipairs(lines) do
+          local fdbase = basename(fd)
+          local tonamebase = basename(toname)
+          if string.match(line, fdbase) then
+            lines[c] = (string.gsub(line, fdbase, tonamebase))
+          end
+          if string.match(line, "generated with the docstrip utility") then
+            lines[c] = (string.gsub(line, "(generated with the docstrip utility)", "%1 and transformed by fntbuild"))
+          end
+        end
         print("Writing " .. toname .. " ...")
         local f=assert(io.open(toname, "w"), "Could not write to " .. toname .. "\n")
-        for _,line in ipairs(lines) do print(line) end
         f:write(table.concat(lines, fnt.os_newline_cp))
         f:close()
       end
     end
   end
+  return 0
 end
 -- }}}
 -------------------------------------------------

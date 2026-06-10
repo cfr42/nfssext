@@ -1,4 +1,4 @@
--- $Id: fntbuild-vars.lua 10802 2025-02-12 20:11:33Z cfrees $
+-- $Id: fntbuild-vars.lua 11966 2026-06-09 18:57:06Z cfrees $
 -- fntbuild variables
 -------------------------------------------------
 -------------------------------------------------
@@ -140,6 +140,34 @@ fnt.tablestemp = fnt.tablestemp or "fntbuild-tables.tex"
 ---@see check_init() in fntbuild-check.lua
 ---@usage public
 fnt.testtemp = fnt.testtemp or "fntbuild-test.lvt"
+-------------------------------------------------
+---@see fnt.fntuni()
+---@see berenisadf build.lua for an example
+---@description data specifying transformed fds to write 
+---@description intended for Unicode support
+---@usage public
+---@type table
+---@description recognised elements:
+---@description defaults = <table> see below
+---@description <index> = <table> with recognised elements:
+---@description fd = <string>
+---@description feat = <string>
+---@description pre = <function> takes and returns a table
+---@description pre(<table>) return <table> (reference to <index>.mappings.fonts) 
+---@description mappings = { fonts = {<pairs>}, enc = {<pairs>} }
+---@description defeat = <string>
+fnt.transformfds = fnt.transformfds or {}
+---@see fnt.fntuni()
+---@description data specifying default mappings and/or features 
+---@usage public
+---@type table
+---@description recognised elements:
+---@description mappings = { fonts = {<pairs>}, enc = {<pairs>} }
+---@description defeat = <string>
+---@description any element permitted in the per-file data, in theory
+---@description but, if you think it makes sense to do this, 
+---@description you probably don't know what this does
+fnt.transformfds.defaults = fnt.transformfds.defaults or {}
 -------------------------------------------------
 -- fnt.vendor and module must be specified before tdslocations
 ---@usage public
