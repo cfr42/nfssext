@@ -1,4 +1,4 @@
--- $Id: fntbuild-check.lua 12010 2026-08-27 01:46:27Z cfrees $
+-- $Id: fntbuild-check.lua 12012 2026-08-27 04:48:38Z cfrees $
 -------------------------------------------------
 -- fntbuild-check
 -------------------------------------------------
@@ -363,7 +363,7 @@ local function check_init ()
   if not checksearch then
     local localtexmf = fnt.localtexmf()
     checkopts = checkopts 
-      .. " --cnf-line=TEXMFAUXTREES={} --cnf-line=TEXMFHOME={} --cnf-line=TEXMFLOCAL={} --cnf-line=TEXMFCONFIG=. --cnf-line=TEXMFVAR=. --cnf-line=VFFONTS=."
+      .. " --cnf-line=TEXMFAUXTREES={} --cnf-line=TEXMFHOME={} --cnf-line=TEXMFLOCAL={} --cnf-line=TEXMFCONFIG=. --cnf-line=TEXMFVAR=. --cnf-line=VFFONTS=. --cnf-line=TEXMFCACHE=."
       .. localtexmf .. " --cnf-line=TFMFONTS=."
       .. localtexmf .. " --cnf-line=TEXFONTMAPS=."
       .. localtexmf .. " --cnf-line=T1FONTS=."
