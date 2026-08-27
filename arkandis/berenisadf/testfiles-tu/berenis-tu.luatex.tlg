@@ -1,0 +1,243 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+============================================================
+TEST 1: ybd-tu-test
+============================================================
+luaotfload | features : Auto-selecting default features for script: dflt.
+luaotfload | system : loading luc file './luatex-cache/generic/fonts/otl/berenisadfpro-italic.luc' :
+luaotfload | loaders : Registering font 17 with id ./BerenisADFPro-Italic.otf and hash berenisadfpro-italic.otf @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+onum=true+pnum=true+rclt=true+rlig=true+script=dflt+tlig=true @ 655360.
+luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
+luaotfload | features : Auto-selecting default features for script: dflt.
+luaotfload | system : loading luc file './luatex-cache/generic/fonts/otl/berenisadfprosc-italic.luc' :
+luaotfload | loaders : Registering font 18 with id ./BerenisADFProSC-Italic.otf and hash berenisadfprosc-italic.otf @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+onum=true+pnum=true+rclt=true+rlig=true+script=dflt+tlig=true @ 655360.
+luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
+luaotfload | features : Auto-selecting default features for script: dflt.
+luaotfload | system : loading luc file './luatex-cache/generic/fonts/otl/berenisadfprosc-bolditalic.luc' :
+luaotfload | loaders : Registering font 19 with id ./BerenisADFProSC-BoldItalic.otf and hash berenisadfprosc-bolditalic.otf @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+onum=true+pnum=true+rclt=true+rlig=true+script=dflt+tlig=true @ 655360.
+luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
+============================================================
+Overfull \hbox (6.29903pt too wide) in paragraph at lines ...
+[]\TU/ybd2j/m/n/10 ABCDE-FGHI-JKLMNOPQRSTU-VWXYZ abcde-fghi-jklmnopqrstu-vwxyz \TU/ybd2j/m/it/10 ABCDE-FGHI-
+\hbox(7.37+2.0)x345.0, glue set - 1.0
+.\hbox(0.0+0.0)x15.0
+.\TU/ybd2j/m/n/10 A
+.\TU/ybd2j/m/n/10 B
+.\TU/ybd2j/m/n/10 C
+.\TU/ybd2j/m/n/10 D
+.\TU/ybd2j/m/n/10 E
+.\TU/ybd2j/m/n/10 F
+.\TU/ybd2j/m/n/10 G
+.\TU/ybd2j/m/n/10 H
+.\TU/ybd2j/m/n/10 I
+.\TU/ybd2j/m/n/10 J
+.\TU/ybd2j/m/n/10 K
+.\TU/ybd2j/m/n/10 L
+.\TU/ybd2j/m/n/10 M
+.\TU/ybd2j/m/n/10 N
+.\TU/ybd2j/m/n/10 O
+.\TU/ybd2j/m/n/10 P
+.\TU/ybd2j/m/n/10 Q
+.\TU/ybd2j/m/n/10 R
+.\TU/ybd2j/m/n/10 S
+.\TU/ybd2j/m/n/10 T
+.\TU/ybd2j/m/n/10 U
+.\TU/ybd2j/m/n/10 V
+.\TU/ybd2j/m/n/10 W
+.\TU/ybd2j/m/n/10 X
+.\TU/ybd2j/m/n/10 Y
+.\TU/ybd2j/m/n/10 Z
+.\glue 3.000 plus 1.498 minus 1.001
+.\TU/ybd2j/m/n/10 a
+.\TU/ybd2j/m/n/10 b
+.\TU/ybd2j/m/n/10 c
+.\TU/ybd2j/m/n/10 d
+.\TU/ybd2j/m/n/10 e
+.\TU/ybd2j/m/n/10 f
+.\TU/ybd2j/m/n/10 g
+.\TU/ybd2j/m/n/10 h
+.\TU/ybd2j/m/n/10 i
+.\TU/ybd2j/m/n/10 j
+.\TU/ybd2j/m/n/10 k
+.\TU/ybd2j/m/n/10 l
+.\TU/ybd2j/m/n/10 m
+.\TU/ybd2j/m/n/10 n
+.\TU/ybd2j/m/n/10 o
+.\TU/ybd2j/m/n/10 p
+.\TU/ybd2j/m/n/10 q
+.\TU/ybd2j/m/n/10 r
+.\TU/ybd2j/m/n/10 s
+.\TU/ybd2j/m/n/10 t
+.\TU/ybd2j/m/n/10 u
+.\TU/ybd2j/m/n/10 v
+.\TU/ybd2j/m/n/10 w
+.\TU/ybd2j/m/n/10 x
+.\TU/ybd2j/m/n/10 y
+.\TU/ybd2j/m/n/10 z
+.\glue 3.000 plus 1.500 minus 1.000
+.\TU/ybd2j/m/it/10 A
+.\TU/ybd2j/m/it/10 B
+.\TU/ybd2j/m/it/10 C
+.\TU/ybd2j/m/it/10 D
+.\TU/ybd2j/m/it/10 E
+.\TU/ybd2j/m/it/10 F
+.\TU/ybd2j/m/it/10 G
+.\kern-0.11
+.\TU/ybd2j/m/it/10 H
+.\TU/ybd2j/m/it/10 I
+.\TU/ybd2j/m/it/10 -
+.\discretionary
+.\glue(\rightskip) 0.0
+Overfull \hbox (5.009pt too wide) in paragraph at lines ...
+\TU/ybd2j/m/it/10 JKLMNOPQRSTU-VWXYZ abcde-fghi-jklmnopqrstu-vwxyz \TU/ybd2j/m/scit/10 ABCDE-FGHI-JKLMNOPQRSTU-
+\hbox(7.37+2.0)x345.0, glue set - 1.0
+.\TU/ybd2j/m/it/10 J
+.\TU/ybd2j/m/it/10 K
+.\kern-0.13
+.\TU/ybd2j/m/it/10 L
+.\TU/ybd2j/m/it/10 M
+.\TU/ybd2j/m/it/10 N
+.\TU/ybd2j/m/it/10 O
+.\TU/ybd2j/m/it/10 P
+.\TU/ybd2j/m/it/10 Q
+.\TU/ybd2j/m/it/10 R
+.\TU/ybd2j/m/it/10 S
+.\TU/ybd2j/m/it/10 T
+.\TU/ybd2j/m/it/10 U
+.\TU/ybd2j/m/it/10 V
+.\TU/ybd2j/m/it/10 W
+.\kern-0.24
+.\TU/ybd2j/m/it/10 X
+.\TU/ybd2j/m/it/10 Y
+.\kern-0.44
+.\TU/ybd2j/m/it/10 Z
+.\glue 3.000 plus 1.498 minus 1.001
+.\TU/ybd2j/m/it/10 a
+.\TU/ybd2j/m/it/10 b
+.\TU/ybd2j/m/it/10 c
+.\TU/ybd2j/m/it/10 d
+.\TU/ybd2j/m/it/10 e
+.\TU/ybd2j/m/it/10 f
+.\TU/ybd2j/m/it/10 g
+.\TU/ybd2j/m/it/10 h
+.\TU/ybd2j/m/it/10 i
+.\TU/ybd2j/m/it/10 j
+.\TU/ybd2j/m/it/10 k
+.\TU/ybd2j/m/it/10 l
+.\TU/ybd2j/m/it/10 m
+.\TU/ybd2j/m/it/10 n
+.\TU/ybd2j/m/it/10 o
+.\TU/ybd2j/m/it/10 p
+.\TU/ybd2j/m/it/10 q
+.\TU/ybd2j/m/it/10 r
+.\TU/ybd2j/m/it/10 s
+.\TU/ybd2j/m/it/10 t
+.\TU/ybd2j/m/it/10 u
+.\TU/ybd2j/m/it/10 v
+.\TU/ybd2j/m/it/10 w
+.\TU/ybd2j/m/it/10 x
+.\TU/ybd2j/m/it/10 y
+.\TU/ybd2j/m/it/10 z
+.\glue 3.000 plus 1.500 minus 1.000
+.\TU/ybd2j/m/scit/10 A
+.\TU/ybd2j/m/scit/10 B
+.\TU/ybd2j/m/scit/10 C
+.\TU/ybd2j/m/scit/10 D
+.\TU/ybd2j/m/scit/10 E
+.\TU/ybd2j/m/scit/10 F
+.\TU/ybd2j/m/scit/10 G
+.\TU/ybd2j/m/scit/10 H
+.\TU/ybd2j/m/scit/10 I
+.\TU/ybd2j/m/scit/10 J
+.\TU/ybd2j/m/scit/10 K
+.\TU/ybd2j/m/scit/10 L
+.\TU/ybd2j/m/scit/10 M
+.\TU/ybd2j/m/scit/10 N
+.\TU/ybd2j/m/scit/10 O
+.\TU/ybd2j/m/scit/10 P
+.\TU/ybd2j/m/scit/10 Q
+.\TU/ybd2j/m/scit/10 R
+.\TU/ybd2j/m/scit/10 S
+.\TU/ybd2j/m/scit/10 T
+.\TU/ybd2j/m/scit/10 U
+.\TU/ybd2j/m/scit/10 -
+.\discretionary
+.\glue(\rightskip) 0.0
+Overfull \hbox (32.13899pt too wide) in paragraph at lines ...
+\TU/ybd2j/b/scit/10 fghi-jklmnopqrstu-vwxyz ABCDE-FGHI-JKLMNOPQRSTU-VWXYZ abcde-fghi-jklmnopqrstu-
+\hbox(7.37+1.88)x345.0, glue set - 1.0
+.\TU/ybd2j/b/scit/10 f
+.\TU/ybd2j/b/scit/10 g
+.\TU/ybd2j/b/scit/10 h
+.\TU/ybd2j/b/scit/10 i
+.\TU/ybd2j/b/scit/10 j
+.\TU/ybd2j/b/scit/10 k
+.\TU/ybd2j/b/scit/10 l
+.\TU/ybd2j/b/scit/10 m
+.\TU/ybd2j/b/scit/10 n
+.\TU/ybd2j/b/scit/10 o
+.\TU/ybd2j/b/scit/10 p
+.\TU/ybd2j/b/scit/10 q
+.\TU/ybd2j/b/scit/10 r
+.\TU/ybd2j/b/scit/10 s
+.\TU/ybd2j/b/scit/10 t
+.\TU/ybd2j/b/scit/10 u
+.\TU/ybd2j/b/scit/10 v
+.\TU/ybd2j/b/scit/10 w
+.\TU/ybd2j/b/scit/10 x
+.\TU/ybd2j/b/scit/10 y
+.\TU/ybd2j/b/scit/10 z
+.\glue 3.000 plus 1.500 minus 1.000
+.\TU/ybd2j/b/scit/10 A
+.\TU/ybd2j/b/scit/10 B
+.\TU/ybd2j/b/scit/10 C
+.\TU/ybd2j/b/scit/10 D
+.\TU/ybd2j/b/scit/10 E
+.\TU/ybd2j/b/scit/10 F
+.\TU/ybd2j/b/scit/10 G
+.\TU/ybd2j/b/scit/10 H
+.\TU/ybd2j/b/scit/10 I
+.\TU/ybd2j/b/scit/10 J
+.\TU/ybd2j/b/scit/10 K
+.\TU/ybd2j/b/scit/10 L
+.\TU/ybd2j/b/scit/10 M
+.\TU/ybd2j/b/scit/10 N
+.\TU/ybd2j/b/scit/10 O
+.\TU/ybd2j/b/scit/10 P
+.\TU/ybd2j/b/scit/10 Q
+.\TU/ybd2j/b/scit/10 R
+.\TU/ybd2j/b/scit/10 S
+.\TU/ybd2j/b/scit/10 T
+.\TU/ybd2j/b/scit/10 U
+.\TU/ybd2j/b/scit/10 V
+.\TU/ybd2j/b/scit/10 W
+.\TU/ybd2j/b/scit/10 X
+.\TU/ybd2j/b/scit/10 Y
+.\kern-0.3
+.\TU/ybd2j/b/scit/10 Z
+.\glue 3.000 plus 1.498 minus 1.001
+.\TU/ybd2j/b/scit/10 a
+.\TU/ybd2j/b/scit/10 b
+.\TU/ybd2j/b/scit/10 c
+.\TU/ybd2j/b/scit/10 d
+.\TU/ybd2j/b/scit/10 e
+.\TU/ybd2j/b/scit/10 f
+.\TU/ybd2j/b/scit/10 g
+.\TU/ybd2j/b/scit/10 h
+.\TU/ybd2j/b/scit/10 i
+.\TU/ybd2j/b/scit/10 j
+.\TU/ybd2j/b/scit/10 k
+.\TU/ybd2j/b/scit/10 l
+.\TU/ybd2j/b/scit/10 m
+.\TU/ybd2j/b/scit/10 n
+.\TU/ybd2j/b/scit/10 o
+.\TU/ybd2j/b/scit/10 p
+.\TU/ybd2j/b/scit/10 q
+.\TU/ybd2j/b/scit/10 r
+.\TU/ybd2j/b/scit/10 s
+.\TU/ybd2j/b/scit/10 t
+.\TU/ybd2j/b/scit/10 u
+.\TU/ybd2j/b/scit/10 -
+.\discretionary
+.\glue(\rightskip) 0.0
+[1
+] (berenis-tu.aux)

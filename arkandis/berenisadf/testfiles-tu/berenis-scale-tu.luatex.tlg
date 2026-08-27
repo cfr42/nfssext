@@ -4,7 +4,7 @@ Don't change this file in any respect.
 TEST 1: berenisadf-scale-tu-test
 ============================================================
 > \box...=
-\hbox(146.0+40.0)x344.2
+\hbox(146.0+40.0)x344.2, direction TLT
 .\TU/ybd2j/m/n/10 p
 .\TU/ybd2j/m/n/10 o
 .\TU/ybd2j/m/n/10 b

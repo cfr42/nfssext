@@ -31,7 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\ModMakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: berenisadf.dtx 11969 2026-06-10 14:27:33Z cfrees $}[v2.1 \revinfo][\filebase DTX: FONT for 8-bit engines]
+\ProvidesFileSVN{$Id: berenisadf.dtx 12011 2026-08-27 01:47:42Z cfrees $}[v2.1 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[berenisadf]
 \documentclass[11pt,british]{ltxdoc}
 % ltnews42 / ateb David Carlisle: https://tex.stackexchange.com/a/754799/ (sylwad Ulrike Fischer rhywle ond alla i ddim canfod o hyd iddo fe)
@@ -1034,7 +1034,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[berenis.sty]{$Id: berenisadf.dtx 11969 2026-06-10 14:27:33Z cfrees $}[v0.0 \revinfo]
+\ProvidesPackageSVN[berenis.sty]{$Id: berenisadf.dtx 12011 2026-08-27 01:47:42Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN[berenis]
 %    \end{macrocode}
 % Load \lpack{nfssext-cfr}.  
@@ -1311,27 +1311,27 @@
     \char13
   }
 } 
-\sys_if_engine_opentype:F {
-  \IfFormatAtLeastTF {2020-02-02}{%
+\IfFormatAtLeastTF {2020-02-02}{
 %    \end{macrocode}
 % \let\MakePrivateLetters\ModMakePrivateLetters
 % \end{macro}
 % To get the oldstyle numbers etc.\ used from TS1, we need to set the subset to 0 or 1.
 % Unfortunately, this means characters missing from the fonts will not use default symbols as fallback, but this seems to be unavoidable.
 %    \begin{macrocode}
-    \DeclareEncodingSubset{TS1}{ybd}{1}%
-    \DeclareEncodingSubset{TS1}{ybd2}{1}%
-    \DeclareEncodingSubset{TS1}{ybd2j}{1}%
-    \DeclareEncodingSubset{TS1}{ybdj}{1}%
-    \DeclareEncodingSubset{TS1}{ybd0}{1}%
-    \DeclareEncodingSubset{TS1}{ybd1}{1}%
-    \DeclareEncodingSubset{TS1}{ybdw}{1}%
-    \DeclareEncodingSubset{TS1}{ybd2w}{1}%
-    \DeclareEncodingSubset{TS1}{ybd2jw}{1}%
-    \DeclareEncodingSubset{TS1}{ybdjw}{1}%
-  }{
-    \RequirePackage{textcomp}
-  }
+  \DeclareEncodingSubset{TS1}{ybd}{1}
+  \DeclareEncodingSubset{TS1}{ybd2}{1}
+  \DeclareEncodingSubset{TS1}{ybd2j}{1}
+  \DeclareEncodingSubset{TS1}{ybdj}{1}
+  \DeclareEncodingSubset{TS1}{ybd0}{1}
+  \DeclareEncodingSubset{TS1}{ybd1}{1}
+  \DeclareEncodingSubset{TS1}{ybdw}{1}
+  \DeclareEncodingSubset{TS1}{ybd2w}{1}
+  \DeclareEncodingSubset{TS1}{ybd2jw}{1}
+  \DeclareEncodingSubset{TS1}{ybdjw}{1}
+}{
+  \RequirePackage{textcomp}
+}
+\sys_if_engine_opentype:F {
   \UndeclareTextCommand{\textperthousand}{T1}
 %    \end{macrocode}
 % \begin{macro}{\sfdefault,\ttdefault}

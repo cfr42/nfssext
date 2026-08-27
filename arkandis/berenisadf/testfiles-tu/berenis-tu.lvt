@@ -1,7 +1,7 @@
 % !TEX TS-program = lualatex
 % !TEX encoding = UTF-8 Unicode
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: berenis-tu.lvt 11968 2026-06-10 00:56:50Z cfrees $}[v1.1 \revinfo][\filebase: TU test]
+\ProvidesFileSVN{$Id: berenis-tu.lvt 11969 2026-06-10 14:27:33Z cfrees $}[v1.1 \revinfo][\filebase: TU test]
 \input regression-test.tex\relax
 \DeclareFontFamily{TU}{lmr}{}
 \DeclareFontShape{TU}{lmr}{m}{n}%
@@ -16,6 +16,7 @@
  }{}
 \documentclass{article}
 \pagestyle{empty}	
+\usepackage{berenis}
 % \usepackage[scale=20]{berenis}
 
 \begin{document}
@@ -25,7 +26,6 @@
 \TEST{ybd-tu-test}{
   % \hbox_set:Nn \l_tmpa_box 
   {
-    \fontencoding{TU}\fontfamily{ybd}\fontseries{m}\fontshape{n}\selectfont
     ABCDEFGHIJKLMNOPQRSTUVWXYZ ~
     abcdefghijklmnopqrstuvwxyz ~
     \itshape
@@ -34,7 +34,7 @@
     \scshape
     ABCDEFGHIJKLMNOPQRSTUVWXYZ ~
     abcdefghijklmnopqrstuvwxyz ~
-    \fontseries{b}\selectfont
+    \bfseries
     ABCDEFGHIJKLMNOPQRSTUVWXYZ ~
     abcdefghijklmnopqrstuvwxyz ~
     \itshape
