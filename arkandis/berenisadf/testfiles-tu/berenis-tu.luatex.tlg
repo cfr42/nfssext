@@ -18,17 +18,26 @@ luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candid
 ============================================================
 Overfull \hbox (6.29903pt too wide) in paragraph at lines ...
 []\TU/ybd2j/m/n/10 ABCDE-FGHI-JKLMNOPQRSTU-VWXYZ abcde-fghi-jklmnopqrstu-vwxyz \TU/ybd2j/m/it/10 ABCDE-FGHI-
-\hbox(7.37+2.0)x345.0, glue set - 1.0
-.\hbox(0.0+0.0)x15.0
+\hbox(7.37+2.0)x345.0, glue set - 1.0, direction TLT
+.\localpar
+..\localinterlinepenalty=0
+..\localbrokenpenalty=0
+..\localleftbox=null
+..\localrightbox=null
+.\hbox(0.0+0.0)x15.0, direction TLT
 .\TU/ybd2j/m/n/10 A
 .\TU/ybd2j/m/n/10 B
 .\TU/ybd2j/m/n/10 C
 .\TU/ybd2j/m/n/10 D
 .\TU/ybd2j/m/n/10 E
+.\discretionary (penalty 50)
+..< \TU/ybd2j/m/n/10 -
 .\TU/ybd2j/m/n/10 F
 .\TU/ybd2j/m/n/10 G
 .\TU/ybd2j/m/n/10 H
 .\TU/ybd2j/m/n/10 I
+.\discretionary (penalty 50)
+..< \TU/ybd2j/m/n/10 -
 .\TU/ybd2j/m/n/10 J
 .\TU/ybd2j/m/n/10 K
 .\TU/ybd2j/m/n/10 L
@@ -41,21 +50,27 @@ Overfull \hbox (6.29903pt too wide) in paragraph at lines ...
 .\TU/ybd2j/m/n/10 S
 .\TU/ybd2j/m/n/10 T
 .\TU/ybd2j/m/n/10 U
+.\discretionary (penalty 50)
+..< \TU/ybd2j/m/n/10 -
 .\TU/ybd2j/m/n/10 V
 .\TU/ybd2j/m/n/10 W
 .\TU/ybd2j/m/n/10 X
 .\TU/ybd2j/m/n/10 Y
 .\TU/ybd2j/m/n/10 Z
-.\glue 3.000 plus 1.498 minus 1.001
+.\glue(\spaceskip) 3.0 plus 1.49849 minus 1.00099
 .\TU/ybd2j/m/n/10 a
 .\TU/ybd2j/m/n/10 b
 .\TU/ybd2j/m/n/10 c
 .\TU/ybd2j/m/n/10 d
 .\TU/ybd2j/m/n/10 e
+.\discretionary (penalty 50)
+..< \TU/ybd2j/m/n/10 -
 .\TU/ybd2j/m/n/10 f
 .\TU/ybd2j/m/n/10 g
 .\TU/ybd2j/m/n/10 h
 .\TU/ybd2j/m/n/10 i
+.\discretionary (penalty 50)
+..< \TU/ybd2j/m/n/10 -
 .\TU/ybd2j/m/n/10 j
 .\TU/ybd2j/m/n/10 k
 .\TU/ybd2j/m/n/10 l
@@ -68,31 +83,35 @@ Overfull \hbox (6.29903pt too wide) in paragraph at lines ...
 .\TU/ybd2j/m/n/10 s
 .\TU/ybd2j/m/n/10 t
 .\TU/ybd2j/m/n/10 u
+.\discretionary (penalty 50)
+..< \TU/ybd2j/m/n/10 -
 .\TU/ybd2j/m/n/10 v
 .\TU/ybd2j/m/n/10 w
 .\TU/ybd2j/m/n/10 x
 .\TU/ybd2j/m/n/10 y
 .\TU/ybd2j/m/n/10 z
-.\glue 3.000 plus 1.500 minus 1.000
+.\glue(\spaceskip) 3.0 plus 1.5 minus 1.0
 .\TU/ybd2j/m/it/10 A
 .\TU/ybd2j/m/it/10 B
 .\TU/ybd2j/m/it/10 C
 .\TU/ybd2j/m/it/10 D
 .\TU/ybd2j/m/it/10 E
+.\discretionary (penalty 50)
+..< \TU/ybd2j/m/it/10 -
 .\TU/ybd2j/m/it/10 F
 .\TU/ybd2j/m/it/10 G
-.\kern-0.11
+.\kern-0.11 (font)
 .\TU/ybd2j/m/it/10 H
 .\TU/ybd2j/m/it/10 I
 .\TU/ybd2j/m/it/10 -
-.\discretionary
+.\discretionary (penalty 50)
 .\glue(\rightskip) 0.0
 Overfull \hbox (5.009pt too wide) in paragraph at lines ...
 \TU/ybd2j/m/it/10 JKLMNOPQRSTU-VWXYZ abcde-fghi-jklmnopqrstu-vwxyz \TU/ybd2j/m/scit/10 ABCDE-FGHI-JKLMNOPQRSTU-
-\hbox(7.37+2.0)x345.0, glue set - 1.0
+\hbox(7.37+2.0)x345.0, glue set - 1.0, direction TLT
 .\TU/ybd2j/m/it/10 J
 .\TU/ybd2j/m/it/10 K
-.\kern-0.13
+.\kern-0.13 (font)
 .\TU/ybd2j/m/it/10 L
 .\TU/ybd2j/m/it/10 M
 .\TU/ybd2j/m/it/10 N
@@ -103,23 +122,29 @@ Overfull \hbox (5.009pt too wide) in paragraph at lines ...
 .\TU/ybd2j/m/it/10 S
 .\TU/ybd2j/m/it/10 T
 .\TU/ybd2j/m/it/10 U
+.\discretionary (penalty 50)
+..< \TU/ybd2j/m/it/10 -
 .\TU/ybd2j/m/it/10 V
 .\TU/ybd2j/m/it/10 W
-.\kern-0.24
+.\kern-0.24 (font)
 .\TU/ybd2j/m/it/10 X
 .\TU/ybd2j/m/it/10 Y
-.\kern-0.44
+.\kern-0.44 (font)
 .\TU/ybd2j/m/it/10 Z
-.\glue 3.000 plus 1.498 minus 1.001
+.\glue(\spaceskip) 3.0 plus 1.49849 minus 1.00099
 .\TU/ybd2j/m/it/10 a
 .\TU/ybd2j/m/it/10 b
 .\TU/ybd2j/m/it/10 c
 .\TU/ybd2j/m/it/10 d
 .\TU/ybd2j/m/it/10 e
+.\discretionary (penalty 50)
+..< \TU/ybd2j/m/it/10 -
 .\TU/ybd2j/m/it/10 f
 .\TU/ybd2j/m/it/10 g
 .\TU/ybd2j/m/it/10 h
 .\TU/ybd2j/m/it/10 i
+.\discretionary (penalty 50)
+..< \TU/ybd2j/m/it/10 -
 .\TU/ybd2j/m/it/10 j
 .\TU/ybd2j/m/it/10 k
 .\TU/ybd2j/m/it/10 l
@@ -132,21 +157,27 @@ Overfull \hbox (5.009pt too wide) in paragraph at lines ...
 .\TU/ybd2j/m/it/10 s
 .\TU/ybd2j/m/it/10 t
 .\TU/ybd2j/m/it/10 u
+.\discretionary (penalty 50)
+..< \TU/ybd2j/m/it/10 -
 .\TU/ybd2j/m/it/10 v
 .\TU/ybd2j/m/it/10 w
 .\TU/ybd2j/m/it/10 x
 .\TU/ybd2j/m/it/10 y
 .\TU/ybd2j/m/it/10 z
-.\glue 3.000 plus 1.500 minus 1.000
+.\glue(\spaceskip) 3.0 plus 1.5 minus 1.0
 .\TU/ybd2j/m/scit/10 A
 .\TU/ybd2j/m/scit/10 B
 .\TU/ybd2j/m/scit/10 C
 .\TU/ybd2j/m/scit/10 D
 .\TU/ybd2j/m/scit/10 E
+.\discretionary (penalty 50)
+..< \TU/ybd2j/m/scit/10 -
 .\TU/ybd2j/m/scit/10 F
 .\TU/ybd2j/m/scit/10 G
 .\TU/ybd2j/m/scit/10 H
 .\TU/ybd2j/m/scit/10 I
+.\discretionary (penalty 50)
+..< \TU/ybd2j/m/scit/10 -
 .\TU/ybd2j/m/scit/10 J
 .\TU/ybd2j/m/scit/10 K
 .\TU/ybd2j/m/scit/10 L
@@ -160,15 +191,17 @@ Overfull \hbox (5.009pt too wide) in paragraph at lines ...
 .\TU/ybd2j/m/scit/10 T
 .\TU/ybd2j/m/scit/10 U
 .\TU/ybd2j/m/scit/10 -
-.\discretionary
+.\discretionary (penalty 50)
 .\glue(\rightskip) 0.0
 Overfull \hbox (32.13899pt too wide) in paragraph at lines ...
 \TU/ybd2j/b/scit/10 fghi-jklmnopqrstu-vwxyz ABCDE-FGHI-JKLMNOPQRSTU-VWXYZ abcde-fghi-jklmnopqrstu-
-\hbox(7.37+1.88)x345.0, glue set - 1.0
+\hbox(7.37+1.88)x345.0, glue set - 1.0, direction TLT
 .\TU/ybd2j/b/scit/10 f
 .\TU/ybd2j/b/scit/10 g
 .\TU/ybd2j/b/scit/10 h
 .\TU/ybd2j/b/scit/10 i
+.\discretionary (penalty 50)
+..< \TU/ybd2j/b/scit/10 -
 .\TU/ybd2j/b/scit/10 j
 .\TU/ybd2j/b/scit/10 k
 .\TU/ybd2j/b/scit/10 l
@@ -181,21 +214,27 @@ Overfull \hbox (32.13899pt too wide) in paragraph at lines ...
 .\TU/ybd2j/b/scit/10 s
 .\TU/ybd2j/b/scit/10 t
 .\TU/ybd2j/b/scit/10 u
+.\discretionary (penalty 50)
+..< \TU/ybd2j/b/scit/10 -
 .\TU/ybd2j/b/scit/10 v
 .\TU/ybd2j/b/scit/10 w
 .\TU/ybd2j/b/scit/10 x
 .\TU/ybd2j/b/scit/10 y
 .\TU/ybd2j/b/scit/10 z
-.\glue 3.000 plus 1.500 minus 1.000
+.\glue(\spaceskip) 3.0 plus 1.5 minus 1.0
 .\TU/ybd2j/b/scit/10 A
 .\TU/ybd2j/b/scit/10 B
 .\TU/ybd2j/b/scit/10 C
 .\TU/ybd2j/b/scit/10 D
 .\TU/ybd2j/b/scit/10 E
+.\discretionary (penalty 50)
+..< \TU/ybd2j/b/scit/10 -
 .\TU/ybd2j/b/scit/10 F
 .\TU/ybd2j/b/scit/10 G
 .\TU/ybd2j/b/scit/10 H
 .\TU/ybd2j/b/scit/10 I
+.\discretionary (penalty 50)
+..< \TU/ybd2j/b/scit/10 -
 .\TU/ybd2j/b/scit/10 J
 .\TU/ybd2j/b/scit/10 K
 .\TU/ybd2j/b/scit/10 L
@@ -208,22 +247,28 @@ Overfull \hbox (32.13899pt too wide) in paragraph at lines ...
 .\TU/ybd2j/b/scit/10 S
 .\TU/ybd2j/b/scit/10 T
 .\TU/ybd2j/b/scit/10 U
+.\discretionary (penalty 50)
+..< \TU/ybd2j/b/scit/10 -
 .\TU/ybd2j/b/scit/10 V
 .\TU/ybd2j/b/scit/10 W
 .\TU/ybd2j/b/scit/10 X
 .\TU/ybd2j/b/scit/10 Y
-.\kern-0.3
+.\kern-0.3 (font)
 .\TU/ybd2j/b/scit/10 Z
-.\glue 3.000 plus 1.498 minus 1.001
+.\glue(\spaceskip) 3.0 plus 1.49849 minus 1.00099
 .\TU/ybd2j/b/scit/10 a
 .\TU/ybd2j/b/scit/10 b
 .\TU/ybd2j/b/scit/10 c
 .\TU/ybd2j/b/scit/10 d
 .\TU/ybd2j/b/scit/10 e
+.\discretionary (penalty 50)
+..< \TU/ybd2j/b/scit/10 -
 .\TU/ybd2j/b/scit/10 f
 .\TU/ybd2j/b/scit/10 g
 .\TU/ybd2j/b/scit/10 h
 .\TU/ybd2j/b/scit/10 i
+.\discretionary (penalty 50)
+..< \TU/ybd2j/b/scit/10 -
 .\TU/ybd2j/b/scit/10 j
 .\TU/ybd2j/b/scit/10 k
 .\TU/ybd2j/b/scit/10 l
@@ -237,7 +282,7 @@ Overfull \hbox (32.13899pt too wide) in paragraph at lines ...
 .\TU/ybd2j/b/scit/10 t
 .\TU/ybd2j/b/scit/10 u
 .\TU/ybd2j/b/scit/10 -
-.\discretionary
+.\discretionary (penalty 50)
 .\glue(\rightskip) 0.0
 [1
 ] (berenis-tu.aux)
