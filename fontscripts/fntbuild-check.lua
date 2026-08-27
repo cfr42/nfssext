@@ -1,4 +1,4 @@
--- $Id: fntbuild-check.lua 10834 2025-02-20 18:57:33Z cfrees $
+-- $Id: fntbuild-check.lua 12010 2026-08-27 01:46:27Z cfrees $
 -------------------------------------------------
 -- fntbuild-check
 -------------------------------------------------
@@ -180,7 +180,7 @@ local function check_init ()
         "/tex/latex/base/ucmss.fd",
         "/tex/latex/base/ucmtt.fd",
         "/tex/latex/l3build", 
-        "/tex/latex/l3backend",
+        "/tex/latex/l3kernel",
         "/tex/latex/fonttable/fonttable.sty",
         "/fonts/enc/dvips/base",
         "/fonts/enc/dvips/cm-super",
