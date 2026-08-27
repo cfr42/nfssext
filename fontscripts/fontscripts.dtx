@@ -1,7 +1,7 @@
 % \iffalse meta-comment
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % fontscripts.dtx
-% Additions and changes Copyright (C) 2010-2025 Clea F. Rees.
+% Additions and changes Copyright (C) 2010-2026 Clea F. Rees.
 % Code from skeleton.dtx Copyright (C) 2015-2024 Scott Pakin (see below).
 %
 % This work may be distributed and/or modified under the
@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: fontscripts.dtx 11048 2025-06-25 10:18:03Z cfrees $}[v0.3 \revinfo][\filebase DTX: l3build scripts for font installation]
+\ProvidesFileSVN{$Id: fontscripts.dtx 11970 2026-06-10 17:01:33Z cfrees $}[v0.3 \revinfo][\filebase DTX: l3build scripts for font installation]
 \DefineFileInfoSVN[fontscripts]
 \documentclass[10pt,british,lm-default=false]{l3doc}
 % l3doc loads fancyvrb
@@ -1006,7 +1006,7 @@ fnt.subsetdefns.clms = "lmss"
 %    \begin{macrocode}
 \pdftracingfonts=1
 \RequirePackage{svn-prov}
-\ProvidesFileSVN[fnt-tables.tex]{$Id: fontscripts.dtx 11048 2025-06-25 10:18:03Z cfrees $}[v0.2 \revinfo][\filebase: font table template]
+\ProvidesFileSVN[fnt-tables.tex]{$Id: fontscripts.dtx 11970 2026-06-10 17:01:33Z cfrees $}[v0.2 \revinfo][\filebase: font table template]
 \DefineFileInfoSVN
 %    \end{macrocode}
 % \iffalse
@@ -1039,7 +1039,7 @@ TABLES
 % Default content:
 %    \begin{macrocode}
 \RequirePackage{svn-prov}
-\ProvidesFileSVN[fnt-test.lvt]{$Id: fontscripts.dtx 11048 2025-06-25 10:18:03Z cfrees $}[v0.0 \revinfo][fontscripts: l3build test template]
+\ProvidesFileSVN[fnt-test.lvt]{$Id: fontscripts.dtx 11970 2026-06-10 17:01:33Z cfrees $}[v0.0 \revinfo][fontscripts: l3build test template]
 \listfiles
 \input regression-test.tex\relax
 \input fntbuild-regression-test.tex\relax
@@ -1069,10 +1069,29 @@ SAMP
 % \fi
 % \begin{template}{fntbuild-regression-test.tex}
 % Simple regression test suite for fonts focused on T1 and TS1 encodings.
+% \changes{v0.0}{2026-06-10}{Add minimal TU support to test template \texttt{fntbuild-regression-test.tex}.
+%   Correct file name recorded.}
 %    \begin{macrocode}
-\pdftracingfonts=1
+\ifcsname pdftracingfonts\endcsname
+  \pdftracingfonts=1
+\else
+  \tracingfonts=1
+\fi
 \RequirePackage{svn-prov}
-\ProvidesFileSVN[fnt-tests.tex]{$Id: fontscripts.dtx 11048 2025-06-25 10:18:03Z cfrees $}[v0.0 \revinfo][fontscripts: l3build tests]
+\ProvidesFileSVN[fntbuild-regression-test.tex]{$Id: fontscripts.dtx 11970 2026-06-10 17:01:33Z cfrees $}[v0.0 \revinfo][fontscripts: l3build tests]
+\csname sys_if_engine_opentype:T\endcsname {%
+  \DeclareFontFamily{TU}{lmr}{}
+  \DeclareFontShape{TU}{lmr}{m}{n}%
+    {<-5.5>     \UnicodeFontFile{lmroman5-regular.otf}{\UnicodeFontTeXLigatures}
+     <5.5-6.5>  \UnicodeFontFile{lmroman6-regular.otf}{\UnicodeFontTeXLigatures}
+     <6.5-7.5>  \UnicodeFontFile{lmroman7-regular.otf}{\UnicodeFontTeXLigatures}
+     <7.5-8.5>  \UnicodeFontFile{lmroman8-regular.otf}{\UnicodeFontTeXLigatures}
+     <8.5-9.5>  \UnicodeFontFile{lmroman9-regular.otf}{\UnicodeFontTeXLigatures}
+     <9.5-11>   \UnicodeFontFile{lmroman10-regular.otf}{\UnicodeFontTeXLigatures}
+     <11-15>    \UnicodeFontFile{lmroman12-regular.otf}{\UnicodeFontTeXLigatures}
+     <15->      \UnicodeFontFile{lmroman17-regular.otf}{\UnicodeFontTeXLigatures}
+   }{}
+}
 \documentclass[10pt,a4paper]{article}
 \usepackage{fonttable}
 \usepackage{tracefnt}% infoshow is default; debugshow traces maths fonts, too
@@ -1285,7 +1304,7 @@ SAMP
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2\nil{#1}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName doc]{$Id: fontscripts.dtx 11048 2025-06-25 10:18:03Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName doc]{$Id: fontscripts.dtx 11970 2026-06-10 17:01:33Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \AddToHook{begindocument}{\OnlyDescription}
 \input{\MyFileBaseName.dtx}
@@ -1296,7 +1315,7 @@ SAMP
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2\nil{#1}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName code]{$Id: fontscripts.dtx 11048 2025-06-25 10:18:03Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName code]{$Id: fontscripts.dtx 11970 2026-06-10 17:01:33Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \input{\MyFileBaseName.dtx}
 %</doc-code>
