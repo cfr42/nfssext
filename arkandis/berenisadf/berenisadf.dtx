@@ -31,7 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\ModMakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: berenisadf.dtx 12011 2026-08-27 01:47:42Z cfrees $}[v2.1 \revinfo][\filebase DTX: FONT for 8-bit engines]
+\ProvidesFileSVN{$Id: berenisadf.dtx 12015 2026-08-27 19:59:47Z cfrees $}[v2.1 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[berenisadf]
 \documentclass[11pt,british]{ltxdoc}
 % ltnews42 / ateb David Carlisle: https://tex.stackexchange.com/a/754799/ (sylwad Ulrike Fischer rhywle ond alla i ddim canfod o hyd iddo fe)
@@ -316,10 +316,11 @@
 % 
 % This document explains how to use the \TeX/\LaTeX\ support provided for version 1.004 of the Berenis \adf\ font collection developed by Hirwen Harendal of the Arkandis Digital Foundry (\adf).
 % \lpack{berenisadf} includes copies of the fonts in postscript type 1 format and opentype versions as source.
+% Both 8-bit and Unicode engines are supported.
 % Further  information about the fonts themselves can be found at \url{http://arkandis.tuxfamily.org/adffonts.html}.
 % The fonts are released under the \textsc{gnu} General Public License as published by the Free Software Foundation; either version 2 of the License, or any later version, with font exception.
 % For details, see \textsc{notice}.txt and \textsc{copying}.
-% 
+%
 % The \TeX/\LaTeX\ support package consists of all files listed in \path{manifest.txt} and these files are released under the \LaTeX\ Project Public License as explained in the included licensing notices.
 % Please report any issues using the \bug{}.
 % 
@@ -330,7 +331,16 @@
 % Six sets of digits are provided: proportional oldstyle and lining; tabular oldstyle and lining; inferior; and superior\footnote{In fact, the fonts also include denominator and numerator figures.
 % Since there is currently no use for these in TeX, however, the support package ignores them.}.
 % The support package renames the fonts according to the Karl Berry fontname scheme and defines 22 families.
-% Together, these provide support for the \textsc{t1} and two versions of the \textsc{ly1} font encoding\footnote{The initial version of the package did not support \textsc{t1} and \textsc{ly1} remains the default to ensure backwards compatibility.}.
+% Together, these provide support for the \textsc{t1} and two versions of the \textsc{ly1} font encoding\footnote{The initial version of the package did not support \textsc{t1} and \textsc{ly1} remains the default to ensure backwards compatibility.}, for use with 8-bit engines, and \textsc{tu}, for use with Unicode engines\footnote{%
+%   Support is specifically targeted at Lua\LaTeX{}, but should also work with Xe\LaTeX{}.%
+% }.
+%
+% \subsection{8-bit\footnote{%
+%   8-bit engines include \TeX{}, e\TeX{} and pdf\TeX{}, for example.
+%   If you use pdf\LaTeX{} to compile, you are using an 8-bit engine; if you use LuaLaTeX{} or XeLaTeX{}, you are using a Unicode engine.
+%   8-bit engines support 7-bit and 8-bit fonts, which include at most 128 and 256 characters respectively.%
+% } engines}
+%
 % Whether to use \textsc{ly1} or \textsc{t1} depends on the features of the fonts required in any particular document.
 % For example, Welsh should be typeset using \textsc{ly1}\footnote{%
 %   This is true specifically for \lpack{berenisadf}.
@@ -338,6 +348,7 @@
 % }, but Polish requires \textsc{t1} and only \textsc{ly1} provides extended ligatures and ‘swash’ variants. 
 % 
 % Eight families primarily provide access to the ‘standard’ or default characters while the four ‘ligature’ or ‘swash’ families support additional non-standard ligatures, alternate glyphs, the slashed zero and additional pre-composed accented characters\footnote{\Fref{sec:encs} describes the encodings used to create these families.
+% Mappings from the original font names to Berry names are shown in \fref{tab:coll}.
 % For further details see the encoding (\path{.enc}) and kerning/ligaturing (\path{.lig}) files.}.
 % Four further families include the inferior and superior figures, together with any other complementary characters included in the fonts.
 % The remaining six families provide the ‘Text Companion’ encoding for use with the \textsc{t1} encoding.
@@ -350,6 +361,7 @@
 % The ‘ligature’ or ‘swash’ families are supported only for \textsc{ly1}.
 % In addition, Welsh should be typeset in \textsc{ly1} since the customised encodings better support it, especially in version 2.0.
 % Polish should be typeset (from version 2.0) with \texttt{enc}\val{t1} and either no \texttt{lig} or \texttt{lig}\val{false}. 
+%
 % 
 % \begin{table}
 % \begin{adjustwidth}{-\savedfancyoffset}{0pt}
@@ -371,10 +383,20 @@
 % \end{adjustwidth}
 % \end{table}
 % 
+% \subsection{Unicode engines}
+%
+% The provided families largely follow the pattern explained for \textsc{ly1} above, but here there is no price to pay for access to additional ligatures and alternate forms as we are not limited to 256 characters per font.
+% The difference is that no Berry names are used for fonts; the Berry names in \label{tab:coll} are used only for \LaTeX{} families.
+%
+% Note that legacy documents compiled with Unicode engines may generate \textsc{pdf}s using a mix of opentype and type1 fonts.
+% One may also see warnings about missing characters.
+% These are due to limitations in \LaTeXe{} and not bugs in this package\footnote{Really, \emph{this} is not my fault!}. 
+% Use of type1 fonts may be avoided by replacing \textsc{ts1} symbol macros with Unicode alternatives.
+% For example, use \cs{ostyle} or \cs{texto} to produce hanging numerals rather than \cs{oldstylenums} or \cs{textoneoldstyle}.
 % 
 % \section{Requirements}
 % 
-% Apart from such obvious requirements as \LaTeXe, the \LaTeX\ support provided by \path{berenis.sty} requires \lpack{nfssext-cfr} and \lpack{xkeyval}.
+% Apart from such obvious requirements as \LaTeXe, the \LaTeX\ support provided by \path{berenis.sty} requires \lpack{nfssext-cfr}.
 % Without \lpack{nfssext-cfr}, you will get errors complaining that the package cannot be found and you will not be able to use any of the additional font commands described in \fref{sec:commands}.
 % 
 % The documentation requires additional packages.
@@ -388,10 +410,11 @@
 % The package supports modified TeXnANSI/\textsc{ly1} encodings, as shown in \fref{tab:berenis}.
 % \changes{v1.004/2.0}{2013/11/25}{Limited support for \textsc{t1} and \textsc{ts1}.}
 % Version 2.0 provides limited support for \textsc{t1} and \textsc{ts1}.
+% Version 3.0 provides experimental support for Unicode (\textsc{tu}).
 % Most characters in the \TeX{}nANSI encoding are available, including the \texteuro.
 % Six of the families use encodings based on \path{texnansi.enc}; four use encodings based on \path{texnansx.enc}.
 % These bases are reflected in the file names as shown below.
-% All encodings make certain changes to accommodate differences in glyph names.
+% All non-Unicode encodings make certain changes to accommodate differences in glyph names.
 % For example, the slots for \path{onesuperior}, \path{twosuperior} and \path{threesuperior} are used for \path{one.superior}, \path{two.superior} and \path{three.superior} in all encodings.
 % 
 % \begin{table}
@@ -442,13 +465,15 @@
 % The encodings use symbols to match the relevant style of figures when these are available.
 % For example, \verb|\texteuro 3.15| will variously produce \texteuro 3.15, \textl{\texteuro 3.15}, \textto{\texteuro 3.15}, \texttl{\texteuro 3.15}, \textinf{\texteuro 3.15} or \textsu{\texteuro 3.15} depending on the current family.
 % 
+% For Unicode, no special encodings are needed.
+% Instead, equivalent functionality is implemented using opentype font features in the \textsc{otf} fonts themselves.
 % 
 % \subsection{\LaTeX\ package}
 % 
 % \DescribePkg{berenis}
 % To use the fonts in a \LaTeX\ document, add \verb|\usepackage{berenis}| to your document preamble.
 % This will set the default serif/roman family to \fname{ybd} (\fgroup{berenis}) and enable access to the various alternates, styles and ligatures.
-% Six optional arguments are available to tailor the behaviour of the package: \verb|lf|/\verb|osf|, \verb|tab|/\verb|prop|, \verb|lig| and \verb|lm|.
+% Six optional arguments are available to tailor the behaviour of the package: \verb|lf|/\verb|osf|, \verb|tab|/\verb|prop|, \verb|lig|, \verb|lm| and \verb|enc|.
 % 
 % \DescribeOpt{lf}\vals{true,false}
 % \DescribeOpt{lining}
@@ -515,7 +540,7 @@
 % 
 % \DescribeOpt{enc}\vals{ly1,LY1,t1,T1}
 %
-% By default, the package will use the \textsc{ly1} encoding.
+% By default, the package will use the \textsc{ly1} encoding on 8-bit engines and \textsc{tu} on Unicode engines.
 % To use \textsc{t1}:
 % \iffalse
 %<*verb>
@@ -559,6 +584,8 @@
 % To explicitly request the default behaviour, which does redefine these families, use \verb|lm| or \verb|lm=true|.
 % 
 % Note that loading \path{berenis.sty} will not affect the default setup for mathematics.
+%
+% This option has no effect on Unicode engines since Latin Modern is already the default.
 % 
 % \changes{v2.1}{2024-09-17}{Enable \textt{scale} package option.}
 % \DescribeOpt{scale}\val{scaling factor}
@@ -576,6 +603,9 @@
 % For this reason, only a subset of the additional commands are relevant to any particular font support package.
 % Those relevant to \lpack{berenisadf} are described below.
 % 
+% \textbf{Note that one \emph{cannot} use \lpack{fontspec} commands with fonts setup by this package.}
+% If you would prefer to use these, simply load the opentype fonts directly with \cs{setmainfont} and do \emph{not} load \lpack{berenis}.
+% Note that in this case \textsc{ts1} symbols will be taken from a different font, probably Latin Modern, so macros such as \cs{oldstylenums} really should be avoided in this case.
 % 
 % \subsection{nfssext-cfr}
 % 
@@ -616,7 +646,7 @@
 % 
 % \subsubsection{Styles}
 % 
-% This section applies only when the \textsc{ly1} encoding is used.
+% This section applies only when the \textsc{ly1} or \textsc{tu} encodings are used.
 % If \textsc{t1} is selected instead, none of the font features described here will be active.
 %
 % \DescribeMacro{\swashstyle}
@@ -662,10 +692,10 @@
 % \DescribeMacro{\zeroslash}
 % \begin{itemize}
 %   \item \verb|Q| will typeset the regular ‘Q’ (\textswash{Q});
-%   \item \verb|Q*| will typeset the alternate ‘Q’ (\textswash{Q*});
+%   \item \verb|Q*| will typeset the alternate ‘Q’ (\textswash{Q*}, \textsc{ly1} only);
 %   \item \verb|fj| \verb|ffj| will produce ligatures (\textswash{fj/ffj});
 %   \item \verb|ch| \verb|ck| \verb|cl| \verb|ct| \verb|ft| \verb|fft| \verb|sh| \verb|sk| \verb|sl| \verb|sp| \verb|st| \verb|tt| will produce additional ligatures (\textswash{ch/ck/cl/ct/ft/fft/sh/sk/sl/sp/st/tt});
-%   \item \verb|\zeroslash| will produce the slashed zero if lining figures are in use (\textswash{\textl{\zeroslash}/\texttl{\zeroslash}});
+%   \item \verb|\zeroslash| will produce the slashed zero if lining figures are in use (\textswash{\textl{\zeroslash}/\texttl{\zeroslash}}, \textsc{ly1} only);
 %   \item \verb|\^W|, \verb|\^w|, \verb|\^Y| and \verb|\^y| will use pre-composed glyphs (\textswash{\^W/\^w/\^Y/\^y}).
 % \end{itemize}
 % 
@@ -674,10 +704,10 @@
 % Outside the scope of these commands:
 % \begin{itemize}
 %   \item \verb|Q| will typeset the regular ‘Q’ (Q);
-%   \item \verb|Q*| will typeset the regular ‘Q’ followed by an asterisk (Q*);
+%   \item \verb|Q*| will typeset the regular ‘Q’ followed by an asterisk (Q*, \textsc{ly1} only);
 %   \item \verb|fj| \verb|ffj| will produce ligatures (fj/ffj);
 %   \item \verb|ch| \verb|ck| \verb|cl| \verb|ct| \verb|ft| \verb|fft| \verb|sh| \verb|sk| \verb|sl| \verb|sp| \verb|st|  \verb|tt| will not produce ligatures (ch/ck/cl/ct/ft/fft/sh/sk/sl/sp/st/tt);
-%   \item \verb|\zeroslash| will not produce the slashed zero even if lining figures are in use (\textl{\zeroslash/\texttl{\zeroslash}});
+%   \item \verb|\zeroslash| will not produce the slashed zero even if lining figures are in use (\textl{\zeroslash/\texttl{\zeroslash}}, \textsc{ly1} only);
 %   \item \verb|\^W|, \verb|\^w|, \verb|\^Y| and \verb|\^y| will use pre-composed glyphs (\textswash{\^W/\^w/\^Y/\^y}).
 % \end{itemize}
 % 
@@ -735,34 +765,27 @@
 % 
 % The font features described in this section are available regardless of font encoding selected.
 % 
+% \changes{v0.0}{2026-08-27}{\cs{textin}, \cs{instyle} de-deprecated as \lpack{hyperref} removed the incompatibility.}
 % Two sets of commands are available for choosing tabular or proportional and oldstyle or lining digits.
 % \begin{table}
-% \centering
-% \begin{threeparttable}
-% \caption{Figures}\label{tab:figs}
-% \begin{tabular}{llll}
-%   \toprule
-%   \textbf{figure style}     & \textbf{style command}  & \textbf{text command} & \textbf{effect}\\ \midrule
-%     lining                    & \verb|\lstyle|            & \verb|\textl{}|       & \textl{0123456789}\\
-%     oldstyle                  & \verb|\ostyle|            & \verb|\texto{}|       & \texto{0123456789}\\
-%     tabular                 & \verb|\tstyle|            & \verb|\textt{}|       & \textt{0123456789}\\
-%     proportional              & \verb|\pstyle|            & \verb|\textp{}|       & \textp{0123456789}\\ \midrule
-%     tabular lining            & \verb|\tlstyle|         & \verb|\texttl{}|        & \texttl{0123456789}\\
-%     tabular oldstyle          & \verb|\tostyle|         & \verb|\textto{}|        & \textto{0123456789}\\
-%     proportional lining     & \verb|\plstyle|         & \verb|\textpl{}|        & \textpl{0123456789}\\
-%     proportional oldstyle   & \verb|\postyle|         & \verb|\textpo{}|        & \textpo{0123456789}\\ \midrule
-%     inferior/subscript        & \verb|\infstyle|         & \verb|\textinf{}|        & \textinf{0123456789}\\
-%                               & \color{gray}\verb|\instyle|\tnotex{tn:indep1} & \color{gray}\verb|\textin{}|\tnotex{tn:indep2} \\
-%     superior/superscript      & \verb|\sustyle|         & \verb|\textsu{}|        & \textsu{0123456789}\\
-%   \bottomrule
-% \end{tabular}
-% \begin{tablenotes}
-%   \item \label{tn:indep1} This macro is deprecated.
-%   \item \label{tn:indep2} This macro is deprecated due to an incompatibility with \lpack{hyperref}.
-%   If \lpack{hyperref} is \textbf{not} loaded, the command is provided for backwards compatibility only, but should be replaced.
-%   If \lpack{hyperref} \textbf{is} loaded, the command will not switch to inferiors and will give an (extremely confusing) error.
-% \end{tablenotes}
-% \end{threeparttable}
+%   \centering
+%   \caption{Figures}\label{tab:figs}
+%   \begin{tabular}{llll}
+%     \toprule
+%     \textbf{figure style}     & \textbf{style command}  & \textbf{text command} & \textbf{effect}\\ \midrule
+%       lining                  & \verb|\lstyle|          & \verb|\textl{}|       & \textl{0123456789}\\
+%       oldstyle                & \verb|\ostyle|          & \verb|\texto{}|       & \texto{0123456789}\\
+%       tabular                 & \verb|\tstyle|          & \verb|\textt{}|       & \textt{0123456789}\\
+%       proportional            & \verb|\pstyle|          & \verb|\textp{}|       & \textp{0123456789}\\ \midrule
+%       tabular lining          & \verb|\tlstyle|         & \verb|\texttl{}|      & \texttl{0123456789}\\
+%       tabular oldstyle        & \verb|\tostyle|         & \verb|\textto{}|      & \textto{0123456789}\\
+%       proportional lining     & \verb|\plstyle|         & \verb|\textpl{}|      & \textpl{0123456789}\\
+%       proportional oldstyle   & \verb|\postyle|         & \verb|\textpo{}|      & \textpo{0123456789}\\ \midrule
+%       inferior/subscript      & \verb|\infstyle|        & \verb|\textinf{}|     & \textinf{0123456789}\\
+%                               & \verb|\instyle|         & \verb|\textin{}|      & \textin{0123456789}\\
+%       superior/superscript    & \verb|\sustyle|         & \verb|\textsu{}|      & \textsu{0123456789}\\
+%     \bottomrule
+%   \end{tabular}
 % \end{table}
 %
 % \DescribeMacro{\lstyle}
@@ -800,6 +823,7 @@
 % \DescribeDMacro{\instyle}
 % \DescribeDMacro{\textin}
 % In addition to modifying the figure style, these commands affect the style of certain complementary characters in the \textsc{ly1}, \textsc{t1} and \textsc{ts1} encodings as explained in \fref{sec:encs}.
+% Similar effects are implemented \emph{via} font features for \textsc{tu}.
 % This means that:
 % \iffalse
 %<*verb>
@@ -1034,7 +1058,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[berenis.sty]{$Id: berenisadf.dtx 12011 2026-08-27 01:47:42Z cfrees $}[v0.0 \revinfo]
+\ProvidesPackageSVN[berenis.sty]{$Id: berenisadf.dtx 12015 2026-08-27 19:59:47Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN[berenis]
 %    \end{macrocode}
 % Load \lpack{nfssext-cfr}.  
@@ -1346,7 +1370,7 @@
 %    \end{macrocode}
 % \end{macro} 
 % \begin{macro}{\zeroslash}
-% Based on definition of \ss from afm2pl manual page
+% Based on definition of \ss{} from afm2pl manual page
 %    \begin{macrocode}
   \cs_new_nopar:Npn \zeroslash
   {
