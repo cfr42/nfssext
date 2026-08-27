@@ -1,4 +1,4 @@
--- $Id: fntbuild-check.lua 12012 2026-08-27 04:48:38Z cfrees $
+-- $Id: fntbuild-check.lua 12013 2026-08-27 05:39:08Z cfrees $
 -------------------------------------------------
 -- fntbuild-check
 -------------------------------------------------
@@ -362,17 +362,28 @@ local function check_init ()
   end
   if not checksearch then
     local localtexmf = fnt.localtexmf()
-    checkopts = checkopts 
-      .. " --cnf-line=TEXMFAUXTREES={} --cnf-line=TEXMFHOME={} --cnf-line=TEXMFLOCAL={} --cnf-line=TEXMFCONFIG=. --cnf-line=TEXMFVAR=. --cnf-line=VFFONTS=. --cnf-line=TEXMFCACHE=."
-      .. localtexmf .. " --cnf-line=TFMFONTS=."
-      .. localtexmf .. " --cnf-line=TEXFONTMAPS=."
-      .. localtexmf .. " --cnf-line=T1FONTS=."
-      .. localtexmf .. " --cnf-line=AFMFONTS=."
-      .. localtexmf .. " --cnf-line=TTFFONTS=."
-      .. localtexmf .. " --cnf-line=OPENTYPEFONTS=."
-      .. localtexmf .. " --cnf-line=LIGFONTS=."
-      .. localtexmf .. " --cnf-line=ENCFONTS=."
-      .. localtexmf 
+    local tmp_t = {
+      TEXMFAUXTREES = "{}",
+      TEXMFHOME     = "{}",
+      TEXMFLOCAL    = "{}",
+      TEXMFCONFIG   = ".",
+      TEXMFVAR      = ".",
+      TEXMFCACHE    = ".",
+      VFFONTS       = "." .. localtexmf,
+      TFMFONTS      = "." .. localtexmf,
+      TEXFONTMAPS   = "." .. localtexmf,
+      T1FONTS       = "." .. localtexmf,
+      AFMFONTS      = "." .. localtexmf,
+      TTFFONTS      = "." .. localtexmf,
+      OPENTYPEFONTS = "." .. localtexmf,
+      LIGFONTS      = "." .. localtexmf,
+      ENCFONTS      = "." .. localtexmf,
+    } 
+    local tmp_tnew = {}
+    for opt, val in pairs(tmp_t) do
+      table.insert(tmp_tnew, string.format("--cnf-line=%s=%s", opt, val))
+    end
+    checkopts = checkopts .. " " .. table.concat(tmp_tnew, " ")
   end
   return 0
 end
