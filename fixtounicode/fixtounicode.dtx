@@ -32,7 +32,7 @@
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MyMakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
 \ExplSyntaxOff
-\ProvidesFileSVN{$Id: fixtounicode.dtx 11683 2026-02-24 03:57:46Z cfrees $}[v0.1.1 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: fixtounicode.dtx 12016 2026-08-31 15:05:18Z cfrees $}[v0.1.1 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[fixtounicodedoc]
 \documentclass[10pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -135,8 +135,29 @@
     \cs_if_free:cT { \l_keys_key_str }
     {
       \tl_gset:cn { \l_keys_key_str } { #1 }
+      \__fixtounicodedoc_split:Nnn #1
+      \tl_new:c { g__fixtounicodedoc_ \l_keys_key_str _url_tl }
+      \tl_gset:cV { g__fixtounicodedoc_ \l_keys_key_str _url_tl } \l__fixtounicodedoc_tmpa_tl
+      \__fixtounicodedoc_new_link:Vn  \l_keys_key_str  {#1}
     }
   },
+}
+\tl_new:N \l__fixtounicodedoc_tmpa_tl
+\tl_new:N \l__fixtounicodedoc_tmpb_tl
+\cs_new_nopar:Npn \__fixtounicodedoc_split:Nnn #1#2#3 {
+  \tl_set:Nn \l__fixtounicodedoc_tmpa_tl {#2}
+  \tl_set:Nn \l__fixtounicodedoc_tmpb_tl {#3}
+}
+\cs_new_protected_nopar:Npn \__fixtounicodedoc_new_link:nn #1#2 {
+  \cs_new_protected:cpn { __fixtounicodedoc_ #1 _ link:n } ##1 {
+    \tl_set:Nv \l__fixtounicodedoc_tmpa_tl { g__fixtounicodedoc_#1_url_tl }
+    \tl_put_right:Nn \l__fixtounicodedoc_tmpa_tl {/##1}
+    \exp_args:NV \href \l__fixtounicodedoc_tmpa_tl {#2~\# ##1}
+  }
+}
+\cs_generate_variant:Nn \__fixtounicodedoc_new_link:nn {Vn}
+\NewDocumentCommand \issue { O {codeberg} +m } {
+  \use:c { __fixtounicodedoc_ #1 _link:n } {#2}
 }
 \NewDocumentCommand \fixtounicodedocset { +m }
 {
@@ -249,7 +270,7 @@
 % This option is not really specific to Dingbats, but that is probably the best known case.
 % Enabling this option when compiling with lua\TeX{} 1.24 or later will load the Unicode code points known to pdf\TeX{} (unless \textsc{dvi} output is enabled).
 % 
-% The option does nother if a different or older engine is used.
+% The option does nothing if a different or older engine is used.
 % For pdf\TeX, it is unnecessary; the mappings are enabled by default.
 % For other engines and older lua\TeX, the mappings would either be silently ignored (lua\TeX) or raise errors (e.g.~luaTeX in \textsc{dvi} mode).
 % 
@@ -273,7 +294,7 @@
 % \end{description}
 %
 % For example, the following adds mappings for three of \pkg{marvosym}'s symbols.
-% \typeout{Clangers}
+% \changes{v0.0}{2026-08-31}{Fix \pkg{marvosym} example (\issue{13}).}
 % \iffalse
 %<*verb>
 % \fi
@@ -283,9 +304,9 @@
   \fixtounicode{%
     tfm = umvs,
     mappings = {%
-      Coffeecup = 26BD,
-      Radioactivity = 2615,
-      Football = 2622,
+      Coffeecup = 2615,
+      Radioactivity = 2622,
+      Football = 26BD,
     },
   }
   \usepackage{marvosym}
@@ -293,7 +314,6 @@
 % \iffalse
 %</verb>
 % \fi
-% \typeout{Bagpuss}
 % 
 % When the corresponding symbols are used in the document,
 % \iffalse
@@ -341,7 +361,7 @@
 %<*sty>
 %<@@=fixtounicode>
 %    \begin{macrocode}
-\GetIdInfo $Id: fixtounicode.dtx 11683 2026-02-24 03:57:46Z cfrees $ 
+\GetIdInfo $Id: fixtounicode.dtx 12016 2026-08-31 15:05:18Z cfrees $ 
   {Fix missing tounicode values in TeX fonts}
 \ProvidesExplPackage{\ExplFileName}
   {\ExplFileDate}{v0.1.1 \ExplFileVersion}{\ExplFileDescription}

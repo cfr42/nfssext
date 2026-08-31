@@ -8,55 +8,55 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 17 with id ./BerenisADFPro-Regular.otf and hash berenisadfpro-regular.otf @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+lnum=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt+tlig=true+tnum=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "cmr10" -> ./cmr10.tfm.
 luaotfload | loaders : Registering font 18 with id ./cmr10.tfm and hash ./cmr10.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 655360.
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "cmr7" -> ./cmr7.tfm.
 luaotfload | loaders : Registering font 19 with id ./cmr7.tfm and hash ./cmr7.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 458752.
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "cmr5" -> ./cmr5.tfm.
 luaotfload | loaders : Registering font 20 with id ./cmr5.tfm and hash ./cmr5.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 327680.
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "cmmi10" -> ./cmmi10.tfm.
 luaotfload | loaders : Registering font 21 with id ./cmmi10.tfm and hash ./cmmi10.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 655360.
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "cmmi7" -> ./cmmi7.tfm.
 luaotfload | loaders : Registering font 22 with id ./cmmi7.tfm and hash ./cmmi7.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 458752.
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "cmmi5" -> ./cmmi5.tfm.
 luaotfload | loaders : Registering font 23 with id ./cmmi5.tfm and hash ./cmmi5.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 327680.
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "cmsy10" -> ./cmsy10.tfm.
 luaotfload | loaders : Registering font 24 with id ./cmsy10.tfm and hash ./cmsy10.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 655360.
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "cmsy7" -> ./cmsy7.tfm.
 luaotfload | loaders : Registering font 25 with id ./cmsy7.tfm and hash ./cmsy7.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 458752.
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "cmsy5" -> ./cmsy5.tfm.
 luaotfload | loaders : Registering font 26 with id ./cmsy5.tfm and hash ./cmsy5.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 327680.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <7> on input line ....
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "cmex10" -> ./cmex10.tfm.
 luaotfload | loaders : Registering font 27 with id ./cmex10.tfm and hash ./cmex10.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ -1000.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <5> on input line ....
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "cmex10" -> ./cmex10.tfm.
 LaTeX Font Info:    Trying to load font information for TS1+ybd on input line ....
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdr8c" -> ./ybdr8c.tfm.
 luaotfload | loaders : Registering font 28 with id ./ybdr8c.tfm and hash ./ybdr8c.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 655360.
 Completed box being shipped out [1]
@@ -4049,7 +4049,7 @@ luaotfload | system : saving luc file './luatex-cache/generic/fonts/otl/berenisa
 luaotfload | loaders : Registering font 29 with id ./BerenisADFProSC-Regular.otf and hash berenisadfprosc-regular.otf @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+lnum=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt+tlig=true+tnum=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdrc8c" -> ./ybdrc8c.tfm.
 luaotfload | loaders : Registering font 30 with id ./ybdrc8c.tfm and hash ./ybdrc8c.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 655360.
 Completed box being shipped out [2]
@@ -8035,7 +8035,7 @@ luaotfload | system : saving luc file './luatex-cache/generic/fonts/otl/berenisa
 luaotfload | loaders : Registering font 31 with id ./BerenisADFPro-Italic.otf and hash berenisadfpro-italic.otf @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+lnum=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt+tlig=true+tnum=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdri8c" -> ./ybdri8c.tfm.
 luaotfload | loaders : Registering font 32 with id ./ybdri8c.tfm and hash ./ybdri8c.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 655360.
 Completed box being shipped out [3]
@@ -12027,7 +12027,7 @@ luaotfload | system : saving luc file './luatex-cache/generic/fonts/otl/berenisa
 luaotfload | loaders : Registering font 33 with id ./BerenisADFProSC-Italic.otf and hash berenisadfprosc-italic.otf @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+lnum=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt+tlig=true+tnum=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdrci8c" -> ./ybdrci8c.tfm.
 luaotfload | loaders : Registering font 34 with id ./ybdrci8c.tfm and hash ./ybdrci8c.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 655360.
 Completed box being shipped out [4]
@@ -15983,7 +15983,7 @@ luaotfload | system : saving luc file './luatex-cache/generic/fonts/otl/berenisa
 luaotfload | loaders : Registering font 35 with id ./BerenisADFPro-Bold.otf and hash berenisadfpro-bold.otf @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+lnum=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt+tlig=true+tnum=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdb8c" -> ./ybdb8c.tfm.
 luaotfload | loaders : Registering font 36 with id ./ybdb8c.tfm and hash ./ybdb8c.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 655360.
 Completed box being shipped out [5]
@@ -19977,7 +19977,7 @@ luaotfload | system : saving luc file './luatex-cache/generic/fonts/otl/berenisa
 luaotfload | loaders : Registering font 37 with id ./BerenisADFProSC-Bold.otf and hash berenisadfprosc-bold.otf @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+lnum=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt+tlig=true+tnum=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdbc8c" -> ./ybdbc8c.tfm.
 luaotfload | loaders : Registering font 38 with id ./ybdbc8c.tfm and hash ./ybdbc8c.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 655360.
 Completed box being shipped out [6]
@@ -23960,7 +23960,7 @@ luaotfload | system : saving luc file './luatex-cache/generic/fonts/otl/berenisa
 luaotfload | loaders : Registering font 39 with id ./BerenisADFPro-BoldItalic.otf and hash berenisadfpro-bolditalic.otf @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+lnum=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt+tlig=true+tnum=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdbi8c" -> ./ybdbi8c.tfm.
 luaotfload | loaders : Registering font 40 with id ./ybdbi8c.tfm and hash ./ybdbi8c.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 655360.
 Completed box being shipped out [7]
@@ -27950,7 +27950,7 @@ luaotfload | system : saving luc file './luatex-cache/generic/fonts/otl/berenisa
 luaotfload | loaders : Registering font 41 with id ./BerenisADFProSC-BoldItalic.otf and hash berenisadfprosc-bolditalic.otf @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+lnum=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt+tlig=true+tnum=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdbci8c" -> ./ybdbci8c.tfm.
 luaotfload | loaders : Registering font 42 with id ./ybdbci8c.tfm and hash ./ybdbci8c.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 655360.
 Completed box being shipped out [8]
@@ -31938,7 +31938,7 @@ luaotfload | loaders : Registering font 43 with id ./BerenisADFPro-Regular.otf a
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 LaTeX Font Info:    Trying to load font information for TS1+ybd2 on input line ....
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdr28c" -> ./ybdr28c.tfm.
 luaotfload | loaders : Registering font 44 with id ./ybdr28c.tfm and hash ./ybdr28c.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 655360.
 Completed box being shipped out [9]
@@ -35925,7 +35925,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 45 with id ./BerenisADFProSC-Regular.otf and hash berenisadfprosc-regular.otf @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+lnum=true+locl=true+mark=true+mkmk=true+mode=node+pnum=true+rclt=true+rlig=true+script=dflt+tlig=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdr2c8c" -> ./ybdr2c8c.tfm.
 luaotfload | loaders : Registering font 46 with id ./ybdr2c8c.tfm and hash ./ybdr2c8c.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 655360.
 Completed box being shipped out [10]
@@ -39910,7 +39910,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 47 with id ./BerenisADFPro-Italic.otf and hash berenisadfpro-italic.otf @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+lnum=true+locl=true+mark=true+mkmk=true+mode=node+pnum=true+rclt=true+rlig=true+script=dflt+tlig=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdr2i8c" -> ./ybdr2i8c.tfm.
 luaotfload | loaders : Registering font 48 with id ./ybdr2i8c.tfm and hash ./ybdr2i8c.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 655360.
 Completed box being shipped out [11]
@@ -43901,7 +43901,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 49 with id ./BerenisADFProSC-Italic.otf and hash berenisadfprosc-italic.otf @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+lnum=true+locl=true+mark=true+mkmk=true+mode=node+pnum=true+rclt=true+rlig=true+script=dflt+tlig=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdr2ci8c" -> ./ybdr2ci8c.tfm.
 luaotfload | loaders : Registering font 50 with id ./ybdr2ci8c.tfm and hash ./ybdr2ci8c.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 655360.
 Completed box being shipped out [12]
@@ -47854,7 +47854,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 51 with id ./BerenisADFPro-Bold.otf and hash berenisadfpro-bold.otf @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+lnum=true+locl=true+mark=true+mkmk=true+mode=node+pnum=true+rclt=true+rlig=true+script=dflt+tlig=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdb28c" -> ./ybdb28c.tfm.
 luaotfload | loaders : Registering font 52 with id ./ybdb28c.tfm and hash ./ybdb28c.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 655360.
 Completed box being shipped out [13]
@@ -51843,7 +51843,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 53 with id ./BerenisADFProSC-Bold.otf and hash berenisadfprosc-bold.otf @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+lnum=true+locl=true+mark=true+mkmk=true+mode=node+pnum=true+rclt=true+rlig=true+script=dflt+tlig=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdb2c8c" -> ./ybdb2c8c.tfm.
 luaotfload | loaders : Registering font 54 with id ./ybdb2c8c.tfm and hash ./ybdb2c8c.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 655360.
 Completed box being shipped out [14]
@@ -55822,7 +55822,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 55 with id ./BerenisADFPro-BoldItalic.otf and hash berenisadfpro-bolditalic.otf @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+lnum=true+locl=true+mark=true+mkmk=true+mode=node+pnum=true+rclt=true+rlig=true+script=dflt+tlig=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdb2i8c" -> ./ybdb2i8c.tfm.
 luaotfload | loaders : Registering font 56 with id ./ybdb2i8c.tfm and hash ./ybdb2i8c.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 655360.
 Completed box being shipped out [15]
@@ -59808,7 +59808,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 57 with id ./BerenisADFProSC-BoldItalic.otf and hash berenisadfprosc-bolditalic.otf @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+lnum=true+locl=true+mark=true+mkmk=true+mode=node+pnum=true+rclt=true+rlig=true+script=dflt+tlig=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdb2ci8c" -> ./ybdb2ci8c.tfm.
 luaotfload | loaders : Registering font 58 with id ./ybdb2ci8c.tfm and hash ./ybdb2ci8c.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 655360.
 Completed box being shipped out [16]
@@ -63794,7 +63794,7 @@ TEST 17: test-TU-ybd2j-m-n
 ============================================================
 LaTeX Font Info:    Trying to load font information for TS1+ybd2j on input line ....
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdr2j8c" -> ./ybdr2j8c.tfm.
 luaotfload | loaders : Registering font 59 with id ./ybdr2j8c.tfm and hash ./ybdr2j8c.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 655360.
 Completed box being shipped out [17]
@@ -67783,7 +67783,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 60 with id ./BerenisADFProSC-Regular.otf and hash berenisadfprosc-regular.otf @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+onum=true+pnum=true+rclt=true+rlig=true+script=dflt+tlig=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdr2cj8c" -> ./ybdr2cj8c.tfm.
 luaotfload | loaders : Registering font 61 with id ./ybdr2cj8c.tfm and hash ./ybdr2cj8c.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 655360.
 Completed box being shipped out [18]
@@ -71766,7 +71766,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 62 with id ./BerenisADFPro-Italic.otf and hash berenisadfpro-italic.otf @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+onum=true+pnum=true+rclt=true+rlig=true+script=dflt+tlig=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdr2ij8c" -> ./ybdr2ij8c.tfm.
 luaotfload | loaders : Registering font 63 with id ./ybdr2ij8c.tfm and hash ./ybdr2ij8c.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 655360.
 Completed box being shipped out [19]
@@ -75755,7 +75755,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 64 with id ./BerenisADFProSC-Italic.otf and hash berenisadfprosc-italic.otf @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+onum=true+pnum=true+rclt=true+rlig=true+script=dflt+tlig=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdr2cij8c" -> ./ybdr2cij8c.tfm.
 luaotfload | loaders : Registering font 65 with id ./ybdr2cij8c.tfm and hash ./ybdr2cij8c.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 655360.
 Completed box being shipped out [20]
@@ -79708,7 +79708,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 66 with id ./BerenisADFPro-Bold.otf and hash berenisadfpro-bold.otf @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+onum=true+pnum=true+rclt=true+rlig=true+script=dflt+tlig=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdb2j8c" -> ./ybdb2j8c.tfm.
 luaotfload | loaders : Registering font 67 with id ./ybdb2j8c.tfm and hash ./ybdb2j8c.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 655360.
 Completed box being shipped out [21]
@@ -83701,7 +83701,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 68 with id ./BerenisADFProSC-Bold.otf and hash berenisadfprosc-bold.otf @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+onum=true+pnum=true+rclt=true+rlig=true+script=dflt+tlig=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdb2cj8c" -> ./ybdb2cj8c.tfm.
 luaotfload | loaders : Registering font 69 with id ./ybdb2cj8c.tfm and hash ./ybdb2cj8c.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 655360.
 Completed box being shipped out [22]
@@ -87681,7 +87681,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 70 with id ./BerenisADFPro-BoldItalic.otf and hash berenisadfpro-bolditalic.otf @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+onum=true+pnum=true+rclt=true+rlig=true+script=dflt+tlig=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdb2ij8c" -> ./ybdb2ij8c.tfm.
 luaotfload | loaders : Registering font 71 with id ./ybdb2ij8c.tfm and hash ./ybdb2ij8c.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 655360.
 Completed box being shipped out [23]
@@ -91668,7 +91668,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 72 with id ./BerenisADFProSC-BoldItalic.otf and hash berenisadfprosc-bolditalic.otf @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+onum=true+pnum=true+rclt=true+rlig=true+script=dflt+tlig=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdb2cij8c" -> ./ybdb2cij8c.tfm.
 luaotfload | loaders : Registering font 73 with id ./ybdb2cij8c.tfm and hash ./ybdb2cij8c.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 655360.
 Completed box being shipped out [24]
@@ -95659,7 +95659,7 @@ luaotfload | loaders : Registering font 74 with id ./BerenisADFPro-Regular.otf a
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 LaTeX Font Info:    Trying to load font information for TS1+ybd2jw on input line ....
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdr2j8c" -> ./ybdr2j8c.tfm.
 Completed box being shipped out [25]
 \vbox(712.86615+3.1)x455.24408, direction TLT
@@ -99636,7 +99636,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 75 with id ./BerenisADFProSC-Regular.otf and hash berenisadfprosc-regular.otf @ normal:aalt=true+abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+dlig=true+hist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+onum=true+pnum=true+rclt=true+rlig=true+script=dflt+ss01=true+tlig=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdr2cj8c" -> ./ybdr2cj8c.tfm.
 Completed box being shipped out [26]
 \vbox(712.86615+0.1)x455.24408, direction TLT
@@ -103603,7 +103603,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 76 with id ./BerenisADFPro-Italic.otf and hash berenisadfpro-italic.otf @ normal:aalt=true+abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+dlig=true+hist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+onum=true+pnum=true+rclt=true+rlig=true+script=dflt+ss01=true+tlig=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdr2ij8c" -> ./ybdr2ij8c.tfm.
 Completed box being shipped out [27]
 \vbox(712.86615+3.1)x455.24408, direction TLT
@@ -107582,7 +107582,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 77 with id ./BerenisADFProSC-Italic.otf and hash berenisadfprosc-italic.otf @ normal:aalt=true+abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+dlig=true+hist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+onum=true+pnum=true+rclt=true+rlig=true+script=dflt+ss01=true+tlig=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdr2cij8c" -> ./ybdr2cij8c.tfm.
 Completed box being shipped out [28]
 \vbox(712.86615+0.15)x455.24408, direction TLT
@@ -111527,7 +111527,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 78 with id ./BerenisADFPro-Bold.otf and hash berenisadfpro-bold.otf @ normal:aalt=true+abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+dlig=true+hist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+onum=true+pnum=true+rclt=true+rlig=true+script=dflt+ss01=true+tlig=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdb2j8c" -> ./ybdb2j8c.tfm.
 Completed box being shipped out [29]
 \vbox(712.86615+3.02)x455.24408, direction TLT
@@ -115506,7 +115506,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 79 with id ./BerenisADFProSC-Bold.otf and hash berenisadfprosc-bold.otf @ normal:aalt=true+abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+dlig=true+hist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+onum=true+pnum=true+rclt=true+rlig=true+script=dflt+ss01=true+tlig=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdb2cj8c" -> ./ybdb2cj8c.tfm.
 Completed box being shipped out [30]
 \vbox(712.86615+3.07)x455.24408, direction TLT
@@ -119472,7 +119472,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 80 with id ./BerenisADFPro-BoldItalic.otf and hash berenisadfpro-bolditalic.otf @ normal:aalt=true+abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+dlig=true+hist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+onum=true+pnum=true+rclt=true+rlig=true+script=dflt+ss01=true+tlig=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdb2ij8c" -> ./ybdb2ij8c.tfm.
 Completed box being shipped out [31]
 \vbox(712.86615+3.07)x455.24408, direction TLT
@@ -123449,7 +123449,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 81 with id ./BerenisADFProSC-BoldItalic.otf and hash berenisadfprosc-bolditalic.otf @ normal:aalt=true+abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+dlig=true+hist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+onum=true+pnum=true+rclt=true+rlig=true+script=dflt+ss01=true+tlig=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdb2cij8c" -> ./ybdb2cij8c.tfm.
 Completed box being shipped out [32]
 \vbox(712.86615+3.07)x455.24408, direction TLT
@@ -127429,7 +127429,7 @@ luaotfload | loaders : Registering font 82 with id ./BerenisADFPro-Regular.otf a
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 LaTeX Font Info:    Trying to load font information for TS1+ybd2w on input line ....
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdr28c" -> ./ybdr28c.tfm.
 Completed box being shipped out [33]
 \vbox(712.86615+3.07)x455.24408, direction TLT
@@ -131405,7 +131405,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 83 with id ./BerenisADFProSC-Regular.otf and hash berenisadfprosc-regular.otf @ normal:aalt=true+abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+dlig=true+hist=true+itlc=true+kern=true+language=dflt+liga=true+lnum=true+locl=true+mark=true+mkmk=true+mode=node+pnum=true+rclt=true+rlig=true+script=dflt+ss01=true+tlig=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdr2c8c" -> ./ybdr2c8c.tfm.
 Completed box being shipped out [34]
 \vbox(712.86615+3.07)x455.24408, direction TLT
@@ -135371,7 +135371,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 84 with id ./BerenisADFPro-Italic.otf and hash berenisadfpro-italic.otf @ normal:aalt=true+abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+dlig=true+hist=true+itlc=true+kern=true+language=dflt+liga=true+lnum=true+locl=true+mark=true+mkmk=true+mode=node+pnum=true+rclt=true+rlig=true+script=dflt+ss01=true+tlig=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdr2i8c" -> ./ybdr2i8c.tfm.
 Completed box being shipped out [35]
 \vbox(712.86615+3.1)x455.24408, direction TLT
@@ -139349,7 +139349,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 85 with id ./BerenisADFProSC-Italic.otf and hash berenisadfprosc-italic.otf @ normal:aalt=true+abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+dlig=true+hist=true+itlc=true+kern=true+language=dflt+liga=true+lnum=true+locl=true+mark=true+mkmk=true+mode=node+pnum=true+rclt=true+rlig=true+script=dflt+ss01=true+tlig=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdr2ci8c" -> ./ybdr2ci8c.tfm.
 Completed box being shipped out [36]
 \vbox(712.86615+3.07)x455.24408, direction TLT
@@ -143293,7 +143293,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 86 with id ./BerenisADFPro-Bold.otf and hash berenisadfpro-bold.otf @ normal:aalt=true+abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+dlig=true+hist=true+itlc=true+kern=true+language=dflt+liga=true+lnum=true+locl=true+mark=true+mkmk=true+mode=node+pnum=true+rclt=true+rlig=true+script=dflt+ss01=true+tlig=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdb28c" -> ./ybdb28c.tfm.
 Completed box being shipped out [37]
 \vbox(712.86615+3.1)x455.24408, direction TLT
@@ -147275,7 +147275,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 87 with id ./BerenisADFProSC-Bold.otf and hash berenisadfprosc-bold.otf @ normal:aalt=true+abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+dlig=true+hist=true+itlc=true+kern=true+language=dflt+liga=true+lnum=true+locl=true+mark=true+mkmk=true+mode=node+pnum=true+rclt=true+rlig=true+script=dflt+ss01=true+tlig=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdb2c8c" -> ./ybdb2c8c.tfm.
 Completed box being shipped out [38]
 \vbox(712.86615+3.07)x455.24408, direction TLT
@@ -151240,7 +151240,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 88 with id ./BerenisADFPro-BoldItalic.otf and hash berenisadfpro-bolditalic.otf @ normal:aalt=true+abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+dlig=true+hist=true+itlc=true+kern=true+language=dflt+liga=true+lnum=true+locl=true+mark=true+mkmk=true+mode=node+pnum=true+rclt=true+rlig=true+script=dflt+ss01=true+tlig=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdb2i8c" -> ./ybdb2i8c.tfm.
 Completed box being shipped out [39]
 \vbox(712.86615+3.07)x455.24408, direction TLT
@@ -155216,7 +155216,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 89 with id ./BerenisADFProSC-BoldItalic.otf and hash berenisadfprosc-bolditalic.otf @ normal:aalt=true+abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+dlig=true+hist=true+itlc=true+kern=true+language=dflt+liga=true+lnum=true+locl=true+mark=true+mkmk=true+mode=node+pnum=true+rclt=true+rlig=true+script=dflt+ss01=true+tlig=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdb2ci8c" -> ./ybdb2ci8c.tfm.
 Completed box being shipped out [40]
 \vbox(712.86615+3.04)x455.24408, direction TLT
@@ -159195,7 +159195,7 @@ luaotfload | loaders : Registering font 90 with id ./BerenisADFPro-Regular.otf a
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 LaTeX Font Info:    Trying to load font information for TS1+ybdj on input line ....
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdrj8c" -> ./ybdrj8c.tfm.
 luaotfload | loaders : Registering font 91 with id ./ybdrj8c.tfm and hash ./ybdrj8c.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 655360.
 Completed box being shipped out [41]
@@ -163183,7 +163183,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 92 with id ./BerenisADFProSC-Regular.otf and hash berenisadfprosc-regular.otf @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+onum=true+rclt=true+rlig=true+script=dflt+tlig=true+tnum=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdrcj8c" -> ./ybdrcj8c.tfm.
 luaotfload | loaders : Registering font 93 with id ./ybdrcj8c.tfm and hash ./ybdrcj8c.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 655360.
 Completed box being shipped out [42]
@@ -167168,7 +167168,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 94 with id ./BerenisADFPro-Italic.otf and hash berenisadfpro-italic.otf @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+onum=true+rclt=true+rlig=true+script=dflt+tlig=true+tnum=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdrij8c" -> ./ybdrij8c.tfm.
 luaotfload | loaders : Registering font 95 with id ./ybdrij8c.tfm and hash ./ybdrij8c.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 655360.
 Completed box being shipped out [43]
@@ -171159,7 +171159,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 96 with id ./BerenisADFProSC-Italic.otf and hash berenisadfprosc-italic.otf @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+onum=true+rclt=true+rlig=true+script=dflt+tlig=true+tnum=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdrcij8c" -> ./ybdrcij8c.tfm.
 luaotfload | loaders : Registering font 97 with id ./ybdrcij8c.tfm and hash ./ybdrcij8c.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 655360.
 Completed box being shipped out [44]
@@ -175112,7 +175112,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 98 with id ./BerenisADFPro-Bold.otf and hash berenisadfpro-bold.otf @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+onum=true+rclt=true+rlig=true+script=dflt+tlig=true+tnum=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdbj8c" -> ./ybdbj8c.tfm.
 luaotfload | loaders : Registering font 99 with id ./ybdbj8c.tfm and hash ./ybdbj8c.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 655360.
 Completed box being shipped out [45]
@@ -179101,7 +179101,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 100 with id ./BerenisADFProSC-Bold.otf and hash berenisadfprosc-bold.otf @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+onum=true+rclt=true+rlig=true+script=dflt+tlig=true+tnum=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdbcj8c" -> ./ybdbcj8c.tfm.
 luaotfload | loaders : Registering font 101 with id ./ybdbcj8c.tfm and hash ./ybdbcj8c.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 655360.
 Completed box being shipped out [46]
@@ -183080,7 +183080,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 102 with id ./BerenisADFPro-BoldItalic.otf and hash berenisadfpro-bolditalic.otf @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+onum=true+rclt=true+rlig=true+script=dflt+tlig=true+tnum=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdbij8c" -> ./ybdbij8c.tfm.
 luaotfload | loaders : Registering font 103 with id ./ybdbij8c.tfm and hash ./ybdbij8c.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 655360.
 Completed box being shipped out [47]
@@ -187066,7 +187066,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 104 with id ./BerenisADFProSC-BoldItalic.otf and hash berenisadfprosc-bolditalic.otf @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+onum=true+rclt=true+rlig=true+script=dflt+tlig=true+tnum=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdbcij8c" -> ./ybdbcij8c.tfm.
 luaotfload | loaders : Registering font 105 with id ./ybdbcij8c.tfm and hash ./ybdbcij8c.tfm @ normal:abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt @ 655360.
 Completed box being shipped out [48]
@@ -191056,7 +191056,7 @@ luaotfload | loaders : Registering font 106 with id ./BerenisADFPro-Regular.otf 
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 LaTeX Font Info:    Trying to load font information for TS1+ybdjw on input line ....
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdrj8c" -> ./ybdrj8c.tfm.
 Completed box being shipped out [49]
 \vbox(712.86615+3.04)x455.24408, direction TLT
@@ -195034,7 +195034,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 107 with id ./BerenisADFProSC-Regular.otf and hash berenisadfprosc-regular.otf @ normal:aalt=true+abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+dlig=true+hist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+onum=true+rclt=true+rlig=true+script=dflt+ss01=true+tlig=true+tnum=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdrcj8c" -> ./ybdrcj8c.tfm.
 Completed box being shipped out [50]
 \vbox(712.86615+3.1)x455.24408, direction TLT
@@ -199002,7 +199002,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 108 with id ./BerenisADFPro-Italic.otf and hash berenisadfpro-italic.otf @ normal:aalt=true+abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+dlig=true+hist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+onum=true+rclt=true+rlig=true+script=dflt+ss01=true+tlig=true+tnum=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdrij8c" -> ./ybdrij8c.tfm.
 Completed box being shipped out [51]
 \vbox(712.86615+3.1)x455.24408, direction TLT
@@ -202982,7 +202982,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 109 with id ./BerenisADFProSC-Italic.otf and hash berenisadfprosc-italic.otf @ normal:aalt=true+abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+dlig=true+hist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+onum=true+rclt=true+rlig=true+script=dflt+ss01=true+tlig=true+tnum=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdrcij8c" -> ./ybdrcij8c.tfm.
 Completed box being shipped out [52]
 \vbox(712.86615+3.1)x455.24408, direction TLT
@@ -206928,7 +206928,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 110 with id ./BerenisADFPro-Bold.otf and hash berenisadfpro-bold.otf @ normal:aalt=true+abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+dlig=true+hist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+onum=true+rclt=true+rlig=true+script=dflt+ss01=true+tlig=true+tnum=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdbj8c" -> ./ybdbj8c.tfm.
 Completed box being shipped out [53]
 \vbox(712.86615+3.1)x455.24408, direction TLT
@@ -210912,7 +210912,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 111 with id ./BerenisADFProSC-Bold.otf and hash berenisadfprosc-bold.otf @ normal:aalt=true+abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+dlig=true+hist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+onum=true+rclt=true+rlig=true+script=dflt+ss01=true+tlig=true+tnum=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdbcj8c" -> ./ybdbcj8c.tfm.
 Completed box being shipped out [54]
 \vbox(712.86615+3.1)x455.24408, direction TLT
@@ -214879,7 +214879,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 112 with id ./BerenisADFPro-BoldItalic.otf and hash berenisadfpro-bolditalic.otf @ normal:aalt=true+abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+dlig=true+hist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+onum=true+rclt=true+rlig=true+script=dflt+ss01=true+tlig=true+tnum=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdbij8c" -> ./ybdbij8c.tfm.
 Completed box being shipped out [55]
 \vbox(712.86615+3.1)x455.24408, direction TLT
@@ -218857,7 +218857,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 113 with id ./BerenisADFProSC-BoldItalic.otf and hash berenisadfprosc-bolditalic.otf @ normal:aalt=true+abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+dlig=true+hist=true+itlc=true+kern=true+language=dflt+liga=true+locl=true+mark=true+mkmk=true+mode=node+onum=true+rclt=true+rlig=true+script=dflt+ss01=true+tlig=true+tnum=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdbcij8c" -> ./ybdbcij8c.tfm.
 Completed box being shipped out [56]
 \vbox(712.86615+3.1)x455.24408, direction TLT
@@ -222838,7 +222838,7 @@ luaotfload | loaders : Registering font 114 with id ./BerenisADFPro-Regular.otf 
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 LaTeX Font Info:    Trying to load font information for TS1+ybdw on input line ....
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdr8c" -> ./ybdr8c.tfm.
 Completed box being shipped out [57]
 \vbox(712.86615+3.1)x455.24408, direction TLT
@@ -226813,7 +226813,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 115 with id ./BerenisADFProSC-Regular.otf and hash berenisadfprosc-regular.otf @ normal:aalt=true+abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+dlig=true+hist=true+itlc=true+kern=true+language=dflt+liga=true+lnum=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt+ss01=true+tlig=true+tnum=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdrc8c" -> ./ybdrc8c.tfm.
 Completed box being shipped out [58]
 \vbox(712.86615+3.1)x455.24408, direction TLT
@@ -230778,7 +230778,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 116 with id ./BerenisADFPro-Italic.otf and hash berenisadfpro-italic.otf @ normal:aalt=true+abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+dlig=true+hist=true+itlc=true+kern=true+language=dflt+liga=true+lnum=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt+ss01=true+tlig=true+tnum=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdri8c" -> ./ybdri8c.tfm.
 Completed box being shipped out [59]
 \vbox(712.86615+3.1)x455.24408, direction TLT
@@ -234755,7 +234755,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 117 with id ./BerenisADFProSC-Italic.otf and hash berenisadfprosc-italic.otf @ normal:aalt=true+abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+dlig=true+hist=true+itlc=true+kern=true+language=dflt+liga=true+lnum=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt+ss01=true+tlig=true+tnum=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdrci8c" -> ./ybdrci8c.tfm.
 Completed box being shipped out [60]
 \vbox(712.86615+0.1)x455.24408, direction TLT
@@ -238698,7 +238698,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 118 with id ./BerenisADFPro-Bold.otf and hash berenisadfpro-bold.otf @ normal:aalt=true+abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+dlig=true+hist=true+itlc=true+kern=true+language=dflt+liga=true+lnum=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt+ss01=true+tlig=true+tnum=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdb8c" -> ./ybdb8c.tfm.
 Completed box being shipped out [61]
 \vbox(712.86615+0.1)x455.24408, direction TLT
@@ -242675,7 +242675,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 119 with id ./BerenisADFProSC-Bold.otf and hash berenisadfprosc-bold.otf @ normal:aalt=true+abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+dlig=true+hist=true+itlc=true+kern=true+language=dflt+liga=true+lnum=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt+ss01=true+tlig=true+tnum=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdbc8c" -> ./ybdbc8c.tfm.
 Completed box being shipped out [62]
 \vbox(712.86615+0.1)x455.24408, direction TLT
@@ -246639,7 +246639,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 120 with id ./BerenisADFPro-BoldItalic.otf and hash berenisadfpro-bolditalic.otf @ normal:aalt=true+abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+dlig=true+hist=true+itlc=true+kern=true+language=dflt+liga=true+lnum=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt+ss01=true+tlig=true+tnum=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdbi8c" -> ./ybdbi8c.tfm.
 Completed box being shipped out [63]
 \vbox(712.86615+3.07)x455.24408, direction TLT
@@ -250614,7 +250614,7 @@ luaotfload | features : Auto-selecting default features for script: dflt.
 luaotfload | loaders : Registering font 121 with id ./BerenisADFProSC-BoldItalic.otf and hash berenisadfprosc-bolditalic.otf @ normal:aalt=true+abvm=true+blwm=true+calt=true+ccmp=true+clig=true+curs=true+dist=true+dlig=true+hist=true+itlc=true+kern=true+language=dflt+liga=true+lnum=true+locl=true+mark=true+mkmk=true+mode=node+rclt=true+rlig=true+script=dflt+ss01=true+tlig=true+tnum=true @ 655360.
 luaotfload | aux : picked height of character 'X' (U+0058) as \fontdimen8 candidate
 luaotfload | features : Auto-selecting default features for script: dflt.
-luaotfload | resolve : step 1: apply method "tex" (function: 0x38af0340)
+luaotfload | resolve : step 1: apply method "tex" (function: 0x7dd6590)
 luaotfload | resolve : 1: method "tex" resolved "ybdbci8c" -> ./ybdbci8c.tfm.
 Completed box being shipped out [64]
 \vbox(712.86615+3.04)x455.24408, direction TLT
