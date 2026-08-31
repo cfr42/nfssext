@@ -1,4 +1,4 @@
--- $Id: build.lua 11703 2026-02-25 07:43:10Z cfrees $
+-- $Id: build.lua 12017 2026-08-31 17:43:27Z cfrees $
 -- Build configuration for adfornadf
 -- l3build.pdf listing 1 tudalen 9
 --[[
@@ -73,5 +73,8 @@ uploadconfig = {
 arkandis = arkandis or {}
 arkandis.noautotest = true
 dofile(maindir .. "/arkandis/arkandis-manifest.lua")
+versionpatterns = versionpatterns or {}
+table.insert(versionpatterns, "SVN Rev: %d+")
+table.insert(versionpatterns, "v%d+[%d%.]* %d+")
 -- os.execute ("printenv")
 -- vim: ts=2:sw=2:tw=80:nospell

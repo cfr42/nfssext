@@ -1,9 +1,9 @@
 This is a generated file for the l3build validation system.
 Don't change this file in any respect.
 (adforn.sty
-Package: adforn ....-..-.. v... (SVN Rev: 11696)
+Package: adforn ....-..-.. v... (v...)
 (fixtounicode.sty
-Package: fixtounicode ....-..-.. v... 11683 Fix missing tounicode values in TeX fonts
+Package: fixtounicode ....-..-.. v... Fix missing tounicode values in TeX fonts
 (glyphtounicode.tex))
 Package fixtounicode Info: Package fixtounicode Info:: Mapping tfm:OrnementsADF/parenleft -> 2B98 on line ...
 Package fixtounicode Info: Package fixtounicode Info:: Mapping tfm:OrnementsADF/parenright -> 2B9A on line ...
