@@ -17,6 +17,13 @@ inputs:
   dep_cache_key:
     required: false
     type: string
+  dep_cache_keys:
+    required: false
+    type: string
+  dep_cache_path:
+    # cfr-lm is always added
+    required: false
+    type: string
   doc:
     required: true
     type: boolean
@@ -115,8 +122,11 @@ runs:
       if: ${{ inputs.dep_cache_key }}
       uses: actions/cache/restore@v5
       with:
-        path: ~/work/nfssext/nfssext/cfr-lm/keep
+        path: |
+          ~/work/nfssext/nfssext/cfr-lm/keep
+          ${{ inputs.dep_cache_path }}
         key: ${{ inputs.dep_cache_key }}
+        restore-keys: ${{ inputs.dep_cache_keys }}
         fail-on-cache-miss: false
     - name: Run l3build fnttarg
     # oes pwrpas ddefnyddio if yma? am fod bob un yn cynnwys pre_target yn y matrix hwn, ond ydyn nhw?

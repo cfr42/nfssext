@@ -13,7 +13,8 @@ on:
     tags: 
       - '*'
     branches:
-      - '*'
+      - 'main'
+      - 'devel'
   workflow_call:
   workflow_dispatch:
 

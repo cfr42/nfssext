@@ -192,6 +192,11 @@ jobs:
       ctan_adfsymbols_output: ${{ steps.save-outputs.outputs.ctan_ret_adfsymbols }}
       ctan_fontscripts_output: ${{ steps.save-outputs.outputs.ctan_ret_fontscripts }}
       ctan_nfssext_cfr_output: ${{ steps.save-outputs.outputs.ctan_ret_nfssext-cfr }}
+      # cache adforn, adfsymbols
+      adforn_cache_key: adforn-${{ github.sha }}-${{ needs.texlive-cache.outputs.cache_key }}
+      lookup_adforn_output: ${{ steps.adforn-lookup.outputs.cache-hit }}
+      adfsymbols_cache_key: adfsymbols-${{ github.sha }}-${{ needs.texlive-cache.outputs.cache_key }}
+      lookup_adfsymbols_output: ${{ steps.adfsymbols-lookup.outputs.cache-hit }}
     # don't abandon other builds if one module fails
     # continue-on-error: true
     strategy:
@@ -204,16 +209,20 @@ jobs:
             working_directory: arkandis/adforn
             pre_target: fnttarg
             extra_needs: clm
+            cache: true
           - module: adfsymbols
             working_directory: arkandis/adfsymbols
             pre_target: fnttarg
             extra_needs: clm
+            cache: true
           - module: fontscripts
             working_directory: fontscripts
             extra_needs: clm
+            cache: false
           - module: nfssext-cfr
             working_directory: nfssext-cfr
             extra_needs: clm
+            cache: false
     name: "Test build: ${{ matrix.module }}"
     steps:
       - name: Checkout repo
@@ -223,6 +232,71 @@ jobs:
         uses: ./.github/actions/nfssext-autocheck-action
         with:
           dep_cache_key: ${{ needs.clm.outputs.clm_cache_key }}
+          extra_needs: ${{ matrix.extra_needs }}
+          # extra_packages: ${{ matrix.extra_packages }}
+          module: ${{ matrix.module }}
+          pre_target: ${{ matrix.pre_target }}
+          texlive_cache_key: ${{ needs.texlive-cache.outputs.cache_key }}
+          working_directory: ${{ matrix.working_directory }}
+      - name: Cache build results
+      # run only if fnttarg build succeeded
+        if: ${{ !cancelled() && steps.build.outputs.fnttarg_ret && steps.lookup.outputs.cache-hit != 'true' && matrix.cache == 'true' }}
+        id: cache
+        uses: actions/cache/save@v6
+        with:
+          path: ${{ matrix.working_directory }}/keep
+          key: ${{ matrix.module }}-${{ github.sha }}-${{ needs.texlive-cache.outputs.cache_key }}
+      - name: Save fnttarg and ctan build results
+        if: ${{ !cancelled() }}
+        id: save-outputs
+        shell: bash
+        env: 
+          BUILD_RET: ${{ steps.build.outputs.fnttarg_ret }}
+          CTAN_RET: ${{ steps.build.outputs.ctan_ret }}
+        run: |
+          module="${{ matrix.module }}"
+          pretarget="${{ matrix.pre_target }}"
+          [[ "$pretarget" != "" ]] && echo -e "fnttarg_ret_${module}=${BUILD_RET}" >> "$GITHUB_OUTPUT" 
+          echo -e "ctan_ret_${module}=${CTAN_RET}" >> "$GITHUB_OUTPUT" 
+          cat "$GITHUB_OUTPUT"
+          allan=0
+          [[ ${CTAN_RET} != 0 ]] && allan=1
+          [[ ${BUILD_RET} != 0  && "$pretarget" != "" ]]  && allan=1
+          exit $allan
+
+  # need cfr-lm, adforn, adfsymbols, pzd
+  nfssext-needs-needy:
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    needs: [ texlive-cache, clm, nfssext-needy ]
+    outputs:
+      ctan_fixtounicode_output: ${{ steps.save-outputs.outputs.ctan_ret_fixtounicode }}
+    # don't abandon other builds if one module fails
+    # continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        # include indicates that we want to set explicitly these combinations
+        # and don't want full matrix testing.
+        include:
+          - module: fixtounicode
+            working_directory: fixtounicode
+            extra_needs: clm, nfssext-needy
+    name: "Test build: ${{ matrix.module }}"
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v6
+      - name: Build fnttarg and ctan
+        id: build 
+        uses: ./.github/actions/nfssext-autocheck-action
+        with:
+          dep_cache_key: ${{ needs.clm.outputs.clm_cache_key }}
+          dep_cache_keys: |
+            ${{ needs.adforn.outputs.adforn_cache_key }}
+            ${{ needs.adfsymbols.outputs.adfsymbols_cache_key }}
+          dep_cache_path: |
+            ~/work/nfssext/nfssext/arkandis/adforn/keep
+            ~/work/nfssext/nfssext/arkandis/adfsymbols/keep
           extra_needs: ${{ matrix.extra_needs }}
           # extra_packages: ${{ matrix.extra_packages }}
           module: ${{ matrix.module }}
@@ -278,6 +352,9 @@ jobs:
           ctanadfsymbols: ${{ needs.nfssext-needy.outputs.ctan_adfsymbols_output }}
           ctanfontscripts: ${{ needs.nfssext-needy.outputs.ctan_fontscripts_output }}
           ctannfssextcfr: ${{ needs.nfssext-needy.outputs.ctan_nfssext_cfr_output }}
+          lookupadforn: ${{ needs.adforn.outputs.lookup_adforn_output }}
+          lookupadfsymbols: ${{ needs.adfsymbols.outputs.lookup_adfsymbols_output }}
+          ctanfixtounicode: ${{ needs.fixtounicode.outputs.ctan_fixtounicode_output }}
         run: |
           allan=0
           clmres=1
@@ -285,6 +362,7 @@ jobs:
           [[ $fnttargclm == 0 && $ctanclm == 0 ]] && clmres=0
           # ([[ $clmres != 0 || $fnttargbaskervaldadf != 0 || $fnttargberenisadf != 0 || $fnttargelectrumadf != 0 || $fnttarglibrisadf != 0 || $fnttargromandeadf != 0 || $fnttargventurisadf != 0 || $ctanbaskervaldadf != 0 || $ctanberenisadf != 0 || $ctanelectrumadf != 0 || $ctanlibrisadf != 0 || $ctanromandeadf != 0 || $ctanventurisadf != 0 ]]) && allan=1
           ([[ $clmres != 0 || $fnttargbaskervaldadf != 0 || $fnttargberenisadf != 0 || $fnttargelectrumadf != 0 || $fnttarglibrisadf != 0 || $fnttargromandeadf != 0 || $fnttargventurisadf != 0 || $ctanbaskervaldadf != 0 || $ctanberenisadf != 0 || $ctanelectrumadf != 0 || $ctanlibrisadf != 0 || $ctanromandeadf != 0 || $ctanventurisadf != 0 || $fnttargadforn != 0 || $fnttargadfsymbols != 0 || $ctanadforn != 0 || $ctanadfsymbols != 0 || $ctanfontscripts != 0 || $ctannfssextcfr != 0 ]]) && allan=1
+          ([[ $clmres != 0 || $lookupadforn != 0 || $lookupadfsymbols != 0 || $ctanfixtounicode != 0]]) && allan=1
           echo "Summary status: $allan"
           echo -e "BUILD_RET=${allan}" >> "$GITHUB_OUTPUT" 
           exit "$allan"
