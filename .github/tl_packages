@@ -29,7 +29,6 @@ collection-basic
         kvdefinekeys
         kvoptions
         kvsetkeys
-        l3backend
         l3kernel
         l3packages
         latex
@@ -54,15 +53,11 @@ collection-basic
 
 # From collection-latexextra
         accsupp
-        acro
         adjustbox
         attachfile
-        # bearwear
-        # blindtext
         cleveref
         csquotes
         doclicense
-        # duckuments
         embedfile
         enumitem
         etoc
@@ -73,7 +68,6 @@ collection-basic
         hvlogos
         hypdoc
         intopdf
-        kantlipsum
         lastpage
         latex-amsmath-dev
         latex-base-dev
@@ -83,7 +77,6 @@ collection-basic
         latex-graphics-dev
         latex-lab-dev
         latex-tools-dev
-        # lipsum
         listing
         listingsutf8
         lua-check-hyphen
@@ -93,9 +86,6 @@ collection-basic
         mmap
         mwe
         pdfcolmk
-        # scrlayer-fancyhdr
-        # scrwfile
-        # tabularray
         transparent
         varwidth
         xpatch
@@ -120,15 +110,8 @@ collection-basic
         xetex
         xetexconfig
 
-# from collection-langgerman
-        babel-german
-        dehyph
-        dehyph-exptl
-        hyphen-german
- 
 # from collection-latexrecommended
         attachfile2
-        beamer
         booktabs
         caption
         etoolbox
@@ -137,13 +120,11 @@ collection-basic
         hologo
         index
         infwarerr
-        # koma-script
         l3experimental
         latexbug
         lineno
         listings
         mathtools
-        # memoir
         microtype
         parskip
         pdfcolfoot
@@ -170,18 +151,14 @@ hyphen-latin
 psnfss
 tex-gyre
 hyperxmp
-# tugboat
 babel-greek
 babel-spanish
-# times
 ntheorem
 babel-dutch
 hyphen-greek
 greek-fontenc
 greek-inputenc
 hyphen-ancientgreek
-# cbfonts-fd
-# cbfonts
 
 # fonts
 amsfonts 
