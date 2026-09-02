@@ -183,12 +183,5 @@ arkandisfiles = {"*.otf","NOTICE*","COPYING"}
 arkandisders = {"*.afm","*.pfb","*.pfm"}
 date = "2010-2026"
 dofile(maindir .. "/arkandis/arkandis-manifest.lua")
---------------------------------------------------------------------------------
-function normalize_log_hook(line)
-  if string.match(line, "^ *luaotfload") then
-    line = (string.gsub(line, "%(function: 0x[a-z0-9]*%)", "(function: 0x...)"))
-  end
-  return line
-end
 -------------------------------------------------
 -- vim: ts=2:sw=2:tw=80:nospell
