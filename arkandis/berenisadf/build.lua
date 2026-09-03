@@ -1,4 +1,4 @@
--- $Id: build.lua 11968 2026-06-10 00:56:50Z cfrees $
+-- $Id: build.lua 12019 2026-09-03 05:12:41Z cfrees $
 -------------------------------------------------
 -- Build configuration for berenisadf
 -------------------------------------------------
@@ -63,19 +63,19 @@ fnt.transformfds = {
     pre = function(current) return pre(current, "8y", "j8y") end,
   },
   { fd = "ly1ybdw.fd",
-    feat = "+tnum;+lnum;+dlig;+hist;+aalt;+ss01;",
+    feat = "+tnum;+lnum;+dlig;+ss01;",
     pre = function(current) return pre(current, "8y", "w8y") end,
   },
   { fd = "ly1ybd2w.fd",
-    feat = "+pnum;+lnum;+dlig;+hist;+aalt;+ss01;",
+    feat = "+pnum;+lnum;+dlig;+ss01;",
     pre = function(current) return pre(current, "(ybd[rb])(.*)8y", "%12%2w8y") end,
   },
   { fd = "ly1ybd2jw.fd",
-    feat = "+pnum;+onum;+dlig;+hist;+aalt;+ss01;",
+    feat = "+pnum;+onum;+dlig;+ss01;",
     pre = function(current) return pre(current, "(ybd[rb])(.*)8y", "%12%2jw8y") end,
   },
   { fd = "ly1ybdjw.fd",
-    feat = "+tnum;+onum;+dlig;+hist;+aalt;+ss01;",
+    feat = "+tnum;+onum;+dlig;+ss01;",
     pre = function(current) return pre(current, "8y", "jw8y") end,
   },
 }
@@ -183,5 +183,9 @@ arkandisfiles = {"*.otf","NOTICE*","COPYING"}
 arkandisders = {"*.afm","*.pfb","*.pfm"}
 date = "2010-2026"
 dofile(maindir .. "/arkandis/arkandis-manifest.lua")
+-------------------------------------------------
+function normalize_log_hook(line)
+  return (string.gsub(line, "(%(function: 0x)[%d%a]+%)", "%1...)"))
+end
 -------------------------------------------------
 -- vim: ts=2:sw=2:tw=80:nospell
