@@ -1,4 +1,4 @@
--- $Id: build.lua 12019 2026-09-03 05:12:41Z cfrees $
+-- $Id: build.lua 12020 2026-09-03 06:26:05Z cfrees $
 -------------------------------------------------
 -- Build configuration for berenisadf
 -------------------------------------------------
@@ -185,7 +185,7 @@ date = "2010-2026"
 dofile(maindir .. "/arkandis/arkandis-manifest.lua")
 -------------------------------------------------
 function normalize_log_hook(line)
-  return (string.gsub(line, "(%(function: 0x)[%d%a]+%)", "%1...)"))
+  return (string.gsub(line, "(%(function: 0x)%x+%)", "%1...)"))
 end
 -------------------------------------------------
 -- vim: ts=2:sw=2:tw=80:nospell
