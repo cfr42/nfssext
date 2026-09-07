@@ -1,9 +1,16 @@
--- $Id: lfc.lua 12023 2026-09-05 03:57:58Z cfrees $
+-- $Id: lfc.lua 12024 2026-09-07 17:37:23Z cfrees $
 -------------------------------------------------------------------------------
 
 lfc = {}
 -------------------------------------------------------------------------------
+local gsub = string.gsub
+local gmatch = string.gmatch
+local lower = string.lower
+local concat = table.concat
 
+local lfc_requests = {}
+local lfc_fams = {}
+local lfc_cache
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -- Max Chernoff: https://chat.stackexchange.com/transcript/message/69175678#69175678
@@ -123,8 +130,8 @@ local insert = table.insert
 -- for i,j in pairs(lfc_env.fonts.names.data) do print(i,type(i),j,type(j)) end
 -- print("*****************")
 
-local fonts = lfc_env.fonts
-local names = fonts.names
+local lfc_fonts = lfc_env.fonts
+local names = lfc_fonts.names
 local resolve = names.resolve
 -- local resolvespec = names.resolvespec
 -- local cleanname = names.cleanname
@@ -138,14 +145,47 @@ local lookup_font_file = names.lookup_font_file
 local font_data = names.data
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
+local function get_cache_path() -- {{{
+  local path = (gsub(lfc_fonts.names.cache.writable, "^(.*/)[^/]+$", "%1" ))
+  assert(path ~= nil, "Cannot find place for cache!")
+  if not lfs.isdir(path .. "/lfc") then
+    assert(file.is_writable(path), "Not writable!")
+    assert(lfs.mkdir(path .. "/lfc"), "Cannot create cache " .. path .. 
+      "/lfc" .. " directory!")
+  end
+  path = path .. "/lfc"
+  return path .. "/" .. "lfc_cache.lua"
+end
+-- }}}
+
+local function read_cache(loc) -- {{{
+  loc = loc or get_cache_path()
+  local cache = lfs.isfile(loc) and dofile(loc) or {}
+  return cache
+end
+-- }}}
+
+-- This is almost completely nonsensical
+local function write_cache(stuff, loc) -- {{{
+  stuff = stuff or lfc_cache
+  if stuff == nil then return 1 end
+  loc = loc or get_cache_path()
+
+  local f = assert(io.open(loc, "w"), "Cannot open cache for write!")
+  f:write(table.serialize(stuff))
+  f:close()
+end
+-- }}}
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
 
 -- Resolves a font specification and turns the family name into
 --    an .fd file name
 -- If the file exists, records this and returns the metadata
 -- If not, returns a table of font data, too
-local function get_font_data(fnt, suffix, force) -- {{{
+local function get_font_data(fnt, force) -- {{{
   if fnt == nil then return nil end
-  suffix = suffix or ""
 
   -- For return
   local f = {}
@@ -169,7 +209,7 @@ local function get_font_data(fnt, suffix, force) -- {{{
     fam_meta = fam_meta,
   }
 
-  local fd = "tu" .. fam_meta .. suffix .. ".fd", "tex"
+  local fd = "tu" .. fam_meta .. ".fd", "tex"
   f.metadata.fd = fd
   -- If an .fd for family exists, we're done unless force was used
   local fd_file = kpse.find_file(fd) 
@@ -379,169 +419,322 @@ local function parse_spec(type, descriptor) -- {{{
 end
 -- }}}
 
+---@function parse_config(fam, config) {{{
+  ---@description returns a table of configs keyd by nfss family name
+  ---@param fam base family name
+  ---@config table or string of configurations
+local function parse_config(fam, config) 
+  local configs = {}
+  if not config then 
+    configs[fam] = "mode=node;script=dflt;lang=dflt;+tlig;"
+  elseif type(config) == "table" then
+    if #config > 0 then
+      -- indexed table --> multiple configs
+      for _,instance in ipairs(config) do
+        local cfgs = parse_config(fam, instance)
+        for name,cfg in pairs(cfg) do
+          configs[name] = cfg
+        end
+      end
+    else
+      -- keyed table --> single config
+      local cfg = {}
+      insert(cfg, "mode=" .. (config.mode or "node"))
+      insert(cfg, "lang=" .. (config.lang or "dflt"))
+      insert(cfg, "script=" .. (config.script or "dflt"))
+      local fam = fam .. (config.suffix or "")
+      if config.fea == nil then
+        insert(cfg, "+tlig")
+        if configs[fam] == nil then
+          configs[fam] = concat(cfg, ";")
+        else
+          local n = 1
+          while configs[fam .. n] do n = n + 1 end
+          configs[fam .. n] = concat(cfg, ";")
+        end
+      else
+        insert(cfg, config.fea)
+        local pre, post, mid = "", "", ""
+        for sign,subs in gmatch(config.fea, "([+-])(%a%a%a%a);") do
+          if sign == "+" then
+            if subs == "tnum" then pre = ""
+            elseif subs == "pnum" then pre = "2"
+            elseif subs == "lnum" then post = ""
+            elseif subs == "onum" then post = "j"
+            elseif subs == "smcp" then mid = "c"
+            elseif subs == "sups" then pre = "1"
+            end
+          elseif subs == "pnum" and pre == "2" then pre = ""
+          elseif subs == "onum" and post == "j" then post = ""
+          elseif subs == "smcp" then mid = ""
+          elseif subs == "sups" and pre == "1" then pre = ""
+          end
+        end
+        local suff = pre .. mid .. post
+        if suff ~= "" then suff = "-" .. suff end
+        if configs[fam .. suff] ~= nil then
+          local n = 1
+          while configs[fam .. suff .. string.format("%c", n)] ~= nil do 
+            n = n + 1 
+          end
+          suff = suff .. string.format("%c", n)
+        end
+        configs[fam .. suff] = concat(cfg, ";")
+      end
+    end
+  else
+    assert(type(config) == "string", 
+      "Expected configuration to be table or string, but received " .. 
+      type(config) .. " for " .. fam)
+    local pre, post, suff = "", "", ""
+    for sign,subs in gmatch(config, "([+-])(%a%a%a%a);") do
+      if sign == "+" then
+        if subs == "tnum" then pre = ""
+        elseif subs == "pnum" then pre = "2"
+        elseif subs == "lnum" then post = ""
+        elseif subs == "onum" then post = "j"
+        end
+      elseif subs == "pnum" then pre = ""
+      elseif subs == "onum" then post = ""
+      end
+      suff = pre .. post
+      if suff ~= "" then suff = "-" .. suff end
+    end
+    if configs[fam .. suff] ~= nil then
+      local n = 1
+      while configs[fam .. suff .. string.format("%c", n)] ~= nil do 
+        n = n + 1 
+      end
+      suff = suff .. string.format("%c", n)
+    end
+    configs[fam .. suff] = config
+  end
+  return configs
+end
+-- }}}
+
 ---@function prepare_fd(fam, fam_data, fea) {{{
-  ---@description returns a table of lines suitable for writing to 
-  ---             an .fd file
+  ---@description returns a table of tables
+  ---             each table uses fam[-suffix] containing lines 
+  ---               suitable for writing to an .fd file
   ---@param fam <string> NFSS family
   ---@param fam_data <table> sorted data for fonts
-  ---@param fea <string> features
+  ---@param config <string> or indexed <table> or keyed <table>
   ---@param scale <boolean>
   ---@status internal
-local function prepare_fd(fam, fam_data, fea, scale) 
+local function prepare_fd(fam, fam_data, config, scale) 
+
+  -- Useless?
+  lfc_cache = lfc_cache or read_cache()
+  lfc_cache.request = lfc_cache.request or {}
+  lfc_cache.request[fam] = lfc_cache.request[fam] or {}
+  local request = lfc_cache.request[fam]
 
   if scale == nil then scale = true end
 
-  local fd = {}
-  local sscale = (scale and fam .. "@scale") or ""
-  local ssscale = (scale and "\\" .. fam .. "@@scale") or ""
+  local configs = parse_config(fam, config)
 
-  local function fd_insert(s)
-    insert(fd, s)
-  end
+  local fds = {}
 
-  fd_insert("\\ProvidesFile{tu" .. fam .. ".fd}[Font definitions for TU/" .. 
-    fam .. "generated by lfc v0.0]")
-  if scale then
-    fd_insert("  \\expandafter\\ifx\\csname " .. sscale .. 
+  for fam_var,cfg in pairs(configs) do
+
+    -- Pointless?
+    lfc_cache[fam_var] = lfc_cache[fam_var] or {}
+    request[cfg] = fam_var
+
+    if lfc_cache[fam_var].config ~= nil and lfc_cache[fam_var].config == cfg and
+      lfc_cache[fam_var].complete and lfc_cache[fam_var].fd then
+
+      fds[fam_var] = lfc_cache[fam_var].fd
+      goto fds_cont
+    end
+
+    local fd = {}
+    lfc_cache[fam_var].complete = true
+
+    local sscale = (scale and fam_var .. "@scale") or ""
+    local ssscale = (scale and "\\" .. fam_var .. "@@scale") or ""
+    
+
+    local curr_line = 0
+    local function fd_insert(s)
+      curr_line = curr_line + 1
+      insert(fd, s)
+    end
+
+    fd_insert("\\ProvidesFile{tu" .. fam_var .. ".fd}[Font definitions for TU/" .. 
+    fam_var .. "generated by lfc v0.0]")
+    if scale then
+      fd_insert("  \\expandafter\\ifx\\csname " .. sscale .. 
       "\\endcsname\\relax\n    \\let" .. ssscale .. "\\@empty\n  \\else\n    \\edef" ..
       ssscale .. "{*[\\csname " .. sscale .. "\\endcsname]}%\n  \\fi")
-  end
-  -- not needed again & errors will be clearer
-  sscale = nil
+    end
+    -- not needed again & errors will be clearer
+    sscale = nil
 
-  fd_insert("\\DeclareFontFamily{TU}{" .. fam .. "}{}")
+    fd_insert("\\DeclareFontFamily{TU}{" .. fam_var .. "}{}")
 
-  -- inspect(fam_data)
+    local shape_begin = "\\DeclareFontShape{TU}{" .. fam_var .. "}{"
+    local shape_mid   = "}{<-> " .. ssscale .. " \\UnicodeFontFile{\""
 
-  local shape_begin = "\\DeclareFontShape{TU}{" .. fam .. "}{"
-  local shape_mid   = "}{<-> " .. ssscale .. " \\UnicodeFontFile{\""
-
-  for series,i in pairs(fam_data) do
-    for shape,fnts in pairs(i) do
-      texio.write_nl("Processing font(s) for " .. series .. 
+    for series,series_data in pairs(fam_data) do
+      local std_line = 0
+      for shape,fnts in pairs(series_data) do
+        texio.write_nl("Processing font(s) for " .. series .. 
         " and " .. shape)
 
-      assert(#fnts ~= 0, "The number of fonts should never be zero!")
+        assert(#fnts ~= 0, "The number of fonts should never be zero!")
 
-      if #fnts == 1 then
+        if #fnts == 1 then
 
-        fd_insert(shape_begin .. series .. "}{" .. shape .. 
+          fd_insert(shape_begin .. series .. "}{" .. shape .. 
           shape_mid .. fnts[1].fullpath .. "\"}{" .. 
-          fea .. "}}{}")
+          cfg .. "}}{}")
 
-      else
+        else
 
-        table.sort(fnts, 
-          function(a, b)
-            if a.nfss_hash ~= b.nfss_hash then
-              local amin = tonumber(a.minsize) or tonumber(a.designsize) 
-              local bmin = tonumber(b.minsize) or tonumber(b.designsize) 
-              if amin < bmin then return true 
-              elseif bmin < amin then return false
-              else
-                local amax = tonumber(a.maxsize) or tonumber(a.designsize)
-                local bmax = tonumber(b.maxsize) or tonumber(b.designsize)
-                if amax < bmax then return true end
+          table.sort(fnts, 
+            function(a, b)
+              if a.nfss_hash ~= b.nfss_hash then
+                local amin = tonumber(a.minsize) or tonumber(a.designsize) 
+                local bmin = tonumber(b.minsize) or tonumber(b.designsize) 
+                if amin < bmin then return true 
+                elseif bmin < amin then return false
+                else
+                  local amax = tonumber(a.maxsize) or tonumber(a.designsize)
+                  local bmax = tonumber(b.maxsize) or tonumber(b.designsize)
+                  if amax < bmax then return true end
+                end
+              end
+              return false
+            end)
+
+          local hash_last = 0
+          local ssubs = {}
+          local max_last
+
+          for shape_data,fnt in ipairs(fnts) do
+            local min, max
+            local opt_size = false
+            local pre = ""
+            if fnt.nfss_hash == hash_last then
+              pre = "%% "
+              texio.write_nl("Warning: duplicate fonts found: hash " .. 
+                hash_last .. " for family " .. fam_var)
+            end
+
+            if shape_data == 1 then min = ""
+            else
+              min = fnt.minsize and fnt.minsize/10 or fnt.designsize 
+                and fnt.designsize/10 or ""
+            end
+            if shape_data == #fnts then max = ""
+            else
+              max = fnt.maxsize and fnt.maxsize/10 or fnt.designsize and 
+                fnt.designsize/10 or ""
+            end
+
+            -- needed to reinsert scaling if duplicate fonts
+            if min ~= "" or max ~= "" then opt_size = true end
+
+            insert(ssubs, pre .. "  <" .. min .. "-" .. max 
+              .. "> \\UnicodeFontFile{\"" .. fnt.fullpath .. "\"}{" 
+              .. cfg .. "}")
+
+            max_last = max
+            hash_last = fnt.nfss_hash
+          end
+          if scale then
+            if opt_size then
+              texio.write_nl("Warning: ignoring scaling for fonts with optical sizing.")
+            else
+              for idx,frag in ipairs(ssubs) do
+                ssubs[idx] = (string.gsub(frag, "(\\UnicodeFontFile)", 
+                  ssscale .. " %1"))
               end
             end
-            return false
-          end)
-
-        local hash_last = 0
-        local ssubs = {}
-        local max_last
-
-        for i,fnt in ipairs(fnts) do
-          local min, max
-          local opt_size = false
-          local pre = ""
-          if fnt.nfss_hash == hash_last then
-            pre = "%% "
-            texio.write_nl("Warning: duplicate fonts found: hash " .. 
-              hash_last .. " for family " .. fam)
           end
+          fd_insert(shape_begin .. series .. "}{" .. shape .. "}{\n" .. 
+            concat(ssubs, "\n")
+            .. "\n}{}")
 
-          if i == 1 then min = ""
-          else
-            min = fnt.minsize and fnt.minsize/10 or fnt.designsize 
-              and fnt.designsize/10 or ""
-          end
-          if i == #fnts then max = ""
-          else
-            max = fnt.maxsize and fnt.maxsize/10 or fnt.designsize and 
-              fnt.designsize/10 or ""
-          end
-
-          -- needed to reinsert scaling if duplicate fonts
-          if min ~= "" or max ~= "" then opt_size = true end
-
-          insert(ssubs, pre .. "  <" .. min .. "-" .. max 
-            .. "> \\UnicodeFontFile{\"" .. fnt.fullpath .. "\"}{" 
-            .. fea .. "}")
-
-          max_last = max
-          hash_last = fnt.nfss_hash
         end
-        if scale then
-          if opt_size then
-            texio.write_nl("Warning: ignoring scaling for fonts with optical sizing.")
-          else
-            for idx,frag in ipairs(ssubs) do
-              ssubs[idx] = (string.gsub(frag, "(\\UnicodeFontFile)", 
-                ssscale .. " %1"))
-            end
-          end
-        end
-        fd_insert(shape_begin .. series .. "}{" .. shape .. "}{\n" .. 
-          table.concat(ssubs, "\n")
-          .. "\n}{}")
-
+        if shape == "n" then std_line = curr_line end
       end
 
       -- check for missing basic shapes
-      if series.it == nil then
-        if series.sl ~= nil then
+      if series_data.it == nil then
+        if series_data.sl ~= nil then
           fd_insert(shape_begin .. series .. 
-          "}{it}{<->ssub * " .. fam .. "/" .. series .. "/sl}{}")
+          "}{it}{<->ssub * " .. fam_var .. "/" .. series .. "/sl}{}")
         end
-      elseif series.sl == nil then
+      elseif series_data.sl == nil then
         fd_insert(shape_begin .. series .. 
-        "}{sl}{<->ssub * " .. fam .. "/" .. series .. "/it}{}")
+        "}{sl}{<->ssub * " .. fam_var .. "/" .. series .. "/it}{}")
       end
-      if series.scit == nil then
-        if series.scsl ~= nil then
+
+      if series_data.sc == nil and std_line > 0 then
+        local line_no = curr_line + 1
+
+        -- temp defn
+        fd_insert((gsub(fd[std_line], "{n}", "{sc}")))
+
+        lfc_cache[fam_var].complete = false
+        lfc_cache[fam_var][line_no] = {
+          line = (gsub(gsub(fd[std_line], cfg, cfg .. ";+smcp"), 
+            "{n}", "{sc}")),
+        }
+        lfc_cache.incomplete = lfc_cache.incomplete or {}
+        lfc_cache.incomplete[fam_var] = lfc_cache.incomplete[fam_var] or {}
+        lfc_cache.incomplete[fam_var][line_no] = true
+
+        lfc_cache.callbacks = lfc_cache.callbacks or {}
+        lfc_cache.callbacks[series_data.n[1].fullpath] = {
+          fam = fam_var,
+          line_no = lfc_cache[fam_var][line_no],
+        }
+      end
+
+      if series_data.scit == nil then
+        if series_data.scsl ~= nil then
           fd_insert(shape_begin .. series .. 
-          "}{scit}{<->ssub * " .. fam .. "/" .. series .. "/scsl}{}")
+          "}{scit}{<->ssub * " .. fam_var .. "/" .. series .. "/scsl}{}")
           fd_insert(shape_begin .. series .. 
-          "}{si}{<->ssub * " .. fam .. "/" .. series .. "/scit}{}")
+          "}{si}{<->ssub * " .. fam_var .. "/" .. series .. "/scit}{}")
         end
-      elseif series.scsl == nil then
+      elseif series_data.scsl == nil then
         fd_insert(shape_begin .. series .. 
-        "}{scsl}{<->ssub * " .. fam .. "/" .. series .. "/scit}{}")
+        "}{scsl}{<->ssub * " .. fam_var .. "/" .. series .. "/scit}{}")
         fd_insert(shape_begin .. series .. 
-        "}{si}{<->ssub * " .. fam .. "/" .. series .. "/scsl}{}")
+        "}{si}{<->ssub * " .. fam_var .. "/" .. series .. "/scsl}{}")
       end
 
     end
-  end
 
-  -- check for missing basic series
-  if fam_data.b == nil then
-    if fam_data.bx ~= nil then
-      for shape,_ in pairs(fam_data.bx) do
-        fd_insert(shape_begin .. "b}{" .. shape .. 
-          "}{<->ssub * " .. fam .. "/bx/" .. shape .. "}{}")
+    -- check for missing basic series
+    if fam_data.b == nil then
+      if fam_data.bx ~= nil then
+        for shape,_ in pairs(fam_data.bx) do
+          fd_insert(shape_begin .. "b}{" .. shape .. 
+            "}{<->ssub * " .. fam_var .. "/bx/" .. shape .. "}{}")
+        end
+      end
+    elseif fam_data.bx == nil then
+      for shape,_ in pairs(fam_data.b) do
+        fd_insert(shape_begin .. "bx}{" .. shape .. 
+          "}{<->ssub * " .. fam_var .. "/b/" .. shape .. "}{}")
       end
     end
-  elseif fam_data.bx == nil then
-    for shape,_ in pairs(fam_data.b) do
-      fd_insert(shape_begin .. "bx}{" .. shape .. 
-        "}{<->ssub * " .. fam .. "/b/" .. shape .. "}{}")
-    end
+
+    lfc_cache[fam_var].fd = fd
+    fds[fam_var] = fd
+
+    :: fds_cont ::
   end
-    
-  return fd
-end-- }}}
+
+  return fds
+end
+-- }}}
 
 local function write_fd(fam, fd_lines, fd_file) -- {{{
   assert(#fd_lines > 2, "I expected more than 2 lines!")
@@ -555,12 +748,73 @@ local function write_fd(fam, fd_lines, fd_file) -- {{{
 end
 -- }}}
 
+local function add_callback() -- {{{
+  luatexbase.add_to_callback(
+    "luaotfload.patch_font",
+    function(data, spec, id)
+      local path = data.filename
+      local cache = lfc_cache or read_cache()
+      if cache.callbacks and cache.callbacks[path] then
+        local fam = cache.callbacks[path].fam
+        local line_no = cache.callbacks[path].line_no
+        local incomplete = cache.incomplete 
+        local fd 
+        if cache[fam] and cache[fam].fd then fd = cache[fam].fd end
+
+        if incomplete and incomplete[fam] and incomplete[fam][line_no] then
+
+          assert(fd and cache[fam][line_no])
+          local line = cache[fam][line_no]
+
+          if data.resources.features.gsub and data.resources.features.gsub.smcp then
+            fd[line_no] = line
+          else
+            fd[line_no] = ""
+            cache[fam][line_no] = nil
+          end
+
+          incomplete[fam][line_no] = nil
+          if count(incomplete[fam]) == 0 then incomplete[fam] = nil end
+        end
+
+        -- Need a way to remove the callbacks ...
+        -- Use the cached fds?
+        --
+        -- This is not going to work with local fds ...
+        -- Need the fds to live exclusively in the cache?
+        -- Or, better, write them locally only when complete (and still cache)?
+
+
+        -- What is needed is a way to define a LaTeX font from Lua ...
+        -- ... but I am not sure how best to do that ...
+        --    I could just write it directly, I guess?
+        --    But how to turn a cached line into LaTeX code?
+
+        local fd_file = assert(io.open("tu" .. fam .. ".fd", "w"))
+        fd_file:write(concat(fd, "\n"))
+        fd_file:close()
+
+        write_cache(lfc_cache)
+
+        -- something here to actually define the font ... !!
+        -- or just defer to next run?
+--   texio.write_nl(line)
+--   tex.sprint(line)
+        
+      end
+
+    end,
+    "lfc check for +smcp"
+  )
+end
+--}}}
+
 -- should be broken up?!
--- takes a font request, configuration details and name suffix
+-- takes a font request, configuration details
 -- only targ is required
 -- either returns metadata with .fd details, if existent
 -- or returns the same after writing one or more (hopefully suitable) .fd
-local function font_config(targ, config, suffix) -- {{{
+local function font_config(targ, config) -- {{{
 
   -- for i,j in pairs(fonts.names) do
   --   print(i,type(i),j,type(j))
@@ -599,16 +853,22 @@ local function font_config(targ, config, suffix) -- {{{
   --   print("\n", i, type(i), j, type(j))
   -- end
 
+  local callback_done = lfc_cache and lfc_cache.callbacks and true or false
+
   if targ == nil then return nil end
 
+  targ = lower(targ)
   config = config or {}
-  config.fea = config.fea or "\\UnicodeFontTeXLigatures"
-  config.size = config.size or "10"
+
+  -- Not sure if this is useful or not
+  -- Everything I construct ends up hopelessly muddled :(
+  -- lfc_requests[targ] = lfc_requests[targ] or {}
+  -- local request = lfc_requests[targ]
+  -- insert(request, {config = config})
+
   local scale = config.scale
   
-  suffix = suffix or ""
-
-  local f = get_font_data(targ, suffix)
+  local f = get_font_data(targ)
 
   if f == nil or f.metadata == nil then return nil end
   local metadata = f.metadata
@@ -638,13 +898,21 @@ local function font_config(targ, config, suffix) -- {{{
   --    - Reduce width + weight -> series
   --    - Reduce style + variant -> shape
   for name,font in pairs(data) do
+    local fullname = font.fullname
+    
+    -- We don't want to parse maths fonts.
+    -- Best would be to check for the MATH table, but we don't want to
+    --    load every font for that, so do this for now.
+    if (match(fullname, "math")) then
+      goto discard
+    end
+
     local width = font.width
     local weight = font.weight
     local style = font.style
     local variant = font.variant
     -- family is more specific than familyname
     local family = font.familyname
-    local fullname = font.fullname
 
     local series, shape
 
@@ -693,6 +961,7 @@ local function font_config(targ, config, suffix) -- {{{
       end
 
     end
+
 
     local t
 
@@ -754,6 +1023,13 @@ local function font_config(targ, config, suffix) -- {{{
 
     insert(t[series][shape], font)
 
+    :: discard ::
+
+  end
+  -- inspect(parsed_fam)
+
+  if parsed_fam == nil and parsed_fam_oldstyle == nil then 
+    return nil 
   end
 
   -- ConTeXt's database treats distinct ‘oldstyle’ fonts as variants
@@ -856,6 +1132,7 @@ local function font_config(targ, config, suffix) -- {{{
       end
     end
   end
+
   if medium then
     for fam,data in pairs(parsed_fam) do
       if data.medium ~= nil then
@@ -906,9 +1183,20 @@ local function font_config(targ, config, suffix) -- {{{
   -- local fds = {}
 
   for fam,fam_data in pairs(parsed_fam) do
-    local fd = prepare_fd(fam, fam_data, config.fea, scale)
-    write_fd(fam, fd) 
+    local fds = prepare_fd(fam, fam_data, config, scale)
+    -- Useless?
+    -- lfc_fams[fam] = lfc_fams[fam] or {}
+    for fam_name,fd in pairs(fds) do
+      -- Pointless?
+      -- lfc_fams[fam][fam_name] = fd
+      write_fd(fam_name, fd) 
+    end
   end
+
+  if callback_done == false and lua_cache ~= nil and 
+    lua_cache.callbacks ~= nil then add_callback() end
+
+
 
   -- for fam, fam_data in pairs(fds) do write_fd(fam, fam_data) end
 
@@ -916,12 +1204,75 @@ local function font_config(targ, config, suffix) -- {{{
 end
 -- }}}
 
+---@function check_sc {{{
+  ---@description temporary defn for use in an .fd file to avoid loading fonts
+  ---   to test for +smcp feature
+  ---@param fam <string>    NFSS family identifier
+  ---@param series <string> NFSS series identifier
+  ---@param line_no int     line number to remove or amend
+--
+--   -- Need a check here for id
+--   local f = font.fonts[font.current(id)] or nil
+--   assert(f ~= nil, "No font!")
+--
+--
+--
+--   texio.write_nl(line)
+--   tex.sprint(line)
+--
+-- }}}
+
+-- texio.write_nl("**** lfc_env ****")
+-- for i,j in pairs(lfc_env) do print(i, type(i), j, type(j)) end
+-- texio.write_nl("**** lfc_env.caches ****")
+-- for i,j in pairs(lfc_env.caches) do print(i, type(i), j, type(j)) end
+-- texio.write_nl("**** lfc_env.caches ****")
+-- for i,j in pairs(lfc_env.caches) do print(i, type(i), j, type(j)) end
+-- texio.write_nl("**** lfc_env.containers ****")
+-- for i,j in pairs(lfc_env.containers) do print(i, type(i), j, type(j)) end
+-- texio.write_nl("**** lfc_env.fonts ****")
+-- for i,j in pairs(lfc_env.fonts) do print(i, type(i), j, type(j)) end
+-- texio.write_nl("**** lfc_env.fonts.handlers ****")
+-- for i,j in pairs(lfc_env.fonts.handlers) do print(i, type(i), j, type(j)) end
+-- texio.write_nl("**** lfc_env.fonts.helpers.commands ****")
+-- for i,j in pairs(lfc_env.fonts.helpers.commands) do print(i, type(i), j, type(j)) end
+-- texio.write_nl("**** lfc_env.fonts.names ****")
+-- for i,j in pairs(lfc_env.fonts.names) do print(i, type(i), j, type(j)) end
+-- texio.write_nl("**** lfc_env.fonts.names.cache ****")
+-- for i,j in pairs(lfc_env.fonts.names.cache) do print(i, type(i), j, type(j)) end
+-- texio.write_nl("**** lfc_env.fonts.names.cache.readables ****")
+-- for i,j in pairs(lfc_env.fonts.names.cache.readables) do print(i, type(i), j, type(j)) end
+-- texio.write_nl("**** lfc_env.storage.shared ****")
+-- for i,j in pairs(lfc_env.storage.shared) do print(i, type(i), j, type(j)) end
+--
+-- -- local shown_cache = fonts.names.show_cache()
+-- -- -- print(shown_cache, type(shown_cache))
+-- -- print("****")
+-- -- for i,j in pairs(lfc_env.storage.shared) do print(i, type(i), j, type(j)) end
+-- --
+-- -- local lmr = fonts.names.lookup_font_name_cached("latinmodernroman10regular")
+-- for i,j in pairs(lfs) do print(i, type(i), j, type(j)) end
+-- for i,j in pairs(file) do print(i, type(i), j, type(j)) end
+
+local cache_path = get_cache_path()
+if lfs.isfile(cache_path) then
+  lfc_cache = read_cache()
+  if lfc_cache and lfc_cache.callbacks then add_callback() end
+end
 
 -------------------------------------------------------------------------------
 -- lfc.search_family = search_family
-lfc.get_font_data = get_font_data
+lfc.check_sc = check_sc
+-- lfc.get_font_data = get_font_data
 lfc.font_config = font_config
 -- lfc.fonts = fonts
+-- lfc.lfc_requests = lfc_requests
+-- lfc.lfc_fams = lfc_fams
+-- lfc.write_cache = write_cache
+-- lfc.read_cache = read_cache
+-- lfc.get_cache_path = get_cache_path
+lfc.cache = lfc_cache
+lfc.add_callback = add_callback
 
 return lfc
 -------------------------------------------------------------------------------
