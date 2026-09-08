@@ -1,6 +1,5 @@
--- $Id: lfc.lua 12025 2026-09-08 04:10:17Z cfrees $
+-- $Id: lfc.lua 12026 2026-09-08 06:00:28Z cfrees $
 -------------------------------------------------------------------------------
-
 -------------------------------------------------------------------------------
 local gsub, gmatch, lower = string.gsub, string.gmatch, string.lower
 
@@ -80,41 +79,6 @@ lfc_env.fonts.names.load(false, false)
 
 -- Get the table of filenames
 local cleanfilename = lfc_env.fonts.names.cleanfilename
--- local paths = {}
---
--- do
---   local files = luaotfload.aux.font_index().files
---   for _, key in ipairs(config.luaotfload.db.location_precedence) do
---     for file, index in pairs(files.base[key]) do
---       paths[cleanfilename(file)] = files.full[index]
---     end
---   end
--- end
---
--- Public exports.
-_G.lfc = _G.lfc or {}
-
--- local function search_family(family_name)
---   family_name = lfc_env.fonts.names.cleanname(family_name)
---   local font = lfc_env.fonts.names.data.families[family_name]
---
---   if font then
---     local output = {}
---     for _, data in pairs(font) do
---       insert(output, {
---         family = data.familyname or family_name,
---         path   = paths[cleanfilename(data.filename)],
---         style  = data.style == "normal" and "upright" or data.style,
---         type   = data.format,
---         weight = data.weight == "normal" and "regular" or data.weight,
---         width  = data.width,
---       })
---     end
---     return output
---   else
---     return {}
---   end
--- end
 
 -- }}}
 -------------------------------------------------------------------------------
