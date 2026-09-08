@@ -1,21 +1,22 @@
--- $Id: lfc.lua 12024 2026-09-07 17:37:23Z cfrees $
+-- $Id: lfc.lua 12025 2026-09-08 04:10:17Z cfrees $
 -------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------
+local gsub, gmatch, lower = string.gsub, string.gmatch, string.lower
+
+local concat, count, insert = table.concat, table.count, table.insert
 
 lfc = {}
--------------------------------------------------------------------------------
-local gsub = string.gsub
-local gmatch = string.gmatch
-local lower = string.lower
-local concat = table.concat
-
 local lfc_requests = {}
-local lfc_fams = {}
 local lfc_cache
+
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -- Max Chernoff: https://chat.stackexchange.com/transcript/message/69175678#69175678
 -- Use ConTeXt's font name database code.
 -------------------------------------------------------------------------------
+
+---@mcsubstitute {{{
 
 -- Define a new private environment into which to load "font-syn.lua".
 local lfc_env = table.copy(luaotfload.fontloader)
@@ -25,17 +26,21 @@ lfc_env.table = table.copy(lfc_env.table)
 local match = string.match
 local split = "^(.-)([^/]-)([^/]-)$"
 
+---@mcsubstitute {{{
 function lfc_env.resolvers.dowithfilesintree(pattern, handle, before, after)
   local files = luaotfload.aux.font_index().files.full
   for i = 1, #files do
     local filename = files[i]
     if match(filename, pattern) then
       local root, path, name = match(filename, split)
+      -- Path is always empty.
       handle("file", root, path, name)
     end
   end
 end
+-- }}}
 
+---@mcsubstitute {{{
 function lfc_env.table.setmetatableindex(t, k)
   if k == "self" then
     return table.setmetatableindex(t, function(tt, kk)
@@ -46,6 +51,7 @@ function lfc_env.table.setmetatableindex(t, k)
     return table.setmetatableindex(t, k)
   end
 end
+-- }}}
 
 -- Define some dummy functions.
 function lfc_env.logs.flush         ()     return nil end
@@ -88,7 +94,6 @@ local cleanfilename = lfc_env.fonts.names.cleanfilename
 -- Public exports.
 _G.lfc = _G.lfc or {}
 
-local insert = table.insert
 -- local function search_family(family_name)
 --   family_name = lfc_env.fonts.names.cleanname(family_name)
 --   local font = lfc_env.fonts.names.data.families[family_name]
@@ -110,42 +115,24 @@ local insert = table.insert
 --     return {}
 --   end
 -- end
+
+-- }}}
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
-
--- print("**** lfc_env ****")
--- for i,j in pairs(lfc_env) do print(i,type(i),j,type(j)) end
--- print("*****************")
---
--- print("**** lfc_env.fonts ****")
--- for i,j in pairs(lfc_env.fonts) do print(i,type(i),j,type(j)) end
--- print("*****************")
-
--- print("**** lfc_env.fonts.handlers.otf.readers ****")
--- getinfo (fn) helpers (table)
--- for i,j in pairs(lfc_env.fonts.handlers.otf.readers.helpers) do print(i,type(i),j,type(j)) end
--- print("*****************")
-
--- print("**** lfc_env.fonts.names.data ****")
--- for i,j in pairs(lfc_env.fonts.names.data) do print(i,type(i),j,type(j)) end
--- print("*****************")
 
 local lfc_fonts = lfc_env.fonts
 local names = lfc_fonts.names
 local resolve = names.resolve
--- local resolvespec = names.resolvespec
--- local cleanname = names.cleanname
--- local cleanfilename = names.cleanfilename
--- local lookup = names.lookup
--- local lookup_fullpath = names.lookup_fullpath
 local lookup_font_file = names.lookup_font_file
--- local sanitize_fontname = names.sanitize_fontname
--- local getmetadata = names.getmetadata
--- -- local getfilename = names.getfilename -- broken
 local font_data = names.data
 -------------------------------------------------------------------------------
+-- Utilities for caching data
 -------------------------------------------------------------------------------
-local function get_cache_path() -- {{{
+---@function get_cache_path -- {{{
+---@description Returns fullname of module cache.
+---@statue internal
+local function get_cache_path()
+  texio.write_nl("[lfc] Accessing cache ...")
   local path = (gsub(lfc_fonts.names.cache.writable, "^(.*/)[^/]+$", "%1" ))
   assert(path ~= nil, "Cannot find place for cache!")
   if not lfs.isdir(path .. "/lfc") then
@@ -158,33 +145,41 @@ local function get_cache_path() -- {{{
 end
 -- }}}
 
-local function read_cache(loc) -- {{{
+---@function read_cache  -- {{{
+---@param loc <string> Optional alternate full path for cache.
+---@status internal
+local function read_cache(loc)
+  texio.write_nl("[lfc] Reading cache ...")
   loc = loc or get_cache_path()
-  local cache = lfs.isfile(loc) and dofile(loc) or {}
+  local cache = lfs.isfile(loc) and table.load(loc) or {}
   return cache
 end
 -- }}}
 
--- This is almost completely nonsensical
-local function write_cache(stuff, loc) -- {{{
+-- This is almost completely nonsensical -- {{{
+---@function write_cache
+---@param stuff <table> Table to save. Default: lua_cache.
+---@param loc <string>  Full path of cache. Default: from get_cache_path().
+local function write_cache(stuff, loc)
+  texio.write_nl("[lfc] Writing cache ...")
   stuff = stuff or lfc_cache
   if stuff == nil then return 1 end
   loc = loc or get_cache_path()
-
-  local f = assert(io.open(loc, "w"), "Cannot open cache for write!")
-  f:write(table.serialize(stuff))
-  f:close()
+  -- Duplicates data referenced by pointers/links/whatever they are.
+  table.save (loc, stuff)
 end
 -- }}}
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 
-
--- Resolves a font specification and turns the family name into
---    an .fd file name
--- If the file exists, records this and returns the metadata
--- If not, returns a table of font data, too
-local function get_font_data(fnt, force) -- {{{
+---@function get_font_data -- {{{
+---@param fnt   <string>  Font name/family/etc. to resolve.
+---@param force <boolean> Whether to force re-generation if .fd found.
+-- @description Resolves a font specification and turns the family name into
+-- @description    an .fd file name
+-- @description If the file exists, records this and returns the metadata
+-- @description If not, returns a table of font data, too
+local function get_font_data(fnt, force)
   if fnt == nil then return nil end
 
   -- For return
@@ -231,74 +226,31 @@ local function get_font_data(fnt, force) -- {{{
   local data = names.list(fam_meta .. ".*",false,true)
   if data == nil then return nil end
 
-
-  -- SCRATCH
-
-  -- print("*********************************\n")
-  -- -- for i,j in pairs(data.latinmodernroman10regular) do print(i,type(i),j,type(j)) end
-  -- print("*********************************\n")
-  -- for i,j in pairs(lfc_env.fonts.analyzers.features) do print(i,type(i),j,type(j)) end
-  -- print("*********************************\n")
-  -- for i,j in pairs(fonts) do print(i,type(i),j,type(j)) end
-  -- print("*********************************\n")
-  -- for i,j in pairs(lfc_env.fonts.handlers.otf) do print(i,type(i),j,type(j)) end
-  -- getgsub
-  -- getstreams
-  -- getalternate
-  -- getkern
-  -- getmultiple
-  -- collectlookups
-  -- scriptandlanguage
-  -- getsubstitution
-  -- load
-  -- loadoutlinedata
-  -- loadestreamdata
-  -- tables, handlers, readers, cache, features
-  -- print("*********************************\n")
-  -- for i,j in pairs(lfc_env.fonts.handlers.otf.helpers) do print(i,type(i),j,type(j)) end
-  -- print("*********************************\n")
-  -- print("*********************************\n")
-  -- for i,j in pairs(lfc_env.fonts.handlers.otf.cache) do print(i,type(i),j,type(j)) end
-  -- print("*********************************\n")
-  -- for i,j in pairs(lfc_env.fonts.handlers.otf.cache.storage["lmroman10-regular"].resources.features.gsub) do print(i,type(i),j,type(j)) end
-  -- print("*********************************\n")
-  -- for i,j in pairs(lfc_env.fonts.handlers.otf.cache.readables) do print(i,type(i),j,type(j)) end
-  -- print("*********************************\n")
-  -- for i,j in pairs(lfc_env.fonts.readers) do print(i,type(i),j,type(j)) end
-  -- print("*********************************\n")
-  -- for i,j in pairs(lfc_env.fonts.mappings) do print(i,type(i),j,type(j)) end
-  -- print("*********************************\n")
-  -- for i,j in pairs(lfc_env.fonts.helpers) do print(i,type(i),j,type(j)) end
-  -- assert(false)
-
-  -- END SCRATCH
-
-
-  -- names.list returns duplicate names for some font files
-  -- this de-duplicates the list, though I wonder if there's a better method?
+  -- names.list returns duplicate names for some font files.
+  -- This de-duplicates the list, though I wonder if there's a better method?
   local data_by_filename = {}
 
-  -- one would prefer to use index IDs here, but I'm not sure how to get that
-  --  in a nice way
+  -- One would prefer to use index IDs here, but I'm not sure how to get that
+  --  in a nice way.
   for name, fdata in pairs(data) do
     -- choice of name is arbitrary
     data_by_filename[fdata.filename] = data_by_filename[fdata.filename] or name
   end
 
-  -- ‘in place’ doesn't mean what you think :(
+  -- ‘In place’ doesn't mean what you think :(
   data_by_filename = table.mirrored(data_by_filename)
 
-  -- discard dupes
+  -- Discard dupes
   for name, fdata in pairs(data) do
     if data_by_filename[name] == nil then
       data[name] = nil
     end
   end
 
-  -- data doesn't include full paths, so add these now
+  -- Data doesn't include full paths, so add these now.
   for name,info in pairs(data) do
     if info.fullpath == nil then
-      -- gets full path from file name
+      -- Gets full path from file name.
       info.fullpath = lookup_font_file(info.filename)
     end
   end
@@ -309,8 +261,10 @@ local function get_font_data(fnt, force) -- {{{
 end 
 -- }}}
 
--- tables to translate db descriptors for context into 
--- latex nfss identifiers from fntguide
+-------------------------------------------------------------------------------
+-- Tables to translate db descriptors for context into 
+-- LaTeX NFSS identifiers from fntguide
+-------------------------------------------------------------------------------
 local weights = { -- {{{
 --[[
   ul Ultra Light
@@ -406,10 +360,14 @@ local variants = { -- {{{
   smallcaps = "sc",
 } -- }}}
 
--- turns a descriptor into a latex nfss identifier or warns if unknown
--- type: 'weights' | 'variants' | 'widths' | 'styles'
--- descriptor is weight | width | variant | style as given in db
-local function parse_spec(type, descriptor) -- {{{
+-------------------------------------------------------------------------------
+-- Parsers
+-------------------------------------------------------------------------------
+---@function parse_spec -- {{{
+---@param type:       'weights' | 'variants' | 'widths' | 'styles'
+---@param descriptor: weight | width | variant | style as given in db
+-- @description Turns a descriptor into a LaTeX NFSS identifier; warns if unknown
+local function parse_spec(type, descriptor)
   local spec = type[descriptor]
   if spec ~= nil then return spec 
   else
@@ -420,9 +378,9 @@ end
 -- }}}
 
 ---@function parse_config(fam, config) {{{
-  ---@description returns a table of configs keyd by nfss family name
-  ---@param fam base family name
-  ---@config table or string of configurations
+---@description Returns a table of configs keyed by NFSS family name.
+---@param   fam: base family name
+---@config  config: table or string of configurations
 local function parse_config(fam, config) 
   local configs = {}
   if not config then 
@@ -514,14 +472,15 @@ end
 -- }}}
 
 ---@function prepare_fd(fam, fam_data, fea) {{{
-  ---@description returns a table of tables
-  ---             each table uses fam[-suffix] containing lines 
-  ---               suitable for writing to an .fd file
-  ---@param fam <string> NFSS family
-  ---@param fam_data <table> sorted data for fonts
-  ---@param config <string> or indexed <table> or keyed <table>
-  ---@param scale <boolean>
-  ---@status internal
+---@description Returns a table of tables
+---@description Each table uses fam[-suffix] containing lines 
+---@description   suitable for writing to an .fd file
+---@param fam       <string>  NFSS family
+---@param fam_data  <table>   Sorted data for fonts
+---@param config    <string> | <indexed table> | <keyed table> configs
+---@param scale     <boolean>
+---@status internal
+-- Should be split??
 local function prepare_fd(fam, fam_data, config, scale) 
 
   -- Useless?
@@ -562,14 +521,14 @@ local function prepare_fd(fam, fam_data, config, scale)
       insert(fd, s)
     end
 
-    fd_insert("\\ProvidesFile{tu" .. fam_var .. ".fd}[Font definitions for TU/" .. 
+    fd_insert("%% DO NOT EDIT THIS FILE IN PLACE\n%% Instead, rename or make a copy.\n%% Changes in-place will be overwritten without warning.\n\\ProvidesFile{tu" .. fam_var .. ".fd}[Font definitions for TU/" .. 
     fam_var .. "generated by lfc v0.0]")
     if scale then
       fd_insert("  \\expandafter\\ifx\\csname " .. sscale .. 
       "\\endcsname\\relax\n    \\let" .. ssscale .. "\\@empty\n  \\else\n    \\edef" ..
       ssscale .. "{*[\\csname " .. sscale .. "\\endcsname]}%\n  \\fi")
     end
-    -- not needed again & errors will be clearer
+    -- Not needed again & errors will be clearer
     sscale = nil
 
     fd_insert("\\DeclareFontFamily{TU}{" .. fam_var .. "}{}")
@@ -628,13 +587,14 @@ local function prepare_fd(fam, fam_data, config, scale)
               min = fnt.minsize and fnt.minsize/10 or fnt.designsize 
                 and fnt.designsize/10 or ""
             end
-            if shape_data == #fnts then max = ""
+            if shape_data == #fnts then 
+              max = ""
             else
               max = fnt.maxsize and fnt.maxsize/10 or fnt.designsize and 
                 fnt.designsize/10 or ""
             end
 
-            -- needed to reinsert scaling if duplicate fonts
+            -- Needed to reinsert scaling if duplicate fonts
             if min ~= "" or max ~= "" then opt_size = true end
 
             insert(ssubs, pre .. "  <" .. min .. "-" .. max 
@@ -662,7 +622,7 @@ local function prepare_fd(fam, fam_data, config, scale)
         if shape == "n" then std_line = curr_line end
       end
 
-      -- check for missing basic shapes
+      -- Check for missing basic shapes
       if series_data.it == nil then
         if series_data.sl ~= nil then
           fd_insert(shape_begin .. series .. 
@@ -676,13 +636,17 @@ local function prepare_fd(fam, fam_data, config, scale)
       if series_data.sc == nil and std_line > 0 then
         local line_no = curr_line + 1
 
-        -- temp defn
-        fd_insert((gsub(fd[std_line], "{n}", "{sc}")))
+        -- Temporary defn
+        -- This will get replaced when the font is used:
+        --    - if +smcp, replaced by appropriate spec
+        --    - if not, replaced by blank line
+        fd_insert(shape_begin .. series .. "}{sc}{<->sub * " .. fam_var .. 
+          "/" .. series .. "/n}{}")
 
         lfc_cache[fam_var].complete = false
         lfc_cache[fam_var][line_no] = {
-          line = (gsub(gsub(fd[std_line], cfg, cfg .. ";+smcp"), 
-            "{n}", "{sc}")),
+          line = (gsub(gsub(fd[std_line], "(\\UnicodeFontFile{[^}]*}{[^}]*)(})", 
+            "%1;+smcp%2"), "{n}", "{sc}")),
         }
         lfc_cache.incomplete = lfc_cache.incomplete or {}
         lfc_cache.incomplete[fam_var] = lfc_cache.incomplete[fam_var] or {}
@@ -691,8 +655,16 @@ local function prepare_fd(fam, fam_data, config, scale)
         lfc_cache.callbacks = lfc_cache.callbacks or {}
         lfc_cache.callbacks[series_data.n[1].fullpath] = {
           fam = fam_var,
-          line_no = lfc_cache[fam_var][line_no],
+          [line_no] = lfc_cache[fam_var][line_no],
         }
+        if #series_data.n > 1 then 
+          local tmp = lfc_cache.callbacks[series_data.n[1].fullpath]
+          tmp.related = { series_data.n[1].fullpath }
+          for curr = 2, #series_data.n do
+            lfc_cache.callbacks[series_data.n[curr].fullpath] = tmp
+            insert(tmp.related, series_data.n[curr].fullpath)
+          end
+        end
       end
 
       if series_data.scit == nil then
@@ -709,9 +681,21 @@ local function prepare_fd(fam, fam_data, config, scale)
         "}{si}{<->ssub * " .. fam_var .. "/" .. series .. "/scsl}{}")
       end
 
+      -- No check for italic sc via +smcp, though could be added.
+      -- Doubt this is worth the overhead, though.
+
+      -- Other possibilities:
+      --    - Auto-generate fds for different figure styles?
+      --    - Swash/alternates?
+      --    - How does this do with .ttc or variable fonts?
+
+      -- It is (relatively) cheap to create additional families once the base
+      --  case is done, if features can be inferred on loading.
+      -- But I'm not sure how that would work for families, as opposed to 
+      --  shapes?
     end
 
-    -- check for missing basic series
+    -- Check for missing basic series
     if fam_data.b == nil then
       if fam_data.bx ~= nil then
         for shape,_ in pairs(fam_data.bx) do
@@ -736,7 +720,14 @@ local function prepare_fd(fam, fam_data, config, scale)
 end
 -- }}}
 
-local function write_fd(fam, fd_lines, fd_file) -- {{{
+-------------------------------------------------------------------------------
+-- Manage font definition files, cache etc.
+-------------------------------------------------------------------------------
+---@function write_fd {{{
+---@param fam:      NFSS family
+---@param fd_lines: content
+---@param fd_file:  filename or generated default
+local function write_fd(fam, fd_lines, fd_file)
   assert(#fd_lines > 2, "I expected more than 2 lines!")
   fd_file = fd_file or io.open("tu" .. fam .. ".fd", "w")
   assert(fd_file ~= nil)
@@ -748,110 +739,104 @@ local function write_fd(fam, fd_lines, fd_file) -- {{{
 end
 -- }}}
 
-local function add_callback() -- {{{
+---@function add_callback -- {{{
+---@description Adds code into the luaotfload.patch_font callback.
+---@description This adjusts font definition files as fonts are loaded and data
+---@description   becomes available to avoid pre-loading unnecessarily.
+local function add_callback()
+  texio.write_nl("[lfc] Adding callback.")
   luatexbase.add_to_callback(
     "luaotfload.patch_font",
     function(data, spec, id)
       local path = data.filename
-      local cache = lfc_cache or read_cache()
-      if cache.callbacks and cache.callbacks[path] then
-        local fam = cache.callbacks[path].fam
-        local line_no = cache.callbacks[path].line_no
-        local incomplete = cache.incomplete 
+      lfc_cache = lfc_cache or read_cache()
+
+      if lfc_cache.callbacks and lfc_cache.callbacks[path] then
+
+        texio.write_nl("[lfc] Processing callback ...")
+        local fam = lfc_cache.callbacks[path].fam
+        local incomplete = lfc_cache.incomplete 
         local fd 
-        if cache[fam] and cache[fam].fd then fd = cache[fam].fd end
+        if lfc_cache[fam] and lfc_cache[fam].fd then fd = lfc_cache[fam].fd end
 
-        if incomplete and incomplete[fam] and incomplete[fam][line_no] then
+        for line_no,_ in pairs(lfc_cache.callbacks[path]) do
+          if line_no == "fam" or line_no == "related" then goto not_line_ref end
 
-          assert(fd and cache[fam][line_no])
-          local line = cache[fam][line_no]
+          if incomplete and incomplete[fam] and incomplete[fam][line_no] then
 
-          if data.resources.features.gsub and data.resources.features.gsub.smcp then
-            fd[line_no] = line
-          else
-            fd[line_no] = ""
-            cache[fam][line_no] = nil
+            texio.write_nl("[lfc] Completing " .. fam .. "...")
+
+            assert(fd and lfc_cache[fam][line_no] and lfc_cache[fam][line_no].line)
+            local line = lfc_cache[fam][line_no].line
+
+            if data.resources.features.gsub and data.resources.features.gsub.smcp then
+              fd[line_no] = line
+            else
+              fd[line_no] = ""
+            end
+            lfc_cache[fam][line_no] = nil
+
+            incomplete[fam][line_no] = nil
+            if count(incomplete[fam]) == 0 then 
+              incomplete[fam] = nil 
+              lfc_cache[fam].complete = true
+            end
           end
 
-          incomplete[fam][line_no] = nil
-          if count(incomplete[fam]) == 0 then incomplete[fam] = nil end
+          lfc_cache.callbacks[path][line_no] = nil
+
+          :: not_line_ref ::
+        end
+        
+        local cnt = count(lfc_cache.callbacks[path])
+        if cnt == 1 and lfc_cache.callbacks[path].fam then 
+          lfc_cache.callbacks[path] = nil 
+        -- Cannot rely on symlink-type effect here because refs get resoved 
+        --    when saving to disk.
+        -- How does the loader manage this?
+        -- What I'd like is to save and restore a pointer to the array (or
+        --    whatever a table is, which I still have no idea what it is).
+        elseif cnt == 2 and lfc_cache.callbacks[path].fam and 
+          lfc_cache.callbacks[path].related then
+          for _,rel_path in ipairs(lfc_cache.callbacks[path].related) do
+            lfc_cache.callbacks[rel_path] = nil
+          end
+          lfc_cache.callbacks[path] = nil
         end
 
-        -- Need a way to remove the callbacks ...
-        -- Use the cached fds?
-        --
-        -- This is not going to work with local fds ...
-        -- Need the fds to live exclusively in the cache?
-        -- Or, better, write them locally only when complete (and still cache)?
+        -- Honestly, the only reason to write the fds out at all is that
+        --    I'm clueless about defining LaTeX fonts from Lua ...
 
-
-        -- What is needed is a way to define a LaTeX font from Lua ...
-        -- ... but I am not sure how best to do that ...
-        --    I could just write it directly, I guess?
-        --    But how to turn a cached line into LaTeX code?
+        texio.write_nl("[lfc] Rewriting fd for " .. fam .. " ...")
 
         local fd_file = assert(io.open("tu" .. fam .. ".fd", "w"))
         fd_file:write(concat(fd, "\n"))
         fd_file:close()
 
+        texio.write_nl("[lfc] Updating cache ...")
         write_cache(lfc_cache)
 
-        -- something here to actually define the font ... !!
-        -- or just defer to next run?
---   texio.write_nl(line)
---   tex.sprint(line)
-        
       end
 
     end,
     "lfc check for +smcp"
   )
+
 end
 --}}}
 
--- should be broken up?!
--- takes a font request, configuration details
--- only targ is required
--- either returns metadata with .fd details, if existent
--- or returns the same after writing one or more (hopefully suitable) .fd
-local function font_config(targ, config) -- {{{
-
-  -- for i,j in pairs(fonts.names) do
-  --   print(i,type(i),j,type(j))
-  -- end
-  -- print("************** <index>.fontnames *******************")
-  -- local font_index = fonts.names.access_font_index()
-  -- for i,j in pairs(fonts.mappings) do
-  --   print(i,type(i),j,type(j))
-  -- end
-  -- assert(false)
-
-
-  -- inspect(lfc_env)
-  -- print("**** lfc_env ****")
-  -- for i,j in pairs(lfc_env) do
-  --   print("\n", i, type(i), j, type(j))
-  -- end
-  -- print("**** resolvers ****")
-  -- for i,j in pairs(lfc_env.resolvers) do
-  --   print("\n", i, type(i), j, type(j))
-  -- end
-  -- print("**** fonts ****")
-  -- for i,j in pairs(lfc_env.fonts) do
-  --   print("\n", i, type(i), j, type(j))
-  -- end
-  -- print("**** fonts.analyzers ****")
-  -- for i,j in pairs(lfc_env.fonts.analyzers.methods) do
-  --   print("\n", i, type(i), j, type(j), lfc_env.fonts.analyzers.methods.latn)
-  -- end
-  -- print("**** fonts.analyzers.features ****")
-  -- for i,j in pairs(lfc_env.fonts.analyzers.features) do
-  --   print("\n", i, type(i), j, type(j))
-  -- end
-  -- print("**** fonts.handlers ****")
-  -- for i,j in pairs(lfc_env.fonts.specifiers.variants) do
-  --   print("\n", i, type(i), j, type(j))
-  -- end
+-------------------------------------------------------------------------------
+-- Main configuration function
+-------------------------------------------------------------------------------
+---@function font_config -- {{{
+---@param target required font specification to resolve
+---@param config optional configuration details
+---@description Main function: configures NFSS families on-the-fly, similar to
+---@description   fontspec.
+---@description Takes a font request and configuration, possibly writes one or 
+---@description   more font definition files and returns table of data.
+-- Should be broken up?!
+local function font_config(targ, config)
 
   local callback_done = lfc_cache and lfc_cache.callbacks and true or false
 
@@ -944,7 +929,7 @@ local function font_config(targ, config) -- {{{
         family = (gsub(family, "caps", ""))
       end
 
-      -- for latin modern roman unslanted, which claims to be perfectly ‘normal’
+      -- For latin modern roman unslanted, which claims to be perfectly ‘normal’
       if (match(name, "unslanted")) then
         family = (gsub(family, "unslanted", ""))
         if (style == "normal" or style == "regular") and variant == "normal" then
@@ -986,7 +971,7 @@ local function font_config(targ, config) -- {{{
     if nfss_variant == "oldstyle" then nfss_variant = "n" end
 
     -- ‘m’ must not be combined, as of the 2020 changes, so ‘mb’ is
-    -- not allowed
+    --    not allowed
     if nfss_weight == "m" then
       series = nfss_width
     elseif nfss_width == "m" then
@@ -995,7 +980,7 @@ local function font_config(targ, config) -- {{{
       series = nfss_weight .. nfss_width
     end
 
-    -- likewise ‘n’, but I never saw anybody combine this, so nothing broken
+    -- Likewise ‘n’, but I never saw anybody combine this, so nothing broken
     if nfss_style == "n" then
       shape = nfss_variant
     elseif nfss_variant == "n" then
@@ -1004,7 +989,7 @@ local function font_config(targ, config) -- {{{
       shape = nfss_variant .. nfss_style
     end
 
-    -- hash is <family>:<series>:<shape>[<minsize>:<maxsize>]
+    -- Hash is <family>:<series>:<shape>[<minsize>:<maxsize>]
     local nfss_hash = family .. ":" .. series .. ":" .. shape 
       .. (font.minsize ~= nil and ":" .. font.minsize or "") 
       .. (font.maxsize ~= nil and ":" .. font.maxsize or "")
@@ -1026,7 +1011,6 @@ local function font_config(targ, config) -- {{{
     :: discard ::
 
   end
-  -- inspect(parsed_fam)
 
   if parsed_fam == nil and parsed_fam_oldstyle == nil then 
     return nil 
@@ -1068,30 +1052,32 @@ local function font_config(targ, config) -- {{{
     parsed_fam_oldstyle = nil
   end
 
-  -- what to do about the common weights NFSS doesn't cover?
+  -- What to do about the common weights NFSS doesn't cover?
   -- e.g. ‘medium’ and ‘book’ often differ from both ‘regular’ and each other
-  -- but treating them as distinct families still seems wrong
-  -- they should be installed as weights, but this is tricky as it breaks
-  --  font selections unless additional change rules are provided
-  -- normally these are made into different families, but then you must 
+  -- But treating them as distinct families still seems wrong.
+  -- They should be installed as weights, but this is tricky as it breaks
+  --  font selections unless additional change rules are provided.
+  -- Normally these are made into different families, but then you must 
   --  either assign other weights arbitrarily to those families or duplicate
-  --  entries in multiple fds & neither is really good to do on-the-fly
+  --  entries in multiple fds & neither is really good to do on-the-fly.
 
-  -- so what to do here?
-  --    1) use ‘book’ or ‘k’ or ‘medium’ or ‘med’ or whatever?
-  --    2) use ‘m’ and hope the fonts discarded as dupes are of-a-weight (not
+  -- So what to do here?
+  --    1) Use ‘book’ or ‘k’ or ‘medium’ or ‘med’ or whatever?
+  --    2) Use ‘m’ and hope the fonts discarded as dupes are of-a-weight (not
   --      likely)?
-  --    3) as (2) but discard all fonts with these weights if ‘regular’ is 
+  --    3) As (2) but discard all fonts with these weights if ‘regular’ is 
   --      available, presumably later?
-  --    4) create separate families?
-  --    5) error if a foundary is so inconveniently prolific?
+  --    4) Create separate families?
+  --    5) Error if a foundary is so inconveniently prolific?
 
   -- I can see the ‘m’ would have been sufficient in the past, though I used
-  --    ‘mb’ before it got prohibited (and so did some core ‘.fd’ files).
+  --  ‘mb’ before it got prohibited (and so did some core ‘.fd’ files).
   -- But now so many fonts distinguish these ...
 
-  -- it would be so much nicer (and more efficient) if NFSS let this be done
-  --    properly!
+  -- It would be so much nicer (and more efficient) if NFSS let this be done
+  --  properly! But the chances of getting NFSS changed to speed compilation
+  --  with a degenerate font package make Alpha Centauri seem a choice spot 
+  --  for your local newsagent's.
   
   if not regular then
     if book then
@@ -1175,20 +1161,9 @@ local function font_config(targ, config) -- {{{
 
   :: set_scale ::
 
-  -- Another possibility:
-  --    Write the files at enddocument or stash in cache?
-  --    Then try to intercept first requests for e.g. sc and update defns?
-  --    Sounds very fragile, though.
-
-  -- local fds = {}
-
   for fam,fam_data in pairs(parsed_fam) do
     local fds = prepare_fd(fam, fam_data, config, scale)
-    -- Useless?
-    -- lfc_fams[fam] = lfc_fams[fam] or {}
     for fam_name,fd in pairs(fds) do
-      -- Pointless?
-      -- lfc_fams[fam][fam_name] = fd
       write_fd(fam_name, fd) 
     end
   end
@@ -1196,78 +1171,29 @@ local function font_config(targ, config) -- {{{
   if callback_done == false and lua_cache ~= nil and 
     lua_cache.callbacks ~= nil then add_callback() end
 
-
-
-  -- for fam, fam_data in pairs(fds) do write_fd(fam, fam_data) end
+  for i,j in pairs(lfc_cache) do print("lfc_cache:",i,type(i),j,type(j)) end
+  write_cache(lfc_cache)
 
   return f
 end
 -- }}}
 
----@function check_sc {{{
-  ---@description temporary defn for use in an .fd file to avoid loading fonts
-  ---   to test for +smcp feature
-  ---@param fam <string>    NFSS family identifier
-  ---@param series <string> NFSS series identifier
-  ---@param line_no int     line number to remove or amend
---
---   -- Need a check here for id
---   local f = font.fonts[font.current(id)] or nil
---   assert(f ~= nil, "No font!")
---
---
---
---   texio.write_nl(line)
---   tex.sprint(line)
---
--- }}}
-
--- texio.write_nl("**** lfc_env ****")
--- for i,j in pairs(lfc_env) do print(i, type(i), j, type(j)) end
--- texio.write_nl("**** lfc_env.caches ****")
--- for i,j in pairs(lfc_env.caches) do print(i, type(i), j, type(j)) end
--- texio.write_nl("**** lfc_env.caches ****")
--- for i,j in pairs(lfc_env.caches) do print(i, type(i), j, type(j)) end
--- texio.write_nl("**** lfc_env.containers ****")
--- for i,j in pairs(lfc_env.containers) do print(i, type(i), j, type(j)) end
--- texio.write_nl("**** lfc_env.fonts ****")
--- for i,j in pairs(lfc_env.fonts) do print(i, type(i), j, type(j)) end
--- texio.write_nl("**** lfc_env.fonts.handlers ****")
--- for i,j in pairs(lfc_env.fonts.handlers) do print(i, type(i), j, type(j)) end
--- texio.write_nl("**** lfc_env.fonts.helpers.commands ****")
--- for i,j in pairs(lfc_env.fonts.helpers.commands) do print(i, type(i), j, type(j)) end
--- texio.write_nl("**** lfc_env.fonts.names ****")
--- for i,j in pairs(lfc_env.fonts.names) do print(i, type(i), j, type(j)) end
--- texio.write_nl("**** lfc_env.fonts.names.cache ****")
--- for i,j in pairs(lfc_env.fonts.names.cache) do print(i, type(i), j, type(j)) end
--- texio.write_nl("**** lfc_env.fonts.names.cache.readables ****")
--- for i,j in pairs(lfc_env.fonts.names.cache.readables) do print(i, type(i), j, type(j)) end
--- texio.write_nl("**** lfc_env.storage.shared ****")
--- for i,j in pairs(lfc_env.storage.shared) do print(i, type(i), j, type(j)) end
---
--- -- local shown_cache = fonts.names.show_cache()
--- -- -- print(shown_cache, type(shown_cache))
--- -- print("****")
--- -- for i,j in pairs(lfc_env.storage.shared) do print(i, type(i), j, type(j)) end
--- --
--- -- local lmr = fonts.names.lookup_font_name_cached("latinmodernroman10regular")
--- for i,j in pairs(lfs) do print(i, type(i), j, type(j)) end
--- for i,j in pairs(file) do print(i, type(i), j, type(j)) end
-
+-------------------------------------------------------------------------------
+-- Forced for now
 local cache_path = get_cache_path()
 if lfs.isfile(cache_path) then
   lfc_cache = read_cache()
   if lfc_cache and lfc_cache.callbacks then add_callback() end
 end
+add_callback()
+-------------------------------------------------------------------------------
 
 -------------------------------------------------------------------------------
 -- lfc.search_family = search_family
-lfc.check_sc = check_sc
 -- lfc.get_font_data = get_font_data
 lfc.font_config = font_config
 -- lfc.fonts = fonts
 -- lfc.lfc_requests = lfc_requests
--- lfc.lfc_fams = lfc_fams
 -- lfc.write_cache = write_cache
 -- lfc.read_cache = read_cache
 -- lfc.get_cache_path = get_cache_path
