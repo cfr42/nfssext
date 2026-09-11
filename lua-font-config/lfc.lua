@@ -1,6 +1,15 @@
--- $Id: lfc.lua 12029 2026-09-11 07:38:28Z cfrees $
+-- $Id: lfc.lua 12030 2026-09-11 08:29:52Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
+-- \makeatletter
+--   \begingroup
+--     \newcatcodetable\lfc@nfss@catcodetable
+--     \catcodetable\catcodetable@latex
+--     \catcode`\@11\relax
+--     \catcode`\ 9\relax
+--     \savecatcodetable\lfc@nfss@catcodetable
+--   \endgroup
+-- \makeatother
 -- \directlua{
 --   lfc = require("lfc")
 --   local font_config = lfc.font_config
@@ -22,6 +31,7 @@ local create = token.create
 lfc = {}
 local lfc_cache
 local lfc_debug = lfc_debug or true
+local lfc_callback_active = false
 
 -- strings, toks, catcodes {{{
 local nfss_catcodetable = luatexbase.registernumber("lfc@nfss@catcodetable")
@@ -1149,6 +1159,7 @@ local function write_fake_fd(fam, fake_fd_lines, fake_fd_file)
   end
 
   out = get_toks(out)
+  -- sprint(nfss_catcodetable,out)
   sprint(-2,out)
 
 end
@@ -1159,6 +1170,9 @@ end
 ---@description This adjusts font definition files as fonts are loaded and data
 ---@description   becomes available to avoid pre-loading unnecessarily.
 local function add_callback()
+  if lfc_callback_active then
+    msg("Callback already active.", "debug")
+  end
   msg("Adding callback.", "info")
   luatexbase.add_to_callback(
     "luaotfload.patch_font",
@@ -1235,7 +1249,7 @@ local function add_callback()
         -- Honestly, the only reason to write the fds out at all is that
         --    I'm clueless about defining LaTeX fonts from Lua ...
 
-        inspect(fake_fd)
+        if lfc_debug then inspect(fake_fd) end
 
         msg("Rewriting fd for " .. fam .. " ...", "log")
         -- It would be better to write only the required lines here.
@@ -1248,15 +1262,12 @@ local function add_callback()
         msg("Updating cache ...", "info")
         write_cache(lfc_cache)
 
-        inspect(id)
-        inspect(spec)
-        for i,j in pairs(data) do print(i,j) end
-
       end
 
     end,
     "lfc check for +smcp"
   )
+  lfc_callback_active = true
 
 end
 --}}}
@@ -1602,8 +1613,8 @@ local function font_config(targ, config)
     end
   end
 
-  if callback_done == false and lua_cache ~= nil and 
-    lua_cache.callbacks ~= nil then 
+  if lfc_callback_active == false and lfc_cache ~= nil and 
+    lfc_cache.callbacks ~= nil then 
     msg("Enabling callback", "debug")
     add_callback() 
   end
@@ -1626,7 +1637,6 @@ if lfs.isfile(cache_path) then
     add_callback() 
   end
 end
--- add_callback()
 -------------------------------------------------------------------------------
 
 -------------------------------------------------------------------------------
