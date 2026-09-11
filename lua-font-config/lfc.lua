@@ -1,15 +1,6 @@
--- $Id: lfc.lua 12028 2026-09-11 06:57:56Z cfrees $
+-- $Id: lfc.lua 12029 2026-09-11 07:38:28Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
--- \makeatletter
---   \begingroup
---     \newcatcodetable\lfc@nfss@catcodetable
---     \catcodetable\catcodetable@latex
---     \catcode`\@11\relax
---     \catcode`\ 9\relax
---     \savecatcodetable\lfc@nfss@catcodetable
---   \endgroup
--- \makeatother
 -- \directlua{
 --   lfc = require("lfc")
 --   local font_config = lfc.font_config
@@ -1146,7 +1137,7 @@ local function write_fake_fd(fam, fake_fd_lines, fake_fd_file)
         local subs = line.sub or line.ssub
         
         append(out, {
-          tok_group_begin, str_onesize, line.ssub and "ssub * " or "sub * ",
+          tok_group_begin, str_onesize, line.ssub and "ssub*" or "sub*",
           subs[1] .. "/" .. subs[2] .. "/" .. subs[3], tok_group_end })
 
       end
@@ -1158,8 +1149,7 @@ local function write_fake_fd(fam, fake_fd_lines, fake_fd_file)
   end
 
   out = get_toks(out)
-  -- sprint(-2,out)
-  sprint(nfss_catcodetable,out)
+  sprint(-2,out)
 
 end
 -- }}}
