@@ -1,4 +1,4 @@
--- $Id: lfc.lua 12031 2026-09-11 08:34:01Z cfrees $
+-- $Id: lfc.lua 12032 2026-09-11 21:29:01Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -- \makeatletter
@@ -10,6 +10,8 @@
 --     \savecatcodetable\lfc@nfss@catcodetable
 --   \endgroup
 -- \makeatother
+-- msg_assert(nfss_catcodetable, "This module requires lua-font-config. \
+--   Use \\usepackage{lua-font-config} rather than loading this module directly.", "err")
 -- \directlua{
 --   lfc = require("lfc")
 --   local font_config = lfc.font_config
@@ -18,11 +20,20 @@
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -- locals {{{
-local gsub, gmatch, lower = string.gsub, string.gmatch, string.lower
-local append, concat, count = table.append, table.concat, table.count
-local fastcopy = table.fastcopy
-local insert, prepend, reversed = table.insert, table.prepend, table.reversed
-local serialize = table.serialize
+local is_writable = file.is_writable
+local isdir, isfile, mkdir = lfs.isdir, lfs.isfile, lfs.mkdir
+local md5sum = md5.sumhexa
+-- string
+local gsub, gmatch, match = string.gsub, string.gmatch, string.match
+local format, lower = string.format, string.lower
+-- table
+local append, insert, prepend = table.append, table.insert, table.prepend
+local copy, count, fastcopy = table.copy, table.count, table.fastcopy
+local load, save, setmetatableindex = table.load, table.save, table.setmetatableindex
+local concat, reversed, serialize = table.concat, table.reversed, table.serialize
+local mirrored, unique = table.mirrored, table.unique
+local sort = table.sort
+-- tex | texio | token
 local sprint = tex.sprint
 local write_nl = texio.write_nl
 local create = token.create
@@ -34,11 +45,11 @@ local lfc_debug = lfc_debug or true
 local lfc_callback_active = false
 
 -- strings, toks, catcodes {{{
-local nfss_catcodetable = luatexbase.registernumber("lfc@nfss@catcodetable")
+-- local nfss_catcodetable = luatexbase.registernumber("lfc@nfss@catcodetable")
 
 local function enquote(str) return "\"" .. str .. "\"" end
 local str_onesize = "<->"
-local str_fea_default = "mode=node;lang=dflt;scpt=dflt;+tlig"
+local str_fea_default = "mode=node;language=dflt;script=dflt;+tlig"
 
 local tok_declare_fam = create("DeclareFontFamily")
 local tok_declare_shape = create("DeclareFontShape")
@@ -113,9 +124,6 @@ if lfc_debug then
 end
 -- }}}
 
-msg_assert(nfss_catcodetable, "This module requires lua-font-config. \
-  Use \\usepackage{lua-font-config} rather than loading this module directly.", "err")
-
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -- Max Chernoff: https://chat.stackexchange.com/transcript/message/69175678#69175678
@@ -125,11 +133,10 @@ msg_assert(nfss_catcodetable, "This module requires lua-font-config. \
 ---@mcsubstitute -- {{{
 
 -- Define a new private environment into which to load "font-syn.lua".
-local lfc_env = table.copy(luaotfload.fontloader)
-lfc_env.table = table.copy(lfc_env.table)
+local lfc_env = copy(luaotfload.fontloader)
+lfc_env.table = copy(lfc_env.table)
 
 -- Define some functions required by "font-syn.lua".
-local match = string.match
 local split = "^(.-)([^/]-)([^/]-)$"
 
 ---@mcsubstitute -- {{{
@@ -149,12 +156,12 @@ end
 ---@mcsubstitute -- {{{
 function lfc_env.table.setmetatableindex(t, k)
   if k == "self" then
-    return table.setmetatableindex(t, function(tt, kk)
+    return setmetatableindex(t, function(tt, kk)
       tt[kk] = kk
       return kk
     end)
   else
-    return table.setmetatableindex(t, k)
+    return setmetatableindex(t, k)
   end
 end
 -- }}}
@@ -174,9 +181,9 @@ loadfile(kpse.find_file("font-syn.lua"), "t", lfc_env)()
 do
   local saved = lfc_env.fonts.names.identify
   function lfc_env.fonts.names.identify(force)
-    texio.write_nl("Generating font name database...")
+    write_nl("Generating font name database...")
     saved(force)
-    texio.write(" done.\n")
+    write(" done.\n")
   end
 end
 
@@ -203,12 +210,12 @@ local font_data = names.data
 ---@description Returns fullname of module cache.
 ---@statue internal
 local function get_cache_path()
-  write_nl("[lfc] Accessing cache ...")
+  msg("Accessing cache ...", "debug")
   local path = (gsub(lfc_fonts.names.cache.writable, "^(.*/)[^/]+$", "%1" ))
-  assert(path ~= nil, "Cannot find place for cache!")
-  if not lfs.isdir(path .. "/lfc") then
-    assert(file.is_writable(path), "Not writable!")
-    assert(lfs.mkdir(path .. "/lfc"), "Cannot create cache " .. path .. 
+  msg_assert(path ~= nil, "Cannot find place for cache!")
+  if not isdir(path .. "/lfc") then
+    msg_assert(is_writable(path), "Cache " .. path .. " not writable!")
+    msg_assert(mkdir(path .. "/lfc"), "Cannot create cache " .. path .. 
       "/lfc" .. " directory!")
   end
   path = path .. "/lfc"
@@ -220,9 +227,13 @@ end
 ---@param loc <string> Optional alternate full path for cache.
 ---@status internal
 local function read_cache(loc)
-  texio.write_nl("[lfc] Reading cache ...")
+  write_nl("[lfc] Reading cache ...")
   loc = loc or get_cache_path()
-  local cache = lfs.isfile(loc) and table.load(loc) or {}
+  local cache = isfile(loc) and load(loc) or {}
+  if lfc_debug then 
+    msg("Read cache state:\n", "debug")
+    inspect(cache) 
+  end
   return cache
 end
 -- }}}
@@ -232,25 +243,30 @@ end
 ---@param stuff <table> Table to save. Default: lua_cache.
 ---@param loc <string>  Full path of cache. Default: from get_cache_path().
 local function write_cache(stuff, loc)
-  texio.write_nl("[lfc] Writing cache ...")
+  msg("Writing cache ...", "debug")
   stuff = stuff or lfc_cache
   if stuff == nil then return 1 end
   loc = loc or get_cache_path()
   -- Duplicates data referenced by pointers/links/whatever they are.
-  table.save (loc, stuff)
+  save (loc, stuff)
+  if lfc_debug then 
+    msg("Saved cache state:\n", "debug")
+    inspect(lfc_cache) 
+  end
 end
 -- }}}
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 
 ---@function get_font_data -- {{{
----@param fnt   <string>  Font name/family/etc. to resolve.
----@param force <boolean> Whether to force re-generation if .fd found.
+---@param fnt     <string>  Font name/family/etc. to resolve.
+---@param config  <table>   Only here used for hash 
+---@param force   <boolean> Whether to force re-generation if .fd found.
 -- @description Resolves a font specification and turns the family name into
 -- @description    an .fd file name
 -- @description If the file exists, records this and returns the metadata
 -- @description If not, returns a table of font data, too
-local function get_font_data(fnt, force)
+local function get_font_data(fnt, config, force)
   if fnt == nil then return nil end
 
   -- For return
@@ -262,8 +278,8 @@ local function get_font_data(fnt, force)
 
   ff = cleanfilename(ff)
 
-  local ext = (string.gsub(ff, "^(.*)%.([^.]+)", "%2"))
-  local basename = (string.gsub(ff, "([^/]*)%.([^.]+)", "%1"))
+  local ext = (gsub(ff, "^(.*)%.([^.]+)", "%2"))
+  local basename = (gsub(ff, "([^/]*)%.([^.]+)", "%1"))
   if ext == nil or basename == nil then return nil end
 
   local fam_meta = font_data.mappings[ext][basename].familyname
@@ -273,20 +289,25 @@ local function get_font_data(fnt, force)
   f.metadata = {
     ext = ext,
     fam_meta = fam_meta,
+    hash_key = md5sum(fam_meta .. serialize(config))
   }
+  local hash_key = f.metadata.hash_key
 
   local fd = "tu" .. fam_meta .. ".fd", "tex"
   f.metadata.fd = fd
   -- If an .fd for family exists, we're done unless force was used
   local fd_file = kpse.find_file(fd) 
-  if fd_file ~= nil then
-    if force == nil then
-      f.metadata.fd_file = fd_file
-      -- return f 
-    else
-      f.metadata.fd_file_old = fd_file
-    end
+  if fd_file and not force then
+    f.metadata.fd_file = fd_file
+    -- return f 
   end
+
+  if lfc_cache.meta_families and lfc_cache.meta_families.by_hash and
+    lfc_cache.meta_families.by_hash[hash_key] and not force then
+    f.metadata.cached = lfc_cache.meta_families.by_hash[hash_key]
+    return f
+  end
+  
 
   -- If not, get font data for family
 
@@ -296,6 +317,7 @@ local function get_font_data(fnt, force)
   -- Returns key-val list, wider coverate
   local data = names.list(fam_meta .. ".*",false,true)
   if data == nil then return nil end
+
 
   -- names.list returns duplicate names for some font files.
   -- This de-duplicates the list, though I wonder if there's a better method?
@@ -309,20 +331,16 @@ local function get_font_data(fnt, force)
   end
 
   -- ‘In place’ doesn't mean what you think :(
-  data_by_filename = table.mirrored(data_by_filename)
+  data_by_filename = mirrored(data_by_filename)
 
-  -- Discard dupes
+  -- Discard dupes -- ??????
+  -- Data doesn't include full paths, so add these now.
   for name, fdata in pairs(data) do
     if data_by_filename[name] == nil then
       data[name] = nil
-    end
-  end
-
-  -- Data doesn't include full paths, so add these now.
-  for name,info in pairs(data) do
-    if info.fullpath == nil then
+    elseif fdata.fullpath == nil then
       -- Gets full path from file name.
-      info.fullpath = lookup_font_file(info.filename)
+      fdata.fullpath = lookup_font_file(fdata.filename)
     end
   end
 
@@ -442,7 +460,7 @@ local function parse_spec(type, descriptor)
   local spec = type[descriptor]
   if spec ~= nil then return spec 
   else
-    texio.write_nl("Warning: " .. descriptor .. " not a known " .. type .. "!")
+    msg(descriptor .. " not a known " .. type .. ".")
     return descriptor
   end
 end
@@ -503,16 +521,16 @@ local function parse_config(fam, config)
         if suff ~= "" then suff = "-" .. suff end
         if configs[fam .. suff] ~= nil then
           local n = 1
-          while configs[fam .. suff .. string.format("%c", n)] ~= nil do 
+          while configs[fam .. suff .. format("%c", n)] ~= nil do 
             n = n + 1 
           end
-          suff = suff .. string.format("%c", n)
+          suff = suff .. format("%c", n)
         end
         configs[fam .. suff] = concat(cfg, ";")
       end
     end
   else
-    assert(type(config) == "string", 
+    msg_assert(type(config) == "string", 
       "Expected configuration to be table or string, but received " .. 
       type(config) .. " for " .. fam)
     local pre, post, suff = "", "", ""
@@ -531,10 +549,10 @@ local function parse_config(fam, config)
     end
     if configs[fam .. suff] ~= nil then
       local n = 1
-      while configs[fam .. suff .. string.format("%c", n)] ~= nil do 
+      while configs[fam .. suff .. format("%c", n)] ~= nil do 
         n = n + 1 
       end
-      suff = suff .. string.format("%c", n)
+      suff = suff .. format("%c", n)
     end
     configs[fam .. suff] = config
   end
@@ -608,7 +626,7 @@ local function prepare_fake_fd(fam, fam_data, config, force)
 
         else
 
-          table.sort(fnts, 
+          sort(fnts, 
             function(a, b)
               if a.nfss_hash ~= b.nfss_hash then
                 local amin = tonumber(a.minsize) or tonumber(a.designsize) 
@@ -702,7 +720,13 @@ local function prepare_fake_fd(fam, fam_data, config, force)
 
       local trans = { sc = "n", scit = "it", scsl = "sl" }
       for to_shape,base_shape in pairs(trans) do
-        if series_data[to_shape] == nil and std_lines[base_shape] > 0 then
+        if series_data[to_shape] == nil and series_data[base_shape] then
+
+          if not (std_lines[base_shape] > 0) then
+            msg("No std_lines for " .. base_shape .. ".")
+            goto trans_skip
+          end
+
           local line_no = curr_line + 1
 
           -- Temporary defn
@@ -737,6 +761,7 @@ local function prepare_fake_fd(fam, fam_data, config, force)
             end
           end
         end
+        :: trans_skip ::
       end
 
       if series_data.scit == nil then
@@ -794,9 +819,8 @@ end
 -------------------------------------------------------------------------------
 
 ---@function write_fake_fd {{{
----@param fam:      NFSS family
----@param fake_fd_lines: content
----@param fake_fd_file:  filename or generated default
+---@param fam:            NFSS family
+---@param scale_factor:   scaling factor
 -- Cache format:
 --  lfc_cache ->
 --    <nfss fam> = {
@@ -828,10 +852,8 @@ local function get_toks(items)
 end
 -- }}}
 
-local function write_fake_fd(fam, fake_fd_lines, fake_fd_file)
-  -- os.fulltime()
-  -- assert(#fake_fd_lines > 2, "I expected more than 2 lines!")
-  fake_fd_file = fake_fd_file or "tu" .. fam .. ".fd"
+local function write_fake_fd(fam, scale_factor)
+  msg("Emulating font definition file for NFSS family " .. fam .. ".")
   msg_assert(lfc_cache[fam] and lfc_cache[fam].fake_fd and 
     type(lfc_cache[fam].fake_fd) == "table", "Cannot find definition for " ..
     fam .. "!")
@@ -842,6 +864,16 @@ local function write_fake_fd(fam, fake_fd_lines, fake_fd_file)
     tok_declare_fam, fastcopy(pre), seq_empty_n
   }
   insert(pre, 1, tok_declare_shape)
+
+  local onesize = str_onesize
+  if scale_factor and scale_factor == 1 then
+    if lfc_cache[fam].scalable then
+      msg("Scaling " .. fam .. " to " .. scale_factor .. ".")
+      onesize = onesize .. "s*[" .. scale_factor .. "]"
+    else
+      msg("Ignoring scaling factor for fonts with optical sizes.")
+    end
+  end
 
   for _,line in ipairs(fake_fd) do
     if line ~= "" then
@@ -858,7 +890,7 @@ local function write_fake_fd(fam, fake_fd_lines, fake_fd_file)
 
         if kind == "string" then 
 
-          append(out, { tok_group_begin, str_onesize, tok_uni_fontfile,
+          append(out, { tok_group_begin, onesize, tok_uni_fontfile,
             seq_n(line[3]), seq_n(line[4]), tok_group_end })
 
         else 
@@ -924,7 +956,6 @@ local function add_callback()
         local incomplete = lfc_cache.incomplete 
         -- local fd 
         local fake_fd 
-        -- if lfc_cache[fam] and lfc_cache[fam].fd then fd = lfc_cache[fam].fd end
         if lfc_cache[fam] and lfc_cache[fam].fake_fd then 
           fake_fd = lfc_cache[fam].fake_fd end
 
@@ -935,9 +966,8 @@ local function add_callback()
 
             msg("Completing " .. fam .. "...", "log")
 
-            -- assert(fd and lfc_cache[fam][line_no] and lfc_cache[fam][line_no].line)
-            assert(fake_fd and lfc_cache[fam][line_no] and 
-              lfc_cache[fam][line_no].line)
+            msg_assert(fake_fd and lfc_cache[fam][line_no] and 
+              lfc_cache[fam][line_no].line, "Data missing from cache!")
             local line = lfc_cache[fam][line_no].line
             msg("line:\t" .. serialize(line), "debug")
 
@@ -948,7 +978,8 @@ local function add_callback()
               -- fd[line_no] = ""
               fake_fd[line_no] = ""
             end
-            msg("fake_fd[line_no]:\t" .. line_no .. ": " .. serialize(fake_fd[line_no]), "debug")
+            msg("fake_fd[line_no]:\t" .. line_no .. ": " .. 
+              serialize(fake_fd[line_no]), "debug")
             lfc_cache[fam][line_no] = nil
 
             incomplete[fam][line_no] = nil
@@ -989,10 +1020,6 @@ local function add_callback()
         -- It would be better to write only the required lines here.
         -- write_fake_fd(fam, fake_fd) 
 
-        -- local fd_file = assert(io.open("tu" .. fam .. ".fd", "w"))
-        -- fd_file:write(concat(fd, "\n"))
-        -- fd_file:close()
-
         msg("Updating cache ...", "info")
         write_cache(lfc_cache)
 
@@ -1019,9 +1046,11 @@ end
 -- Should be broken up?!
 local function font_config(targ, config)
 
-  local callback_done = lfc_cache and lfc_cache.callbacks and true or false
-
   if targ == nil then return nil end
+
+  lfc_cache = lfc_cache or read_cache()
+
+  local callback_done = lfc_cache and lfc_cache.callbacks and true or false
 
   targ = lower(targ)
   config = config or {}
@@ -1034,317 +1063,331 @@ local function font_config(targ, config)
   local metadata = f.metadata
 
   local fam_meta = metadata.fam_meta
-  assert(fam_meta ~= nil)
+  msg_assert(fam_meta ~= nil, "No reults for " .. targ)
 
   if metadata.fd_file then return f end
 
-  local data = f.data
-  if data == nil then return nil end
+  local hash_key = metadata.hash_key
+  if not metadata.cached then 
 
-  local parsed_fam
-  local parsed_fam_oldstyle
+    local data = f.data
+    if data == nil then return nil end
 
-  local insert = table.insert
-  local match = string.match
-  local gsub = string.gsub
+    local parsed_fam
+    local parsed_fam_oldstyle
 
-  local nfss_hashes = {}
-  local regular = false
-  local book = false
-  local medium = false
-  -- local maybe_not_scale = false
+    local nfss_hashes = {}
+    local regular = false
+    local book = false
+    local medium = false
+    -- local maybe_not_scale = false
 
-  -- Adjust returned data for compatibility with NFSS
-  --    - Reduce width + weight -> series
-  --    - Reduce style + variant -> shape
-  for name,font in pairs(data) do
-    local fullname = font.fullname
-    
-    -- We don't want to parse maths fonts.
-    -- Best would be to check for the MATH table, but we don't want to
-    --    load every font for that, so do this for now.
-    if (match(fullname, "math")) then
-      goto discard
-    end
-
-    local width = font.width
-    local weight = font.weight
-    local style = font.style
-    local variant = font.variant
-    -- family is more specific than familyname
-    local family = font.familyname
-
-    local series, shape
-
-    -- not wise?
-    -- if style == "italic" and ((match(name, "oblique")) or
-    --   (match(name, "slanted"))) then
-    --   style = "oblique"
-    -- end
-
-    -- if font.minsize ~= nil or font.maxsize ~= nil then
-    --   maybe_not_scale = true
-    -- end
-
-    if fam_meta ~= family then
-
-      family = (gsub(family, variant, ""))
-      if not (match(fam_meta, "%d")) then
-        family = (gsub(family, "%d", ""))
-      end
-      family = (gsub(family, style, ""))
-      family = (gsub(family, weight, ""))
-      family = (gsub(family, width, ""))
-
-      if style == "oblique" or style == "slanted" then
-        family = (gsub((gsub(family, "oblique", "")), "slanted", ""))
+    -- Adjust returned data for compatibility with NFSS
+    --    - Reduce width + weight -> series
+    --    - Reduce style + variant -> shape
+    for name,font in pairs(data) do
+      local fullname = font.fullname
+      
+      -- We don't want to parse maths fonts.
+      -- Best would be to check for the MATH table, but we don't want to
+      --    load every font for that, so do this for now.
+      if (match(fullname, "math")) then
+        goto discard
       end
 
-      if variant == "smallcaps" then
-        family = (gsub(family, "caps", ""))
-      end
+      local width = font.width
+      local weight = font.weight
+      local style = font.style
+      local variant = font.variant
+      -- family is more specific than familyname
+      local family = font.familyname
 
-      -- For latin modern roman unslanted, which claims to be perfectly ‘normal’
-      if (match(name, "unslanted")) then
-        family = (gsub(family, "unslanted", ""))
-        if (style == "normal" or style == "regular") and variant == "normal" then
-          style = "uprightitalic"
+      local series, shape
+
+      -- not wise?
+      -- if style == "italic" and ((match(name, "oblique")) or
+      --   (match(name, "slanted"))) then
+      --   style = "oblique"
+      -- end
+
+      -- if font.minsize ~= nil or font.maxsize ~= nil then
+      --   maybe_not_scale = true
+      -- end
+
+      if fam_meta ~= family then
+
+        family = (gsub(family, variant, ""))
+        if not (match(fam_meta, "%d")) then
+          family = (gsub(family, "%d", ""))
         end
-      end
+        family = (gsub(family, style, ""))
+        family = (gsub(family, weight, ""))
+        family = (gsub(family, width, ""))
 
-      if weight == "normal" or weight == "regular" then
-        if (match(fullname, "book")) then weight = "book"
-          book = true
-        elseif (match(fullname, "medium")) then weight = "medium"
-          medium = true
-        else regular = true end
-      end
+        if style == "oblique" or style == "slanted" then
+          family = (gsub((gsub(family, "oblique", "")), "slanted", ""))
+        end
 
-    end
+        if variant == "smallcaps" then
+          family = (gsub(family, "caps", ""))
+        end
 
-
-    local t
-
-    -- what is this for exactly?
-    if variant ~= "oldstyle" then
-      if parsed_fam == nil then parsed_fam = {} end
-      t = parsed_fam
-    else
-      if parsed_fam_oldstyle == nil then parsed_fam_oldstyle = {} end
-      t = parsed_fam_oldstyle
-    end
-    t[family] = t[family] or {}
-    t = t[family]
-
-
-    -- translate to NFSS identifiers (texdoc fntguide)
-    local nfss_weight   = parse_spec(weights, weight)
-    local nfss_width    = parse_spec(widths, width)
-    local nfss_style    = parse_spec(styles, style)
-    local nfss_variant  = parse_spec(variants, variant)
-
-    if nfss_variant == "oldstyle" then nfss_variant = "n" end
-
-    -- ‘m’ must not be combined, as of the 2020 changes, so ‘mb’ is
-    --    not allowed
-    if nfss_weight == "m" then
-      series = nfss_width
-    elseif nfss_width == "m" then
-      series = nfss_weight
-    else 
-      series = nfss_weight .. nfss_width
-    end
-
-    -- Likewise ‘n’, but I never saw anybody combine this, so nothing broken
-    if nfss_style == "n" then
-      shape = nfss_variant
-    elseif nfss_variant == "n" then
-      shape = nfss_style
-    else
-      shape = nfss_variant .. nfss_style
-    end
-
-    -- Hash is <family>:<series>:<shape>[<minsize>:<maxsize>]
-    local nfss_hash = family .. ":" .. series .. ":" .. shape 
-      .. (font.minsize ~= nil and ":" .. font.minsize or "") 
-      .. (font.maxsize ~= nil and ":" .. font.maxsize or "")
-
-    font.series = series
-    font.shape = shape
-    font.nfss_hash = nfss_hash
-    font.nfss_family = family
-    
-    nfss_hashes[family] = nfss_hashes[family] or {}
-    nfss_hashes[family][nfss_hash] = nfss_hashes[family][nfss_hash] or 0
-    nfss_hashes[family][nfss_hash] = nfss_hashes[family][nfss_hash] + 1
-
-    t[series] = t[series] or {}
-    t[series][shape] = t[series][shape] or {}
-
-    insert(t[series][shape], font)
-
-    :: discard ::
-
-  end
-
-  if parsed_fam == nil and parsed_fam_oldstyle == nil then 
-    return nil 
-  end
-
-  -- ConTeXt's database treats distinct ‘oldstyle’ fonts as variants
-  -- but this doesn't fit NFSS, so it needs to be a family
-  -- I'm not sure what this is aimed at, so not sure if it should just
-  --    be +j ??
-
-  if parsed_fam_oldstyle ~= nil then
-    if parsed_fam == nil then
-      parsed_fam = parsed_fam_oldstyle
-    else 
-      for fam,i in pairs(parsed_fam_oldstyle) do
-        if parsed_fam[fam] ~= nil then
-          local hash_fam = fam .. "oldstyle"
-          if parsed_fam[fam .. "oldstyle"] ~= nil then
-            local n = 2
-            while parsed_fam[fam .. "oldstyle" .. n] ~= nil do n = n + 1 end
-            parsed_fam[fam .. "oldstyle" .. n] = i
-            hash_fam = hash_fam .. n
-          else
-            parsed_fam[fam .. "oldstyle"] = i
+        -- For latin modern roman unslanted, which claims to be perfectly ‘normal’
+        if (match(name, "unslanted")) then
+          family = (gsub(family, "unslanted", ""))
+          if (style == "normal" or style == "regular") and variant == "normal" then
+            style = "uprightitalic"
           end
-          for series,j in pairs(i) do
-            for shape,fnts in pairs(j) do
-              for _,fnt in ipairs(fnts) do
-                fnt.nfss_hash = (string.gsub(fnt.nfss_hash, fam, hash_fam))
-                fnt.nfss_family = (string.gsub(fnt.nfss_family, fam, hash_fam))
+        end
+
+        if weight == "normal" or weight == "regular" then
+          if (match(fullname, "book")) then weight = "book"
+            book = true
+          elseif (match(fullname, "medium")) then weight = "medium"
+            medium = true
+          else regular = true end
+        end
+
+      end
+
+
+      local t
+
+      -- what is this for exactly?
+      if variant ~= "oldstyle" then
+        if parsed_fam == nil then parsed_fam = {} end
+        t = parsed_fam
+      else
+        if parsed_fam_oldstyle == nil then parsed_fam_oldstyle = {} end
+        t = parsed_fam_oldstyle
+      end
+      t[family] = t[family] or {}
+      t = t[family]
+
+
+      -- translate to NFSS identifiers (texdoc fntguide)
+      local nfss_weight   = parse_spec(weights, weight)
+      local nfss_width    = parse_spec(widths, width)
+      local nfss_style    = parse_spec(styles, style)
+      local nfss_variant  = parse_spec(variants, variant)
+
+      if nfss_variant == "oldstyle" then nfss_variant = "n" end
+
+      -- ‘m’ must not be combined, as of the 2020 changes, so ‘mb’ is
+      --    not allowed
+      if nfss_weight == "m" then
+        series = nfss_width
+      elseif nfss_width == "m" then
+        series = nfss_weight
+      else 
+        series = nfss_weight .. nfss_width
+      end
+
+      -- Likewise ‘n’, but I never saw anybody combine this, so nothing broken
+      if nfss_style == "n" then
+        shape = nfss_variant
+      elseif nfss_variant == "n" then
+        shape = nfss_style
+      else
+        shape = nfss_variant .. nfss_style
+      end
+
+      -- Hash is <family>:<series>:<shape>[<minsize>:<maxsize>]
+      local nfss_hash = family .. ":" .. series .. ":" .. shape 
+        .. (font.minsize ~= nil and ":" .. font.minsize or "") 
+        .. (font.maxsize ~= nil and ":" .. font.maxsize or "")
+
+      font.series = series
+      font.shape = shape
+      font.nfss_hash = nfss_hash
+      font.nfss_family = family
+      
+      nfss_hashes[family] = nfss_hashes[family] or {}
+      nfss_hashes[family][nfss_hash] = nfss_hashes[family][nfss_hash] or 0
+      nfss_hashes[family][nfss_hash] = nfss_hashes[family][nfss_hash] + 1
+
+      t[series] = t[series] or {}
+      t[series][shape] = t[series][shape] or {}
+
+      insert(t[series][shape], font)
+
+      :: discard ::
+
+    end
+
+    if parsed_fam == nil and parsed_fam_oldstyle == nil then 
+      return nil 
+    end
+
+    -- ConTeXt's database treats distinct ‘oldstyle’ fonts as variants
+    -- but this doesn't fit NFSS, so it needs to be a family
+    -- I'm not sure what this is aimed at, so not sure if it should just
+    --    be +j ??
+
+    if parsed_fam_oldstyle ~= nil then
+      if parsed_fam == nil then
+        parsed_fam = parsed_fam_oldstyle
+      else 
+        for fam,i in pairs(parsed_fam_oldstyle) do
+          if parsed_fam[fam] ~= nil then
+            local hash_fam = fam .. "oldstyle"
+            if parsed_fam[fam .. "oldstyle"] ~= nil then
+              local n = 2
+              while parsed_fam[fam .. "oldstyle" .. n] ~= nil do n = n + 1 end
+              parsed_fam[fam .. "oldstyle" .. n] = i
+              hash_fam = hash_fam .. n
+            else
+              parsed_fam[fam .. "oldstyle"] = i
+            end
+            for series,j in pairs(i) do
+              for shape,fnts in pairs(j) do
+                for _,fnt in ipairs(fnts) do
+                  fnt.nfss_hash = (gsub(fnt.nfss_hash, fam, hash_fam))
+                  fnt.nfss_family = (gsub(fnt.nfss_family, fam, hash_fam))
+                end
               end
             end
+          else
+            parsed_fam[fam] = i
           end
-        else
-          parsed_fam[fam] = i
         end
       end
+      parsed_fam_oldstyle = nil
     end
-    parsed_fam_oldstyle = nil
-  end
 
-  -- What to do about the common weights NFSS doesn't cover?
-  -- e.g. ‘medium’ and ‘book’ often differ from both ‘regular’ and each other
-  -- But treating them as distinct families still seems wrong.
-  -- They should be installed as weights, but this is tricky as it breaks
-  --  font selections unless additional change rules are provided.
-  -- Normally these are made into different families, but then you must 
-  --  either assign other weights arbitrarily to those families or duplicate
-  --  entries in multiple fds & neither is really good to do on-the-fly.
+    -- What to do about the common weights NFSS doesn't cover?
+    -- e.g. ‘medium’ and ‘book’ often differ from both ‘regular’ and each other
+    -- But treating them as distinct families still seems wrong.
+    -- They should be installed as weights, but this is tricky as it breaks
+    --  font selections unless additional change rules are provided.
+    -- Normally these are made into different families, but then you must 
+    --  either assign other weights arbitrarily to those families or duplicate
+    --  entries in multiple fds & neither is really good to do on-the-fly.
 
-  -- So what to do here?
-  --    1) Use ‘book’ or ‘k’ or ‘medium’ or ‘med’ or whatever?
-  --    2) Use ‘m’ and hope the fonts discarded as dupes are of-a-weight (not
-  --      likely)?
-  --    3) As (2) but discard all fonts with these weights if ‘regular’ is 
-  --      available, presumably later?
-  --    4) Create separate families?
-  --    5) Error if a foundary is so inconveniently prolific?
+    -- So what to do here?
+    --    1) Use ‘book’ or ‘k’ or ‘medium’ or ‘med’ or whatever?
+    --    2) Use ‘m’ and hope the fonts discarded as dupes are of-a-weight (not
+    --      likely)?
+    --    3) As (2) but discard all fonts with these weights if ‘regular’ is 
+    --      available, presumably later?
+    --    4) Create separate families?
+    --    5) Error if a foundary is so inconveniently prolific?
 
-  -- I can see the ‘m’ would have been sufficient in the past, though I used
-  --  ‘mb’ before it got prohibited (and so did some core ‘.fd’ files).
-  -- But now so many fonts distinguish these ...
+    -- I can see the ‘m’ would have been sufficient in the past, though I used
+    --  ‘mb’ before it got prohibited (and so did some core ‘.fd’ files).
+    -- But now so many fonts distinguish these ...
 
-  -- It would be so much nicer (and more efficient) if NFSS let this be done
-  --  properly! But the chances of getting NFSS changed to speed compilation
-  --  with a degenerate font package make Alpha Centauri seem a choice spot 
-  --  for your local newsagent's.
-  
-  if not regular then
+    -- It would be so much nicer (and more efficient) if NFSS let this be done
+    --  properly! But the chances of getting NFSS changed to speed compilation
+    --  with a degenerate font package make Alpha Centauri seem a choice spot 
+    --  for your local newsagent's.
+    
+    if not regular then
+      if book then
+        for fam,data in pairs(parsed_fam) do
+          if data.book then
+            assert(data.m == nil)
+            data.m = data.book
+            data.book = nil
+          end
+        end
+        book = false
+      elseif medium then
+        for fam,data in pairs(parsed_fam) do
+          if data.medium then
+            assert(data.m == nil)
+            data.m = data.medium
+            data.medium = nil
+          end
+        end
+        medium = false
+      end
+    end
+
     if book then
       for fam,data in pairs(parsed_fam) do
-        if data.book then
-          assert(data.m == nil)
-          data.m = data.book
+        if data.book ~= nil then
+          local book_fam = fam .. "book"
+          msg_assert(parsed_fam[book_fam] == nil, 
+            "I didn't expect so many books outside a library.")
+          parsed_fam[book_fam] = {}
+          parsed_fam[book_fam].m = data.book
           data.book = nil
+          for series,i in pairs(data) do
+            if series ~= "m" then 
+              parsed_fam[book_fam][series] = i
+            end
+          end
         end
       end
-      book = false
-    elseif medium then
+    end
+
+    if medium then
       for fam,data in pairs(parsed_fam) do
-        if data.medium then
-          assert(data.m == nil)
-          data.m = data.medium
+        if data.medium ~= nil then
+          local medium_fam = fam .. "medium"
+          msg_assert(parsed_fam[medium_fam] == nil, 
+            "I didn't expect so many mediums outside an art studio.")
+          parsed_fam[medium_fam] = {}
+          parsed_fam[medium_fam].m = data.medium
           data.medium = nil
-        end
-      end
-      medium = false
-    end
-  end
-
-  if book then
-    for fam,data in pairs(parsed_fam) do
-      if data.book ~= nil then
-        local book_fam = fam .. "book"
-        assert(parsed_fam[book_fam] == nil, 
-          "I didn't expect so many books outside a library.")
-        parsed_fam[book_fam] = {}
-        parsed_fam[book_fam].m = data.book
-        data.book = nil
-        for series,i in pairs(data) do
-          if series ~= "m" then 
-            parsed_fam[book_fam][series] = i
+          for series,i in pairs(data) do
+            if series ~= "m" then 
+              parsed_fam[medium_fam][series] = i
+            end
           end
         end
       end
     end
-  end
+          
 
-  if medium then
-    for fam,data in pairs(parsed_fam) do
-      if data.medium ~= nil then
-        local medium_fam = fam .. "medium"
-        assert(parsed_fam[medium_fam] == nil, 
-          "I didn't expect so many mediums outside an art studio.")
-        parsed_fam[medium_fam] = {}
-        parsed_fam[medium_fam].m = data.medium
-        data.medium = nil
-        for series,i in pairs(data) do
-          if series ~= "m" then 
-            parsed_fam[medium_fam][series] = i
-          end
-        end
-      end
-    end
-  end
-        
+    -- local scale = true
 
-  -- local scale = true
+    -- Don't scale if optical sizes are present, but just checking for
+    --  minsize/maxsize when parsing fails because font data's so poor.
+    -- One would think that checking the range was greater than some min
+    --  would be a good heuristic, but some fonts set minsize = maxsize
+    --  even though there is only one font (e.g. TeX Gyre Pagella).
 
-  -- Don't scale if optical sizes are present, but just checking for
-  --  minsize/maxsize when parsing fails because font data's so poor.
-  -- One would think that checking the range was greater than some min
-  --  would be a good heuristic, but some fonts set minsize = maxsize
-  --  even though there is only one font (e.g. TeX Gyre Pagella).
-
-  -- if maybe_not_scale then
-  --   for fam,fam_data in pairs(parsed_fam) do
-  --     for series,i in pairs(fam_data) do
-  --       for shape,fnts in pairs(i) do
-  --         if #fnts > 1 then
-  --           scale = false
-  --           goto set_scale
-  --         end
-  --       end
-  --     end
-  --   end
-  -- end
-  --
-  -- :: set_scale ::
-
-  for fam,fam_data in pairs(parsed_fam) do
-    -- local fds = prepare_fd(fam, fam_data, config, scale)
-    local fake_fds = prepare_fake_fd(fam, fam_data, config)
-    -- for fam_name,fd in pairs(fds) do
-    --   write_fd(fam_name, fd) 
+    -- if maybe_not_scale then
+    --   for fam,fam_data in pairs(parsed_fam) do
+    --     for series,i in pairs(fam_data) do
+    --       for shape,fnts in pairs(i) do
+    --         if #fnts > 1 then
+    --           scale = false
+    --           goto set_scale
+    --         end
+    --       end
+    --     end
+    --   end
     -- end
-    for fam_name,fake_fd in pairs(fake_fds) do
-      write_fake_fd(fam_name, fake_fd) 
+    --
+    -- :: set_scale ::
+
+    lfc_cache.meta_families = lfc_cache.meta_families or {}
+    lfc_cache.meta_families.by_hash = lfc_cache.meta_families.by_hash or {}
+    lfc_cache.meta_families.by_hash[hash_key] = {}
+    local by_hash = lfc_cache.meta_families.by_hash[hash_key] 
+
+    for fam,fam_data in pairs(parsed_fam) do
+      local fake_fds = prepare_fake_fd(fam, fam_data, config)
+      for fam_name,fake_fd in pairs(fake_fds) do
+        insert(by_hash, fam_name)
+        write_fake_fd(fam_name, fake_fd) 
+      end
     end
+
+    write_cache(lfc_cache)
+
+  else
+
+    for _,fam_name in ipairs(lfc_cache.meta_families.by_hash[hash_key]) do
+      msg_assert(lfc_cache[fam_name] and lfc_cache[fam_name].fake_fd,
+        "Cache failure. Try removing the cache before recompiling.")
+      msg("Using cached fd emulation for " .. fam_name .. ".")
+      write_fake_fd(fam_name, lfc_cache[fam_name].fake_fd)
+    end
+
   end
 
   if lfc_callback_active == false and lfc_cache ~= nil and 
@@ -1353,10 +1396,6 @@ local function font_config(targ, config)
     add_callback() 
   end
 
-  -- for i,j in pairs(lfc_cache) do print("lfc_cache:",i,type(i),j,type(j)) end
-  -- inspect(lfc_cache)
-  write_cache(lfc_cache)
-
   return f
 end
 -- }}}
@@ -1364,7 +1403,7 @@ end
 -------------------------------------------------------------------------------
 -- Forced for now
 local cache_path = get_cache_path()
-if lfs.isfile(cache_path) then
+if isfile(cache_path) then
   lfc_cache = read_cache()
   if lfc_cache and lfc_cache.callbacks then 
     msg("Activating callback", "debug")
@@ -1374,15 +1413,14 @@ end
 -------------------------------------------------------------------------------
 
 -------------------------------------------------------------------------------
--- lfc.search_family = search_family
 -- lfc.get_font_data = get_font_data
 lfc.font_config = font_config
 -- lfc.fonts = fonts
 -- lfc.write_cache = write_cache
 -- lfc.read_cache = read_cache
 -- lfc.get_cache_path = get_cache_path
-lfc.cache = lfc_cache
-lfc.add_callback = add_callback
+-- lfc.cache = lfc_cache
+-- lfc.add_callback = add_callback
 
 
 return lfc
