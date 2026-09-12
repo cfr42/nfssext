@@ -1,25 +1,8 @@
--- $Id: lfc.lua 12032 2026-09-11 21:29:01Z cfrees $
--------------------------------------------------------------------------------
--------------------------------------------------------------------------------
--- \makeatletter
---   \begingroup
---     \newcatcodetable\lfc@nfss@catcodetable
---     \catcodetable\catcodetable@latex
---     \catcode`\@11\relax
---     \catcode`\ 9\relax
---     \savecatcodetable\lfc@nfss@catcodetable
---   \endgroup
--- \makeatother
--- msg_assert(nfss_catcodetable, "This module requires lua-font-config. \
---   Use \\usepackage{lua-font-config} rather than loading this module directly.", "err")
--- \directlua{
---   lfc = require("lfc")
---   local font_config = lfc.font_config
---   font_config("texgyrepagella")
--- }
+-- $Id: lfc.lua 12033 2026-09-12 20:05:26Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -- locals {{{
+-- imports {{{
 local is_writable = file.is_writable
 local isdir, isfile, mkdir = lfs.isdir, lfs.isfile, lfs.mkdir
 local md5sum = md5.sumhexa
@@ -27,11 +10,11 @@ local md5sum = md5.sumhexa
 local gsub, gmatch, match = string.gsub, string.gmatch, string.match
 local format, lower = string.format, string.lower
 -- table
-local append, insert, prepend = table.append, table.insert, table.prepend
+local append, insert = table.append, table.insert
 local copy, count, fastcopy = table.copy, table.count, table.fastcopy
 local load, save, setmetatableindex = table.load, table.save, table.setmetatableindex
-local concat, reversed, serialize = table.concat, table.reversed, table.serialize
-local mirrored, unique = table.mirrored, table.unique
+local concat, serialize = table.concat, table.serialize
+local mirrored = table.mirrored
 local sort = table.sort
 -- tex | texio | token
 local sprint = tex.sprint
@@ -39,13 +22,10 @@ local write_nl = texio.write_nl
 local create = token.create
 -- }}}
 
-lfc = {}
+lfc = {} -- ours {{{
 local lfc_cache
 local lfc_debug = lfc_debug or true
 local lfc_callback_active = false
-
--- strings, toks, catcodes {{{
--- local nfss_catcodetable = luatexbase.registernumber("lfc@nfss@catcodetable")
 
 local function enquote(str) return "\"" .. str .. "\"" end
 local str_onesize = "<->"
@@ -56,13 +36,13 @@ local tok_declare_shape = create("DeclareFontShape")
 local tok_group_begin = create(123, 1)
 local tok_group_end = create(125, 2)
 local tok_uni_fontfile = create("UnicodeFontFile")
-local tok_typeout = create("typeout")
 
 local seq_enc_tu = {tok_group_begin, "TU", tok_group_end}
 local seq_empty_n = {tok_group_begin, tok_group_end}
 local function seq_n(arg)
   return {tok_group_begin, arg, tok_group_end}
 end
+-- }}}
 -- }}}
 
 -------------------------------------------------------------------------------
@@ -103,24 +83,8 @@ local function msg_assert(cond, text, level)
     msg(text, level or "bug")
   end
 end
-local function msg_log(text, eval) end
 if lfc_debug then
   function msg_assert(cond, text, level) assert(cond, text) end
-  function msg_log(text, eval)
-    local pre = "[lfc] Debug:\t"
-    if text then write_nl(pre .. text) end
-    for n,i in ipairs(eval) do
-      if i then write_nl(pre .. tostring(i) .. "\t0 (true)\n")
-      else write_nl(pre .. tostring(i) .. "\t1 (false)\n")
-      end
-      eval[n] = nil
-    end
-    for i,j in pairs(eval) do
-      if j then write_nl(pre .. i .. "\t0 (true)\n")
-      else write_nl(pre .. i .. "\t1 (false)\n")
-      end
-    end
-  end
 end
 -- }}}
 
@@ -139,7 +103,7 @@ lfc_env.table = copy(lfc_env.table)
 -- Define some functions required by "font-syn.lua".
 local split = "^(.-)([^/]-)([^/]-)$"
 
----@mcsubstitute -- {{{
+---@function lfc_env.resolvers.dowithfilesintree() -- {{{
 function lfc_env.resolvers.dowithfilesintree(pattern, handle, before, after)
   local files = luaotfload.aux.font_index().files.full
   for i = 1, #files do
@@ -153,7 +117,7 @@ function lfc_env.resolvers.dowithfilesintree(pattern, handle, before, after)
 end
 -- }}}
 
----@mcsubstitute -- {{{
+---@function lfc_env.table.setmetatableindex() -- {{{
 function lfc_env.table.setmetatableindex(t, k)
   if k == "self" then
     return setmetatableindex(t, function(tt, kk)
@@ -197,16 +161,17 @@ local cleanfilename = lfc_env.fonts.names.cleanfilename
 -- }}}
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
-
+-- late locals {{{
 local lfc_fonts = lfc_env.fonts
 local names = lfc_fonts.names
 local resolve = names.resolve
 local lookup_font_file = names.lookup_font_file
 local font_data = names.data
+-- }}}
 -------------------------------------------------------------------------------
 -- Utilities for caching data
 -------------------------------------------------------------------------------
----@function get_cache_path -- {{{
+---@function get_cache_path() -- {{{
 ---@description Returns fullname of module cache.
 ---@statue internal
 local function get_cache_path()
@@ -223,7 +188,7 @@ local function get_cache_path()
 end
 -- }}}
 
----@function read_cache  -- {{{
+---@function read_cache()  -- {{{
 ---@param loc <string> Optional alternate full path for cache.
 ---@status internal
 local function read_cache(loc)
@@ -238,8 +203,7 @@ local function read_cache(loc)
 end
 -- }}}
 
--- This is almost completely nonsensical -- {{{
----@function write_cache
+---@function write_cache([stuff[, loc]] -- {{{
 ---@param stuff <table> Table to save. Default: lua_cache.
 ---@param loc <string>  Full path of cache. Default: from get_cache_path().
 local function write_cache(stuff, loc)
@@ -295,13 +259,13 @@ local function get_font_data(fnt, config, force)
 
   local fd = "tu" .. fam_meta .. ".fd", "tex"
   f.metadata.fd = fd
-  -- If an .fd for family exists, we're done unless force was used
   local fd_file = kpse.find_file(fd) 
+  -- If an .fd for family exists, use unless force was used
   if fd_file and not force then
     f.metadata.fd_file = fd_file
-    -- return f 
   end
 
+  -- If an .fd for family exists, we're done unless force was used
   if lfc_cache.meta_families and lfc_cache.meta_families.by_hash and
     lfc_cache.meta_families.by_hash[hash_key] and not force then
     f.metadata.cached = lfc_cache.meta_families.by_hash[hash_key]
@@ -574,11 +538,10 @@ end
 --  lfc_cache ->
 --    callbacks = {
 --      <fullpath> = {
---        <line no.> = {
---          line = {<data>},
---        },
+--        <line no.> = true,
 --        ...,
 --        fam = <nfss fam>,
+--        rel = {<path>, ...},
 --      },
 --      ...,
 --    },
@@ -596,8 +559,6 @@ end
 --      },
 --    },
 --    <nfss fam> = {
---      <line no.> = <line>,
---      ...,
 --      complete = <boolean>,
 --      config = <feature string>,
 --      fake_fd = {
@@ -759,18 +720,17 @@ local function prepare_fake_fd(fam, fam_data, config, force)
           local line_no = curr_line + 1
 
           -- Temporary defn
-          -- This will get replaced when the font is used:
-          --    - if +smcp, replaced by appropriate spec
+          -- This may get replaced when the font is used:
+          --    - if +smcp, retain spec
           --    - if not, replaced by blank line
-          fake_fd_insert({series, to_shape, sub = {fam_var, series, base_shape}})
+          -- This works better than an initial subs or blank and 
+          --  _seems_ not to error???
+          local line_mod = fastcopy(fake_fd[std_lines[base_shape]])
+          line_mod[4] = line_mod[4] .. ";+smcp"
+          line_mod[2] = to_shape
+          fake_fd_insert(line_mod)
 
           lfc_cache[fam_var].complete = false
-          lfc_cache[fam_var][line_no] = {
-            line = fastcopy(fake_fd[std_lines[base_shape]])
-          }
-          lfc_cache[fam_var][line_no].line[2] = to_shape
-          lfc_cache[fam_var][line_no].line[4] = 
-            lfc_cache[fam_var][line_no].line[4] .. ";+smcp"
 
           lfc_cache.incomplete = lfc_cache.incomplete or {}
           lfc_cache.incomplete[fam_var] = lfc_cache.incomplete[fam_var] or {}
@@ -779,7 +739,7 @@ local function prepare_fake_fd(fam, fam_data, config, force)
           lfc_cache.callbacks = lfc_cache.callbacks or {}
           lfc_cache.callbacks[series_data[base_shape][1].fullpath] = {
             fam = fam_var,
-            [line_no] = lfc_cache[fam_var][line_no],
+            [line_no] = true,
           }
           if #series_data[base_shape] > 1 then 
             local tmp = lfc_cache.callbacks[series_data[base_shape][1].fullpath]
@@ -845,27 +805,11 @@ end
 -- }}}
 -------------------------------------------------------------------------------
 -- Manage font definition files, cache etc.
+-- get_toks()   write_declare_shape()   write_fake_fd()   add_callback()
 -------------------------------------------------------------------------------
-
-
----@function write_fake_fd {{{
----@param fam:            NFSS family
----@param scale_factor:   scaling factor
--- Cache format:
---  lfc_cache ->
---    <nfss fam> = {
---      fake_fd = {
---        {<series>, <shape>, <fullpath>, <cfg>} 
---        | {<series>, <shape>, {
---            <min>, <max>, <fullpath>
---          }, <cfg>}
---        | {<series>, <shape>, ssub = {<fam>, <series>, <shape>}}
---        | {<series>, <shape>, sub = {<fam>, <series>, <shape>}}
---      }
---    }
-
-
--- {{{
+---@function get_toks(items) {{{
+---@param items   <table> of [tables of] toks, strings
+---@description   Returns sequence of toks, strings for sprint()
 local function get_toks(items)
   local toks = {}
   for _,item in ipairs(items) do
@@ -882,7 +826,13 @@ local function get_toks(items)
 end
 -- }}}
 
--- {{{
+---@function write_declare_shape(pre, line, post[, size_spec]) {{{
+---@param pre       <table> of toks/strings e.g. \DeclareFontShape{<fam>}{<enc>}
+---@param line      <table> rep. font spec  e.g. {<series>}, {<shape>}, ... 
+---@param post      <table> of toks/strings e.g. {}
+---@param size_spec <string> e.g. "<-5.0>" or "<->s*" etc.
+---@Description Returns table of (tables of) toks/strings for a font shape
+---@Description declaration. <line> may include ["sub"] or ["ssub"].
 local function write_declare_shape(pre, line, post, size_spec) 
 
   msg_assert(pre and line and post, 
@@ -938,6 +888,10 @@ local function write_declare_shape(pre, line, post, size_spec)
 end
 -- }}}
 
+---@function write_fake_fd(fam[, scale_factor]) {{{
+---@param fam:            NFSS family
+---@param scale_factor:   scaling factor
+-- Cache format: see above
 local function write_fake_fd(fam, scale_factor)
   msg("Emulating font definition file for NFSS family " .. fam .. ".")
   msg_assert(lfc_cache[fam] and lfc_cache[fam].fake_fd and 
@@ -952,8 +906,9 @@ local function write_fake_fd(fam, scale_factor)
   insert(pre, 1, tok_declare_shape)
 
   local onesize = str_onesize
-  if scale_factor and scale_factor == 1 then
+  if scale_factor and scale_factor ~= 1 then
     if lfc_cache[fam].scalable then
+      inspect(scale_factor)
       msg("Scaling " .. fam .. " to " .. scale_factor .. ".")
       onesize = onesize .. "s*[" .. scale_factor .. "]"
     else
@@ -968,7 +923,6 @@ local function write_fake_fd(fam, scale_factor)
   end
 
   out = get_toks(out)
-  -- sprint(nfss_catcodetable,out)
   sprint(-2,out)
 
 end
@@ -1009,28 +963,20 @@ local function add_callback()
 
             msg("Completing " .. fam .. "...", "log")
 
-            msg_assert(fake_fd and lfc_cache[fam][line_no] and 
-              lfc_cache[fam][line_no].line, "Data missing from cache!")
-            local line = lfc_cache[fam][line_no].line
-            msg("line:\t" .. serialize(line), "debug")
+            msg_assert(fake_fd, "Data missing from cache!")
+            msg("line:\t" .. line_no, "debug")
 
-            if data.resources.features.gsub and data.resources.features.gsub.smcp then
-              fake_fd[line_no] = line
-              local pre = {tok_declare_shape}
-              append(pre, seq_enc_tu)
-              append(pre, seq_n(fam))
-              local out = write_declare_shape(pre, line, seq_empty_n, str_onesize)
-              lfc.dynamics = lfc.dynamics or {}
-              lfc.dynamics[path] = lfc.dynamics[path] or {}
-              insert(lfc.dynamics[path], get_toks(out))
-              -- inspect(lfc.dynamics)
-            else
+            if not data.resources.features.gsub or 
+              not data.resources.features.gsub.smcp then
               fake_fd[line_no] = ""
+              -- Warn because the usual LaTeX warning gets eaten.
+              msg("Missing small-caps (italic/oblique/upright).")
             end
             msg("fake_fd[line_no]:\t" .. line_no .. ": " .. 
-              serialize(fake_fd[line_no]), "debug")
-            lfc_cache[fam][line_no] = nil
+              (fake_fd[line_no] == "" and "" or serialize(fake_fd[line_no])), 
+              "debug")
 
+            -- tidy up incompletes list
             incomplete[fam][line_no] = nil
             if count(incomplete[fam]) == 0 then 
               incomplete[fam] = nil 
@@ -1044,6 +990,7 @@ local function add_callback()
           :: not_line_ref ::
         end
         
+        -- tidy up callbacks
         local cnt = count(lfc_cache.callbacks[path])
         if cnt == 1 and lfc_cache.callbacks[path].fam then 
           lfc_cache.callbacks[path] = nil 
@@ -1060,14 +1007,8 @@ local function add_callback()
           lfc_cache.callbacks[path] = nil
         end
 
-        -- Honestly, the only reason to write the fds out at all is that
-        --    I'm clueless about defining LaTeX fonts from Lua ...
-
+        msg("Rewrote fd for " .. fam .. " ...", "log")
         if lfc_debug then inspect(fake_fd) end
-
-        msg("Rewriting fd for " .. fam .. " ...", "log")
-        -- It would be better to write only the required lines here.
-        -- write_fake_fd(fam, fake_fd) 
 
         msg("Updating cache ...", "info")
         write_cache(lfc_cache)
@@ -1082,21 +1023,9 @@ local function add_callback()
 end
 --}}}
 
----@function try_adjustment(path) {{{
-local function try_adjustment(path)
-  msg("try_adjustment(" .. path .. ")", "debug")
-  if lfc_debug then inspect(lfc.dynamics) end
-  if lfc.dynamics and lfc.dynamics[path] then
-    local out = {}
-    for _,i in ipairs(lfc.dynamics[path]) do append(out, i) end
-    -- inspect(out)
-    sprint(-2, out)
-  end
-end
--- }}}
-
 -------------------------------------------------------------------------------
 -- Main configuration function
+-- font_config()
 -------------------------------------------------------------------------------
 ---@function font_config -- {{{
 ---@param target required font specification to resolve
@@ -1435,7 +1364,9 @@ local function font_config(targ, config)
       local fake_fds = prepare_fake_fd(fam, fam_data, config)
       for fam_name,fake_fd in pairs(fake_fds) do
         insert(by_hash, fam_name)
-        write_fake_fd(fam_name, fake_fd) 
+        local scale = config[fam_name] and config[fam_name].scale and 
+          config[fam_name].scale or (config.scale and config.scale or nil)
+        write_fake_fd(fam_name, scale) 
       end
     end
 
@@ -1447,7 +1378,9 @@ local function font_config(targ, config)
       msg_assert(lfc_cache[fam_name] and lfc_cache[fam_name].fake_fd,
         "Cache failure. Try removing the cache before recompiling.")
       msg("Using cached fd emulation for " .. fam_name .. ".")
-      write_fake_fd(fam_name, lfc_cache[fam_name].fake_fd)
+      local scale = config[fam_name] and config[fam_name].scale and 
+        config[fam_name].scale or (config.scale and config.scale or nil)
+      write_fake_fd(fam_name, scale) 
     end
 
   end
@@ -1463,7 +1396,12 @@ end
 -- }}}
 
 -------------------------------------------------------------------------------
+-- Setup on load
+-------------------------------------------------------------------------------
+-- {{{
 -- Forced for now
+-- Probably the callback should only be added when a family is defined.
+-- For now, this loads regardless of what the font uses.
 local cache_path = get_cache_path()
 if isfile(cache_path) then
   lfc_cache = read_cache()
@@ -1472,8 +1410,12 @@ if isfile(cache_path) then
     add_callback() 
   end
 end
+-- }}}
 -------------------------------------------------------------------------------
 
+-------------------------------------------------------------------------------
+-- Public exports
+-- Probably get_cache_path should be exposed, at least.
 -------------------------------------------------------------------------------
 -- lfc.get_font_data = get_font_data
 lfc.font_config = font_config
@@ -1481,9 +1423,7 @@ lfc.font_config = font_config
 -- lfc.write_cache = write_cache
 -- lfc.read_cache = read_cache
 -- lfc.get_cache_path = get_cache_path
--- lfc.cache = lfc_cache
 -- lfc.add_callback = add_callback
-lfc.try_adjustment = try_adjustment
 
 
 return lfc
