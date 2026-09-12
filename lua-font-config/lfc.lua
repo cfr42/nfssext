@@ -572,15 +572,44 @@ end
 -- Should be split??
 -- Cache format:
 --  lfc_cache ->
+--    callbacks = {
+--      <fullpath> = {
+--        <line no.> = {
+--          line = {<data>},
+--        },
+--        ...,
+--        fam = <nfss fam>,
+--      },
+--      ...,
+--    },
+--    incomplete = {
+--      <nfss fam> = {
+--        <line no.> = true,
+--        ...,
+--      },
+--      ...,
+--    },
+--    meta_families = {
+--      by_hash = {
+--        <hash> = {<nfss fam>, ...},
+--        ...,
+--      },
+--    },
 --    <nfss fam> = {
+--      <line no.> = <line>,
+--      ...,
+--      complete = <boolean>,
+--      config = <feature string>,
 --      fake_fd = {
 --        {<series>, <shape>, <fullpath>, <cfg>} 
 --        | {<series>, <shape>, {
 --            <min>, <max>, <fullpath>
 --          }, <cfg>}
 --        | {<series>, <shape>, ssub = {<fam>, <series>, <shape>}}
---        | {<series>, <shape>, sub = {<fam>, <series>, <shape>}}
---      }
+--        | {<series>, <shape>, sub = {<fam>, <series>, <shape>}},
+--        ...,
+--      },
+--      scalable = <boolean>,
 --    }
 local function prepare_fake_fd(fam, fam_data, config, force) 
 
@@ -818,6 +847,7 @@ end
 -- Manage font definition files, cache etc.
 -------------------------------------------------------------------------------
 
+
 ---@function write_fake_fd {{{
 ---@param fam:            NFSS family
 ---@param scale_factor:   scaling factor
@@ -852,6 +882,62 @@ local function get_toks(items)
 end
 -- }}}
 
+-- {{{
+local function write_declare_shape(pre, line, post, size_spec) 
+
+  msg_assert(pre and line and post, 
+    "Partial or no spec to write. This should never happen!")
+
+  size_spec = size_spec or str_onesize
+
+  local out = {pre}
+
+  -- series
+  append(out, seq_n(line[1]))
+  -- shape
+  append(out, seq_n(line[2]))
+
+  if line[3] then
+
+    local kind = type(line[3])
+
+    if kind == "string" then 
+
+      append(out, { tok_group_begin, str_onesize, tok_uni_fontfile,
+      seq_n(line[3]), seq_n(line[4]), tok_group_end })
+
+    else 
+      msg_assert(kind == "table", "Unexpected type " .. kind .. "!")
+
+      insert(out, tok_group_begin)
+
+      for _,item in ipairs(line[3]) do
+        append(out, {item[1], tok_uni_fontfile, seq_n(item[2]), 
+        seq_n(line[4]) })
+      end
+
+      insert(out, tok_group_end)
+    end
+
+  else
+
+    msg_assert(line.sub or line.ssub, "Malformed line!")
+    local subs = line.sub or line.ssub
+
+    append(out, {
+      tok_group_begin, str_onesize, line.ssub and "ssub*" or "sub*",
+      subs[1] .. "/" .. subs[2] .. "/" .. subs[3], tok_group_end })
+
+  end
+
+  -- hyph or whatever
+  insert(out, post)
+
+  return out
+
+end
+-- }}}
+
 local function write_fake_fd(fam, scale_factor)
   msg("Emulating font definition file for NFSS family " .. fam .. ".")
   msg_assert(lfc_cache[fam] and lfc_cache[fam].fake_fd and 
@@ -876,51 +962,8 @@ local function write_fake_fd(fam, scale_factor)
   end
 
   for _,line in ipairs(fake_fd) do
-    if line ~= "" then
-      append(out, pre)
-
-      -- series
-      append(out, seq_n(line[1]))
-      -- shape
-      append(out, seq_n(line[2]))
-
-      if line[3] then
-
-        local kind = type(line[3])
-
-        if kind == "string" then 
-
-          append(out, { tok_group_begin, onesize, tok_uni_fontfile,
-            seq_n(line[3]), seq_n(line[4]), tok_group_end })
-
-        else 
-          msg_assert(kind == "table", "Unexpected type " .. kind .. " for " .. 
-            fam .. "!")
-
-          insert(out, tok_group_begin)
-
-          for _,item in ipairs(line[3]) do
-            append(out, {item[1], tok_uni_fontfile, seq_n(item[2]), 
-              seq_n(line[4]) })
-          end
-
-          insert(out, tok_group_end)
-        end
-
-      else
-
-        msg_assert(line.sub or line.ssub, "Malformed line for " .. fam .. "!")
-        local subs = line.sub or line.ssub
-        
-        append(out, {
-          tok_group_begin, str_onesize, line.ssub and "ssub*" or "sub*",
-          subs[1] .. "/" .. subs[2] .. "/" .. subs[3], tok_group_end })
-
-      end
-
-      -- hyph or whatever
-      insert(out, seq_empty_n)
-
+    if line ~= "" then 
+      append(out, write_declare_shape(pre, line, seq_empty_n, onesize))
     end
   end
 
@@ -972,10 +1015,16 @@ local function add_callback()
             msg("line:\t" .. serialize(line), "debug")
 
             if data.resources.features.gsub and data.resources.features.gsub.smcp then
-              -- fd[line_no] = line
               fake_fd[line_no] = line
+              local pre = {tok_declare_shape}
+              append(pre, seq_enc_tu)
+              append(pre, seq_n(fam))
+              local out = write_declare_shape(pre, line, seq_empty_n, str_onesize)
+              lfc.dynamics = lfc.dynamics or {}
+              lfc.dynamics[path] = lfc.dynamics[path] or {}
+              insert(lfc.dynamics[path], get_toks(out))
+              -- inspect(lfc.dynamics)
             else
-              -- fd[line_no] = ""
               fake_fd[line_no] = ""
             end
             msg("fake_fd[line_no]:\t" .. line_no .. ": " .. 
@@ -1032,6 +1081,19 @@ local function add_callback()
 
 end
 --}}}
+
+---@function try_adjustment(path) {{{
+local function try_adjustment(path)
+  msg("try_adjustment(" .. path .. ")", "debug")
+  if lfc_debug then inspect(lfc.dynamics) end
+  if lfc.dynamics and lfc.dynamics[path] then
+    local out = {}
+    for _,i in ipairs(lfc.dynamics[path]) do append(out, i) end
+    -- inspect(out)
+    sprint(-2, out)
+  end
+end
+-- }}}
 
 -------------------------------------------------------------------------------
 -- Main configuration function
@@ -1421,6 +1483,7 @@ lfc.font_config = font_config
 -- lfc.get_cache_path = get_cache_path
 -- lfc.cache = lfc_cache
 -- lfc.add_callback = add_callback
+lfc.try_adjustment = try_adjustment
 
 
 return lfc
