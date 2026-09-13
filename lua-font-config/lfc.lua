@@ -1,4 +1,4 @@
--- $Id: lfc.lua 12033 2026-09-12 20:05:26Z cfrees $
+-- $Id: lfc.lua 12034 2026-09-13 01:58:23Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -- locals {{{
@@ -25,7 +25,8 @@ local create = token.create
 lfc = {} -- ours {{{
 local lfc_cache
 local lfc_debug = lfc_debug or true
-local lfc_callback_active = false
+local lfc_callback_smcp_active = false
+local lfc_callback_data_active = false
 
 local function enquote(str) return "\"" .. str .. "\"" end
 local str_onesize = "<->"
@@ -42,6 +43,8 @@ local seq_empty_n = {tok_group_begin, tok_group_end}
 local function seq_n(arg)
   return {tok_group_begin, arg, tok_group_end}
 end
+
+local function add_callback_data() end
 -- }}}
 -- }}}
 
@@ -409,7 +412,7 @@ local variants = { -- {{{
   sc    Caps and small caps
 --]]
   normal = "n",
-  oldstyle = "oldstyle",
+  -- oldstyle = "oldstyle",
   smallcaps = "sc",
 } -- }}}
 
@@ -436,6 +439,7 @@ end
 ---@config  config: table or string of configurations
 local function parse_config(fam, config) 
   local configs = {}
+  local auto = true
   if not config then 
     configs[fam] = "mode=node;script=dflt;lang=dflt;+tlig;"
   elseif type(config) == "table" then
@@ -465,23 +469,24 @@ local function parse_config(fam, config)
         end
       else
         insert(cfg, config.fea)
-        local pre, post, mid = "", "", ""
+        local pre, post = "", ""
+        -- Should use long suffixes here, but this is more convenient for now.
         for sign,subs in gmatch(config.fea, "([+-])(%a%a%a%a);") do
           if sign == "+" then
             if subs == "tnum" then pre = ""
             elseif subs == "pnum" then pre = "2"
             elseif subs == "lnum" then post = ""
             elseif subs == "onum" then post = "j"
-            elseif subs == "smcp" then mid = "c"
+            elseif subs == "subs" then pre = "0"
             elseif subs == "sups" then pre = "1"
             end
           elseif subs == "pnum" and pre == "2" then pre = ""
           elseif subs == "onum" and post == "j" then post = ""
-          elseif subs == "smcp" then mid = ""
+          elseif subs == "subs" and pre == "0" then pre = ""
           elseif subs == "sups" and pre == "1" then pre = ""
           end
         end
-        local suff = pre .. mid .. post
+        local suff = pre .. post
         if suff ~= "" then suff = "-" .. suff end
         if configs[fam .. suff] ~= nil then
           local n = 1
@@ -536,7 +541,11 @@ end
 -- Should be split??
 -- Cache format:
 --  lfc_cache ->
---    callbacks = {
+--    callbacks_data = {
+--      <fullpath>,
+--      ...,
+--    },
+--    callbacks_smcp = {
 --      <fullpath> = {
 --        <line no.> = true,
 --        ...,
@@ -556,6 +565,14 @@ end
 --      by_hash = {
 --        <hash> = {<nfss fam>, ...},
 --        ...,
+--      },
+--    },
+--    resources = {
+--      full path> = {
+--        features = {
+--          gsub = <data>,
+--          gpos = <data>,
+--        },
 --      },
 --    },
 --    <nfss fam> = {
@@ -592,6 +609,15 @@ local function prepare_fake_fd(fam, fam_data, config, force)
       goto fake_fds_cont
     end
 
+    lfc_cache[fam_var].paths = lfc_cache[fam_var].paths or {}
+    local path_list = lfc_cache[fam_var].paths
+
+    lfc_cache.callbacks_data = lfc_cache.callbacks_data or {}
+    local callbacks_data = lfc_cache.callbacks_data
+
+    lfc_cache.resources = lfc_cache.resources or {}
+    local resources = lfc_cache.resources
+
     local fake_fd = {}
     lfc_cache[fam_var].complete = true
 
@@ -602,6 +628,13 @@ local function prepare_fake_fd(fam, fam_data, config, force)
       curr_line = curr_line + 1
       insert(fake_fd, s)
     end
+    local function add_path(p)
+      insert(path_list, p)
+      if not resources[p] then
+        callbacks_data[p] = true
+        if not lfc_callback_data_active then add_callback_data() end
+      end
+    end
 
     for series,series_data in pairs(fam_data) do
       local std_lines = {n = 0, it = 0, sl = 0}
@@ -609,6 +642,9 @@ local function prepare_fake_fd(fam, fam_data, config, force)
         msg("Processing font(s) for " .. series .. " and " .. shape, "debug")
 
         msg_assert(#fnts ~= 0, "The number of fonts should never be zero!")
+
+        -- Add path to list for family and add callback if needed.
+        for _,ff in ipairs(fnts) do add_path(ff.fullpath) end
 
         if #fnts == 1 then
 
@@ -717,6 +753,19 @@ local function prepare_fake_fd(fam, fam_data, config, force)
             goto trans_skip
           end
 
+          local curr_path = series_data[base_shape][1].fullpath
+
+          local checked = false
+
+          if lfc_cache.resources and lfc_cache.resources[curr_path] then
+            local rsc = lfc_cache.resources[curr_path]
+            if rsc.features and rsc.features.gsub and rsc.features.gsub.smcp then
+              checked = true
+            else
+              goto trans_skip
+            end
+          end
+
           local line_no = curr_line + 1
 
           -- Temporary defn
@@ -730,23 +779,25 @@ local function prepare_fake_fd(fam, fam_data, config, force)
           line_mod[2] = to_shape
           fake_fd_insert(line_mod)
 
-          lfc_cache[fam_var].complete = false
+          if not checked then 
+            lfc_cache[fam_var].complete = false
 
-          lfc_cache.incomplete = lfc_cache.incomplete or {}
-          lfc_cache.incomplete[fam_var] = lfc_cache.incomplete[fam_var] or {}
-          lfc_cache.incomplete[fam_var][line_no] = true
+            lfc_cache.incomplete = lfc_cache.incomplete or {}
+            lfc_cache.incomplete[fam_var] = lfc_cache.incomplete[fam_var] or {}
+            lfc_cache.incomplete[fam_var][line_no] = true
 
-          lfc_cache.callbacks = lfc_cache.callbacks or {}
-          lfc_cache.callbacks[series_data[base_shape][1].fullpath] = {
-            fam = fam_var,
-            [line_no] = true,
-          }
-          if #series_data[base_shape] > 1 then 
-            local tmp = lfc_cache.callbacks[series_data[base_shape][1].fullpath]
-            tmp.related = { series_data[base_shape][1].fullpath }
-            for curr = 2, #series_data[base_shape] do
-              lfc_cache.callbacks[series_data[base_shape][curr].fullpath] = tmp
-              insert(tmp.related, series_data[base_shape][curr].fullpath)
+            lfc_cache.callbacks_smcp = lfc_cache.callbacks_smcp or {}
+            lfc_cache.callbacks_smcp[curr_path] = {
+              fam = fam_var,
+              [line_no] = true,
+            }
+            if #series_data[base_shape] > 1 then 
+              local tmp = lfc_cache.callbacks_smcp[curr_path]
+              tmp.related = { curr_path }
+              for curr = 2, #series_data[base_shape] do
+                lfc_cache.callbacks_smcp[curr_path] = tmp
+                insert(tmp.related, curr_path)
+              end
             end
           end
         end
@@ -805,7 +856,7 @@ end
 -- }}}
 -------------------------------------------------------------------------------
 -- Manage font definition files, cache etc.
--- get_toks()   write_declare_shape()   write_fake_fd()   add_callback()
+-- get_toks()   write_declare_shape()   write_fake_fd()   add_callback_smcp()
 -------------------------------------------------------------------------------
 ---@function get_toks(items) {{{
 ---@param items   <table> of [tables of] toks, strings
@@ -928,12 +979,12 @@ local function write_fake_fd(fam, scale_factor)
 end
 -- }}}
 
----@function add_callback -- {{{
+---@function add_callback_smcp -- {{{
 ---@description Adds code into the luaotfload.patch_font callback.
 ---@description This adjusts font definition files as fonts are loaded and data
 ---@description   becomes available to avoid pre-loading unnecessarily.
-local function add_callback()
-  if lfc_callback_active then
+local function add_callback_smcp()
+  if lfc_callback_smcp_active then
     msg("Callback already active.", "debug")
   end
   msg("Adding callback.", "info")
@@ -943,20 +994,20 @@ local function add_callback()
       local path = data.filename
       lfc_cache = lfc_cache or read_cache()
 
-      if lfc_cache.callbacks and lfc_cache.callbacks[path] then
+      if lfc_cache.callbacks_smcp and lfc_cache.callbacks_smcp[path] then
 
         msg("Processing callback ...", "info")
         msg("Path:\t" .. path, "debug")
         msg("Spec:\t" .. spec, "debug")
         msg("Id:\t" .. id, "debug")
-        local fam = lfc_cache.callbacks[path].fam
+        local fam = lfc_cache.callbacks_smcp[path].fam
         local incomplete = lfc_cache.incomplete 
         -- local fd 
         local fake_fd 
         if lfc_cache[fam] and lfc_cache[fam].fake_fd then 
           fake_fd = lfc_cache[fam].fake_fd end
 
-        for line_no,_ in pairs(lfc_cache.callbacks[path]) do
+        for line_no,_ in pairs(lfc_cache.callbacks_smcp[path]) do
           if line_no == "fam" or line_no == "related" then goto not_line_ref end
 
           if incomplete and incomplete[fam] and incomplete[fam][line_no] then
@@ -984,27 +1035,27 @@ local function add_callback()
             end
           end
 
-          lfc_cache.callbacks[path][line_no] = nil
+          lfc_cache.callbacks_smcp[path][line_no] = nil
 
 
           :: not_line_ref ::
         end
         
         -- tidy up callbacks
-        local cnt = count(lfc_cache.callbacks[path])
-        if cnt == 1 and lfc_cache.callbacks[path].fam then 
-          lfc_cache.callbacks[path] = nil 
+        local cnt = count(lfc_cache.callbacks_smcp[path])
+        if cnt == 1 and lfc_cache.callbacks_smcp[path].fam then 
+          lfc_cache.callbacks_smcp[path] = nil 
         -- Cannot rely on symlink-type effect here because refs get resolved 
         --    when saving to disk.
         -- How does the loader manage this?
         -- What I'd like is to save and restore a pointer to the array (or
         --    whatever a table is, which I still have no idea what it is).
-        elseif cnt == 2 and lfc_cache.callbacks[path].fam and 
-          lfc_cache.callbacks[path].related then
-          for _,rel_path in ipairs(lfc_cache.callbacks[path].related) do
-            lfc_cache.callbacks[rel_path] = nil
+        elseif cnt == 2 and lfc_cache.callbacks_smcp[path].fam and 
+          lfc_cache.callbacks_smcp[path].related then
+          for _,rel_path in ipairs(lfc_cache.callbacks_smcp[path].related) do
+            lfc_cache.callbacks_smcp[rel_path] = nil
           end
-          lfc_cache.callbacks[path] = nil
+          lfc_cache.callbacks_smcp[path] = nil
         end
 
         msg("Rewrote fd for " .. fam .. " ...", "log")
@@ -1018,11 +1069,78 @@ local function add_callback()
     end,
     "lfc check for +smcp"
   )
-  lfc_callback_active = true
+  lfc_callback_smcp_active = true
 
 end
 --}}}
 
+---@function add_callback_data -- {{{
+---@description Adds code into the luaotfload.patch_font callback.
+---@description This just gathers data as fonts become available
+---@description   to avoid pre-loading unnecessarily.
+-- This was made local earlier so it could be used above.
+-- Ref. https://stackoverflow.com/a/10272049/3186474 (but I do not want it in 
+--  _G!
+add_callback_data = function()
+  if lfc_callback_data_active then
+    msg("Callback already active.", "debug")
+  end
+  msg("Adding data callback.", "info")
+  luatexbase.add_to_callback(
+    "luaotfload.patch_font",
+    function(data, spec, id)
+      local path = data.filename
+      lfc_cache = lfc_cache or read_cache()
+
+      if lfc_cache.callbacks_data and lfc_cache.callbacks_data[path] then
+
+        msg("Processing data callback ...", "info")
+        msg("Path:\t" .. path, "debug")
+        msg("Spec:\t" .. spec, "debug")
+        msg("Id:\t" .. id, "debug")
+
+        lfc_cache.resources = lfc_cache.resources or {}
+        lfc_cache.resources[path] = lfc_cache.resources[path] or {}
+        local cached = lfc_cache.resources[path]
+        cached.features = cached.features or {}
+        local fea = cached.features
+
+        local rfea = data.resources.features
+        
+        fea.gsub = rfea.gsub and {} or nil
+        if fea.gsub then
+          fea.gsub.tnum = rfea.tnum and true or false
+          fea.gsub.lnum = rfea.lnum and true or false
+          fea.gsub.onum = rfea.onum and true or false
+          fea.gsub.pnum = rfea.pnum and true or false
+          fea.gsub.scmp = rfea.scmp and true or false
+          fea.gsub.subs = rfea.subs and true or false
+          fea.gsub.sups = rfea.sups and true or false
+        else
+          fea.gsub = false
+        end
+
+        -- tidy up callbacks
+        lfc_cache.callbacks_data[path] = nil
+        if count(lfc_cache.callbacks_data) == 0 then 
+          lfc_cache.callbacks_data = nil 
+        end
+
+        msg("Cached resources for " .. path .. " ...", "log")
+        if lfc_debug then inspect(lfc_cache.resources[path]) end
+
+        msg("Updating cache ...", "info")
+        write_cache(lfc_cache)
+
+      end
+
+    end,
+    "lfc cache font resources"
+  )
+  lfc_callback_data_active = true
+
+end
+--}}}
 -------------------------------------------------------------------------------
 -- Main configuration function
 -- font_config()
@@ -1041,7 +1159,7 @@ local function font_config(targ, config)
 
   lfc_cache = lfc_cache or read_cache()
 
-  local callback_done = lfc_cache and lfc_cache.callbacks and true or false
+  local callback_done = lfc_cache and lfc_cache.callbacks_smcp and true or false
 
   targ = lower(targ)
   config = config or {}
@@ -1065,7 +1183,7 @@ local function font_config(targ, config)
     if data == nil then return nil end
 
     local parsed_fam
-    local parsed_fam_oldstyle
+    -- local parsed_fam_oldstyle
 
     local nfss_hashes = {}
     local regular = false
@@ -1144,14 +1262,14 @@ local function font_config(targ, config)
 
       local t
 
-      -- what is this for exactly?
-      if variant ~= "oldstyle" then
+      -- What is this for exactly?
+      -- if variant ~= "oldstyle" then
         if parsed_fam == nil then parsed_fam = {} end
         t = parsed_fam
-      else
-        if parsed_fam_oldstyle == nil then parsed_fam_oldstyle = {} end
-        t = parsed_fam_oldstyle
-      end
+      -- else
+      --   if parsed_fam_oldstyle == nil then parsed_fam_oldstyle = {} end
+      --   t = parsed_fam_oldstyle
+      -- end
       t[family] = t[family] or {}
       t = t[family]
 
@@ -1162,7 +1280,8 @@ local function font_config(targ, config)
       local nfss_style    = parse_spec(styles, style)
       local nfss_variant  = parse_spec(variants, variant)
 
-      if nfss_variant == "oldstyle" then nfss_variant = "n" end
+      -- Is this really needed and for what?
+      -- if nfss_variant == "oldstyle" then nfss_variant = "n" end
 
       -- ‘m’ must not be combined, as of the 2020 changes, so ‘mb’ is
       --    not allowed
@@ -1206,7 +1325,7 @@ local function font_config(targ, config)
 
     end
 
-    if parsed_fam == nil and parsed_fam_oldstyle == nil then 
+    if parsed_fam == nil then --and parsed_fam_oldstyle == nil then 
       return nil 
     end
 
@@ -1215,36 +1334,36 @@ local function font_config(targ, config)
     -- I'm not sure what this is aimed at, so not sure if it should just
     --    be +j ??
 
-    if parsed_fam_oldstyle ~= nil then
-      if parsed_fam == nil then
-        parsed_fam = parsed_fam_oldstyle
-      else 
-        for fam,i in pairs(parsed_fam_oldstyle) do
-          if parsed_fam[fam] ~= nil then
-            local hash_fam = fam .. "oldstyle"
-            if parsed_fam[fam .. "oldstyle"] ~= nil then
-              local n = 2
-              while parsed_fam[fam .. "oldstyle" .. n] ~= nil do n = n + 1 end
-              parsed_fam[fam .. "oldstyle" .. n] = i
-              hash_fam = hash_fam .. n
-            else
-              parsed_fam[fam .. "oldstyle"] = i
-            end
-            for series,j in pairs(i) do
-              for shape,fnts in pairs(j) do
-                for _,fnt in ipairs(fnts) do
-                  fnt.nfss_hash = (gsub(fnt.nfss_hash, fam, hash_fam))
-                  fnt.nfss_family = (gsub(fnt.nfss_family, fam, hash_fam))
-                end
-              end
-            end
-          else
-            parsed_fam[fam] = i
-          end
-        end
-      end
-      parsed_fam_oldstyle = nil
-    end
+    -- if parsed_fam_oldstyle ~= nil then
+    --   if parsed_fam == nil then
+    --     parsed_fam = parsed_fam_oldstyle
+    --   else 
+    --     for fam,i in pairs(parsed_fam_oldstyle) do
+    --       if parsed_fam[fam] ~= nil then
+    --         local hash_fam = fam .. "oldstyle"
+    --         if parsed_fam[fam .. "oldstyle"] ~= nil then
+    --           local n = 2
+    --           while parsed_fam[fam .. "oldstyle" .. n] ~= nil do n = n + 1 end
+    --           parsed_fam[fam .. "oldstyle" .. n] = i
+    --           hash_fam = hash_fam .. n
+    --         else
+    --           parsed_fam[fam .. "oldstyle"] = i
+    --         end
+    --         for series,j in pairs(i) do
+    --           for shape,fnts in pairs(j) do
+    --             for _,fnt in ipairs(fnts) do
+    --               fnt.nfss_hash = (gsub(fnt.nfss_hash, fam, hash_fam))
+    --               fnt.nfss_family = (gsub(fnt.nfss_family, fam, hash_fam))
+    --             end
+    --           end
+    --         end
+    --       else
+    --         parsed_fam[fam] = i
+    --       end
+    --     end
+    --   end
+    --   parsed_fam_oldstyle = nil
+    -- end
 
     -- What to do about the common weights NFSS doesn't cover?
     -- e.g. ‘medium’ and ‘book’ often differ from both ‘regular’ and each other
@@ -1385,10 +1504,10 @@ local function font_config(targ, config)
 
   end
 
-  if lfc_callback_active == false and lfc_cache ~= nil and 
-    lfc_cache.callbacks ~= nil then 
+  if lfc_callback_smcp_active == false and lfc_cache ~= nil and 
+    lfc_cache.callbacks_smcp ~= nil then 
     msg("Enabling callback", "debug")
-    add_callback() 
+    add_callback_smcp() 
   end
 
   return f
@@ -1405,9 +1524,15 @@ end
 local cache_path = get_cache_path()
 if isfile(cache_path) then
   lfc_cache = read_cache()
-  if lfc_cache and lfc_cache.callbacks then 
-    msg("Activating callback", "debug")
-    add_callback() 
+  if lfc_cache then
+    if lfc_cache.callbacks_smcp then 
+      msg("Activating callback", "debug")
+      add_callback_smcp() 
+    end
+    if lfc_cache.callbacks_data then 
+      msg("Activating callback", "debug")
+      add_callback_data() 
+    end
   end
 end
 -- }}}
@@ -1423,7 +1548,7 @@ lfc.font_config = font_config
 -- lfc.write_cache = write_cache
 -- lfc.read_cache = read_cache
 -- lfc.get_cache_path = get_cache_path
--- lfc.add_callback = add_callback
+-- lfc.add_callback_smcp = add_callback_smcp
 
 
 return lfc
