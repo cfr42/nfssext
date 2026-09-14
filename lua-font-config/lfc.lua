@@ -1,4 +1,4 @@
--- $Id: lfc.lua 12034 2026-09-13 01:58:23Z cfrees $
+-- $Id: lfc.lua 12037 2026-09-14 07:00:19Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -- locals {{{
@@ -141,7 +141,8 @@ function lfc_env.resolvers.showpath (name) return nil end
 function lfc_env.resolvers.splitpath(path) return nil end
 
 -- Load "font-syn.lua" into our private environment.
-loadfile(kpse.find_file("font-syn.lua"), "t", lfc_env)()
+-- loadfile(kpse.find_file("font-syn.lua"), "t", lfc_env)()
+loadfile("lfc-context-font-syn.lua", "t", lfc_env)()
 
 -- Print a message while generating our font name database so that users
 -- don't get confused by the long pause.
@@ -224,6 +225,26 @@ end
 -- }}}
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
+---@function hash_check(name, config) -- {{{
+---@param name      <string>  Key e.g. name of (meta-)family or whatever
+---@param config    <table>   Table of configuration data
+---@description Returns hash and any matching cached data.
+local function hash_check(name, config)
+
+  if not name then return nil end
+  config = config or {}
+
+  local hash_key = md5sum(name .. serialize(config))
+
+  if lfc_cache.meta_families and lfc_cache.meta_families.by_hash and
+    lfc_cache.meta_families.by_hash[hash_key] then
+
+    local cached = lfc_cache.meta_families.by_hash[hash_key]
+  end
+
+  return hash_key, cached or nil
+end
+-- }}}
 
 ---@function get_font_data -- {{{
 ---@param fnt     <string>  Font name/family/etc. to resolve.
@@ -252,36 +273,38 @@ local function get_font_data(fnt, config, force)
   local fam_meta = font_data.mappings[ext][basename].familyname
   if fam_meta == nil then return nil end
 
-  -- Return extension, family name and either fd file or font data
-  f.metadata = {
-    ext = ext,
-    fam_meta = fam_meta,
-    hash_key = md5sum(fam_meta .. serialize(config))
+
+  -- Return extension, family name and either fd file or font data.
+  f.metadata  = {
+    ext       = ext,
+    fam_meta  = fam_meta,
   }
-  local hash_key = f.metadata.hash_key
+  local metadata = f.metadata
 
   local fd = "tu" .. fam_meta .. ".fd", "tex"
-  f.metadata.fd = fd
+  metadata.fd = fd
   local fd_file = kpse.find_file(fd) 
-  -- If an .fd for family exists, use unless force was used
+  -- If an .fd for family exists, use unless force was used.
   if fd_file and not force then
-    f.metadata.fd_file = fd_file
-  end
-
-  -- If an .fd for family exists, we're done unless force was used
-  if lfc_cache.meta_families and lfc_cache.meta_families.by_hash and
-    lfc_cache.meta_families.by_hash[hash_key] and not force then
-    f.metadata.cached = lfc_cache.meta_families.by_hash[hash_key]
+    metadata.fd_file = fd_file
     return f
   end
-  
+
+  local hash_key, cached = hash_check(fam_meta, config)
+  metadata.hash_key  = hash_key
+
+  -- If a cached emulated .fd exists, we're done unless force was used.
+  if cached and not force then
+    metadata.cached = cached
+    return f
+  end
 
   -- If not, get font data for family
 
   -- Returns indexed list, limited coverage
   -- local data = font_data.families[fam_meta]
 
-  -- Returns key-val list, wider coverate
+  -- Returns key-val list, wider coverage
   local data = names.list(fam_meta .. ".*",false,true)
   if data == nil then return nil end
 
@@ -317,6 +340,16 @@ local function get_font_data(fnt, config, force)
 end 
 -- }}}
 
+---@function resolve_one(fnt) {{{
+---@param fnt <string>
+---@description Returns full path if found; o/w nil.
+local function resolve_one(fnt)
+  if not fnt then return nil end
+  fnt = resolve(fnt)
+  msg_assert(fnt, "Invalid font specification: " .. fnt .. ".", "warn")
+  return (fnt and lookup_font_file(fnt)) or nil
+end
+-- }}}
 -------------------------------------------------------------------------------
 -- Tables to translate db descriptors for context into 
 -- LaTeX NFSS identifiers from fntguide
@@ -420,14 +453,14 @@ local variants = { -- {{{
 -- Parsers
 -------------------------------------------------------------------------------
 ---@function parse_spec -- {{{
----@param type:       'weights' | 'variants' | 'widths' | 'styles'
+---@param kind:       'weights' | 'variants' | 'widths' | 'styles'
 ---@param descriptor: weight | width | variant | style as given in db
 -- @description Turns a descriptor into a LaTeX NFSS identifier; warns if unknown
-local function parse_spec(type, descriptor)
-  local spec = type[descriptor]
+local function parse_spec(kind, descriptor)
+  local spec = kind[descriptor]
   if spec ~= nil then return spec 
   else
-    msg(descriptor .. " not a known " .. type .. ".")
+    msg(descriptor .. " not a valid value.")
     return descriptor
   end
 end
@@ -441,7 +474,7 @@ local function parse_config(fam, config)
   local configs = {}
   local auto = true
   if not config then 
-    configs[fam] = "mode=node;script=dflt;lang=dflt;+tlig;"
+    configs[fam] = str_fea_default
   elseif type(config) == "table" then
     if #config > 0 then
       -- indexed table --> multiple configs
@@ -602,8 +635,10 @@ local function prepare_fake_fd(fam, fam_data, config, force)
 
     lfc_cache[fam_var] = lfc_cache[fam_var] or {}
 
-    if lfc_cache[fam_var].config ~= nil and lfc_cache[fam_var].config == cfg and
-      lfc_cache[fam_var].fake_fd and not force then
+    -- Does config check make any sense?
+    -- The problem is we can't use the hash yet ...
+    if lfc_cache[fam_var].config ~= nil and lfc_cache[fam_var].config == config
+      and lfc_cache[fam_var].fake_fd and not force then
 
       fake_fds[fam_var] = lfc_cache[fam_var].fake_fd
       goto fake_fds_cont
@@ -619,6 +654,7 @@ local function prepare_fake_fd(fam, fam_data, config, force)
     local resources = lfc_cache.resources
 
     local fake_fd = {}
+
     lfc_cache[fam_var].complete = true
 
     local scalable = true
@@ -941,14 +977,23 @@ end
 
 ---@function write_fake_fd(fam[, scale_factor]) {{{
 ---@param fam:            NFSS family
----@param scale_factor:   scaling factor
+---@param scale_factor:   Scaling factor
+---@param fake_fd:        If not cached
+---@description fake_fd should be nil unless something has gone wrong.
+---@description This should never happen in the automated case.
 -- Cache format: see above
-local function write_fake_fd(fam, scale_factor)
+local function write_fake_fd(fam, scale_factor, fake_fd)
   msg("Emulating font definition file for NFSS family " .. fam .. ".")
-  msg_assert(lfc_cache[fam] and lfc_cache[fam].fake_fd and 
+  if scale_factor and not fake_fd and type(scale_factor) == "table" then
+    fake_fd = scale_factor
+    scale_factor = nil
+  end
+  if not fake_fd then
+    msg_assert(lfc_cache[fam] and lfc_cache[fam].fake_fd and 
     type(lfc_cache[fam].fake_fd) == "table", "Cannot find definition for " ..
     fam .. "!")
-  local fake_fd = lfc_cache[fam].fake_fd
+    fake_fd = lfc_cache[fam].fake_fd
+  end
   local pre = fastcopy(seq_enc_tu)
   append(pre, seq_n(fam))
   local out = {
@@ -1145,6 +1190,28 @@ end
 -- Main configuration function
 -- font_config()
 -------------------------------------------------------------------------------
+---@function used_cached_fd(fam, scale) {{{
+---@param fam   <string>  Name of a cached meta-family.
+---@param scale <numeric> Potential scaling factor or nil.
+local function use_cached_fd(fam, scale) 
+  msg_assert(lfc_cache[fam] and lfc_cache[fam].fake_fd,
+    "Cache failure. Try removing the cache before recompiling.")
+  msg("Using cached fd emulation for " .. fam .. ".")
+
+  if not lfc_callback_smcp_active and not lfc_cache[fam].complete then
+    add_callback_smcp()
+  end
+
+  -- This is a sledge hammer for a glass spider.
+  if not lfc_callback_data_active and lfc_cache.callbacks_data ~= nil then 
+    msg("Enabling data callback", "debug")
+    add_callback_data() 
+  end
+
+  return write_fake_fd(fam, lfc_cache[fam].scalable and scale or nil) 
+end
+-- }}}
+
 ---@function font_config -- {{{
 ---@param target required font specification to resolve
 ---@param config optional configuration details
@@ -1491,26 +1558,172 @@ local function font_config(targ, config)
 
     write_cache(lfc_cache)
 
+    -- Sledge hammer and fairy lights.
+    if lfc_callback_smcp_active == false and lfc_cache.callbacks_smcp ~= nil then 
+      msg("Enabling callback", "debug")
+      add_callback_smcp() 
+    end
+
   else
 
     for _,fam_name in ipairs(lfc_cache.meta_families.by_hash[hash_key]) do
-      msg_assert(lfc_cache[fam_name] and lfc_cache[fam_name].fake_fd,
-        "Cache failure. Try removing the cache before recompiling.")
-      msg("Using cached fd emulation for " .. fam_name .. ".")
       local scale = config[fam_name] and config[fam_name].scale and 
         config[fam_name].scale or (config.scale and config.scale or nil)
-      write_fake_fd(fam_name, scale) 
+      use_cached_fd(fam_name, scale) 
     end
 
   end
 
-  if lfc_callback_smcp_active == false and lfc_cache ~= nil and 
-    lfc_cache.callbacks_smcp ~= nil then 
-    msg("Enabling callback", "debug")
-    add_callback_smcp() 
-  end
 
   return f
+end
+-- }}}
+
+
+---@function fast_font_config(fam, config) {{{
+---@param fam     <string>  Suitable for NFSS family name.
+---@param config  <table>   Configuration.
+---@param force   <boolean> Whether to force regeneration.
+local function fast_font_config(fam, config, force) 
+
+  force = force or false
+
+  msg_assert(fam, "Expected at least one argument, but found none!", "err")
+
+  if type(fam) == "table" then
+
+    local configs, force = fam, force or config or nil
+    for _,cfg in ipairs(configs) do
+      for fam,config in pairs(cfg) do
+        fast_font_config(fam, config, force)
+      end
+    end
+
+  else
+
+    -- We should have a family name, configuration table [and force or not].
+
+    -- Errors
+    msg_assert(type(fam) == "string", "Expected family name to be a string, \z
+      but found " .. type(fam) .. "!", "err")
+    msg_assert(config and type(config) == "table", "Expected configuration table, \z
+      but found " .. (config and type(config) or "nothing") .. "!", "err")
+
+    fam = cleanfilename(fam)
+
+    -- Get hash and check for cached data.
+    local hash_key, cached = hash_check(fam, config)
+
+    -- If fd is cached, use unless force.
+    if cached and not force then
+      use_cached_fd(fam, config.scale or nil)
+    end
+
+    local scalable = true
+    local paths = {}
+    local do_not_cache = false
+
+    local function get_spec(wght, wd, var, stl)
+      local weight, width, variant, style =
+        parse_spec(weights, wght),
+        parse_spec(widths, wd),
+        parse_spec(variants, var),
+        parse_spec(styles, stl)
+      return weight == "m" and width or (width == "m" and weight or weight .. width),
+        variant == "n" and style or (style == "n" and variant or variant .. style)
+    end
+
+    -- Config should consist of indexed tables, one for each shape declaration,
+    --  with possibly some keyed values in the mix.
+    for i,cfg in ipairs(config) do
+
+      -- Error if there's no font spec to resolve.
+      msg_assert((cfg.font and type(cfg.font) == "string") or
+        (cfg.fonts and type(cfg.fonts) == "table") or cfg.sub or cfg.ssub,
+        "Invalid or missing font specification!", "err")
+
+      local weight, width, variant, style = cfg.weight or "medium", cfg.width 
+        or "medium", 
+        (cfg.sc or cfg.smallcaps) and "sc" or "normal", 
+        cfg.shape or "normal"
+
+      cfg.series, cfg.shape = get_spec(weight, width, variant, style)
+
+
+      -- Resolves the actual font requests
+      if not cfg.sub and not cfg.ssub then
+        cfg.fea = cfg.fea or cfg.features or str_fea_default
+        if cfg.font then
+          cfg.font = resolve_one(cfg.font)
+          if not cfg.font then
+            config[i] = ""
+            do_not_cache = true
+            goto invalid_font_request
+          end
+          insert(paths, cfg.font)
+        else
+          scalable = false
+          for j,frag in ipairs(cfg.fonts) do
+            if not (frag.min or frag.max) or not (frag.font and 
+              type(frag.font) == "string") then
+              msg("Invalid font specification: <" .. (frag.min or "0") .. "-" ..
+                (frag.max or "0") .. ">" .. (frag.font and tostring(frag.font) 
+                or "\"\"") .. "!")
+              config[i] = ""
+              do_not_cache = true
+              goto invalid_font_request
+            end
+            local min = frag.min or ""
+            local max = frag.max or ""
+            local font = resolve_one(frag.font)
+            if not font then
+              config[i] = ""
+              do_not_cache = true
+              goto invalid_font_request
+            end
+            cfg.fonts[j] = {min, max, frag.font}
+            insert(paths, frag.font)
+            if not lfc_cache.resources or not lfc_cache.resources[frag.font] 
+              then
+                lfc_cache.callbacks_data = lfc_cache.callbacks_data or {}
+                lfc_cache.callbacks_data[frag.font] = true
+                if not lfc_callback_data_active then add_callback_data() end
+            end
+          end
+        end
+      end
+
+      config[i] = {cfg.series, cfg.shape, cfg.font or cfg.fonts or cfg.sub or 
+        cfg.ssub, cfg.fea or nil}
+
+      :: invalid_font_request ::
+
+    end
+
+    -- Cache only if no error occurred in processing.
+    if not do_not_cache then
+      lfc_cache = lfc_cache or read_cache()
+      if lfc_cache[fam] then
+        lfc_cache[fam].fake_fd = config
+        lfc_cache[fam].scalable = scalable
+        lfc_cache[fam].complete = true
+        lfc_cache[fam].config = serialize(config)
+        lfc_cache[fam].paths = paths
+      else 
+        lfc_cache[fam] = {
+          fake_fd = config,
+          scalable = scalable,
+          complete = true,
+          config = serialize(config),
+          paths = paths
+        }
+      end
+    end
+
+    -- Try to create a family even after erroneous user input.
+    write_fake_fd(fam, scalable and config.scale or nil or nil, config)
+
+  end
 end
 -- }}}
 
@@ -1544,6 +1757,7 @@ end
 -------------------------------------------------------------------------------
 -- lfc.get_font_data = get_font_data
 lfc.font_config = font_config
+lfc.fast_font_config = fast_font_config
 -- lfc.fonts = fonts
 -- lfc.write_cache = write_cache
 -- lfc.read_cache = read_cache
