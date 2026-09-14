@@ -1,4 +1,4 @@
--- $Id: lfc.lua 12037 2026-09-14 07:00:19Z cfrees $
+-- $Id: lfc.lua 12038 2026-09-14 14:06:54Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -- locals {{{
@@ -13,7 +13,7 @@ local format, lower = string.format, string.lower
 local append, insert = table.append, table.insert
 local copy, count, fastcopy = table.copy, table.count, table.fastcopy
 local load, save, setmetatableindex = table.load, table.save, table.setmetatableindex
-local concat, serialize = table.concat, table.serialize
+local concat, serialize, unique = table.concat, table.serialize, table.unique
 local mirrored = table.mirrored
 local sort = table.sort
 -- tex | texio | token
@@ -224,6 +224,7 @@ local function write_cache(stuff, loc)
 end
 -- }}}
 -------------------------------------------------------------------------------
+-- Hash utilities
 -------------------------------------------------------------------------------
 ---@function hash_check(name, config) -- {{{
 ---@param name      <string>  Key e.g. name of (meta-)family or whatever
@@ -233,6 +234,7 @@ local function hash_check(name, config)
 
   if not name then return nil end
   config = config or {}
+  lfc_cache = lfc_cache or read_cache()
 
   local hash_key = md5sum(name .. serialize(config))
 
@@ -246,6 +248,41 @@ local function hash_check(name, config)
 end
 -- }}}
 
+---@function hash_cache(name, config) -- {{{
+---@param name(s)     <string>  Key e.g. name of (meta-)family or whatever
+---                               or hash_key.
+---@param config      <table>   Table of configuration data
+---                               if names rather than hash_key.
+---@param meta_fam(s) <table>   List of (meta-)families (opt).
+---@description Optionally creates hash and caches.
+---@description Returns hash_key.
+local function hash_cache(meta_fams, name, config)
+  if type(meta_fams) == "string" then
+    name = meta_fams
+    config = name
+    meta_fams = nil
+  end
+
+  msg_assert(name and type(name) == "string", "Expected string to make hash!")
+  lfc_cache = lfc_cache or read_cache()
+
+  local hash_key = not config and name or 
+    md5sum(name .. serialize(config or {}))
+
+  if meta_fams then
+    lfc_cache.meta_families = lfc_cache.meta_families or {}
+    lfc_cache.meta_families.by_hash = lfc_cache.meta_families.by_hash or {}
+
+    lfc_cache.meta_families.by_hash[hash_key] = meta_fams
+  end
+
+  return hash_key
+end
+-- }}}
+
+-------------------------------------------------------------------------------
+-- Lookup utilities
+-------------------------------------------------------------------------------
 ---@function get_font_data -- {{{
 ---@param fnt     <string>  Font name/family/etc. to resolve.
 ---@param config  <table>   Only here used for hash 
@@ -866,6 +903,8 @@ local function prepare_fake_fd(fam, fam_data, config, force)
       --  shapes?
     end
 
+    path_list = unique(path_list)
+
     -- Check for missing basic series
     if fam_data.b == nil then
       if fam_data.bx ~= nil then
@@ -1154,13 +1193,13 @@ add_callback_data = function()
         
         fea.gsub = rfea.gsub and {} or nil
         if fea.gsub then
-          fea.gsub.tnum = rfea.tnum and true or false
-          fea.gsub.lnum = rfea.lnum and true or false
-          fea.gsub.onum = rfea.onum and true or false
-          fea.gsub.pnum = rfea.pnum and true or false
-          fea.gsub.scmp = rfea.scmp and true or false
-          fea.gsub.subs = rfea.subs and true or false
-          fea.gsub.sups = rfea.sups and true or false
+          fea.gsub.tnum = rfea.gsub.tnum and true or false
+          fea.gsub.lnum = rfea.gsub.lnum and true or false
+          fea.gsub.onum = rfea.gsub.onum and true or false
+          fea.gsub.pnum = rfea.gsub.pnum and true or false
+          fea.gsub.smcp = rfea.gsub.smcp and true or false
+          fea.gsub.subs = rfea.gsub.subs and true or false
+          fea.gsub.sups = rfea.gsub.sups and true or false
         else
           fea.gsub = false
         end
@@ -1517,34 +1556,13 @@ local function font_config(targ, config)
       end
     end
           
-
-    -- local scale = true
-
-    -- Don't scale if optical sizes are present, but just checking for
-    --  minsize/maxsize when parsing fails because font data's so poor.
-    -- One would think that checking the range was greater than some min
-    --  would be a good heuristic, but some fonts set minsize = maxsize
-    --  even though there is only one font (e.g. TeX Gyre Pagella).
-
-    -- if maybe_not_scale then
-    --   for fam,fam_data in pairs(parsed_fam) do
-    --     for series,i in pairs(fam_data) do
-    --       for shape,fnts in pairs(i) do
-    --         if #fnts > 1 then
-    --           scale = false
-    --           goto set_scale
-    --         end
-    --       end
-    --     end
-    --   end
-    -- end
-    --
-    -- :: set_scale ::
+    -- link families to hash_key
 
     lfc_cache.meta_families = lfc_cache.meta_families or {}
     lfc_cache.meta_families.by_hash = lfc_cache.meta_families.by_hash or {}
     lfc_cache.meta_families.by_hash[hash_key] = {}
     local by_hash = lfc_cache.meta_families.by_hash[hash_key] 
+
 
     for fam,fam_data in pairs(parsed_fam) do
       local fake_fds = prepare_fake_fd(fam, fam_data, config)
@@ -1580,11 +1598,11 @@ end
 -- }}}
 
 
----@function fast_font_config(fam, config) {{{
+---@function custom_font_config(fam, config) {{{
 ---@param fam     <string>  Suitable for NFSS family name.
 ---@param config  <table>   Configuration.
 ---@param force   <boolean> Whether to force regeneration.
-local function fast_font_config(fam, config, force) 
+local function custom_font_config(fam, config, force) 
 
   force = force or false
 
@@ -1704,20 +1722,16 @@ local function fast_font_config(fam, config, force)
     if not do_not_cache then
       lfc_cache = lfc_cache or read_cache()
       if lfc_cache[fam] then
-        lfc_cache[fam].fake_fd = config
-        lfc_cache[fam].scalable = scalable
-        lfc_cache[fam].complete = true
-        lfc_cache[fam].config = serialize(config)
-        lfc_cache[fam].paths = paths
-      else 
-        lfc_cache[fam] = {
-          fake_fd = config,
-          scalable = scalable,
-          complete = true,
-          config = serialize(config),
-          paths = paths
-        }
-      end
+        msg("Overwriting cached configuration for " .. fam .. ".", "log")
+      end 
+      lfc_cache[fam] = {
+        fake_fd = config,
+        scalable = scalable,
+        complete = true,
+        config = serialize(config),
+        paths = unique(paths)
+      }
+      hash_cache({fam}, fam, config)
     end
 
     -- Try to create a family even after erroneous user input.
@@ -1757,12 +1771,11 @@ end
 -------------------------------------------------------------------------------
 -- lfc.get_font_data = get_font_data
 lfc.font_config = font_config
-lfc.fast_font_config = fast_font_config
+lfc.custom_font_config = custom_font_config
 -- lfc.fonts = fonts
 -- lfc.write_cache = write_cache
 -- lfc.read_cache = read_cache
 -- lfc.get_cache_path = get_cache_path
--- lfc.add_callback_smcp = add_callback_smcp
 
 
 return lfc
