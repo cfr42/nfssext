@@ -1,4 +1,4 @@
--- $Id: lfc.lua 12039 2026-09-14 18:17:01Z cfrees $
+-- $Id: lfc.lua 12040 2026-09-14 20:07:24Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -- locals {{{
@@ -43,7 +43,6 @@ local function seq_n(arg)
   return {tok_group_begin, arg, tok_group_end}
 end
 
-local function add_callback_data() end
 -- }}}
 -- }}}
 
@@ -708,7 +707,6 @@ local function prepare_fake_fd(fam, fam_data, config, force)
       insert(path_list, p)
       if not resources[p] then
         callbacks_data[p] = true
-        if not lfc_callback_data_active then add_callback_data() end
       end
     end
 
@@ -906,7 +904,7 @@ local function prepare_fake_fd(fam, fam_data, config, force)
       --  shapes?
     end
 
-    path_list = unique(path_list)
+    lfc_cache[fam_var].paths = unique(path_list)
 
     -- Check for missing basic series
     if fam_data.b == nil then
@@ -1021,53 +1019,6 @@ local function write_declare_shape(pre, line, post, size_spec)
 end
 -- }}}
 
----@function write_fake_fd(fam[, scale_factor]) {{{
----@param fam:            NFSS family
----@param scale_factor:   Scaling factor
----@param fake_fd:        If not cached
----@description fake_fd should be nil unless something has gone wrong.
----@description This should never happen in the automated case.
--- Cache format: see above
-local function write_fake_fd(fam, scale_factor, fake_fd)
-  msg({"Emulating font definition file for NFSS family ", fam, "."})
-  if scale_factor and not fake_fd and type(scale_factor) == "table" then
-    fake_fd = scale_factor
-    scale_factor = nil
-  end
-  if not fake_fd then
-    msg_assert(lfc_cache[fam] and lfc_cache[fam].fake_fd and 
-      type(lfc_cache[fam].fake_fd) == "table", {"Cannot find definition for ",
-      fam, "!"})
-    fake_fd = lfc_cache[fam].fake_fd
-  end
-  local pre = {fastcopy(seq_enc_tu), seq_n(fam)}
-  local out = {
-    tok_declare_fam, fastcopy(pre), seq_empty_n
-  }
-  insert(pre, 1, tok_declare_shape)
-
-  local onesize = str_onesize
-  if scale_factor and scale_factor ~= 1 then
-    if lfc_cache[fam].scalable then
-      msg({"Scaling ", fam, " to ", scale_factor, "."})
-      onesize = onesize .. "s*[" .. scale_factor .. "]"
-    else
-      msg("Ignoring scaling factor for fonts with optical sizes.")
-    end
-  end
-
-  for _,line in ipairs(fake_fd) do
-    if line ~= "" then 
-      append(out, write_declare_shape(pre, line, seq_empty_n, onesize))
-    end
-  end
-
-  out = get_toks(out)
-  sprint(-2,out)
-
-end
--- }}}
-
 ---@function add_callback_smcp -- {{{
 ---@description Adds code into the luaotfload.patch_font callback.
 ---@description This adjusts font definition files as fonts are loaded and data
@@ -1076,7 +1027,7 @@ local function add_callback_smcp()
   if lfc_callback_smcp_active then
     msg("Callback already active.", "debug")
   end
-  msg("Adding callback.", "info")
+  msg("Adding smcp callback.", "info")
   luatexbase.add_to_callback(
     "luaotfload.patch_font",
     function(data, spec, id)
@@ -1085,7 +1036,7 @@ local function add_callback_smcp()
 
       if lfc_cache.callbacks_smcp and lfc_cache.callbacks_smcp[path] then
 
-        msg("Processing callback ...", "info")
+        msg("Processing smcp callback ...", "info")
         msg({"Path:\t", path}, "debug")
         msg({"Spec:\t", spec}, "debug")
         msg({"Id:\t", id}, "debug")
@@ -1232,6 +1183,79 @@ end
 --}}}
 
 -------------------------------------------------------------------------------
+-- Callback functions **must** come before write_fake_fd()!!
+--    Or, for some reason, one works and one doesn't.
+--    I have no idea why ...
+-- write_fake_fd() should be the **only** function calling add_callback_*().
+--    All other functions may write requests to lfc_cache **only**.
+-- This function is nonetheless called too often.
+-- E.g. it defines *all* family matches for lookups, even though only some
+--    are likely required.
+-------------------------------------------------------------------------------
+
+---@function write_fake_fd(fam[, scale_factor]) {{{
+---@param fam:            NFSS family
+---@param scale_factor:   Scaling factor
+---@param fake_fd:        If not cached
+---@description fake_fd should be nil unless something has gone wrong.
+---@description This should never happen in the automated case.
+-- Cache format: see above
+local function write_fake_fd(fam, scale_factor, fake_fd)
+  msg({"Emulating font definition file for NFSS family ", fam, "."})
+  if scale_factor and not fake_fd and type(scale_factor) == "table" then
+    fake_fd = scale_factor
+    scale_factor = nil
+  end
+  if not fake_fd then
+    msg_assert(lfc_cache[fam] and lfc_cache[fam].fake_fd and 
+      type(lfc_cache[fam].fake_fd) == "table", {"Cannot find definition for ",
+      fam, "!"})
+    fake_fd = lfc_cache[fam].fake_fd
+  end
+  local pre = {fastcopy(seq_enc_tu), seq_n(fam)}
+  local out = {
+    tok_declare_fam, fastcopy(pre), seq_empty_n
+  }
+  insert(pre, 1, tok_declare_shape)
+
+  local onesize = str_onesize
+  if scale_factor and scale_factor ~= 1 then
+    if lfc_cache[fam].scalable then
+      msg({"Scaling ", fam, " to ", scale_factor, "."})
+      onesize = onesize .. "s*[" .. scale_factor .. "]"
+    else
+      msg("Ignoring scaling factor for fonts with optical sizes.")
+    end
+  end
+
+  for _,line in ipairs(fake_fd) do
+    if line ~= "" then 
+      append(out, write_declare_shape(pre, line, seq_empty_n, onesize))
+    end
+  end
+
+  out = get_toks(out)
+  sprint(-2,out)
+
+  if not lfc_cache[fam].complete and not lfc_callback_smcp_active then
+    add_callback_smcp()
+  end
+
+  msg_assert(lfc_cache[fam].paths, {"No paths cached for ", fam, "!"}, "debug")
+
+  if lfc_cache.callbacks_data and not lfc_callback_data_active then
+    for _,path in ipairs(lfc_cache[fam].paths) do
+      if lfc_cache.callbacks_data[path] then
+        add_callback_data()
+        break
+      end
+    end
+  end
+
+end
+-- }}}
+
+-------------------------------------------------------------------------------
 -- Main configuration function
 -- font_config()
 -------------------------------------------------------------------------------
@@ -1242,16 +1266,6 @@ local function use_cached_fd(fam, scale)
   msg_assert(lfc_cache[fam] and lfc_cache[fam].fake_fd,
     "Cache failure. Try removing the cache before recompiling.")
   msg({"Using cached fd emulation for ", fam, "."})
-
-  if not lfc_callback_smcp_active and not lfc_cache[fam].complete then
-    add_callback_smcp()
-  end
-
-  -- This is a sledge hammer for a glass spider.
-  if not lfc_callback_data_active and lfc_cache.callbacks_data ~= nil then 
-    msg("Enabling data callback", "debug")
-    add_callback_data() 
-  end
 
   return write_fake_fd(fam, lfc_cache[fam].scalable and scale or nil) 
 end
@@ -1270,8 +1284,6 @@ local function font_config(targ, config)
   if targ == nil then return nil end
 
   lfc_cache = lfc_cache or read_cache()
-
-  local callback_done = lfc_cache and lfc_cache.callbacks_smcp and true or false
 
   targ = lower(targ)
   config = config or {}
@@ -1582,12 +1594,6 @@ local function font_config(targ, config)
 
     write_cache(lfc_cache)
 
-    -- Sledge hammer and fairy lights.
-    if lfc_callback_smcp_active == false and lfc_cache.callbacks_smcp ~= nil then 
-      msg("Enabling callback", "debug")
-      add_callback_smcp() 
-    end
-
   else
 
     for _,fam_name in ipairs(lfc_cache.meta_families.by_hash[hash_key]) do
@@ -1711,7 +1717,6 @@ local function custom_font_config(fam, config, force)
               then
                 lfc_cache.callbacks_data = lfc_cache.callbacks_data or {}
                 lfc_cache.callbacks_data[frag.font] = true
-                if not lfc_callback_data_active then add_callback_data() end
             end
           end
         end
@@ -1755,19 +1760,7 @@ end
 -- Probably the callback should only be added when a family is defined.
 -- For now, this loads regardless of what the font uses.
 local cache_path = get_cache_path()
-if isfile(cache_path) then
-  lfc_cache = read_cache()
-  if lfc_cache then
-    if lfc_cache.callbacks_smcp then 
-      msg("Activating callback", "debug")
-      add_callback_smcp() 
-    end
-    if lfc_cache.callbacks_data then 
-      msg("Activating callback", "debug")
-      add_callback_data() 
-    end
-  end
-end
+lfc_cache = isfile(cache_path) and read_cache() or {}
 -- }}}
 
 -------------------------------------------------------------------------------
