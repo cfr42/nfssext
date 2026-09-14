@@ -1,4 +1,4 @@
--- $Id: lfc.lua 12038 2026-09-14 14:06:54Z cfrees $
+-- $Id: lfc.lua 12039 2026-09-14 18:17:01Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -- locals {{{
@@ -36,10 +36,9 @@ local tok_declare_fam = create("DeclareFontFamily")
 local tok_declare_shape = create("DeclareFontShape")
 local tok_group_begin = create(123, 1)
 local tok_group_end = create(125, 2)
-local tok_uni_fontfile = create("UnicodeFontFile")
 
-local seq_enc_tu = {tok_group_begin, "TU", tok_group_end}
 local seq_empty_n = {tok_group_begin, tok_group_end}
+local seq_enc_tu = {tok_group_begin, "TU", tok_group_end}
 local function seq_n(arg)
   return {tok_group_begin, arg, tok_group_end}
 end
@@ -63,11 +62,10 @@ local function msg(text, level)
   level = level or "warn"
   if level == "debug" and not lfc_debug then return end
   if type(text) == "string" then
-    write_nl("[lfc] " .. msg_level[level] .. ":\t" .. text .. "\n")
+    write_nl(concat({"[lfc] ", msg_level[level], ":\t", text, "\n"}, ""))
   else
-    for _,txt in ipairs(text) do
-      write_nl("[lfc] " .. msg_level[level] .. ":\t" .. txt .. "\n")
-    end
+    write_nl(concat({"[lfc] ", msg_level[level], ":\t", concat(text, ""), "\n"},
+      ""))
   end
   if level == "bug" then
     write_nl("[lfc] Bug:\tPlease report to one of\n\
@@ -77,7 +75,6 @@ local function msg(text, level)
       [lfc] Bug:\t\t\\usepackage[debug]{lua-font-config}\n")
     error(1)
   elseif level == "err" then
-    write_nl("[lfc] Error:\t" .. text .. ".\n")
     error(2)
   end
 end
@@ -87,7 +84,8 @@ local function msg_assert(cond, text, level)
   end
 end
 if lfc_debug then
-  function msg_assert(cond, text, level) assert(cond, text) end
+  function msg_assert(cond, text, level) assert(cond, (type(text) == "string" 
+    and text) or concat(text)) end
 end
 -- }}}
 
@@ -163,6 +161,7 @@ lfc_env.fonts.names.load(false, false)
 local cleanfilename = lfc_env.fonts.names.cleanfilename
 
 -- }}}
+
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -- late locals {{{
@@ -172,6 +171,7 @@ local resolve = names.resolve
 local lookup_font_file = names.lookup_font_file
 local font_data = names.data
 -- }}}
+
 -------------------------------------------------------------------------------
 -- Utilities for caching data
 -------------------------------------------------------------------------------
@@ -183,9 +183,9 @@ local function get_cache_path()
   local path = (gsub(lfc_fonts.names.cache.writable, "^(.*/)[^/]+$", "%1" ))
   msg_assert(path ~= nil, "Cannot find place for cache!")
   if not isdir(path .. "/lfc") then
-    msg_assert(is_writable(path), "Cache " .. path .. " not writable!")
-    msg_assert(mkdir(path .. "/lfc"), "Cannot create cache " .. path .. 
-      "/lfc" .. " directory!")
+    msg_assert(is_writable(path), {"Cache ", path, " not writable!"})
+    msg_assert(mkdir(path .. "/lfc"), {"Cannot create cache ", path, 
+    "/lfc", " directory!"})
   end
   path = path .. "/lfc"
   return path .. "/" .. "lfc_cache.lua"
@@ -223,6 +223,7 @@ local function write_cache(stuff, loc)
   end
 end
 -- }}}
+
 -------------------------------------------------------------------------------
 -- Hash utilities
 -------------------------------------------------------------------------------
@@ -383,10 +384,11 @@ end
 local function resolve_one(fnt)
   if not fnt then return nil end
   fnt = resolve(fnt)
-  msg_assert(fnt, "Invalid font specification: " .. fnt .. ".", "warn")
+  msg_assert(fnt, {"Invalid font specification: ", fnt, "."}, "warn")
   return (fnt and lookup_font_file(fnt)) or nil
 end
 -- }}}
+
 -------------------------------------------------------------------------------
 -- Tables to translate db descriptors for context into 
 -- LaTeX NFSS identifiers from fntguide
@@ -497,7 +499,7 @@ local function parse_spec(kind, descriptor)
   local spec = kind[descriptor]
   if spec ~= nil then return spec 
   else
-    msg(descriptor .. " not a valid value.")
+    msg({descriptor, " not a valid value."})
     return descriptor
   end
 end
@@ -509,7 +511,6 @@ end
 ---@config  config: table or string of configurations
 local function parse_config(fam, config) 
   local configs = {}
-  local auto = true
   if not config then 
     configs[fam] = str_fea_default
   elseif type(config) == "table" then
@@ -540,6 +541,8 @@ local function parse_config(fam, config)
       else
         insert(cfg, config.fea)
         local pre, post = "", ""
+        config.fea = (gsubs(gsubs(config.fea, "(%a%a%a%a)%s*=%s*true", "+%1"),
+          "(%a%a%a%a)%s*=%s*false", "-%1"))
         -- Should use long suffixes here, but this is more convenient for now.
         for sign,subs in gmatch(config.fea, "([+-])(%a%a%a%a);") do
           if sign == "+" then
@@ -570,8 +573,8 @@ local function parse_config(fam, config)
     end
   else
     msg_assert(type(config) == "string", 
-      "Expected configuration to be table or string, but received " .. 
-      type(config) .. " for " .. fam)
+      {"Expected configuration to be table or string, but received ", 
+      type(config), " for ", fam})
     local pre, post, suff = "", "", ""
     for sign,subs in gmatch(config, "([+-])(%a%a%a%a);") do
       if sign == "+" then
@@ -712,7 +715,7 @@ local function prepare_fake_fd(fam, fam_data, config, force)
     for series,series_data in pairs(fam_data) do
       local std_lines = {n = 0, it = 0, sl = 0}
       for shape,fnts in pairs(series_data) do
-        msg("Processing font(s) for " .. series .. " and " .. shape, "debug")
+        msg({"Processing font(s) for ", series, " and ", shape}, "debug")
 
         msg_assert(#fnts ~= 0, "The number of fonts should never be zero!")
 
@@ -752,8 +755,8 @@ local function prepare_fake_fd(fam, fam_data, config, force)
             local pre = ""
             if fnt.nfss_hash == hash_last then
               pre = "%% "
-              msg("Duplicate fonts found: hash " .. 
-                hash_last .. " for family " .. fam_var)
+              msg({"Duplicate fonts found: hash ", 
+                hash_last, " for family ", fam_var})
             end
 
             if shape_data == 1 then min = ""
@@ -797,8 +800,8 @@ local function prepare_fake_fd(fam, fam_data, config, force)
             for _,i in ipairs(ssubs) do
               fake_fd_insert({series, shape, enquote(i[2]), cfg})
             end
-            msg("Apparent duplicates for " .. fam .. "/" .. series ..
-              "/" .. shape .. ".")
+            msg({"Apparent duplicates for ", fam, "/", series,
+              "/", shape, "."})
           end
 
         end
@@ -822,7 +825,7 @@ local function prepare_fake_fd(fam, fam_data, config, force)
         if series_data[to_shape] == nil and series_data[base_shape] then
 
           if not (std_lines[base_shape] > 0) then
-            msg("No std_lines for " .. base_shape .. ".")
+            msg({"No std_lines for ", base_shape, "."})
             goto trans_skip
           end
 
@@ -929,6 +932,7 @@ local function prepare_fake_fd(fam, fam_data, config, force)
   return fake_fds
 end
 -- }}}
+
 -------------------------------------------------------------------------------
 -- Manage font definition files, cache etc.
 -- get_toks()   write_declare_shape()   write_fake_fd()   add_callback_smcp()
@@ -943,8 +947,8 @@ local function get_toks(items)
       if type(item) == "userdata" or type(item) == "string" then 
         insert(toks, item)
       elseif type(item) == "table" then append(toks, get_toks(item))
-      else msg_assert(false, "Unidentified Lua Object: "
-        .. type(item) .. " (" .. item .. ")!")
+      else msg_assert(false, {"Unidentified Lua Object: ", type(item),
+        " (", item, ")!"})
       end
     end
   end
@@ -968,6 +972,10 @@ local function write_declare_shape(pre, line, post, size_spec)
 
   local out = {pre}
 
+  local function seq_font_spec(fnt, fea)
+    return  { "\"[", fnt, "]:", fea, "\"" }
+  end
+
   -- series
   append(out, seq_n(line[1]))
   -- shape
@@ -979,17 +987,16 @@ local function write_declare_shape(pre, line, post, size_spec)
 
     if kind == "string" then 
 
-      append(out, { tok_group_begin, str_onesize, tok_uni_fontfile,
-      seq_n(line[3]), seq_n(line[4]), tok_group_end })
+      append(out, { tok_group_begin, str_onesize, seq_font_spec(line[3], 
+        line[4]), tok_group_end })
 
     else 
-      msg_assert(kind == "table", "Unexpected type " .. kind .. "!")
+      msg_assert(kind == "table", {"Unexpected type ", kind, "!"})
 
       insert(out, tok_group_begin)
 
       for _,item in ipairs(line[3]) do
-        append(out, {item[1], tok_uni_fontfile, seq_n(item[2]), 
-        seq_n(line[4]) })
+        append(out, {item[1], seq_font_spec(item[2], line[4])}) 
       end
 
       insert(out, tok_group_end)
@@ -1022,19 +1029,18 @@ end
 ---@description This should never happen in the automated case.
 -- Cache format: see above
 local function write_fake_fd(fam, scale_factor, fake_fd)
-  msg("Emulating font definition file for NFSS family " .. fam .. ".")
+  msg({"Emulating font definition file for NFSS family ", fam, "."})
   if scale_factor and not fake_fd and type(scale_factor) == "table" then
     fake_fd = scale_factor
     scale_factor = nil
   end
   if not fake_fd then
     msg_assert(lfc_cache[fam] and lfc_cache[fam].fake_fd and 
-    type(lfc_cache[fam].fake_fd) == "table", "Cannot find definition for " ..
-    fam .. "!")
+      type(lfc_cache[fam].fake_fd) == "table", {"Cannot find definition for ",
+      fam, "!"})
     fake_fd = lfc_cache[fam].fake_fd
   end
-  local pre = fastcopy(seq_enc_tu)
-  append(pre, seq_n(fam))
+  local pre = {fastcopy(seq_enc_tu), seq_n(fam)}
   local out = {
     tok_declare_fam, fastcopy(pre), seq_empty_n
   }
@@ -1043,8 +1049,7 @@ local function write_fake_fd(fam, scale_factor, fake_fd)
   local onesize = str_onesize
   if scale_factor and scale_factor ~= 1 then
     if lfc_cache[fam].scalable then
-      inspect(scale_factor)
-      msg("Scaling " .. fam .. " to " .. scale_factor .. ".")
+      msg({"Scaling ", fam, " to ", scale_factor, "."})
       onesize = onesize .. "s*[" .. scale_factor .. "]"
     else
       msg("Ignoring scaling factor for fonts with optical sizes.")
@@ -1081,9 +1086,9 @@ local function add_callback_smcp()
       if lfc_cache.callbacks_smcp and lfc_cache.callbacks_smcp[path] then
 
         msg("Processing callback ...", "info")
-        msg("Path:\t" .. path, "debug")
-        msg("Spec:\t" .. spec, "debug")
-        msg("Id:\t" .. id, "debug")
+        msg({"Path:\t", path}, "debug")
+        msg({"Spec:\t", spec}, "debug")
+        msg({"Id:\t", id}, "debug")
         local fam = lfc_cache.callbacks_smcp[path].fam
         local incomplete = lfc_cache.incomplete 
         -- local fd 
@@ -1096,10 +1101,10 @@ local function add_callback_smcp()
 
           if incomplete and incomplete[fam] and incomplete[fam][line_no] then
 
-            msg("Completing " .. fam .. "...", "log")
+            msg({"Completing ", fam, "...", "log"})
 
             msg_assert(fake_fd, "Data missing from cache!")
-            msg("line:\t" .. line_no, "debug")
+            msg({"line:\t", line_no}, "debug")
 
             if not data.resources.features.gsub or 
               not data.resources.features.gsub.smcp then
@@ -1107,8 +1112,8 @@ local function add_callback_smcp()
               -- Warn because the usual LaTeX warning gets eaten.
               msg("Missing small-caps (italic/oblique/upright).")
             end
-            msg("fake_fd[line_no]:\t" .. line_no .. ": " .. 
-              (fake_fd[line_no] == "" and "" or serialize(fake_fd[line_no])), 
+            msg({"fake_fd[line_no]:\t", line_no, ": ", 
+              (fake_fd[line_no] == "" and "" or serialize(fake_fd[line_no]))},
               "debug")
 
             -- tidy up incompletes list
@@ -1142,7 +1147,7 @@ local function add_callback_smcp()
           lfc_cache.callbacks_smcp[path] = nil
         end
 
-        msg("Rewrote fd for " .. fam .. " ...", "log")
+        msg({"Rewrote fd for ", fam, "..."}, "log")
         if lfc_debug then inspect(fake_fd) end
 
         msg("Updating cache ...", "info")
@@ -1179,9 +1184,9 @@ add_callback_data = function()
       if lfc_cache.callbacks_data and lfc_cache.callbacks_data[path] then
 
         msg("Processing data callback ...", "info")
-        msg("Path:\t" .. path, "debug")
-        msg("Spec:\t" .. spec, "debug")
-        msg("Id:\t" .. id, "debug")
+        msg({"Path:\t", path}, "debug")
+        msg({"Spec:\t", spec}, "debug")
+        msg({"Id:\t", id}, "debug")
 
         lfc_cache.resources = lfc_cache.resources or {}
         lfc_cache.resources[path] = lfc_cache.resources[path] or {}
@@ -1210,7 +1215,7 @@ add_callback_data = function()
           lfc_cache.callbacks_data = nil 
         end
 
-        msg("Cached resources for " .. path .. " ...", "log")
+        msg({"Cached resources for ", path, " ..."}, "log")
         if lfc_debug then inspect(lfc_cache.resources[path]) end
 
         msg("Updating cache ...", "info")
@@ -1225,6 +1230,7 @@ add_callback_data = function()
 
 end
 --}}}
+
 -------------------------------------------------------------------------------
 -- Main configuration function
 -- font_config()
@@ -1235,7 +1241,7 @@ end
 local function use_cached_fd(fam, scale) 
   msg_assert(lfc_cache[fam] and lfc_cache[fam].fake_fd,
     "Cache failure. Try removing the cache before recompiling.")
-  msg("Using cached fd emulation for " .. fam .. ".")
+  msg({"Using cached fd emulation for ", fam, "."})
 
   if not lfc_callback_smcp_active and not lfc_cache[fam].complete then
     add_callback_smcp()
@@ -1278,7 +1284,7 @@ local function font_config(targ, config)
   local metadata = f.metadata
 
   local fam_meta = metadata.fam_meta
-  msg_assert(fam_meta ~= nil, "No reults for " .. targ)
+  msg_assert(fam_meta ~= nil, {"No reults for ", targ})
 
   if metadata.fd_file then return f end
 
@@ -1622,10 +1628,10 @@ local function custom_font_config(fam, config, force)
     -- We should have a family name, configuration table [and force or not].
 
     -- Errors
-    msg_assert(type(fam) == "string", "Expected family name to be a string, \z
-      but found " .. type(fam) .. "!", "err")
-    msg_assert(config and type(config) == "table", "Expected configuration table, \z
-      but found " .. (config and type(config) or "nothing") .. "!", "err")
+    msg_assert(type(fam) == "string", {"Expected family name to be a string, \z
+      but found ", type(fam), "!"}, "err")
+      msg_assert(config and type(config) == "table", {"Expected configuration table, \z
+      but found ", (config and type(config) or "nothing"), "!"}, "err")
 
     fam = cleanfilename(fam)
 
@@ -1684,9 +1690,9 @@ local function custom_font_config(fam, config, force)
           for j,frag in ipairs(cfg.fonts) do
             if not (frag.min or frag.max) or not (frag.font and 
               type(frag.font) == "string") then
-              msg("Invalid font specification: <" .. (frag.min or "0") .. "-" ..
-                (frag.max or "0") .. ">" .. (frag.font and tostring(frag.font) 
-                or "\"\"") .. "!")
+              msg({"Invalid font specification: <", (frag.min or "0"), "-",
+                (frag.max or "0"), ">", (frag.font and tostring(frag.font) 
+                or "\"\""), "!"})
               config[i] = ""
               do_not_cache = true
               goto invalid_font_request
@@ -1722,7 +1728,7 @@ local function custom_font_config(fam, config, force)
     if not do_not_cache then
       lfc_cache = lfc_cache or read_cache()
       if lfc_cache[fam] then
-        msg("Overwriting cached configuration for " .. fam .. ".", "log")
+        msg({"Overwriting cached configuration for ", fam, "."}, "log")
       end 
       lfc_cache[fam] = {
         fake_fd = config,
@@ -1763,6 +1769,7 @@ if isfile(cache_path) then
   end
 end
 -- }}}
+
 -------------------------------------------------------------------------------
 
 -------------------------------------------------------------------------------
