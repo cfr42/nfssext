@@ -1,4 +1,24 @@
--- $Id: lfc.lua 12040 2026-09-14 20:07:24Z cfrees $
+-- $Id: lfc.lua 12041 2026-09-15 02:05:24Z cfrees $
+-------------------------------------------------------------------------------
+-- TODO
+-- Code should be cleaned up - there's a lot of cruft here.
+-- Config parsing looks horrible.
+-- Family name suffixes not recommended.
+--    - Not sure if it's an issue, but it is awkward using CamelCase here.
+--    - I also really, really don't like use of caps in filenames, even 
+--        virtual ones.
+-- Too many font defns are written.
+-- There's no user interface.
+-- Potential conflicts re. family names, multiple configs etc.
+--     - Use hashes more extensively?
+-- There's some disconnect between the data I'm using and the data luaotfload
+--    uses, even though they are the same data.
+--      - I guess luaotfload doesn't recognise cleanfilename() returns.
+-- The code is too long, too complex, too clunky and too simplistic.
+--    (Yes, of course, it can be both.)
+-- Custom fn. is very slow.
+-- Cached data should depend on db/fnt versions.
+-- Loading the ConTeXt file differently?
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -- locals {{{
@@ -27,6 +47,7 @@ local lfc_cache
 local lfc_debug = lfc_debug or true
 local lfc_callback_smcp_active = false
 local lfc_callback_data_active = false
+local lfc_callback_cache_active = false
 
 local function enquote(str) return "\"" .. str .. "\"" end
 local str_onesize = "<->"
@@ -206,19 +227,17 @@ local function read_cache(loc)
 end
 -- }}}
 
----@function write_cache([stuff[, loc]] -- {{{
----@param stuff <table> Table to save. Default: lua_cache.
----@param loc <string>  Full path of cache. Default: from get_cache_path().
-local function write_cache(stuff, loc)
+---@function write_cache() -- {{{
+local function write_cache()
   msg("Writing cache ...", "debug")
-  stuff = stuff or lfc_cache
-  if stuff == nil then return 1 end
-  loc = loc or get_cache_path()
-  -- Duplicates data referenced by pointers/links/whatever they are.
-  save (loc, stuff)
-  if lfc_debug then 
-    msg("Saved cache state:\n", "debug")
-    inspect(lfc_cache) 
+  if lfc_cache then
+    local loc = get_cache_path()
+    -- Duplicates data referenced by pointers/links/whatever they are.
+    save (loc, lfc_cache)
+    if lfc_debug then 
+      msg("Saved cache state:\n", "debug")
+      inspect(lfc_cache) 
+    end
   end
 end
 -- }}}
@@ -1101,8 +1120,10 @@ local function add_callback_smcp()
         msg({"Rewrote fd for ", fam, "..."}, "log")
         if lfc_debug then inspect(fake_fd) end
 
-        msg("Updating cache ...", "info")
-        write_cache(lfc_cache)
+        msg("Checking cache enabled ...", "info")
+        if not lfc_callback_cache_active then
+          add_callback_cache()
+        end
 
       end
 
@@ -1169,8 +1190,10 @@ add_callback_data = function()
         msg({"Cached resources for ", path, " ..."}, "log")
         if lfc_debug then inspect(lfc_cache.resources[path]) end
 
-        msg("Updating cache ...", "info")
-        write_cache(lfc_cache)
+        msg("Checking cache is active ...", "info")
+        if not lfc_callback_cache_active then
+          add_callback_cache()
+        end
 
       end
 
@@ -1181,6 +1204,32 @@ add_callback_data = function()
 
 end
 --}}}
+
+---@function add_callback_cache() {{{
+---@description This writes the cache at the end of the run.
+---@description It should probably be done from LaTeX, though?
+---@description Here the debugging is lost as the .log is closed already.
+---@description The manual ominously warns ‘Use it at your own risk.’
+local function add_callback_cache()
+  if lfc_callback_cache_active then
+    msg("Cache callback already active.", "debug")
+  end
+  msg("Adding cache callback.", "info")
+  luatexbase.add_to_callback(
+    "wrapup_run",
+    function()
+      if lfc_cache then
+        msg("Updating cache ...", "log")
+        write_cache()
+      else
+        msg("No cache data found!")
+      end
+    end,
+    "lfc write cache to disk"
+  )
+  lfc_callback_cache_active = true
+end
+-- }}}
 
 -------------------------------------------------------------------------------
 -- Callback functions **must** come before write_fake_fd()!!
@@ -1592,7 +1641,7 @@ local function font_config(targ, config)
       end
     end
 
-    write_cache(lfc_cache)
+    if not lfc_callback_cache_active then add_callback_cache() end
 
   else
 
