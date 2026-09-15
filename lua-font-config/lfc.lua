@@ -1,4 +1,4 @@
--- $Id: lfc.lua 12041 2026-09-15 02:05:24Z cfrees $
+-- $Id: lfc.lua 12042 2026-09-15 03:07:02Z cfrees $
 -------------------------------------------------------------------------------
 -- TODO
 -- Code should be cleaned up - there's a lot of cruft here.
@@ -957,19 +957,17 @@ end
 ---@function get_toks(items) {{{
 ---@param items   <table> of [tables of] toks, strings
 ---@description   Returns sequence of toks, strings for sprint()
+-- This is an internal fn, so it should™ only receive valid input --- if not,
+--    I doubt type-checking here will help anything.
 local function get_toks(items)
-  local toks = {}
-  for _,item in ipairs(items) do
-    if item ~= "" then
-      if type(item) == "userdata" or type(item) == "string" then 
-        insert(toks, item)
-      elseif type(item) == "table" then append(toks, get_toks(item))
-      else msg_assert(false, {"Unidentified Lua Object: ", type(item),
-        " (", item, ")!"})
-      end
+  if type(items) == "table" then 
+    local toks = {}
+    for _,item in ipairs(items) do
+      append(toks, get_toks(item))
     end
+    return toks
+  else return {items}
   end
-  return toks
 end
 -- }}}
 
