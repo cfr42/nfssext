@@ -1,68 +1,112 @@
--- $Id: lfc.lua 12042 2026-09-15 03:07:02Z cfrees $
+-- $Id: lfc.lua 12043 2026-09-16 23:27:01Z cfrees $
 -------------------------------------------------------------------------------
 -- TODO
+--
 -- Code should be cleaned up - there's a lot of cruft here.
+--
 -- Config parsing looks horrible.
+--
 -- Family name suffixes not recommended.
 --    - Not sure if it's an issue, but it is awkward using CamelCase here.
 --    - I also really, really don't like use of caps in filenames, even 
 --        virtual ones.
+--
 -- Too many font defns are written.
+--
 -- There's no user interface.
+--
 -- Potential conflicts re. family names, multiple configs etc.
 --     - Use hashes more extensively?
+--
 -- There's some disconnect between the data I'm using and the data luaotfload
 --    uses, even though they are the same data.
 --      - I guess luaotfload doesn't recognise cleanfilename() returns.
+--
 -- The code is too long, too complex, too clunky and too simplistic.
 --    (Yes, of course, it can be both.)
+--
 -- Custom fn. is very slow.
+--
 -- Cached data should depend on db/fnt versions.
+--
 -- Loading the ConTeXt file differently?
+--
+-- Reuse data for overlapping families?
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -- locals {{{
 -- imports {{{
-local is_writable = file.is_writable
-local isdir, isfile, mkdir = lfs.isdir, lfs.isfile, lfs.mkdir
-local md5sum = md5.sumhexa
+local is_writable           = file.is_writable
+local isdir, isfile, mkdir  = lfs.isdir, lfs.isfile, lfs.mkdir
+local get_functions_table   = lua.get_functions_table
+local new_lua_function      = luatexbase.new_luafunction
+local md5sum                = md5.sumhexa
 -- string
 local gsub, gmatch, match = string.gsub, string.gmatch, string.match
-local format, lower = string.format, string.lower
+local format, lower       = string.format, string.lower
 -- table
-local append, insert = table.append, table.insert
-local copy, count, fastcopy = table.copy, table.count, table.fastcopy
-local load, save, setmetatableindex = table.load, table.save, table.setmetatableindex
+local append, insert            = table.append, table.insert
+local copy, count, fastcopy     = table.copy, table.count, table.fastcopy
+local load, mirrored, sort      = table.load, table.mirrored, table.sort
+local save, setmetatableindex   = table.save, table.setmetatableindex
 local concat, serialize, unique = table.concat, table.serialize, table.unique
-local mirrored = table.mirrored
-local sort = table.sort
 -- tex | texio | token
-local sprint = tex.sprint
-local write_nl = texio.write_nl
-local create = token.create
+local sprint                  = tex.sprint
+local write_nl                = texio.write_nl
+local create, param, set_lua  = token.create, token.scan_string, token.set_lua
 -- }}}
 
 lfc = {} -- ours {{{
+
+-- Booleans
 local lfc_cache
-local lfc_debug = lfc_debug or true
-local lfc_callback_smcp_active = false
-local lfc_callback_data_active = false
+local lfc_debug                 = lfc_debug or true
+local lfc_callback_smcp_active  = false
+local lfc_callback_data_active  = false
 local lfc_callback_cache_active = false
 
+-- Strings
 local function enquote(str) return "\"" .. str .. "\"" end
 local str_onesize = "<->"
 local str_fea_default = "mode=node;language=dflt;script=dflt;+tlig"
 
-local tok_declare_fam = create("DeclareFontFamily")
+-- Single tokens
+local tok_group_begin   = create(123, 1)
+local tok_group_end     = create(125, 2)
+local tok_declare_fam   = create("DeclareFontFamily")
 local tok_declare_shape = create("DeclareFontShape")
-local tok_group_begin = create(123, 1)
-local tok_group_end = create(125, 2)
+local tok_renewcommand  = create("renewcommand")
+local tok_rmdefault     = create("rmdefault")
+local tok_sfdefault     = create("sfdefault")
+local tok_ttdefault     = create("ttdefault")
 
-local seq_empty_n = {tok_group_begin, tok_group_end}
-local seq_enc_tu = {tok_group_begin, "TU", tok_group_end}
-local function seq_n(arg)
-  return {tok_group_begin, arg, tok_group_end}
+-- Token lists
+local toks_empty_n = {tok_group_begin, tok_group_end}
+local function embrace(arg) return {tok_group_begin, arg, tok_group_end} end
+local toks_enc_tu = embrace("TU")
+
+---@function luafunction_to_cs(csname, fn, tex_global, protected) -- {{{
+---@param csname      <string>    Macro to set/create.
+---@param fn          <function>  Lua function.
+---@param tex_global  <boolean>   Whether to create global macro.
+---@param protected   <boolean>   Whether to create protected macro.
+---@description Registers the Lua function fn in the table of functions and 
+---@description   creates the macro \csname with the specified properties.
+---@description tex_global, protected are optional, default to false. 
+-- See exp-lua-fns.tex for example, explanation etc.
+-- Simplification: Udi Fogiel:
+--    https://chat.stackexchange.com/transcript/message/69209032#69209032
+local function luafunction_to_cs(csname, fn, ...)
+
+  local t = get_functions_table()
+
+  local n = new_lua_function(csname)
+
+  t[n] = fn
+
+  set_lua(csname, n, ...)
 end
+-- }}}
 
 -- }}}
 -- }}}
@@ -108,6 +152,12 @@ if lfc_debug then
     and text) or concat(text)) end
 end
 -- }}}
+
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
@@ -987,14 +1037,14 @@ local function write_declare_shape(pre, line, post, size_spec)
 
   local out = {pre}
 
-  local function seq_font_spec(fnt, fea)
+  local function toks_font_spec(fnt, fea)
     return  { "\"[", fnt, "]:", fea, "\"" }
   end
 
   -- series
-  append(out, seq_n(line[1]))
+  append(out, embrace(line[1]))
   -- shape
-  append(out, seq_n(line[2]))
+  append(out, embrace(line[2]))
 
   if line[3] then
 
@@ -1002,7 +1052,7 @@ local function write_declare_shape(pre, line, post, size_spec)
 
     if kind == "string" then 
 
-      append(out, { tok_group_begin, str_onesize, seq_font_spec(line[3], 
+      append(out, { tok_group_begin, str_onesize, toks_font_spec(line[3], 
         line[4]), tok_group_end })
 
     else 
@@ -1011,7 +1061,7 @@ local function write_declare_shape(pre, line, post, size_spec)
       insert(out, tok_group_begin)
 
       for _,item in ipairs(line[3]) do
-        append(out, {item[1], seq_font_spec(item[2], line[4])}) 
+        append(out, {item[1], toks_font_spec(item[2], line[4])}) 
       end
 
       insert(out, tok_group_end)
@@ -1259,9 +1309,9 @@ local function write_fake_fd(fam, scale_factor, fake_fd)
       fam, "!"})
     fake_fd = lfc_cache[fam].fake_fd
   end
-  local pre = {fastcopy(seq_enc_tu), seq_n(fam)}
+  local pre = {fastcopy(toks_enc_tu), embrace(fam)}
   local out = {
-    tok_declare_fam, fastcopy(pre), seq_empty_n
+    tok_declare_fam, fastcopy(pre), toks_empty_n
   }
   insert(pre, 1, tok_declare_shape)
 
@@ -1277,7 +1327,7 @@ local function write_fake_fd(fam, scale_factor, fake_fd)
 
   for _,line in ipairs(fake_fd) do
     if line ~= "" then 
-      append(out, write_declare_shape(pre, line, seq_empty_n, onesize))
+      append(out, write_declare_shape(pre, line, toks_empty_n, onesize))
     end
   end
 
@@ -1800,11 +1850,38 @@ end
 -- }}}
 
 -------------------------------------------------------------------------------
+-- LaTeX interface things
+-------------------------------------------------------------------------------
+local fam_defaults = { -- {{{
+  rm = rmdefault,
+  sf = sfdefault,
+  tt = ttdefault,
+}
+-- }}}
+
+---@function get_fam_default_scanner(fam) {{{
+---@param fam   <string: "rm" | "sf" | "tt">  NFSS default family.
+---@description Returns a Lua function which scans an argument and sets the
+---@description   specified family default to the given value.
+local function get_fam_default_scanner(fam) 
+  return function()
+    local fam_name = param()
+    sprint(-2, get_toks({renewcommand, fam_defaults[fam], embrace(fam_name)}))
+  end
+end
+-- }}}
+
+-- Generate TeX macros which will use a Lua function to set rm, sf and tt 
+--  families.
+luafunction_to_cs("__lfc_set_rm:w", get_fam_default_scanner("rm"))
+luafunction_to_cs("__lfc_set_sf:w", get_fam_default_scanner("sf"))
+luafunction_to_cs("__lfc_set_tt:w", get_fam_default_scanner("tt"))
+
+-------------------------------------------------------------------------------
 -- Setup on load
 -------------------------------------------------------------------------------
 -- {{{
 -- Forced for now
--- Probably the callback should only be added when a family is defined.
 -- For now, this loads regardless of what the font uses.
 local cache_path = get_cache_path()
 lfc_cache = isfile(cache_path) and read_cache() or {}
