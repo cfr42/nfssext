@@ -1,0 +1,348 @@
+% \iffalse meta-comment
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% lua-font-config.dtx
+% Additions and changes Copyright (C) 2024-2026 Clea F. Rees.
+% Code from skeleton.dtx Copyright (C) 2015-2024 Scott Pakin (see below).
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   https://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2008-05-04 or later.
+%
+% This work has the LPPL maintenance status \muaintained'.
+%
+% The Current Maintainer of this work is Clea F. Rees.
+%
+% This work consists of all files listed in manifest.txt.
+%
+% The file lua-font-config.dtx is a derived work under the terms of the
+% LPPL. It is based on version 2.4 of skeleton.dtx which is part of
+% dtxtut by Scott Pakin. A copy of dtxtut, including the
+% unmodified version of skeleton.dtx is available from
+% https://www.ctan.org/pkg/dtxtut and released under the LPPL.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \fi
+%
+% \iffalse
+%<*driver>
+\RequirePackage{svn-prov}
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12044 2026-09-17 19:53:18Z cfrees $}[v0.3 \revinfo][\filename: \filebase]
+\DefineFileInfoSVN[lfc]
+\GetFileInfoSVN*
+% ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/ 
+\def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
+\documentclass[british,a4paper]{ltxdoc}
+% ltnews42 / ateb David Carlisle: https://tex.stackexchange.com/a/754799/ (sylwad Ulrike Fischer rhywle ond alla i ddim canfod o hyd iddo fe)
+\partokencontext=0
+\usepackage{babel}
+\usepackage{lua-font-config}
+\usepackage{parskip}
+\usepackage{verbatim}
+\usepackage{graphicx}
+\usepackage{xurl}
+% sicrhau hyperindex=false: llwytho CYN bookmark
+\usepackage{hypdoc}% ateb Ulrike Fischer: https://tex.stackexchange.com/a/695555/
+\usepackage{bookmark}
+\usepackage{fancyref}
+\usepackage{csquotes}
+\MakeAutoQuote{‘}{’}
+\MakeAutoQuote*{“}{”}
+\EnableCrossrefs
+\CodelineIndex
+\RecordChanges
+%^^A \OnlyDescription
+%^^A \ExplSyntaxOn
+%^^A \makeatletter
+\DoNotIndex{\verb,\ProvidesPackageSVN,\NeedsTeXFormat,\ProcessKeyOptions,\ExplSyntaxOn,\ExplSyntaxOff,\RequirePackage,\NeedsTeXFormat,\DefineFileInfoSVN,\GetInfoSVN,\@ifundefined,\@ifl@t@r\ExplLoaderFileDate,\endinput,\PackageError,\PackageWarning,\PackageInfo,\keys_define:nn,\keys_set:nn,\ProcessKeysOptionns,\author,\title,\maketitle,\date,\revinfo,\ProcessKeysOptions,\MessageBreak,\fmtversion,\documentclass,\ExplLoaderFileDate,\filebase,\fileversion,\fileinfo,\filebase:,\filedate,\documentclass,\@ifl@t@r,\begin,\end,\item,\IfFormatAtLeastTF}
+%^^A \makeatother
+%^^A \ExplSyntaxOff
+\definecolor{strawberry}{rgb}{1.000,0.000,0.502}
+\definecolor{blueberry}{rgb}{0.000,0.000,1.000}
+\definecolor{moss}{rgb}{0.000,0.502,0.251}
+\hypersetup{%
+  colorlinks=true,
+  citecolor={moss},
+  extension=pdf,
+  linkcolor={strawberry},
+  linktocpage=true,
+  pdfcreator={TeX},
+  pdfproducer={pdfeTeX},
+  urlcolor={blueberry}%
+}
+\NewDocElement[%
+  idxtype=opt.,
+  idxgroup=options,
+  printtype=\textit{opt.},
+]{Opt}{option}
+\NewDocElement[%
+  idxtype=fn.,
+  idxgroup=functions,
+  printtype=\textit{fn.},
+  macrolike=true,
+]{Fn}{function}
+\NewDocElement[%
+  idxtype=var.,
+  idxgroup=variables,
+  printtype=\textit{var.},
+  macrolike=true,
+]{Var}{variable}
+\NewDocumentCommand \val { m }
+{%
+  {\ttfamily =\,\meta{#1}}%
+}
+\ExplSyntaxOn
+\NewDocumentCommand \vals { m }
+{
+  {
+    \ttfamily = \, 
+    \clist_use:nn { #1 } { \textbar }
+  }
+} 
+\ExplSyntaxOff
+\setcounter{IndexColumns}{2}
+\makeatletter
+\def\@xobeysp{\leavevmode\penalty100\ }
+\makeatother
+\begin{document}
+  \DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+% \title{\filebase}
+% \author{Clea F. Rees}
+% \date{\filedate}
+% \maketitle
+% \begin{abstract}
+% An opentype font configuration package for Lua\LaTeXe{}.
+% The aim is to provide an alternative to \pkg{fontspec} which is both faster
+% and more powerful, by doing as much processing as possible in Lua.
+% To avoid loading fonts unnecessarily, the data used is corrected during 
+% compilation and the results cached for future use.
+%
+% \emph{This package is experimental.}
+% \end{abstract}
+% 
+% \section{Requirements}\label{sec:require}
+%
+% The package requires \file{font-syn.lua}, from the Con\TeX t (\textsc{mkiv}).
+% This file is included in \TeX\ Live, Mik\TeX and other distributions.
+%
+% Obviously, the package requires Lua\LaTeXe.
+% It will not work with any other engine or format.
+%
+% \section{Usage}\label{sec:pkg}
+%
+% \emph{The user interface is currently \textbf{extremely} basic.}
+% All that is properly supported is the choice of font family for the standard
+% families --- i.e.~roman/serif, sans and typewriter/mono --- and configuration
+% of additional fonts, again by family.
+%
+% Simple usage looks like this:
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+  \usepackage{lua-font-config}
+  \fontconfig{%
+    rm = texgyrepagella,
+    sf = texgyreheros,
+    tt = sourcecodepro,
+  }
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% 
+% If you want to configure font features or a non-default script etc., you can 
+% use:
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+  \usepackage{lua-font-config}
+  \fontconfig{%
+    rm = {%
+      name = texgyrepagella, 
+      features = {script=ltn;},
+    },
+    sf = {%
+      name = texgyreheros,
+      features = {script=cyrl;},
+    },
+    tt = {%
+      name = texgyrecursor,
+      features = {+zero;},
+    },
+  }
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% Do \textbf{not} specify small-capitals (\texttt{+smcp}) unless you want 
+% \emph{all} fonts in the family to use that feature.
+% Small-caps and italic/oblique small-caps will be configured 
+% automatically if available.
+%
+% ^^A \section{Advanced Configuration}\label{sec:adv}
+% ^^A
+% ^^A Advanced configuration uses Lua and allows you to specify exactly which
+% ^^A fonts you wish to use for which shapes in which families with which 
+% ^^A features.
+% ^^A
+% ^^A \emph{It is strongly recommended to use the basic interface explained in 
+% ^^A \fref{sec:usage} prior to attempting custom configuration.} 
+% ^^A
+% ^^A This is a powerful tool, but it requires a good knowledge of \textsc{nfss},
+% ^^A familiarity with the fonts you wish to use and some elementary Lua.
+% ^^A The fonts you request must actually exist, have the features you
+% ^^A say and be sensibly grouped into families, where ‘sensible’ means ‘makes
+% ^^A sense in \textsc{nfss}’.
+% ^^A
+% ^^A If you do not know what \textsc{nfss} is, do not know your
+% ^^A \texttt{+calt} from your \texttt{-dlig} or are unfamiliar with Lua, 
+% ^^A congratulations. 
+% ^^A You have a life.
+% ^^A This section is not for you. 
+%
+% 
+% \changes{v0.0}{0000-00-00}{First public release.}
+%  
+%
+% \MaybeStop{%
+%   \PrintChanges
+%   \PrintIndex
+% }
+% 
+% \section{Implementation}
+%
+% You do not need to read the remainder of this document in order to install or use the package.
+%
+% Note that almost everything is done in Lua, so there is really very little to see here.
+%
+%<@@=lfc>
+%<*sty>
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}[2021-11-15]
+\RequirePackage{svn-prov}
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12044 2026-09-17 19:53:18Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
+% this is needed only because l3doc overwrites \fileversion and \filedate
+% neither ltxdoc nor doc does this
+\DefineFileInfoSVN[lfc]
+%    \end{macrocode}
+% \iffalse
+% ^^A Paid â defnyddio \GetFileInfoSVN*/\GetFileInfoSVN{} yn y fan hon!!
+% \fi
+%    \begin{macrocode}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% copied verbatim, excepting format from Joseph Wright's' siunitx.sty under LPPL
+\@ifundefined{directlua}{%
+  \PackageError{lua-font-config}{Package requires LuaLaTeX}
+  {To use lua-font-config, you must compile your document with LuaLaTeX.}%
+}{}
+\@ifundefined{ExplLoaderFileDate}{%
+  \RequirePackage{expl3}%
+}{}
+%% almost verbatim from siunitx.sty
+\@ifl@t@r\ExplLoaderFileDate{2022-02-24}{%
+}{%
+  \PackageError{lua-font-config}{Support package expl3 too old}
+  {%
+    You need to update your installation of the bundles 'l3kernel' and
+    'l3packages'.\MessageBreak
+    Loading~lua-font-config~will~abort!%
+  }%
+  \endinput
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\ExplSyntaxOn
+\prop_gput:NnV \g_msg_module_name_prop {@@} \lfc@base
+\msg_new:nnnn {@@} {needs-luatex} {
+  \msg_critical_text:n {@@} :: ~requires~LuaLaTeX~\msg_line_context:
+} { \msg_see_documentation_text:n {@@} }
+\sys_if_engine_luatex:F { \msg_critical:nn {@@} {needs-luatex} }
+%    \end{macrocode}
+% \begin{variable}{\l__@@_tmpa_tl}
+%   Custom ephemeral token list.
+%    \begin{macrocode}
+\tl_new:N \l__@@_tmpa_tl
+%    \end{macrocode}
+% \end{variable}
+%    \begin{macrocode}
+%    \end{macrocode}
+% Configure keys for default families.
+%    \begin{macrocode}
+\clist_map_inline:nn {rm, sf, tt} {
+  \keys_define:nn {lfc} {
+    #1 .code:n            = { 
+      \keys_set_exclude_groups:nnnN {lfc/#1} {config} {##1} \l__@@_tmpa_tl
+      \keys_set:nV {lfc/#1} \l__@@_tmpa_tl
+    },
+    #1 .value_required:n  = true,
+    #1 .usage:n           = preamble,
+  }
+  \keys_define:nn {lfc/#1} {
+    name      .code:n = { \use:c {__@@_set_#1:n} {##1} },
+    features  .code:n = { \__@@_set_fam_fea:n {##1} },
+    unknown   .code:n = {
+      \exp_args:NnV \use:c {__@@_set_#1:n} \l_keys_key_str
+    },
+    name      .value_required:n   = true,
+    features  .value_required:n   = true,
+    unknown   .value_forbidden:n  = true,
+    name      .usage:n            = preamble,
+    features  .usage:n            = preamble,
+    unknown   .usage:n            = preamble,
+  }
+}
+%    \end{macrocode}
+% Configure keys for additional families.
+%    \begin{macrocode}
+\keys_define:nn {lfc} {
+  family  .code:n           = { 
+    \keys_set_exclude_groups:nnnN {lfc/fam} {config} {#1} \l__@@_tmpa_tl
+    \keys_set:nV {lfc/fam} \l__@@_tmpa_tl
+  },
+  family  .value_required:n = true,
+  family  .usage:n          = general,
+}
+\keys_define:nn {lfc/fam} {
+  name      .code:n = { \__@@_set_fam_name:n {#1} },
+  features  .code:n = { \__@@_set_fam_fea:n {#1} },
+  unknown   .code:n = {
+    \exp_args:NV \__@@_set_fam_name:n \l_keys_key_str 
+  },
+  name      .value_required:n   = true,
+  features  .value_required:n   = true,
+  unknown   .value_forbidden:n  = true,
+  name      .usage:n            = general,
+  features  .usage:n            = general,
+  unknown   .usage:n            = general,
+  features  .groups:n           = config,
+}
+%    \end{macrocode}
+% \begin{macro}{\fontconfig}
+%   The main (and currently(?) only) macro.
+%    \begin{macrocode}
+\NewDocumentCommand\fontconfig { +m }{
+  \keys_set:nn {lfc} {#1}
+}
+%    \end{macrocode}
+% \end{macro}
+%    \begin{macrocode}
+\directlua{
+  require("lfc")
+}
+\hook_gput_code:nnn {begindocument/before} {.} {
+  \__@@_configure_doc_families:
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+\ExplSyntaxOff
+%    \end{macrocode}
+%</sty>
+% 
+%\Finale

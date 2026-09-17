@@ -1,4 +1,4 @@
--- $Id: lfc.lua 12043 2026-09-16 23:27:01Z cfrees $
+-- $Id: lfc.lua 12044 2026-09-17 19:53:18Z cfrees $
 -------------------------------------------------------------------------------
 -- TODO
 --
@@ -53,13 +53,15 @@ local concat, serialize, unique = table.concat, table.serialize, table.unique
 -- tex | texio | token
 local sprint                  = tex.sprint
 local write_nl                = texio.write_nl
-local create, param, set_lua  = token.create, token.scan_string, token.set_lua
+-- Max Chernoff: ‘The Lua function token.scan_argument accepts a boolean argument (token.scan_argument(true) or token.scan_argument(false)) which determines whether to expand the TeX string argument’ (https://chat.stackexchange.com/transcript/message/69210787#69210787)
+local create, param, set_lua  = token.create, token.scan_argument, token.set_lua
 -- }}}
 
 lfc = {} -- ours {{{
 
--- Booleans
 local lfc_cache
+
+-- Booleans
 local lfc_debug                 = lfc_debug or true
 local lfc_callback_smcp_active  = false
 local lfc_callback_data_active  = false
@@ -75,10 +77,16 @@ local tok_group_begin   = create(123, 1)
 local tok_group_end     = create(125, 2)
 local tok_declare_fam   = create("DeclareFontFamily")
 local tok_declare_shape = create("DeclareFontShape")
+local tok_fontfamily    = create("fontfamily")
+local tok_selectfont    = create("selectfont")
 local tok_renewcommand  = create("renewcommand")
 local tok_rmdefault     = create("rmdefault")
 local tok_sfdefault     = create("sfdefault")
 local tok_ttdefault     = create("ttdefault")
+
+-- Tables
+local nfss_default_families = {}
+local nfss_doc_families = {}
 
 -- Token lists
 local toks_empty_n = {tok_group_begin, tok_group_end}
@@ -1702,7 +1710,7 @@ local function font_config(targ, config)
   end
 
 
-  return f
+  return fam_meta
 end
 -- }}}
 
@@ -1852,10 +1860,23 @@ end
 -------------------------------------------------------------------------------
 -- LaTeX interface things
 -------------------------------------------------------------------------------
+---@function do_with_one_scanner(fn) {{{
+---@param fn    <function>  Function to execute on argument.
+---@description Returns a function which picks up and does something with
+---@description one TeX argument.
+---@description An attempt to generalise get_fam_default_scanner() above.
+local function do_with_one_scanner(fn)
+  return function()
+    local one = param(false)
+    return fn(one)
+  end
+end
+-- }}}
+
 local fam_defaults = { -- {{{
-  rm = rmdefault,
-  sf = sfdefault,
-  tt = ttdefault,
+  rm = tok_rmdefault,
+  sf = tok_sfdefault,
+  tt = tok_ttdefault,
 }
 -- }}}
 
@@ -1864,19 +1885,108 @@ local fam_defaults = { -- {{{
 ---@description Returns a Lua function which scans an argument and sets the
 ---@description   specified family default to the given value.
 local function get_fam_default_scanner(fam) 
+  return do_with_one_scanner(
+    function(fam_name)
+      local cleanname = cleanfilename(fam_name)
+      nfss_doc_families[cleanname] = {
+        name = tostring(fam_name),
+        cleanname = cleanname,
+        default = fam,
+      }
+      nfss_default_families[fam] = nfss_doc_families[cleanname]
+      nfss_doc_families.curr = cleanname
+      if lfc_debug then inspect(nfss_default_families) end
+    end)
+end
+-- }}}
+
+
+---@function get_fam_name_scanner() {{{
+---@description Returns a function which takes a name and stores it.
+local function get_fam_name_scanner()
+  return do_with_one_scanner(
+    function(name)
+      local cleanname = cleanfilename(name)
+      nfss_doc_families[cleanname] = {
+        name = tostring(name),
+        cleanname = cleanname,
+      }
+      nfss_doc_families.curr = cleanname
+      if lfc_debug then inspect(nfss_doc_families) end
+    end)
+end
+-- }}}
+
+---@function get_fam_fea_scanner() {{{
+---@description Returns a function which takes a feature specification and 
+---@description stores it.
+local function get_fam_fea_scanner()
+  return do_with_one_scanner(
+    function(fea)
+      local curr = nfss_doc_families.curr
+      msg_assert(curr ~= nil, "No current family to set features for!")
+      curr = nfss_doc_families[curr]
+      curr.features = lower(tostring(fea))
+    end)
+end
+-- }}}
+
+---@function configure_doc_families() {{{
+---@description Configures requested fonts.
+---@description Sets defaults for rm/sf/tt, if applicable.
+---@description This doesn't work if I make this a direct fn. rather than a
+---@description generator. Something to do with (Lua) scope, maybe?
+local function configure_doc_families()
   return function()
-    local fam_name = param()
-    sprint(-2, get_toks({renewcommand, fam_defaults[fam], embrace(fam_name)}))
+    if lfc_debug then 
+      msg("Configuring doc families ...", "debug")
+      inspect(nfss_default_families) 
+      inspect(nfss_doc_families) 
+      inspect(fam_defaults)
+    end
+    for name,cfg in pairs(nfss_doc_families) do
+      if name ~= "curr" then
+        -- Currently ignores features!!
+        local nfss_fam = font_config(cfg.name)
+        if nfss_fam ~= nil then cfg.nfss_fam = nfss_fam
+          if not cfg.default then
+            luafunction_to_cs(cfg.cleanname, function()
+              return sprint(-2, get_toks({tok_fontfamily, embrace(nfss_fam),
+                tok_selectfont}), "protected")
+            end)
+          end
+        else 
+          msg({"No family found for ", cfg.name, "!"}, "warn") 
+          nfss_doc_families[name] = nil
+        end
+      end
+    end
+    if lfc_debug then inspect(nfss_doc_families) end
+    msg("Setting default families ...", "debug") 
+    for fam,cfg in pairs(nfss_default_families) do
+      if cfg.nfss_fam then
+        local fam_name = cfg.nfss_fam
+        msg({"Setting ", fam, " default to ", fam_name, "."}, "info")
+        sprint(-2, get_toks({tok_renewcommand, fam_defaults[fam], embrace(fam_name)}))
+      else msg({"No family found for ", fam, "!"})
+      end
+    end
   end
 end
 -- }}}
 
 -- Generate TeX macros which will use a Lua function to set rm, sf and tt 
 --  families.
-luafunction_to_cs("__lfc_set_rm:w", get_fam_default_scanner("rm"))
-luafunction_to_cs("__lfc_set_sf:w", get_fam_default_scanner("sf"))
-luafunction_to_cs("__lfc_set_tt:w", get_fam_default_scanner("tt"))
+luafunction_to_cs("__lfc_set_rm:n", get_fam_default_scanner("rm"))
+luafunction_to_cs("__lfc_set_sf:n", get_fam_default_scanner("sf"))
+luafunction_to_cs("__lfc_set_tt:n", get_fam_default_scanner("tt"))
 
+-- Scanners for additional family names and a general one for features.
+luafunction_to_cs("__lfc_set_fam_name:n", get_fam_name_scanner())
+luafunction_to_cs("__lfc_set_fam_fea:n", get_fam_fea_scanner())
+
+-- A macro to configure the fonts at begindocument.
+luafunction_to_cs("__lfc_configure_doc_families:", configure_doc_families())
 -------------------------------------------------------------------------------
 -- Setup on load
 -------------------------------------------------------------------------------
