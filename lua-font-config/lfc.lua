@@ -1,4 +1,4 @@
--- $Id: lfc.lua 12044 2026-09-17 19:53:18Z cfrees $
+-- $Id: lfc.lua 12045 2026-09-18 06:43:30Z cfrees $
 -------------------------------------------------------------------------------
 -- TODO
 --
@@ -17,6 +17,7 @@
 --
 -- Potential conflicts re. family names, multiple configs etc.
 --     - Use hashes more extensively?
+--     - Or not at all?
 --
 -- There's some disconnect between the data I'm using and the data luaotfload
 --    uses, even though they are the same data.
@@ -28,6 +29,7 @@
 -- Custom fn. is very slow.
 --
 -- Cached data should depend on db/fnt versions.
+--    - Or is this automatic?
 --
 -- Loading the ConTeXt file differently?
 --
@@ -40,7 +42,6 @@ local is_writable           = file.is_writable
 local isdir, isfile, mkdir  = lfs.isdir, lfs.isfile, lfs.mkdir
 local get_functions_table   = lua.get_functions_table
 local new_lua_function      = luatexbase.new_luafunction
-local md5sum                = md5.sumhexa
 -- string
 local gsub, gmatch, match = string.gsub, string.gmatch, string.match
 local format, lower       = string.format, string.lower
@@ -301,63 +302,6 @@ end
 -- }}}
 
 -------------------------------------------------------------------------------
--- Hash utilities
--------------------------------------------------------------------------------
----@function hash_check(name, config) -- {{{
----@param name      <string>  Key e.g. name of (meta-)family or whatever
----@param config    <table>   Table of configuration data
----@description Returns hash and any matching cached data.
-local function hash_check(name, config)
-
-  if not name then return nil end
-  config = config or {}
-  lfc_cache = lfc_cache or read_cache()
-
-  local hash_key = md5sum(name .. serialize(config))
-
-  if lfc_cache.meta_families and lfc_cache.meta_families.by_hash and
-    lfc_cache.meta_families.by_hash[hash_key] then
-
-    local cached = lfc_cache.meta_families.by_hash[hash_key]
-  end
-
-  return hash_key, cached or nil
-end
--- }}}
-
----@function hash_cache(name, config) -- {{{
----@param name(s)     <string>  Key e.g. name of (meta-)family or whatever
----                               or hash_key.
----@param config      <table>   Table of configuration data
----                               if names rather than hash_key.
----@param meta_fam(s) <table>   List of (meta-)families (opt).
----@description Optionally creates hash and caches.
----@description Returns hash_key.
-local function hash_cache(meta_fams, name, config)
-  if type(meta_fams) == "string" then
-    name = meta_fams
-    config = name
-    meta_fams = nil
-  end
-
-  msg_assert(name and type(name) == "string", "Expected string to make hash!")
-  lfc_cache = lfc_cache or read_cache()
-
-  local hash_key = not config and name or 
-    md5sum(name .. serialize(config or {}))
-
-  if meta_fams then
-    lfc_cache.meta_families = lfc_cache.meta_families or {}
-    lfc_cache.meta_families.by_hash = lfc_cache.meta_families.by_hash or {}
-
-    lfc_cache.meta_families.by_hash[hash_key] = meta_fams
-  end
-
-  return hash_key
-end
--- }}}
-
--------------------------------------------------------------------------------
 -- Lookup utilities
 -------------------------------------------------------------------------------
 ---@function get_font_data -- {{{
@@ -404,8 +348,11 @@ local function get_font_data(fnt, config, force)
     return f
   end
 
-  local hash_key, cached = hash_check(fam_meta, config)
-  metadata.hash_key  = hash_key
+  local cached
+  if lfc_cache.meta_families and lfc_cache.meta_families.by_meta_fam then
+    cached = lfc_cache.meta_families.by_meta_fam[fam_meta] or nil
+  end
+  metadata.hash_key  = fam_meta
 
   -- If a cached emulated .fd exists, we're done unless force was used.
   if cached and not force then
@@ -436,6 +383,7 @@ local function get_font_data(fnt, config, force)
 
   -- ‘In place’ doesn't mean what you think :(
   data_by_filename = mirrored(data_by_filename)
+
 
   -- Discard dupes -- ??????
   -- Data doesn't include full paths, so add these now.
@@ -738,273 +686,266 @@ end
 --      },
 --      scalable = <boolean>,
 --    }
-local function prepare_fake_fd(fam, fam_data, config, force) 
+local function prepare_fake_fd(fam, fam_data, force) 
 
   force = force or false
 
   lfc_cache = lfc_cache or read_cache()
 
-  local configs = parse_config(fam, config)
-  local fake_fds = {}
+  lfc_cache[fam] = lfc_cache[fam] or {}
 
-  for fam_var,cfg in pairs(configs) do
+  if lfc_cache[fam].fake_fd and not force then
 
-    lfc_cache[fam_var] = lfc_cache[fam_var] or {}
-
-    -- Does config check make any sense?
-    -- The problem is we can't use the hash yet ...
-    if lfc_cache[fam_var].config ~= nil and lfc_cache[fam_var].config == config
-      and lfc_cache[fam_var].fake_fd and not force then
-
-      fake_fds[fam_var] = lfc_cache[fam_var].fake_fd
-      goto fake_fds_cont
-    end
-
-    lfc_cache[fam_var].paths = lfc_cache[fam_var].paths or {}
-    local path_list = lfc_cache[fam_var].paths
-
-    lfc_cache.callbacks_data = lfc_cache.callbacks_data or {}
-    local callbacks_data = lfc_cache.callbacks_data
-
-    lfc_cache.resources = lfc_cache.resources or {}
-    local resources = lfc_cache.resources
-
-    local fake_fd = {}
-
-    lfc_cache[fam_var].complete = true
-
-    local scalable = true
-
-    local curr_line = 0
-    local function fake_fd_insert(s)
-      curr_line = curr_line + 1
-      insert(fake_fd, s)
-    end
-    local function add_path(p)
-      insert(path_list, p)
-      if not resources[p] then
-        callbacks_data[p] = true
-      end
-    end
-
-    for series,series_data in pairs(fam_data) do
-      local std_lines = {n = 0, it = 0, sl = 0}
-      for shape,fnts in pairs(series_data) do
-        msg({"Processing font(s) for ", series, " and ", shape}, "debug")
-
-        msg_assert(#fnts ~= 0, "The number of fonts should never be zero!")
-
-        -- Add path to list for family and add callback if needed.
-        for _,ff in ipairs(fnts) do add_path(ff.fullpath) end
-
-        if #fnts == 1 then
-
-          fake_fd_insert({series, shape, enquote(fnts[1].fullpath), cfg})
-
-        else
-
-          sort(fnts, 
-            function(a, b)
-              if a.nfss_hash ~= b.nfss_hash then
-                local amin = tonumber(a.minsize) or tonumber(a.designsize) 
-                local bmin = tonumber(b.minsize) or tonumber(b.designsize) 
-                if amin < bmin then return true 
-                elseif bmin < amin then return false
-                else
-                  local amax = tonumber(a.maxsize) or tonumber(a.designsize)
-                  local bmax = tonumber(b.maxsize) or tonumber(b.designsize)
-                  if amax < bmax then return true end
-                end
-              end
-              return false
-            end)
-
-          local hash_last = 0
-          local ssubs = {}
-          local max_max = 0
-          local min_min
-          local opt_size = false
-
-          for shape_data,fnt in ipairs(fnts) do
-            local min, max
-            local pre = ""
-            if fnt.nfss_hash == hash_last then
-              pre = "%% "
-              msg({"Duplicate fonts found: hash ", 
-                hash_last, " for family ", fam_var})
-            end
-
-            if shape_data == 1 then min = ""
-            else
-              min = fnt.minsize and fnt.minsize/10 or fnt.designsize 
-                and fnt.designsize/10 or ""
-            end
-            if shape_data == #fnts then 
-              max = ""
-            else
-              max = fnt.maxsize and fnt.maxsize/10 or fnt.designsize and 
-                fnt.designsize/10 or ""
-            end
-
-            if min == max then
-              min = ""
-              max = ""
-            end
-
-            -- Needed to reinsert scaling if duplicate fonts
-            if min ~= "" or max ~= "" then opt_size = true end
-
-            insert(ssubs, {"<" .. min .. "-" .. max .. ">", enquote(fnt.fullpath)})
-
-            max_max = (max ~= "" and max > max_max) and max or max_max
-            if min ~= "" then
-              min_min = min_min or min
-              min_min = min < min_min and min or min_min
-            end
-            hash_last = fnt.nfss_hash
-          end
-
-          if max_max == 0 or not min_min then opt_size = false
-          elseif max_max == min_min then opt_size = false
-          end
-
-          if opt_size then
-            fake_fd_insert({series, shape, fastcopy(ssubs), cfg})
-            scalable = false
-          else
-            for _,i in ipairs(ssubs) do
-              fake_fd_insert({series, shape, enquote(i[2]), cfg})
-            end
-            msg({"Apparent duplicates for ", fam, "/", series,
-              "/", shape, "."})
-          end
-
-        end
-        if shape == "n" then std_lines.n = curr_line 
-        elseif shape == "it" then std_lines.it = curr_line
-        elseif shape == "sl" then std_lines.sl = curr_line
-        end
-      end
-
-      -- Check for missing basic shapes
-      if series_data.it == nil then
-        if series_data.sl ~= nil then
-          fake_fd_insert({series, "it", ssub = {fam_var, series, "sl"}})
-        end
-      elseif series_data.sl == nil then
-        fake_fd_insert({series, "sl", ssub = {fam_var, series, "it"}})
-      end
-
-      local trans = { sc = "n", scit = "it", scsl = "sl" }
-      for to_shape,base_shape in pairs(trans) do
-        if series_data[to_shape] == nil and series_data[base_shape] then
-
-          if not (std_lines[base_shape] > 0) then
-            msg({"No std_lines for ", base_shape, "."})
-            goto trans_skip
-          end
-
-          local curr_path = series_data[base_shape][1].fullpath
-
-          local checked = false
-
-          if lfc_cache.resources and lfc_cache.resources[curr_path] then
-            local rsc = lfc_cache.resources[curr_path]
-            if rsc.features and rsc.features.gsub and rsc.features.gsub.smcp then
-              checked = true
-            else
-              goto trans_skip
-            end
-          end
-
-          local line_no = curr_line + 1
-
-          -- Temporary defn
-          -- This may get replaced when the font is used:
-          --    - if +smcp, retain spec
-          --    - if not, replaced by blank line
-          -- This works better than an initial subs or blank and 
-          --  _seems_ not to error???
-          local line_mod = fastcopy(fake_fd[std_lines[base_shape]])
-          line_mod[4] = line_mod[4] .. ";+smcp"
-          line_mod[2] = to_shape
-          fake_fd_insert(line_mod)
-
-          if not checked then 
-            lfc_cache[fam_var].complete = false
-
-            lfc_cache.incomplete = lfc_cache.incomplete or {}
-            lfc_cache.incomplete[fam_var] = lfc_cache.incomplete[fam_var] or {}
-            lfc_cache.incomplete[fam_var][line_no] = true
-
-            lfc_cache.callbacks_smcp = lfc_cache.callbacks_smcp or {}
-            lfc_cache.callbacks_smcp[curr_path] = {
-              fam = fam_var,
-              [line_no] = true,
-            }
-            if #series_data[base_shape] > 1 then 
-              local tmp = lfc_cache.callbacks_smcp[curr_path]
-              tmp.related = { curr_path }
-              for curr = 2, #series_data[base_shape] do
-                lfc_cache.callbacks_smcp[curr_path] = tmp
-                insert(tmp.related, curr_path)
-              end
-            end
-          end
-        end
-        :: trans_skip ::
-      end
-
-      if series_data.scit == nil then
-        if series_data.scsl ~= nil then
-          fake_fd_insert({series, "scit", ssub = {fam_var, series, "scsl"}})
-          fake_fd_insert({series, "si", ssub = {fam_var, series, "scit"}})
-        end
-      elseif series_data.scsl == nil then
-        fake_fd_insert({series, "scsl", ssub = {fam_var, series, "scit"}})
-        fake_fd_insert({series, "si", ssub = {fam_var, series, "scsl"}})
-      else 
-        fake_fd_insert({series, "si", ssub = {fam_var, series, "scit"}})
-      end
-
-      -- No check for italic sc via +smcp, though could be added.
-      -- Doubt this is worth the overhead, though.
-
-      -- Other possibilities:
-      --    - Auto-generate fds for different figure styles?
-      --    - Swash/alternates?
-      --    - How does this do with .ttc or variable fonts?
-
-      -- It is (relatively) cheap to create additional families once the base
-      --  case is done, if features can be inferred on loading.
-      -- But I'm not sure how that would work for families, as opposed to 
-      --  shapes?
-    end
-
-    lfc_cache[fam_var].paths = unique(path_list)
-
-    -- Check for missing basic series
-    if fam_data.b == nil then
-      if fam_data.bx ~= nil then
-        for shape,_ in pairs(fam_data.bx) do
-          fake_fd_insert({"b", shape, ssub = {fam_var, "bx", shape}})
-        end
-      end
-    elseif fam_data.bx == nil then
-      for shape,_ in pairs(fam_data.b) do
-        fake_fd_insert({"bx", shape, ssub = {fam_var, "b", shape}})
-      end
-    end
-
-    lfc_cache[fam_var].fake_fd = fake_fd
-    lfc_cache[fam_var].scalable = scalable
-    lfc_cache[fam_var].config = cfg
-    fake_fds[fam_var] = fake_fd
-
-    :: fake_fds_cont ::
+    return lfc_cache[fam].fake_fd
   end
 
-  return fake_fds
+  lfc_cache[fam].paths = lfc_cache[fam].paths or {}
+  local path_list = lfc_cache[fam].paths
+
+  lfc_cache.callbacks_data = lfc_cache.callbacks_data or {}
+  local callbacks_data = lfc_cache.callbacks_data
+
+  lfc_cache.resources = lfc_cache.resources or {}
+  local resources = lfc_cache.resources
+
+  local fake_fd = {}
+
+  lfc_cache[fam].complete = true
+
+  local scalable = true
+
+  local curr_line = 0
+  local function fake_fd_insert(s)
+    curr_line = curr_line + 1
+    insert(fake_fd, s)
+  end
+  local function add_path(p)
+    insert(path_list, p)
+    if not resources[p] then
+      callbacks_data[p] = true
+    end
+  end
+
+  for series,series_data in pairs(fam_data) do
+    local std_lines = {n = 0, it = 0, sl = 0}
+    for shape,fnts in pairs(series_data) do
+      msg({"Processing font(s) for ", series, " and ", shape}, "debug")
+
+      msg_assert(#fnts ~= 0, "The number of fonts should never be zero!")
+
+      -- Add path to list for family and add callback if needed.
+      for _,ff in ipairs(fnts) do add_path(ff.fullpath) end
+
+      if #fnts == 1 then
+
+        -- Need an empty entry for cfg mods e.g. +smcp; etc.
+        fake_fd_insert({series, shape, enquote(fnts[1].fullpath), ""})
+
+      else
+
+        sort(fnts, 
+        function(a, b)
+          if a.nfss_hash ~= b.nfss_hash then
+            local amin = tonumber(a.minsize) or tonumber(a.designsize) 
+            local bmin = tonumber(b.minsize) or tonumber(b.designsize) 
+            if amin < bmin then return true 
+            elseif bmin < amin then return false
+            else
+              local amax = tonumber(a.maxsize) or tonumber(a.designsize)
+              local bmax = tonumber(b.maxsize) or tonumber(b.designsize)
+              if amax < bmax then return true end
+            end
+          end
+          return false
+        end)
+
+        local hash_last = 0
+        local ssubs = {}
+        local max_max = 0
+        local min_min
+        local opt_size = false
+
+        for shape_data,fnt in ipairs(fnts) do
+          local min, max
+          local pre = ""
+          if fnt.nfss_hash == hash_last then
+            pre = "%% "
+            msg({"Duplicate fonts found: hash ", 
+            hash_last, " for family ", fam})
+          end
+
+          if shape_data == 1 then min = ""
+          else
+            min = fnt.minsize and fnt.minsize/10 or fnt.designsize 
+            and fnt.designsize/10 or ""
+          end
+          if shape_data == #fnts then 
+            max = ""
+          else
+            max = fnt.maxsize and fnt.maxsize/10 or fnt.designsize and 
+            fnt.designsize/10 or ""
+          end
+
+          if min == max then
+            min = ""
+            max = ""
+          end
+
+          -- Needed to reinsert scaling if duplicate fonts
+          if min ~= "" or max ~= "" then opt_size = true end
+
+          insert(ssubs, {"<" .. min .. "-" .. max .. ">", enquote(fnt.fullpath)})
+
+          max_max = (max ~= "" and max > max_max) and max or max_max
+          if min ~= "" then
+            min_min = min_min or min
+            min_min = min < min_min and min or min_min
+          end
+          hash_last = fnt.nfss_hash
+        end
+
+        if max_max == 0 or not min_min then opt_size = false
+        elseif max_max == min_min then opt_size = false
+        end
+
+        if opt_size then
+          -- We need an empty cfg at the end to hold transformations
+          -- such as smcp.
+          fake_fd_insert({series, shape, fastcopy(ssubs), ""})
+          scalable = false
+        else
+          for _,i in ipairs(ssubs) do
+            -- Need empty placeholder for cfg.
+            fake_fd_insert({series, shape, enquote(i[2]), ""})
+          end
+          msg({"Apparent duplicates for ", fam, "/", series,
+          "/", shape, "."})
+        end
+
+      end
+      if shape == "n" then std_lines.n = curr_line 
+      elseif shape == "it" then std_lines.it = curr_line
+      elseif shape == "sl" then std_lines.sl = curr_line
+      end
+    end
+
+    -- Check for missing basic shapes
+    if series_data.it == nil then
+      if series_data.sl ~= nil then
+        fake_fd_insert({series, "it", ssub = {fam, series, "sl"}})
+      end
+    elseif series_data.sl == nil then
+      fake_fd_insert({series, "sl", ssub = {fam, series, "it"}})
+    end
+
+    local trans = { sc = "n", scit = "it", scsl = "sl" }
+    for to_shape,base_shape in pairs(trans) do
+      if series_data[to_shape] == nil and series_data[base_shape] then
+
+        if not (std_lines[base_shape] > 0) then
+          msg({"No std_lines for ", base_shape, "."})
+          goto trans_skip
+        end
+
+        local curr_path = series_data[base_shape][1].fullpath
+
+        local checked_and_smcp = false
+
+        if lfc_cache.resources and lfc_cache.resources[curr_path] then
+          local rsc = lfc_cache.resources[curr_path]
+          if rsc.features and rsc.features.gsub and rsc.features.gsub.smcp then
+            checked_and_smcp = true
+          else
+            -- We've checked and it doesn't have smcp, so skip the rest.
+            goto trans_skip
+          end
+        end
+
+        local line_no = curr_line + 1
+
+        -- Temporary defn
+        -- This may get replaced when the font is used:
+        --    - if +smcp, retain spec
+        --    - if not, replaced by blank line
+        -- This works better than an initial subs or blank and 
+        --  _seems_ not to error???
+        local line_mod = fastcopy(fake_fd[std_lines[base_shape]])
+        line_mod[4] = "+smcp"
+        line_mod[2] = to_shape
+        fake_fd_insert(line_mod)
+
+        -- We haven't checked, so the addition may be wrong.
+        if not checked_and_smcp then 
+          lfc_cache[fam].complete = false
+
+          lfc_cache.incomplete = lfc_cache.incomplete or {}
+          lfc_cache.incomplete[fam] = lfc_cache.incomplete[fam] or {}
+          lfc_cache.incomplete[fam][line_no] = true
+
+          lfc_cache.callbacks_smcp = lfc_cache.callbacks_smcp or {}
+          lfc_cache.callbacks_smcp[curr_path] = {
+            fam = fam,
+            [line_no] = true,
+          }
+          if #series_data[base_shape] > 1 then 
+            local tmp = lfc_cache.callbacks_smcp[curr_path]
+            tmp.related = { curr_path }
+            for curr = 2, #series_data[base_shape] do
+              lfc_cache.callbacks_smcp[curr_path] = tmp
+              insert(tmp.related, curr_path)
+            end
+          end
+        end
+      end
+      :: trans_skip ::
+    end
+
+    if series_data.scit == nil then
+      if series_data.scsl ~= nil then
+        fake_fd_insert({series, "scit", ssub = {fam, series, "scsl"}})
+        fake_fd_insert({series, "si", ssub = {fam, series, "scit"}})
+      end
+    elseif series_data.scsl == nil then
+      fake_fd_insert({series, "scsl", ssub = {fam, series, "scit"}})
+      fake_fd_insert({series, "si", ssub = {fam, series, "scsl"}})
+    else 
+      fake_fd_insert({series, "si", ssub = {fam, series, "scit"}})
+    end
+
+    -- No check for italic sc via +smcp, though could be added.
+    -- Doubt this is worth the overhead, though.
+
+    -- Other possibilities:
+    --    - Auto-generate fds for different figure styles?
+    --    - Swash/alternates?
+    --    - How does this do with .ttc or variable fonts?
+
+    -- It is (relatively) cheap to create additional families once the base
+    --  case is done, if features can be inferred on loading.
+    -- But I'm not sure how that would work for families, as opposed to 
+    --  shapes?
+  end
+
+  lfc_cache[fam].paths = unique(path_list)
+
+  -- Check for missing basic series
+  if fam_data.b == nil then
+    if fam_data.bx ~= nil then
+      for shape,_ in pairs(fam_data.bx) do
+        fake_fd_insert({"b", shape, ssub = {fam, "bx", shape}})
+      end
+    end
+  elseif fam_data.bx == nil then
+    for shape,_ in pairs(fam_data.b) do
+      fake_fd_insert({"bx", shape, ssub = {fam, "b", shape}})
+    end
+  end
+
+
+  lfc_cache[fam].fake_fd = fake_fd
+  lfc_cache[fam].scalable = scalable
+
+  return fake_fd
 end
 -- }}}
 
@@ -1029,23 +970,33 @@ local function get_toks(items)
 end
 -- }}}
 
----@function write_declare_shape(pre, line, post[, size_spec]) {{{
----@param pre       <table> of toks/strings e.g. \DeclareFontShape{<fam>}{<enc>}
----@param line      <table> rep. font spec  e.g. {<series>}, {<shape>}, ... 
----@param post      <table> of toks/strings e.g. {}
----@param size_spec <string> e.g. "<-5.0>" or "<->s*" etc.
+---@function write_declare_shape(pre, line, post[, fea] [, size_spec]) {{{
+---@param pre       <table>   of toks/strings e.g. \DeclareFontShape{<fam>}{<enc>}
+---@param line      <table>   rep. font spec  e.g. {<series>}, {<shape>}, ... 
+---@param post      <table>   of toks/strings e.g. {}
+---@param fea       <string>  of features e.g. "mode=node;script=dflt;+tlig+"
+---@param size_spec <string>  e.g. "<-5.0>" or "<->s*" etc.
 ---@Description Returns table of (tables of) toks/strings for a font shape
 ---@Description declaration. <line> may include ["sub"] or ["ssub"].
-local function write_declare_shape(pre, line, post, size_spec) 
+local function write_declare_shape(pre, line, post, fea, size_spec) 
 
   msg_assert(pre and line and post, 
     "Partial or no spec to write. This should never happen!")
+
+  if not size_spec and fea and (match(fea, "^<")) then
+    size_spec = fea
+    fea = nil
+  end
+
+  -- fea should be a table?
+  fea = fea or str_fea_default
+  fea = line[4] and line[4] ~= "" and (fea .. ";" .. line[4]) or fea
 
   size_spec = size_spec or str_onesize
 
   local out = {pre}
 
-  local function toks_font_spec(fnt, fea)
+  local function toks_font_spec(fnt)
     return  { "\"[", fnt, "]:", fea, "\"" }
   end
 
@@ -1061,7 +1012,7 @@ local function write_declare_shape(pre, line, post, size_spec)
     if kind == "string" then 
 
       append(out, { tok_group_begin, str_onesize, toks_font_spec(line[3], 
-        line[4]), tok_group_end })
+        fea), tok_group_end })
 
     else 
       msg_assert(kind == "table", {"Unexpected type ", kind, "!"})
@@ -1069,7 +1020,7 @@ local function write_declare_shape(pre, line, post, size_spec)
       insert(out, tok_group_begin)
 
       for _,item in ipairs(line[3]) do
-        append(out, {item[1], toks_font_spec(item[2], line[4])}) 
+        append(out, {item[1], toks_font_spec(item[2], fea)}) 
       end
 
       insert(out, tok_group_end)
@@ -1403,22 +1354,18 @@ local function font_config(targ, config)
   local fam_meta = metadata.fam_meta
   msg_assert(fam_meta ~= nil, {"No reults for ", targ})
 
-  if metadata.fd_file then return f end
 
-  local hash_key = metadata.hash_key
   if not metadata.cached then 
 
     local data = f.data
     if data == nil then return nil end
 
     local parsed_fam
-    -- local parsed_fam_oldstyle
 
     local nfss_hashes = {}
     local regular = false
     local book = false
     local medium = false
-    -- local maybe_not_scale = false
 
     -- Adjust returned data for compatibility with NFSS
     --    - Reduce width + weight -> series
@@ -1441,16 +1388,6 @@ local function font_config(targ, config)
       local family = font.familyname
 
       local series, shape
-
-      -- not wise?
-      -- if style == "italic" and ((match(name, "oblique")) or
-      --   (match(name, "slanted"))) then
-      --   style = "oblique"
-      -- end
-
-      -- if font.minsize ~= nil or font.maxsize ~= nil then
-      --   maybe_not_scale = true
-      -- end
 
       if fam_meta ~= family then
 
@@ -1491,14 +1428,8 @@ local function font_config(targ, config)
 
       local t
 
-      -- What is this for exactly?
-      -- if variant ~= "oldstyle" then
-        if parsed_fam == nil then parsed_fam = {} end
-        t = parsed_fam
-      -- else
-      --   if parsed_fam_oldstyle == nil then parsed_fam_oldstyle = {} end
-      --   t = parsed_fam_oldstyle
-      -- end
+      if parsed_fam == nil then parsed_fam = {} end
+      t = parsed_fam
       t[family] = t[family] or {}
       t = t[family]
 
@@ -1509,8 +1440,6 @@ local function font_config(targ, config)
       local nfss_style    = parse_spec(styles, style)
       local nfss_variant  = parse_spec(variants, variant)
 
-      -- Is this really needed and for what?
-      -- if nfss_variant == "oldstyle" then nfss_variant = "n" end
 
       -- ‘m’ must not be combined, as of the 2020 changes, so ‘mb’ is
       --    not allowed
@@ -1557,42 +1486,6 @@ local function font_config(targ, config)
     if parsed_fam == nil then --and parsed_fam_oldstyle == nil then 
       return nil 
     end
-
-    -- ConTeXt's database treats distinct ‘oldstyle’ fonts as variants
-    -- but this doesn't fit NFSS, so it needs to be a family
-    -- I'm not sure what this is aimed at, so not sure if it should just
-    --    be +j ??
-
-    -- if parsed_fam_oldstyle ~= nil then
-    --   if parsed_fam == nil then
-    --     parsed_fam = parsed_fam_oldstyle
-    --   else 
-    --     for fam,i in pairs(parsed_fam_oldstyle) do
-    --       if parsed_fam[fam] ~= nil then
-    --         local hash_fam = fam .. "oldstyle"
-    --         if parsed_fam[fam .. "oldstyle"] ~= nil then
-    --           local n = 2
-    --           while parsed_fam[fam .. "oldstyle" .. n] ~= nil do n = n + 1 end
-    --           parsed_fam[fam .. "oldstyle" .. n] = i
-    --           hash_fam = hash_fam .. n
-    --         else
-    --           parsed_fam[fam .. "oldstyle"] = i
-    --         end
-    --         for series,j in pairs(i) do
-    --           for shape,fnts in pairs(j) do
-    --             for _,fnt in ipairs(fnts) do
-    --               fnt.nfss_hash = (gsub(fnt.nfss_hash, fam, hash_fam))
-    --               fnt.nfss_family = (gsub(fnt.nfss_family, fam, hash_fam))
-    --             end
-    --           end
-    --         end
-    --       else
-    --         parsed_fam[fam] = i
-    --       end
-    --     end
-    --   end
-    --   parsed_fam_oldstyle = nil
-    -- end
 
     -- What to do about the common weights NFSS doesn't cover?
     -- e.g. ‘medium’ and ‘book’ often differ from both ‘regular’ and each other
@@ -1679,21 +1572,23 @@ local function font_config(targ, config)
       end
     end
           
-    -- link families to hash_key
+    -- link families to fam_meta
 
     lfc_cache.meta_families = lfc_cache.meta_families or {}
-    lfc_cache.meta_families.by_hash = lfc_cache.meta_families.by_hash or {}
-    lfc_cache.meta_families.by_hash[hash_key] = {}
-    local by_hash = lfc_cache.meta_families.by_hash[hash_key] 
+    lfc_cache.meta_families.by_meta_fam = lfc_cache.meta_families.by_meta_fam or {}
+    lfc_cache.meta_families.by_meta_fam[fam_meta] = {}
+    local by_meta_fam = lfc_cache.meta_families.by_meta_fam[fam_meta]
 
 
     for fam,fam_data in pairs(parsed_fam) do
-      local fake_fds = prepare_fake_fd(fam, fam_data, config)
-      for fam_name,fake_fd in pairs(fake_fds) do
-        insert(by_hash, fam_name)
-        local scale = config[fam_name] and config[fam_name].scale and 
-          config[fam_name].scale or (config.scale and config.scale or nil)
-        write_fake_fd(fam_name, scale) 
+      local fake_fd = prepare_fake_fd(fam, fam_data)
+      if fake_fd then
+        insert(by_meta_fam, fam)
+        local scale = config[fam] and config[fam].scale and 
+          config[fam].scale or (config.scale and config.scale or nil)
+        local fea = config[fam] and config[fam].fea and config[fam].fea or
+          (config.fea and config.fea or str_fea_default)
+        write_fake_fd(fam, fea, scale) 
       end
     end
 
@@ -1701,10 +1596,12 @@ local function font_config(targ, config)
 
   else
 
-    for _,fam_name in ipairs(lfc_cache.meta_families.by_hash[hash_key]) do
+    for _,fam_name in ipairs(lfc_cache.meta_families.by_meta_fam[fam_meta]) do
       local scale = config[fam_name] and config[fam_name].scale and 
         config[fam_name].scale or (config.scale and config.scale or nil)
-      use_cached_fd(fam_name, scale) 
+      local fea = config[fam_name] and config[fam_name].fea and 
+        config[fam_name].fea or (config.fea and config.fea or str_fea_default)
+      use_cached_fd(fam_name, fea, scale) 
     end
 
   end
@@ -1714,148 +1611,6 @@ local function font_config(targ, config)
 end
 -- }}}
 
-
----@function custom_font_config(fam, config) {{{
----@param fam     <string>  Suitable for NFSS family name.
----@param config  <table>   Configuration.
----@param force   <boolean> Whether to force regeneration.
-local function custom_font_config(fam, config, force) 
-
-  force = force or false
-
-  msg_assert(fam, "Expected at least one argument, but found none!", "err")
-
-  if type(fam) == "table" then
-
-    local configs, force = fam, force or config or nil
-    for _,cfg in ipairs(configs) do
-      for fam,config in pairs(cfg) do
-        fast_font_config(fam, config, force)
-      end
-    end
-
-  else
-
-    -- We should have a family name, configuration table [and force or not].
-
-    -- Errors
-    msg_assert(type(fam) == "string", {"Expected family name to be a string, \z
-      but found ", type(fam), "!"}, "err")
-      msg_assert(config and type(config) == "table", {"Expected configuration table, \z
-      but found ", (config and type(config) or "nothing"), "!"}, "err")
-
-    fam = cleanfilename(fam)
-
-    -- Get hash and check for cached data.
-    local hash_key, cached = hash_check(fam, config)
-
-    -- If fd is cached, use unless force.
-    if cached and not force then
-      use_cached_fd(fam, config.scale or nil)
-    end
-
-    local scalable = true
-    local paths = {}
-    local do_not_cache = false
-
-    local function get_spec(wght, wd, var, stl)
-      local weight, width, variant, style =
-        parse_spec(weights, wght),
-        parse_spec(widths, wd),
-        parse_spec(variants, var),
-        parse_spec(styles, stl)
-      return weight == "m" and width or (width == "m" and weight or weight .. width),
-        variant == "n" and style or (style == "n" and variant or variant .. style)
-    end
-
-    -- Config should consist of indexed tables, one for each shape declaration,
-    --  with possibly some keyed values in the mix.
-    for i,cfg in ipairs(config) do
-
-      -- Error if there's no font spec to resolve.
-      msg_assert((cfg.font and type(cfg.font) == "string") or
-        (cfg.fonts and type(cfg.fonts) == "table") or cfg.sub or cfg.ssub,
-        "Invalid or missing font specification!", "err")
-
-      local weight, width, variant, style = cfg.weight or "medium", cfg.width 
-        or "medium", 
-        (cfg.sc or cfg.smallcaps) and "sc" or "normal", 
-        cfg.shape or "normal"
-
-      cfg.series, cfg.shape = get_spec(weight, width, variant, style)
-
-
-      -- Resolves the actual font requests
-      if not cfg.sub and not cfg.ssub then
-        cfg.fea = cfg.fea or cfg.features or str_fea_default
-        if cfg.font then
-          cfg.font = resolve_one(cfg.font)
-          if not cfg.font then
-            config[i] = ""
-            do_not_cache = true
-            goto invalid_font_request
-          end
-          insert(paths, cfg.font)
-        else
-          scalable = false
-          for j,frag in ipairs(cfg.fonts) do
-            if not (frag.min or frag.max) or not (frag.font and 
-              type(frag.font) == "string") then
-              msg({"Invalid font specification: <", (frag.min or "0"), "-",
-                (frag.max or "0"), ">", (frag.font and tostring(frag.font) 
-                or "\"\""), "!"})
-              config[i] = ""
-              do_not_cache = true
-              goto invalid_font_request
-            end
-            local min = frag.min or ""
-            local max = frag.max or ""
-            local font = resolve_one(frag.font)
-            if not font then
-              config[i] = ""
-              do_not_cache = true
-              goto invalid_font_request
-            end
-            cfg.fonts[j] = {min, max, frag.font}
-            insert(paths, frag.font)
-            if not lfc_cache.resources or not lfc_cache.resources[frag.font] 
-              then
-                lfc_cache.callbacks_data = lfc_cache.callbacks_data or {}
-                lfc_cache.callbacks_data[frag.font] = true
-            end
-          end
-        end
-      end
-
-      config[i] = {cfg.series, cfg.shape, cfg.font or cfg.fonts or cfg.sub or 
-        cfg.ssub, cfg.fea or nil}
-
-      :: invalid_font_request ::
-
-    end
-
-    -- Cache only if no error occurred in processing.
-    if not do_not_cache then
-      lfc_cache = lfc_cache or read_cache()
-      if lfc_cache[fam] then
-        msg({"Overwriting cached configuration for ", fam, "."}, "log")
-      end 
-      lfc_cache[fam] = {
-        fake_fd = config,
-        scalable = scalable,
-        complete = true,
-        config = serialize(config),
-        paths = unique(paths)
-      }
-      hash_cache({fam}, fam, config)
-    end
-
-    -- Try to create a family even after erroneous user input.
-    write_fake_fd(fam, scalable and config.scale or nil or nil, config)
-
-  end
-end
--- }}}
 
 -------------------------------------------------------------------------------
 -- LaTeX interface things
@@ -2005,7 +1760,7 @@ lfc_cache = isfile(cache_path) and read_cache() or {}
 -------------------------------------------------------------------------------
 -- lfc.get_font_data = get_font_data
 lfc.font_config = font_config
-lfc.custom_font_config = custom_font_config
+-- lfc.custom_font_config = custom_font_config
 -- lfc.fonts = fonts
 -- lfc.write_cache = write_cache
 -- lfc.read_cache = read_cache
