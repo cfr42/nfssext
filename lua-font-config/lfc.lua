@@ -1,4 +1,4 @@
--- $Id: lfc.lua 12045 2026-09-18 06:43:30Z cfrees $
+-- $Id: lfc.lua 12046 2026-09-18 16:15:13Z cfrees $
 -------------------------------------------------------------------------------
 -- TODO
 --
@@ -26,7 +26,7 @@
 -- The code is too long, too complex, too clunky and too simplistic.
 --    (Yes, of course, it can be both.)
 --
--- Custom fn. is very slow.
+-- Custom fn. is very slow.   => no Lua API
 --
 -- Cached data should depend on db/fnt versions.
 --    - Or is this automatic?
@@ -1758,9 +1758,11 @@ lfc_cache = isfile(cache_path) and read_cache() or {}
 -- Public exports
 -- Probably get_cache_path should be exposed, at least.
 -------------------------------------------------------------------------------
--- lfc.get_font_data = get_font_data
+-- Is this a bad idea? 
+-- Max said most people want a separate function --- presumably they have some
+--    reason for that?
 lfc.font_config = font_config
--- lfc.custom_font_config = custom_font_config
+-- lfc.get_font_data = get_font_data
 -- lfc.fonts = fonts
 -- lfc.write_cache = write_cache
 -- lfc.read_cache = read_cache

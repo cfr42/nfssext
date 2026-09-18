@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12044 2026-09-17 19:53:18Z cfrees $}[v0.3 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12046 2026-09-18 16:15:13Z cfrees $}[v0.3 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/ 
@@ -127,18 +127,47 @@
 % 
 % \section{Requirements}\label{sec:require}
 %
-% The package requires \file{font-syn.lua}, from the Con\TeX t (\textsc{mkiv}).
-% This file is included in \TeX\ Live, Mik\TeX and other distributions.
-%
-% Obviously, the package requires Lua\LaTeXe.
+% The package requires Lua\LaTeXe.
 % It will not work with any other engine or format.
 %
 % \section{Usage}\label{sec:pkg}
 %
 % \emph{The user interface is currently \textbf{extremely} basic.}
+%
 % All that is properly supported is the choice of font family for the standard
 % families --- i.e.~roman/serif, sans and typewriter/mono --- and configuration
 % of additional fonts, again by family.
+% In addition to this, scaling and raw feature selection are supported.
+% That is, most things are supported in the sense that they are possible, but
+% the interface is rudimentary in the extreme.
+%
+% That said, the automated configuration is quite extensive.
+% By default, the package tries to configure font families which are as rich
+% as possible, insofar as the fonts support this. 
+% This includes
+% \begin{itemize}
+%   \item multiple widths and shapes, insofar as \textsc{nfss} supports them;
+%   \item italic, oblique, upright italic, reverse italic, reverse oblique;
+%   \item small-caps, italic small-caps, oblique small-caps\footnote{%
+%     This should work whether small-caps are in separate fonts (e.g.~Latin 
+%     Modern) or implemented by the \texttt{smcp} feature (e.g.~\TeX{}-Gyre
+%     Pagella).};
+%   \item optical sizes.
+% \end{itemize}
+% Of course, this depends on the quality of the data the fonts provide.
+% It is not always good or, even, vaguely accurate. 
+% If things do not fit, an effort is made to accommodate them as distinct font
+% families, so they are still available at document level.
+%
+% At present, this is a bit chaotic and a bit hard to use, as the 
+% results are ‘hidden’ from you (in, of course, plain sight).
+% Even so, you should typically need to do much less to access the fonts you
+% want than you might otherwise expect. 
+%
+% The advantage of this is that if a font has several widths, you can easily
+% adjust the one used for bold by simply redefining the relevant default.
+% This is not very user friendly yet, but it is not terrible.
+% 
 %
 % Simple usage looks like this:
 % \iffalse
@@ -149,15 +178,15 @@
   \fontconfig{%
     rm = texgyrepagella,
     sf = texgyreheros,
-    tt = sourcecodepro,
+    tt = texgyrecursor,
   }
 \end{verbatim}
 % \iffalse
 %</verb>
 % \fi
 % 
-% If you want to configure font features or a non-default script etc., you can 
-% use:
+% If you want to configure font features, scale a family or use a non-default
+% script etc., you can use:
 % \iffalse
 %<*verb>
 % \fi
@@ -166,10 +195,11 @@
   \fontconfig{%
     rm = {%
       name = texgyrepagella, 
-      features = {script=ltn;},
+      features = {script=ltn;+tlig;+pnum},
     },
     sf = {%
       name = texgyreheros,
+      scale = 1.2,
       features = {script=cyrl;},
     },
     tt = {%
@@ -186,26 +216,67 @@
 % Small-caps and italic/oblique small-caps will be configured 
 % automatically if available.
 %
-% ^^A \section{Advanced Configuration}\label{sec:adv}
-% ^^A
-% ^^A Advanced configuration uses Lua and allows you to specify exactly which
-% ^^A fonts you wish to use for which shapes in which families with which 
-% ^^A features.
-% ^^A
-% ^^A \emph{It is strongly recommended to use the basic interface explained in 
-% ^^A \fref{sec:usage} prior to attempting custom configuration.} 
-% ^^A
-% ^^A This is a powerful tool, but it requires a good knowledge of \textsc{nfss},
-% ^^A familiarity with the fonts you wish to use and some elementary Lua.
-% ^^A The fonts you request must actually exist, have the features you
-% ^^A say and be sensibly grouped into families, where ‘sensible’ means ‘makes
-% ^^A sense in \textsc{nfss}’.
-% ^^A
-% ^^A If you do not know what \textsc{nfss} is, do not know your
-% ^^A \texttt{+calt} from your \texttt{-dlig} or are unfamiliar with Lua, 
-% ^^A congratulations. 
-% ^^A You have a life.
-% ^^A This section is not for you. 
+% \section{Advanced Configuration}\label{sec:adv}
+%
+% Advanced configuration is possible, but the interface is currently non-
+% existent and, despite not existing, will certainly change. 
+%
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+\directlua{
+  lfc = require("lfc")
+  local font_config = lfc.font_config
+  font_config("venturis", {fea = "mode=node;script=dflt;+tlig;+pnum;+onum"})
+}
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+%
+% You do not actually gain much by this, although it is a bit faster, since 
+% key-value processing in \LaTeX{} is fairly slow. 
+% However, you cannot actually do anything you cannot do otherwise.
+% The only two configuration options are \texttt{fea} and \texttt{scale},
+% although you could theoretically modify them for different families, if you
+% lookup string will return several.
+%
+% What you gain is primarily the absence of interference on the \LaTeX{} side.
+% Families will be configured for you, but you may then choose how to use 
+% them; nothing will change by default.
+% Not even macros will be defined to access them; if you want that, you must
+% do it yourself.
+% 
+% So after the Lua above, you might do
+% \iffalse
+%<*verb>
+% \fi
+\begin{verbatim}
+\renewcommand\rmdefault{venturisadf}
+\renewcommand\sfdefault{venturissansadfcd}
+\makeatletter
+% TitlingNo3? (digits get eaten during lookup)
+\DeclareRobustCommand\venturistitling{%
+  \not@math@alphabet\venturistitling\relax
+  \fontfamily{venturisadftitlingno}\selectfont
+}
+\DeclareTextFontCommand\textvtitle{\venturistitling}
+\makeatother
+\end{verbatim}
+% \iffalse
+%</verb>
+% \fi
+% Right now, the only way to know what is available is to examine the fonts
+% or, better, the cached data (after the first run).
+% You can also put \texttt{lfc_debug = true} before loading the module to 
+% get (lots) of console output, including the database contents.
+%
+% That is, you can use the module directly, but that is not to say that the
+% module is actually usable at present.
+%
+% Obviously, such shenanigans are not for the faint of heart or, indeed, for
+% the stout-hearted-but-moderately-sane.
 %
 % 
 % \changes{v0.0}{0000-00-00}{First public release.}
@@ -227,7 +298,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12044 2026-09-17 19:53:18Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12046 2026-09-18 16:15:13Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % this is needed only because l3doc overwrites \fileversion and \filedate
 % neither ltxdoc nor doc does this
 \DefineFileInfoSVN[lfc]
@@ -329,6 +400,7 @@
 %    \begin{macrocode}
 \NewDocumentCommand\fontconfig { +m }{
   \keys_set:nn {lfc} {#1}
+  \__@@_configure_doc_families:
 }
 %    \end{macrocode}
 % \end{macro}
@@ -336,11 +408,6 @@
 \directlua{
   require("lfc")
 }
-\hook_gput_code:nnn {begindocument/before} {.} {
-  \__@@_configure_doc_families:
-}
-%    \end{macrocode}
-%    \begin{macrocode}
 \ExplSyntaxOff
 %    \end{macrocode}
 %</sty>
