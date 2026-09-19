@@ -1,4 +1,4 @@
--- $Id: lfc.lua 12046 2026-09-18 16:15:13Z cfrees $
+-- $Id: lfc.lua 12047 2026-09-19 00:15:01Z cfrees $
 -------------------------------------------------------------------------------
 -- TODO
 --
@@ -6,18 +6,9 @@
 --
 -- Config parsing looks horrible.
 --
--- Family name suffixes not recommended.
---    - Not sure if it's an issue, but it is awkward using CamelCase here.
---    - I also really, really don't like use of caps in filenames, even 
---        virtual ones.
---
 -- Too many font defns are written.
 --
 -- There's no user interface.
---
--- Potential conflicts re. family names, multiple configs etc.
---     - Use hashes more extensively?
---     - Or not at all?
 --
 -- There's some disconnect between the data I'm using and the data luaotfload
 --    uses, even though they are the same data.
@@ -26,14 +17,23 @@
 -- The code is too long, too complex, too clunky and too simplistic.
 --    (Yes, of course, it can be both.)
 --
--- Custom fn. is very slow.   => no Lua API
---
 -- Cached data should depend on db/fnt versions.
 --    - Or is this automatic?
 --
 -- Loading the ConTeXt file differently?
 --
--- Reuse data for overlapping families?
+-- Use suffix or something to distinguish families by features?
+-- Or some other way to deal with this?
+-- 
+-- Information for user.
+--
+-- Some (any) user interface.
+--
+-- Way to define individual font commands.
+--
+-- Cope with symbol fonts? Not sure is that really needed?
+--
+-- Too slow?
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -- locals {{{
@@ -1251,17 +1251,14 @@ end
 
 ---@function write_fake_fd(fam[, scale_factor]) {{{
 ---@param fam:            NFSS family
----@param scale_factor:   Scaling factor
 ---@param fake_fd:        If not cached
+---@param fea:            Features
+---@param scale_factor:   Scaling factor
 ---@description fake_fd should be nil unless something has gone wrong.
 ---@description This should never happen in the automated case.
 -- Cache format: see above
-local function write_fake_fd(fam, scale_factor, fake_fd)
+local function write_fake_fd(fam, fake_fd, fea, scale_factor)
   msg({"Emulating font definition file for NFSS family ", fam, "."})
-  if scale_factor and not fake_fd and type(scale_factor) == "table" then
-    fake_fd = scale_factor
-    scale_factor = nil
-  end
   if not fake_fd then
     msg_assert(lfc_cache[fam] and lfc_cache[fam].fake_fd and 
       type(lfc_cache[fam].fake_fd) == "table", {"Cannot find definition for ",
@@ -1286,7 +1283,7 @@ local function write_fake_fd(fam, scale_factor, fake_fd)
 
   for _,line in ipairs(fake_fd) do
     if line ~= "" then 
-      append(out, write_declare_shape(pre, line, toks_empty_n, onesize))
+      append(out, write_declare_shape(pre, line, toks_empty_n, fea, onesize))
     end
   end
 
@@ -1315,15 +1312,16 @@ end
 -- Main configuration function
 -- font_config()
 -------------------------------------------------------------------------------
----@function used_cached_fd(fam, scale) {{{
+---@function use_cached_fd(fam, scale) {{{
 ---@param fam   <string>  Name of a cached meta-family.
+---@param fea   <string>  Font features.
 ---@param scale <numeric> Potential scaling factor or nil.
-local function use_cached_fd(fam, scale) 
+local function use_cached_fd(fam, fea, scale) 
   msg_assert(lfc_cache[fam] and lfc_cache[fam].fake_fd,
     "Cache failure. Try removing the cache before recompiling.")
   msg({"Using cached fd emulation for ", fam, "."})
 
-  return write_fake_fd(fam, lfc_cache[fam].scalable and scale or nil) 
+  return write_fake_fd(fam, lfc_cache[fam].fake_fd, fea, scale) 
 end
 -- }}}
 
@@ -1588,7 +1586,7 @@ local function font_config(targ, config)
           config[fam].scale or (config.scale and config.scale or nil)
         local fea = config[fam] and config[fam].fea and config[fam].fea or
           (config.fea and config.fea or str_fea_default)
-        write_fake_fd(fam, fea, scale) 
+        write_fake_fd(fam, fake_fd, fea, scale) 
       end
     end
 
@@ -1730,8 +1728,7 @@ local function configure_doc_families()
 end
 -- }}}
 
--- Generate TeX macros which will use a Lua function to set rm, sf and tt 
---  families.
+-- Generate TeX macros to use Lua functions to set rm, sf and tt.
 luafunction_to_cs("__lfc_set_rm:n", get_fam_default_scanner("rm"))
 luafunction_to_cs("__lfc_set_sf:n", get_fam_default_scanner("sf"))
 luafunction_to_cs("__lfc_set_tt:n", get_fam_default_scanner("tt"))
