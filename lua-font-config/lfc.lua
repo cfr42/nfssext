@@ -1,4 +1,4 @@
--- $Id: lfc.lua 12047 2026-09-19 00:15:01Z cfrees $
+-- $Id: lfc.lua 12048 2026-09-19 01:28:52Z cfrees $
 -------------------------------------------------------------------------------
 -- TODO
 --
@@ -43,8 +43,8 @@ local isdir, isfile, mkdir  = lfs.isdir, lfs.isfile, lfs.mkdir
 local get_functions_table   = lua.get_functions_table
 local new_lua_function      = luatexbase.new_luafunction
 -- string
-local gsub, gmatch, match = string.gsub, string.gmatch, string.match
-local format, lower       = string.format, string.lower
+local gsub, gmatch, match       = string.gsub, string.gmatch, string.match
+local find, format, lower       = string.find, string.format, string.lower
 -- table
 local append, insert            = table.append, table.insert
 local copy, count, fastcopy     = table.copy, table.count, table.fastcopy
@@ -304,15 +304,14 @@ end
 -------------------------------------------------------------------------------
 -- Lookup utilities
 -------------------------------------------------------------------------------
----@function get_font_data -- {{{
+---@function get_font_data(targ[, force]) -- {{{
 ---@param fnt     <string>  Font name/family/etc. to resolve.
----@param config  <table>   Only here used for hash 
 ---@param force   <boolean> Whether to force re-generation if .fd found.
 -- @description Resolves a font specification and turns the family name into
 -- @description    an .fd file name
 -- @description If the file exists, records this and returns the metadata
 -- @description If not, returns a table of font data, too
-local function get_font_data(fnt, config, force)
+local function get_font_data(fnt, force)
   if fnt == nil then return nil end
 
   -- For return
@@ -350,12 +349,16 @@ local function get_font_data(fnt, config, force)
 
   local cached
   if lfc_cache.meta_families and lfc_cache.meta_families.by_meta_fam then
-    cached = lfc_cache.meta_families.by_meta_fam[fam_meta] or nil
+    if not force then
+      cached = lfc_cache.meta_families.by_meta_fam[fam_meta]
+    else
+      lfc_cache.meta_families.by_meta_fam[fam_meta] = nil
+    end
   end
   metadata.hash_key  = fam_meta
 
   -- If a cached emulated .fd exists, we're done unless force was used.
-  if cached and not force then
+  if cached then
     metadata.cached = cached
     return f
   end
@@ -983,7 +986,7 @@ local function write_declare_shape(pre, line, post, fea, size_spec)
   msg_assert(pre and line and post, 
     "Partial or no spec to write. This should never happen!")
 
-  if not size_spec and fea and (match(fea, "^<")) then
+  if not size_spec and fea and (find(fea, "^<")) then
     size_spec = fea
     fea = nil
   end
@@ -1344,7 +1347,7 @@ local function font_config(targ, config)
 
   local scale = config.scale
   
-  local f = get_font_data(targ)
+  local f = get_font_data(targ, config.force or nil)
 
   if f == nil or f.metadata == nil then return nil end
   local metadata = f.metadata
@@ -1374,7 +1377,7 @@ local function font_config(targ, config)
       -- We don't want to parse maths fonts.
       -- Best would be to check for the MATH table, but we don't want to
       --    load every font for that, so do this for now.
-      if (match(fullname, "math")) then
+      if (find(fullname, "math")) then
         goto discard
       end
 
@@ -1390,7 +1393,7 @@ local function font_config(targ, config)
       if fam_meta ~= family then
 
         family = (gsub(family, variant, ""))
-        if not (match(fam_meta, "%d")) then
+        if not (find(fam_meta, "%d")) then
           family = (gsub(family, "%d", ""))
         end
         family = (gsub(family, style, ""))
@@ -1406,7 +1409,7 @@ local function font_config(targ, config)
         end
 
         -- For latin modern roman unslanted, which claims to be perfectly ‘normal’
-        if (match(name, "unslanted")) then
+        if (find(name, "unslanted")) then
           family = (gsub(family, "unslanted", ""))
           if (style == "normal" or style == "regular") and variant == "normal" then
             style = "uprightitalic"
@@ -1414,9 +1417,9 @@ local function font_config(targ, config)
         end
 
         if weight == "normal" or weight == "regular" then
-          if (match(fullname, "book")) then weight = "book"
+          if (find(fullname, "book")) then weight = "book"
             book = true
-          elseif (match(fullname, "medium")) then weight = "medium"
+          elseif (find(fullname, "medium")) then weight = "medium"
             medium = true
           else regular = true end
         end
