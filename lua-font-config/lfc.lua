@@ -1,4 +1,4 @@
--- $Id: lfc.lua 12049 2026-09-19 04:39:57Z cfrees $
+-- $Id: lfc.lua 12050 2026-09-19 08:07:28Z cfrees $
 -------------------------------------------------------------------------------
 -- TODO
 --
@@ -131,6 +131,7 @@ local msg_level = {
   log   = "Log",
   warn  = "Warning",
 }
+local msg_cfg = lfc.msg_cfg or {}
 local function msg(text, level)
   level = level or "warn"
   if level == "debug" and not lfc_debug then return end
@@ -156,9 +157,28 @@ local function msg_assert(cond, text, level)
     msg(text, level or "bug")
   end
 end
+local function msg_debug(...) end
 if lfc_debug then
   function msg_assert(cond, text, level) assert(cond, (type(text) == "string" 
     and text) or concat(text)) end
+  msg_cfg.debug = msg_cfg.debug or {
+    -- cache     = true,
+    -- callback  = true,
+    -- database  = true,
+    defn      = true,
+    doc       = true,
+    -- sort      = true,
+  }
+  function msg_debug(m, cat, ...)
+    if cat and not msg_cfg.debug[cat] then 
+      msg({"Skipped debug ", cat}, "debug") 
+      return 
+    end
+    cat = cat or "generic"
+    msg({"[", cat, "] ", m}, "debug")
+    local vargs = {...} -- Aaaarrrggghhh!!
+    for _,i in ipairs(vargs) do inspect(i) end
+  end
 end
 -- }}}
 
@@ -278,10 +298,7 @@ local function read_cache(loc)
   write_nl("[lfc] Reading cache ...")
   loc = loc or get_cache_path()
   local cache = isfile(loc) and load(loc) or {}
-  if lfc_debug then 
-    msg("Read cache state:\n", "debug")
-    inspect(cache) 
-  end
+  msg_debug("Read cache state:\n", "cache", cache)
   return cache
 end
 -- }}}
@@ -293,10 +310,7 @@ local function write_cache()
     local loc = get_cache_path()
     -- Duplicates data referenced by pointers/links/whatever they are.
     save (loc, lfc_cache)
-    if lfc_debug then 
-      msg("Saved cache state:\n", "debug")
-      inspect(lfc_cache) 
-    end
+    msg_debug("Saved cache state:\n", "cache", lfc_cache)
   end
 end
 -- }}}
@@ -1154,7 +1168,7 @@ local function add_callback_smcp()
         end
 
         msg({"Rewrote fd for ", fam, "..."}, "log")
-        if lfc_debug then inspect(fake_fd) end
+        msg("fake_fd:", "callback", fake_fd)
 
         msg("Checking cache enabled ...", "info")
         if not lfc_callback_cache_active then
@@ -1224,7 +1238,7 @@ add_callback_data = function()
         end
 
         msg({"Cached resources for ", path, " ..."}, "log")
-        if lfc_debug then inspect(lfc_cache.resources[path]) end
+        msg_debug("Resources: ", "cache", lfc_cache.resources[path])
 
         msg("Checking cache is active ...", "info")
         if not lfc_callback_cache_active then
@@ -1261,7 +1275,8 @@ end
 ---@description This should never happen in the automated case.
 -- Cache format: see above
 local function write_fake_fd(fam, fake_fd, fea, scale_factor)
-  msg({"Emulating font definition file for NFSS family ", fam, "."})
+  msg({"Emulating font definition file for NFSS family ", fam, " with ",
+    fea, " scaled ", scale_factor or "1", "."})
   if not fake_fd then
     msg_assert(lfc_cache[fam] and lfc_cache[fam].fake_fd and 
       type(lfc_cache[fam].fake_fd) == "table", {"Cannot find definition for ",
@@ -1290,7 +1305,9 @@ local function write_fake_fd(fam, fake_fd, fea, scale_factor)
     end
   end
 
+  msg_debug("Out (partially tokenized): ", "defn", out)
   out = get_toks(out)
+  msg_debug("Out (streamed): ", "defn", out)
   sprint(-2,out)
 
   if not lfc_cache[fam].complete and not lfc_callback_smcp_active then
@@ -1585,10 +1602,10 @@ local function font_config(targ, config)
       local fake_fd = prepare_fake_fd(fam, fam_data)
       if fake_fd then
         insert(by_meta_fam, fam)
-        local scale = config[fam] and config[fam].scale and 
-          config[fam].scale or (config.scale and config.scale or nil)
-        local fea = config[fam] and config[fam].fea and config[fam].fea or
-          (config.fea and config.fea or str_fea_default)
+        local scale = (config[fam] and config[fam].scale and 
+          config[fam].scale) or (config.scale and config.scale) or nil
+        local fea = (config[fam] and config[fam].fea and config[fam].fea) or
+          (config.fea and config.fea) or str_fea_default
         write_fake_fd(fam, fake_fd, fea, scale) 
       end
     end
@@ -1598,10 +1615,10 @@ local function font_config(targ, config)
   else
 
     for _,fam_name in ipairs(lfc_cache.meta_families.by_meta_fam[fam_meta]) do
-      local scale = config[fam_name] and config[fam_name].scale and 
-        config[fam_name].scale or (config.scale and config.scale or nil)
-      local fea = config[fam_name] and config[fam_name].fea and 
-        config[fam_name].fea or (config.fea and config.fea or str_fea_default)
+      local scale = (config[fam_name] and config[fam_name].scale and 
+        config[fam_name].scale) or (config.scale and config.scale) or nil
+      local fea = (config[fam_name] and config[fam_name].fea and 
+        config[fam_name].fea) or (config.fea and config.fea) or str_fea_default
       use_cached_fd(fam_name, fea, scale) 
     end
 
@@ -1624,6 +1641,7 @@ end
 local function do_with_one_scanner(fn)
   return function()
     local one = param(false)
+    msg({"Scanned one: ", one}, "debug")
     return fn(one)
   end
 end
@@ -1637,6 +1655,7 @@ local function do_with_two_scanner(fn)
   return function()
     local one = param(false)
     local two = param(false)
+    msg({"Scanned two: ", one, " | ", two}, "debug")
     return fn(one, two)
   end
 end
@@ -1664,7 +1683,7 @@ local function get_fam_default_scanner(fam)
       }
       nfss_default_families[fam] = nfss_doc_families[cleanname]
       nfss_doc_families.curr = cleanname
-      if lfc_debug then inspect(nfss_default_families) end
+      msg_debug("NFSS default families: ", "doc", nfss_default_families)
     end)
 end
 -- }}}
@@ -1681,7 +1700,7 @@ local function get_fam_name_scanner()
         cleanname = cleanname,
       }
       nfss_doc_families.curr = cleanname
-      if lfc_debug then inspect(nfss_doc_families) end
+      msg_debug("NFSS doc families: ", "doc", nfss_doc_families)
     end)
 end
 -- }}}
@@ -1696,6 +1715,7 @@ local function get_fam_cfg_scanner()
       msg_assert(curr ~= nil, "No current family to set features for!")
       curr = nfss_doc_families[curr]
       curr[key] = lower(tostring(value))
+      msg_debug("Scanned family configuration: ", "doc", curr)
     end)
 end
 -- }}}
@@ -1707,22 +1727,21 @@ end
 ---@description generator. Something to do with (Lua) scope, maybe?
 local function configure_doc_families()
   return function()
-    if lfc_debug then 
-      msg("Configuring doc families ...", "debug")
-      inspect(nfss_default_families) 
-      inspect(nfss_doc_families) 
-      inspect(fam_defaults)
-    end
+    msg_debug("Configuring doc families ...", "doc",
+      nfss_default_families,
+      nfss_doc_families,
+      fam_defaults)
     local config = {fea = nil, scale = nil, force = nil}
     for name,cfg in pairs(nfss_doc_families) do
       if name ~= "curr" then
-        config.fea = cfg.features or nil
+        config.fea = cfg.fea or nil
         config.scale = cfg.scale or nil
         config.force = cfg.force or nil
         -- Currently ignores features!!
         local nfss_fam = font_config(cfg.name,config)
         if nfss_fam ~= nil then cfg.nfss_fam = nfss_fam
           if not cfg.default then
+            msg({"Creating NFSS family ", nfss_fam}, "debug")
             luafunction_to_cs(cfg.cleanname, function()
               return sprint(-2, get_toks({tok_fontfamily, embrace(nfss_fam),
                 tok_selectfont}), "protected")
@@ -1734,7 +1753,7 @@ local function configure_doc_families()
         end
       end
     end
-    if lfc_debug then inspect(nfss_doc_families) end
+    msg_debug("NFSS doc families: ", "doc", nfss_doc_families)
     msg("Setting default families ...", "debug") 
     for fam,cfg in pairs(nfss_default_families) do
       if cfg.nfss_fam then
