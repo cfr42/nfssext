@@ -1,4 +1,4 @@
--- $Id: lfc.lua 12050 2026-09-19 08:07:28Z cfrees $
+-- $Id: lfc.lua 12051 2026-09-19 20:56:11Z cfrees $
 -------------------------------------------------------------------------------
 -- TODO
 --
@@ -181,12 +181,6 @@ if lfc_debug then
   end
 end
 -- }}}
-
--------------------------------------------------------------------------------
--------------------------------------------------------------------------------
-
--------------------------------------------------------------------------------
--------------------------------------------------------------------------------
 
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
@@ -1028,7 +1022,7 @@ local function write_declare_shape(pre, line, post, fea, size_spec)
 
     if kind == "string" then 
 
-      append(out, { tok_group_begin, str_onesize, toks_font_spec(line[3], 
+      append(out, { tok_group_begin, size_spec, toks_font_spec(line[3], 
         fea), tok_group_end })
 
     else 
@@ -1266,7 +1260,7 @@ end
 --    are likely required.
 -------------------------------------------------------------------------------
 
----@function write_fake_fd(fam[, scale_factor]) {{{
+---@function write_fake_fd(fam, fake_fd, fea[, scale_factor]) {{{
 ---@param fam:            NFSS family
 ---@param fake_fd:        If not cached
 ---@param fea:            Features
@@ -1301,6 +1295,7 @@ local function write_fake_fd(fam, fake_fd, fea, scale_factor)
 
   for _,line in ipairs(fake_fd) do
     if line ~= "" then 
+      msg({"Preparing line: ", fam, ": ", fea, " ", onesize}, "debug")
       append(out, write_declare_shape(pre, line, toks_empty_n, fea, onesize))
     end
   end
