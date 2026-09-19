@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12046 2026-09-18 16:15:13Z cfrees $}[v0.3 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12049 2026-09-19 04:39:57Z cfrees $}[v0.3 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/ 
@@ -298,7 +298,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12046 2026-09-18 16:15:13Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12049 2026-09-19 04:39:57Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % this is needed only because l3doc overwrites \fileversion and \filedate
 % neither ltxdoc nor doc does this
 \DefineFileInfoSVN[lfc]
@@ -357,16 +357,17 @@
   }
   \keys_define:nn {lfc/#1} {
     name      .code:n = { \use:c {__@@_set_#1:n} {##1} },
-    features  .code:n = { \__@@_set_fam_fea:n {##1} },
+    features  .code:n = { \keys_set:nn {lfc/fam} {features = {##1} }},
+    scale     .code:n = { \keys_set:nn {lfc/fam} {scale    = {##1} }},
+    force     .code:n = { \keys_set:nn {lfc/fam} {force    = {##1} }},
     unknown   .code:n = {
       \exp_args:NnV \use:c {__@@_set_#1:n} \l_keys_key_str
     },
     name      .value_required:n   = true,
-    features  .value_required:n   = true,
     unknown   .value_forbidden:n  = true,
-    name      .usage:n            = preamble,
-    features  .usage:n            = preamble,
-    unknown   .usage:n            = preamble,
+    features  .groups:n           = config,
+    scale     .groups:n           = config,
+    force     .groups:n           = config,
   }
 }
 %    \end{macrocode}
@@ -382,17 +383,25 @@
 }
 \keys_define:nn {lfc/fam} {
   name      .code:n = { \__@@_set_fam_name:n {#1} },
-  features  .code:n = { \__@@_set_fam_fea:n {#1} },
+  features  .code:n = { \__@@_set_fam_cfg:nn {fea}{#1} },
+  scale     .code:n = { \__@@_set_fam_cfg:nn {scale}{#1} },
+  force     .code:n = { \__@@_set_fam_cfg:nn {force}{#1} },
   unknown   .code:n = {
     \exp_args:NV \__@@_set_fam_name:n \l_keys_key_str 
   },
   name      .value_required:n   = true,
   features  .value_required:n   = true,
+  scale     .value_required:n   = true,
+  force     .default:n          = true,
   unknown   .value_forbidden:n  = true,
   name      .usage:n            = general,
   features  .usage:n            = general,
+  scale     .usage:n            = general,
+  force     .usage:n            = general,
   unknown   .usage:n            = general,
   features  .groups:n           = config,
+  scale     .groups:n           = config,
+  force     .groups:n           = config,
 }
 %    \end{macrocode}
 % \begin{macro}{\fontconfig}
@@ -405,10 +414,10 @@
 %    \end{macrocode}
 % \end{macro}
 %    \begin{macrocode}
+\ExplSyntaxOff
 \directlua{
   require("lfc")
 }
-\ExplSyntaxOff
 %    \end{macrocode}
 %</sty>
 % 

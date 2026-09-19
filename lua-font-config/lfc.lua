@@ -1,4 +1,4 @@
--- $Id: lfc.lua 12048 2026-09-19 01:28:52Z cfrees $
+-- $Id: lfc.lua 12049 2026-09-19 04:39:57Z cfrees $
 -------------------------------------------------------------------------------
 -- TODO
 --
@@ -1048,6 +1048,32 @@ local function write_declare_shape(pre, line, post, fea, size_spec)
 end
 -- }}}
 
+---@function add_callback_cache() {{{
+---@description This writes the cache at the end of the run.
+---@description It should probably be done from LaTeX, though?
+---@description Here the debugging is lost as the .log is closed already.
+---@description The manual ominously warns ‘Use it at your own risk.’
+local function add_callback_cache()
+  if lfc_callback_cache_active then
+    msg("Cache callback already active.", "debug")
+  end
+  msg("Adding cache callback.", "info")
+  luatexbase.add_to_callback(
+    "wrapup_run",
+    function()
+      if lfc_cache then
+        msg("Updating cache ...", "log")
+        write_cache()
+      else
+        msg("No cache data found!")
+      end
+    end,
+    "lfc write cache to disk"
+  )
+  lfc_callback_cache_active = true
+end
+-- }}}
+
 ---@function add_callback_smcp -- {{{
 ---@description Adds code into the luaotfload.patch_font callback.
 ---@description This adjusts font definition files as fonts are loaded and data
@@ -1214,32 +1240,6 @@ add_callback_data = function()
 
 end
 --}}}
-
----@function add_callback_cache() {{{
----@description This writes the cache at the end of the run.
----@description It should probably be done from LaTeX, though?
----@description Here the debugging is lost as the .log is closed already.
----@description The manual ominously warns ‘Use it at your own risk.’
-local function add_callback_cache()
-  if lfc_callback_cache_active then
-    msg("Cache callback already active.", "debug")
-  end
-  msg("Adding cache callback.", "info")
-  luatexbase.add_to_callback(
-    "wrapup_run",
-    function()
-      if lfc_cache then
-        msg("Updating cache ...", "log")
-        write_cache()
-      else
-        msg("No cache data found!")
-      end
-    end,
-    "lfc write cache to disk"
-  )
-  lfc_callback_cache_active = true
-end
--- }}}
 
 -------------------------------------------------------------------------------
 -- Callback functions **must** come before write_fake_fd()!!
@@ -1629,6 +1629,19 @@ local function do_with_one_scanner(fn)
 end
 -- }}}
 
+---@function do_with_two_scanner(fn) {{{
+---@param fn    <function>  Function to execute on argument.
+---@description Returns a function which picks up and does something with
+---@description   two TeX arguments.
+local function do_with_two_scanner(fn)
+  return function()
+    local one = param(false)
+    local two = param(false)
+    return fn(one, two)
+  end
+end
+-- }}}
+
 local fam_defaults = { -- {{{
   rm = tok_rmdefault,
   sf = tok_sfdefault,
@@ -1673,16 +1686,16 @@ local function get_fam_name_scanner()
 end
 -- }}}
 
----@function get_fam_fea_scanner() {{{
+---@function get_fam_cfg_scanner() {{{
 ---@description Returns a function which takes a feature specification and 
 ---@description stores it.
-local function get_fam_fea_scanner()
-  return do_with_one_scanner(
-    function(fea)
+local function get_fam_cfg_scanner()
+  return do_with_two_scanner(
+    function(key, value)
       local curr = nfss_doc_families.curr
       msg_assert(curr ~= nil, "No current family to set features for!")
       curr = nfss_doc_families[curr]
-      curr.features = lower(tostring(fea))
+      curr[key] = lower(tostring(value))
     end)
 end
 -- }}}
@@ -1700,10 +1713,14 @@ local function configure_doc_families()
       inspect(nfss_doc_families) 
       inspect(fam_defaults)
     end
+    local config = {fea = nil, scale = nil, force = nil}
     for name,cfg in pairs(nfss_doc_families) do
       if name ~= "curr" then
+        config.fea = cfg.features or nil
+        config.scale = cfg.scale or nil
+        config.force = cfg.force or nil
         -- Currently ignores features!!
-        local nfss_fam = font_config(cfg.name)
+        local nfss_fam = font_config(cfg.name,config)
         if nfss_fam ~= nil then cfg.nfss_fam = nfss_fam
           if not cfg.default then
             luafunction_to_cs(cfg.cleanname, function()
@@ -1738,7 +1755,7 @@ luafunction_to_cs("__lfc_set_tt:n", get_fam_default_scanner("tt"))
 
 -- Scanners for additional family names and a general one for features.
 luafunction_to_cs("__lfc_set_fam_name:n", get_fam_name_scanner())
-luafunction_to_cs("__lfc_set_fam_fea:n", get_fam_fea_scanner())
+luafunction_to_cs("__lfc_set_fam_cfg:nn", get_fam_cfg_scanner())
 
 -- A macro to configure the fonts at begindocument.
 luafunction_to_cs("__lfc_configure_doc_families:", configure_doc_families())
