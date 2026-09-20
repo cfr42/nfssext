@@ -1,14 +1,12 @@
--- $Id: lfc.lua 12052 2026-09-20 17:09:46Z cfrees $
+-- $Id: lfc.lua 12053 2026-09-20 23:07:55Z cfrees $
 -------------------------------------------------------------------------------
 -- TODO
 --
--- Code should be cleaned up - there's a lot of cruft here.
+-- Code should be cleaned up - I cannot need 2,000 lines to load a font!
 --
 -- Config parsing looks horrible.
 --
--- Too many font defns are written.
---
--- There's no user interface.
+-- There's almost no user interface.
 --
 -- There's some disconnect between the data I'm using and the data luaotfload
 --    uses, even though they are the same data.
@@ -34,9 +32,73 @@
 -- Cope with symbol fonts? Not sure is that really needed?
 --
 -- Too slow?
+--
+-- ** Modify database creation to avoid sorting the data twice? **
+--
+-------------------------------------------------------------------------------
+-- Cache format:
+-------------------------------------------------------------------------------
+--  lfc_cache ->
+--    callbacks_data = {
+--      <fullpath>,
+--      ...,
+--    },
+--    callbacks_smcp = {
+--      <fullpath> = {
+--        <line no.> = true,
+--        ...,
+--        fam = <nfss fam>,
+--        rel = {<path>, ...},
+--      },
+--      ...,
+--    },
+--    incomplete = {
+--      <nfss fam> = {
+--        <line no.> = true,
+--        ...,
+--      },
+--      ...,
+--    },
+--    meta_families = {
+--      by_meta_fam = {
+--        <meta-family> = {<nfss fam>, ...},
+--        ...,
+--      },
+--    },
+--    resources = {
+--      <full path> = {
+--        features = {
+--          gsub = {
+--            lnum = true | false,
+--            onum = true | false,
+--            pnum = true | false,
+--            smcp = true | false,
+--            subs = true | false,
+--            sups = true | false,
+--            tnum = true | false,
+--          },
+--        },
+--      },
+--    },
+--    <nfss fam> = {
+--      complete = <boolean>,
+--      config = <feature string>,
+--      fake_fd = {
+--        {<series>, <shape>, <fullpath>, <cfg>} 
+--        | {<series>, <shape>, {
+--            <min>, <max>, <fullpath>
+--          }, <cfg>}
+--        | {<series>, <shape>, ssub = {<fam>, <series>, <shape>}}
+--        | {<series>, <shape>, sub = {<fam>, <series>, <shape>}},
+--        ...,
+--      },
+--      paths = <table of paths to font files>,
+--      scalable = true | false,
+--    }
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -- locals {{{
+
 -- imports {{{
 local is_writable           = file.is_writable
 local isdir, isfile, mkdir  = lfs.isdir, lfs.isfile, lfs.mkdir
@@ -46,7 +108,7 @@ local new_lua_function      = luatexbase.new_luafunction
 local gsub, gmatch, match       = string.gsub, string.gmatch, string.match
 local find, format, lower       = string.find, string.format, string.lower
 -- table
-local append, insert            = table.append, table.insert
+local append, hashed, insert    = table.append, table.hashed, table.insert
 local copy, count, fastcopy     = table.copy, table.count, table.fastcopy
 local load, mirrored, sort      = table.load, table.mirrored, table.sort
 local save, setmetatableindex   = table.save, table.setmetatableindex
@@ -63,7 +125,7 @@ lfc = {} -- ours {{{
 local lfc_cache
 
 -- Booleans
-local lfc_debug                 = lfc_debug or false
+local lfc_debug                 = lfc.debug or false
 local lfc_callback_smcp_active  = false
 local lfc_callback_data_active  = false
 local lfc_callback_cache_active = false
@@ -71,12 +133,13 @@ local lfc_callback_cache_active = false
 -- Strings
 local function enquote(str) return "\"" .. str .. "\"" end
 
+local lfc_log_level         = lfc.log_level or (lfc_debug and "debug" or "info")
+
 local str_onesize           = "<->"
 local str_fea_default       = "mode=node;language=dflt;script=dflt;+tlig"
 
-local str_file_empty        = ".tex"
-local str_hook_file_pre     = "file/"
-local str_hook_file_post    = "/before"
+local function hook_file_before(filename) 
+  return {"file/", filename, "/before"} end
 
 -- Single tokens
 local tok_group_begin       = create(123, 1)
@@ -98,9 +161,11 @@ local nfss_default_families = {}
 local nfss_doc_families     = {}
 
 -- Token lists
-local toks_empty_n = {tok_group_begin, tok_group_end}
+local toks_empty_n          = {tok_group_begin, tok_group_end}
 local function embrace(arg) return {tok_group_begin, arg, tok_group_end} end
-local toks_enc_tu = embrace("TU")
+local toks_enc_tu          = embrace("TU")
+local toks_file_empty      = embrace(".tex")
+local toks_dot             = embrace(".")
 
 ---@function luafunction_to_cs(csname, fn, tex_global, protected) -- {{{
 ---@param csname      <string>    Macro to set/create.
@@ -126,6 +191,7 @@ end
 -- }}}
 
 -- }}}
+
 -- }}}
 
 -------------------------------------------------------------------------------
@@ -139,10 +205,20 @@ local msg_level = {
   log   = "Log",
   warn  = "Warning",
 }
+local msg_log_levels = {
+  "bug",
+  "err",
+  "warn",
+  "info",
+  "log",
+  "debug",
+}
+msg_log_levels = hashed(msg_log_levels)
 local msg_cfg = lfc.msg_cfg or {}
 local function msg(text, level)
   level = level or "warn"
-  if level == "debug" and not lfc_debug then return end
+  level_n = msg_log_levels[level] or msg_log_levels.debug
+  if level_n > msg_log_levels[lfc_log_level] then return end
   if type(text) == "string" then
     write_nl(concat({"[lfc] ", msg_level[level], ":\t", text, "\n"}, ""))
   else
@@ -170,12 +246,10 @@ if lfc_debug then
   function msg_assert(cond, text, level) assert(cond, (type(text) == "string" 
     and text) or concat(text)) end
   msg_cfg.debug = msg_cfg.debug or {
-    -- cache     = true,
-    -- callback  = true,
-    -- database  = true,
+    cache     = true,
+    callback  = true,
     defn      = true,
     doc       = true,
-    -- sort      = true,
   }
   function msg_debug(m, cat, ...)
     if cat and not msg_cfg.debug[cat] then 
@@ -655,58 +729,7 @@ end
 ---@param force     <boolean>
 ---@status internal
 -- Should be split??
--- Cache format:
---  lfc_cache ->
---    callbacks_data = {
---      <fullpath>,
---      ...,
---    },
---    callbacks_smcp = {
---      <fullpath> = {
---        <line no.> = true,
---        ...,
---        fam = <nfss fam>,
---        rel = {<path>, ...},
---      },
---      ...,
---    },
---    incomplete = {
---      <nfss fam> = {
---        <line no.> = true,
---        ...,
---      },
---      ...,
---    },
---    meta_families = {
---      by_hash = {
---        <hash> = {<nfss fam>, ...},
---        ...,
---      },
---    },
---    resources = {
---      full path> = {
---        features = {
---          gsub = <data>,
---          gpos = <data>,
---        },
---      },
---    },
---    <nfss fam> = {
---      complete = <boolean>,
---      config = <feature string>,
---      fake_fd = {
---        {<series>, <shape>, <fullpath>, <cfg>} 
---        | {<series>, <shape>, {
---            <min>, <max>, <fullpath>
---          }, <cfg>}
---        | {<series>, <shape>, ssub = {<fam>, <series>, <shape>}}
---        | {<series>, <shape>, sub = {<fam>, <series>, <shape>}},
---        ...,
---      },
---      scalable = <boolean>,
---    }
 local function prepare_fake_fd(fam, fam_data, force) 
-
   force = force or false
 
   lfc_cache = lfc_cache or read_cache()
@@ -978,13 +1001,17 @@ end
 -- This is an internal fn, so it should™ only receive valid input --- if not,
 --    I doubt type-checking here will help anything.
 local function get_toks(items)
+  msg_debug("Sequencing toks \'n things ...", "defn", items)
   if type(items) == "table" then 
     local toks = {}
     for _,item in ipairs(items) do
       append(toks, get_toks(item))
     end
+    msg_debug("Sequenced toks: ", "defn", toks)
     return toks
-  else return {items}
+  else 
+    msg_debug("Returning toks: ", "defn", items)
+    return {items}
   end
 end
 -- }}}
@@ -1170,7 +1197,7 @@ local function add_callback_smcp()
         end
 
         msg({"Rewrote fd for ", fam, "..."}, "log")
-        msg("fake_fd:", "callback", fake_fd)
+        msg_debug("fake_fd:", "callback", fake_fd)
 
         msg("Checking cache enabled ...", "info")
         if not lfc_callback_cache_active then
@@ -1325,6 +1352,15 @@ local function write_fake_fd(fam, fake_fd, fea, scale_factor)
 end
 -- }}}
 
+---@function function file_subs_empty(filename) {{{
+---@param       <string> filename (with any extension; no path)
+---@description Substitutes the `.tex` file for <filename> using the LaTeX fn.
+local function file_subs_empty(filename)
+  return sprint(-2, get_toks({tok_file_subs, embrace(filename), 
+    toks_file_empty}))
+end
+-- }}}
+
 ---@function add_fake_fd(fam, fake_fd, fea, scale_faction) {{{
 ---@see         write_fake_fd()
 ---@description A wrapper around write_fake_fd() which avoids defining fonts
@@ -1332,14 +1368,13 @@ end
 local function add_fake_fd(fam, fake_fd, fea, scale_factor)
   local fd_filename = "tu" .. fam .. ".fd"
   local fn = "__lfc_" .. fd_filename
-  luafunction_to_cs(fn, function() 
-    write_fake_fd(fam, fake_fd, fea, scale_factor) 
-  end)
+  luafunction_to_cs(fn, function ()
+    return write_fake_fd(fam, fake_fd, fea, scale_factor)
+  end, "protected")
   fn = create(fn)
-  sprint(-2, get_toks({tok_file_subs, embrace(fd_filename), 
-    embrace(str_file_empty), tok_hook_gput_code, tok_group_begin,
-    str_hook_file_pre, fd_filename, str_hook_file_post, tok_group_end, 
-    embrace("."), tok_group_begin, fn, tok_group_end}), "protected")
+  file_subs_empty(fd_filename)
+  sprint(-2, get_toks({tok_hook_gput_code, tok_group_begin, 
+    hook_file_before(fd_filename), tok_group_end, toks_dot, embrace(fn)}))
 end
 -- }}}
 
@@ -1347,7 +1382,7 @@ end
 -- Main configuration function
 -- font_config()
 -------------------------------------------------------------------------------
----@function use_cached_fd(fam, scale) {{{
+---@function use_cached_fd(fam, scale[, now]) {{{
 ---@param fam   <string>  Name of a cached meta-family.
 ---@param fea   <string>  Font features.
 ---@param scale <numeric> Potential scaling factor or nil.
@@ -1391,7 +1426,7 @@ local function font_config(targ, config, immediate)
 
   local scale = config.scale
   
-  local f = get_font_data(targ, config.force or nil)
+  local f = get_font_data(targ, config.force or false)
 
   if f == nil or f.metadata == nil then return nil end
   local metadata = f.metadata
@@ -1829,7 +1864,7 @@ lfc_cache = isfile(cache_path) and read_cache() or {}
 -- Is this a bad idea? 
 -- Max said most people want a separate function --- presumably they have some
 --    reason for that?
--- lfc.font_config = font_config
+lfc.font_config = font_config
 -- lfc.get_font_data = get_font_data
 -- lfc.fonts = fonts
 -- lfc.write_cache = write_cache
@@ -1837,7 +1872,7 @@ lfc_cache = isfile(cache_path) and read_cache() or {}
 -- lfc.get_cache_path = get_cache_path
 
 
--- return lfc
+return lfc
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 
