@@ -1,4 +1,4 @@
--- $Id: lfc.lua 12051 2026-09-19 20:56:11Z cfrees $
+-- $Id: lfc.lua 12052 2026-09-20 17:09:46Z cfrees $
 -------------------------------------------------------------------------------
 -- TODO
 --
@@ -63,31 +63,39 @@ lfc = {} -- ours {{{
 local lfc_cache
 
 -- Booleans
-local lfc_debug                 = lfc_debug or true
+local lfc_debug                 = lfc_debug or false
 local lfc_callback_smcp_active  = false
 local lfc_callback_data_active  = false
 local lfc_callback_cache_active = false
 
 -- Strings
 local function enquote(str) return "\"" .. str .. "\"" end
-local str_onesize = "<->"
-local str_fea_default = "mode=node;language=dflt;script=dflt;+tlig"
+
+local str_onesize           = "<->"
+local str_fea_default       = "mode=node;language=dflt;script=dflt;+tlig"
+
+local str_file_empty        = ".tex"
+local str_hook_file_pre     = "file/"
+local str_hook_file_post    = "/before"
 
 -- Single tokens
-local tok_group_begin   = create(123, 1)
-local tok_group_end     = create(125, 2)
-local tok_declare_fam   = create("DeclareFontFamily")
-local tok_declare_shape = create("DeclareFontShape")
-local tok_fontfamily    = create("fontfamily")
-local tok_selectfont    = create("selectfont")
-local tok_renewcommand  = create("renewcommand")
-local tok_rmdefault     = create("rmdefault")
-local tok_sfdefault     = create("sfdefault")
-local tok_ttdefault     = create("ttdefault")
+local tok_group_begin       = create(123, 1)
+local tok_group_end         = create(125, 2)
+local tok_declare_fam       = create("DeclareFontFamily")
+local tok_declare_shape     = create("DeclareFontShape")
+local tok_fontfamily        = create("fontfamily")
+local tok_selectfont        = create("selectfont")
+local tok_renewcommand      = create("renewcommand")
+local tok_rmdefault         = create("rmdefault")
+local tok_sfdefault         = create("sfdefault")
+local tok_ttdefault         = create("ttdefault")
+
+local tok_file_subs         = create("declare@file@substitution")
+local tok_hook_gput_code    = create("hook_gput_code:nnn")
 
 -- Tables
 local nfss_default_families = {}
-local nfss_doc_families = {}
+local nfss_doc_families     = {}
 
 -- Token lists
 local toks_empty_n = {tok_group_begin, tok_group_end}
@@ -1270,13 +1278,7 @@ end
 -- Cache format: see above
 local function write_fake_fd(fam, fake_fd, fea, scale_factor)
   msg({"Emulating font definition file for NFSS family ", fam, " with ",
-    fea, " scaled ", scale_factor or "1", "."})
-  if not fake_fd then
-    msg_assert(lfc_cache[fam] and lfc_cache[fam].fake_fd and 
-      type(lfc_cache[fam].fake_fd) == "table", {"Cannot find definition for ",
-      fam, "!"})
-    fake_fd = lfc_cache[fam].fake_fd
-  end
+    fea, " scaled ", scale_factor or "1", "."}, "log")
   local pre = {fastcopy(toks_enc_tu), embrace(fam)}
   local out = {
     tok_declare_fam, fastcopy(pre), toks_empty_n
@@ -1286,7 +1288,7 @@ local function write_fake_fd(fam, fake_fd, fea, scale_factor)
   local onesize = str_onesize
   if scale_factor and scale_factor ~= 1 then
     if lfc_cache[fam].scalable then
-      msg({"Scaling ", fam, " to ", scale_factor, "."})
+      msg({"Scaling ", fam, " to ", scale_factor, "."}, "info")
       onesize = onesize .. "s*[" .. scale_factor .. "]"
     else
       msg("Ignoring scaling factor for fonts with optical sizes.")
@@ -1323,6 +1325,24 @@ local function write_fake_fd(fam, fake_fd, fea, scale_factor)
 end
 -- }}}
 
+---@function add_fake_fd(fam, fake_fd, fea, scale_faction) {{{
+---@see         write_fake_fd()
+---@description A wrapper around write_fake_fd() which avoids defining fonts
+---@description   unnecessarily (and so avoids unnecessary callbacks etc.).
+local function add_fake_fd(fam, fake_fd, fea, scale_factor)
+  local fd_filename = "tu" .. fam .. ".fd"
+  local fn = "__lfc_" .. fd_filename
+  luafunction_to_cs(fn, function() 
+    write_fake_fd(fam, fake_fd, fea, scale_factor) 
+  end)
+  fn = create(fn)
+  sprint(-2, get_toks({tok_file_subs, embrace(fd_filename), 
+    embrace(str_file_empty), tok_hook_gput_code, tok_group_begin,
+    str_hook_file_pre, fd_filename, str_hook_file_post, tok_group_end, 
+    embrace("."), tok_group_begin, fn, tok_group_end}), "protected")
+end
+-- }}}
+
 -------------------------------------------------------------------------------
 -- Main configuration function
 -- font_config()
@@ -1331,31 +1351,43 @@ end
 ---@param fam   <string>  Name of a cached meta-family.
 ---@param fea   <string>  Font features.
 ---@param scale <numeric> Potential scaling factor or nil.
-local function use_cached_fd(fam, fea, scale) 
+---@param now   <boolean> Whether to write defns or setup hook.
+local function use_cached_fd(fam, fea, scale, now) 
   msg_assert(lfc_cache[fam] and lfc_cache[fam].fake_fd,
     "Cache failure. Try removing the cache before recompiling.")
-  msg({"Using cached fd emulation for ", fam, "."})
+  msg({"Using cached fd emulation for ", fam, "."}, "debug")
+  now = now or false
 
-  return write_fake_fd(fam, lfc_cache[fam].fake_fd, fea, scale) 
+  if now then
+    return write_fake_fd(fam, lfc_cache[fam].fake_fd, fea, scale) 
+  else
+    return add_fake_fd(fam, lfc_cache[fam].fake_fd, fea, scale) 
+  end
 end
 -- }}}
 
----@function font_config -- {{{
----@param target required font specification to resolve
----@param config optional configuration details
+---@function font_config(targ, config[, immediate]) -- {{{
+---@param target    required <string>   Font specification to resolve.
+---@param config    optional <table>    Configuration details.
+---@param immediate optional <boolean>  Whether to write defns or setup hook.
 ---@description Main function: configures NFSS families on-the-fly, similar to
 ---@description   fontspec.
 ---@description Takes a font request and configuration, possibly writes one or 
 ---@description   more font definition files and returns table of data.
 -- Should be broken up?!
-local function font_config(targ, config)
+local function font_config(targ, config, immediate)
 
   if targ == nil then return nil end
 
   lfc_cache = lfc_cache or read_cache()
 
   targ = lower(targ)
+  if not immediate and (config == "true" or config == "false") then
+    immediate = config
+    config = nil
+  end
   config = config or {}
+  immediate = immediate or false
 
   local scale = config.scale
   
@@ -1601,7 +1633,11 @@ local function font_config(targ, config)
           config[fam].scale) or (config.scale and config.scale) or nil
         local fea = (config[fam] and config[fam].fea and config[fam].fea) or
           (config.fea and config.fea) or str_fea_default
-        write_fake_fd(fam, fake_fd, fea, scale) 
+        if immediate then
+          write_fake_fd(fam, fake_fd, fea, scale) 
+        else
+          add_fake_fd(fam, fake_fd, fea, scale) 
+        end
       end
     end
 
@@ -1614,7 +1650,7 @@ local function font_config(targ, config)
         config[fam_name].scale) or (config.scale and config.scale) or nil
       local fea = (config[fam_name] and config[fam_name].fea and 
         config[fam_name].fea) or (config.fea and config.fea) or str_fea_default
-      use_cached_fd(fam_name, fea, scale) 
+      use_cached_fd(fam_name, fea, scale, immediate) 
     end
 
   end
@@ -1733,7 +1769,8 @@ local function configure_doc_families()
         config.scale = cfg.scale or nil
         config.force = cfg.force or nil
         -- Currently ignores features!!
-        local nfss_fam = font_config(cfg.name,config)
+        local nfss_fam = font_config(cfg.name, config, cfg.default and true or 
+          false)
         if nfss_fam ~= nil then cfg.nfss_fam = nfss_fam
           if not cfg.default then
             msg({"Creating NFSS family ", nfss_fam}, "debug")
@@ -1753,7 +1790,7 @@ local function configure_doc_families()
     for fam,cfg in pairs(nfss_default_families) do
       if cfg.nfss_fam then
         local fam_name = cfg.nfss_fam
-        msg({"Setting ", fam, " default to ", fam_name, "."}, "info")
+        msg({"Setting ", fam, " default to ", fam_name, "."}, "log")
         sprint(-2, get_toks({tok_renewcommand, fam_defaults[fam], embrace(fam_name)}))
       else msg({"No family found for ", fam, "!"})
       end
@@ -1792,7 +1829,7 @@ lfc_cache = isfile(cache_path) and read_cache() or {}
 -- Is this a bad idea? 
 -- Max said most people want a separate function --- presumably they have some
 --    reason for that?
-lfc.font_config = font_config
+-- lfc.font_config = font_config
 -- lfc.get_font_data = get_font_data
 -- lfc.fonts = fonts
 -- lfc.write_cache = write_cache
@@ -1800,7 +1837,7 @@ lfc.font_config = font_config
 -- lfc.get_cache_path = get_cache_path
 
 
-return lfc
+-- return lfc
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 
