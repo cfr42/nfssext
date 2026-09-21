@@ -1,4 +1,4 @@
--- $Id: lfc.lua 12053 2026-09-20 23:07:55Z cfrees $
+-- $Id: lfc.lua 12055 2026-09-21 00:27:56Z cfrees $
 -------------------------------------------------------------------------------
 -- TODO
 --
@@ -38,7 +38,7 @@
 -------------------------------------------------------------------------------
 -- Cache format:
 -------------------------------------------------------------------------------
---  lfc_cache ->
+--  lfc_cache ->  {{{
 --    callbacks_data = {
 --      <fullpath>,
 --      ...,
@@ -95,6 +95,7 @@
 --      paths = <table of paths to font files>,
 --      scalable = true | false,
 --    }
+--  }}}
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -- locals {{{
@@ -498,6 +499,9 @@ end
 ---@function resolve_one(fnt) {{{
 ---@param fnt <string>
 ---@description Returns full path if found; o/w nil.
+---@description This was written for the custom config function.
+---@description That has gone, but this should probably get a different
+---@description   interface to allow single lookups.
 local function resolve_one(fnt)
   if not fnt then return nil end
   fnt = resolve(fnt)
@@ -1378,10 +1382,6 @@ local function add_fake_fd(fam, fake_fd, fea, scale_factor)
 end
 -- }}}
 
--------------------------------------------------------------------------------
--- Main configuration function
--- font_config()
--------------------------------------------------------------------------------
 ---@function use_cached_fd(fam, scale[, now]) {{{
 ---@param fam   <string>  Name of a cached meta-family.
 ---@param fea   <string>  Font features.
@@ -1401,6 +1401,10 @@ local function use_cached_fd(fam, fea, scale, now)
 end
 -- }}}
 
+-------------------------------------------------------------------------------
+-- Main configuration function
+-- font_config()
+-------------------------------------------------------------------------------
 ---@function font_config(targ, config[, immediate]) -- {{{
 ---@param target    required <string>   Font specification to resolve.
 ---@param config    optional <table>    Configuration details.
@@ -1864,7 +1868,7 @@ lfc_cache = isfile(cache_path) and read_cache() or {}
 -- Is this a bad idea? 
 -- Max said most people want a separate function --- presumably they have some
 --    reason for that?
-lfc.font_config = font_config
+-- lfc.font_config = font_config
 -- lfc.get_font_data = get_font_data
 -- lfc.fonts = fonts
 -- lfc.write_cache = write_cache
@@ -1872,7 +1876,7 @@ lfc.font_config = font_config
 -- lfc.get_cache_path = get_cache_path
 
 
-return lfc
+-- return lfc
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 

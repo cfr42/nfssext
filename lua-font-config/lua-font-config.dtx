@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12049 2026-09-19 04:39:57Z cfrees $}[v0.3 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12055 2026-09-21 00:27:56Z cfrees $}[v0.3 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/ 
@@ -41,7 +41,6 @@
 \usepackage{lua-font-config}
 \usepackage{parskip}
 \usepackage{verbatim}
-\usepackage{graphicx}
 \usepackage{xurl}
 % sicrhau hyperindex=false: llwytho CYN bookmark
 \usepackage{hypdoc}% ateb Ulrike Fischer: https://tex.stackexchange.com/a/695555/
@@ -205,6 +204,8 @@
     tt = {%
       name = texgyrecursor,
       features = {+zero;},
+      %% for completeness: false is anyway the default
+      force = false,
     },
   }
 \end{verbatim}
@@ -216,6 +217,33 @@
 % Small-caps and italic/oblique small-caps will be configured 
 % automatically if available.
 %
+% The only supported keys at present are
+% \begin{description}
+%   \item[name] The ‘name’ to lookup.
+%     This may, but need not be, the name of a font family.
+%     Shorter, less specific names will configure more families; longer, more specific names will configure fewer.
+%     For example, \texttt{name = texgyrepagellax,} will configure fewer than \texttt{name = texgyrepagella,} since the latter string matches both families, while the former does not.
+%     
+%     The name is lower-cased prior to lookup. 
+%     The data used to generate actual font families uses a cleaned up version of the given name or, sometimes, a variation, depending on the data returned from the database.
+%     For example, \texttt{tex gyre PaGellA} yields the same results as \texttt{texgyrepagella}.
+%     Numbers are likewise removed\footnote{%
+%       This is problematic for fonts which depend on digits in their names to distinguish them e.g.~Venturis ADF has four distinct ‘titling’ fonts, whose names differ by a single character, which is \texttt{1}, \texttt{2}, \texttt{3} or \texttt{4}. 
+%       The algorithm used to sort the fonts into \textsc{nfss} families currently gets confused by this, leading to misleading warnings about ‘apparent duplicate’ fonts. 
+%       (Something is indeed awry, but they are not duplicates.
+%       Rather what should be four families appears to be only one.)%
+%     }
+%   \item[fea] Optional list of font features. 
+%       The default is \texttt{script=dflt}, \texttt{mode=node}, \texttt{+tlig}, \texttt{language=dflt}.
+%   \item[scale] Optional factor by which the font should be scaled e.g.~\texttt{20} or \textt{0.8}.
+%       Ignored if a family includes distinct optical sizes.
+%   \item[force] Boolean which determines whether cached data is to be regenerated on the basis of a new search of the font-loader's database.
+%       Note that this doesn't regenerate the loader's database itself. 
+%       It simply zaps data stored by this module for one or more font families.
+% \end{description}
+%
+\iffalse
+%<*hmm>
 % \section{Advanced Configuration}\label{sec:adv}
 %
 % Advanced configuration is possible, but the interface is currently non-
@@ -228,26 +256,27 @@
 \directlua{
   lfc = require("lfc")
   local font_config = lfc.font_config
-  font_config("venturis", {fea = "mode=node;script=dflt;+tlig;+pnum;+onum"})
+  font_config("venturis", {fea = "mode=node;script=dflt;+tlig;+pnum;+onum",
+    scale=0.9, force = false}, false)
 }
 \end{verbatim}
 % \iffalse
 %</verb>
 % \fi
 %
-% You do not actually gain much by this, although it is a bit faster, since 
-% key-value processing in \LaTeX{} is fairly slow. 
-% However, you cannot actually do anything you cannot do otherwise.
-% The only two configuration options are \texttt{fea} and \texttt{scale},
-% although you could theoretically modify them for different families, if you
-% lookup string will return several.
+% The function \texttt{font_config()} takes one mandatory and two optional arguments.
+% The first is the string to look up, typically, but not necessarily, a family name.
+% The second is a table of configuration data.
+% The only used values are \texttt{fea}, \texttt{scale} and \texttt{force}, all explained in the previous section.
 %
-% What you gain is primarily the absence of interference on the \LaTeX{} side.
-% Families will be configured for you, but you may then choose how to use 
-% them; nothing will change by default.
-% Not even macros will be defined to access them; if you want that, you must
-% do it yourself.
-% 
+% The final \texttt{false} determines whether the definitions should be written immediately or code placed into a hook to be used on-demand.
+% When the \LaTeX{} interface is used, this is set \texttt{true} for the main document families and \texttt{false} otherwise.
+% Omitting it is equivalent to \texttt{false}.
+%
+% You do not actually gain much by this by used of the Lua interface.
+% It may (or may not) be marginally faster, since key-value processing in \LaTeX{} is fairly slow. 
+% However, you cannot actually do anything you cannot do otherwise, except for changing when and whether font definitions are actually used.
+%
 % So after the Lua above, you might do
 % \iffalse
 %<*verb>
@@ -269,15 +298,17 @@
 % \fi
 % Right now, the only way to know what is available is to examine the fonts
 % or, better, the cached data (after the first run).
-% You can also put \texttt{lfc_debug = true} before loading the module to 
+% You can also put \texttt{lfc = \{debug = true\}} before loading the module to 
 % get (lots) of console output, including the database contents.
 %
-% That is, you can use the module directly, but that is not to say that the
-% module is actually usable at present.
+% That is, you can use the module directly, but that should not be understood
+% to mean that the module is actually usable at present.
 %
 % Obviously, such shenanigans are not for the faint of heart or, indeed, for
-% the stout-hearted-but-moderately-sane.
+% the saner portion of the stouter-hearted.
 %
+%</hmm>
+\fi
 % 
 % \changes{v0.0}{0000-00-00}{First public release.}
 %  
@@ -289,16 +320,14 @@
 % 
 % \section{Implementation}
 %
-% You do not need to read the remainder of this document in order to install or use the package.
-%
-% Note that almost everything is done in Lua, so there is really very little to see here.
+% There is very little here, because almost everything is done in Lua.
 %
 %<@@=lfc>
 %<*sty>
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12049 2026-09-19 04:39:57Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12055 2026-09-21 00:27:56Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % this is needed only because l3doc overwrites \fileversion and \filedate
 % neither ltxdoc nor doc does this
 \DefineFileInfoSVN[lfc]
