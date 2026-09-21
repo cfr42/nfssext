@@ -1,4 +1,4 @@
--- $Id: lfc.lua 12057 2026-09-21 07:53:34Z cfrees $
+-- $Id: lfc.lua 12058 2026-09-21 07:55:49Z cfrees $
 -------------------------------------------------------------------------------
 -- TODO
 --
@@ -126,7 +126,7 @@ lfc = {} -- ours {{{
 local lfc_cache
 
 -- Booleans
-local lfc_debug                 = lfc.debug or true
+local lfc_debug                 = lfc_debug or false
 local lfc_callback_smcp_active  = false
 local lfc_callback_data_active  = false
 local lfc_callback_cache_active = false
