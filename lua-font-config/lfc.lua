@@ -1,4 +1,4 @@
--- $Id: lfc.lua 12055 2026-09-21 00:27:56Z cfrees $
+-- $Id: lfc.lua 12057 2026-09-21 07:53:34Z cfrees $
 -------------------------------------------------------------------------------
 -- TODO
 --
@@ -126,7 +126,7 @@ lfc = {} -- ours {{{
 local lfc_cache
 
 -- Booleans
-local lfc_debug                 = lfc.debug or false
+local lfc_debug                 = lfc.debug or true
 local lfc_callback_smcp_active  = false
 local lfc_callback_data_active  = false
 local lfc_callback_cache_active = false
@@ -406,38 +406,77 @@ local function get_font_data(fnt, force)
   if fnt == nil then return nil end
 
   -- For return
-  local f = {}
-
-  -- Gets file name
-  local ff = resolve(fnt)
-  if ff == nil then return nil end
-
-  ff = cleanfilename(ff)
-
-  local ext = (gsub(ff, "^(.*)%.([^.]+)", "%2"))
-  local basename = (gsub(ff, "([^/]*)%.([^.]+)", "%1"))
-  if ext == nil or basename == nil then return nil end
-
-  local fam_meta = font_data.mappings[ext][basename].familyname
-  if fam_meta == nil then return nil end
-
-
-  -- Return extension, family name and either fd file or font data.
-  f.metadata  = {
-    ext       = ext,
-    fam_meta  = fam_meta,
+  local f = {
+    metadata = {}
   }
+  local fam_meta
+
+  -- Check for exact family match.
+  local ff = font_data.families[fnt]
+
+  if ff then
+
+    -- We don't use the data, as it isn't very good.
+    -- But we can bypass the longer search by filename/partial match.
+    fam_meta = fnt
+
+  else
+
+    -- Gets file name.
+    -- Should this be before or after the search below?
+    --    - Which is fastest? Guessing this one ...
+    ff = resolve(fnt)
+
+    if ff then 
+      -- We still have to get the family, but this should already be 
+      --    in the data.
+      ff = cleanfilename(ff)
+
+      local ext = (gsub(ff, "^(.*)%.([^.]+)", "%2"))
+      local basename = (gsub(ff, "([^/]*)%.([^.]+)", "%1"))
+
+      if ext and basename then
+        fam_meta = font_data.mappings[ext][basename].familyname
+        f.metadata.ext = ext
+      end
+    end
+
+    -- If we still have no match ...
+    if not fam_meta then
+      -- Iterate through the known families, checking if the name begins
+      --    with the target i.e. search for '^${fnt}', ignoring any tail.
+      for _,i in ipairs(font_data.sorted_families) do
+        if find(i, "^" .. fnt) then 
+          -- This should be the shortest match, which is hopefully 
+          --    a reasonable guess.
+          fam_meta = i[1].familyname
+          break
+        end
+      end
+    end
+  end
+
+
+  -- If we still find nothing, rhodd y ffidl yn y tor ...
+  if not fam_meta then return nil end
+
+  f.metadata.fam_meta = fam_meta
+
+
+  -- Return extension (if known), family name and either fd file or font data.
+
   local metadata = f.metadata
 
-  local fd = "tu" .. fam_meta .. ".fd", "tex"
+  local fd = concat({"tu", fam_meta, ".fd"}, "")
   metadata.fd = fd
-  local fd_file = kpse.find_file(fd) 
+  local fd_file = kpse.find_file(fd, "tex") 
   -- If an .fd for family exists, use unless force was used.
   if fd_file and not force then
     metadata.fd_file = fd_file
     return f
   end
 
+  -- We prefer cached even if we have data, as cached will be processed.
   local cached
   if lfc_cache.meta_families and lfc_cache.meta_families.by_meta_fam then
     if not force then
@@ -454,12 +493,12 @@ local function get_font_data(fnt, force)
     return f
   end
 
-  -- If not, get font data for family
+  -- If not, get font data for family.
 
-  -- Returns indexed list, limited coverage
+  -- Returns indexed list, limited coverage.
   -- local data = font_data.families[fam_meta]
 
-  -- Returns key-val list, wider coverage
+  -- Returns key-val list, wider coverage.
   local data = names.list(fam_meta .. ".*",false,true)
   if data == nil then return nil end
 
@@ -1450,6 +1489,7 @@ local function font_config(targ, config, immediate)
     local regular = false
     local book = false
     local medium = false
+
 
     -- Adjust returned data for compatibility with NFSS
     --    - Reduce width + weight -> series
