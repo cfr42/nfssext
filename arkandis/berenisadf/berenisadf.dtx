@@ -31,7 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\ModMakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: berenisadf.dtx 12061 2026-09-22 19:31:50Z cfrees $}[v2.1 \revinfo][\filebase DTX: FONT for 8-bit engines]
+\ProvidesFileSVN{$Id: berenisadf.dtx 12064 2026-09-22 23:50:53Z cfrees $}[v3.0 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[berenisadf]
 \documentclass[11pt,british]{ltxdoc}
 % ltnews42 / ateb David Carlisle: https://tex.stackexchange.com/a/754799/ (sylwad Ulrike Fischer rhywle ond alla i ddim canfod o hyd iddo fe)
@@ -767,7 +767,7 @@
 % 
 % The font features described in this section are available regardless of font encoding selected.
 % 
-% \changes{v0.0}{2026-08-27}{\cs{textin}, \cs{instyle} de-deprecated as \lpack{hyperref} removed the incompatibility.}
+% \changes{v3.0}{2026-08-27}{\cs{textin}, \cs{instyle} de-deprecated as \lpack{hyperref} removed the incompatibility.}
 % Two sets of commands are available for choosing tabular or proportional and oldstyle or lining digits.
 % \begin{table}
 %   \centering
@@ -1060,7 +1060,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[berenis.sty]{$Id: berenisadf.dtx 12061 2026-09-22 19:31:50Z cfrees $}[v0.0 \revinfo]
+\ProvidesPackageSVN[berenis.sty]{$Id: berenisadf.dtx 12064 2026-09-22 23:50:53Z cfrees $}[v3.0 \revinfo]
 \DefineFileInfoSVN[berenis]
 %    \end{macrocode}
 % Load \lpack{nfssext-cfr}.  
@@ -1088,7 +1088,7 @@
 % \tl_new:N \g__berenis_enc_tl
 %    \end{macrocode}
 % Dubious choice of default encoding.
-% \changes{v0.0}{2026-06-10}{Support for Unicode.}
+% \changes{v3.0}{2026-06-10}{Support for Unicode.}
 %    \begin{macrocode}
 \tl_gset:Ne \g__berenis_enc_tl { \sys_if_engine_opentype:TF { TU } { LY1 } }
 %    \end{macrocode}
@@ -1314,7 +1314,7 @@
 % (Ideally would set further stuff but these are the most problematic.)
 % \changes{v1.0}{????/??/??}{Tai bach work for ‘swash’ encoding.}
 % \changes{v2.0}{????/??/??}{Tai bach work for any LY1 encoding.}
-% \changes{v0.0}{2024/10/19}{Fix broken text composites for LY1 encoding.}
+% \changes{v2.1}{2024/10/19}{Fix broken text composites for LY1 encoding.}
 % The cost is some of the non-fancy non-standard ligatures and the boundary character in the non-swash variants.
 %    \begin{macrocode}
 \tl_if_eq:NnT \g__berenis_enc_tl { LY1 }
