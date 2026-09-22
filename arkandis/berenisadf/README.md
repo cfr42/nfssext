@@ -1,4 +1,4 @@
-$Id: README.md 10366 2024-09-18 14:25:21Z cfrees $
+$Id: README.md 12064 2026-09-22 23:50:53Z cfrees $
 
 # berenisadf
 
@@ -26,12 +26,16 @@ found on the foundry's homepage:
 
 For details, please see berenisadf.pdf.
 
-The (La)TeX support requires nfssext-cfr and xkeyval. These packages are
-available from CTAN.
+The (La)TeX support requires nfssext-cfr. This package is available from 
+CTAN.
 
-The (La)TeX support should be considered somewhat experimental. If you find
-any problems, please let me know and I will try to correct them. If you can
-send a fix, so much the better.
+Package support for Opentype fonts on Unicode engines requires version 3.0 
+or later. For performance and quality reasons, this does not use fontspec. 
+If you wish to use fontspec macros with the fonts, configure the fonts in 
+the usual way rather than loading the LaTeX package.
+
+The (La)TeX support for Unicode engines should be considered experimental. 
+If you find any problems, please report them to the bug tracker on Codeberg.
 
 ## Code Repositories
 
@@ -50,7 +54,7 @@ If you have comments about the fonts themselves, please contact Hirwen
 Harendal (harendalh <at> hotmail <dot> ac <dot> uk). 
 
 Clea F. Rees
-Version 2.1
-2024-09-18
+Version 3.0
+2026-09-23
 
 <!-- vim: tw=80:et:sw=2: -->

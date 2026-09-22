@@ -1,4 +1,4 @@
--- $Id: fntbuild-doc.lua 11051 2025-06-28 01:26:51Z cfrees $
+-- $Id: fntbuild-doc.lua 12062 2026-09-22 22:58:50Z cfrees $
 -------------------------------------------------
 -- fntbuild-doc
 -------------------------------------------------
@@ -65,18 +65,21 @@ local function doc_init ()
     "")
     -- l3build-tagging.lua
     for i, j in ipairs(fdfiles) do
-      if string.match(j,"^ly1") then
+      -- omit Unicode
+      if string.find(j,"^tu") then goto skip_tu end
+      if string.find(j,"^ly1") then
         yy = 1
       end
       j = unpackdir .. "/" .. j
       for line in io.lines(j) do
-        if string.match(line,
+        if string.find(line,
           "^\\DeclareFontShape%{[^%}]*%}%{[^%}]*%}%{[^%}]*%}%{[^%}]*%}%{$"
         ) then
         coll = (coll .. string.gsub(string.gsub(line,"%{$","%%%%"),
         "^\\DeclareFontShape","\n\\sampletable"))
       end
     end
+    :: skip_tu ::
   end
   if yy == 1 then
     maps = "\n\\input{ly1enc.def}\n" .. maps

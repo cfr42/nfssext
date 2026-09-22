@@ -1,0 +1,37 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+\RequirePackage{svn-prov}
+\ProvidesFileSVN{$Id: berenis-scale-tu.lvt 11969 2026-06-10 14:27:33Z cfrees $}[v0.1 \revinfo][\filebase: TU scale test]
+\input regression-test.tex\relax
+\DeclareFontFamily{TU}{lmr}{}
+\DeclareFontShape{TU}{lmr}{m}{n}%
+  {<-5.5>     \UnicodeFontFile{lmroman5-regular.otf}{\UnicodeFontTeXLigatures}
+   <5.5-6.5>  \UnicodeFontFile{lmroman6-regular.otf}{\UnicodeFontTeXLigatures}
+   <6.5-7.5>  \UnicodeFontFile{lmroman7-regular.otf}{\UnicodeFontTeXLigatures}
+   <7.5-8.5>  \UnicodeFontFile{lmroman8-regular.otf}{\UnicodeFontTeXLigatures}
+   <8.5-9.5>  \UnicodeFontFile{lmroman9-regular.otf}{\UnicodeFontTeXLigatures}
+   <9.5-11>   \UnicodeFontFile{lmroman10-regular.otf}{\UnicodeFontTeXLigatures}
+   <11-15>    \UnicodeFontFile{lmroman12-regular.otf}{\UnicodeFontTeXLigatures}
+   <15->      \UnicodeFontFile{lmroman17-regular.otf}{\UnicodeFontTeXLigatures}
+ }{}
+\documentclass{article}
+	
+\usepackage[scale=20]{berenis}
+
+\begin{document}
+\START
+% RHAID ddefnyddio'r llinell isod tu allan i'r \TEST
+\ExplSyntaxOn
+\TEST{berenisadf-scale-tu-test}{
+  \hbox_set:Nn \l_tmpa_box 
+  {
+    \normalfont\normalsize
+    pobl
+  }
+  \box_show:N \l_tmpa_box
+}
+\ExplSyntaxOff
+\END
+
+\end{document} 
+% vim: ts=2:sw=2:

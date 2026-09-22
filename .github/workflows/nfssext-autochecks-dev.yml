@@ -127,7 +127,7 @@ jobs:
           - module: berenisadf
             working_directory: arkandis/berenisadf
             # berenis needs make, ff
-            extra_packages: make fontforge
+            extra_packages: make fontforge-nox
             pre_target: fnttarg
           - module: electrumadf
             working_directory: arkandis/electrumadf
