@@ -31,7 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\ModMakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: berenisadf.dtx 12015 2026-08-27 19:59:47Z cfrees $}[v2.1 \revinfo][\filebase DTX: FONT for 8-bit engines]
+\ProvidesFileSVN{$Id: berenisadf.dtx 12059 2026-09-22 05:29:44Z cfrees $}[v2.1 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[berenisadf]
 \documentclass[11pt,british]{ltxdoc}
 % ltnews42 / ateb David Carlisle: https://tex.stackexchange.com/a/754799/ (sylwad Ulrike Fischer rhywle ond alla i ddim canfod o hyd iddo fe)
@@ -1058,7 +1058,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[berenis.sty]{$Id: berenisadf.dtx 12015 2026-08-27 19:59:47Z cfrees $}[v0.0 \revinfo]
+\ProvidesPackageSVN[berenis.sty]{$Id: berenisadf.dtx 12059 2026-09-22 05:29:44Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN[berenis]
 %    \end{macrocode}
 % Load \lpack{nfssext-cfr}.  
@@ -9790,7 +9790,7 @@ berenisadf.pdf : berenisadf.tex berenis.sty $(tfms) $(pfbs) ybd.map
 $(afms) : %.afm : %.pfb
 $(pfbs) : ff-ybd.pe ybd.nam $(otfs)
 	@printf %b "Generating type 1 from $(subst .pfb,.otf,$(subst ybd,BerenisADFPro,$(subst -r,-Regular,$(subst -b,-Bold,$(subst -rI,-I,$(subst ybdb,ybd-b,$(subst ybdr,ybd-r,$(subst bc,SC-b,$(subst rc,SC-r,$(subst i,Italic,$@))))))))))\n"
-	$(srcdir)/ff-ybd.pe $(subst .pfb,.otf,$(subst ybd,BerenisADFPro,$(subst -r,-Regular,$(subst -b,-Bold,$(subst -rI,-I,$(subst ybdb,ybd-b,$(subst ybdr,ybd-r,$(subst bc,SC-b,$(subst rc,SC-r,$(subst i,Italic,$@))))))))))
+	@fontforge -lang=ff $(srcdir)/ff-ybd.pe $(subst .pfb,.otf,$(subst ybd,BerenisADFPro,$(subst -r,-Regular,$(subst -b,-Bold,$(subst -rI,-I,$(subst ybdb,ybd-b,$(subst ybdr,ybd-r,$(subst bc,SC-b,$(subst rc,SC-r,$(subst i,Italic,$@))))))))))
 	@printf %b "Moving $(subst .pfb,.afm,$(subst ybd,BerenisADFPro,$(subst -r,-Regular,$(subst -b,-Bold,$(subst -rI,-I,$(subst ybdb,ybd-b,$(subst ybdr,ybd-r,$(subst bc,SC-b,$(subst rc,SC-r,$(subst i,Italic,$@)))))))))) to $(subst .pfb,.afm,$@)\n"
 	mv $(subst .pfb,.afm,$(subst ybd,BerenisADFPro,$(subst -r,-Regular,$(subst -b,-Bold,$(subst -rI,-I,$(subst ybdb,ybd-b,$(subst ybdr,ybd-r,$(subst bc,SC-b,$(subst rc,SC-r,$(subst i,Italic,$@)))))))))) $(subst .pfb,.afm,$@)
 	@printf %b "Moving $(subst ybd,BerenisADFPro,$(subst -r,-Regular,$(subst -b,-Bold,$(subst -rI,-I,$(subst ybdb,ybd-b,$(subst ybdr,ybd-r,$(subst bc,SC-b,$(subst rc,SC-r,$(subst i,Italic,$@))))))))) to $@\n"
