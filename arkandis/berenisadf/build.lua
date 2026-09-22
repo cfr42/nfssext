@@ -1,4 +1,4 @@
--- $Id: build.lua 12020 2026-09-03 06:26:05Z cfrees $
+-- $Id: build.lua 12061 2026-09-22 19:31:50Z cfrees $
 -------------------------------------------------
 -- Build configuration for berenisadf
 -------------------------------------------------
@@ -159,7 +159,7 @@ uploadconfig = {
 	ctanPath   = "/fonts/berenisadf",
 	license    = {"lppl1.3c","GPL 2 with font exception"},
 	pkg        = ctanpkg,
-	summary    = "Support for BerenisADF on 8-bit engines",
+	summary    = "Support for BerenisADF on 8-bit and Unicode engines",
   uploader   = "Clea F. Rees",
 	version    = "v2.1",
   -- optional --
