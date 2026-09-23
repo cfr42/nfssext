@@ -124,7 +124,7 @@ jobs:
           [[ $clmdocret != 0 && $clmctanret != 0 ]] && allan=1
           printf %b "clm doc ret ${clmdocret}, ctan ret ${clmctanret} --> allan ${allan}\n"
           # fail if both cache lookup and cache save failed 
-          [[ $clmlookup != "true" && $clmcache != "true" ]] && allan=1
+          [[ $clmlookup != "success" && $clmcache != "success" ]] && allan=1
           printf %b "clm lookup ${clmlookup}, cache ${clmcache} --> allan ${allan}\n"
           printf %b "(clm) releasing ${releasing} --> allan ${allan}\n"
           if [ $releasing != "false" ]
