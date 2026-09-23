@@ -17,6 +17,13 @@ inputs:
   dep_cache_key:
     required: false
     type: string
+  # dep_cache_keys:
+  #   required: false
+  #   type: string
+  # dep_cache_path:
+  #   # cfr-lm is always added
+  #   required: false
+  #   type: string
   doc:
     required: true
     type: boolean
@@ -116,7 +123,11 @@ runs:
       uses: actions/cache/restore@v5
       with:
         path: ~/work/nfssext/nfssext/cfr-lm/keep
+        # path: |
+        #   ~/work/nfssext/nfssext/cfr-lm/keep
+        #   ${{ inputs.dep_cache_path }}
         key: ${{ inputs.dep_cache_key }}
+        # restore-keys: ${{ inputs.dep_cache_keys }}
         fail-on-cache-miss: false
     - name: Run l3build fnttarg
     # oes pwrpas ddefnyddio if yma? am fod bob un yn cynnwys pre_target yn y matrix hwn, ond ydyn nhw?
@@ -205,9 +216,9 @@ runs:
         if [ $manifest == 0 ] 
         then
           l3build manifest || manres=1
-          echo -e "MAN_RET=${manres}" >> "$GITHUB_ENV"
-          echo -e "MAN_RET=${manres}" >> "$GITHUB_OUTPUT"
         fi
+        echo -e "MAN_RET=${manres}" >> "$GITHUB_ENV"
+        echo -e "MAN_RET=${manres}" >> "$GITHUB_OUTPUT"
         cat "$GITHUB_OUTPUT"
         cat "$GITHUB_ENV"
         exit $allan
@@ -247,13 +258,16 @@ runs:
         echo -e "DOC_RET=${allan}" >> "$GITHUB_OUTPUT" 
         echo -e "DOC_RET=${allan}" >> "$GITHUB_ENV" 
         echo -e "DOC_OPTS=${opts}" >> "$GITHUB_ENV"
+        # set the manifest result OK in case we're not generating one
         manres=0
         if [ $manifest == 0 ] 
         then
+          # if we are, build it or toggle to indicate error
           l3build manifest || manres=1
-          echo -e "MAN_RET=${manres}" >> "$GITHUB_ENV"
-          echo -e "MAN_RET=${manres}" >> "$GITHUB_OUTPUT"
         fi
+        # record result either way
+        echo -e "MAN_RET=${manres}" >> "$GITHUB_ENV"
+        echo -e "MAN_RET=${manres}" >> "$GITHUB_OUTPUT"
         cat "$GITHUB_OUTPUT"
         cat "$GITHUB_ENV"
         exit $allan
@@ -298,12 +312,14 @@ runs:
         exit $allan
     - name: List zip
       if: ${{ env.RELEASE == 0 && (( steps.ctan-rel.outcome == 'success' ) || ( env.CTANREL == 1 && steps.ctan.outcome == 'success' )) }}
+      # if: ${{ env.RELEASE == 0 && (( steps.ctan-rel.outcome == 0 ) || ( env.CTANREL == 1 && steps.ctan.outcome == 0 )) }}
       shell: bash
       working-directory: ${{ inputs.working_directory }}
       run: |
         unzip -l "${{ inputs.working_directory }}"-ctan.zip || unzip -l "${{ inputs.module }}"-ctan.zip || echo -e "Could not find zip!"
     - name: Archive zip
       if: ${{ env.RELEASE == 0 && (( steps.ctan-rel.outcome == 'success' ) || ( env.CTANREL == 1 && steps.ctan.outcome == 'success' )) }} 
+      # if: ${{ env.RELEASE == 0 && (( steps.ctan-rel.outcome == 0 ) || ( env.CTANREL == 1 && steps.ctan.outcome == 0 )) }} 
       id: zip
       # dwyn o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
       uses: actions/upload-artifact@v7

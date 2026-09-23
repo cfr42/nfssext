@@ -13,7 +13,8 @@ on:
     tags: 
       - '*'
     branches:
-      - '*'
+      - 'main'
+      - 'devel'
   workflow_call:
   workflow_dispatch:
 
@@ -117,15 +118,21 @@ jobs:
           allan=0
           # fail if fnttarg, check or doc failed (or fnttarg and ctan)
           [[ $clmfnttargret != 0 ]] && allan=1
+          printf %b "clm fnttarg ret ${clmfnttargret} --> allan ${allan}\n"
           [[ $clmcheckret != 0 && $clmctanret != 0 ]] && allan=1
+          printf %b "clm check ret ${clmcheckret}, ctan ret ${clmctanret} --> allan ${allan}\n"
           [[ $clmdocret != 0 && $clmctanret != 0 ]] && allan=1
+          printf %b "clm doc ret ${clmdocret}, ctan ret ${clmctanret} --> allan ${allan}\n"
           # fail if both cache lookup and cache save failed 
-          [[ $clmlookup != "true" && $clmcache != "true" ]] || allan=1
+          [[ $clmlookup != "success" && $clmcache != "success" ]] && allan=1
+          printf %b "clm lookup ${clmlookup}, cache ${clmcache} --> allan ${allan}\n"
+          printf %b "(clm) releasing ${releasing} --> allan ${allan}\n"
           if [ $releasing != "false" ]
           then
             [[  $clmctanret == 0 || $clmctanrelret == 0 ]] || allan=1
             [[ $clmreleaseret == 0 && $clmmanifestret == 0 ]] || allan=1
           fi
+          printf %b "(clm) allan ${allan}\n"
           exit $allan
 
   # addaswyd o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
@@ -192,7 +199,7 @@ jobs:
           - module: berenisadf
             working_directory: arkandis/berenisadf
             # berenis needs make, ff
-            extra_packages: make fontforge
+            extra_packages: make fontforge-nox
             pre_target: fnttarg
           - module: electrumadf
             working_directory: arkandis/electrumadf
@@ -230,7 +237,7 @@ jobs:
           manifest: true
           module: ${{ matrix.module }}
           pre_target: ${{ matrix.pre_target }}
-          release: ${{ env.releasing }}
+          release: ${{ env.RELEASING }}
           tds: true
           texlive_cache_key: ${{ needs.texlive-cache.outputs.cache_key }}
           working_directory: ${{ matrix.working_directory }}
@@ -253,12 +260,19 @@ jobs:
           echo -e "check_ret_${module}=$checkret\nctan_ret_${module}=$ctanret\nctanrel_ret_${module}=$ctanrelret\nfnttarg_ret_${module}=$fnttargret\nmanifest_ret_${module}=$manifestret\nrelease_ret_${module}=$releaseret\n" >> "$GITHUB_OUTPUT"
           # fail if either fnttarg or ctan failed to build
           [[ $fnttargret == 0 ]] || allan=1
+          printf %b "fnttarg ret ${fnttargret} --> allan ${allan}\n"
           [[ $checkret == "" || $checkret == 0 ]] || allan=1
+          printf %b "check ret ${checkret} --> allan ${allan}\n"
           [[ $ctanret == "" || $ctanret == 0 ]] || allan=1
+          printf %b "ctan ret ${ctanret} --> allan ${allan}\n"
           [[ $docret == "" || $docret == 0 ]] || allan=1
+          printf %b "doc ret ${docret} --> allan ${allan}\n"
+          printf %b "releasing ${releasing}\n"
           if [ $releasing != "false" ]
           then
+            printf %b "ctan ret ${ctanret}, ctanrel ret ${ctanrelret} --> allan ${allan}\n"
             [[ $ctanret == 0 || $ctanrelret == 0 ]] || allan=1
+            printf %b "release ret ${releaseret}, manifest ret ${manifestret} --> allan ${allan}\n"
             [[ $releaseret == 0 && $manifestret == 0 ]] || allan=1
           fi
           cat "$GITHUB_OUTPUT"

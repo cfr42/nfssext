@@ -143,9 +143,9 @@ collection-basic
 # other
 pgf 
 marginnote 
-tikzducks 
-tikzlings 
-catchfile
+# tikzducks 
+# tikzlings 
+# catchfile
 babel-latin
 hyphen-latin
 psnfss

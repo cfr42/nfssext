@@ -31,7 +31,7 @@
 \RequirePackage{svn-prov}
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\ModMakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
-\ProvidesFileSVN{$Id: berenisadf.dtx 12059 2026-09-22 05:29:44Z cfrees $}[v2.1 \revinfo][\filebase DTX: FONT for 8-bit engines]
+\ProvidesFileSVN{$Id: berenisadf.dtx 12064 2026-09-22 23:50:53Z cfrees $}[v3.0 \revinfo][\filebase DTX: FONT for 8-bit engines]
 \DefineFileInfoSVN[berenisadf]
 \documentclass[11pt,british]{ltxdoc}
 % ltnews42 / ateb David Carlisle: https://tex.stackexchange.com/a/754799/ (sylwad Ulrike Fischer rhywle ond alla i ddim canfod o hyd iddo fe)
@@ -335,11 +335,13 @@
 %   Support is specifically targeted at Lua\LaTeX{}, but should also work with Xe\LaTeX{}.%
 % }.
 %
-% \subsection{8-bit\footnote{%
-%   8-bit engines include \TeX{}, e\TeX{} and pdf\TeX{}, for example.
+% \subsection{8-bit engines}
+
+% \textsc{ly1} and \textsc{t1} are provided for 8-bit engines\footnote{%
+%   For example, \TeX{}, e\TeX{} and pdf\TeX{}.
 %   If you use pdf\LaTeX{} to compile, you are using an 8-bit engine; if you use LuaLaTeX{} or XeLaTeX{}, you are using a Unicode engine.
 %   8-bit engines support 7-bit and 8-bit fonts, which include at most 128 and 256 characters respectively.%
-% } engines}
+% }.
 %
 % Whether to use \textsc{ly1} or \textsc{t1} depends on the features of the fonts required in any particular document.
 % For example, Welsh should be typeset using \textsc{ly1}\footnote{%
@@ -765,7 +767,7 @@
 % 
 % The font features described in this section are available regardless of font encoding selected.
 % 
-% \changes{v0.0}{2026-08-27}{\cs{textin}, \cs{instyle} de-deprecated as \lpack{hyperref} removed the incompatibility.}
+% \changes{v3.0}{2026-08-27}{\cs{textin}, \cs{instyle} de-deprecated as \lpack{hyperref} removed the incompatibility.}
 % Two sets of commands are available for choosing tabular or proportional and oldstyle or lining digits.
 % \begin{table}
 %   \centering
@@ -1058,7 +1060,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[berenis.sty]{$Id: berenisadf.dtx 12059 2026-09-22 05:29:44Z cfrees $}[v0.0 \revinfo]
+\ProvidesPackageSVN[berenis.sty]{$Id: berenisadf.dtx 12064 2026-09-22 23:50:53Z cfrees $}[v3.0 \revinfo]
 \DefineFileInfoSVN[berenis]
 %    \end{macrocode}
 % Load \lpack{nfssext-cfr}.  
@@ -1086,7 +1088,7 @@
 % \tl_new:N \g__berenis_enc_tl
 %    \end{macrocode}
 % Dubious choice of default encoding.
-% \changes{v0.0}{2026-06-10}{Support for Unicode.}
+% \changes{v3.0}{2026-06-10}{Support for Unicode.}
 %    \begin{macrocode}
 \tl_gset:Ne \g__berenis_enc_tl { \sys_if_engine_opentype:TF { TU } { LY1 } }
 %    \end{macrocode}
@@ -1312,7 +1314,7 @@
 % (Ideally would set further stuff but these are the most problematic.)
 % \changes{v1.0}{????/??/??}{Tai bach work for ‘swash’ encoding.}
 % \changes{v2.0}{????/??/??}{Tai bach work for any LY1 encoding.}
-% \changes{v0.0}{2024/10/19}{Fix broken text composites for LY1 encoding.}
+% \changes{v2.1}{2024/10/19}{Fix broken text composites for LY1 encoding.}
 % The cost is some of the non-fancy non-standard ligatures and the boundary character in the non-swash variants.
 %    \begin{macrocode}
 \tl_if_eq:NnT \g__berenis_enc_tl { LY1 }
@@ -9790,7 +9792,7 @@ berenisadf.pdf : berenisadf.tex berenis.sty $(tfms) $(pfbs) ybd.map
 $(afms) : %.afm : %.pfb
 $(pfbs) : ff-ybd.pe ybd.nam $(otfs)
 	@printf %b "Generating type 1 from $(subst .pfb,.otf,$(subst ybd,BerenisADFPro,$(subst -r,-Regular,$(subst -b,-Bold,$(subst -rI,-I,$(subst ybdb,ybd-b,$(subst ybdr,ybd-r,$(subst bc,SC-b,$(subst rc,SC-r,$(subst i,Italic,$@))))))))))\n"
-	@fontforge -lang=ff $(srcdir)/ff-ybd.pe $(subst .pfb,.otf,$(subst ybd,BerenisADFPro,$(subst -r,-Regular,$(subst -b,-Bold,$(subst -rI,-I,$(subst ybdb,ybd-b,$(subst ybdr,ybd-r,$(subst bc,SC-b,$(subst rc,SC-r,$(subst i,Italic,$@))))))))))
+	@fontforge -lang=ff -script $(srcdir)/ff-ybd.pe $(subst .pfb,.otf,$(subst ybd,BerenisADFPro,$(subst -r,-Regular,$(subst -b,-Bold,$(subst -rI,-I,$(subst ybdb,ybd-b,$(subst ybdr,ybd-r,$(subst bc,SC-b,$(subst rc,SC-r,$(subst i,Italic,$@))))))))))
 	@printf %b "Moving $(subst .pfb,.afm,$(subst ybd,BerenisADFPro,$(subst -r,-Regular,$(subst -b,-Bold,$(subst -rI,-I,$(subst ybdb,ybd-b,$(subst ybdr,ybd-r,$(subst bc,SC-b,$(subst rc,SC-r,$(subst i,Italic,$@)))))))))) to $(subst .pfb,.afm,$@)\n"
 	mv $(subst .pfb,.afm,$(subst ybd,BerenisADFPro,$(subst -r,-Regular,$(subst -b,-Bold,$(subst -rI,-I,$(subst ybdb,ybd-b,$(subst ybdr,ybd-r,$(subst bc,SC-b,$(subst rc,SC-r,$(subst i,Italic,$@)))))))))) $(subst .pfb,.afm,$@)
 	@printf %b "Moving $(subst ybd,BerenisADFPro,$(subst -r,-Regular,$(subst -b,-Bold,$(subst -rI,-I,$(subst ybdb,ybd-b,$(subst ybdr,ybd-r,$(subst bc,SC-b,$(subst rc,SC-r,$(subst i,Italic,$@))))))))) to $@\n"
