@@ -258,13 +258,16 @@ runs:
         echo -e "DOC_RET=${allan}" >> "$GITHUB_OUTPUT" 
         echo -e "DOC_RET=${allan}" >> "$GITHUB_ENV" 
         echo -e "DOC_OPTS=${opts}" >> "$GITHUB_ENV"
+        # set the manifest result OK in case we're not generating one
         manres=0
         if [ $manifest == 0 ] 
         then
+          # if we are, build it or toggle to indicate error
           l3build manifest || manres=1
-          echo -e "MAN_RET=${manres}" >> "$GITHUB_ENV"
-          echo -e "MAN_RET=${manres}" >> "$GITHUB_OUTPUT"
         fi
+        # record result either way
+        echo -e "MAN_RET=${manres}" >> "$GITHUB_ENV"
+        echo -e "MAN_RET=${manres}" >> "$GITHUB_OUTPUT"
         cat "$GITHUB_OUTPUT"
         cat "$GITHUB_ENV"
         exit $allan

@@ -118,15 +118,21 @@ jobs:
           allan=0
           # fail if fnttarg, check or doc failed (or fnttarg and ctan)
           [[ $clmfnttargret != 0 ]] && allan=1
+          printf %b "clm fnttarg ret ${clmfnttargret} --> allan ${allan}\n"
           [[ $clmcheckret != 0 && $clmctanret != 0 ]] && allan=1
+          printf %b "clm check ret ${clmcheckret}, ctan ret ${clmctanret} --> allan ${allan}\n"
           [[ $clmdocret != 0 && $clmctanret != 0 ]] && allan=1
+          printf %b "clm doc ret ${clmdocret}, ctan ret ${clmctanret} --> allan ${allan}\n"
           # fail if both cache lookup and cache save failed 
           [[ $clmlookup != "true" && $clmcache != "true" ]] || allan=1
+          printf %b "clm lookup ${clmlookup}, cache ${clmcache} --> allan ${allan}\n"
+          printf %b "(clm) releasing ${releasing} --> allan ${allan}\n"
           if [ $releasing != "false" ]
           then
             [[  $clmctanret == 0 || $clmctanrelret == 0 ]] || allan=1
             [[ $clmreleaseret == 0 && $clmmanifestret == 0 ]] || allan=1
           fi
+          printf %b "(clm) allan ${allan}\n"
           exit $allan
 
   # addaswyd o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
