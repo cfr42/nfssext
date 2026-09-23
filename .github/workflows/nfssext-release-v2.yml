@@ -273,7 +273,7 @@ jobs:
             printf %b "ctan ret ${ctanret}, ctanrel ret ${ctanrelret} --> allan ${allan}\n"
             [[ $ctanret == 0 || $ctanrelret == 0 ]] || allan=1
             printf %b "release ret ${releaseret}, manifest ret ${manifestret} --> allan ${allan}\n"
-            [[ $releaseret == 0 && ($manifestret == 0 || $manifestret == "success") ]] || allan=1
+            [[ $releaseret == 0 && $manifestret == 0 ]] || allan=1
           fi
           cat "$GITHUB_OUTPUT"
           exit $allan
