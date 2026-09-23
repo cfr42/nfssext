@@ -237,7 +237,7 @@ jobs:
           manifest: true
           module: ${{ matrix.module }}
           pre_target: ${{ matrix.pre_target }}
-          release: ${{ env.releasing }}
+          release: ${{ env.RELEASING }}
           tds: true
           texlive_cache_key: ${{ needs.texlive-cache.outputs.cache_key }}
           working_directory: ${{ matrix.working_directory }}
