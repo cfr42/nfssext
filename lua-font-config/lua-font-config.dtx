@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12055 2026-09-21 00:27:56Z cfrees $}[v0.3 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12066 2026-09-24 16:32:33Z cfrees $}[v0.3 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/ 
@@ -327,7 +327,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12055 2026-09-21 00:27:56Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12066 2026-09-24 16:32:33Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % this is needed only because l3doc overwrites \fileversion and \filedate
 % neither ltxdoc nor doc does this
 \DefineFileInfoSVN[lfc]
@@ -449,5 +449,43 @@
 }
 %    \end{macrocode}
 %</sty>
+%
+%<*ee-lmr>
+\documentclass{article}
+\usepackage{lua-font-config}
+\fontconfig{rm = latinmodernroman}
+\begin{document}
+ABC abc \textit{DEF def \textsc{GHI ghi}} 
+\textsc{JKL jkl \textsl{MNO mno}} \textsl{PQR pqr}
+\fontshape{ui}\selectfont STU stu
+
+\normalfont\bfseries
+ABC abc \textit{DEF def \textsc{GHI ghi}} 
+\textsc{JKL jkl \textsl{MNO mno}} \textsl{PQR pqr}
+\fontshape{ui}\selectfont STU stu
+
+\normalfont\fontseries{db}\selectfont
+ABC abc \textit{DEF def \textsc{GHI ghi}} 
+\textsc{JKL jkl \textsl{MNO mno}} \textsl{PQR pqr}
+\fontshape{ui}\selectfont STU stu
+
+\normalfont
+\footnotesize
+ABC abc \textit{DEF def \textsc{GHI ghi}} 
+\textsc{JKL jkl \textsl{MNO mno}} \textsl{PQR pqr}
+\fontshape{ui}\selectfont STU stu
+
+\normalfont\bfseries
+ABC abc \textit{DEF def \textsc{GHI ghi}} 
+\textsc{JKL jkl \textsl{MNO mno}} \textsl{PQR pqr}
+\fontshape{ui}\selectfont STU stu
+
+\normalfont\fontseries{db}\selectfont
+ABC abc \textit{DEF def \textsc{GHI ghi}} 
+\textsc{JKL jkl \textsl{MNO mno}} \textsl{PQR pqr}
+\fontshape{ui}\selectfont STU stu
+\end{document}
+
+%</ee-lmr>
 % 
 %\Finale

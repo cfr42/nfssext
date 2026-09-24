@@ -1,4 +1,4 @@
-%% $Id: lua-font-config.ins 12044 2026-09-17 19:53:18Z cfrees $
+%% $Id: lua-font-config.ins 12066 2026-09-24 16:32:33Z cfrees $
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% lua-font-config.ins
 %% Additions and changes Copyright (C) 2008-2025 Clea F. Rees.
@@ -60,7 +60,11 @@ This work consists of all files listed in manifest.txt.
 
 \usepreamble\safonol
 
-\generate{\file{lua-font-config.sty}{\from{lua-font-config.dtx}{sty}}}
+\generate{%
+  \file{lua-font-config.sty}{\from{lua-font-config.dtx}{sty}}%
+  % demos
+  \file{example-lmr}{\from{lua-font-config.dtx}{ee-lmr}}%
+}
 
 
 \endbatchfile
