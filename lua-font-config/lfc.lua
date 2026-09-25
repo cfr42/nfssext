@@ -1,39 +1,47 @@
--- $Id: lfc.lua 12067 2026-09-25 01:03:21Z cfrees $
+-- $Id: lfc.lua 12069 2026-09-25 04:26:10Z cfrees $
 -------------------------------------------------------------------------------
 -- TODO
 --
--- Code should be cleaned up - I cannot need 2,000 lines to load a font!
+-- 1. Test with .ttf.
 --
--- Config parsing looks horrible.
+-- 2. Accommodate .ttc.
 --
--- There's almost no user interface.
+-- 3. Variable fonts.
 --
--- There's some disconnect between the data I'm using and the data luaotfload
---    uses, even though they are the same data.
+-- 4. Colour.
+--
+-- 5. Code should be cleaned up - I cannot need 2,000 lines to load a font!
+--
+-- 6. Config parsing looks horrible. => Now better, but rather non-existent.
+--
+-- 7. There's almost no user interface.
+--
+-- 8. Is there some disconnect between the data I'm using and the data luaotfload
+--    uses, even though they are the same data?
 --      - I guess luaotfload doesn't recognise cleanfilename() returns.
 --
--- The code is too long, too complex, too clunky and too simplistic.
+-- [Unnumbered Gripe] The code is too long, too complex, too clunky and too 
+--    simplistic.
 --    (Yes, of course, it can be both.)
 --
--- Cached data should depend on db/fnt versions.
+-- 9. Cached data should depend on db/fnt versions.
 --    - Or is this automatic?
+--    - Or maybe it shouldn't?
 --
--- Loading the ConTeXt file differently?
+-- 10. Loading the ConTeXt file differently?
 --
--- Use suffix or something to distinguish families by features?
--- Or some other way to deal with this?
+-- 11. Use suffix or something to distinguish families by features?
+--      Or some other way to deal with this?
 -- 
--- Information for user.
+-- 12. Information for user.
 --
--- Some (any) user interface.
+-- 13. Way to define individual font commands.
 --
--- Way to define individual font commands.
+-- 14. Cope with symbol fonts? Not sure is that really needed?
 --
--- Cope with symbol fonts? Not sure is that really needed?
+-- 15. Too slow?
 --
--- Too slow?
---
--- ** Modify database creation to avoid sorting the data twice? **
+-- 16. ** Modify database creation to avoid sorting the data twice? **
 --
 -------------------------------------------------------------------------------
 -- Cache format:
@@ -243,7 +251,7 @@ local function msg_assert(cond, text, level)
   end
 end
 local function msg_debug(...) end
-if lfc_debug then
+local function debug_config()
   function msg_assert(cond, text, level) assert(cond, (type(text) == "string" 
     and text) or concat(text)) end
   msg_cfg.debug = msg_cfg.debug or {
@@ -262,6 +270,9 @@ if lfc_debug then
     local vargs = {...} -- Aaaarrrggghhh!!
     for _,i in ipairs(vargs) do inspect(i) end
   end
+end
+if lfc_debug then
+  debug_config()
 end
 -- }}}
 
@@ -1802,11 +1813,15 @@ local function get_fam_default_scanner(fam)
   return do_with_one_scanner(
     function(fam_name)
       local cleanname = cleanfilename(fam_name)
-      nfss_doc_families[cleanname] = {
-        name = tostring(fam_name),
-        cleanname = cleanname,
-        default = fam,
-      }
+      if not nfss_doc_families[cleanname] then
+        nfss_doc_families[cleanname] = {
+          name = tostring(fam_name),
+          cleanname = cleanname,
+          default = {fam},
+        }
+      else
+        insert(nfss_doc_families[cleanname].default, fam)
+      end
       nfss_default_families[fam] = nfss_doc_families[cleanname]
       nfss_doc_families.curr = cleanname
       msg_debug("NFSS default families: ", "doc", nfss_default_families)
@@ -1890,6 +1905,9 @@ local function configure_doc_families()
       else msg({"No family found for ", fam, "!"})
       end
     end
+    -- Discard data to avoid duplicating configuration if called again.
+    nfss_doc_families = {}
+    nfss_default_families = {}
   end
 end
 -- }}}
@@ -1905,6 +1923,26 @@ luafunction_to_cs("__lfc_set_fam_cfg:nn", get_fam_cfg_scanner())
 
 -- A macro to configure the fonts at begindocument.
 luafunction_to_cs("__lfc_configure_doc_families:", configure_doc_families())
+
+---@function get_debug_cat_scanner() {{{
+local function get_debug_cat_scanner()
+  return do_with_one_scanner(
+    function(cats)
+      msg_cfg = msg_cfg or {}
+      msg_cfg.debug = msg_cfg.debug or {}
+      for _,cat in ipairs({cats}) do
+        msg_cfg.debug[cat] = true
+      end
+      lfc_debug = true
+      debug_config()
+    end)
+end
+-- }}}
+
+-- Macros to toggle debugging.
+luafunction_to_cs("__lfc_debug_set_true:", function() lfc_debug = true end)
+luafunction_to_cs("__lfc_debug_set_false:", function() lfc_debug = false end)
+luafunction_to_cs("__lfc_debug_set_cats:n", get_debug_cat_scanner())
 -------------------------------------------------------------------------------
 -- Setup on load
 -------------------------------------------------------------------------------

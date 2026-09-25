@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12066 2026-09-24 16:32:33Z cfrees $}[v0.3 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12069 2026-09-25 04:26:10Z cfrees $}[v0.3 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/ 
@@ -327,7 +327,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12066 2026-09-24 16:32:33Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12069 2026-09-25 04:26:10Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % this is needed only because l3doc overwrites \fileversion and \filedate
 % neither ltxdoc nor doc does this
 \DefineFileInfoSVN[lfc]
@@ -365,10 +365,11 @@
 } { \msg_see_documentation_text:n {@@} }
 \sys_if_engine_luatex:F { \msg_critical:nn {@@} {needs-luatex} }
 %    \end{macrocode}
-% \begin{variable}{\l__@@_tmpa_tl}
-%   Custom ephemeral token list.
+% \begin{variable}{\l_@@_tmpa_tl,\l_@@_tmpa_bool}
+%   Custom ephemeral variables.
 %    \begin{macrocode}
 \tl_new:N \l__@@_tmpa_tl
+\bool_new:N \l__@@_tmpa_bool
 %    \end{macrocode}
 % \end{variable}
 %    \begin{macrocode}
@@ -380,6 +381,7 @@
     #1 .code:n            = { 
       \keys_set_exclude_groups:nnnN {lfc/#1} {config} {##1} \l__@@_tmpa_tl
       \keys_set:nV {lfc/#1} \l__@@_tmpa_tl
+      \bool_set_true:N \l_@@_tmpa_bool
     },
     #1 .value_required:n  = true,
     #1 .usage:n           = preamble,
@@ -391,6 +393,7 @@
     force     .code:n = { \keys_set:nn {lfc/fam} {force    = {##1} }},
     unknown   .code:n = {
       \exp_args:NnV \use:c {__@@_set_#1:n} \l_keys_key_str
+      \bool_set_true:N \l_@@_tmpa_bool
     },
     name      .value_required:n   = true,
     unknown   .value_forbidden:n  = true,
@@ -400,12 +403,21 @@
   }
 }
 %    \end{macrocode}
-% Configure keys for additional families.
+% Configure keys for additional families, debugging etc.
 %    \begin{macrocode}
 \keys_define:nn {lfc} {
+  debug   .code:n           = { 
+    \keys_set:nn {lfc/debug} {
+      state       = true,
+      categories  = {"doc"},
+      #1
+    } 
+  },
+  debug   .usage:n          = general,
   family  .code:n           = { 
     \keys_set_exclude_groups:nnnN {lfc/fam} {config} {#1} \l__@@_tmpa_tl
     \keys_set:nV {lfc/fam} \l__@@_tmpa_tl
+    \bool_set_true:N \l_@@_tmpa_bool
   },
   family  .value_required:n = true,
   family  .usage:n          = general,
@@ -417,6 +429,7 @@
   force     .code:n = { \__@@_set_fam_cfg:nn {force}{#1} },
   unknown   .code:n = {
     \exp_args:NV \__@@_set_fam_name:n \l_keys_key_str 
+    \bool_set_true:N \l_@@_tmpa_bool
   },
   name      .value_required:n   = true,
   features  .value_required:n   = true,
@@ -432,13 +445,26 @@
   scale     .groups:n           = config,
   force     .groups:n           = config,
 }
+\keys_define:nn {lfc/debug} {
+  state       .choice:,
+  state/false .code:n             = { \_@@_debug_set_false: },
+  state/true  .code:n             = { \_@@_debug_set_true: },
+  categories  .code:n             = { \_@@_debug_set_cats:n {#1} },
+  state       .default:n          = true,
+  state       .usage:n            = general,
+  categories  .value_required:n   = true,
+  categories  .usage:n            = general,
+}
 %    \end{macrocode}
 % \begin{macro}{\fontconfig}
 %   The main (and currently(?) only) macro.
 %    \begin{macrocode}
 \NewDocumentCommand\fontconfig { +m }{
+  \bool_set_false:N \l_@@_tmpa_bool
   \keys_set:nn {lfc} {#1}
-  \__@@_configure_doc_families:
+  \bool_if:NT \l_@@_tmpa_bool {
+    \__@@_configure_doc_families:
+  }
 }
 %    \end{macrocode}
 % \end{macro}
