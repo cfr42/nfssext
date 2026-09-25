@@ -1,4 +1,4 @@
--- $Id: lfc.lua 12058 2026-09-21 07:55:49Z cfrees $
+-- $Id: lfc.lua 12067 2026-09-25 01:03:21Z cfrees $
 -------------------------------------------------------------------------------
 -- TODO
 --
@@ -116,7 +116,7 @@ local save, setmetatableindex   = table.save, table.setmetatableindex
 local concat, serialize, unique = table.concat, table.serialize, table.unique
 -- tex | texio | token
 local sprint                  = tex.sprint
-local write_nl                = texio.write_nl
+local write, write_nl         = texio.write, texio.write_nl
 -- Max Chernoff: ‘The Lua function token.scan_argument accepts a boolean argument (token.scan_argument(true) or token.scan_argument(false)) which determines whether to expand the TeX string argument’ (https://chat.stackexchange.com/transcript/message/69210787#69210787)
 local create, param, set_lua  = token.create, token.scan_argument, token.set_lua
 -- }}}
@@ -332,6 +332,7 @@ end
 -- Unconditionally load the font name database, regenerating it if
 -- necessary.
 lfc_env.fonts.names.load(false, false)
+-- lfc_env.fonts.names.load(true, true)
 
 -- Get the table of filenames
 local cleanfilename = lfc_env.fonts.names.cleanfilename
@@ -572,8 +573,8 @@ local weights = { -- {{{
   light = "l",
   regular = "m",
   normal = "m",
-  medium = "m",
-  book = "m",
+  medium = "f", -- deviant
+  book = "k",   -- deviant
   mediumbold = "sb",
   demi = "db",
   semibold = "sb",
@@ -881,14 +882,22 @@ local function prepare_fake_fd(fam, fam_data, force)
 
           insert(ssubs, {"<" .. min .. "-" .. max .. ">", enquote(fnt.fullpath)})
 
-          max_max = (max ~= "" and max > max_max) and max or max_max
-          if min ~= "" then
-            min_min = min_min or min
-            min_min = min < min_min and min or min_min
-          end
           hash_last = fnt.nfss_hash
+
+          -- In case there are just 2 sizes, as opposed to a range, we need 
+          --    to undo the "" setting to avoid discarding optical sizes 
+          --    completely.
+          min = fnt.minsize or fnt.designsize or 0
+          max = fnt.maxsize or fnt.designsize or 0
+
+          max_max = (max > max_max) and max or max_max
+          min_min = min_min or min
+          min_min = (min < min_min) and min or min_min
+
         end
 
+        -- Is this necessary? 
+        -- If not, could also discard the last part of the loop ...
         if max_max == 0 or not min_min then opt_size = false
         elseif max_max == min_min then opt_size = false
         end
@@ -1193,7 +1202,7 @@ local function add_callback_smcp()
 
           if incomplete and incomplete[fam] and incomplete[fam][line_no] then
 
-            msg({"Completing ", fam, "...", "log"})
+            msg({"Completing ", fam, "..."}, "log")
 
             msg_assert(fake_fd, "Data missing from cache!")
             msg({"line:\t", line_no}, "debug")
@@ -1506,6 +1515,7 @@ local function font_config(targ, config, immediate)
 
       local width = font.width
       local weight = font.weight
+      local fontweight = font.fontweight
       local style = font.style
       local variant = font.variant
       -- family is more specific than familyname
@@ -1521,6 +1531,7 @@ local function font_config(targ, config, immediate)
         end
         family = (gsub(family, style, ""))
         family = (gsub(family, weight, ""))
+        if fontweight then family = (gsub(family, fontweight, "")) end
         family = (gsub(family, width, ""))
 
         if style == "oblique" or style == "slanted" then
@@ -1539,24 +1550,29 @@ local function font_config(targ, config, immediate)
           end
         end
 
-        if weight == "normal" or weight == "regular" then
-          if (find(fullname, "book")) then weight = "book"
-            book = true
-          elseif (find(fullname, "medium")) then weight = "medium"
-            medium = true
-          else regular = true end
-        end
-
       end
 
+      -- local t
 
-      local t
+      parsed_fam = parsed_fam or {}
+      parsed_fam[family] = parsed_fam[family] or {}
+      local t = parsed_fam[family]
 
-      if parsed_fam == nil then parsed_fam = {} end
-      t = parsed_fam
-      t[family] = t[family] or {}
-      t = t[family]
 
+      if weight == "normal" then
+        if fontweight then
+          if fontweight == "regular" then
+            regular = true
+            weight = fontweight
+          elseif fontweight == "book" then 
+            book = true
+            weight = fontweight
+          elseif  fontweight == "medium" then 
+            medium = true
+            weight = fontweight
+          end
+        end
+      end
 
       -- translate to NFSS identifiers (texdoc fntguide)
       local nfss_weight   = parse_spec(weights, weight)
@@ -1641,60 +1657,60 @@ local function font_config(targ, config, immediate)
     if not regular then
       if book then
         for fam,data in pairs(parsed_fam) do
-          if data.book then
+          if data.k then
             assert(data.m == nil)
-            data.m = data.book
-            data.book = nil
+            data.m = data.k
+            -- data.k = nil
           end
         end
         book = false
       elseif medium then
         for fam,data in pairs(parsed_fam) do
-          if data.medium then
+          if data.f then
             assert(data.m == nil)
-            data.m = data.medium
-            data.medium = nil
+            data.m = data.f
+            -- data.f = nil
           end
         end
         medium = false
       end
     end
 
-    if book then
-      for fam,data in pairs(parsed_fam) do
-        if data.book ~= nil then
-          local book_fam = fam .. "book"
-          msg_assert(parsed_fam[book_fam] == nil, 
-            "I didn't expect so many books outside a library.")
-          parsed_fam[book_fam] = {}
-          parsed_fam[book_fam].m = data.book
-          data.book = nil
-          for series,i in pairs(data) do
-            if series ~= "m" then 
-              parsed_fam[book_fam][series] = i
-            end
-          end
-        end
-      end
-    end
+    -- if book then
+    --   for fam,data in pairs(parsed_fam) do
+    --     if data.book ~= nil then
+    --       local book_fam = fam .. "book"
+    --       msg_assert(parsed_fam[book_fam] == nil, 
+    --         "I didn't expect so many books outside a library.")
+    --       parsed_fam[book_fam] = {}
+    --       parsed_fam[book_fam].m = data.book
+    --       data.book = nil
+    --       for series,i in pairs(data) do
+    --         if series ~= "m" then 
+    --           parsed_fam[book_fam][series] = i
+    --         end
+    --       end
+    --     end
+    --   end
+    -- end
 
-    if medium then
-      for fam,data in pairs(parsed_fam) do
-        if data.medium ~= nil then
-          local medium_fam = fam .. "medium"
-          msg_assert(parsed_fam[medium_fam] == nil, 
-            "I didn't expect so many mediums outside an art studio.")
-          parsed_fam[medium_fam] = {}
-          parsed_fam[medium_fam].m = data.medium
-          data.medium = nil
-          for series,i in pairs(data) do
-            if series ~= "m" then 
-              parsed_fam[medium_fam][series] = i
-            end
-          end
-        end
-      end
-    end
+    -- if medium then
+    --   for fam,data in pairs(parsed_fam) do
+    --     if data.medium ~= nil then
+    --       local medium_fam = fam .. "medium"
+    --       msg_assert(parsed_fam[medium_fam] == nil, 
+    --         "I didn't expect so many mediums outside an art studio.")
+    --       parsed_fam[medium_fam] = {}
+    --       parsed_fam[medium_fam].m = data.medium
+    --       data.medium = nil
+    --       for series,i in pairs(data) do
+    --         if series ~= "m" then 
+    --           parsed_fam[medium_fam][series] = i
+    --         end
+    --       end
+    --     end
+    --   end
+    -- end
           
     -- link families to fam_meta
 
