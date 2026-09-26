@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12069 2026-09-25 04:26:10Z cfrees $}[v0.3 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12070 2026-09-26 01:25:21Z cfrees $}[v0.3 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/ 
@@ -235,12 +235,22 @@
 %     }
 %   \item[fea] Optional list of font features. 
 %       The default is \texttt{script=dflt}, \texttt{mode=node}, \texttt{+tlig}, \texttt{language=dflt}.
-%   \item[scale] Optional factor by which the font should be scaled e.g.~\texttt{20} or \textt{0.8}.
-%       Ignored if a family includes distinct optical sizes.
 %   \item[force] Boolean which determines whether cached data is to be regenerated on the basis of a new search of the font-loader's database.
 %       Note that this doesn't regenerate the loader's database itself. 
 %       It simply zaps data stored by this module for one or more font families.
+%   \item[scale] Optional factor by which the font should be scaled e.g.~\texttt{20} or \textt{0.8}.
+%       Ignored if a family includes distinct optical sizes.
 % \end{description}
+% If configuring one of the three ‘default’ document families, you may also choose whether or not to configure the corresponding fonts used in mathematics.
+% Note that these keys do not configuring mathematical fonts as such e.g.~those used for symbols, scripts etc.\ are unaffected.
+% Instead, it configures the fonts which \TeX{} classically takes from the text families such as \cs{mathrm}.
+% These keys are \textbf{only} available when configuring one of \texttt{rm}, \texttt{sf} and \texttt{tt}.
+% \begin{description}
+%   \item[maths\textbar math] Expects one of the values \texttt{true} or \texttt{false}.
+%   \item[nomaths\textbar nomath] Does not accept a value.
+%   Equivalent to \texttt{maths = {false}}.
+% \end{description}
+% If unset, the default is equivalent to \texttt{maths = {true}}.
 %
 \iffalse
 %<*hmm>
@@ -327,7 +337,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12069 2026-09-25 04:26:10Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12070 2026-09-26 01:25:21Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % this is needed only because l3doc overwrites \fileversion and \filedate
 % neither ltxdoc nor doc does this
 \DefineFileInfoSVN[lfc]
@@ -388,18 +398,29 @@
   }
   \keys_define:nn {lfc/#1} {
     name      .code:n = { \use:c {__@@_set_#1:n} {##1} },
-    features  .code:n = { \keys_set:nn {lfc/fam} {features = {##1} }},
-    scale     .code:n = { \keys_set:nn {lfc/fam} {scale    = {##1} }},
-    force     .code:n = { \keys_set:nn {lfc/fam} {force    = {##1} }},
+    features  .code:n = { \keys_set:nn {lfc/fam} {features = {##1}} },
+    force     .code:n = { \keys_set:nn {lfc/fam} {force    = {##1}} },
+    scale     .code:n = { \keys_set:nn {lfc/fam} {scale    = {##1}} },
+    maths     .code:n = { \__@@_set_fam_cfg:nn   {maths}{##1} },
+    math      .meta:n = { maths = {##1} },
+    nomaths   .meta:n = { maths = false },
+    nomath    .meta:n = { nomaths },
     unknown   .code:n = {
       \exp_args:NnV \use:c {__@@_set_#1:n} \l_keys_key_str
-      \bool_set_true:N \l_@@_tmpa_bool
     },
     name      .value_required:n   = true,
+    math      .default:n          = true,
+    maths     .default:n          = true,
+    nomath    .value_forbidden:n  = true,
+    nomaths   .value_forbidden:n  = true,
     unknown   .value_forbidden:n  = true,
     features  .groups:n           = config,
-    scale     .groups:n           = config,
     force     .groups:n           = config,
+    maths     .groups:n           = config,
+    math      .groups:n           = config,
+    nomath    .groups:n           = config,
+    nomaths   .groups:n           = config,
+    scale     .groups:n           = config,
   }
 }
 %    \end{macrocode}
@@ -425,25 +446,24 @@
 \keys_define:nn {lfc/fam} {
   name      .code:n = { \__@@_set_fam_name:n {#1} },
   features  .code:n = { \__@@_set_fam_cfg:nn {fea}{#1} },
-  scale     .code:n = { \__@@_set_fam_cfg:nn {scale}{#1} },
   force     .code:n = { \__@@_set_fam_cfg:nn {force}{#1} },
+  scale     .code:n = { \__@@_set_fam_cfg:nn {scale}{#1} },
   unknown   .code:n = {
     \exp_args:NV \__@@_set_fam_name:n \l_keys_key_str 
-    \bool_set_true:N \l_@@_tmpa_bool
   },
   name      .value_required:n   = true,
   features  .value_required:n   = true,
-  scale     .value_required:n   = true,
   force     .default:n          = true,
+  scale     .value_required:n   = true,
   unknown   .value_forbidden:n  = true,
   name      .usage:n            = general,
   features  .usage:n            = general,
-  scale     .usage:n            = general,
   force     .usage:n            = general,
+  scale     .usage:n            = general,
   unknown   .usage:n            = general,
   features  .groups:n           = config,
-  scale     .groups:n           = config,
   force     .groups:n           = config,
+  scale     .groups:n           = config,
 }
 \keys_define:nn {lfc/debug} {
   state       .choice:,
@@ -457,7 +477,7 @@
 }
 %    \end{macrocode}
 % \begin{macro}{\fontconfig}
-%   The main (and currently(?) only) macro.
+%   The main (and currently(?) only) public macro.
 %    \begin{macrocode}
 \NewDocumentCommand\fontconfig { +m }{
   \bool_set_false:N \l_@@_tmpa_bool
@@ -468,13 +488,47 @@
 }
 %    \end{macrocode}
 % \end{macro}
+% \begin{macro}{\_@@_set_mathrm:,\_@@_set_mathsf:,\_@@_set_mathtt:}
+% TODO: move to hooks if module gets support for switching the families out e.g.~for language changes.
+% Currently, the code is too simple-minded for this to arise \dots.
 %    \begin{macrocode}
+\cs_new_protected_nopar:Npn \_@@_set_mathrm: {
+  \SetMathAlphabet \mathrm {normal} {TU} \rmdefault {\mdseries@rm} \shapedefault
+  \SetMathAlphabet \mathit {normal} {TU} \rmdefault {\mdseries@rm} \itdefault
+  \SetMathAlphabet \mathbf {normal} {TU} \rmdefault {\bfseries@rm} \shapedefault
+  \SetMathAlphabet \mathrm {bold}   {TU} \rmdefault {\mdseries@rm} \shapedefault
+  \SetMathAlphabet \mathit {bold}   {TU} \rmdefault {\mdseries@rm} \itdefault
+  \SetMathAlphabet \mathbf {bold}   {TU} \rmdefault {\bfseries@rm} \shapedefault
+}
+\cs_new_protected_nopar:Npn \_@@_set_mathsf: {
+  \SetMathAlphabet \mathsf {normal} {TU} \sfdefault {\mdseries@sf} \shapedefault
+  \SetMathAlphabet \mathsf {bold}   {TU} \sfdefault {\bfseries@sf} \shapedefault
+}
+\cs_new_protected_nopar:Npn \_@@_set_mathtt: {
+  \SetMathAlphabet \mathtt {normal} {TU} \ttdefault {\mdseries@tt} \shapedefault
+  \SetMathAlphabet \mathtt {bold}   {TU} \ttdefault {\bfseries@tt} \shapedefault
+}
+%    \end{macrocode}
+% \end{macro}
+%    \begin{macrocode}
+\hook_gput_code:nnn {class/ltx-talk/before} {.} {
+  \hook_gput_code:nnn {package/mathtools/after} {.} {
+    \RequirePackage{lum-newcomputermodernsans}
+    \fontconfig{
+      rm      = {newcomputermodernsans},
+      sf      = {newcomputermodernsans},
+    }
+    \tagpdfsetup { math / mathml / luamml / load = true }
+  }
+}
 \ExplSyntaxOff
 \directlua{
   require("lfc")
 }
 %    \end{macrocode}
 %</sty>
+%
+%
 %
 %<*ee-lmr>
 \documentclass{article}

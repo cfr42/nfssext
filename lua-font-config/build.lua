@@ -1,4 +1,4 @@
--- $Id: build.lua 12066 2026-09-24 16:32:33Z cfrees $
+-- $Id: build.lua 12070 2026-09-26 01:25:21Z cfrees $
 -------------------------------------------------------------------------------
 -- This work, which consists of all files listed in manifest.txt, is released 
 -- under the LaTeX Project Public Licence version 1.3c or later. See individual 
@@ -90,7 +90,7 @@ uploadconfig = {
 	author        = "Clea F. Rees",
   -- email (don't include here!)
 	ctanPath      = "/tex/lualatex/lua-font-config",
-	license       = {"gpl2","lppl1.3c"},
+	license       = {"gpl2","lppl1.3c","GUST-FONT-NOSOURCE-LICENSE","SIL OFL"},
 	pkg           = ctanpkg,
 	summary       = "Lua-based opentype font configuration for LuaLaTeX.",
   uploader      = "Clea F. Rees",

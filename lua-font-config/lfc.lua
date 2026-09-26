@@ -1,6 +1,9 @@
--- $Id: lfc.lua 12069 2026-09-25 04:26:10Z cfrees $
+-- $Id: lfc.lua 12070 2026-09-26 01:25:21Z cfrees $
 -------------------------------------------------------------------------------
 -- TODO
+--
+-- 0. Abandon the whole thing since packages are not supposed to meddle with 
+--    fonts?
 --
 -- 1. Test with .ttf.
 --
@@ -164,6 +167,10 @@ local tok_ttdefault         = create("ttdefault")
 
 local tok_file_subs         = create("declare@file@substitution")
 local tok_hook_gput_code    = create("hook_gput_code:nnn")
+
+local tok_mathrm            = create("__lfc_set_mathrm:")
+local tok_mathsf            = create("__lfc_set_mathsf:")
+local tok_mathtt            = create("__lfc_set_mathtt:")
 
 -- Tables
 local nfss_default_families = {}
@@ -836,7 +843,8 @@ local function prepare_fake_fd(fam, fam_data, force)
       if #fnts == 1 then
 
         -- Need an empty entry for cfg mods e.g. +smcp; etc.
-        fake_fd_insert({series, shape, enquote(fnts[1].fullpath), ""})
+        fake_fd_insert({series, shape, enquote(fnts[1].fullpath),
+          fnts[1].subfont or 0, ""})
 
       else
 
@@ -891,7 +899,8 @@ local function prepare_fake_fd(fam, fam_data, force)
           -- Needed to reinsert scaling if duplicate fonts
           if min ~= "" or max ~= "" then opt_size = true end
 
-          insert(ssubs, {"<" .. min .. "-" .. max .. ">", enquote(fnt.fullpath)})
+          insert(ssubs, {"<" .. min .. "-" .. max .. ">", 
+            enquote(fnt.fullpath), fnt.subfont or 0 })
 
           hash_last = fnt.nfss_hash
 
@@ -921,7 +930,7 @@ local function prepare_fake_fd(fam, fam_data, force)
         else
           for _,i in ipairs(ssubs) do
             -- Need empty placeholder for cfg.
-            fake_fd_insert({series, shape, enquote(i[2]), ""})
+            fake_fd_insert({series, shape, enquote(i[2]), i[3], ""})
           end
           msg({"Apparent duplicates for ", fam, "/", series,
           "/", shape, "."})
@@ -1105,8 +1114,9 @@ local function write_declare_shape(pre, line, post, fea, size_spec)
 
   local out = {pre}
 
-  local function toks_font_spec(fnt)
-    return  { "\"[", fnt, "]:", fea, "\"" }
+  local function toks_font_spec(fnt, subfnt)
+    return subfnt == 0 and { "\"[", fnt, "]:", fea, "\"" } or  
+      { "\"[", fnt, "]:(", subfnt, ")", fea, "\"" }
   end
 
   -- series
@@ -1120,16 +1130,23 @@ local function write_declare_shape(pre, line, post, fea, size_spec)
 
     if kind == "string" then 
 
+      -- Simple case: {<-> "[<path>]":           <features>"}
+      --          or: {<-> "[<path>]":(<subfont>)<features>"}
       append(out, { tok_group_begin, size_spec, toks_font_spec(line[3], 
-        fea), tok_group_end })
+        line[4]), tok_group_end })
 
     else 
       msg_assert(kind == "table", {"Unexpected type ", kind, "!"})
 
+      -- Otherwise: {
+      --              <min-max> "[<path>]":           <features>"
+      --       (or)   <min-max> "[<path>]":(<subfont>)<features>"
+      --              ...
+      --             }
       insert(out, tok_group_begin)
 
       for _,item in ipairs(line[3]) do
-        append(out, {item[1], toks_font_spec(item[2], fea)}) 
+        append(out, {item[1], toks_font_spec(item[2], item[3])}) 
       end
 
       insert(out, tok_group_end)
@@ -1137,6 +1154,7 @@ local function write_declare_shape(pre, line, post, fea, size_spec)
 
   else
 
+    -- Else we must have a substitution - silent or o/w.
     msg_assert(line.sub or line.ssub, "Malformed line!")
     local subs = line.sub or line.ssub
 
@@ -1424,7 +1442,7 @@ local function file_subs_empty(filename)
 end
 -- }}}
 
----@function add_fake_fd(fam, fake_fd, fea, scale_faction) {{{
+---@function add_fake_fd(fam, fake_fd, fea, scale_factor) {{{
 ---@see         write_fake_fd()
 ---@description A wrapper around write_fake_fd() which avoids defining fonts
 ---@description   unnecessarily (and so avoids unnecessary callbacks etc.).
@@ -1805,6 +1823,13 @@ local fam_defaults = { -- {{{
 }
 -- }}}
 
+local fam_to_maths = { -- {{{
+  rm = tok_mathrm,
+  sf = tok_mathsf,
+  tt = tok_mathtt,
+}
+-- }}}
+
 ---@function get_fam_default_scanner(fam) {{{
 ---@param fam   <string: "rm" | "sf" | "tt">  NFSS default family.
 ---@description Returns a Lua function which scans an argument and sets the
@@ -1900,8 +1925,13 @@ local function configure_doc_families()
     for fam,cfg in pairs(nfss_default_families) do
       if cfg.nfss_fam then
         local fam_name = cfg.nfss_fam
+        local maths = cfg.maths or true
         msg({"Setting ", fam, " default to ", fam_name, "."}, "log")
         sprint(-2, get_toks({tok_renewcommand, fam_defaults[fam], embrace(fam_name)}))
+        if maths then
+          msg({"Setting math", fam, "."}, "log")
+          sprint(-2, fam_to_maths[fam])
+        end
       else msg({"No family found for ", fam, "!"})
       end
     end
