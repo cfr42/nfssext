@@ -1,0 +1,79 @@
+%% $id:$
+\input regression-test.tex
+\makeatletter
+\AddToHook {selectfont} [.] {\lfc@aux}
+\def\lfc@aux#1{%
+  \edef\tempa{\expandafter\detokenize\expandafter{\expanded{\expandafter\expandafter\expandafter\noexpand\csname\f@encoding/\f@family/\f@series/\f@shape\endcsname}}}%
+  \expandafter\lfc@auxi\expandafter{\tempa}%
+}
+\def\lfc@auxi#1{%
+  \NEWLINE
+  \NEWLINE
+  \TYPE{[lfc font]: #1}
+  \NEWLINE
+  \NEWLINE
+}
+\makeatother
+\documentclass{article}
+\parindent=0pt
+\START
+\usepackage{lua-font-config}
+\fontconfig{rm = latinmodernroman}
+\begin{document}
+\TEST{latinmodernroman m}{%
+  Upright \textit{Italics \textsc{Italic Small Caps}} 
+  \textsc{Small Caps \textsl{Oblique Small Caps}} \textsl{Oblique}
+  \fontshape{ui}\selectfont Upright Italics
+}
+\OMIT
+\normalfont
+\TIMO
+
+\TEST{latinmodernroman b}{%
+  \bfseries
+  Upright \textit{Italics \textsc{Italic Small Caps (NA)}} 
+  \textsc{Small Caps (NA) \textsl{Oblique Small Caps (NA)}} \textsl{Oblique}
+  \fontshape{ui}\selectfont Upright Italics (NA)
+}
+\OMIT
+\normalfont
+\TIMO
+
+\TEST{latinmodernroman db}{%
+  \fontseries{db}\selectfont
+  Upright \textit{Italics \textsc{Italic Small Caps (NA)}} 
+  \textsc{Small Caps (NA) \textsl{Oblique Small Caps (NA)}} \textsl{Oblique}
+  \fontshape{ui}\selectfont Upright Italics (NA)
+}
+\OMIT
+\normalfont
+\TIMO
+
+\TEST{latinmodernroman footnotesize m}{%
+  \footnotesize
+  Upright \textit{Italics \textsc{Italic Small Caps}} 
+  \textsc{Small Caps \textsl{Oblique Small Caps}} \textsl{Oblique}
+  \fontshape{ui}\selectfont Upright Italics
+}
+\OMIT
+\normalfont
+\TIMO
+
+\TEST{latinmodernroman footnotesize b}{%
+  \bfseries
+  Upright \textit{Italics \textsc{Italic Small Caps (NA)}} 
+  \textsc{Small Caps (NA) \textsl{Oblique Small Caps (NA)}} \textsl{Oblique}
+  \fontshape{ui}\selectfont Upright Italics (NA)
+}
+\OMIT
+\normalfont
+\TIMO
+
+\TEST{latinmodernroman footnotesize db}{%
+  \fontseries{db}\selectfont
+  Upright \textit{Italics \textsc{Italic Small Caps (NA)}} 
+  \textsc{Small Caps (NA) \textsl{Oblique Small Caps (NA)}} \textsl{Oblique}
+  \fontshape{ui}\selectfont Upright Italics (NA)
+}
+\end{document}
+
