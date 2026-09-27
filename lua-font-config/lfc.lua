@@ -1,4 +1,4 @@
--- $Id: lfc.lua 12070 2026-09-26 01:25:21Z cfrees $
+-- $Id: lfc.lua 12071 2026-09-27 06:36:10Z cfrees $
 -------------------------------------------------------------------------------
 -- TODO
 --
@@ -149,6 +149,9 @@ local lfc_log_level         = lfc.log_level or (lfc_debug and "debug" or "info")
 
 local str_onesize           = "<->"
 local str_fea_default       = "mode=node;language=dflt;script=dflt;+tlig"
+local str_fea_math_default  = "mode=basic;language=dflt;script=math;"
+local str_fea_math_sf       = "ssty=1;"
+local str_fea_math_ssf      = "ssty=2;"
 
 local function hook_file_before(filename) 
   return {"file/", filename, "/before"} end
@@ -171,6 +174,10 @@ local tok_hook_gput_code    = create("hook_gput_code:nnn")
 local tok_mathrm            = create("__lfc_set_mathrm:")
 local tok_mathsf            = create("__lfc_set_mathsf:")
 local tok_mathtt            = create("__lfc_set_mathtt:")
+
+local tok_declare_m_scr_map = create("DeclareMathScriptfontMapping")
+local tok_declare_sym_fnt   = create("DeclareSymbolFont")
+local tok_set_sym_fnt       = create("SetSymbolFont")
 
 -- Tables
 local nfss_default_families = {}
@@ -781,18 +788,19 @@ local function parse_config(fam, config)
 end
 -- }}}
 
----@function prepare_fake_fd(fam, fam_data, fea) {{{
+---@function prepare_fake_fd(fam, fam_data, typeset_mode, force) {{{
 ---@description Returns a table of tables
 ---@description Each table uses fam[-suffix] containing lines 
 ---@description   suitable for emulating an .fd file
----@param fam       <string>  NFSS family
----@param fam_data  <table>   Sorted data for fonts
----@param config    <string> | <indexed table> | <keyed table> configs
----@param force     <boolean>
+---@param fam           <string>  NFSS family
+---@param fam_data      <table>   Sorted data for fonts
+---@param typeset_mode  <int>     0 (text) | 1 (math) | 2 (symbol - ignored)
+---@param force         <boolean>
 ---@status internal
 -- Should be split??
-local function prepare_fake_fd(fam, fam_data, force) 
+local function prepare_fake_fd(fam, fam_data, typeset_mode, force) 
   force = force or false
+  typeset_mode = typeset_mode or 0
 
   lfc_cache = lfc_cache or read_cache()
 
@@ -831,8 +839,11 @@ local function prepare_fake_fd(fam, fam_data, force)
   end
 
   for series,series_data in pairs(fam_data) do
+
     local std_lines = {n = 0, it = 0, sl = 0}
+
     for shape,fnts in pairs(series_data) do
+
       msg({"Processing font(s) for ", series, " and ", shape}, "debug")
 
       msg_assert(#fnts ~= 0, "The number of fonts should never be zero!")
@@ -937,107 +948,111 @@ local function prepare_fake_fd(fam, fam_data, force)
         end
 
       end
-      if shape == "n" then std_lines.n = curr_line 
-      elseif shape == "it" then std_lines.it = curr_line
-      elseif shape == "sl" then std_lines.sl = curr_line
-      end
-    end
 
-    -- Check for missing basic shapes
-    if series_data.it == nil then
-      if series_data.sl ~= nil then
-        fake_fd_insert({series, "it", ssub = {fam, series, "sl"}})
-      end
-    elseif series_data.sl == nil then
-      fake_fd_insert({series, "sl", ssub = {fam, series, "it"}})
-    end
-
-    local trans = { sc = "n", scit = "it", scsl = "sl" }
-    for to_shape,base_shape in pairs(trans) do
-      if series_data[to_shape] == nil and series_data[base_shape] then
-
-        if not (std_lines[base_shape] > 0) then
-          msg({"No std_lines for ", base_shape, "."})
-          goto trans_skip
+      if typeset_mode == 0 then
+        if shape == "n" then std_lines.n = curr_line 
+        elseif shape == "it" then std_lines.it = curr_line
+        elseif shape == "sl" then std_lines.sl = curr_line
         end
+      end
 
-        local curr_path = series_data[base_shape][1].fullpath
+    end
 
-        local checked_and_smcp = false
+    if typeset_mode == 0 then
+      -- For text fonts, check for missing basic shapes
 
-        if lfc_cache.resources and lfc_cache.resources[curr_path] then
-          local rsc = lfc_cache.resources[curr_path]
-          if rsc.features and rsc.features.gsub and rsc.features.gsub.smcp then
-            checked_and_smcp = true
-          else
-            -- We've checked and it doesn't have smcp, so skip the rest.
+      if series_data.it == nil then
+        if series_data.sl ~= nil then
+          fake_fd_insert({series, "it", ssub = {fam, series, "sl"}})
+        end
+      elseif series_data.sl == nil then
+        fake_fd_insert({series, "sl", ssub = {fam, series, "it"}})
+      end
+
+      local trans = { sc = "n", scit = "it", scsl = "sl" }
+      for to_shape,base_shape in pairs(trans) do
+        if series_data[to_shape] == nil and series_data[base_shape] then
+
+          if not (std_lines[base_shape] > 0) then
+            msg({"No std_lines for ", base_shape, "."})
             goto trans_skip
           end
-        end
 
-        local line_no = curr_line + 1
+          local curr_path = series_data[base_shape][1].fullpath
 
-        -- Temporary defn
-        -- This may get replaced when the font is used:
-        --    - if +smcp, retain spec
-        --    - if not, replaced by blank line
-        -- This works better than an initial subs or blank and 
-        --  _seems_ not to error???
-        local line_mod = fastcopy(fake_fd[std_lines[base_shape]])
-        line_mod[4] = "+smcp"
-        line_mod[2] = to_shape
-        fake_fd_insert(line_mod)
+          local checked_and_smcp = false
 
-        -- We haven't checked, so the addition may be wrong.
-        if not checked_and_smcp then 
-          lfc_cache[fam].complete = false
+          if lfc_cache.resources and lfc_cache.resources[curr_path] then
+            local rsc = lfc_cache.resources[curr_path]
+            if rsc.features and rsc.features.gsub and rsc.features.gsub.smcp then
+              checked_and_smcp = true
+            else
+              -- We've checked and it doesn't have smcp, so skip the rest.
+              goto trans_skip
+            end
+          end
 
-          lfc_cache.incomplete = lfc_cache.incomplete or {}
-          lfc_cache.incomplete[fam] = lfc_cache.incomplete[fam] or {}
-          lfc_cache.incomplete[fam][line_no] = true
+          local line_no = curr_line + 1
 
-          lfc_cache.callbacks_smcp = lfc_cache.callbacks_smcp or {}
-          lfc_cache.callbacks_smcp[curr_path] = {
-            fam = fam,
-            [line_no] = true,
-          }
-          if #series_data[base_shape] > 1 then 
-            local tmp = lfc_cache.callbacks_smcp[curr_path]
-            tmp.related = { curr_path }
-            for curr = 2, #series_data[base_shape] do
-              lfc_cache.callbacks_smcp[curr_path] = tmp
-              insert(tmp.related, curr_path)
+          -- Temporary defn
+          -- This may get replaced when the font is used:
+          --    - if +smcp, retain spec
+          --    - if not, replaced by blank line
+          -- This works better than an initial subs or blank and 
+          --  _seems_ not to error???
+          local line_mod = fastcopy(fake_fd[std_lines[base_shape]])
+          line_mod[4] = "+smcp"
+          line_mod[2] = to_shape
+          fake_fd_insert(line_mod)
+
+          -- We haven't checked, so the addition may be wrong.
+          if not checked_and_smcp then 
+            lfc_cache[fam].complete = false
+
+            lfc_cache.incomplete = lfc_cache.incomplete or {}
+            lfc_cache.incomplete[fam] = lfc_cache.incomplete[fam] or {}
+            lfc_cache.incomplete[fam][line_no] = true
+
+            lfc_cache.callbacks_smcp = lfc_cache.callbacks_smcp or {}
+            lfc_cache.callbacks_smcp[curr_path] = {
+              fam = fam,
+              [line_no] = true,
+            }
+            if #series_data[base_shape] > 1 then 
+              local tmp = lfc_cache.callbacks_smcp[curr_path]
+              tmp.related = { curr_path }
+              for curr = 2, #series_data[base_shape] do
+                lfc_cache.callbacks_smcp[curr_path] = tmp
+                insert(tmp.related, curr_path)
+              end
             end
           end
         end
+        :: trans_skip ::
       end
-      :: trans_skip ::
-    end
 
-    if series_data.scit == nil then
-      if series_data.scsl ~= nil then
-        fake_fd_insert({series, "scit", ssub = {fam, series, "scsl"}})
+      if series_data.scit == nil then
+        if series_data.scsl ~= nil then
+          fake_fd_insert({series, "scit", ssub = {fam, series, "scsl"}})
+          fake_fd_insert({series, "si", ssub = {fam, series, "scit"}})
+        end
+      elseif series_data.scsl == nil then
+        fake_fd_insert({series, "scsl", ssub = {fam, series, "scit"}})
+        fake_fd_insert({series, "si", ssub = {fam, series, "scsl"}})
+      else 
         fake_fd_insert({series, "si", ssub = {fam, series, "scit"}})
       end
-    elseif series_data.scsl == nil then
-      fake_fd_insert({series, "scsl", ssub = {fam, series, "scit"}})
-      fake_fd_insert({series, "si", ssub = {fam, series, "scsl"}})
-    else 
-      fake_fd_insert({series, "si", ssub = {fam, series, "scit"}})
+
+      -- Other possibilities:
+      --    - Auto-generate fds for different figure styles?
+      --    - Swash/alternates?
+      --    - How does this do with .ttc or variable fonts?
+
+      -- It is (relatively) cheap to create additional families once the base
+      --  case is done, if features can be inferred on loading.
+      -- But I'm not sure how that would work for families, as opposed to 
+      --  shapes?
     end
-
-    -- No check for italic sc via +smcp, though could be added.
-    -- Doubt this is worth the overhead, though.
-
-    -- Other possibilities:
-    --    - Auto-generate fds for different figure styles?
-    --    - Swash/alternates?
-    --    - How does this do with .ttc or variable fonts?
-
-    -- It is (relatively) cheap to create additional families once the base
-    --  case is done, if features can be inferred on loading.
-    -- But I'm not sure how that would work for families, as opposed to 
-    --  shapes?
   end
 
   lfc_cache[fam].paths = unique(path_list)
@@ -1058,6 +1073,7 @@ local function prepare_fake_fd(fam, fam_data, force)
 
   lfc_cache[fam].fake_fd = fake_fd
   lfc_cache[fam].scalable = scalable
+  lfc_cache[fam].typeset_mode = typeset_mode
 
   return fake_fd
 end
@@ -1403,6 +1419,8 @@ local function write_fake_fd(fam, fake_fd, fea, scale_factor)
     end
   end
 
+  local type = lfc_cache[fam].typeset_mode or 0
+
   for _,line in ipairs(fake_fd) do
     if line ~= "" then 
       msg({"Preparing line: ", fam, ": ", fea, " ", onesize}, "debug")
@@ -1410,24 +1428,45 @@ local function write_fake_fd(fam, fake_fd, fea, scale_factor)
     end
   end
 
+  -- \DeclareMathScriptfontMapping{TU}{ncmm}{TU}{ncmm-sf}{TU}{ncmm-ssf}
+  local needs_scripts = false
+  if type == 1 and not find(fam, "%-sf$") and not find (fam, "%-ssf$") then
+    append(out, {tok_declare_m_scr_map, toks_enc_tu, embrace(fam),
+      toks_enc_tu, embrace(fam .. "-sf"), toks_enc_tu, embrace(fam .. "-ssf")})
+    needs_scripts = true
+  end
+
   msg_debug("Out (partially tokenized): ", "defn", out)
   out = get_toks(out)
   msg_debug("Out (streamed): ", "defn", out)
   sprint(-2,out)
 
-  if not lfc_cache[fam].complete and not lfc_callback_smcp_active then
-    add_callback_smcp()
-  end
+  if type == 0 then
 
-  msg_assert(lfc_cache[fam].paths, {"No paths cached for ", fam, "!"}, "debug")
+    -- text may be incomplete
 
-  if lfc_cache.callbacks_data and not lfc_callback_data_active then
-    for _,path in ipairs(lfc_cache[fam].paths) do
-      if lfc_cache.callbacks_data[path] then
-        add_callback_data()
-        break
+    if not lfc_cache[fam].complete and not lfc_callback_smcp_active then
+      add_callback_smcp()
+    end
+
+    msg_assert(lfc_cache[fam].paths, {"No paths cached for ", fam, "!"}, "debug")
+
+    if lfc_cache.callbacks_data and not lfc_callback_data_active then
+      for _,path in ipairs(lfc_cache[fam].paths) do
+        if lfc_cache.callbacks_data[path] then
+          add_callback_data()
+          break
+        end
       end
     end
+
+  elseif nedds_scripts then
+
+    -- maths may need scripts
+
+    write_fake_fd(fam .. "-sf", fake_fd, fea .. str_fea_math_sf, scale_factor)
+    write_fake_fd(fam .. "-ssf", fake_fd, fea .. str_fea_math_ssf, scale_factor)
+
   end
 
 end
@@ -1515,7 +1554,6 @@ local function font_config(targ, config, immediate)
   local fam_meta = metadata.fam_meta
   msg_assert(fam_meta ~= nil, {"No reults for ", targ})
 
-
   if not metadata.cached then 
 
     local data = f.data
@@ -1527,6 +1565,8 @@ local function font_config(targ, config, immediate)
     local regular = false
     local book = false
     local medium = false
+    -- text: 0 ; maths: 1; other: 2
+    local type = 0
 
 
     -- Adjust returned data for compatibility with NFSS
@@ -1538,9 +1578,8 @@ local function font_config(targ, config, immediate)
       -- We don't want to parse maths fonts.
       -- Best would be to check for the MATH table, but we don't want to
       --    load every font for that, so do this for now.
-      if (find(fullname, "math")) then
-        goto discard
-      end
+      if find(fullname, "math") and not find(fullname, "mathematica") 
+        and not find(fullname, "cyrillic") then type = 1 end
 
       local width = font.width
       local weight = font.weight
@@ -1638,6 +1677,7 @@ local function font_config(targ, config, immediate)
       font.shape = shape
       font.nfss_hash = nfss_hash
       font.nfss_family = family
+      font.typeset_mode = type
       
       nfss_hashes[family] = nfss_hashes[family] or {}
       nfss_hashes[family][nfss_hash] = nfss_hashes[family][nfss_hash] or 0
@@ -1647,8 +1687,6 @@ local function font_config(targ, config, immediate)
       t[series][shape] = t[series][shape] or {}
 
       insert(t[series][shape], font)
-
-      :: discard ::
 
     end
 
@@ -1705,42 +1743,6 @@ local function font_config(targ, config, immediate)
       end
     end
 
-    -- if book then
-    --   for fam,data in pairs(parsed_fam) do
-    --     if data.book ~= nil then
-    --       local book_fam = fam .. "book"
-    --       msg_assert(parsed_fam[book_fam] == nil, 
-    --         "I didn't expect so many books outside a library.")
-    --       parsed_fam[book_fam] = {}
-    --       parsed_fam[book_fam].m = data.book
-    --       data.book = nil
-    --       for series,i in pairs(data) do
-    --         if series ~= "m" then 
-    --           parsed_fam[book_fam][series] = i
-    --         end
-    --       end
-    --     end
-    --   end
-    -- end
-
-    -- if medium then
-    --   for fam,data in pairs(parsed_fam) do
-    --     if data.medium ~= nil then
-    --       local medium_fam = fam .. "medium"
-    --       msg_assert(parsed_fam[medium_fam] == nil, 
-    --         "I didn't expect so many mediums outside an art studio.")
-    --       parsed_fam[medium_fam] = {}
-    --       parsed_fam[medium_fam].m = data.medium
-    --       data.medium = nil
-    --       for series,i in pairs(data) do
-    --         if series ~= "m" then 
-    --           parsed_fam[medium_fam][series] = i
-    --         end
-    --       end
-    --     end
-    --   end
-    -- end
-          
     -- link families to fam_meta
 
     lfc_cache.meta_families = lfc_cache.meta_families or {}
@@ -1750,13 +1752,14 @@ local function font_config(targ, config, immediate)
 
 
     for fam,fam_data in pairs(parsed_fam) do
-      local fake_fd = prepare_fake_fd(fam, fam_data)
+      local fake_fd = prepare_fake_fd(fam, fam_data, type)
       if fake_fd then
         insert(by_meta_fam, fam)
         local scale = (config[fam] and config[fam].scale and 
           config[fam].scale) or (config.scale and config.scale) or nil
         local fea = (config[fam] and config[fam].fea and config[fam].fea) or
-          (config.fea and config.fea) or str_fea_default
+          (config.fea and config.fea) or (type ~= 1 and str_fea_default) or
+          str_fea_math_default
         if immediate then
           write_fake_fd(fam, fake_fd, fea, scale) 
         else
@@ -1773,12 +1776,13 @@ local function font_config(targ, config, immediate)
       local scale = (config[fam_name] and config[fam_name].scale and 
         config[fam_name].scale) or (config.scale and config.scale) or nil
       local fea = (config[fam_name] and config[fam_name].fea and 
-        config[fam_name].fea) or (config.fea and config.fea) or str_fea_default
+        config[fam_name].fea) or (config.fea and config.fea) or 
+        (lfc_cache[fam_name].typeset_mode ~= 1 and str_fea_default) or
+        str_fea_math_default
       use_cached_fd(fam_name, fea, scale, immediate) 
     end
 
   end
-
 
   return fam_meta
 end
@@ -1897,24 +1901,47 @@ local function configure_doc_families()
       nfss_default_families,
       nfss_doc_families,
       fam_defaults)
-    local config = {fea = nil, scale = nil, force = nil}
+    local config = {fea = nil, scale = nil, force = nil, typeset_mode = nil}
     for name,cfg in pairs(nfss_doc_families) do
       if name ~= "curr" then
         config.fea = cfg.fea or nil
         config.scale = cfg.scale or nil
         config.force = cfg.force or nil
-        -- Currently ignores features!!
+
+        -- text: 0, maths: 1
+        config.typeset_mode = cfg.typeset_mode or 0
+
         local nfss_fam = font_config(cfg.name, config, cfg.default and true or 
-          false)
+        false)
+
         if nfss_fam ~= nil then cfg.nfss_fam = nfss_fam
-          if not cfg.default then
-            msg({"Creating NFSS family ", nfss_fam}, "debug")
-            luafunction_to_cs(cfg.cleanname, function()
-              return sprint(-2, get_toks({tok_fontfamily, embrace(nfss_fam),
+
+          if config.typeset_mode == 0 then
+          -- text mode
+            if not cfg.default then
+              msg({"Creating NFSS family ", nfss_fam}, "debug")
+              luafunction_to_cs(cfg.cleanname, function()
+                return sprint(-2, get_toks({tok_fontfamily, embrace(nfss_fam),
                 tok_selectfont}), "protected")
-            end)
+              end)
+            end
+
+          else 
+            -- maths mode
+            -- This assumes lua-unicode-math
+            msg({"Creating maths symbol fonts ", nfss_fam}, "debug")
+            sprint(-2, get_toks({tok_declare_sym_fnt, 
+              embrace("lummain"), toks_enc_tu, embrace(nfss_fam), 
+              embrace("m"), embrace("n")--,
+              -- This will error if there is no `b` series.
+              -- lfc_cache[nfss_fam].fake_fd.b and 
+              -- (tok_set_sym_fnt, embrace("lummain"), embrace("bold"),
+              -- toks_enc_tu, embrace(nfss_fam), embrace("b"), embrace("n"))
+              -- or nil
+            }))
           end
-        else 
+
+        else
           msg({"No family found for ", cfg.name, "!"}, "warn") 
           nfss_doc_families[name] = nil
         end
