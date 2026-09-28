@@ -1,4 +1,4 @@
--- $Id: build.lua 12072 2026-09-28 02:54:13Z cfrees $
+-- $Id: build.lua 12074 2026-09-28 17:04:10Z cfrees $
 -------------------------------------------------------------------------------
 -- This work, which consists of all files listed in manifest.txt, is released 
 -- under the LaTeX Project Public Licence version 1.3c or later. See individual 
@@ -13,9 +13,9 @@ ctanpkg = "lua-font-config"
 -- but don't make lua-font-config a dependency or dependant
 maindir = ".."
 sourcefiledir = "."
-sourcefiles = {"*.dtx", "*.ins","lfc*.lua"}
+sourcefiles = {"*.dtx", "*.ins", "lua-font-config.lua", "lfc*.lua"}
 manifestfile = "manifest.txt"
-installfiles = {"lfc*.lua", "*.sty"}
+installfiles = {"lua-font-config.lua", "lfc*.lua", "*.sty"}
 -- typesetdeps = {maindir .. "/nfssext-cfr", maindir .. "/cfr-lm"}
 -- typesetfiles = {"*-doc.tex", "*-code.tex"}
 -- local info = os.uname()
@@ -105,13 +105,11 @@ uploadconfig = {
 	bugtracker    = {"https://codeberg.org/cfr/nfssext/issues"},
   description   = "Opentype font configuration for LuaLaTeX written primarily in Lua.\z
     Engine callbacks, LaTeX hooks and caching are used to eliminate pre-loading and minimise pre-defining.\z
-    This allows very rich font families to be quicky generated, with minimal  user input and no configuration files.\z
+    This allows very rich font families to be quicky generated, with minimal user input and no configuration files.\z
     The Lua module uses code from ConTeXt(MKIV), which incurs a short delay the first time the package is used.\z
-    This is necessary because the default database used by luaotfload lacks data the package needs to construct full families.\z
-    The aim is for these families to include as many fonts from as possible, so that users can easily access multiple shapes, weights, widths etc. within a single family.\z
-    The package is currently experimental, but its author hopes to eventually offer a more efficient and effective alternative to fontspec.\z
-    While the package is already usable in simpler cases, however, it currently provides only a small part of fontspec's functionality.\z
-    Truetype collections, variable fonts, spot colours etc. are not (yet?) supported and the user interface is, if not quite non-existent, certainly extremely rudimentary.",
+    The aim is to auto-generate families which provide fast, easy access to multiple shapes, weights, widths etc. within a single family.\z
+    The package is currently experimental and, while already usable in simpler cases, the package currently provides only a small part of fontspec's functionality.\z
+    Multi-lingual typesetting, variable fonts, spot colours etc. are not (yet?) supported and the user interface is extremely rudimentary.",
   -- development {}
   -- home {}
 	-- note          = "",
