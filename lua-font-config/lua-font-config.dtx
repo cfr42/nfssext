@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12073 2026-09-28 16:51:42Z cfrees $}[v0.3 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12075 2026-09-28 18:48:00Z cfrees $}[v0.3 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/ 
@@ -312,7 +312,7 @@
 % \fi
 \begin{verbatim}
 \directlua{
-  lfc = require("lfc")
+  lfc = require("lua-font-config")
   local font_config = lfc.font_config
   font_config("venturis", {fea = "mode=node;script=dflt;+tlig;+pnum;+onum",
     scale=0.9, force = false}, false)
@@ -383,7 +383,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12073 2026-09-28 16:51:42Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12075 2026-09-28 18:48:00Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % this is needed only because l3doc overwrites \fileversion and \filedate
 % neither ltxdoc nor doc does this
 \DefineFileInfoSVN[lfc]
@@ -705,5 +705,29 @@ ABC abc \textit{DEF def \textsc{GHI ghi}}
 \end{frame}
 \end{document}
 %</ee-talk>
+% 
+%<*ee-ncm-math>
+\documentclass{article}
+\usepackage{lua-font-config}
+\fontconfig{%
+  rm = newcomputermodern,
+  sf = newcomputermodernsans,
+  tt = newcomputermodernmono,
+  math = newcomputermodernmath,
+}
+\parindent=0pt
+\begin{document}
+\[
+    \sin\theta^2 + \cos\theta^2 = 1
+\]
+$\mathsf{x} \mathtt{x} \mathbf{x}$
+
+\mathversion{bold}
+\[
+    \sin\theta^2 + \cos\theta^2 = 1
+\]
+$\mathsf{x} \mathtt{x} \mathbf{x}$
+\end{document}
+%</ee-ncm-math>
 % 
 %\Finale
