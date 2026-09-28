@@ -1,19 +1,5 @@
-%% $id:$
-\input regression-test.tex
-\makeatletter
-\AddToHook {selectfont} [.] {\lfc@aux}
-\def\lfc@aux#1{%
-  \edef\tempa{\expandafter\detokenize\expandafter{\expanded{\expandafter\expandafter\expandafter\noexpand\csname\f@encoding/\f@family/\f@series/\f@shape\endcsname}}}%
-  \expandafter\lfc@auxi\expandafter{\tempa}%
-}
-\def\lfc@auxi#1{%
-  \NEWLINE
-  \NEWLINE
-  \TYPE{[lfc font]: #1}
-  \NEWLINE
-  \NEWLINE
-}
-\makeatother
+%% $Id: test-lmr.lvt 12073 2026-09-28 16:51:42Z cfrees $
+\input lfc-support.tex
 \documentclass{article}
 \parindent=0pt
 \START

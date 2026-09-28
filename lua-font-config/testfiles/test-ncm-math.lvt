@@ -1,0 +1,24 @@
+%% $Id: test-ncm-math.lvt 12073 2026-09-28 16:51:42Z cfrees $
+\input lfc-support.tex
+\documentclass{article}
+\START
+\usepackage{lua-font-config}
+\fontconfig{%
+  rm = newcomputermodern,
+  sf = newcomputermodernsans,
+  tt = newcomputermodernmono,
+  math = newcomputermodernmath,
+}
+\parindent=0pt
+\begin{document}
+\[
+    \sin\theta^2 + \cos\theta^2 = 1
+\]
+$\mathsf{x} \mathtt{x} \mathbf{x}$
+
+\mathversion{bold}
+\[
+    \sin\theta^2 + \cos\theta^2 = 1
+\]
+$\mathsf{x} \mathtt{x} \mathbf{x}$
+\end{document}

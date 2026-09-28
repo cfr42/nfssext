@@ -1,0 +1,16 @@
+%% $Id: lfc-support.tex 12073 2026-09-28 16:51:42Z cfrees $
+\input regression-test.tex
+\makeatletter
+\AddToHook {selectfont} [.] {\lfc@aux}
+\def\lfc@aux#1{%
+  \edef\tempa{\expandafter\detokenize\expandafter{\expanded{\expandafter\expandafter\expandafter\noexpand\csname\f@encoding/\f@family/\f@series/\f@shape\endcsname}}}%
+  \expandafter\lfc@auxi\expandafter{\tempa}%
+}
+\def\lfc@auxi#1{%
+  \NEWLINE
+  \NEWLINE
+  \TYPE{[lfc font]: #1}
+  \NEWLINE
+  \NEWLINE
+}
+\makeatother
