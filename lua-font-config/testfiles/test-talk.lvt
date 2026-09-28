@@ -1,0 +1,44 @@
+%% $Id: test-talk.lvt 12077 2026-09-28 22:47:58Z cfrees $
+\input lfc-support.tex
+\DocumentMetadata{}
+\START
+\RequirePackage{lua-font-config}%
+\OMIT
+\documentclass{ltx-talk}
+\TIMO
+\TEST{no-fontspec}{%
+  \IfPackageLoadedTF{fontspec}{\ERROR}{\TYPEOUT{OK!}}%
+}
+\OMIT
+\title{Some Title}
+\author{A. U. Thor}
+\institute{Pantheon, Greece}
+\date{Ancient}
+\TIMO
+\begin{document}
+\begin{frame}
+  \maketitle
+\end{frame}
+\begin{frame}
+  \frametitle{Frame}
+  Some text\footnote{With a footnote.} on a slide.
+  \begin{equation}
+    v = ut + \frac{1}{2}at^2
+  \end{equation}
+  \begin{equation}
+    \sin^2\theta + \cos^2\theta = 1
+  \end{equation}
+\end{frame}
+\begin{frame}
+  \frametitle{Frame}
+  \fontseries{k}\selectfont Book 
+
+  \textsc{Small-Caps \textit{italics \textbf{bold}} \textbf{bold}}
+
+
+  \normalfont Regular
+
+
+  \textsc{Small-Caps \textsl{italics \textbf{bold}} \textbf{bold}}
+\end{frame}
+\end{document}
