@@ -1,4 +1,4 @@
--- $Id: build.lua 12070 2026-09-26 01:25:21Z cfrees $
+-- $Id: build.lua 12072 2026-09-28 02:54:13Z cfrees $
 -------------------------------------------------------------------------------
 -- This work, which consists of all files listed in manifest.txt, is released 
 -- under the LaTeX Project Public Licence version 1.3c or later. See individual 
@@ -20,9 +20,15 @@ installfiles = {"lfc*.lua", "*.sty"}
 -- typesetfiles = {"*-doc.tex", "*-code.tex"}
 -- local info = os.uname()
 checkengines = {"luatex"}
+-- 2 runs to avoid cache-creation messages in logs and ensure cache is used on
+-- subsequent runs
+checkruns = 2
+versionpatterns = versionpatterns or {}
+table.insert(versionpatterns, "SVN Rev: %d+")
+table.insert(versionpatterns, "v%d+[%d%.]* %d+")
 demofiles = {"example-*.tex"}
 typesetexe = "lualatex"
-typesetopts = "-interaction=nonstopmode -cnf-line='TEXMFHOME=.' -cnf-line='TEXMFLOCAL=.' -cnf-line='TEXMFARCH=.'"
+typesetopts = "-interaction=nonstopmode -cnf-line='TEXMFHOME=.' -cnf-line='TEXMFLOCAL=.' -cnf-line='TEXMFARCH=.' -cnf-line='TEXMFCACHE=.'"
 -- typesetruns = 5
 --
 -- docfiles = filelist(sourcefiledir,"fntbuild-*.lua")

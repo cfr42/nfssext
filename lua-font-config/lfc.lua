@@ -1,17 +1,17 @@
--- $Id: lfc.lua 12071 2026-09-27 06:36:10Z cfrees $
+-- $Id: lfc.lua 12072 2026-09-28 02:54:13Z cfrees $
 -------------------------------------------------------------------------------
 -- TODO
 --
 -- 0. Abandon the whole thing since packages are not supposed to meddle with 
 --    fonts?
 --
--- 1. Test with .ttf.
+-- 1. Test with .ttf. How to test??
 --
--- 2. Accommodate .ttc.
+-- 2. Accommodate .ttc. How to test this??
 --
--- 3. Variable fonts.
+-- 3. Variable fonts. How to do or test??
 --
--- 4. Colour.
+-- 4. Colour. Do??
 --
 -- 5. Code should be cleaned up - I cannot need 2,000 lines to load a font!
 --
@@ -150,8 +150,8 @@ local lfc_log_level         = lfc.log_level or (lfc_debug and "debug" or "info")
 local str_onesize           = "<->"
 local str_fea_default       = "mode=node;language=dflt;script=dflt;+tlig"
 local str_fea_math_default  = "mode=basic;language=dflt;script=math;"
-local str_fea_math_sf       = "ssty=1;"
-local str_fea_math_ssf      = "ssty=2;"
+local str_fea_math_sf       = "ssty=1"
+local str_fea_math_ssf      = "ssty=2"
 
 local function hook_file_before(filename) 
   return {"file/", filename, "/before"} end
@@ -176,8 +176,7 @@ local tok_mathsf            = create("__lfc_set_mathsf:")
 local tok_mathtt            = create("__lfc_set_mathtt:")
 
 local tok_declare_m_scr_map = create("DeclareMathScriptfontMapping")
-local tok_declare_sym_fnt   = create("DeclareSymbolFont")
-local tok_set_sym_fnt       = create("SetSymbolFont")
+local tok_declare_lum_fnts  = create("__lfc_declare_lum_symbol_fonts:nn")
 
 -- Tables
 local nfss_default_families = {}
@@ -214,7 +213,6 @@ end
 -- }}}
 
 -- }}}
-
 -- }}}
 
 -------------------------------------------------------------------------------
@@ -441,13 +439,11 @@ local function get_font_data(fnt, force)
   local ff = font_data.families[fnt]
 
   if ff then
-
     -- We don't use the data, as it isn't very good.
     -- But we can bypass the longer search by filename/partial match.
     fam_meta = fnt
 
   else
-
     -- Gets file name.
     -- Should this be before or after the search below?
     --    - Which is fastest? Guessing this one ...
@@ -482,12 +478,10 @@ local function get_font_data(fnt, force)
     end
   end
 
-
   -- If we still find nothing, rhodd y ffidl yn y tor ...
   if not fam_meta then return nil end
 
   f.metadata.fam_meta = fam_meta
-
 
   -- Return extension (if known), family name and either fd file or font data.
 
@@ -528,7 +522,6 @@ local function get_font_data(fnt, force)
   local data = names.list(fam_meta .. ".*",false,true)
   if data == nil then return nil end
 
-
   -- names.list returns duplicate names for some font files.
   -- This de-duplicates the list, though I wonder if there's a better method?
   local data_by_filename = {}
@@ -542,7 +535,6 @@ local function get_font_data(fnt, force)
 
   -- ‘In place’ doesn't mean what you think :(
   data_by_filename = mirrored(data_by_filename)
-
 
   -- Discard dupes -- ??????
   -- Data doesn't include full paths, so add these now.
@@ -1070,12 +1062,56 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
     end
   end
 
-
   lfc_cache[fam].fake_fd = fake_fd
   lfc_cache[fam].scalable = scalable
   lfc_cache[fam].typeset_mode = typeset_mode
 
-  return fake_fd
+
+  -- This probably would be better wrapped into a mechanism to handle variants.
+
+  local fake_fd_sf, fake_fd_ssf
+
+  if typeset_mode == 1 then
+
+    local sf, ssf = fam .. "-sf", fam .. "-ssf"
+    lfc_cache[sf] = {}
+    lfc_cache[ssf] = {}
+
+    fake_fd_sf = fastcopy(fake_fd)
+    fake_fd_ssf = fastcopy(fake_fd)
+
+    for _,line in ipairs(fake_fd_sf) do
+      if not line.ssub and not line.sub then
+        if type(line[3]) == "string" then 
+          line[5] = str_fea_math_sf
+        else
+          msg_assert(type(line[3]) == "table")
+          line[4] = str_fea_math_sf 
+        end
+      end
+    end
+    for _,line in ipairs(fake_fd_ssf) do
+      if not line.ssub and not line.sub then
+        if type(line[3]) == "string" then 
+          line[5] = str_fea_math_sf
+        else
+          msg_assert(type(line[3]) == "table")
+          line[4] = str_fea_math_ssf 
+        end
+      end
+    end
+
+    lfc_cache[sf].fake_fd = fake_fd_sf
+    lfc_cache[ssf].fake_fd = fake_fd_ssf
+
+    for i,j in pairs(lfc_cache[fam]) do
+      if not lfc_cache[sf][i] then lfc_cache[sf][i] = j end
+      if not lfc_cache[ssf][i] then lfc_cache[ssf][i] = j end
+    end
+    
+  end
+
+  return fake_fd, fake_fd_sf, fake_fd_ssf
 end
 -- }}}
 
@@ -1169,7 +1205,6 @@ local function write_declare_shape(pre, line, post, fea, size_spec)
     end
 
   else
-
     -- Else we must have a substitution - silent or o/w.
     msg_assert(line.sub or line.ssub, "Malformed line!")
     local subs = line.sub or line.ssub
@@ -1177,7 +1212,6 @@ local function write_declare_shape(pre, line, post, fea, size_spec)
     append(out, {
       tok_group_begin, str_onesize, line.ssub and "ssub*" or "sub*",
       subs[1] .. "/" .. subs[2] .. "/" .. subs[3], tok_group_end })
-
   end
 
   -- hyph or whatever
@@ -1272,7 +1306,6 @@ local function add_callback_smcp()
 
           lfc_cache.callbacks_smcp[path][line_no] = nil
 
-
           :: not_line_ref ::
         end
         
@@ -1300,14 +1333,11 @@ local function add_callback_smcp()
         if not lfc_callback_cache_active then
           add_callback_cache()
         end
-
       end
-
     end,
     "lfc check for +smcp"
   )
   lfc_callback_smcp_active = true
-
 end
 --}}}
 
@@ -1403,6 +1433,7 @@ end
 local function write_fake_fd(fam, fake_fd, fea, scale_factor)
   msg({"Emulating font definition file for NFSS family ", fam, " with ",
     fea, " scaled ", scale_factor or "1", "."}, "log")
+
   local pre = {fastcopy(toks_enc_tu), embrace(fam)}
   local out = {
     tok_declare_fam, fastcopy(pre), toks_empty_n
@@ -1428,12 +1459,10 @@ local function write_fake_fd(fam, fake_fd, fea, scale_factor)
     end
   end
 
-  -- \DeclareMathScriptfontMapping{TU}{ncmm}{TU}{ncmm-sf}{TU}{ncmm-ssf}
-  local needs_scripts = false
+  -- Requires lua-unicode-math.
   if type == 1 and not find(fam, "%-sf$") and not find (fam, "%-ssf$") then
     append(out, {tok_declare_m_scr_map, toks_enc_tu, embrace(fam),
       toks_enc_tu, embrace(fam .. "-sf"), toks_enc_tu, embrace(fam .. "-ssf")})
-    needs_scripts = true
   end
 
   msg_debug("Out (partially tokenized): ", "defn", out)
@@ -1460,13 +1489,6 @@ local function write_fake_fd(fam, fake_fd, fea, scale_factor)
       end
     end
 
-  elseif nedds_scripts then
-
-    -- maths may need scripts
-
-    write_fake_fd(fam .. "-sf", fake_fd, fea .. str_fea_math_sf, scale_factor)
-    write_fake_fd(fam .. "-ssf", fake_fd, fea .. str_fea_math_ssf, scale_factor)
-
   end
 
 end
@@ -1489,6 +1511,8 @@ local function add_fake_fd(fam, fake_fd, fea, scale_factor)
   local fd_filename = "tu" .. fam .. ".fd"
   local fn = "__lfc_" .. fd_filename
   luafunction_to_cs(fn, function ()
+    -- ‘true’ tells the writer the code is delayed and suppresses immediate write
+    --    of -sf, -ssf for maths.
     return write_fake_fd(fam, fake_fd, fea, scale_factor)
   end, "protected")
   fn = create(fn)
@@ -1565,8 +1589,6 @@ local function font_config(targ, config, immediate)
     local regular = false
     local book = false
     local medium = false
-    -- text: 0 ; maths: 1; other: 2
-    local type = 0
 
 
     -- Adjust returned data for compatibility with NFSS
@@ -1574,12 +1596,13 @@ local function font_config(targ, config, immediate)
     --    - Reduce style + variant -> shape
     for name,font in pairs(data) do
       local fullname = font.fullname
+      -- text: 0 ; maths: 1; other: 2
+      local typeset_mode = 0
       
-      -- We don't want to parse maths fonts.
       -- Best would be to check for the MATH table, but we don't want to
       --    load every font for that, so do this for now.
-      if find(fullname, "math") and not find(fullname, "mathematica") 
-        and not find(fullname, "cyrillic") then type = 1 end
+      if find(fullname, "math") and not (find(fullname, "mathematica") 
+        or find(fullname, "cyrillic")) then typeset_mode = 1 end
 
       local width = font.width
       local weight = font.weight
@@ -1619,8 +1642,6 @@ local function font_config(targ, config, immediate)
         end
 
       end
-
-      -- local t
 
       parsed_fam = parsed_fam or {}
       parsed_fam[family] = parsed_fam[family] or {}
@@ -1677,7 +1698,7 @@ local function font_config(targ, config, immediate)
       font.shape = shape
       font.nfss_hash = nfss_hash
       font.nfss_family = family
-      font.typeset_mode = type
+      font.typeset_mode = typeset_mode
       
       nfss_hashes[family] = nfss_hashes[family] or {}
       nfss_hashes[family][nfss_hash] = nfss_hashes[family][nfss_hash] or 0
@@ -1736,7 +1757,6 @@ local function font_config(targ, config, immediate)
           if data.f then
             assert(data.m == nil)
             data.m = data.f
-            -- data.f = nil
           end
         end
         medium = false
@@ -1750,11 +1770,29 @@ local function font_config(targ, config, immediate)
     lfc_cache.meta_families.by_meta_fam[fam_meta] = {}
     local by_meta_fam = lfc_cache.meta_families.by_meta_fam[fam_meta]
 
-
     for fam,fam_data in pairs(parsed_fam) do
-      local fake_fd = prepare_fake_fd(fam, fam_data, type)
+
+      local typeset_mode
+      for series,shapes in pairs(fam_data) do
+        for shape,fnts in pairs(shapes) do
+          typeset_mode = fnts[1].typeset_mode
+          break
+        end
+      end
+
+      local fam_sf, fam_ssf
+      if type == 1 then 
+        fam_sf, fam_ssf = fam .. "-sf", fam .. "-ssf" 
+      end
+
+      local fake_fd, fake_fd_sf, fake_fd_ssf = prepare_fake_fd(fam, fam_data, type)
+
       if fake_fd then
         insert(by_meta_fam, fam)
+
+        if fake_fd_sf then insert(by_meta_fam, fam_sf) end
+        if fake_fd_ssf then insert(by_meta_fam, fam_ssf) end
+
         local scale = (config[fam] and config[fam].scale and 
           config[fam].scale) or (config.scale and config.scale) or nil
         local fea = (config[fam] and config[fam].fea and config[fam].fea) or
@@ -1762,10 +1800,17 @@ local function font_config(targ, config, immediate)
           str_fea_math_default
         if immediate then
           write_fake_fd(fam, fake_fd, fea, scale) 
+
+          if fake_fd_sf then write_fake_fd(fam_sf, fake_fd_sf, fea, scale) end
+          if fake_fd_ssf then write_fake_fd(fam_ssf, fake_fd_ssf, fea, scale) end
         else
           add_fake_fd(fam, fake_fd, fea, scale) 
+
+          if fake_fd_sf then add_fake_fd(fam_sf, fake_fd_sf, fea, scale) end
+          if fake_fd_ssf then add_fake_fd(fam_ssf, fake_fd_ssf, fea, scale) end
         end
       end
+
     end
 
     if not lfc_callback_cache_active then add_callback_cache() end
@@ -1787,7 +1832,6 @@ local function font_config(targ, config, immediate)
   return fam_meta
 end
 -- }}}
-
 
 -------------------------------------------------------------------------------
 -- LaTeX interface things
@@ -1851,6 +1895,7 @@ local function get_fam_default_scanner(fam)
       else
         insert(nfss_doc_families[cleanname].default, fam)
       end
+      nfss_doc_families[cleanname].typeset_mode = fam ~= "math" and 0 or 1
       nfss_default_families[fam] = nfss_doc_families[cleanname]
       nfss_doc_families.curr = cleanname
       msg_debug("NFSS default families: ", "doc", nfss_default_families)
@@ -1926,19 +1971,9 @@ local function configure_doc_families()
               end)
             end
 
-          else 
-            -- maths mode
-            -- This assumes lua-unicode-math
-            msg({"Creating maths symbol fonts ", nfss_fam}, "debug")
-            sprint(-2, get_toks({tok_declare_sym_fnt, 
-              embrace("lummain"), toks_enc_tu, embrace(nfss_fam), 
-              embrace("m"), embrace("n")--,
-              -- This will error if there is no `b` series.
-              -- lfc_cache[nfss_fam].fake_fd.b and 
-              -- (tok_set_sym_fnt, embrace("lummain"), embrace("bold"),
-              -- toks_enc_tu, embrace(nfss_fam), embrace("b"), embrace("n"))
-              -- or nil
-            }))
+          -- Support specific maths families?
+          -- elseif cfg.typeset_mode == 1 then
+
           end
 
         else
@@ -1952,12 +1987,21 @@ local function configure_doc_families()
     for fam,cfg in pairs(nfss_default_families) do
       if cfg.nfss_fam then
         local fam_name = cfg.nfss_fam
-        local maths = cfg.maths or true
-        msg({"Setting ", fam, " default to ", fam_name, "."}, "log")
-        sprint(-2, get_toks({tok_renewcommand, fam_defaults[fam], embrace(fam_name)}))
-        if maths then
-          msg({"Setting math", fam, "."}, "log")
-          sprint(-2, fam_to_maths[fam])
+        if cfg.typeset_mode == 0 then
+          -- Use of text fonts in maths mode.
+          local maths = cfg.maths or true
+          msg({"Setting ", fam, " default to ", fam_name, "."}, "log")
+          sprint(-2, get_toks({tok_renewcommand, fam_defaults[fam], embrace(fam_name)}))
+          if maths then
+            msg({"Setting math", fam, "."}, "log")
+            sprint(-2, fam_to_maths[fam])
+          end
+        elseif cfg.typeset_mode == 1 then
+          -- Use of Unicode maths fonts in maths mode.
+          -- This assumes lua-unicode-math.
+          msg({"Setting main maths fonts to ", fam_name, "."}, "log")
+          sprint(-2, get_toks({tok_declare_lum_fnts, embrace(fam_name), 
+            embrace(fam_name)}))
         end
       else msg({"No family found for ", fam, "!"})
       end
@@ -1970,9 +2014,10 @@ end
 -- }}}
 
 -- Generate TeX macros to use Lua functions to set rm, sf and tt.
-luafunction_to_cs("__lfc_set_rm:n", get_fam_default_scanner("rm"))
-luafunction_to_cs("__lfc_set_sf:n", get_fam_default_scanner("sf"))
-luafunction_to_cs("__lfc_set_tt:n", get_fam_default_scanner("tt"))
+luafunction_to_cs("__lfc_set_rm:n",   get_fam_default_scanner("rm"))
+luafunction_to_cs("__lfc_set_sf:n",   get_fam_default_scanner("sf"))
+luafunction_to_cs("__lfc_set_tt:n",   get_fam_default_scanner("tt"))
+luafunction_to_cs("__lfc_set_math:n", get_fam_default_scanner("math"))
 
 -- Scanners for additional family names and a general one for features.
 luafunction_to_cs("__lfc_set_fam_name:n", get_fam_name_scanner())
@@ -2004,30 +2049,10 @@ luafunction_to_cs("__lfc_debug_set_cats:n", get_debug_cat_scanner())
 -- Setup on load
 -------------------------------------------------------------------------------
 -- {{{
--- Forced for now
--- For now, this loads regardless of what the font uses.
 local cache_path = get_cache_path()
 lfc_cache = isfile(cache_path) and read_cache() or {}
 -- }}}
 
--------------------------------------------------------------------------------
-
--------------------------------------------------------------------------------
--- Public exports
--- Probably get_cache_path should be exposed, at least.
--------------------------------------------------------------------------------
--- Is this a bad idea? 
--- Max said most people want a separate function --- presumably they have some
---    reason for that?
--- lfc.font_config = font_config
--- lfc.get_font_data = get_font_data
--- lfc.fonts = fonts
--- lfc.write_cache = write_cache
--- lfc.read_cache = read_cache
--- lfc.get_cache_path = get_cache_path
-
-
--- return lfc
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 
