@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12078 2026-09-29 07:24:38Z cfrees $}[v0.3 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12079 2026-09-29 16:08:03Z cfrees $}[v0.3 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/ 
@@ -383,7 +383,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12078 2026-09-29 07:24:38Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12079 2026-09-29 16:08:03Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % this is needed only because l3doc overwrites \fileversion and \filedate
 % neither ltxdoc nor doc does this
 \DefineFileInfoSVN[lfc]
@@ -613,10 +613,11 @@
 %    \begin{macrocode}
 \hook_gput_code:nnn {class/ltx-talk/before} {.} {
   \hook_gput_code:nnn {package/mathtools/after} {.} {
-    \RequirePackage{lum-newcomputermodernsans}
+    \RequirePackage{lua-unicode-math}
     \fontconfig{
       rm      = {newcomputermodernsans},
       sf      = {newcomputermodernsans},
+      math    = {newcomputermodernsansmath},
     }
     \tagpdfsetup { math / mathml / luamml / load = true }
   }

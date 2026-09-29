@@ -1,4 +1,4 @@
-%% $Id: test-talk.lvt 12077 2026-09-28 22:47:58Z cfrees $
+%% $Id: test-talk.lvt 12079 2026-09-29 16:08:03Z cfrees $
 \input lfc-support.tex
 \DocumentMetadata{}
 \START
@@ -7,7 +7,7 @@
 \documentclass{ltx-talk}
 \TIMO
 \TEST{no-fontspec}{%
-  \IfPackageLoadedTF{fontspec}{\ERROR}{\TYPEOUT{OK!}}%
+  \IfPackageLoadedTF{fontspec}{\ERROR}{\TYPE{OK!}}%
 }
 \OMIT
 \title{Some Title}

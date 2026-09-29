@@ -1,4 +1,4 @@
--- $Id: lua-font-config.lua 12073 2026-09-28 16:51:42Z cfrees $
+-- $Id: lua-font-config.lua 12079 2026-09-29 16:08:03Z cfrees $
 -------------------------------------------------------------------------------
 -- TODO
 --
@@ -1450,7 +1450,7 @@ local function write_fake_fd(fam, fake_fd, fea, scale_factor)
     end
   end
 
-  local type = lfc_cache[fam].typeset_mode or 0
+  local typeset_mode = lfc_cache[fam].typeset_mode or 0
 
   for _,line in ipairs(fake_fd) do
     if line ~= "" then 
@@ -1460,7 +1460,7 @@ local function write_fake_fd(fam, fake_fd, fea, scale_factor)
   end
 
   -- Requires lua-unicode-math.
-  if type == 1 and not find(fam, "%-sf$") and not find (fam, "%-ssf$") then
+  if typeset_mode == 1 and not find(fam, "%-sf$") and not find (fam, "%-ssf$") then
     append(out, {tok_declare_m_scr_map, toks_enc_tu, embrace(fam),
       toks_enc_tu, embrace(fam .. "-sf"), toks_enc_tu, embrace(fam .. "-ssf")})
   end
@@ -1470,7 +1470,7 @@ local function write_fake_fd(fam, fake_fd, fea, scale_factor)
   msg_debug("Out (streamed): ", "defn", out)
   sprint(-2,out)
 
-  if type == 0 then
+  if typeset_mode == 0 then
 
     -- text may be incomplete
 
@@ -1781,11 +1781,12 @@ local function font_config(targ, config, immediate)
       end
 
       local fam_sf, fam_ssf
-      if type == 1 then 
+      if typeset_mode == 1 then 
         fam_sf, fam_ssf = fam .. "-sf", fam .. "-ssf" 
       end
 
-      local fake_fd, fake_fd_sf, fake_fd_ssf = prepare_fake_fd(fam, fam_data, type)
+      local fake_fd, fake_fd_sf, fake_fd_ssf = prepare_fake_fd(fam, fam_data, 
+        typeset_mode)
 
       if fake_fd then
         insert(by_meta_fam, fam)
@@ -1796,8 +1797,8 @@ local function font_config(targ, config, immediate)
         local scale = (config[fam] and config[fam].scale and 
           config[fam].scale) or (config.scale and config.scale) or nil
         local fea = (config[fam] and config[fam].fea and config[fam].fea) or
-          (config.fea and config.fea) or (type ~= 1 and str_fea_default) or
-          str_fea_math_default
+          (config.fea and config.fea) or (typeset_mode ~= 1 and 
+          str_fea_default) or str_fea_math_default
         if immediate then
           write_fake_fd(fam, fake_fd, fea, scale) 
 
