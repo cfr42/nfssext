@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12075 2026-09-28 18:48:00Z cfrees $}[v0.3 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12078 2026-09-29 07:24:38Z cfrees $}[v0.3 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/ 
@@ -383,7 +383,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12075 2026-09-28 18:48:00Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12078 2026-09-29 07:24:38Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % this is needed only because l3doc overwrites \fileversion and \filedate
 % neither ltxdoc nor doc does this
 \DefineFileInfoSVN[lfc]
@@ -415,23 +415,23 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \ExplSyntaxOn
-\prop_gput:NnV \g_msg_module_name_prop {@@} \lfc@base
-\msg_new:nnnn {@@} {needs-luatex} {
-  \msg_critical_text:n {@@} :: ~requires~LuaLaTeX~\msg_line_context:
-} { \msg_see_documentation_text:n {@@} }
-\sys_if_engine_luatex:F { \msg_critical:nn {@@} {needs-luatex} }
-\msg_new:nnnn {@@} {math-needs-lum} {
-  \msg_error_text:n {@@} :: ~math~config~requires~lua-unicode-math,~but~
+\prop_gput:NnV \g_msg_module_name_prop {lfc} \lfc@base
+\msg_new:nnnn {lfc} {needs-luatex} {
+  \msg_critical_text:n {lfc} :: ~requires~LuaLaTeX~\msg_line_context:
+} { \msg_see_documentation_text:n {lfc} }
+\sys_if_engine_luatex:F { \msg_critical:nn {lfc} {needs-luatex} }
+\msg_new:nnnn {lfc} {math-needs-lum} {
+  \msg_error_text:n {lfc} :: ~math~config~requires~lua-unicode-math,~but~
   you've~loaded~unicode-math.~This~cannot~work~\msg_line_context:
 } { To~configure~Unicode~maths~fonts~with~this~package,~we~need~to~load~
   lua-unicode-math,~but~unicode-math,~which~is~incompatible~has~already~
   been~loaded,~so~I'm~going~to~ignore~this~part~of~your~settings.~
-  \msg_see_documentation_text:n {@@}
+  \msg_see_documentation_text:n {lfc}
 }
-\msg_new:nnnn {@@} {loading} {
-  \msg_info_text:n {@@} :: ~loading~##1~for~maths~support~
+\msg_new:nnnn {lfc} {loading} {
+  \msg_info_text:n {lfc} :: ~loading~#1~for~maths~support~
   \msg_line_context:
-} { \msg_see_documentation_text:n {@@} }
+} { \msg_see_documentation_text:n {lfc} }
 %    \end{macrocode}
 % \begin{variable}{\l_@@_tmpa_tl,\l_@@_tmpa_bool}
 %   Custom ephemeral variables.
@@ -502,9 +502,9 @@
   family  .usage:n          = general,
   math    .code:n           = { 
     \IfPackageLoadedTF {unicode-math} {
-      \msg_error:nn {@@} {math-needs-lum}
+      \msg_error:nn {lfc} {math-needs-lum}
     } {
-      \msg_info:nn {@@} {loading} {lua-unicode-math} 
+      \msg_info:nnn {lfc} {loading} {lua-unicode-math} 
       \RequirePackage{lua-unicode-math}
       \keys_set_exclude_groups:nnnN {lfc/math} {config} {#1} \l_@@_tmpa_tl
       \keys_set:nV {lfc/math} \l_@@_tmpa_tl
