@@ -1,4 +1,4 @@
--- $Id: lua-font-config.lua 12079 2026-09-29 16:08:03Z cfrees $
+-- $Id: lua-font-config.lua 12080 2026-09-29 18:03:28Z cfrees $
 -------------------------------------------------------------------------------
 -- TODO
 --
@@ -1742,25 +1742,18 @@ local function font_config(targ, config, immediate)
     --  with a degenerate font package make Alpha Centauri seem a choice spot 
     --  for your local newsagent's.
     
-    if not regular then
-      if book then
-        for fam,data in pairs(parsed_fam) do
-          if data.k then
-            assert(data.m == nil)
-            data.m = data.k
-            -- data.k = nil
-          end
+    for fam,data in pairs(parsed_fam) do
+      print(fam,data,data.m,data.k,data.f)
+      if not data.m then
+        if data.k then
+          data.m = data.k
+          data.k = nil
+        elseif data.f then
+          data.m = data.f
+          data.f = nil
         end
-        book = false
-      elseif medium then
-        for fam,data in pairs(parsed_fam) do
-          if data.f then
-            assert(data.m == nil)
-            data.m = data.f
-          end
-        end
-        medium = false
       end
+      inspect(data)
     end
 
     -- link families to fam_meta
