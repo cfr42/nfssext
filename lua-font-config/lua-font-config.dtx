@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12082 2026-09-30 02:01:40Z cfrees $}[v0.0 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12084 2026-09-30 16:30:14Z cfrees $}[v0.0 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -49,12 +49,14 @@
 \fontconfig{%
   rm    = kproman,
   sf    = kpsans,
-  tt    = kpmono,
+  tt    = {%
+    name  = kpmono,
+    fea   = {mode=node;script=dflt;language=dflt;-tlig},
+  },
   math  = kpmath,
 }
 \usepackage{xcolor}
 \usepackage{parskip}
-\usepackage{verbatim}
 \usepackage{xurl}
 % sicrhau hyperindex=false: llwytho CYN bookmark
 \usepackage{hypdoc}% ateb Ulrike Fischer: https://tex.stackexchange.com/a/695555/
@@ -303,16 +305,16 @@
   \fontconfig{%
     rm = {%
       name = texgyrepagella, 
-      features = {script=ltn;+tlig;+pnum},
+      fea  = {script=ltn;+tlig;+pnum},
     },
     sf = {%
-      name = texgyreheros,
+      name  = texgyreheros,
       scale = 1.2,
-      features = {script=cyrl;},
+      fea   = {script=cyrl;},
     },
     tt = {%
-      name = texgyrecursor,
-      features = {+zero;},
+      name  = texgyrecursor,
+      fea   = {+zero;},
       %% for completeness: false is anyway the default
       force = false,
     },
@@ -378,7 +380,7 @@
 %
 % Currently there is only one key in this category.
 %
-% \DescribeKey{features}\val{opentype feature spec.}\par
+% \DescribeKey{fea}\val{opentype feature spec.}\par
 % Optional list of font features \textbf{for text fonts only}. 
 % 
 % Note that the specification is currently passed to the font loader with 
@@ -388,7 +390,7 @@
 % The default is \texttt{script=dflt}, \texttt{mode=node}, \texttt{+tlig},
 % \texttt{language=dflt}.
 \fi
-% The default is \texttt{features=}%
+% The default is \texttt{fea=}%
 %   \marg{mode=node;scrpt=dflt;language=dflt;+tlig}.
 % Unless provided in separate fonts, \texttt{+smcp} is added, if available, 
 % for upright, italic and oblique small-caps.
@@ -434,9 +436,10 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12082 2026-09-30 02:01:40Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
-% this is needed only because l3doc overwrites \fileversion and \filedate
-% neither ltxdoc nor doc does this
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12084 2026-09-30 16:30:14Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
+% This is needed only because l3doc overwrites \fileversion and \filedate.
+% Neither ltxdoc nor doc does this.
+% But it seems better to do it this way on the basis of the general precautionary principle.
 \DefineFileInfoSVN[lfc]
 %    \end{macrocode}
 % \iffalse
@@ -491,9 +494,8 @@
 \bool_new:N \l_@@_tmpa_bool
 %    \end{macrocode}
 % \end{variable}
-%    \begin{macrocode}
-%    \end{macrocode}
-% Configure keys for default families.
+% \begin{keyname}{rm,sf,tt}
+% Top-level keys for default text families.
 %    \begin{macrocode}
 \clist_map_inline:nn {rm, sf, tt} {
   \keys_define:nn {lfc} {
@@ -505,9 +507,13 @@
     #1 .value_required:n  = true,
     #1 .usage:n           = preamble,
   }
+%    \end{macrocode}
+% \begin{keyname}{name,fea,force,scale,maths,math,nomaths,nomath}
+% Configure keys for default text families.
+%    \begin{macrocode}
   \keys_define:nn {lfc/#1} {
     name      .code:n = { \use:c {_@@_set_#1:n} {##1} },
-    features  .code:n = { \keys_set:nn {lfc/fam} {features = {##1}} },
+    fea       .code:n = { \keys_set:nn {lfc/fam} {fea      = {##1}} },
     force     .code:n = { \keys_set:nn {lfc/fam} {force    = {##1}} },
     scale     .code:n = { \keys_set:nn {lfc/fam} {scale    = {##1}} },
     maths     .code:n = { \_@@_set_fam_cfg:nn   {maths}{##1} },
@@ -523,7 +529,7 @@
     nomath    .value_forbidden:n  = true,
     nomaths   .value_forbidden:n  = true,
     unknown   .value_forbidden:n  = true,
-    features  .groups:n           = config,
+    fea       .groups:n           = config,
     force     .groups:n           = config,
     maths     .groups:n           = config,
     math      .groups:n           = config,
@@ -533,7 +539,10 @@
   }
 }
 %    \end{macrocode}
-% Configure keys for additional families, debugging etc.
+% \end{keyname}
+% \end{keyname}
+% \begin{keyname}{debug,family,math}
+% Top-level keys for additional families, Unicode maths and debugging.
 %    \begin{macrocode}
 \keys_define:nn {lfc} {
   debug   .code:n           = { 
@@ -565,28 +574,37 @@
   math    .value_required:n = true,
   math    .usage:n          = preamble,
 }
+%    \end{macrocode}
+% \begin{keyname}{name,fea,force,scale}
+% Configure keys for additional families.
+%    \begin{macrocode}
 \keys_define:nn {lfc/fam} {
   name      .code:n = { \__@@_set_fam_name:n {#1} },
-  features  .code:n = { \__@@_set_fam_cfg:nn {fea}{#1} },
+  fea       .code:n = { \__@@_set_fam_cfg:nn {fea}{#1} },
   force     .code:n = { \__@@_set_fam_cfg:nn {force}{#1} },
   scale     .code:n = { \__@@_set_fam_cfg:nn {scale}{#1} },
   unknown   .code:n = {
     \exp_args:NV \__@@_set_fam_name:n \l_keys_key_str 
   },
   name      .value_required:n   = true,
-  features  .value_required:n   = true,
+  fea       .value_required:n   = true,
   force     .default:n          = true,
   scale     .value_required:n   = true,
   unknown   .value_forbidden:n  = true,
   name      .usage:n            = general,
-  features  .usage:n            = general,
+  fea       .usage:n            = general,
   force     .usage:n            = general,
   scale     .usage:n            = general,
   unknown   .usage:n            = general,
-  features  .groups:n           = config,
+  fea       .groups:n           = config,
   force     .groups:n           = config,
   scale     .groups:n           = config,
 }
+%    \end{macrocode}
+% \end{keyname}
+% \begin{keyname}{name,force,scale}
+% Configure keys for Unicode maths.
+%    \begin{macrocode}
 \IfPackageLoadedF {unicode-math} {
   \keys_define:nn {lfc/math} {
     name      .code:n = { \use:c {_@@_set_math:n} {#1} },
@@ -607,6 +625,11 @@
     scale     .groups:n           = config,
   }
 }
+%    \end{macrocode}
+% \end{keyname}
+% \begin{keyname}{state,categories}
+% Configure keys for debugging.
+%    \begin{macrocode}
 \keys_define:nn {lfc/debug} {
   state       .choice:,
   state/false .code:n             = { \_@@_debug_set_false: },
@@ -618,6 +641,8 @@
   categories  .usage:n            = general,
 }
 %    \end{macrocode}
+% \end{keyname}
+% \end{keyname}
 % \begin{macro}{\fontconfig}
 %   The main (and currently(?) only) public macro.
 %    \begin{macrocode}
@@ -673,10 +698,8 @@
     \tagpdfsetup { math / mathml / luamml / load = true }
   }
 }
+\lua_load_module:n {lua-font-config}
 \ExplSyntaxOff
-\directlua{
-  require("lua-font-config")
-}
 %    \end{macrocode}
 %</sty>
 %
