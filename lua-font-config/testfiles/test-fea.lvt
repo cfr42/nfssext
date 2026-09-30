@@ -1,4 +1,4 @@
-%% $Id: test-fea.lvt 12083 2026-09-30 06:04:10Z cfrees $
+%% $Id: test-fea.lvt 12084 2026-09-30 16:30:14Z cfrees $
 \input lfc-support.tex
 \documentclass{article}
 \parindent=0pt
@@ -7,15 +7,15 @@
 \fontconfig{%
   rm = {%
     name = TeX Gyre Pagella,
-    features = {mode=node;script=dflt;lAngUaGe=DfLT;+TLIG;+ONUM;+PNUM},
+    fea = {mode=node;script=dflt;lAngUaGe=DfLT;+TLIG;+ONUM;+PNUM},
   },
   sf = {% 
     name = texgyreheros,
-    features = {mode=node;script=dflt;lAngUaGe=DfLT;+TLIG;+pnum;+lnum},
+    fea = {mode=node;script=dflt;lAngUaGe=DfLT;+TLIG;+pnum;+lnum},
   },
   tt = {% 
     name = texgyrecursor,
-    features = {mode=node;script=dflt;lAngUaGe=DfLT;-TLIG;+tnum;+lnum;-liga},
+    fea = {mode=node;script=dflt;lAngUaGe=DfLT;-TLIG;+tnum;+lnum;-liga},
   },
 }
 \begin{document}
