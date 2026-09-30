@@ -1,0 +1,40 @@
+%% $Id: test-fea.lvt 12083 2026-09-30 06:04:10Z cfrees $
+\input lfc-support.tex
+\documentclass{article}
+\parindent=0pt
+\START
+\usepackage{lua-font-config}
+\fontconfig{%
+  rm = {%
+    name = TeX Gyre Pagella,
+    features = {mode=node;script=dflt;lAngUaGe=DfLT;+TLIG;+ONUM;+PNUM},
+  },
+  sf = {% 
+    name = texgyreheros,
+    features = {mode=node;script=dflt;lAngUaGe=DfLT;+TLIG;+pnum;+lnum},
+  },
+  tt = {% 
+    name = texgyrecursor,
+    features = {mode=node;script=dflt;lAngUaGe=DfLT;-TLIG;+tnum;+lnum;-liga},
+  },
+}
+\begin{document}
+
+\TEST{texgyrepagella +onum +pnum}{%
+  \TeX-Gyre Pagella: 0123456789
+}
+
+\TEST{texgyreheros +pnum +lnum}{%
+  \sffamily
+  \TeX-Gyre Heros: 0123456789
+}
+
+\TEST{texgyrecursor -tlig +tnum +lnum}{%
+  \ttfamily
+  \TeX-Gyre Cursor 0123456789
+  -- --- outfitted officials affluently affiliate fish finials flagranty, first
+  finalising infinite floral affinities of fish-filled fingers
+}
+
+\end{document}
+
