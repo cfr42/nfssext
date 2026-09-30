@@ -1,4 +1,4 @@
--- $Id: lua-font-config.lua 12080 2026-09-29 18:03:28Z cfrees $
+-- $Id: lua-font-config.lua 12084 2026-09-30 16:30:14Z cfrees $
 -------------------------------------------------------------------------------
 -- TODO
 --
@@ -399,6 +399,9 @@ local function read_cache(loc)
   write_nl("[lfc] Reading cache ...")
   loc = loc or get_cache_path()
   local cache = isfile(loc) and load(loc) or {}
+  cache.resources = cache.resources or {}
+  cache.meta_families = cache.meta_families or {}
+  cache.meta_families.by_meta_fam = cache.meta_families.by_meta_fam or {}
   msg_debug("Read cache state:\n", "cache", cache)
   return cache
 end
@@ -498,13 +501,13 @@ local function get_font_data(fnt, force)
 
   -- We prefer cached even if we have data, as cached will be processed.
   local cached
-  if lfc_cache.meta_families and lfc_cache.meta_families.by_meta_fam then
+  -- if lfc_cache.meta_families and lfc_cache.meta_families.by_meta_fam then
     if not force then
       cached = lfc_cache.meta_families.by_meta_fam[fam_meta]
     else
       lfc_cache.meta_families.by_meta_fam[fam_meta] = nil
     end
-  end
+  -- end
   metadata.hash_key  = fam_meta
 
   -- If a cached emulated .fd exists, we're done unless force was used.
@@ -794,7 +797,7 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
   force = force or false
   typeset_mode = typeset_mode or 0
 
-  lfc_cache = lfc_cache or read_cache()
+  -- lfc_cache = lfc_cache or read_cache()
 
   lfc_cache[fam] = lfc_cache[fam] or {}
 
@@ -806,10 +809,10 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
   lfc_cache[fam].paths = lfc_cache[fam].paths or {}
   local path_list = lfc_cache[fam].paths
 
-  lfc_cache.callbacks_data = lfc_cache.callbacks_data or {}
-  local callbacks_data = lfc_cache.callbacks_data
+  -- lfc_cache.callbacks_data = lfc_cache.callbacks_data or {}
+  -- local callbacks_data = lfc_cache.callbacks_data
 
-  lfc_cache.resources = lfc_cache.resources or {}
+  -- lfc_cache.resources = lfc_cache.resources or {}
   local resources = lfc_cache.resources
 
   local fake_fd = {}
@@ -825,9 +828,12 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
   end
   local function add_path(p)
     insert(path_list, p)
-    if not resources[p] then
-      callbacks_data[p] = true
-    end
+    -- if not resources[p] then
+    --   -- callbacks_data[p] = true
+    --   if not lfc_callback_data_active then 
+    --     add_callback_data()
+    --   end
+    -- end
   end
 
   for series,series_data in pairs(fam_data) do
@@ -974,7 +980,7 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
 
           local checked_and_smcp = false
 
-          if lfc_cache.resources and lfc_cache.resources[curr_path] then
+          if lfc_cache.resources[curr_path] then
             local rsc = lfc_cache.resources[curr_path]
             if rsc.features and rsc.features.gsub and rsc.features.gsub.smcp then
               checked_and_smcp = true
@@ -1261,7 +1267,7 @@ local function add_callback_smcp()
     "luaotfload.patch_font",
     function(data, spec, id)
       local path = data.filename
-      lfc_cache = lfc_cache or read_cache()
+      -- lfc_cache = lfc_cache or read_cache()
 
       if lfc_cache.callbacks_smcp and lfc_cache.callbacks_smcp[path] then
 
@@ -1357,17 +1363,19 @@ add_callback_data = function()
     "luaotfload.patch_font",
     function(data, spec, id)
       local path = data.filename
-      lfc_cache = lfc_cache or read_cache()
+      -- lfc_cache = lfc_cache or read_cache()
 
-      if lfc_cache.callbacks_data and lfc_cache.callbacks_data[path] then
+      -- if lfc_cache.callbacks_data and lfc_cache.callbacks_data[path] then
+      if not lfc_cache.resources[path] then
 
         msg("Processing data callback ...", "info")
         msg({"Path:\t", path}, "debug")
         msg({"Spec:\t", spec}, "debug")
         msg({"Id:\t", id}, "debug")
 
-        lfc_cache.resources = lfc_cache.resources or {}
-        lfc_cache.resources[path] = lfc_cache.resources[path] or {}
+        -- lfc_cache.resources = lfc_cache.resources or {}
+        -- lfc_cache.resources[path] = lfc_cache.resources[path] or {}
+        lfc_cache.resources[path] = {}
         local cached = lfc_cache.resources[path]
         cached.features = cached.features or {}
         local fea = cached.features
@@ -1388,10 +1396,10 @@ add_callback_data = function()
         end
 
         -- tidy up callbacks
-        lfc_cache.callbacks_data[path] = nil
-        if count(lfc_cache.callbacks_data) == 0 then 
-          lfc_cache.callbacks_data = nil 
-        end
+        -- lfc_cache.callbacks_data[path] = nil
+        -- if count(lfc_cache.callbacks_data) == 0 then 
+        --   lfc_cache.callbacks_data = nil 
+        -- end
 
         msg({"Cached resources for ", path, " ..."}, "log")
         msg_debug("Resources: ", "cache", lfc_cache.resources[path])
@@ -1480,9 +1488,9 @@ local function write_fake_fd(fam, fake_fd, fea, scale_factor)
 
     msg_assert(lfc_cache[fam].paths, {"No paths cached for ", fam, "!"}, "debug")
 
-    if lfc_cache.callbacks_data and not lfc_callback_data_active then
+    if not lfc_callback_data_active then
       for _,path in ipairs(lfc_cache[fam].paths) do
-        if lfc_cache.callbacks_data[path] then
+        if not lfc_cache.resources[path] then
           add_callback_data()
           break
         end
@@ -1558,7 +1566,7 @@ local function font_config(targ, config, immediate)
 
   if targ == nil then return nil end
 
-  lfc_cache = lfc_cache or read_cache()
+  -- lfc_cache = lfc_cache or read_cache()
 
   targ = lower(targ)
   if not immediate and (config == "true" or config == "false") then
@@ -1743,7 +1751,6 @@ local function font_config(targ, config, immediate)
     --  for your local newsagent's.
     
     for fam,data in pairs(parsed_fam) do
-      print(fam,data,data.m,data.k,data.f)
       if not data.m then
         if data.k then
           data.m = data.k
@@ -1753,13 +1760,12 @@ local function font_config(targ, config, immediate)
           data.f = nil
         end
       end
-      inspect(data)
     end
 
     -- link families to fam_meta
 
-    lfc_cache.meta_families = lfc_cache.meta_families or {}
-    lfc_cache.meta_families.by_meta_fam = lfc_cache.meta_families.by_meta_fam or {}
+    -- lfc_cache.meta_families = lfc_cache.meta_families or {}
+    -- lfc_cache.meta_families.by_meta_fam = lfc_cache.meta_families.by_meta_fam or {}
     lfc_cache.meta_families.by_meta_fam[fam_meta] = {}
     local by_meta_fam = lfc_cache.meta_families.by_meta_fam[fam_meta]
 
@@ -2044,7 +2050,7 @@ luafunction_to_cs("__lfc_debug_set_cats:n", get_debug_cat_scanner())
 -------------------------------------------------------------------------------
 -- {{{
 local cache_path = get_cache_path()
-lfc_cache = isfile(cache_path) and read_cache() or {}
+lfc_cache = read_cache()
 -- }}}
 
 -------------------------------------------------------------------------------
