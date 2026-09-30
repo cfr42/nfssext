@@ -29,9 +29,16 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12079 2026-09-29 16:08:03Z cfrees $}[v0.3 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12082 2026-09-30 02:01:40Z cfrees $}[v0.0 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
+\begingroup
+\makeatletter
+\def\first@of@some#1 (#2){#1}
+\xdef\lfc@semanticver{%
+  \expandafter\first@of@some\lfc@version\relax
+}
+\endgroup
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/ 
 \def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
 \documentclass[british,a4paper]{ltxdoc}
@@ -39,16 +46,23 @@
 \partokencontext=0
 \usepackage{babel}
 \usepackage{lua-font-config}
+\fontconfig{%
+  rm    = kproman,
+  sf    = kpsans,
+  tt    = kpmono,
+  math  = kpmath,
+}
+\usepackage{xcolor}
 \usepackage{parskip}
 \usepackage{verbatim}
 \usepackage{xurl}
 % sicrhau hyperindex=false: llwytho CYN bookmark
 \usepackage{hypdoc}% ateb Ulrike Fischer: https://tex.stackexchange.com/a/695555/
 \usepackage{bookmark}
-\usepackage{fancyref}
 \usepackage{csquotes}
 \MakeAutoQuote{‘}{’}
 \MakeAutoQuote*{“}{”}
+\usepackage{cleveref}
 \EnableCrossrefs
 \CodelineIndex
 \RecordChanges
@@ -71,11 +85,16 @@
   pdfproducer={pdfeTeX},
   urlcolor={blueberry}%
 }
+% \NewDocElement[%
+%   idxtype=opt.,
+%   idxgroup=options,
+%   printtype=\textit{opt.},
+% ]{Opt}{option}
 \NewDocElement[%
-  idxtype=opt.,
-  idxgroup=options,
-  printtype=\textit{opt.},
-]{Opt}{option}
+  idxtype=key,
+  idxgroup=keys,
+  printtype=\textit{key},
+]{Key}{keyname}
 \NewDocElement[%
   idxtype=fn.,
   idxgroup=functions,
@@ -100,7 +119,26 @@
     \clist_use:nn { #1 } { \textbar }
   }
 } 
+\keys_define:nn { lfc / doc }
+{
+  unknown .code:n = {
+    \cs_if_free:cT { \l_keys_key_str }
+    {
+      \tl_gset:cn { \l_keys_key_str } { #1 }
+    }
+  },
+}
+\NewDocumentCommand \lfcdocset { +m }
+{
+  \keys_set:nn { lfc / doc } { #1 }
+}
 \ExplSyntaxOff
+\lfcdocset{%
+  bug={\href{https://codeberg.org/cfr/nfssext/issues}{\textsc{bugtracker}}},
+  codeberg={\href{https://codeberg.org/cfr/nfssext}{\textsc{codeberg}}},
+  github={\href{https://github.com/cfr42/nfssext}{\textsc{github}}},
+  ctan={\href{https://ctan.org/}{\textsc{ctan}}},
+}
 \setcounter{IndexColumns}{2}
 \makeatletter
 \def\@xobeysp{\leavevmode\penalty100\ }
@@ -110,9 +148,24 @@
 \end{document}
 %</driver>
 % \fi
-% \title{\filebase}
-% \author{Clea F. Rees}
-% \date{\filedate}
+% \expandafter\title\expandafter{\csname lfc@base\endcsname}
+% \author{Clea F. Rees}%^^A\thanks{%
+% \AddToHook{shipout/foreground}{%
+%   \put (5mm,\dimeval{\baselineskip-\paperheight}) {%
+%     \hbox to \dimeval{\paperwidth-10mm} {%
+%       \footnotesize
+%       Bug tracker:
+%       \href{https://codeberg.org/cfr/nfssext/issues}{\url{codeberg.org/cfr/nfssext/issues}}
+%       \textbar{} Code:
+%       \href{https://codeberg.org/cfr/nfssext}{\url{codeberg.org/cfr/nfssext}}
+%       \textbar{} Mirror:
+%       \href{https://github.com/cfr42/nfssext}{\url{github.com/cfr42/nfssext}}% 
+%       \hfill
+%     }%
+% }}
+% \expandafter\date\expandafter{\csname lfc@semanticver\endcsname\thanks{%
+%   \textsc{svn}: \UseName{lfc@rev} \UseName{lfc@date}%
+% }}
 % \maketitle
 % \begin{abstract}
 % An opentype font configuration package for Lua\LaTeXe{}.
@@ -137,8 +190,9 @@
 % \emph{The user interface is currently \textbf{extremely} basic.}
 %
 % All that is properly supported is the choice of font family for the standard
-% families --- i.e.~roman/serif, sans and typewriter/mono --- and configuration
-% of additional fonts, again by family.
+% families --- i.e.~roman/serif, sans, typewriter/mono and (Unicode) maths 
+% (main, script and calligraphic) --- and configuration of additional fonts, 
+% again by family.
 % In addition to this, scaling and raw feature selection are supported.
 % That is, most things are supported in the sense that they are possible, but
 % the interface is rudimentary in the extreme.
@@ -158,8 +212,9 @@
 % \end{itemize}
 % Of course, this depends on the quality of the data the fonts provide.
 % It is not always good or, even, vaguely accurate. 
-% If things do not fit, an effort is made to accommodate them as distinct font
-% families, so they are still available at document level.
+% If things do not fit, some (currently minimal) effort is made to 
+% accommodate them as distinct font families, so they are still available 
+% at document level.
 %
 % At present, this is a bit chaotic and a bit hard to use, as the 
 % results are ‘hidden’ from you (in, of course, plain sight).
@@ -168,7 +223,7 @@
 %
 % The advantage of this is that if a font has several widths, you can easily
 % adjust the one used for bold by simply redefining the relevant default.
-% This is not very user friendly yet, but it is not terrible.
+% This is not very user friendly yet, but it is not completely terrible.
 % 
 %
 % Simple usage looks like this:
@@ -188,32 +243,58 @@
 %</verb>
 % \fi
 %
-% Top-level keys are
-% \begin{description}
-%   \item[rm]   Default main/serif font family.
-%   \item[sf]   Default sans family.
-%   \item[tt]   Default typewriter/monowidth family.
-%   \item[math] Default Unicode maths family\footnote{%
-%     In fact configures three families, since \pkg{lua-unicode-math} uses 
-%     distinct families for script and calligraphic letters.
-%     These use the same Unicode font, but toggle settings to access the 
-%     appropriate character ranges within the font.
-%     If available, both a ‘normal’ and ‘bold’ version of the families is 
-%     configured, again following \pkg{lua-unicode-math}.
-%     However, this package does not yet support fake bold, so load the 
-%     relevant \texttt{lum-} package if you need this.%
-%   }.
-%   \item[fam]  Configure an additional font family for use in text.
-%     A macro based on the resolved family name is created to switch to the 
-%     font\footnote{%
-%       Sorry: right now you must figure out what this is.%
-%     }.
-% \end{description}
-% All options accept either a simple family name, as shown above, or a braced 
-% key-value list, as shown below.
+% \DescribeMacro{\fontconfig}\marg{key-val list}\par
+% Specify font configuration.
 % 
-% If you want to configure font features, scale a family or use a non-default
-% script etc., you can use:
+% \subsection{Keys}\label{subsec:keys}
+% Top-level keys are described here.
+% Keys for use in key-value lists are described in \cref{subsec:keys-cfg}.
+%
+% \DescribeKey{rm}\val{family name}\par
+% \DescribeKey{rm}\val{key-val list}\par
+% Specify family to use as the main document font, typically a serif or ‘roman’ family.
+%
+% Available keys are listed below.
+%
+% \DescribeKey{sf}\val{family name}\par
+% \DescribeKey{sf}\val{key-val list}\par
+% Specify family to use as the default sans family, typically a sans-serif.
+%
+% Available keys are listed below.
+%
+% \DescribeKey{tt}\val{family name}\par
+% \DescribeKey{tt}\val{key-val list}\par
+% Specify family to use as the default ‘typewriter’ family, typically monowidth.
+%
+% Available keys are listed below.
+%
+% \DescribeKey{fam}\val{family name}\par
+% \DescribeKey{fam}\val{key-val list}\par
+% Specify an additional text family.
+% This will create a macro which can be used to switch to the requested family\footnote{%
+%   Sorry: right now you must figure out what this is.%
+% }.
+%
+% Available keys are listed below.
+%
+% \DescribeKey{math}\val{family name}\par
+% \DescribeKey{math}\val{key-val list}\par
+% Specify the family to use for typesetting Unicode mathematics.
+% This sets the fonts used for symbols, script and calligraphic alphabets.
+% It does not change the fonts used to typeset operators, since these are taken from text fonts and configured separately.
+%
+% Available keys are listed below.
+%
+% This option uses \pkg{lua-unicode-math}.
+% \pkg{unicode-math} is \textbf{not} supported.
+% If you wish to use \pkg{unicode-math}, do not use this option.
+% Instead, load \pkg{unicode-math} and use \cs{setmathfont} as usual.
+%
+% \subsection{Keys for specifying font families}\label{subsec:keys-cfg}
+%
+% All keys described in \cref{subsec:keys} accept either a simple family name,
+% as shown in the example above, or a braced key-value list.
+% For example,
 % \iffalse
 %<*verb>
 % \fi
@@ -240,133 +321,103 @@
 % \iffalse
 %</verb>
 % \fi
-% Do \textbf{not} specify small-capitals (\texttt{+smcp}) unless you want 
-% \emph{all} fonts in the family to use that feature.
-% Small-caps and italic/oblique small-caps will be configured 
-% automatically if available.
 %
-% The only supported keys at present are
-% \begin{description}
-%   \item[name] The ‘name’ to lookup.
-%     This may, but need not be, the name of a font family.
-%     Shorter, less specific names will configure more families; longer, more
-%     specific names will configure fewer.
-%     For example, \texttt{name = texgyrepagellax,} will configure fewer than 
-%     \texttt{name = texgyrepagella,} since the latter string matches both 
-%     families, while the former does not.
-%     
-%     The name is lower-cased prior to lookup. 
-%     The data used to generate actual font families uses a cleaned up version 
-%     of the given name or, sometimes, a variation, depending on the data
-%     returned from the database.
-%     For example, \texttt{tex gyre PaGellA} yields the same results as 
-%     \texttt{texgyrepagella}.
-%     Numbers are likewise removed\footnote{%
-%       This is problematic for fonts which depend on digits in their names to 
-%       distinguish them e.g.~Venturis ADF has four distinct ‘titling’ 
-%       fonts, whose names differ by a single character, which is \texttt{1}, 
-%       \texttt{2}, \texttt{3} or \texttt{4}. 
-%       The algorithm used to sort the fonts into \textsc{nfss} families 
-%       currently gets confused by this, leading to misleading warnings 
-%       about ‘apparent duplicate’ fonts. 
-%       (Something is indeed awry, but they are not duplicates.
-%       Rather what should be four families appears to be only one.)%
-%     }
-%   \item[fea] Optional list of font features \textbf{for text fonts only}. 
-%       The default is \texttt{script=dflt}, \texttt{mode=node}, \texttt{+tlig},
-%       \texttt{language=dflt}.
-%   \item[force] Boolean which determines whether cached data is to be 
-%       regenerated on the basis of a new search of the font-loader's database.
-%       Note that this doesn't regenerate the loader's database itself. 
-%       It simply zaps data stored by this module for one or more font families.
-%   \item[scale] Optional factor by which the font should be scaled
-%       e.g.~\texttt{20} or \textt{0.8}.
-%       Ignored if a family includes distinct optical sizes.
-% \end{description}
-% If configuring one of the three ‘default’ text-mode document families, 
-% you may also choose whether or not to configure the corresponding fonts used
-% in mathematics.
-% Note that these keys do not configuring mathematical fonts as such e.g.~those
-% used for symbols, scripts etc.\ are unaffected.
-% Instead, it configures the fonts which \TeX{} classically takes from the text
-% families such as \cs{mathrm}.
-% These keys are \textbf{only} available when configuring one of \texttt{rm},
-% \texttt{sf} and \texttt{tt}.
-% \begin{description}
-%   \item[maths\textbar math] Expects one of the values \texttt{true} or
-%   \texttt{false}.
-%   \item[nomaths\textbar nomath] Does not accept a value.
-%   Equivalent to \texttt{maths = {false}}.
-% \end{description}
-% If unset, the default is equivalent to \texttt{maths = {true}}.
+% This section describes these ‘inner’ keys.
+%
+% \subsubsection{Common keys}\label{subsubsec:common}
+%
+% These keys accepted by all of \texttt{rm}, \texttt{sf}, \texttt{tt}, \texttt{fam}
+% and \texttt{math}.
+%
+% \DescribeKey{name}\val{lookup name}\par
+% The ‘name’ to lookup.
+% This may, but need not be, the name of a font family.
+% Shorter, less specific names will configure more families; longer, more
+% specific names will configure fewer.
+%
+% For example, \texttt{name = texgyrepagellax,} will configure fewer than 
+% \texttt{name = texgyrepagella,} since the latter string matches both 
+% families, while the former does not.
+% 
+% The name is lower-cased prior to lookup. 
+% The data used to generate actual font families uses a cleaned up version 
+% of the given name or, sometimes, a variation, depending on the data
+% returned from the database.
+%
+% For example, \texttt{tex gyre PaGellA} yields the same results as 
+% \texttt{texgyrepagella}.
+%
+% Numbers are likewise removed\footnote{%
+%   This is problematic for fonts which depend on digits in their names to 
+%   distinguish them e.g.~Venturis ADF has four distinct ‘titling’ 
+%   fonts, whose names differ by a single character, which is \texttt{1}, 
+%   \texttt{2}, \texttt{3} or \texttt{4}. 
+%   The algorithm used to sort the fonts into \textsc{nfss} families 
+%   currently gets confused by this, leading to misleading warnings 
+%   about ‘apparent duplicate’ fonts. 
+%   (Something is indeed awry, but they are not duplicates.
+%   Rather what should be four families appears to be only one.)%
+% }.
+%
+%
+% \DescribeKey{force}\vals{true,false}\par
+% Boolean which determines whether cached data is to be regenerated on the 
+% basis of a new search of the font-loader's database.
+%
+% Note that this doesn't regenerate the loader's database itself. 
+% It simply zaps data stored by this module for one or more font families.
+%
+% \DescribeKey{scale}\val{factor}\par
+% Optional factor by which the font should be scaled e.g.~\texttt{20} or 
+% \texttt{0.8}.
+% Ignored if a family includes distinct optical sizes.
+%
+% \subsubsection{Text-mode keys}\label{subsubsec:keys-text}
+% These keys are accepted in all key-value specifications except for the 
+% top-level \texttt{math} key used to configure Unicode maths.
+%
+% Currently there is only one key in this category.
+%
+% \DescribeKey{features}\val{opentype feature spec.}\par
+% Optional list of font features \textbf{for text fonts only}. 
+% 
+% Note that the specification is currently passed to the font loader with 
+% minimal processing, so you must use ‘raw’ feature specifications.
 %
 \iffalse
-%<*hmm>
-% \section{Advanced Configuration}\label{sec:adv}
-%
-% Advanced configuration is possible, but the interface is currently non-
-% existent and, despite not existing, will certainly change. 
-%
-% \iffalse
-%<*verb>
-% \fi
-\begin{verbatim}
-\directlua{
-  lfc = require("lua-font-config")
-  local font_config = lfc.font_config
-  font_config("venturis", {fea = "mode=node;script=dflt;+tlig;+pnum;+onum",
-    scale=0.9, force = false}, false)
-}
-\end{verbatim}
-% \iffalse
-%</verb>
-% \fi
-%
-% The function \texttt{font_config()} takes one mandatory and two optional arguments.
-% The first is the string to look up, typically, but not necessarily, a family name.
-% The second is a table of configuration data.
-% The only used values are \texttt{fea}, \texttt{scale} and \texttt{force}, all explained in the previous section.
-%
-% The final \texttt{false} determines whether the definitions should be written immediately or code placed into a hook to be used on-demand.
-% When the \LaTeX{} interface is used, this is set \texttt{true} for the main document families and \texttt{false} otherwise.
-% Omitting it is equivalent to \texttt{false}.
-%
-% You do not actually gain much by this by used of the Lua interface.
-% It may (or may not) be marginally faster, since key-value processing in \LaTeX{} is fairly slow. 
-% However, you cannot actually do anything you cannot do otherwise, except for changing when and whether font definitions are actually used.
-%
-% So after the Lua above, you might do
-% \iffalse
-%<*verb>
-% \fi
-\begin{verbatim}
-\renewcommand\rmdefault{venturisadf}
-\renewcommand\sfdefault{venturissansadfcd}
-\makeatletter
-% TitlingNo3? (digits get eaten during lookup)
-\DeclareRobustCommand\venturistitling{%
-  \not@math@alphabet\venturistitling\relax
-  \fontfamily{venturisadftitlingno}\selectfont
-}
-\DeclareTextFontCommand\textvtitle{\venturistitling}
-\makeatother
-\end{verbatim}
-% \iffalse
-%</verb>
-% \fi
-% Right now, the only way to know what is available is to examine the fonts
-% or, better, the cached data (after the first run).
-% You can also put \texttt{lfc = \{debug = true\}} before loading the module to 
-% get (lots) of console output, including the database contents.
-%
-% That is, you can use the module directly, but that should not be understood
-% to mean that the module is actually usable at present.
-%
-% Obviously, such shenanigans are not for the faint of heart or, indeed, for
-% the saner portion of the stouter-hearted.
-%</hmm>
+% The default is \texttt{script=dflt}, \texttt{mode=node}, \texttt{+tlig},
+% \texttt{language=dflt}.
 \fi
+% The default is \texttt{features=}%
+%   \marg{mode=node;scrpt=dflt;language=dflt;+tlig}.
+% Unless provided in separate fonts, \texttt{+smcp} is added, if available, 
+% for upright, italic and oblique small-caps.
 % 
+% Features apply to \emph{all} fonts configured as a result of the lookup, so
+% you should not specify features you do not wish applied to all fonts to which
+% the specification applies.
+% 
+% \subsubsection{Default text family keys}\label{subsubsec:keys-text-def}
+% These keys are accepted by \texttt{rm}, \texttt{sf} and \texttt{tt} i.e.~when
+% specifying the default text families for the document.
+%
+% These keys all do the same thing, so you may use your preferred syntactic
+% sweetener. 
+%
+% \DescribeKey{math}\vals{true,false}\par
+% \DescribeKey{maths}
+% Should the current specification also be used for the corresponding text
+% family in maths?
+%
+% For example, if you are configuring the main document family with 
+% \texttt{rm}, should that family also be used for operators, \cs{mathrm} etc.?
+%
+% The default is equivalent to \texttt{math = true}.
+%
+% \DescribeKey{nomath}
+% \DescribeKey{nomaths}
+% Equivalent to \texttt{math = false}.
+%
 % \changes{v0.0}{0000-00-00}{First public release.}
 %
 % \MaybeStop{%
@@ -378,12 +429,12 @@
 %
 % There is very little here, because almost everything is done in Lua.
 %
-%<@@=lfc>
 %<*sty>
+%<@@=lfc>
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12079 2026-09-29 16:08:03Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12082 2026-09-30 02:01:40Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % this is needed only because l3doc overwrites \fileversion and \filedate
 % neither ltxdoc nor doc does this
 \DefineFileInfoSVN[lfc]
@@ -455,11 +506,11 @@
     #1 .usage:n           = preamble,
   }
   \keys_define:nn {lfc/#1} {
-    name      .code:n = { \use:c {__@@_set_#1:n} {##1} },
+    name      .code:n = { \use:c {_@@_set_#1:n} {##1} },
     features  .code:n = { \keys_set:nn {lfc/fam} {features = {##1}} },
     force     .code:n = { \keys_set:nn {lfc/fam} {force    = {##1}} },
     scale     .code:n = { \keys_set:nn {lfc/fam} {scale    = {##1}} },
-    maths     .code:n = { \__@@_set_fam_cfg:nn   {maths}{##1} },
+    maths     .code:n = { \_@@_set_fam_cfg:nn   {maths}{##1} },
     math      .meta:n = { maths = {##1} },
     nomaths   .meta:n = { maths = false },
     nomath    .meta:n = { nomaths },
@@ -538,11 +589,11 @@
 }
 \IfPackageLoadedF {unicode-math} {
   \keys_define:nn {lfc/math} {
-    name      .code:n = { \use:c {__@@_set_math:n} {#1} },
+    name      .code:n = { \use:c {_@@_set_math:n} {#1} },
     force     .code:n = { \keys_set:nn {lfc/fam} {force    = {#1}} },
     scale     .code:n = { \keys_set:nn {lfc/fam} {scale    = {#1}} },
     unknown   .code:n = {
-      \exp_args:NnV \use:c {__@@_set_math:n} \l_keys_key_str
+      \exp_args:NnV \use:c {_@@_set_math:n} \l_keys_key_str
     },
     name      .value_required:n   = true,
     force     .default:n          = true,
@@ -579,7 +630,7 @@
 }
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{\_@@_set_mathrm:,\_@@_set_mathsf:,\_@@_set_mathtt:}
+% \begin{function}{\_@@_set_mathrm:,\_@@_set_mathsf:,\_@@_set_mathtt:}
 % TODO: move to hooks if module gets support for switching the families out e.g.~for language changes.
 % Currently, the code is too simple-minded for this to arise \dots.
 %    \begin{macrocode}
@@ -600,15 +651,15 @@
   \SetMathAlphabet \mathtt {bold}   {TU} \ttdefault {\bfseries@tt} \shapedefault
 }
 %    \end{macrocode}
-% \end{macro}
-% \begin{macro}{\_@@_declare_lum_symbol_fonts:nn}
+% \end{function}
+% \begin{function}{\_@@_declare_lum_symbol_fonts:nn}
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \_@@_declare_lum_symbol_fonts:nn #1#2 {
   \DeclareSymbolFont{lummain}{TU}{#1}{m}{n}
   \SetSymbolFont{lummain}{bold}{TU}{#2}{b}{n}
 }
 %    \end{macrocode}
-% \end{macro}
+% \end{function}
 % This should be equivalent to the default setup, modulo any differences between loading the package and using \cs{setmathfont} for \pkg{lua-unicode-math}.
 %    \begin{macrocode}
 \hook_gput_code:nnn {class/ltx-talk/before} {.} {
@@ -630,7 +681,7 @@
 %</sty>
 %
 %
-%
+% \iffalse
 %<*ee-lmr>
 \documentclass{article}
 \usepackage{lua-font-config}
@@ -730,5 +781,6 @@ $\mathsf{x} \mathtt{x} \mathbf{x}$
 $\mathsf{x} \mathtt{x} \mathbf{x}$
 \end{document}
 %</ee-ncm-math>
+% \fi
 % 
 %\Finale
