@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12084 2026-09-30 16:30:14Z cfrees $}[v0.0 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12085 2026-10-01 07:11:18Z cfrees $}[v0.0 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -436,7 +436,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12084 2026-09-30 16:30:14Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12085 2026-10-01 07:11:18Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -575,8 +575,9 @@
   math    .usage:n          = preamble,
 }
 %    \end{macrocode}
+% \end{keyname}
 % \begin{keyname}{name,fea,force,scale}
-% Configure keys for additional families.
+% Configure keys for families.
 %    \begin{macrocode}
 \keys_define:nn {lfc/fam} {
   name      .code:n = { \__@@_set_fam_name:n {#1} },
@@ -642,7 +643,6 @@
 }
 %    \end{macrocode}
 % \end{keyname}
-% \end{keyname}
 % \begin{macro}{\fontconfig}
 %   The main (and currently(?) only) public macro.
 %    \begin{macrocode}
@@ -698,8 +698,11 @@
     \tagpdfsetup { math / mathml / luamml / load = true }
   }
 }
-\lua_load_module:n {lua-font-config}
+%%^^A \lua_load_module:n {lua-font-config}
 \ExplSyntaxOff
+\directlua{
+  require("lua-font-config")
+}
 %    \end{macrocode}
 %</sty>
 %

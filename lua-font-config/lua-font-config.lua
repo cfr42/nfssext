@@ -1,4 +1,4 @@
--- $Id: lua-font-config.lua 12084 2026-09-30 16:30:14Z cfrees $
+-- $Id: lua-font-config.lua 12085 2026-10-01 07:11:18Z cfrees $
 -------------------------------------------------------------------------------
 -- TODO
 --
@@ -50,10 +50,6 @@
 -- Cache format:
 -------------------------------------------------------------------------------
 --  lfc_cache ->  {{{
---    callbacks_data = {
---      <fullpath>,
---      ...,
---    },
 --    callbacks_smcp = {
 --      <fullpath> = {
 --        <line no.> = true,
@@ -93,11 +89,10 @@
 --    },
 --    <nfss fam> = {
 --      complete = <boolean>,
---      config = <feature string>,
 --      fake_fd = {
---        {<series>, <shape>, <fullpath>, <cfg>} 
+--        {<series>, <shape>, <fullpath>, <subfont>, <cfg>} 
 --        | {<series>, <shape>, {
---            <min>, <max>, <fullpath>
+--            <min>, <max>, <fullpath>, <subfont>
 --          }, <cfg>}
 --        | {<series>, <shape>, ssub = {<fam>, <series>, <shape>}}
 --        | {<series>, <shape>, sub = {<fam>, <series>, <shape>}},
@@ -105,6 +100,7 @@
 --      },
 --      paths = <table of paths to font files>,
 --      scalable = true | false,
+--      typeset_mode = 0 | 1 [| 2? ]
 --    }
 --  }}}
 -------------------------------------------------------------------------------
@@ -125,11 +121,18 @@ local copy, count, fastcopy     = table.copy, table.count, table.fastcopy
 local load, mirrored, sort      = table.load, table.mirrored, table.sort
 local save, setmetatableindex   = table.save, table.setmetatableindex
 local concat, serialize, unique = table.concat, table.serialize, table.unique
+local prepend                   = table.prepend
 -- tex | texio | token
 local sprint                  = tex.sprint
 local write, write_nl         = texio.write, texio.write_nl
 -- Max Chernoff: ‘The Lua function token.scan_argument accepts a boolean argument (token.scan_argument(true) or token.scan_argument(false)) which determines whether to expand the TeX string argument’ (https://chat.stackexchange.com/transcript/message/69210787#69210787)
 local create, param, set_lua  = token.create, token.scan_argument, token.set_lua
+-- lpeg
+local oneof, stripper, keeper       = lpeg.oneof, lpeg.stripper, lpeg.keeper
+local firstofsplit, secondofsplit   = lpeg.firstofsplit, lpeg.secondofsplit
+local Ct, splitat, lpeg_match       = lpeg.Ct, lpeg.splitat, lpeg.match
+local p_comma, p_semicolon          = lpeg.patterns.comma, lpeg.patterns.semicolon
+local p_is_sign                     = lpeg.patterns.sign
 -- }}}
 
 lfc = {} -- ours {{{
@@ -146,6 +149,41 @@ local lfc_callback_cache_active = false
 local function enquote(str) return "\"" .. str .. "\"" end
 
 local lfc_log_level         = lfc.log_level or (lfc_debug and "debug" or "info")
+
+-- lpeg
+local p_semicolon_or_comma  = oneof(p_semicolon, p_comma)
+local p_key                 = firstofsplit("=")
+local p_value               = secondofsplit("=")
+local p_sign                = keeper(p_is_sign)
+local p_unsign              = stripper(p_is_sign)
+local p_fea_split           = splitat(p_semicolon_or_comma, false)
+---@function fea_split(s_fea) {{{
+---@param s_fea   <string>  List of semicolon or comma separated features
+---@description Returns a table of structurally ‘normalised’ features.
+---@example fea_split("script=dflt;language=dflt,+onum;pnum=true;-tlig;mode=node")
+---@example -> {
+---@example       ["script"]    = "dflt",
+---@example       ["language"]  = "dflt",
+---@example       ["onum"]      = "true",
+---@example       ["pnum"]      = "true",
+---@example       ["tlig"]      = "false",
+---@example       ["mode"]      = "node"
+---@example    }
+local function fea_split(s_fea) 
+  local t_fea   = lpeg_match(Ct(p_fea_split), s_fea) 
+  local t_norm  = {}
+  for ind,feature in ipairs(t_fea) do
+    local key, val = lpeg_match(p_key, feature), lpeg_match(p_value, feature)
+    if not val then
+      val = lpeg_match(p_sign, key)
+      key = lpeg_match(p_unsign, key)
+      val = val == "+" and "true" or (val == "-" and "false" or val)
+    end
+    t_norm[key] = val
+  end
+  return t_norm
+end
+-- }}}
 
 local str_onesize           = "<->"
 local str_fea_default       = "mode=node;language=dflt;script=dflt;+tlig"
@@ -671,7 +709,10 @@ local variants = { -- {{{
 
 -------------------------------------------------------------------------------
 -- Parsers
+-- parse_spec()   parse_config()    prepare_fake_fd() parse_fea()
+-- parse_config() is not used??!!
 -------------------------------------------------------------------------------
+--- {{{
 ---@function parse_spec -- {{{
 ---@param kind:       'weights' | 'variants' | 'widths' | 'styles'
 ---@param descriptor: weight | width | variant | style as given in db
@@ -797,8 +838,6 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
   force = force or false
   typeset_mode = typeset_mode or 0
 
-  -- lfc_cache = lfc_cache or read_cache()
-
   lfc_cache[fam] = lfc_cache[fam] or {}
 
   if lfc_cache[fam].fake_fd and not force then
@@ -809,10 +848,6 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
   lfc_cache[fam].paths = lfc_cache[fam].paths or {}
   local path_list = lfc_cache[fam].paths
 
-  -- lfc_cache.callbacks_data = lfc_cache.callbacks_data or {}
-  -- local callbacks_data = lfc_cache.callbacks_data
-
-  -- lfc_cache.resources = lfc_cache.resources or {}
   local resources = lfc_cache.resources
 
   local fake_fd = {}
@@ -828,12 +863,6 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
   end
   local function add_path(p)
     insert(path_list, p)
-    -- if not resources[p] then
-    --   -- callbacks_data[p] = true
-    --   if not lfc_callback_data_active then 
-    --     add_callback_data()
-    --   end
-    -- end
   end
 
   for series,series_data in pairs(fam_data) do
@@ -1121,10 +1150,135 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
 end
 -- }}}
 
+---@function parse_fea(fea) {{{
+---@param       <string>
+---@return      (string) <feature spec.>, (string) <suffix> or nil
+---@description Assumes typeset mode is 0. Normalises feature spec. for loader,
+---@description constructs suffix for family name.
+local function parse_fea(fea)
+  if not fea then return str_fea_default, nil end
+  local s_fea = str_fea_default
+  local t_fea = fea_split(lower(tostring(fea)))
+  local suffix = {}
+  local cat_suffix
+  local fea_lookup = {
+    -- script    = {default = "dflt", latin = "ltn"},
+    -- language  = {},
+    figures  = {
+      lining        = "lnum", 
+      oldstyle      = "onum", 
+      proportional  = "pnum", 
+      tabular       = "tnum",
+      superscript   = "sups",
+      subscript     = "subs",
+    },
+    -- language    = {
+    -- },
+    ligatures  = {
+      discretionary = "dlig",
+      historical    = "hlig",
+      tex           = "tlig",
+    },
+    mode       = {
+      harfbuzz      = "harf",
+      node          = nil,
+    },
+    -- script      = {
+    -- },
+    -- Use a metamethod here, probably?
+    -- numbers    = fea_lookup.figures,
+  }
+  local fea_ignore = {
+    language      = "dflt",
+    liga          = "true",
+    lnum          = "true",
+    mode          = "node",
+    script        = "dflt",
+    tlig          = "true",
+    tnum          = "true",
+  }
+  -- Paid â cheisio leihau nifer o dablau yma!!!
+  local t_feat = {}
+  for key,val in pairs(t_fea) do
+    if fea_ignore[key] and fea_ignore[key] == val then
+      t_fea[key] = nil
+    else
+      local code = fea_lookup[key]
+      if code then
+        local c = code[val]
+        if c then
+          t_fea[key]  = nil
+          t_fea[c] = "true"
+          insert(t_feat, format("%s=\"true\"", c))
+        else 
+          insert(t_feat, format("%s=%s", key, val)) 
+        end
+      else
+        insert(t_feat, format("%s=%s", key, val)) 
+      end
+    end
+  end
+  fea = s_fea .. ";" .. concat(t_feat, ";")
+  -- According to fntguide, these should use the autoinst suffixes,
+  -- but this makes things really awkward because then (mapping to 
+  -- nfssext) we have
+  --    LF      \plstyle
+  --    TLF     \tlstyle
+  --    OsF     \postyle
+  --    TOsF    \tostyle
+  -- But, as the font loader code points out, tnum and lnum are 
+  -- supposed to be default, onum and pnum should be variants.
+  -- So the above is very awkward to implement for opentype fonts.
+  -- Nor does it make much sense in terms of historical norms, since
+  -- LaTeX always uses tabular by default.
+  -- And I really want the no-feature form to get no suffixes here
+  -- as that seems much easier to understand, from a user perspective.
+  -- Moreover, I really want these either split or Berry.
+  -- Berry would be easier, but split does less violence to Frank's
+  -- decrees, so let's see how that works.
+  --      -prop   \pstyle   aka 2
+  --      -osf    \ostyle   aka j
+  -- autoinst doesn't give anything for subscript/superscript, but 
+  -- uses Sup for superiors and Numr, Dnom for fractions.
+  --      -subs   aka 0
+  --      -sups   aka 1
+  -- And we hereby decree, with no authority whatsoever that -prop
+  -- precede -osf, following Berry, if both apply.
+  if t_fea.sups then cat_suffix = "-sups" 
+  elseif t_fea.subs then cat_suffix = "-subs"
+  else
+    if t_fea.pnum then cat_suffix = "-prop" end
+    if t_fea.onum then 
+      cat_suffix = (cat_suffix and cat_suffix .. "-osf") or "-osf"
+    end
+  end
+  for _,i in pairs(fea_lookup.figures) do t_fea[i] = nil end
+  if t_fea.tlig  == "false" then insert(suffix, "notlig") end
+  if t_fea.liga  == "false" then insert(suffix, "noliga") end
+  t_fea.tlig = nil
+  t_fea.liga = nil
+  for key,val in pairs(t_fea) do
+    if val == "true" or val == "false" then
+      insert(suffix, key)
+    else
+      insert(suffix, key .. ":" .. val)
+    end
+  end
+  if #suffix > 0 then 
+    suffix = concat(suffix, "-")
+    cat_suffix = cat_suffix and (cat_suffix .. "-" .. suffix) or suffix
+  end
+  return fea, cat_suffix
+end
+-- }}}
+--- }}}
 -------------------------------------------------------------------------------
 -- Manage font definition files, cache etc.
 -- get_toks()   write_declare_shape()   write_fake_fd()   add_callback_smcp()
+-- add_callback_data()  add_callback_cache()  file_subs_empty()
+-- add_fake_fd() use_cached_fd()
 -------------------------------------------------------------------------------
+--- {{{
 ---@function get_toks(items) {{{
 ---@param items   <table> of [tables of] toks, strings
 ---@description   Returns sequence of toks, strings for sprint()
@@ -1267,7 +1421,6 @@ local function add_callback_smcp()
     "luaotfload.patch_font",
     function(data, spec, id)
       local path = data.filename
-      -- lfc_cache = lfc_cache or read_cache()
 
       if lfc_cache.callbacks_smcp and lfc_cache.callbacks_smcp[path] then
 
@@ -1277,7 +1430,6 @@ local function add_callback_smcp()
         msg({"Id:\t", id}, "debug")
         local fam = lfc_cache.callbacks_smcp[path].fam
         local incomplete = lfc_cache.incomplete 
-        -- local fd 
         local fake_fd 
         if lfc_cache[fam] and lfc_cache[fam].fake_fd then 
           fake_fd = lfc_cache[fam].fake_fd end
@@ -1363,9 +1515,7 @@ add_callback_data = function()
     "luaotfload.patch_font",
     function(data, spec, id)
       local path = data.filename
-      -- lfc_cache = lfc_cache or read_cache()
 
-      -- if lfc_cache.callbacks_data and lfc_cache.callbacks_data[path] then
       if not lfc_cache.resources[path] then
 
         msg("Processing data callback ...", "info")
@@ -1373,8 +1523,6 @@ add_callback_data = function()
         msg({"Spec:\t", spec}, "debug")
         msg({"Id:\t", id}, "debug")
 
-        -- lfc_cache.resources = lfc_cache.resources or {}
-        -- lfc_cache.resources[path] = lfc_cache.resources[path] or {}
         lfc_cache.resources[path] = {}
         local cached = lfc_cache.resources[path]
         cached.features = cached.features or {}
@@ -1394,12 +1542,6 @@ add_callback_data = function()
         else
           fea.gsub = false
         end
-
-        -- tidy up callbacks
-        -- lfc_cache.callbacks_data[path] = nil
-        -- if count(lfc_cache.callbacks_data) == 0 then 
-        --   lfc_cache.callbacks_data = nil 
-        -- end
 
         msg({"Cached resources for ", path, " ..."}, "log")
         msg_debug("Resources: ", "cache", lfc_cache.resources[path])
@@ -1435,14 +1577,17 @@ end
 ---@param fake_fd:        If not cached
 ---@param fea:            Features
 ---@param scale_factor:   Scaling factor
----@description fake_fd should be nil unless something has gone wrong.
+---@param suffix:         Suffix for NFSS family (if required)
+---@description fake_fd should not be nil unless something has gone wrong.
 ---@description This should never happen in the automated case.
 -- Cache format: see above
-local function write_fake_fd(fam, fake_fd, fea, scale_factor)
+local function write_fake_fd(fam, fake_fd, fea, scale_factor, suffix)
   msg({"Emulating font definition file for NFSS family ", fam, " with ",
-    fea, " scaled ", scale_factor or "1", "."}, "log")
+    fea, " scaled ", scale_factor or "1", " suffixed ", suffix or "[none]",
+    "."}, "log")
 
-  local pre = {fastcopy(toks_enc_tu), embrace(fam)}
+  local use_name = suffix and (fam .. suffix) or fam
+  local pre = {fastcopy(toks_enc_tu), embrace(use_name)}
   local out = {
     tok_declare_fam, fastcopy(pre), toks_empty_n
   }
@@ -1451,7 +1596,7 @@ local function write_fake_fd(fam, fake_fd, fea, scale_factor)
   local onesize = str_onesize
   if scale_factor and scale_factor ~= 1 then
     if lfc_cache[fam].scalable then
-      msg({"Scaling ", fam, " to ", scale_factor, "."}, "info")
+      msg({"Scaling ", use_name, " to ", scale_factor, "."}, "info")
       onesize = onesize .. "s*[" .. scale_factor .. "]"
     else
       msg("Ignoring scaling factor for fonts with optical sizes.")
@@ -1462,12 +1607,13 @@ local function write_fake_fd(fam, fake_fd, fea, scale_factor)
 
   for _,line in ipairs(fake_fd) do
     if line ~= "" then 
-      msg({"Preparing line: ", fam, ": ", fea, " ", onesize}, "debug")
+      msg({"Preparing line: ", use_name, ": ", fea, " ", onesize}, "debug")
       append(out, write_declare_shape(pre, line, toks_empty_n, fea, onesize))
     end
   end
 
   -- Requires lua-unicode-math.
+  -- No suffix for maths, so fam is OK here.
   if typeset_mode == 1 and not find(fam, "%-sf$") and not find (fam, "%-ssf$") then
     append(out, {tok_declare_m_scr_map, toks_enc_tu, embrace(fam),
       toks_enc_tu, embrace(fam .. "-sf"), toks_enc_tu, embrace(fam .. "-ssf")})
@@ -1498,7 +1644,6 @@ local function write_fake_fd(fam, fake_fd, fea, scale_factor)
     end
 
   end
-
 end
 -- }}}
 
@@ -1511,17 +1656,15 @@ local function file_subs_empty(filename)
 end
 -- }}}
 
----@function add_fake_fd(fam, fake_fd, fea, scale_factor) {{{
+---@function add_fake_fd(fam, fake_fd, fea, scale_factor, suffix) {{{
 ---@see         write_fake_fd()
 ---@description A wrapper around write_fake_fd() which avoids defining fonts
 ---@description   unnecessarily (and so avoids unnecessary callbacks etc.).
-local function add_fake_fd(fam, fake_fd, fea, scale_factor)
-  local fd_filename = "tu" .. fam .. ".fd"
+local function add_fake_fd(fam, fake_fd, fea, scale_factor, suffix)
+  local fd_filename = "tu" .. suffix and (fam .. suffix) or fam .. ".fd"
   local fn = "__lfc_" .. fd_filename
   luafunction_to_cs(fn, function ()
-    -- ‘true’ tells the writer the code is delayed and suppresses immediate write
-    --    of -sf, -ssf for maths.
-    return write_fake_fd(fam, fake_fd, fea, scale_factor)
+    return write_fake_fd(fam, fake_fd, fea, scale_factor, suffix)
   end, "protected")
   fn = create(fn)
   file_subs_empty(fd_filename)
@@ -1531,24 +1674,26 @@ end
 -- }}}
 
 ---@function use_cached_fd(fam, scale[, now]) {{{
----@param fam   <string>  Name of a cached meta-family.
----@param fea   <string>  Font features.
----@param scale <numeric> Potential scaling factor or nil.
----@param now   <boolean> Whether to write defns or setup hook.
-local function use_cached_fd(fam, fea, scale, now) 
+---@param fam     <string>  Name of a cached meta-family.
+---@param fea     <string>  Font features.
+---@param scale   <numeric> Potential scaling factor or nil.
+---@param now     <boolean> Whether to write defns or setup hook.
+---@param suffix  <string>  If required.
+local function use_cached_fd(fam, fea, scale, now, suffix) 
   msg_assert(lfc_cache[fam] and lfc_cache[fam].fake_fd,
     "Cache failure. Try removing the cache before recompiling.")
   msg({"Using cached fd emulation for ", fam, "."}, "debug")
   now = now or false
 
   if now then
-    return write_fake_fd(fam, lfc_cache[fam].fake_fd, fea, scale) 
+    return write_fake_fd(fam, lfc_cache[fam].fake_fd, fea, scale, suffix) 
   else
-    return add_fake_fd(fam, lfc_cache[fam].fake_fd, fea, scale) 
+    return add_fake_fd(fam, lfc_cache[fam].fake_fd, fea, scale, suffix) 
   end
 end
 -- }}}
 
+--- }}}
 -------------------------------------------------------------------------------
 -- Main configuration function
 -- font_config()
@@ -1565,8 +1710,6 @@ end
 local function font_config(targ, config, immediate)
 
   if targ == nil then return nil end
-
-  -- lfc_cache = lfc_cache or read_cache()
 
   targ = lower(targ)
   if not immediate and (config == "true" or config == "false") then
@@ -1585,6 +1728,7 @@ local function font_config(targ, config, immediate)
 
   local fam_meta = metadata.fam_meta
   msg_assert(fam_meta ~= nil, {"No reults for ", targ})
+  local meta_suffix
 
   if not metadata.cached then 
 
@@ -1655,7 +1799,6 @@ local function font_config(targ, config, immediate)
       parsed_fam[family] = parsed_fam[family] or {}
       local t = parsed_fam[family]
 
-
       if weight == "normal" then
         if fontweight then
           if fontweight == "regular" then
@@ -1676,7 +1819,6 @@ local function font_config(targ, config, immediate)
       local nfss_width    = parse_spec(widths, width)
       local nfss_style    = parse_spec(styles, style)
       local nfss_variant  = parse_spec(variants, variant)
-
 
       -- ‘m’ must not be combined, as of the 2020 changes, so ‘mb’ is
       --    not allowed
@@ -1764,10 +1906,9 @@ local function font_config(targ, config, immediate)
 
     -- link families to fam_meta
 
-    -- lfc_cache.meta_families = lfc_cache.meta_families or {}
-    -- lfc_cache.meta_families.by_meta_fam = lfc_cache.meta_families.by_meta_fam or {}
     lfc_cache.meta_families.by_meta_fam[fam_meta] = {}
     local by_meta_fam = lfc_cache.meta_families.by_meta_fam[fam_meta]
+
 
     for fam,fam_data in pairs(parsed_fam) do
 
@@ -1795,20 +1936,39 @@ local function font_config(targ, config, immediate)
 
         local scale = (config[fam] and config[fam].scale and 
           config[fam].scale) or (config.scale and config.scale) or nil
+
         local fea = (config[fam] and config[fam].fea and config[fam].fea) or
-          (config.fea and config.fea) or (typeset_mode ~= 1 and 
-          str_fea_default) or str_fea_math_default
-        if immediate then
-          write_fake_fd(fam, fake_fd, fea, scale) 
+          (config.fea and config.fea) or nil
 
-          if fake_fd_sf then write_fake_fd(fam_sf, fake_fd_sf, fea, scale) end
-          if fake_fd_ssf then write_fake_fd(fam_ssf, fake_fd_ssf, fea, scale) end
-        else
-          add_fake_fd(fam, fake_fd, fea, scale) 
-
-          if fake_fd_sf then add_fake_fd(fam_sf, fake_fd_sf, fea, scale) end
-          if fake_fd_ssf then add_fake_fd(fam_ssf, fake_fd_ssf, fea, scale) end
+        local suffix
+        if typeset_mode == 0 and fea then fea, suffix = parse_fea(fea) 
+        else 
+          fea = typeset_mode ~= 1 and str_fea_default or str_fea_math_default
         end
+
+        if immediate then
+          write_fake_fd(fam, fake_fd, fea, scale, suffix) 
+
+          if fake_fd_sf then 
+            write_fake_fd(fam_sf, fake_fd_sf, fea, scale, suffix) 
+          end
+          if fake_fd_ssf then 
+            write_fake_fd(fam_ssf, fake_fd_ssf, fea, scale, suffix)
+          end
+        else
+          add_fake_fd(fam, fake_fd, fea, scale, suffix)
+
+          if fake_fd_sf then 
+            add_fake_fd(fam_sf, fake_fd_sf, fea, scale, suffix)
+          end
+          if fake_fd_ssf then 
+            add_fake_fd(fam_ssf, fake_fd_ssf, fea, scale, suffix)
+          end
+        end
+
+        -- Need a different way to handle this.
+        -- It shouldn't be disconnected this way.
+        if suffix and fam_meta == fam then meta_suffix = suffix end
       end
 
     end
@@ -1820,15 +1980,28 @@ local function font_config(targ, config, immediate)
     for _,fam_name in ipairs(lfc_cache.meta_families.by_meta_fam[fam_meta]) do
       local scale = (config[fam_name] and config[fam_name].scale and 
         config[fam_name].scale) or (config.scale and config.scale) or nil
+
       local fea = (config[fam_name] and config[fam_name].fea and 
-        config[fam_name].fea) or (config.fea and config.fea) or 
-        (lfc_cache[fam_name].typeset_mode ~= 1 and str_fea_default) or
-        str_fea_math_default
-      use_cached_fd(fam_name, fea, scale, immediate) 
+        config[fam_name].fea) or (config.fea and config.fea) or nil
+
+      local suffix
+      if lfc_cache[fam_name].typeset_mode == 0 and fea then 
+        fea, suffix = parse_fea(fea) 
+      else 
+        fea = lfc_cache[fam_name].typeset_mode ~= 1 and str_fea_default 
+          or str_fea_math_default
+      end
+
+      use_cached_fd(fam_name, fea, scale, immediate, suffix) 
+
+      -- Need a different way to handle this.
+      -- It shouldn't be disconnected this way.
+      if suffix and fam_meta == fam_name then meta_suffix = suffix end
     end
 
   end
 
+  if meta_suffix then fam_meta = fam_meta .. meta_suffix end
   return fam_meta
 end
 -- }}}
@@ -1836,6 +2009,9 @@ end
 -------------------------------------------------------------------------------
 -- LaTeX interface things
 -------------------------------------------------------------------------------
+--- {{{
+-- Scanners for 1 or 2 arguments.
+-- {{{
 ---@function do_with_one_scanner(fn) {{{
 ---@param fn    <function>  Function to execute on argument.
 ---@description Returns a function which picks up and does something with
@@ -1863,7 +2039,10 @@ local function do_with_two_scanner(fn)
   end
 end
 -- }}}
+-- }}}
 
+-- Lookup tables for default text families, text families in maths mode.
+-- {{{
 local fam_defaults = { -- {{{
   rm = tok_rmdefault,
   sf = tok_sfdefault,
@@ -1877,7 +2056,10 @@ local fam_to_maths = { -- {{{
   tt = tok_mathtt,
 }
 -- }}}
+-- }}}
 
+-- Scanner creators.
+-- {{{
 ---@function get_fam_default_scanner(fam) {{{
 ---@param fam   <string: "rm" | "sf" | "tt">  NFSS default family.
 ---@description Returns a Lua function which scans an argument and sets the
@@ -1902,7 +2084,6 @@ local function get_fam_default_scanner(fam)
     end)
 end
 -- }}}
-
 
 ---@function get_fam_name_scanner() {{{
 ---@description Returns a function which takes a name and stores it.
@@ -1934,7 +2115,10 @@ local function get_fam_cfg_scanner()
     end)
 end
 -- }}}
+-- }}}
 
+-- Configuration function.
+-- {{{
 ---@function configure_doc_families() {{{
 ---@description Configures requested fonts.
 ---@description Sets defaults for rm/sf/tt, if applicable.
@@ -1959,7 +2143,8 @@ local function configure_doc_families()
         local nfss_fam = font_config(cfg.name, config, cfg.default and true or 
         false)
 
-        if nfss_fam ~= nil then cfg.nfss_fam = nfss_fam
+        if nfss_fam ~= nil then 
+          cfg.nfss_fam = nfss_fam
 
           if config.typeset_mode == 0 then
           -- text mode
@@ -2012,18 +2197,23 @@ local function configure_doc_families()
   end
 end
 -- }}}
+-- }}}
 
 -- Generate TeX macros to use Lua functions to set rm, sf and tt.
+-- {{{
 luafunction_to_cs("__lfc_set_rm:n",   get_fam_default_scanner("rm"))
 luafunction_to_cs("__lfc_set_sf:n",   get_fam_default_scanner("sf"))
 luafunction_to_cs("__lfc_set_tt:n",   get_fam_default_scanner("tt"))
 luafunction_to_cs("__lfc_set_math:n", get_fam_default_scanner("math"))
+-- }}}
 
 -- Scanners for additional family names and a general one for features.
+-- {{{
 luafunction_to_cs("__lfc_set_fam_name:n", get_fam_name_scanner())
 luafunction_to_cs("__lfc_set_fam_cfg:nn", get_fam_cfg_scanner())
+-- }}}
 
--- A macro to configure the fonts at begindocument.
+-- A macro to actually configure the font families.
 luafunction_to_cs("__lfc_configure_doc_families:", configure_doc_families())
 
 ---@function get_debug_cat_scanner() {{{
@@ -2042,9 +2232,12 @@ end
 -- }}}
 
 -- Macros to toggle debugging.
+-- {{{
 luafunction_to_cs("__lfc_debug_set_true:", function() lfc_debug = true end)
 luafunction_to_cs("__lfc_debug_set_false:", function() lfc_debug = false end)
 luafunction_to_cs("__lfc_debug_set_cats:n", get_debug_cat_scanner())
+-- }}}
+--- }}}
 -------------------------------------------------------------------------------
 -- Setup on load
 -------------------------------------------------------------------------------
