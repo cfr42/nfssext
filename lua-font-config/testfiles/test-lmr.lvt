@@ -1,4 +1,4 @@
-%% $Id: test-lmr.lvt 12073 2026-09-28 16:51:42Z cfrees $
+%% $Id: test-lmr.lvt 12086 2026-10-02 06:44:44Z cfrees $
 \input lfc-support.tex
 \documentclass{article}
 \parindent=0pt
@@ -46,6 +46,7 @@
 \TIMO
 
 \TEST{latinmodernroman footnotesize b}{%
+  \footnotesize
   \bfseries
   Upright \textit{Italics \textsc{Italic Small Caps (NA)}} 
   \textsc{Small Caps (NA) \textsl{Oblique Small Caps (NA)}} \textsl{Oblique}
@@ -56,6 +57,7 @@
 \TIMO
 
 \TEST{latinmodernroman footnotesize db}{%
+  \footnotesize
   \fontseries{db}\selectfont
   Upright \textit{Italics \textsc{Italic Small Caps (NA)}} 
   \textsc{Small Caps (NA) \textsl{Oblique Small Caps (NA)}} \textsl{Oblique}

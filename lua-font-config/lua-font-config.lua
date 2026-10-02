@@ -1,4 +1,4 @@
--- $Id: lua-font-config.lua 12085 2026-10-01 07:11:18Z cfrees $
+-- $Id: lua-font-config.lua 12086 2026-10-02 06:44:44Z cfrees $
 -------------------------------------------------------------------------------
 -- TODO
 --
@@ -68,6 +68,10 @@
 --    },
 --    meta_families = {
 --      by_meta_fam = {
+--        <meta-family> = {<nfss fam>, ...},
+--        ...,
+--      },
+--      by_meta_math = {
 --        <meta-family> = {<nfss fam>, ...},
 --        ...,
 --      },
@@ -146,7 +150,7 @@ local lfc_callback_data_active  = false
 local lfc_callback_cache_active = false
 
 -- Strings
-local function enquote(str) return "\"" .. str .. "\"" end
+local function enquote(str) return format("\"%s\"", str) end
 
 local lfc_log_level         = lfc.log_level or (lfc_debug and "debug" or "info")
 
@@ -420,13 +424,13 @@ local function get_cache_path()
   msg("Accessing cache ...", "debug")
   local path = (gsub(lfc_fonts.names.cache.writable, "^(.*/)[^/]+$", "%1" ))
   msg_assert(path ~= nil, "Cannot find place for cache!")
-  if not isdir(path .. "/lfc") then
+  if not isdir(format("%s/lfc", path)) then
     msg_assert(is_writable(path), {"Cache ", path, " not writable!"})
-    msg_assert(mkdir(path .. "/lfc"), {"Cannot create cache ", path, 
+    msg_assert(mkdir(format("%s/lfc", path)), {"Cannot create cache ", path, 
     "/lfc", " directory!"})
   end
-  path = path .. "/lfc"
-  return path .. "/" .. "lfc_cache.lua"
+  path = format("%s/lfc", path)
+  return format("%s/lfc_cache.lua", path)
 end
 -- }}}
 
@@ -440,6 +444,7 @@ local function read_cache(loc)
   cache.resources = cache.resources or {}
   cache.meta_families = cache.meta_families or {}
   cache.meta_families.by_meta_fam = cache.meta_families.by_meta_fam or {}
+  cache.meta_families.by_meta_math = cache.meta_families.by_meta_math or {}
   msg_debug("Read cache state:\n", "cache", cache)
   return cache
 end
@@ -541,9 +546,11 @@ local function get_font_data(fnt, force)
   local cached
   -- if lfc_cache.meta_families and lfc_cache.meta_families.by_meta_fam then
     if not force then
-      cached = lfc_cache.meta_families.by_meta_fam[fam_meta]
+      cached = lfc_cache.meta_families.by_meta_fam[fam_meta] or
+        lfc_cache.meta_families.by_meta_math[fam_meta]
     else
       lfc_cache.meta_families.by_meta_fam[fam_meta] = nil
+      lfc_cache.meta_families.by_meta_math[fam_meta] = nil
     end
   -- end
   metadata.hash_key  = fam_meta
@@ -731,97 +738,97 @@ end
 ---@description Returns a table of configs keyed by NFSS family name.
 ---@param   fam: base family name
 ---@config  config: table or string of configurations
-local function parse_config(fam, config) 
-  local configs = {}
-  if not config then 
-    configs[fam] = str_fea_default
-  elseif type(config) == "table" then
-    if #config > 0 then
-      -- indexed table --> multiple configs
-      for _,instance in ipairs(config) do
-        local cfgs = parse_config(fam, instance)
-        for name,cfg in pairs(cfg) do
-          configs[name] = cfg
-        end
-      end
-    else
-      -- keyed table --> single config
-      local cfg = {}
-      insert(cfg, "mode=" .. (config.mode or "node"))
-      insert(cfg, "lang=" .. (config.lang or "dflt"))
-      insert(cfg, "script=" .. (config.script or "dflt"))
-      local fam = fam .. (config.suffix or "")
-      if config.fea == nil then
-        insert(cfg, "+tlig")
-        if configs[fam] == nil then
-          configs[fam] = concat(cfg, ";")
-        else
-          local n = 1
-          while configs[fam .. n] do n = n + 1 end
-          configs[fam .. n] = concat(cfg, ";")
-        end
-      else
-        insert(cfg, config.fea)
-        local pre, post = "", ""
-        config.fea = (gsubs(gsubs(config.fea, "(%a%a%a%a)%s*=%s*true", "+%1"),
-          "(%a%a%a%a)%s*=%s*false", "-%1"))
-        -- Should use long suffixes here, but this is more convenient for now.
-        for sign,subs in gmatch(config.fea, "([+-])(%a%a%a%a);") do
-          if sign == "+" then
-            if subs == "tnum" then pre = ""
-            elseif subs == "pnum" then pre = "2"
-            elseif subs == "lnum" then post = ""
-            elseif subs == "onum" then post = "j"
-            elseif subs == "subs" then pre = "0"
-            elseif subs == "sups" then pre = "1"
-            end
-          elseif subs == "pnum" and pre == "2" then pre = ""
-          elseif subs == "onum" and post == "j" then post = ""
-          elseif subs == "subs" and pre == "0" then pre = ""
-          elseif subs == "sups" and pre == "1" then pre = ""
-          end
-        end
-        local suff = pre .. post
-        if suff ~= "" then suff = "-" .. suff end
-        if configs[fam .. suff] ~= nil then
-          local n = 1
-          while configs[fam .. suff .. format("%c", n)] ~= nil do 
-            n = n + 1 
-          end
-          suff = suff .. format("%c", n)
-        end
-        configs[fam .. suff] = concat(cfg, ";")
-      end
-    end
-  else
-    msg_assert(type(config) == "string", 
-      {"Expected configuration to be table or string, but received ", 
-      type(config), " for ", fam})
-    local pre, post, suff = "", "", ""
-    for sign,subs in gmatch(config, "([+-])(%a%a%a%a);") do
-      if sign == "+" then
-        if subs == "tnum" then pre = ""
-        elseif subs == "pnum" then pre = "2"
-        elseif subs == "lnum" then post = ""
-        elseif subs == "onum" then post = "j"
-        end
-      elseif subs == "pnum" then pre = ""
-      elseif subs == "onum" then post = ""
-      end
-      suff = pre .. post
-      if suff ~= "" then suff = "-" .. suff end
-    end
-    if configs[fam .. suff] ~= nil then
-      local n = 1
-      while configs[fam .. suff .. format("%c", n)] ~= nil do 
-        n = n + 1 
-      end
-      suff = suff .. format("%c", n)
-    end
-    configs[fam .. suff] = config
-  end
-  return configs
-end
+-- local function parse_config(fam, config) 
+--   local configs = {}
+--   if not config then 
+--     configs[fam] = str_fea_default
+--   elseif type(config) == "table" then
+--     if #config > 0 then
+--       -- indexed table --> multiple configs
+--       for _,instance in ipairs(config) do
+--         local cfgs = parse_config(fam, instance)
+--         for name,cfg in pairs(cfg) do
+--           configs[name] = cfg
+--         end
+--       end
+--     else
+--       -- keyed table --> single config
+--       local cfg = {}
+--       insert(cfg, "mode=" .. (config.mode or "node"))
+--       insert(cfg, "lang=" .. (config.lang or "dflt"))
+--       insert(cfg, "script=" .. (config.script or "dflt"))
+--       local fam = fam .. (config.suffix or "")
+--       if config.fea == nil then
+--         insert(cfg, "+tlig")
+--         if configs[fam] == nil then
+--           configs[fam] = concat(cfg, ";")
+--         else
+--           local n = 1
+--           while configs[fam .. n] do n = n + 1 end
+--           configs[fam .. n] = concat(cfg, ";")
+--         end
+--       else
+--         insert(cfg, config.fea)
+--         local pre, post = "", ""
+--         config.fea = (gsubs(gsubs(config.fea, "(%a%a%a%a)%s*=%s*true", "+%1"),
+--           "(%a%a%a%a)%s*=%s*false", "-%1"))
+--         -- Should use long suffixes here, but this is more convenient for now.
+--         for sign,subs in gmatch(config.fea, "([+-])(%a%a%a%a);") do
+--           if sign == "+" then
+--             if subs == "tnum" then pre = ""
+--             elseif subs == "pnum" then pre = "2"
+--             elseif subs == "lnum" then post = ""
+--             elseif subs == "onum" then post = "j"
+--             elseif subs == "subs" then pre = "0"
+--             elseif subs == "sups" then pre = "1"
+--             end
+--           elseif subs == "pnum" and pre == "2" then pre = ""
+--           elseif subs == "onum" and post == "j" then post = ""
+--           elseif subs == "subs" and pre == "0" then pre = ""
+--           elseif subs == "sups" and pre == "1" then pre = ""
+--           end
+--         end
+--         local suff = pre .. post
+--         if suff ~= "" then suff = "-" .. suff end
+--         if configs[fam .. suff] ~= nil then
+--           local n = 1
+--           while configs[fam .. suff .. format("%c", n)] ~= nil do 
+--             n = n + 1 
+--           end
+--           suff = suff .. format("%c", n)
+--         end
+--         configs[fam .. suff] = concat(cfg, ";")
+--       end
+--     end
+--   else
+--     msg_assert(type(config) == "string", 
+--       {"Expected configuration to be table or string, but received ", 
+--       type(config), " for ", fam})
+--     local pre, post, suff = "", "", ""
+--     for sign,subs in gmatch(config, "([+-])(%a%a%a%a);") do
+--       if sign == "+" then
+--         if subs == "tnum" then pre = ""
+--         elseif subs == "pnum" then pre = "2"
+--         elseif subs == "lnum" then post = ""
+--         elseif subs == "onum" then post = "j"
+--         end
+--       elseif subs == "pnum" then pre = ""
+--       elseif subs == "onum" then post = ""
+--       end
+--       suff = pre .. post
+--       if suff ~= "" then suff = "-" .. suff end
+--     end
+--     if configs[fam .. suff] ~= nil then
+--       local n = 1
+--       while configs[fam .. suff .. format("%c", n)] ~= nil do 
+--         n = n + 1 
+--       end
+--       suff = suff .. format("%c", n)
+--     end
+--     configs[fam .. suff] = config
+--   end
+--   return configs
+-- end
 -- }}}
 
 ---@function prepare_fake_fd(fam, fam_data, typeset_mode, force) {{{
@@ -837,13 +844,36 @@ end
 local function prepare_fake_fd(fam, fam_data, typeset_mode, force) 
   force = force or false
   typeset_mode = typeset_mode or 0
+  msg(format("prepare_fake_fd params: %s, %s, %s, %s", fam, fam_data, 
+    typeset_mode, force), "info")
 
   lfc_cache[fam] = lfc_cache[fam] or {}
 
   if lfc_cache[fam].fake_fd and not force then
 
-    return lfc_cache[fam].fake_fd
+    if typeset_mode ~= 1 then return lfc_cache[fam].fake_fd
+    elseif lfc_cache.meta_families.by_meta_math[fam] then 
+      local t = lfc_cache.meta_families.by_meta_math[fam]
+      for ind,mfam in ipairs(t) do
+        t[ind] = lfc_cache[mfam].fake_fd
+        if not t[ind] then 
+          msg(format("Missing defns for %s (family %s).\n\z
+            This should not really happen, but I will try to recover.",
+            mfam, fam))
+          goto math_awol 
+        end
+      end
+      if not #t == 3 then 
+        msg("Not exactly 3 maths families!", "warn") 
+        goto math_awol
+      end
+      return t[1], t[2], t[3]
+    else
+      msg(format("Missing maths family %s for %s. Regenerating data.",
+        mfam, fam))
+    end
   end
+  :: math_awol ::
 
   lfc_cache[fam].paths = lfc_cache[fam].paths or {}
   local path_list = lfc_cache[fam].paths
@@ -865,13 +895,15 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
     insert(path_list, p)
   end
 
+  local std_series = {b = {}, bx = {}}
+
   for series,series_data in pairs(fam_data) do
 
-    local std_lines = {n = 0, it = 0, sl = 0}
+    local std_lines = {n = 0, it = 0, sl = 0, scit = 0, scsl = 0}
 
     for shape,fnts in pairs(series_data) do
 
-      msg({"Processing font(s) for ", series, " and ", shape}, "debug")
+      msg({"Processing font(s) for ", series, " and ", shape}, "info")
 
       msg_assert(#fnts ~= 0, "The number of fonts should never be zero!")
 
@@ -937,7 +969,7 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
           -- Needed to reinsert scaling if duplicate fonts
           if min ~= "" or max ~= "" then opt_size = true end
 
-          insert(ssubs, {"<" .. min .. "-" .. max .. ">", 
+          insert(ssubs, {format("<%s-%s>", min, max),
             enquote(fnt.fullpath), fnt.subfont or 0 })
 
           hash_last = fnt.nfss_hash
@@ -977,23 +1009,55 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
       end
 
       if typeset_mode == 0 then
+
+        msg("(prepare_fake_fd) typeset_mode is 0", "debug")
+
         if shape == "n" then std_lines.n = curr_line 
         elseif shape == "it" then std_lines.it = curr_line
         elseif shape == "sl" then std_lines.sl = curr_line
+        elseif shape == "scit" then std_lines.scit = curr_line
+        elseif shape == "scsl" then std_lines.scsl = curr_line
         end
-      end
 
+        if series == "b" and not fam_data.bx then
+          if #series_data[shape] == 1 then
+            fake_fd_insert({"bx", shape, ssub = {fam, "b", shape}})
+          else
+            local reuse_line = fake_fd[curr_line]
+            fake_fd_insert({"bx", shape, reuse_line[3], reuse_line[4]})
+          end
+        elseif series == "bx" and not fam_data.b then
+          if #series_data[shape] == 1 then
+            fake_fd_insert({"bx", shape, ssub = {fam, "b", shape}})
+          else
+            local reuse_line = fake_fd[curr_line]
+            fake_fd_insert({"b", shape, reuse_line[3], reuse_line[4]})
+          end
+        end
+
+      end
     end
 
     if typeset_mode == 0 then
       -- For text fonts, check for missing basic shapes
+      msg("(prepare_fake_fd) typeset_mode is 0", "debug")
 
       if series_data.it == nil then
         if series_data.sl ~= nil then
-          fake_fd_insert({series, "it", ssub = {fam, series, "sl"}})
+          if #series_data.sl == 1 then
+            fake_fd_insert({series, "it", ssub = {fam, series, "sl"}})
+          else
+            local reuse_line = fake_fd[std_lines.sl]
+            fake_fd_insert({series, "it", reuse_line[3], reuse_line[4]})
+          end
         end
       elseif series_data.sl == nil then
-        fake_fd_insert({series, "sl", ssub = {fam, series, "it"}})
+        if #series_data.it == 1 then
+          fake_fd_insert({series, "sl", ssub = {fam, series, "it"}})
+        else
+          local reuse_line = fake_fd[std_lines.it]
+          fake_fd_insert({series, "sl", reuse_line[3], reuse_line[4]})
+        end
       end
 
       local trans = { sc = "n", scit = "it", scsl = "sl" }
@@ -1060,14 +1124,31 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
 
       if series_data.scit == nil then
         if series_data.scsl ~= nil then
-          fake_fd_insert({series, "scit", ssub = {fam, series, "scsl"}})
-          fake_fd_insert({series, "si", ssub = {fam, series, "scit"}})
+          if #series_data.scsl == 1 then
+            fake_fd_insert({series, "scit", ssub = {fam, series, "scsl"}})
+            fake_fd_insert({series, "si", ssub = {fam, series, "scit"}})
+          else
+            local reuse_line = fake_fd[std_lines.scsl]
+            fake_fd_insert({series, "scit", reuse_line[3], reuse_line[4]})
+            fake_fd_insert({series, "si", reuse_line[3], reuse_line[4]})
+          end
         end
       elseif series_data.scsl == nil then
-        fake_fd_insert({series, "scsl", ssub = {fam, series, "scit"}})
-        fake_fd_insert({series, "si", ssub = {fam, series, "scsl"}})
+        if #series_data.scit == 1 then
+          fake_fd_insert({series, "scsl", ssub = {fam, series, "scit"}})
+          fake_fd_insert({series, "si", ssub = {fam, series, "scsl"}})
+        else
+          local reuse_line = fake_fd[std_lines.scit]
+          fake_fd_insert({series, "scsl", reuse_line[3], reuse_line[4]})
+          fake_fd_insert({series, "si", reuse_line[3], reuse_line[4]})
+        end
       else 
-        fake_fd_insert({series, "si", ssub = {fam, series, "scit"}})
+        if #series_data.scit == 1 then
+          fake_fd_insert({series, "si", ssub = {fam, series, "scit"}})
+        else
+          local reuse_line = fake_fd[std_lines.scit]
+          fake_fd_insert({series, "si", reuse_line[3], reuse_line[4]})
+        end
       end
 
       -- Other possibilities:
@@ -1084,31 +1165,26 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
 
   lfc_cache[fam].paths = unique(path_list)
 
-  -- Check for missing basic series
-  if fam_data.b == nil then
-    if fam_data.bx ~= nil then
-      for shape,_ in pairs(fam_data.bx) do
-        fake_fd_insert({"b", shape, ssub = {fam, "bx", shape}})
-      end
-    end
-  elseif fam_data.bx == nil then
-    for shape,_ in pairs(fam_data.b) do
-      fake_fd_insert({"bx", shape, ssub = {fam, "b", shape}})
-    end
-  end
-
   lfc_cache[fam].fake_fd = fake_fd
   lfc_cache[fam].scalable = scalable
   lfc_cache[fam].typeset_mode = typeset_mode
 
 
   -- This probably would be better wrapped into a mechanism to handle variants.
+  -- ^^ Nah?
 
   local fake_fd_sf, fake_fd_ssf
 
   if typeset_mode == 1 then
 
-    local sf, ssf = fam .. "-sf", fam .. "-ssf"
+    msg("(prepare_fake_fd) typeset_mode is 1", "info")
+
+    local sf, ssf = format("%s-sf", fam), format("%s-ssf", fam)
+    msg(format("Emulating %s and %s.", sf, ssf), "log")
+
+    -- We need extra cache data for maths families so that cache look-up
+    -- catches scripts.
+    lfc_cache.meta_families.by_meta_math[fam] = {fam, sf, ssf}
     lfc_cache[sf] = {}
     lfc_cache[ssf] = {}
 
@@ -1128,7 +1204,7 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
     for _,line in ipairs(fake_fd_ssf) do
       if not line.ssub and not line.sub then
         if type(line[3]) == "string" then 
-          line[5] = str_fea_math_sf
+          line[5] = str_fea_math_ssf
         else
           msg_assert(type(line[3]) == "table")
           line[4] = str_fea_math_ssf 
@@ -1218,7 +1294,7 @@ local function parse_fea(fea)
       end
     end
   end
-  fea = s_fea .. ";" .. concat(t_feat, ";")
+  fea = format("%s;%s", s_fea, concat(t_feat, ";"))
   -- According to fntguide, these should use the autoinst suffixes,
   -- but this makes things really awkward because then (mapping to 
   -- nfssext) we have
@@ -1249,24 +1325,24 @@ local function parse_fea(fea)
   else
     if t_fea.pnum then cat_suffix = "-prop" end
     if t_fea.onum then 
-      cat_suffix = (cat_suffix and cat_suffix .. "-osf") or "-osf"
+      cat_suffix = cat_suffix and format("%s-osf", cat_suffix) or "-osf"
     end
   end
   for _,i in pairs(fea_lookup.figures) do t_fea[i] = nil end
-  if t_fea.tlig  == "false" then insert(suffix, "notlig") end
-  if t_fea.liga  == "false" then insert(suffix, "noliga") end
+  if t_fea.tlig  == "false" then insert(suffix, "-notlig") end
+  if t_fea.liga  == "false" then insert(suffix, "-noliga") end
   t_fea.tlig = nil
   t_fea.liga = nil
   for key,val in pairs(t_fea) do
     if val == "true" or val == "false" then
-      insert(suffix, key)
+      insert(suffix, format("-%s", key))
     else
-      insert(suffix, key .. ":" .. val)
+      insert(suffix, format("-%s:%s", key, val))
     end
   end
   if #suffix > 0 then 
-    suffix = concat(suffix, "-")
-    cat_suffix = cat_suffix and (cat_suffix .. "-" .. suffix) or suffix
+    suffix = concat(suffix, "")
+    cat_suffix = cat_suffix and format("%s%s", cat_suffix, suffix) or suffix
   end
   return fea, cat_suffix
 end
@@ -1320,7 +1396,7 @@ local function write_declare_shape(pre, line, post, fea, size_spec)
 
   -- fea should be a table?
   fea = fea or str_fea_default
-  fea = line[4] and line[4] ~= "" and (fea .. ";" .. line[4]) or fea
+  fea = line[4] and line[4] ~= "" and format("%s;%s", fea, line[4]) or fea
 
   size_spec = size_spec or str_onesize
 
@@ -1367,11 +1443,11 @@ local function write_declare_shape(pre, line, post, fea, size_spec)
   else
     -- Else we must have a substitution - silent or o/w.
     msg_assert(line.sub or line.ssub, "Malformed line!")
-    local subs = line.sub or line.ssub
+    local subst = line.sub or line.ssub
 
     append(out, {
       tok_group_begin, str_onesize, line.ssub and "ssub*" or "sub*",
-      subs[1] .. "/" .. subs[2] .. "/" .. subs[3], tok_group_end })
+      format("%s/%s/%s", subst[1], subst[2], subst[3]), tok_group_end })
   end
 
   -- hyph or whatever
@@ -1586,7 +1662,7 @@ local function write_fake_fd(fam, fake_fd, fea, scale_factor, suffix)
     fea, " scaled ", scale_factor or "1", " suffixed ", suffix or "[none]",
     "."}, "log")
 
-  local use_name = suffix and (fam .. suffix) or fam
+  local use_name = suffix and format("%s%s", fam, suffix) or fam
   local pre = {fastcopy(toks_enc_tu), embrace(use_name)}
   local out = {
     tok_declare_fam, fastcopy(pre), toks_empty_n
@@ -1597,7 +1673,7 @@ local function write_fake_fd(fam, fake_fd, fea, scale_factor, suffix)
   if scale_factor and scale_factor ~= 1 then
     if lfc_cache[fam].scalable then
       msg({"Scaling ", use_name, " to ", scale_factor, "."}, "info")
-      onesize = onesize .. "s*[" .. scale_factor .. "]"
+      onesize = format("%ss*[%s]", onesize, scale_factor)
     else
       msg("Ignoring scaling factor for fonts with optical sizes.")
     end
@@ -1616,7 +1692,7 @@ local function write_fake_fd(fam, fake_fd, fea, scale_factor, suffix)
   -- No suffix for maths, so fam is OK here.
   if typeset_mode == 1 and not find(fam, "%-sf$") and not find (fam, "%-ssf$") then
     append(out, {tok_declare_m_scr_map, toks_enc_tu, embrace(fam),
-      toks_enc_tu, embrace(fam .. "-sf"), toks_enc_tu, embrace(fam .. "-ssf")})
+      toks_enc_tu, embrace(format("%s-sf", fam)), toks_enc_tu, embrace(format("%s-ssf", fam))})
   end
 
   msg_debug("Out (partially tokenized): ", "defn", out)
@@ -1661,8 +1737,8 @@ end
 ---@description A wrapper around write_fake_fd() which avoids defining fonts
 ---@description   unnecessarily (and so avoids unnecessary callbacks etc.).
 local function add_fake_fd(fam, fake_fd, fea, scale_factor, suffix)
-  local fd_filename = "tu" .. suffix and (fam .. suffix) or fam .. ".fd"
-  local fn = "__lfc_" .. fd_filename
+  local fd_filename = suffix and format("tu%s%s.fd", fam, suffix) or format("tu%s.fd", fam)
+  local fn = format("__lfc_%s", fd_filename)
   luafunction_to_cs(fn, function ()
     return write_fake_fd(fam, fake_fd, fea, scale_factor, suffix)
   end, "protected")
@@ -1827,7 +1903,7 @@ local function font_config(targ, config, immediate)
       elseif nfss_width == "m" then
         series = nfss_weight
       else 
-        series = nfss_weight .. nfss_width
+        series = format("%s%s", nfss_weight, nfss_width)
       end
 
       -- Likewise ‘n’, but I never saw anybody combine this, so nothing broken
@@ -1836,13 +1912,13 @@ local function font_config(targ, config, immediate)
       elseif nfss_variant == "n" then
         shape = nfss_style
       else
-        shape = nfss_variant .. nfss_style
+        shape = format("%s%s", nfss_variant, nfss_style)
       end
 
       -- Hash is <family>:<series>:<shape>[<minsize>:<maxsize>]
-      local nfss_hash = family .. ":" .. series .. ":" .. shape 
-        .. (font.minsize ~= nil and ":" .. font.minsize or "") 
-        .. (font.maxsize ~= nil and ":" .. font.maxsize or "")
+      local nfss_hash = format("%s:%s:%s%s%s", family, series, shape, 
+        font.minsize ~= nil and format(":%s", font.minsize) or "", 
+        font.maxsize ~= nil and format(":%s", font.maxsize) or "")
 
       font.series = series
       font.shape = shape
@@ -1920,19 +1996,44 @@ local function font_config(targ, config, immediate)
         end
       end
 
-      local fam_sf, fam_ssf
+      local fam_sf, fam_ssf, by_meta_math
       if typeset_mode == 1 then 
-        fam_sf, fam_ssf = fam .. "-sf", fam .. "-ssf" 
+        fam_sf, fam_ssf = format("%s-sf", fam), format("%s-ssf", fam) 
       end
 
-      local fake_fd, fake_fd_sf, fake_fd_ssf = prepare_fake_fd(fam, fam_data, 
-        typeset_mode)
+      local fake_fd, fake_fd_sf, fake_fd_ssf
+      -- Obviously, this is a stupid way to do this ....
+      -- Probably better to get the data back from the cache or return a
+      --    keyed table?
+      local f1, f2, f3 = prepare_fake_fd(fam, fam_data, typeset_mode)
+      if not f2 then fake_fd = f1
+      else
+        for _,fd in ipairs({f1,f2,f3}) do
+          for _,line in ipairs(fd) do
+            local fs = line[5] or line[4]
+            if not fs then goto maybe end
+            if fs == "" then fake_fd = fd
+            elseif find(fs, str_fea_math_sf) then fake_fd_sf = fd
+            elseif find(fs, str_fea_math_ssf) then fake_fd_ssf = fd
+            end
+            break
+            :: maybe ::
+          end
+        end
+        msg_assert(fake_fd and fake_fd_sf and fake_fd_ssf, "Mismatching maths \z
+          families!")
+      end
 
       if fake_fd then
         insert(by_meta_fam, fam)
 
-        if fake_fd_sf then insert(by_meta_fam, fam_sf) end
-        if fake_fd_ssf then insert(by_meta_fam, fam_ssf) end
+        if typeset_mode == 1 then 
+          msg_assert(fake_fd_sf and fake_fd_ssf, 
+            "Missing script and scriptscript!")
+          lfc_cache.meta_families.by_meta_math[fam] = {
+            fam, fam_sf, fam_ssf
+          }
+        end
 
         local scale = (config[fam] and config[fam].scale and 
           config[fam].scale) or (config.scale and config.scale) or nil
@@ -1977,31 +2078,58 @@ local function font_config(targ, config, immediate)
 
   else
 
-    for _,fam_name in ipairs(lfc_cache.meta_families.by_meta_fam[fam_meta]) do
-      local scale = (config[fam_name] and config[fam_name].scale and 
+    local by_meta_fam = lfc_cache.meta_families.by_meta_fam[fam_meta]
+    local all_math = false
+    if not by_meta_fam then
+      by_meta_fam = lfc_cache.meta_families.by_meta_math[fam_meta]
+      all_math = true
+    end
+
+    if not all_math then
+      for _,fam_name in ipairs(by_meta_fam) do
+        local scale = (config[fam_name] and config[fam_name].scale and 
         config[fam_name].scale) or (config.scale and config.scale) or nil
 
-      local fea = (config[fam_name] and config[fam_name].fea and 
-        config[fam_name].fea) or (config.fea and config.fea) or nil
+        local fea = (config[fam_name] and config[fam_name].fea and 
+        config[fam_name].fea) or (config.fea and config.fea)
 
-      local suffix
-      if lfc_cache[fam_name].typeset_mode == 0 and fea then 
-        fea, suffix = parse_fea(fea) 
-      else 
-        fea = lfc_cache[fam_name].typeset_mode ~= 1 and str_fea_default 
+        local suffix
+        local typeset_mode = lfc_cache[fam_name].typeset_mode
+        if typeset_mode == 0 and fea then 
+          fea, suffix = parse_fea(fea) 
+        else 
+          fea = typeset_mode ~= 1 and str_fea_default 
           or str_fea_math_default
+        end
+
+        if typeset_mode ~= 1 then
+          use_cached_fd(fam_name, fea, scale, immediate, suffix) 
+        else
+          -- Pick up the additional maths fds.
+          local meta_math = lfc_cache.meta_families.by_meta_math[fam_name]
+          msg_assert(meta_math, "Missing meta math from cache!")
+          for _,mfam in ipairs(meta_math) do
+            use_cached_fd(mfam, fea, scale, immediate, suffix) 
+          end
+        end
+
+        -- Need a different way to handle this.
+        -- It shouldn't be disconnected this way.
+        if suffix and fam_meta == fam_name then meta_suffix = suffix end
       end
+    else
+      for _,fam_name in ipairs(by_meta_fam) do
+        -- Not sure if scale is really appropriate here.
+        local scale = (config[fam_name] and config[fam_name].scale and 
+          config[fam_name].scale) or (config.scale and config.scale) or nil
 
-      use_cached_fd(fam_name, fea, scale, immediate, suffix) 
-
-      -- Need a different way to handle this.
-      -- It shouldn't be disconnected this way.
-      if suffix and fam_meta == fam_name then meta_suffix = suffix end
+        use_cached_fd(fam_name, str_fea_math_default, scale, immediate, nil)
+      end
     end
 
   end
 
-  if meta_suffix then fam_meta = fam_meta .. meta_suffix end
+  if meta_suffix then fam_meta = format("%s%s", fam_meta, meta_suffix) end
   return fam_meta
 end
 -- }}}
