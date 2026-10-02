@@ -90,7 +90,7 @@ LaTeX Font Info:    Trying to load font information for U+OrnementsADF on input 
 TEST 2: Show PDF Tags
 ============================================================
 -------- adforn-tounicodes.xml (start) ---------
-<PDF>
+<PDF version="2.0">
  <StructTreeRoot>
   <Document xmlns="http://iso.org/pdf2/ssn"
      id="ID.02"
