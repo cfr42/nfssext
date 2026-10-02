@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12088 2026-10-02 17:00:48Z cfrees $}[v0.0 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12089 2026-10-02 17:46:35Z cfrees $}[v0.0 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -436,7 +436,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12088 2026-10-02 17:00:48Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12089 2026-10-02 17:46:35Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -700,16 +700,13 @@
     \tagpdfsetup { math / mathml / luamml / load = true }
   }
 }
-%%^^A \lua_load_module:n {lua-font-config}
+\lua_load_module:n {lua-font-config}
 \ExplSyntaxOff
-\directlua{
-  require("lua-font-config")
-}
 %    \end{macrocode}
 %</sty>
 %
-%
 % \iffalse
+%
 %<*ee-lmr>
 \documentclass{article}
 \usepackage{lua-font-config}
@@ -747,6 +744,115 @@ ABC abc \textit{DEF def \textsc{GHI ghi}}
 \end{document}
 
 %</ee-lmr>
+%
+%<*ee-fea>
+%% $Id: lua-font-config.dtx 12089 2026-10-02 17:46:35Z cfrees $
+\documentclass{article}
+\parindent=0pt
+\usepackage{lua-font-config}
+\fontconfig{%
+  rm = {% serif uses oldstyle, proportional figures
+    name = TeX Gyre Pagella,
+    fea = {+ONUM;+PNUM},
+  },
+  sf = {% sans uses proportional lining figures
+    name = texgyreheros,
+    fea = {+pnum;+lnum},
+  },
+  tt = {% typewriter uses tabular lining figures and no ligatures
+    name = texgyrecursor,
+    fea = {-TLIG;+tnum;+lnum;-liga},
+  },
+}
+\begin{document}
+{%
+  \TeX-Gyre Pagella: 0123456789
+}
+
+{%
+  \sffamily
+  \TeX-Gyre Heros: 0123456789
+}
+
+{%
+  \ttfamily
+  \TeX-Gyre Cursor 0123456789
+  -- --- outfitted officials affluently affiliate fish finials flagranty, first
+  finalising infinite floral affinities of fish-filled fingers
+}
+
+%% No maths font is configured, so Latin Modern Math gets used there, but the
+%% ‘text’ fonts used in maths are synchronised with the document settings by
+%% default.
+\[
+    \sin \mathrm{Aa} \mathsf{Aa} \mathtt{Aa} \mathit{Aa} \mathbf{Aa}
+\]
+\mathversion{bold}
+\[
+    \sin \mathrm{Aa} \mathsf{Aa} \mathtt{Aa} \mathit{Aa} \mathbf{Aa}
+\]
+\end{document}
+%</ee-fea>
+%
+%<*ee-ncm-complete>
+\documentclass{article}
+\usepackage{lua-font-config}
+\fontconfig{%
+  rm    = New Computer Modern,
+  sf    = New Computer Modern Sans,
+  tt    = New Computer Modern Mono,
+  math  = New Computer Modern Math,
+}
+\begin{document}
+New Computer Modern with default settings.
+
+\sffamily
+New Computer Modern Sans with default settings.
+
+\ttfamily
+New Computer Modern Mono with default settings.
+
+\normalfont
+New Computer Modern Math with text fonts as above:
+\[
+    \sin\theta^2 + \cos\theta^2 = 1
+\]
+\[
+    \mathscr{ABC abc} \mathcal{ABC abc}
+\]
+\mathversion{bold}
+\[
+    \sin\theta^2 + \cos\theta^2 = 1
+\]
+\[
+    \mathscr{ABC abc} \mathcal{ABC abc}
+\]
+\end{document}
+%</ee-ncm-complete>
+%
+%<*ee-ncm-math>
+\documentclass{article}
+\usepackage{lua-font-config}
+\fontconfig{%
+  rm = newcomputermodern,
+  sf = newcomputermodernsans,
+  tt = newcomputermodernmono,
+  math = newcomputermodernmath,
+}
+\parindent=0pt
+\begin{document}
+\[
+    \sin\theta^2 + \cos\theta^2 = 1
+\]
+$\mathsf{x} \mathtt{x} \mathbf{x}$
+
+\mathversion{bold}
+\[
+    \sin\theta^2 + \cos\theta^2 = 1
+\]
+$\mathsf{x} \mathtt{x} \mathbf{x}$
+\end{document}
+%</ee-ncm-math>
 %
 %<*ee-talk>
 \DocumentMetadata{tagging=on,pdfstandard=ua-2,pdfversion=2.0,lang=en-GB}
@@ -786,29 +892,6 @@ ABC abc \textit{DEF def \textsc{GHI ghi}}
 \end{document}
 %</ee-talk>
 % 
-%<*ee-ncm-math>
-\documentclass{article}
-\usepackage{lua-font-config}
-\fontconfig{%
-  rm = newcomputermodern,
-  sf = newcomputermodernsans,
-  tt = newcomputermodernmono,
-  math = newcomputermodernmath,
-}
-\parindent=0pt
-\begin{document}
-\[
-    \sin\theta^2 + \cos\theta^2 = 1
-\]
-$\mathsf{x} \mathtt{x} \mathbf{x}$
-
-\mathversion{bold}
-\[
-    \sin\theta^2 + \cos\theta^2 = 1
-\]
-$\mathsf{x} \mathtt{x} \mathbf{x}$
-\end{document}
-%</ee-ncm-math>
 % \fi
 % 
 %\Finale
