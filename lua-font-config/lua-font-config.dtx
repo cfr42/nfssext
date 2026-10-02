@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12085 2026-10-01 07:11:18Z cfrees $}[v0.0 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12088 2026-10-02 17:00:48Z cfrees $}[v0.0 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -436,7 +436,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12085 2026-10-01 07:11:18Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12088 2026-10-02 17:00:48Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -663,9 +663,11 @@
   \SetMathAlphabet \mathrm {normal} {TU} \rmdefault {\mdseries@rm} \shapedefault
   \SetMathAlphabet \mathit {normal} {TU} \rmdefault {\mdseries@rm} \itdefault
   \SetMathAlphabet \mathbf {normal} {TU} \rmdefault {\bfseries@rm} \shapedefault
-  \SetMathAlphabet \mathrm {bold}   {TU} \rmdefault {\mdseries@rm} \shapedefault
-  \SetMathAlphabet \mathit {bold}   {TU} \rmdefault {\mdseries@rm} \itdefault
+  \SetMathAlphabet \mathrm {bold}   {TU} \rmdefault {\bfseries@rm} \shapedefault
+  \SetMathAlphabet \mathit {bold}   {TU} \rmdefault {\bfseries@rm} \itdefault
   \SetMathAlphabet \mathbf {bold}   {TU} \rmdefault {\bfseries@rm} \shapedefault
+  \SetSymbolFont{operators}{normal} {TU} \rmdefault {\mdseries@rm} \shapedefault
+  \SetSymbolFont{operators}{bold}   {TU} \rmdefault {\bfseries@rm} \shapedefault
 }
 \cs_new_protected_nopar:Npn \_@@_set_mathsf: {
   \SetMathAlphabet \mathsf {normal} {TU} \sfdefault {\mdseries@sf} \shapedefault

@@ -113,10 +113,6 @@ Package tagpdf Info: luamml has been disabled and will not create a MathML file.
 [lfc font]: \<->"["/usr/local/texlive/2026/texmf-dist/fonts/opentype/public/newcomputermodern/NewCMSans10-Bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;0" 
 [lfc font]: \<-9.0>"["/usr/local/texlive/2026/texmf-dist/fonts/opentype/public/newcomputermodern/NewCMSans08-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<9.0->"["/usr/local/texlive/2026/texmf-dist/fonts/opentype/public/newcomputermodern/NewCMSans10-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
 [1]
-LaTeX Font Info:    Trying to load font information for TU+lmr-base on input line ....
-(../tulmr-base.fd
-File: tulmr-base.fd ....-..-.. v... LaTeX font definitions for Latin Modern in base mode
-)
 [lfc font]: \<-9.0>"["/usr/local/texlive/2026/texmf-dist/fonts/opentype/public/newcomputermodern/NewCMSans08-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<9.0->"["/usr/local/texlive/2026/texmf-dist/fonts/opentype/public/newcomputermodern/NewCMSans10-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
 [lfc font]: \<-9.0>"["/usr/local/texlive/2026/texmf-dist/fonts/opentype/public/newcomputermodern/NewCMSans08-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<9.0->"["/usr/local/texlive/2026/texmf-dist/fonts/opentype/public/newcomputermodern/NewCMSans10-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
 [lfc font]: \<-9.0>"["/usr/local/texlive/2026/texmf-dist/fonts/opentype/public/newcomputermodern/NewCMSans08-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<9.0->"["/usr/local/texlive/2026/texmf-dist/fonts/opentype/public/newcomputermodern/NewCMSans10-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
