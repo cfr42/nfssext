@@ -33,7 +33,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12091 2026-10-03 08:10:08Z cfrees $}[v0.0 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12092 2026-10-03 22:35:32Z cfrees $}[v0.0 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -62,6 +62,7 @@
 \usepackage{xcolor}
 \usepackage{graphicx}
 \usepackage{parskip}
+\usepackage{changepage}
 \usepackage{xurl}
 % sicrhau hyperindex=false: llwytho CYN bookmark
 \usepackage{hypdoc}% ateb Ulrike Fischer: https://tex.stackexchange.com/a/695555/
@@ -91,17 +92,6 @@
   pdfproducer={LuaTeX},
   urlcolor={blueberry}%
 }
-\makeatletter
-\setminted     {style=sas,breaklines=true,breakafter={\,},%
-  frame=single,rulecolor=darkgray,%
-}
-\newmintedfile [lfcdocfile]{latex} {%
-  rangestartstring={\\documentclass},%
-  rangestopstring={\\end\{document\}},%
-  frame = topline,%
-}
-
-\makeatother
 % \NewDocElement[%
 %   idxtype=opt.,
 %   idxgroup=options,
@@ -149,6 +139,35 @@
 {
   \keys_set:nn { lfc / doc } { #1 }
 }
+\setminted     {style=sas,breaklines=true,breakafter={\,},
+  frame=single,rulecolor=darkgray,
+}
+\newmintedfile [lfcdocfile]{latex} {
+  rangestartstring={\\documentclass},
+  rangestopstring={\\end\{document\}},
+  frame = topline,
+}
+\NewDocumentCommand \lfcee { s o m} {
+  \begin{figure}
+    \IfBooleanT {#1} {
+      \begin{adjustwidth}{-8pc}{}
+    }
+      \centering 
+      \IfNoValueTF {#2} {
+        \includegraphics{example-#3} 
+        \par
+      } {
+        \clist_map_inline:nn {#2} {
+          \includegraphics[page=##1]{example-#3}
+          \par
+        }
+      }
+      \caption{\texttt{example-#3}}\label{fig:ee-#3}
+    \IfBooleanT {#1} {
+      \end{adjustwidth}
+    }
+  \end{figure}
+}
 \ExplSyntaxOff
 \lfcdocset{%
   bug={\href{https://codeberg.org/cfr/nfssext/issues}{\textsc{bugtracker}}},
@@ -160,13 +179,6 @@
 \makeatletter
 \def\@xobeysp{\leavevmode\penalty100\ }
 \makeatother
-\NewDocumentCommand \lfcee { O{} m} {%
-  \begin{figure}
-    \centering 
-    \includegraphics[#1]{example-#2} 
-    \caption{\texttt{example-#2}}\label{fig:ee-#2#1}
-  \end{figure}%
-}
 \begin{document}
   \DocInput{\filename}
 \end{document}
@@ -444,22 +456,124 @@
 %
 % \section{Examples}\label{sec:eeiau}
 %
-% \lfcdocfile [label=example-lmr] {example-lmr}
+% \lfcdocfile [label=example-lmr -- \cref{fig:ee-lmr}] {example-lmr}
 % \lfcee{lmr}
 %
-% \lfcdocfile [label=example-ncm-math] {example-ncm-math}
+% \lfcdocfile [label=example-ncm-math -- \cref{fig:ee-ncm-math}] {example-ncm-math}
 % \lfcee{ncm-math}
 %
-% \lfcdocfile [label=example-ncm-complete] {example-ncm-complete}
+% \lfcdocfile [label=example-ncm-complete -- \cref{fig:ee-ncm-complete}] 
+%   {example-ncm-complete}
 % \lfcee{ncm-complete}
 %
-% \lfcdocfile [label=example-fea] {example-fea}
+% \lfcdocfile [label=example-fea -- \cref{fig:ee-fea}] {example-fea}
 % \lfcee{fea}
 %
-% \lfcdocfile [label=example-talk,rangestartstring={\\DocumentMetadata}]{example-talk}
-% \lfcee[page=1]{talk}
-% \lfcee[page=2]{talk}
-% \lfcee[page=3]{talk}
+% \lfcdocfile [label=example-talk -- \cref{fig:ee-talk},
+%   rangestartstring={\\DocumentMetadata}]{example-talk}
+% \lfcee*[1,2]{talk}
+%
+% \section{TO DOs}\label{sec:todo}
+%
+% These are not in any particular order, though there is some tendency for 
+%   higher priority items to be earlier.
+% \begin{enumerate}
+%   \item Conceptual
+%     \begin{itemize}
+%       \item Abandon the whole thing since packages are not supposed to meddle 
+%         with fonts?
+%     \end{itemize}
+%   \item \textsc{nfss}
+%     \begin{itemize}
+%       \item Support multiple font configurations e.g.~for multiple languages 
+%         with multiple scripts.
+%         \begin{itemize}
+%           \item Support for \pkg{babel}?
+%           \item[] \pkg{babel} provides e.g. \cs{babelfont}, which uses 
+%             \cs{fontspec}.
+%             Should \pkg{lua-font-config} provide this?
+%         \end{itemize}
+%      \end{itemize}
+%   \item Interface
+%     \begin{itemize}
+%       \item Provide a proper user interface (more similar to Con\TeX{}t, 
+%           since we're using the same (\textsc{mkiv}) sorting?
+%       \item Information for user.
+%       \item Accommodate \texttt{.ttc}. 
+%       \begin{itemize}
+%         \item The basis is done, but not sure what, if any, interface is needed?
+%         \item How to test this??
+%       \end{itemize}
+%       \item Way to define individual font commands for text and (maybe) maths.
+%         \begin{itemize}
+%           \item Text is already in the infrastructure, but the defined macro is 
+%             unpredictable \& non-configurable.
+%         \end{itemize}
+%     \end{itemize}
+%   \item Loader
+%     \begin{itemize}
+%       \item Test with \texttt{.ttf}. 
+%         \begin{itemize}
+%           \item What needs testing exactly??
+%             Or is this all on the loader?
+%         \end{itemize}
+%       \item Variable fonts.
+%         \begin{itemize}
+%           \item How to do or test??
+%         \end{itemize}
+%       \item Colour. 
+%         Do??
+%         \begin{itemize}
+%           \item What does ‘Do??’ refer to?
+%         \end{itemize}
+%       \item Cope with (text) symbol fonts?
+%         Not sure is that really needed?
+%       \item Combo, fallback \& all that.
+%     \end{itemize}
+%   \item Cache
+%     \begin{itemize}
+%       \item Cached data should depend on db/fnt versions.
+%         \begin{itemize}
+%           \item Or is this automatic?
+%           \item Or maybe it shouldn't?
+%         \end{itemize}
+%     \end{itemize}
+%   \item Documentation
+%     \begin{itemize}
+%       \item Not everything implemented in terms of the \textsc{ui} is 
+%         in the user doc.
+%       \item The Lua code has some comments, but these don't always amount to
+%         documentation.
+%       \item The overall infrastructure isn't really documented, except for
+%         a partially accurate \textsc{ascii} database schema included inline.
+%       \item Registered Lua functions mapped to \pkg{expl3} names are not 
+%         documented.
+%       \item Use of callbacks, hooks etc.\ is more-or-less undocumented.
+%     \end{itemize}
+%   \item Code
+%     \begin{itemize}
+%       \item Should be cleaned up -- I cannot need 2,500 lines to load a font!
+%       \item[Unnumbered Gripe] The code is too long, too complex, too clunky and too 
+%          simplistic.
+%          (Yes, of course, it can be both.)
+%       \item Loading the ConTeXt file differently?
+%       \item Improve formal \LaTeX{} representation (see \pkg{ltluatexbase}.
+%       \item Improve performance.
+%         \begin{itemize}
+%           \item There is some duplication and too many pre-definitions for my taste.
+%         \end{itemize}
+%       \item Possibly modify database creation to avoid sorting the data twice??
+%     \end{itemize}
+%   \item Test suite
+%     \begin{itemize}
+%       \item Some tests produce indeterministic output, not because there is
+%         a problem, but because the ordering is arbitrary by design.
+%         This does not work with \pkg{l3build}'s model of regression testing.
+%       \item There are no unit tests (cf.\ \pkg{nfssext-cfr}, where the tests
+%         are much more focused).
+%         I don't know how to implement this for (non-public) Lua functions.
+%     \end{itemize}
+% \end{enumerate}
 %
 % \changes{v0.0}{0000-00-00}{First public release.}
 %
@@ -477,7 +591,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12091 2026-10-03 08:10:08Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12092 2026-10-03 22:35:32Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -787,7 +901,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %</ee-lmr>
 %
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12091 2026-10-03 08:10:08Z cfrees $
+%% $Id: lua-font-config.dtx 12092 2026-10-03 22:35:32Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -825,11 +939,21 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 % No maths font is configured, so Computer Modern is used.
 % But the ‘text’ fonts in maths matches the text by default.
 \[
-    \sin \mathrm{rm} \mathsf{sf} \mathtt{tt} \mathit{it} \mathbf{bf}
+    \sin\quad
+    \mathrm{rm}\quad
+    \mathsf{sf}\quad
+    \mathtt{tt}\quad
+    \mathit{it}\quad
+    \mathbf{bf}
 \]
 \mathversion{bold}
 \[
-    \sin \mathrm{rm} \mathsf{sf} \mathtt{tt} \mathit{it} \mathbf{bf}
+    \sin\quad
+    \mathrm{rm}\quad
+    \mathsf{sf}\quad
+    \mathtt{tt}\quad
+    \mathit{it}\quad
+    \mathbf{bf}
 \]
 \end{document}
 %</ee-fea>
@@ -910,24 +1034,28 @@ $\mathsf{x} \mathtt{x} \mathbf{x}$
 \begin{frame}
   \frametitle{Frame}
   Some text\footnote{With a footnote.} on a slide.
+
+  \textsc{Small-Caps \textsl{italics \textbf{bold}} \textbf{bold}.}
+
+  Regular, \fontseries{k}\selectfont Book and \bfseries Bold.
+  \normalfont
   \begin{equation}
     v = ut + \frac{1}{2}at^2
   \end{equation}
   \begin{equation}
     \sin^2\theta + \cos^2\theta = 1
   \end{equation}
-\end{frame}
-\begin{frame}
-  \frametitle{Frame}
-  \fontseries{k}\selectfont Book 
+  Script $\mathscr{ABC abc}$ and calligraphic $\mathcal{ABC abc}$.
 
-  \textsc{Small-Caps \textit{italics \textbf{bold}} \textbf{bold}}
-
-
-  \normalfont Regular
-
-
-  \textsc{Small-Caps \textsl{italics \textbf{bold}} \textbf{bold}}
+  Bold maths:
+  \mathversion{bold}
+  \begin{equation}
+    v = ut + \frac{1}{2}at^2
+  \end{equation}
+  \begin{equation}
+    \sin^2\theta + \cos^2\theta = 1
+  \end{equation}
+  Script $\mathscr{ABC abc}$ and calligraphic $\mathcal{ABC abc}$.
 \end{frame}
 \end{document}
 %</ee-talk>

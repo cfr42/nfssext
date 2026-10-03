@@ -1,4 +1,4 @@
--- $Id: build.lua 12086 2026-10-02 06:44:44Z cfrees $
+-- $Id: build.lua 12091 2026-10-03 08:10:08Z cfrees $
 --------------------------------------------------------------------------------
 -- This package combines files released under distinct licences. 
 --
@@ -66,17 +66,18 @@ function manifest_setup ()
     {
       name = "Package files",
       dir = unpackdir,
-      files = {"*.cls","*.sty","example-*.tex"},
+      -- files = {"*.cls","*.sty","example-*.tex"},
+      files = {"*.cls","*.sty"},
       exclude = sourcefiles,
       description = "* manifest.txt",
     },
     {
       name = "Typeset documentation",
       -- files = {typesetfiles,typesetdemofiles},
-      files = {"*.pdf"},
-      excludefiles = {".",".."},
+      files = typesetfiles,
+      excludefiles = {".","..","example-*.pdf"},
       dir = sourcefiledir,
-      -- rename = {"%.%w+$",".pdf"},
+      rename = {"%.%w+$",".pdf"},
     },
   }
   return groups
@@ -165,9 +166,32 @@ function docinit_hook()
   -- Work around l3build deficiency/designed limitation/feature.
   files = filelist(unpackdir, "example*.tex")
   for _,f in ipairs(files) do 
+    local modf = "mod-" .. f
     cp(f, unpackdir, typesetdir) 
-    assert(tex(f, typesetdir))
-    assert(cp((gsub(f, "%.tex$", ".pdf")), typesetdir, sourcefiledir))
+    local t = {}
+    local dc = false
+    for line in io.lines(typesetdir .. "/" .. f) do
+      if not find(line, "^%%") then
+        if not dc and find(line, "\\documentclass{article}") then
+          dc = true
+          insert(t, "\\documentclass[varwidth,border=2.5pt]{standalone}")
+        elseif not dc and find(line, "\\documentclass{ltx-talk}") then
+          dc = true
+          insert(t, line)
+        else
+          insert(t, line)
+        end
+      end
+    end
+    local mf = io.open(typesetdir .. "/" .. modf, "w")
+    assert(mf)
+    mf:write(table.concat(t, "\n"))
+    mf:close()
+    -- This doesn't typeset the talk one enough, but it doesn't matter here.
+    -- We just don't include the final page.
+    assert(tex(modf, typesetdir))
+    local mpf, pf = (gsub(modf, "%.tex$", ".pdf")), (gsub(f, "%.tex$", ".pdf"))
+    assert(ren(typesetdir, mpf, pf))
   end
 
   return 0
