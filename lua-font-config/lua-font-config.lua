@@ -1,4 +1,4 @@
--- $Id: lua-font-config.lua 12086 2026-10-02 06:44:44Z cfrees $
+-- $Id: lua-font-config.lua 12090 2026-10-03 04:16:25Z cfrees $
 -------------------------------------------------------------------------------
 -- TODO
 --
@@ -8,12 +8,13 @@
 -- 1. Test with .ttf. How to test??
 --
 -- 2. Accommodate .ttc. How to test this??
+--      - The basis is done, but not sure what, if any, interface is needed?
 --
 -- 3. Variable fonts. How to do or test??
 --
 -- 4. Colour. Do??
 --
--- 5. Code should be cleaned up - I cannot need 2,000 lines to load a font!
+-- 5. Code should be cleaned up - I cannot need 2,500 lines to load a font!
 --
 -- 6. Config parsing looks horrible. => Now better, but rather non-existent.
 --
@@ -33,9 +34,6 @@
 --
 -- 10. Loading the ConTeXt file differently?
 --
--- 11. Use suffix or something to distinguish families by features?
---      Or some other way to deal with this?
--- 
 -- 12. Information for user.
 --
 -- 13. Way to define individual font commands.
@@ -716,8 +714,7 @@ local variants = { -- {{{
 
 -------------------------------------------------------------------------------
 -- Parsers
--- parse_spec()   parse_config()    prepare_fake_fd() parse_fea()
--- parse_config() is not used??!!
+-- parse_spec()   prepare_fake_fd() parse_fea()
 -------------------------------------------------------------------------------
 --- {{{
 ---@function parse_spec -- {{{
@@ -732,103 +729,6 @@ local function parse_spec(kind, descriptor)
     return descriptor
   end
 end
--- }}}
-
----@function parse_config(fam, config) {{{
----@description Returns a table of configs keyed by NFSS family name.
----@param   fam: base family name
----@config  config: table or string of configurations
--- local function parse_config(fam, config) 
---   local configs = {}
---   if not config then 
---     configs[fam] = str_fea_default
---   elseif type(config) == "table" then
---     if #config > 0 then
---       -- indexed table --> multiple configs
---       for _,instance in ipairs(config) do
---         local cfgs = parse_config(fam, instance)
---         for name,cfg in pairs(cfg) do
---           configs[name] = cfg
---         end
---       end
---     else
---       -- keyed table --> single config
---       local cfg = {}
---       insert(cfg, "mode=" .. (config.mode or "node"))
---       insert(cfg, "lang=" .. (config.lang or "dflt"))
---       insert(cfg, "script=" .. (config.script or "dflt"))
---       local fam = fam .. (config.suffix or "")
---       if config.fea == nil then
---         insert(cfg, "+tlig")
---         if configs[fam] == nil then
---           configs[fam] = concat(cfg, ";")
---         else
---           local n = 1
---           while configs[fam .. n] do n = n + 1 end
---           configs[fam .. n] = concat(cfg, ";")
---         end
---       else
---         insert(cfg, config.fea)
---         local pre, post = "", ""
---         config.fea = (gsubs(gsubs(config.fea, "(%a%a%a%a)%s*=%s*true", "+%1"),
---           "(%a%a%a%a)%s*=%s*false", "-%1"))
---         -- Should use long suffixes here, but this is more convenient for now.
---         for sign,subs in gmatch(config.fea, "([+-])(%a%a%a%a);") do
---           if sign == "+" then
---             if subs == "tnum" then pre = ""
---             elseif subs == "pnum" then pre = "2"
---             elseif subs == "lnum" then post = ""
---             elseif subs == "onum" then post = "j"
---             elseif subs == "subs" then pre = "0"
---             elseif subs == "sups" then pre = "1"
---             end
---           elseif subs == "pnum" and pre == "2" then pre = ""
---           elseif subs == "onum" and post == "j" then post = ""
---           elseif subs == "subs" and pre == "0" then pre = ""
---           elseif subs == "sups" and pre == "1" then pre = ""
---           end
---         end
---         local suff = pre .. post
---         if suff ~= "" then suff = "-" .. suff end
---         if configs[fam .. suff] ~= nil then
---           local n = 1
---           while configs[fam .. suff .. format("%c", n)] ~= nil do 
---             n = n + 1 
---           end
---           suff = suff .. format("%c", n)
---         end
---         configs[fam .. suff] = concat(cfg, ";")
---       end
---     end
---   else
---     msg_assert(type(config) == "string", 
---       {"Expected configuration to be table or string, but received ", 
---       type(config), " for ", fam})
---     local pre, post, suff = "", "", ""
---     for sign,subs in gmatch(config, "([+-])(%a%a%a%a);") do
---       if sign == "+" then
---         if subs == "tnum" then pre = ""
---         elseif subs == "pnum" then pre = "2"
---         elseif subs == "lnum" then post = ""
---         elseif subs == "onum" then post = "j"
---         end
---       elseif subs == "pnum" then pre = ""
---       elseif subs == "onum" then post = ""
---       end
---       suff = pre .. post
---       if suff ~= "" then suff = "-" .. suff end
---     end
---     if configs[fam .. suff] ~= nil then
---       local n = 1
---       while configs[fam .. suff .. format("%c", n)] ~= nil do 
---         n = n + 1 
---       end
---       suff = suff .. format("%c", n)
---     end
---     configs[fam .. suff] = config
---   end
---   return configs
--- end
 -- }}}
 
 ---@function prepare_fake_fd(fam, fam_data, typeset_mode, force) {{{
@@ -1021,14 +921,14 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
 
         if series == "b" and not fam_data.bx then
           if #series_data[shape] == 1 then
-            fake_fd_insert({"bx", shape, ssub = {fam, "b", shape}})
+            fake_fd_insert({"bx", shape, ssub = {"b", shape}})
           else
             local reuse_line = fake_fd[curr_line]
             fake_fd_insert({"bx", shape, reuse_line[3], reuse_line[4]})
           end
         elseif series == "bx" and not fam_data.b then
           if #series_data[shape] == 1 then
-            fake_fd_insert({"bx", shape, ssub = {fam, "b", shape}})
+            fake_fd_insert({"bx", shape, ssub = {"b", shape}})
           else
             local reuse_line = fake_fd[curr_line]
             fake_fd_insert({"b", shape, reuse_line[3], reuse_line[4]})
@@ -1045,7 +945,7 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
       if series_data.it == nil then
         if series_data.sl ~= nil then
           if #series_data.sl == 1 then
-            fake_fd_insert({series, "it", ssub = {fam, series, "sl"}})
+            fake_fd_insert({series, "it", ssub = {series, "sl"}})
           else
             local reuse_line = fake_fd[std_lines.sl]
             fake_fd_insert({series, "it", reuse_line[3], reuse_line[4]})
@@ -1053,7 +953,7 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
         end
       elseif series_data.sl == nil then
         if #series_data.it == 1 then
-          fake_fd_insert({series, "sl", ssub = {fam, series, "it"}})
+          fake_fd_insert({series, "sl", ssub = {series, "it"}})
         else
           local reuse_line = fake_fd[std_lines.it]
           fake_fd_insert({series, "sl", reuse_line[3], reuse_line[4]})
@@ -1125,8 +1025,8 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
       if series_data.scit == nil then
         if series_data.scsl ~= nil then
           if #series_data.scsl == 1 then
-            fake_fd_insert({series, "scit", ssub = {fam, series, "scsl"}})
-            fake_fd_insert({series, "si", ssub = {fam, series, "scit"}})
+            fake_fd_insert({series, "scit", ssub = {series, "scsl"}})
+            fake_fd_insert({series, "si", ssub = {series, "scit"}})
           else
             local reuse_line = fake_fd[std_lines.scsl]
             fake_fd_insert({series, "scit", reuse_line[3], reuse_line[4]})
@@ -1135,8 +1035,8 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
         end
       elseif series_data.scsl == nil then
         if #series_data.scit == 1 then
-          fake_fd_insert({series, "scsl", ssub = {fam, series, "scit"}})
-          fake_fd_insert({series, "si", ssub = {fam, series, "scsl"}})
+          fake_fd_insert({series, "scsl", ssub = {series, "scit"}})
+          fake_fd_insert({series, "si", ssub = {series, "scsl"}})
         else
           local reuse_line = fake_fd[std_lines.scit]
           fake_fd_insert({series, "scsl", reuse_line[3], reuse_line[4]})
@@ -1144,7 +1044,7 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
         end
       else 
         if #series_data.scit == 1 then
-          fake_fd_insert({series, "si", ssub = {fam, series, "scit"}})
+          fake_fd_insert({series, "si", ssub = {series, "scit"}})
         else
           local reuse_line = fake_fd[std_lines.scit]
           fake_fd_insert({series, "si", reuse_line[3], reuse_line[4]})
@@ -1376,7 +1276,8 @@ local function get_toks(items)
 end
 -- }}}
 
----@function write_declare_shape(pre, line, post[, fea] [, size_spec]) {{{
+---@function write_declare_shape(fam, pre, line, post[, fea] [, size_spec]) {{{
+---@param fam       <string>  for use in subs lines, should inc. suffix
 ---@param pre       <table>   of toks/strings e.g. \DeclareFontShape{<fam>}{<enc>}
 ---@param line      <table>   rep. font spec  e.g. {<series>}, {<shape>}, ... 
 ---@param post      <table>   of toks/strings e.g. {}
@@ -1384,9 +1285,9 @@ end
 ---@param size_spec <string>  e.g. "<-5.0>" or "<->s*" etc.
 ---@Description Returns table of (tables of) toks/strings for a font shape
 ---@Description declaration. <line> may include ["sub"] or ["ssub"].
-local function write_declare_shape(pre, line, post, fea, size_spec) 
+local function write_declare_shape(fam, pre, line, post, fea, size_spec) 
 
-  msg_assert(pre and line and post, 
+  msg_assert(fam and pre and line and post, 
     "Partial or no spec to write. This should never happen!")
 
   if not size_spec and fea and (find(fea, "^<")) then
@@ -1447,7 +1348,7 @@ local function write_declare_shape(pre, line, post, fea, size_spec)
 
     append(out, {
       tok_group_begin, str_onesize, line.ssub and "ssub*" or "sub*",
-      format("%s/%s/%s", subst[1], subst[2], subst[3]), tok_group_end })
+      format("%s/%s/%s", fam, subst[1], subst[2]), tok_group_end })
   end
 
   -- hyph or whatever
@@ -1648,7 +1549,7 @@ end
 --    are likely required.
 -------------------------------------------------------------------------------
 
----@function write_fake_fd(fam, fake_fd, fea[, scale_factor]) {{{
+---@function write_fake_fd(fam, fake_fd, fea[, scale_factor[, suffix]]) {{{
 ---@param fam:            NFSS family
 ---@param fake_fd:        If not cached
 ---@param fea:            Features
@@ -1684,7 +1585,8 @@ local function write_fake_fd(fam, fake_fd, fea, scale_factor, suffix)
   for _,line in ipairs(fake_fd) do
     if line ~= "" then 
       msg({"Preparing line: ", use_name, ": ", fea, " ", onesize}, "debug")
-      append(out, write_declare_shape(pre, line, toks_empty_n, fea, onesize))
+      append(out, write_declare_shape(use_name, pre, line, toks_empty_n, fea, 
+        onesize))
     end
   end
 

@@ -29,7 +29,7 @@
 % \iffalse
 %<*driver>
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12089 2026-10-02 17:46:35Z cfrees $}[v0.0 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12090 2026-10-03 04:16:25Z cfrees $}[v0.0 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -64,15 +64,14 @@
 \usepackage{csquotes}
 \MakeAutoQuote{‘}{’}
 \MakeAutoQuote*{“}{”}
+\usepackage{minted}
 \usepackage{cleveref}
 \EnableCrossrefs
 \CodelineIndex
 \RecordChanges
 %^^A \OnlyDescription
 %^^A \ExplSyntaxOn
-%^^A \makeatletter
 \DoNotIndex{\verb,\ProvidesPackageSVN,\NeedsTeXFormat,\ProcessKeyOptions,\ExplSyntaxOn,\ExplSyntaxOff,\RequirePackage,\NeedsTeXFormat,\DefineFileInfoSVN,\GetInfoSVN,\@ifundefined,\@ifl@t@r\ExplLoaderFileDate,\endinput,\PackageError,\PackageWarning,\PackageInfo,\keys_define:nn,\keys_set:nn,\ProcessKeysOptionns,\author,\title,\maketitle,\date,\revinfo,\ProcessKeysOptions,\MessageBreak,\fmtversion,\documentclass,\ExplLoaderFileDate,\filebase,\fileversion,\fileinfo,\filebase:,\filedate,\documentclass,\@ifl@t@r,\begin,\end,\item,\IfFormatAtLeastTF}
-%^^A \makeatother
 %^^A \ExplSyntaxOff
 \definecolor{strawberry}{rgb}{1.000,0.000,0.502}
 \definecolor{blueberry}{rgb}{0.000,0.000,1.000}
@@ -84,9 +83,20 @@
   linkcolor={strawberry},
   linktocpage=true,
   pdfcreator={TeX},
-  pdfproducer={pdfeTeX},
+  pdfproducer={LuaTeX},
   urlcolor={blueberry}%
 }
+\makeatletter
+\setminted     {style=sas,breaklines=true,breakafter={\,},%
+  frame=single,rulecolor=darkgray,%
+}
+\newmintedfile [lfcdocfile]{latex} {%
+  rangestartstring={\\documentclass},%
+  rangestopstring={\\end\{document\}},%
+  frame = topline,%
+}
+
+\makeatother
 % \NewDocElement[%
 %   idxtype=opt.,
 %   idxgroup=options,
@@ -232,7 +242,7 @@
 % \iffalse
 %<*verb>
 % \fi
-\begin{verbatim}
+\begin{minted}{latex}
   \usepackage{lua-font-config}
   \fontconfig{%
     rm = texgyrepagella,
@@ -240,7 +250,7 @@
     tt = texgyrecursor,
     math = texgyrescholamath,
   }
-\end{verbatim}
+\end{minted}
 % \iffalse
 %</verb>
 % \fi
@@ -300,7 +310,7 @@
 % \iffalse
 %<*verb>
 % \fi
-\begin{verbatim}
+\begin{minted}{latex}
   \usepackage{lua-font-config}
   \fontconfig{%
     rm = {%
@@ -319,7 +329,7 @@
       force = false,
     },
   }
-\end{verbatim}
+\end{minted}
 % \iffalse
 %</verb>
 % \fi
@@ -420,6 +430,18 @@
 % \DescribeKey{nomaths}
 % Equivalent to \texttt{math = false}.
 %
+% \section{Examples}\label{sec:eeiau}
+%
+% \lfcdocfile [label=example-lmr] {example-lmr}
+%
+% \lfcdocfile [label=example-ncm-math] {example-ncm-math}
+%
+% \lfcdocfile [label=example-ncm-complete] {example-ncm-complete}
+%
+% \lfcdocfile [label=example-fea] {example-fea}
+%
+% \lfcdocfile [label=example-talk,rangestartstring={\\DocumentMetadata}]{example-talk}
+%
 % \changes{v0.0}{0000-00-00}{First public release.}
 %
 % \MaybeStop{%
@@ -436,7 +458,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12089 2026-10-02 17:46:35Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12090 2026-10-03 04:16:25Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -712,41 +734,41 @@
 \usepackage{lua-font-config}
 \fontconfig{rm = latinmodernroman}
 \begin{document}
-ABC abc \textit{DEF def \textsc{GHI ghi}} 
-\textsc{JKL jkl \textsl{MNO mno}} \textsl{PQR pqr}
-\fontshape{ui}\selectfont STU stu
+This is Latin Modern Roman.
+It features \textit{italics} and \textsl{oblique}.
+\textsc{Small-caps are implemented as distinct fonts, as are \textsl{oblique small-caps}.}
+{\fontshape{ui}\selectfont Upright italics are less commonly used.}
 
 \normalfont\bfseries
-ABC abc \textit{DEF def \textsc{GHI ghi}} 
-\textsc{JKL jkl \textsl{MNO mno}} \textsl{PQR pqr}
-\fontshape{ui}\selectfont STU stu
+This is the bold expanded weight.
+It features \textit{italics} and \textsl{oblique}.
 
 \normalfont\fontseries{db}\selectfont
-ABC abc \textit{DEF def \textsc{GHI ghi}} 
-\textsc{JKL jkl \textsl{MNO mno}} \textsl{PQR pqr}
-\fontshape{ui}\selectfont STU stu
+The ‘demi-bold’ is of regular width, with \textsl{oblique}.
 
 \normalfont
+Where optical sizes are available, thes provide higher quality output than simple scaling.
+
 \footnotesize
-ABC abc \textit{DEF def \textsc{GHI ghi}} 
-\textsc{JKL jkl \textsl{MNO mno}} \textsl{PQR pqr}
-\fontshape{ui}\selectfont STU stu
+This is footnote-sized Latin Modern Roman.
+It features \textit{italics} and \textsl{oblique}.
+\textsc{Small-caps are implemented as distinct fonts, as are \textsl{oblique small-caps}.}
+{\fontshape{ui}\selectfont Upright italics is less commonly used.}
 
 \normalfont\bfseries
-ABC abc \textit{DEF def \textsc{GHI ghi}} 
-\textsc{JKL jkl \textsl{MNO mno}} \textsl{PQR pqr}
-\fontshape{ui}\selectfont STU stu
+This is the bold expanded weight.
+It features \textit{italics} and \textsl{oblique}.
 
 \normalfont\fontseries{db}\selectfont
-ABC abc \textit{DEF def \textsc{GHI ghi}} 
-\textsc{JKL jkl \textsl{MNO mno}} \textsl{PQR pqr}
-\fontshape{ui}\selectfont STU stu
-\end{document}
+The ‘demi-bold’ is of regular width, with upright and \textsl{oblique} shapes.
 
+\normalfont
+The output should look very much as if ‘lua-font-config’ had not been loaded!
+\end{document}
 %</ee-lmr>
 %
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12089 2026-10-02 17:46:35Z cfrees $
+%% $Id: lua-font-config.dtx 12090 2026-10-03 04:16:25Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -781,9 +803,9 @@ ABC abc \textit{DEF def \textsc{GHI ghi}}
   finalising infinite floral affinities of fish-filled fingers
 }
 
-%% No maths font is configured, so Latin Modern Math gets used there, but the
-%% ‘text’ fonts used in maths are synchronised with the document settings by
-%% default.
+% No maths font is configured, so Computer Modern is used.
+% But the ‘text’ fonts in maths should match the text by default.
+% Unfortunately, this doesn't (yet?) work with non-default features.
 \[
     \sin \mathrm{Aa} \mathsf{Aa} \mathtt{Aa} \mathit{Aa} \mathbf{Aa}
 \]
@@ -856,7 +878,7 @@ $\mathsf{x} \mathtt{x} \mathbf{x}$
 %
 %<*ee-talk>
 \DocumentMetadata{tagging=on,pdfstandard=ua-2,pdfversion=2.0,lang=en-GB}
-\RequirePackage{lua-font-config}%
+\RequirePackage{lua-font-config}% MUST precede class.
 \documentclass{ltx-talk}
 
 \title{Some Title}
