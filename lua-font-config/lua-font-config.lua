@@ -1,4 +1,4 @@
--- $Id: lua-font-config.lua 12090 2026-10-03 04:16:25Z cfrees $
+-- $Id: lua-font-config.lua 12095 2026-10-03 23:45:38Z cfrees $
 -------------------------------------------------------------------------------
 -- TODO
 --
@@ -123,7 +123,7 @@ local copy, count, fastcopy     = table.copy, table.count, table.fastcopy
 local load, mirrored, sort      = table.load, table.mirrored, table.sort
 local save, setmetatableindex   = table.save, table.setmetatableindex
 local concat, serialize, unique = table.concat, table.serialize, table.unique
-local prepend                   = table.prepend
+local prepend, sortedpairs      = table.prepend, table.sortedpairs
 -- tex | texio | token
 local sprint                  = tex.sprint
 local write, write_nl         = texio.write, texio.write_nl
@@ -1223,6 +1223,7 @@ local function parse_fea(fea)
   if t_fea.sups then cat_suffix = "-sups" 
   elseif t_fea.subs then cat_suffix = "-subs"
   else
+    -- prop before osf b/c 2j
     if t_fea.pnum then cat_suffix = "-prop" end
     if t_fea.onum then 
       cat_suffix = cat_suffix and format("%s-osf", cat_suffix) or "-osf"
@@ -1233,9 +1234,9 @@ local function parse_fea(fea)
   if t_fea.liga  == "false" then insert(suffix, "-noliga") end
   t_fea.tlig = nil
   t_fea.liga = nil
-  for key,val in pairs(t_fea) do
+  for key,val in sortedpairs(t_fea) do
     if val == "true" or val == "false" then
-      insert(suffix, format("-%s", key))
+      insert(suffix, format("-%s%s", val == "true" and "" or "no", key))
     else
       insert(suffix, format("-%s:%s", key, val))
     end
@@ -2161,7 +2162,7 @@ local function configure_doc_families()
       nfss_doc_families,
       fam_defaults)
     local config = {fea = nil, scale = nil, force = nil, typeset_mode = nil}
-    for name,cfg in pairs(nfss_doc_families) do
+    for name,cfg in sortedpairs(nfss_doc_families) do
       if name ~= "curr" then
         config.fea = cfg.fea or nil
         config.scale = cfg.scale or nil
@@ -2199,7 +2200,7 @@ local function configure_doc_families()
     end
     msg_debug("NFSS doc families: ", "doc", nfss_doc_families)
     msg("Setting default families ...", "debug") 
-    for fam,cfg in pairs(nfss_default_families) do
+    for fam,cfg in sortedpairs(nfss_default_families) do
       if cfg.nfss_fam then
         local fam_name = cfg.nfss_fam
         if cfg.typeset_mode == 0 then
