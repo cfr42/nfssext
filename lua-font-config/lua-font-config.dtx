@@ -28,8 +28,12 @@
 %
 % \iffalse
 %<*driver>
+\directlua{
+  pdf.setmajorversion(2)
+  pdf.setminorversion(0)
+}
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12090 2026-10-03 04:16:25Z cfrees $}[v0.0 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12091 2026-10-03 08:10:08Z cfrees $}[v0.0 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -56,15 +60,16 @@
   math  = kpmath,
 }
 \usepackage{xcolor}
+\usepackage{graphicx}
 \usepackage{parskip}
 \usepackage{xurl}
 % sicrhau hyperindex=false: llwytho CYN bookmark
 \usepackage{hypdoc}% ateb Ulrike Fischer: https://tex.stackexchange.com/a/695555/
 \usepackage{bookmark}
+\usepackage{minted}
 \usepackage{csquotes}
 \MakeAutoQuote{‘}{’}
 \MakeAutoQuote*{“}{”}
-\usepackage{minted}
 \usepackage{cleveref}
 \EnableCrossrefs
 \CodelineIndex
@@ -155,6 +160,13 @@
 \makeatletter
 \def\@xobeysp{\leavevmode\penalty100\ }
 \makeatother
+\NewDocumentCommand \lfcee { O{} m} {%
+  \begin{figure}
+    \centering 
+    \includegraphics[#1]{example-#2} 
+    \caption{\texttt{example-#2}}\label{fig:ee-#2#1}
+  \end{figure}%
+}
 \begin{document}
   \DocInput{\filename}
 \end{document}
@@ -433,14 +445,21 @@
 % \section{Examples}\label{sec:eeiau}
 %
 % \lfcdocfile [label=example-lmr] {example-lmr}
+% \lfcee{lmr}
 %
 % \lfcdocfile [label=example-ncm-math] {example-ncm-math}
+% \lfcee{ncm-math}
 %
 % \lfcdocfile [label=example-ncm-complete] {example-ncm-complete}
+% \lfcee{ncm-complete}
 %
 % \lfcdocfile [label=example-fea] {example-fea}
+% \lfcee{fea}
 %
 % \lfcdocfile [label=example-talk,rangestartstring={\\DocumentMetadata}]{example-talk}
+% \lfcee[page=1]{talk}
+% \lfcee[page=2]{talk}
+% \lfcee[page=3]{talk}
 %
 % \changes{v0.0}{0000-00-00}{First public release.}
 %
@@ -458,7 +477,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12090 2026-10-03 04:16:25Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12091 2026-10-03 08:10:08Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -768,7 +787,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %</ee-lmr>
 %
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12090 2026-10-03 04:16:25Z cfrees $
+%% $Id: lua-font-config.dtx 12091 2026-10-03 08:10:08Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -804,14 +823,13 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 }
 
 % No maths font is configured, so Computer Modern is used.
-% But the ‘text’ fonts in maths should match the text by default.
-% Unfortunately, this doesn't (yet?) work with non-default features.
+% But the ‘text’ fonts in maths matches the text by default.
 \[
-    \sin \mathrm{Aa} \mathsf{Aa} \mathtt{Aa} \mathit{Aa} \mathbf{Aa}
+    \sin \mathrm{rm} \mathsf{sf} \mathtt{tt} \mathit{it} \mathbf{bf}
 \]
 \mathversion{bold}
 \[
-    \sin \mathrm{Aa} \mathsf{Aa} \mathtt{Aa} \mathit{Aa} \mathbf{Aa}
+    \sin \mathrm{rm} \mathsf{sf} \mathtt{tt} \mathit{it} \mathbf{bf}
 \]
 \end{document}
 %</ee-fea>
