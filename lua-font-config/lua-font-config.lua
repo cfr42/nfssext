@@ -1,4 +1,4 @@
--- $Id: lua-font-config.lua 12095 2026-10-03 23:45:38Z cfrees $
+-- $Id: lua-font-config.lua 12100 2026-10-06 05:07:31Z cfrees $
 -------------------------------------------------------------------------------
 -- TODO
 --
@@ -379,7 +379,8 @@ function lfc_env.resolvers.splitpath(path) return nil end
 
 -- Load "font-syn.lua" into our private environment.
 -- loadfile(kpse.find_file("font-syn.lua"), "t", lfc_env)()
-loadfile("lfc-context-font-syn.lua", "t", lfc_env)()
+loadfile(kpse.find_file("lfc-context-font-syn.lua"), "t", lfc_env)()
+-- loadfile("lfc-context-font-syn.lua", "t", lfc_env)()
 
 -- Print a message while generating our font name database so that users
 -- don't get confused by the long pause.
