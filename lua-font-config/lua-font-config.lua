@@ -1,49 +1,5 @@
--- $Id: lua-font-config.lua 12100 2026-10-06 05:07:31Z cfrees $
+-- $Id: lua-font-config.lua 12101 2026-10-07 07:01:14Z cfrees $
 -------------------------------------------------------------------------------
--- TODO
---
--- 0. Abandon the whole thing since packages are not supposed to meddle with 
---    fonts?
---
--- 1. Test with .ttf. How to test??
---
--- 2. Accommodate .ttc. How to test this??
---      - The basis is done, but not sure what, if any, interface is needed?
---
--- 3. Variable fonts. How to do or test??
---
--- 4. Colour. Do??
---
--- 5. Code should be cleaned up - I cannot need 2,500 lines to load a font!
---
--- 6. Config parsing looks horrible. => Now better, but rather non-existent.
---
--- 7. There's almost no user interface.
---
--- 8. Is there some disconnect between the data I'm using and the data luaotfload
---    uses, even though they are the same data?
---      - I guess luaotfload doesn't recognise cleanfilename() returns.
---
--- [Unnumbered Gripe] The code is too long, too complex, too clunky and too 
---    simplistic.
---    (Yes, of course, it can be both.)
---
--- 9. Cached data should depend on db/fnt versions.
---    - Or is this automatic?
---    - Or maybe it shouldn't?
---
--- 10. Loading the ConTeXt file differently?
---
--- 12. Information for user.
---
--- 13. Way to define individual font commands.
---
--- 14. Cope with symbol fonts? Not sure is that really needed?
---
--- 15. Too slow?
---
--- 16. ** Modify database creation to avoid sorting the data twice? **
---
 -------------------------------------------------------------------------------
 -- Cache format:
 -------------------------------------------------------------------------------
@@ -137,7 +93,10 @@ local p_comma, p_semicolon          = lpeg.patterns.comma, lpeg.patterns.semicol
 local p_is_sign                     = lpeg.patterns.sign
 -- }}}
 
-lfc = {} -- ours {{{
+-- ours {{{
+-- Only used for handling pre-config and not sure this is either necessary or
+-- wise.
+local lfc   = lfc or {}
 
 local lfc_cache
 
@@ -1174,11 +1133,23 @@ local function parse_fea(fea)
     tlig          = "true",
     tnum          = "true",
   }
+  local fea_known = {
+    lnum          = true,
+    onum          = true,
+    pnum          = true,
+    tnum          = true,
+    subs          = true,
+    sups          = true,
+    tlig          = true,
+  }
   -- Paid â cheisio leihau nifer o dablau yma!!!
   local t_feat = {}
-  for key,val in pairs(t_fea) do
+  -- sortedpairs for regression testing ...
+  for key,val in sortedpairs(t_fea) do
     if fea_ignore[key] and fea_ignore[key] == val then
       t_fea[key] = nil
+    elseif fea_known[key] then
+      insert(t_feat, format("%s=%s", key, val))
     else
       local code = fea_lookup[key]
       if code then
@@ -1855,22 +1826,13 @@ local function font_config(targ, config, immediate)
     --  entries in multiple fds & neither is really good to do on-the-fly.
 
     -- So what to do here?
-    --    1) Use ‘book’ or ‘k’ or ‘medium’ or ‘med’ or whatever?
-    --    2) Use ‘m’ and hope the fonts discarded as dupes are of-a-weight (not
-    --      likely)?
-    --    3) As (2) but discard all fonts with these weights if ‘regular’ is 
-    --      available, presumably later?
-    --    4) Create separate families?
-    --    5) Error if a foundary is so inconveniently prolific?
+    -- (6) 1. book    :-> k (non-standard)
+    --        medium  :-> f (arbitrary)
+    --        regular :-> m
+    --     2. ~(\exists x) (m = x) --> ((\exists x} (k = x) --> (k :-> m))
+    --     3. ~(\exists x) (m = x) --> ((\exists x} (f = x) --> (f :-> m))
 
-    -- I can see the ‘m’ would have been sufficient in the past, though I used
-    --  ‘mb’ before it got prohibited (and so did some core ‘.fd’ files).
-    -- But now so many fonts distinguish these ...
-
-    -- It would be so much nicer (and more efficient) if NFSS let this be done
-    --  properly! But the chances of getting NFSS changed to speed compilation
-    --  with a degenerate font package make Alpha Centauri seem a choice spot 
-    --  for your local newsagent's.
+    -- Nowadays so many fonts distinguish these ...
     
     for fam,data in pairs(parsed_fam) do
       if not data.m then
@@ -2150,7 +2112,6 @@ end
 -- }}}
 
 -- Configuration function.
--- {{{
 ---@function configure_doc_families() {{{
 ---@description Configures requested fonts.
 ---@description Sets defaults for rm/sf/tt, if applicable.
@@ -2229,7 +2190,6 @@ local function configure_doc_families()
   end
 end
 -- }}}
--- }}}
 
 -- Generate TeX macros to use Lua functions to set rm, sf and tt.
 -- {{{
@@ -2264,11 +2224,10 @@ end
 -- }}}
 
 -- Macros to toggle debugging.
--- {{{
 luafunction_to_cs("__lfc_debug_set_true:", function() lfc_debug = true end)
 luafunction_to_cs("__lfc_debug_set_false:", function() lfc_debug = false end)
 luafunction_to_cs("__lfc_debug_set_cats:n", get_debug_cat_scanner())
--- }}}
+
 --- }}}
 -------------------------------------------------------------------------------
 -- Setup on load
