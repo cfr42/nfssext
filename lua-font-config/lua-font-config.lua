@@ -1,4 +1,4 @@
--- $Id: lua-font-config.lua 12101 2026-10-07 07:01:14Z cfrees $
+-- $Id: lua-font-config.lua 12102 2026-10-10 04:30:24Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -- Cache format:
@@ -94,11 +94,15 @@ local p_is_sign                     = lpeg.patterns.sign
 -- }}}
 
 -- ours {{{
--- Only used for handling pre-config and not sure this is either necessary or
--- wise.
+-- Used for handling pre-config, but not sure this is either necessary or
+--    wise.
 local lfc   = lfc or {}
 
+-- Used to store cache for access during run.
 local lfc_cache
+
+-- Used to store compilation-specific results for ease of reuse/modification.
+local lfc_tmp_cache = {fonts = {}, math = {}, rm = {}, sf = {}, tt = {}}
 
 -- Booleans
 local lfc_debug                 = lfc_debug or false
@@ -2096,13 +2100,13 @@ end
 -- }}}
 
 ---@function get_fam_cfg_scanner() {{{
----@description Returns a function which takes a feature specification and 
+---@description Returns a function which takes a param/val specification and 
 ---@description stores it.
 local function get_fam_cfg_scanner()
   return do_with_two_scanner(
     function(key, value)
       local curr = nfss_doc_families.curr
-      msg_assert(curr ~= nil, "No current family to set features for!")
+      msg_assert(curr ~= nil, "No current family to set parameters for!")
       curr = nfss_doc_families[curr]
       curr[key] = lower(tostring(value))
       msg_debug("Scanned family configuration: ", "doc", curr)
@@ -2143,7 +2147,7 @@ local function configure_doc_families()
           -- text mode
             if not cfg.default then
               msg({"Creating NFSS family ", nfss_fam}, "debug")
-              luafunction_to_cs(cfg.cleanname, function()
+              luafunction_to_cs(cfg.csname or cfg.cleanname, function()
                 return sprint(-2, get_toks({tok_fontfamily, embrace(nfss_fam),
                 tok_selectfont}), "protected")
               end)

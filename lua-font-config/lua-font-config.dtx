@@ -33,7 +33,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12101 2026-10-07 07:01:14Z cfrees $}[v0.0 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12102 2026-10-10 04:30:24Z cfrees $}[v0.0 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -454,6 +454,37 @@
 % \DescribeKey{nomaths}
 % Equivalent to \texttt{math = false}.
 %
+% \subsubsection{Additional text family keys}\label{subsubsec:keys-text-add}
+%
+% \DescribeKey{command}|=\command|\par
+% Use \cs{command} to switch to the font family, rather than creating a command
+% from the family name.
+% 
+% By default the command to switch to the font family depends on the discovered
+% family name i.e.~on the result of searching the database for the specified 
+% family.
+% In many cases, this will be the value passed to the \texttt{name} key, but often
+% it will not and sometimes this may not be the command name you want anyway.
+% \texttt{command} allows you to override it.
+%
+% For example, the following would setup \cs{playfair} to switch to Playfair 
+% Display, rather than the default choice of \cs{playfairdisplay}.
+% \iffalse
+%<*verb>
+% \fi
+\begin{minted}{latex}
+  \usepackage{lua-font-config}
+  \fontconfig{%
+    family = {% setup an additional non-default family
+      name = Playfair Display,
+      command = \playfair,
+    },
+  }
+\end{minted}
+% \iffalse
+%</verb>
+% \fi
+%
 % \section{Examples}\label{sec:eeiau}
 %
 % \lfcdocfile [label=example-lmr -- \cref{fig:ee-lmr}] {example-lmr}
@@ -468,6 +499,9 @@
 %
 % \lfcdocfile [label=example-fea -- \cref{fig:ee-fea}] {example-fea}
 % \lfcee{fea}
+%
+% \lfcdocfile [label=example-add -- \cref{fig:ee-add}] {example-add}
+% \lfcee{add}
 %
 % \lfcdocfile [label=example-talk -- \cref{fig:ee-talk},
 %   rangestartstring={\\DocumentMetadata}]{example-talk}
@@ -588,7 +622,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12101 2026-10-07 07:01:14Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12102 2026-10-10 04:30:24Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -733,6 +767,9 @@
 %    \begin{macrocode}
 \keys_define:nn {lfc/fam} {
   name      .code:n = { \__@@_set_fam_name:n {#1} },
+  command   .code:n = { 
+    \exp_args:Nne \__@@_set_fam_cfg:nn {csname}{ \cs_to_str:N #1 }
+  },
   fea       .code:n = { \__@@_set_fam_cfg:nn {fea}{#1} },
   force     .code:n = { \__@@_set_fam_cfg:nn {force}{#1} },
   scale     .code:n = { \__@@_set_fam_cfg:nn {scale}{#1} },
@@ -898,7 +935,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %</ee-lmr>
 %
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12101 2026-10-07 07:01:14Z cfrees $
+%% $Id: lua-font-config.dtx 12102 2026-10-10 04:30:24Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -1057,6 +1094,29 @@ $\mathsf{x} \mathtt{x} \mathbf{x}$
 \end{document}
 %</ee-talk>
 % 
+%<*ee-add>
+\documentclass{article}
+\usepackage{lua-font-config}
+\fontconfig{%
+  family  = {
+    name    = Lobster Two,
+    scale   = 2,
+    command = \lobster,
+  },
+}
+\begin{document}
+This is some ordinary text in the default \LaTeXe{} font.
+
+{\lobster This is Lobster Two.
+  \textit{Italics but no \textsc{small-caps}} \textsc{even in upright}.
+  We do have \textbf{bold and \textit{bold italics}}, but there is no, 
+  \textsl{oblique, so here we get italics, too.}%
+}
+
+Back to the default.
+\end{document}
+%</ee-add>
+%
 % \fi
 % 
 %\Finale
