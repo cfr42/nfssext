@@ -1,4 +1,4 @@
--- $Id: build.lua 12103 2026-10-10 20:31:04Z cfrees $
+-- $Id: build.lua 12104 2026-10-10 23:11:30Z cfrees $
 --------------------------------------------------------------------------------
 -- This package combines files released under distinct licences. 
 --
@@ -197,7 +197,7 @@ function docinit_hook()
   return 0
 end
 --------------------------------------------------------------------------------
-kpse.set_program_name("l3build")
+kpse.set_program_name("texlua", "l3build")
 local kpse_texmfdist = (string.gsub(kpse.expand_var("$TEXMFDIST"), "%-", "%%-"))
 function normalize_log_hook(line)
   return (string.gsub(line, kpse_texmfdist, "TEXMFDIST"))
