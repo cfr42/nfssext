@@ -1,4 +1,4 @@
--- $Id: lua-font-config.lua 12106 2026-10-11 08:42:28Z cfrees $
+-- $Id: lua-font-config.lua 12109 2026-10-11 20:32:34Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -- Cache format:
@@ -1283,25 +1283,16 @@ local function write_declare_shape(fam, pre, line, post, fea, size_spec)
   msg_assert(fam and pre and line and post, 
     "Partial or no spec to write. This should never happen!")
 
-  -- if not size_spec and fea and (find(fea, "^<")) then
-  --   size_spec = fea
-  --   fea = nil
-  -- end
-
-  -- msg({"size_spec is ", size_spec}, "debug")
-
   -- fea should be a table?
-  
 
   size_spec = size_spec or str_onesize
 
   local out = {pre}
-  local kind
+  local kind = type(line[3]) or nil
 
-  if line[3] then
-    kind = type(line[3])
-    if type(line[3]) == "string" then
-      fea = line[5] ~= "" and format("%s;%s", fea, line[5]) or fea
+  if kind then
+    if kind == "string" then
+      fea = (line[5] ~= "") and format("%s;%s", fea, line[5]) or fea
     else
       msg_assert(kind == "table", {"Unexpected type ", kind, "!"})
       fea = line[4] ~= "" and format("%s;%s", fea, line[4]) or fea
