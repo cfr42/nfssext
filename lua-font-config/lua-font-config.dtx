@@ -33,7 +33,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12102 2026-10-10 04:30:24Z cfrees $}[v0.0 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12105 2026-10-11 05:12:51Z cfrees $}[v0.0 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -622,7 +622,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12102 2026-10-10 04:30:24Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12105 2026-10-11 05:12:51Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -732,11 +732,9 @@
 %    \begin{macrocode}
 \keys_define:nn {lfc} {
   debug   .code:n           = { 
-    \keys_set:nn {lfc/debug} {
-      state       = true,
-      categories  = {"doc"},
-      #1
-    } 
+    \keys_set_groups:nnnN
+      {lfc/debug} {toggle} {state = true, #1} \l_@@_tmpa_tl
+    \keys_set:nV {lfc/debug} \l_@@_tmpa_tl
   },
   debug   .usage:n          = general,
   family  .code:n           = { 
@@ -821,14 +819,15 @@
 % Configure keys for debugging.
 %    \begin{macrocode}
 \keys_define:nn {lfc/debug} {
+  categories  .code:n             = { \_@@_debug_set_cats_scanner:n {#1} },
   state       .choice:,
   state/false .code:n             = { \_@@_debug_set_false: },
   state/true  .code:n             = { \_@@_debug_set_true: },
-  categories  .code:n             = { \_@@_debug_set_cats:n {#1} },
-  state       .default:n          = true,
+  categories  .usage:n            = general,
   state       .usage:n            = general,
   categories  .value_required:n   = true,
-  categories  .usage:n            = general,
+  state       .default:n          = true,
+  state       .groups:n           = toggle,
 }
 %    \end{macrocode}
 % \end{keyname}
@@ -935,7 +934,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %</ee-lmr>
 %
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12102 2026-10-10 04:30:24Z cfrees $
+%% $Id: lua-font-config.dtx 12105 2026-10-11 05:12:51Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}

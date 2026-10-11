@@ -1,4 +1,4 @@
--- $Id: lua-font-config.lua 12102 2026-10-10 04:30:24Z cfrees $
+-- $Id: lua-font-config.lua 12105 2026-10-11 05:12:51Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -- Cache format:
@@ -90,7 +90,7 @@ local oneof, stripper, keeper       = lpeg.oneof, lpeg.stripper, lpeg.keeper
 local firstofsplit, secondofsplit   = lpeg.firstofsplit, lpeg.secondofsplit
 local Ct, splitat, lpeg_match       = lpeg.Ct, lpeg.splitat, lpeg.match
 local p_comma, p_semicolon          = lpeg.patterns.comma, lpeg.patterns.semicolon
-local p_is_sign                     = lpeg.patterns.sign
+local p_is_sign, p_space            = lpeg.patterns.sign, lpeg.patterns.space
 -- }}}
 
 -- ours {{{
@@ -105,15 +105,12 @@ local lfc_cache
 local lfc_tmp_cache = {fonts = {}, math = {}, rm = {}, sf = {}, tt = {}}
 
 -- Booleans
-local lfc_debug                 = lfc_debug or false
 local lfc_callback_smcp_active  = false
 local lfc_callback_data_active  = false
 local lfc_callback_cache_active = false
 
 -- Strings
 local function enquote(str) return format("\"%s\"", str) end
-
-local lfc_log_level         = lfc.log_level or (lfc_debug and "debug" or "info")
 
 -- lpeg
 local p_semicolon_or_comma  = oneof(p_semicolon, p_comma)
@@ -221,13 +218,15 @@ end
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -- logging fns {{{
+local msg_debug, msg_assert, lfc_debug, lfc_log_level
+
 local msg_level = {
   bug   = "Bug",
-  debug = "Debug",
   err   = "Error",
+  warn  = "Warning",
   info  = "Info",
   log   = "Log",
-  warn  = "Warning",
+  debug = "Debug",
 }
 local msg_log_levels = {
   "bug",
@@ -238,7 +237,7 @@ local msg_log_levels = {
   "debug",
 }
 msg_log_levels = hashed(msg_log_levels)
-local msg_cfg = lfc.msg_cfg or {}
+
 local function msg(text, level)
   level = level or "warn"
   level_n = msg_log_levels[level] or msg_log_levels.debug
@@ -260,35 +259,46 @@ local function msg(text, level)
     error(2)
   end
 end
-local function msg_assert(cond, text, level) 
-  if not cond then
-    msg(text, level or "bug")
-  end
-end
-local function msg_debug(...) end
-local function debug_config()
-  function msg_assert(cond, text, level) assert(cond, (type(text) == "string" 
-    and text) or concat(text)) end
-  msg_cfg.debug = msg_cfg.debug or {
-    cache     = true,
-    callback  = true,
-    defn      = true,
-    doc       = true,
-  }
-  function msg_debug(m, cat, ...)
-    if cat and not msg_cfg.debug[cat] then 
-      msg({"Skipped debug ", cat}, "debug") 
-      return 
+local function msg_config(log_level, cfg)
+  lfc_debug = (cfg and cfg.state) and true or false
+  lfc_log_level = log_level or (lfc_debug and "debug" or "info")
+
+  if lfc_debug then
+  
+    function msg_assert(cond, text, level) assert(cond, (type(text) == "string" 
+      and text) or concat(text)) end
+
+    local cats = cfg.categories or {
+      cache     = true,
+      callback  = true,
+      defn      = true,
+      doc       = true,
+    }
+
+    function msg_debug(m, cat, ...)
+      if cat and not cats[cat] then 
+        msg({"Skipped debug ", cat}, "debug") 
+        return 
+      end
+      cat = cat or "generic"
+      msg({"[", cat, "] ", m}, "debug")
+      local vargs = {...} -- Aaaarrrggghhh!!
+      for _,i in ipairs(vargs) do inspect(i) end
     end
-    cat = cat or "generic"
-    msg({"[", cat, "] ", m}, "debug")
-    local vargs = {...} -- Aaaarrrggghhh!!
-    for _,i in ipairs(vargs) do inspect(i) end
+
+  else
+
+    function msg_assert(cond, text, level) 
+      if not cond then
+        msg(text, level or "bug")
+      end
+    end
+
+    function msg_debug(...) end
+
   end
 end
-if lfc_debug then
-  debug_config()
-end
+msg_config(lfc.log_level, lfc.debug)
 -- }}}
 
 -------------------------------------------------------------------------------
@@ -2212,25 +2222,53 @@ luafunction_to_cs("__lfc_set_fam_cfg:nn", get_fam_cfg_scanner())
 -- A macro to actually configure the font families.
 luafunction_to_cs("__lfc_configure_doc_families:", configure_doc_families())
 
----@function get_debug_cat_scanner() {{{
-local function get_debug_cat_scanner()
+---@function get_log_level_scanner() {{{
+local function get_log_level_scanner()
+  return do_with_one_scanner(
+    function(level)
+      -- Make sure these are set as used all over.
+      lfc_log_level = msg_level[level] and level or lfc_log_level
+      lfc_debug = (lfc_log_level == "debug") and true or false
+      -- Note this will set all cats true if "debug".
+      return msg_config(lfc_log_level, { state = lfc_debug })
+    end)
+end
+-- }}}
+
+-- An expl3 function to set the log level.
+luafunction_to_cs("__lfc_set_log_level:n", get_log_level_scanner())
+
+---@function get_cats_scanner() {{{
+local function get_cats_scanner()
   return do_with_one_scanner(
     function(cats)
-      msg_cfg = msg_cfg or {}
-      msg_cfg.debug = msg_cfg.debug or {}
-      for _,cat in ipairs({cats}) do
-        msg_cfg.debug[cat] = true
+      local t = lpeg_match(Ct(splitat(p_comma,false)), cats)
+      for n,i in ipairs(t) do 
+        if i == "" then t[n] = nil
+        else
+          t[n] = lpeg_match(stripper(p_space), i) 
+          t[i] = nil
+        end
       end
-      lfc_debug = true
-      debug_config()
+      t = hashed(t)
+      return msg_config(lfc_log_level, {
+        state = lfc_debug and true or false,
+        categories = t,
+      })
     end)
 end
 -- }}}
 
 -- Macros to toggle debugging.
-luafunction_to_cs("__lfc_debug_set_true:", function() lfc_debug = true end)
-luafunction_to_cs("__lfc_debug_set_false:", function() lfc_debug = false end)
-luafunction_to_cs("__lfc_debug_set_cats:n", get_debug_cat_scanner())
+luafunction_to_cs("__lfc_debug_set_true:", function() 
+  lfc_debug = true 
+  lfc_log_level = "debug"
+end)
+luafunction_to_cs("__lfc_debug_set_false:", function() 
+  lfc_debug = false 
+  lfc_log_level = (lfc_log_level == "debug") and "info" or lfc_log_level
+end)
+luafunction_to_cs("__lfc_debug_set_cats_scanner:n", get_cats_scanner())
 
 --- }}}
 -------------------------------------------------------------------------------
