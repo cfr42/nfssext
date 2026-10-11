@@ -1,4 +1,4 @@
--- $Id: lua-font-config.lua 12105 2026-10-11 05:12:51Z cfrees $
+-- $Id: lua-font-config.lua 12106 2026-10-11 08:42:28Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -- Cache format:
@@ -266,7 +266,7 @@ local function msg_config(log_level, cfg)
   if lfc_debug then
   
     function msg_assert(cond, text, level) assert(cond, (type(text) == "string" 
-      and text) or concat(text)) end
+      and text) or concat(text, "")) end
 
     local cats = cfg.categories or {
       cache     = true,
@@ -898,14 +898,14 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
             fake_fd_insert({"bx", shape, ssub = {"b", shape}})
           else
             local reuse_line = fake_fd[curr_line]
-            fake_fd_insert({"bx", shape, reuse_line[3], reuse_line[4]})
+            fake_fd_insert({"bx", shape, reuse_line[3], reuse_line[4], reuse_line[5]})
           end
         elseif series == "bx" and not fam_data.b then
           if #series_data[shape] == 1 then
             fake_fd_insert({"bx", shape, ssub = {"b", shape}})
           else
             local reuse_line = fake_fd[curr_line]
-            fake_fd_insert({"b", shape, reuse_line[3], reuse_line[4]})
+            fake_fd_insert({"b", shape, reuse_line[3], reuse_line[4], reuse_line[5]})
           end
         end
 
@@ -922,7 +922,7 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
             fake_fd_insert({series, "it", ssub = {series, "sl"}})
           else
             local reuse_line = fake_fd[std_lines.sl]
-            fake_fd_insert({series, "it", reuse_line[3], reuse_line[4]})
+            fake_fd_insert({series, "it", reuse_line[3], reuse_line[4], reuse_line[5]})
           end
         end
       elseif series_data.sl == nil then
@@ -930,7 +930,7 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
           fake_fd_insert({series, "sl", ssub = {series, "it"}})
         else
           local reuse_line = fake_fd[std_lines.it]
-          fake_fd_insert({series, "sl", reuse_line[3], reuse_line[4]})
+          fake_fd_insert({series, "sl", reuse_line[3], reuse_line[4], reuse_line[5]})
         end
       end
 
@@ -966,7 +966,13 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
           -- This works better than an initial subs or blank and 
           --  _seems_ not to error???
           local line_mod = fastcopy(fake_fd[std_lines[base_shape]])
-          line_mod[4] = "+smcp"
+          if type(line_mod[3]) == "table" then
+            -- Optical sizes.
+            line_mod[4] = "+smcp"
+          else
+            -- Single size, so subfont is at index 4.
+            line_mod[5] = "+smcp"
+          end
           line_mod[2] = to_shape
           fake_fd_insert(line_mod)
 
@@ -1003,8 +1009,8 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
             fake_fd_insert({series, "si", ssub = {series, "scit"}})
           else
             local reuse_line = fake_fd[std_lines.scsl]
-            fake_fd_insert({series, "scit", reuse_line[3], reuse_line[4]})
-            fake_fd_insert({series, "si", reuse_line[3], reuse_line[4]})
+            fake_fd_insert({series, "scit", reuse_line[3], reuse_line[4], reuse_line[5]})
+            fake_fd_insert({series, "si", reuse_line[3], reuse_line[4], reuse_line[5]})
           end
         end
       elseif series_data.scsl == nil then
@@ -1013,15 +1019,15 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
           fake_fd_insert({series, "si", ssub = {series, "scsl"}})
         else
           local reuse_line = fake_fd[std_lines.scit]
-          fake_fd_insert({series, "scsl", reuse_line[3], reuse_line[4]})
-          fake_fd_insert({series, "si", reuse_line[3], reuse_line[4]})
+          fake_fd_insert({series, "scsl", reuse_line[3], reuse_line[4], reuse_line[5]})
+          fake_fd_insert({series, "si", reuse_line[3], reuse_line[4], reuse_line[5]})
         end
       else 
         if #series_data.scit == 1 then
           fake_fd_insert({series, "si", ssub = {series, "scit"}})
         else
           local reuse_line = fake_fd[std_lines.scit]
-          fake_fd_insert({series, "si", reuse_line[3], reuse_line[4]})
+          fake_fd_insert({series, "si", reuse_line[3], reuse_line[4], reuse_line[5]})
         end
       end
 
@@ -1263,7 +1269,7 @@ local function get_toks(items)
 end
 -- }}}
 
----@function write_declare_shape(fam, pre, line, post[, fea] [, size_spec]) {{{
+---@function write_declare_shape(fam, pre, line, post, fea [, size_spec]) {{{
 ---@param fam       <string>  for use in subs lines, should inc. suffix
 ---@param pre       <table>   of toks/strings e.g. \DeclareFontShape{<fam>}{<enc>}
 ---@param line      <table>   rep. font spec  e.g. {<series>}, {<shape>}, ... 
@@ -1277,18 +1283,30 @@ local function write_declare_shape(fam, pre, line, post, fea, size_spec)
   msg_assert(fam and pre and line and post, 
     "Partial or no spec to write. This should never happen!")
 
-  if not size_spec and fea and (find(fea, "^<")) then
-    size_spec = fea
-    fea = nil
-  end
+  -- if not size_spec and fea and (find(fea, "^<")) then
+  --   size_spec = fea
+  --   fea = nil
+  -- end
+
+  -- msg({"size_spec is ", size_spec}, "debug")
 
   -- fea should be a table?
-  fea = fea or str_fea_default
-  fea = line[4] and line[4] ~= "" and format("%s;%s", fea, line[4]) or fea
+  
 
   size_spec = size_spec or str_onesize
 
   local out = {pre}
+  local kind
+
+  if line[3] then
+    kind = type(line[3])
+    if type(line[3]) == "string" then
+      fea = line[5] ~= "" and format("%s;%s", fea, line[5]) or fea
+    else
+      msg_assert(kind == "table", {"Unexpected type ", kind, "!"})
+      fea = line[4] ~= "" and format("%s;%s", fea, line[4]) or fea
+    end
+  end
 
   local function toks_font_spec(fnt, subfnt)
     return subfnt == 0 and { "\"[", fnt, "]:", fea, "\"" } or  
@@ -1302,7 +1320,6 @@ local function write_declare_shape(fam, pre, line, post, fea, size_spec)
 
   if line[3] then
 
-    local kind = type(line[3])
 
     if kind == "string" then 
 
@@ -1312,7 +1329,6 @@ local function write_declare_shape(fam, pre, line, post, fea, size_spec)
         line[4]), tok_group_end })
 
     else 
-      msg_assert(kind == "table", {"Unexpected type ", kind, "!"})
 
       -- Otherwise: {
       --              <min-max> "[<path>]":           <features>"

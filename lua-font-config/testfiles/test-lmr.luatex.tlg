@@ -11,9 +11,10 @@ Lua function __lfc_set_math:n = ...
 Lua function __lfc_set_fam_name:n = ...
 Lua function __lfc_set_fam_cfg:nn = ...
 Lua function __lfc_configure_doc_families: = ...
+Lua function __lfc_set_log_level:n = ...
 Lua function __lfc_debug_set_true: = ...
 Lua function __lfc_debug_set_false: = ...
-Lua function __lfc_debug_set_cats:n = ...
+Lua function __lfc_debug_set_cats_scanner:n = ...
 [lfc] Reading cache ...)
 [lfc] Info:^^IAdding smcp callback.
 Inserting `lfc check for +smcp' in `luaotfload.patch_font'.
@@ -66,27 +67,27 @@ LaTeX Font Info:    ... okay on input line ....
 TEST 1: latinmodernroman m
 ============================================================
 [lfc font]: \<-7.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman7-italic.otf"]:mode=node;language=dflt;script=dflt;+tlig"<7.5-8.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman8-italic.otf"]:mode=node;language=dflt;script=dflt;+tlig"<8.5-9.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman9-italic.otf"]:mode=node;language=dflt;script=dflt;+tlig"<9.5-11.0>"["TEXMFDIST/fonts/opentype/public/lm/lmroman10-italic.otf"]:mode=node;language=dflt;script=dflt;+tlig"<11.0->"["TEXMFDIST/fonts/opentype/public/lm/lmroman12-italic.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromancaps10-oblique.otf"]:mode=node;language=dflt;script=dflt;+tlig;0" 
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromancaps10-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;0" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromancaps10-oblique.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromancaps10-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
 LaTeX Font Info:    Font shape `TU/latinmodernroman/m/scsl' in size <10> not available
 (Font)              Font shape `TU/latinmodernroman/m/scit' tried instead on input line ....
 [lfc font]: \<->ssub*latinmodernroman/m/scit 
 [lfc font]: \<-8.5>"["TEXMFDIST/fonts/opentype/public/lm/lmromanslant8-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<8.5-9.5>"["TEXMFDIST/fonts/opentype/public/lm/lmromanslant9-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<9.5-11.0>"["TEXMFDIST/fonts/opentype/public/lm/lmromanslant10-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<11.0-14.0>"["TEXMFDIST/fonts/opentype/public/lm/lmromanslant12-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<14.0->"["TEXMFDIST/fonts/opentype/public/lm/lmromanslant17-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromanunsl10-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;0" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromanunsl10-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
 ============================================================
 ============================================================
 TEST 2: latinmodernroman b
 ============================================================
 [lfc font]: \<-5.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman5-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig"<5.5-6.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman6-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig"<6.5-7.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman7-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig"<7.5-8.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman8-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig"<8.5-9.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman9-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig"<9.5-11.0>"["TEXMFDIST/fonts/opentype/public/lm/lmroman10-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig"<11.0->"["TEXMFDIST/fonts/opentype/public/lm/lmroman12-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmroman10-bolditalic.otf"]:mode=node;language=dflt;script=dflt;+tlig;0" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmroman10-bolditalic.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
 LaTeX Font Warning: Font shape `TU/latinmodernroman/b/scit' undefined
 (Font)              using `TU/latinmodernroman/b/sc' instead on input line ....
 [lfc font]: \<-5.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman5-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp"<5.5-6.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman6-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp"<6.5-7.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman7-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp"<7.5-8.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman8-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp"<8.5-9.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman9-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp"<9.5-11.0>"["TEXMFDIST/fonts/opentype/public/lm/lmroman10-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp"<11.0->"["TEXMFDIST/fonts/opentype/public/lm/lmroman12-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp" 
 [lfc font]: \<-5.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman5-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp"<5.5-6.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman6-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp"<6.5-7.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman7-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp"<7.5-8.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman8-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp"<8.5-9.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman9-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp"<9.5-11.0>"["TEXMFDIST/fonts/opentype/public/lm/lmroman10-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp"<11.0->"["TEXMFDIST/fonts/opentype/public/lm/lmroman12-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp" 
 LaTeX Font Warning: Font shape `TU/latinmodernroman/b/scsl' undefined
 (Font)              using `TU/latinmodernroman/b/sl' instead on input line ....
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromanslant10-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;0" 
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromanslant10-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;0" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromanslant10-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromanslant10-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
 LaTeX Font Warning: Font shape `TU/latinmodernroman/b/ui' undefined
 (Font)              using `TU/latinmodernroman/b/n' instead on input line ....
 [lfc font]: \<-5.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman5-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig"<5.5-6.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman6-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig"<6.5-7.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman7-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig"<7.5-8.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman8-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig"<8.5-9.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman9-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig"<9.5-11.0>"["TEXMFDIST/fonts/opentype/public/lm/lmroman10-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig"<11.0->"["TEXMFDIST/fonts/opentype/public/lm/lmroman12-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
@@ -94,14 +95,14 @@ LaTeX Font Warning: Font shape `TU/latinmodernroman/b/ui' undefined
 ============================================================
 TEST 3: latinmodernroman db
 ============================================================
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromandemi10-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;0" 
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromandemi10-oblique.otf"]:mode=node;language=dflt;script=dflt;+tlig;0" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromandemi10-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromandemi10-oblique.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
 LaTeX Font Warning: Font shape `TU/latinmodernroman/db/scit' undefined
 (Font)              using `TU/latinmodernroman/db/sc' instead on input line ....
 LaTeX Font Warning: Font shape `TU/latinmodernroman/db/sc' undefined
 (Font)              using `TU/latinmodernroman/db/n' instead on input line ....
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromandemi10-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;0" 
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromandemi10-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;0" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromandemi10-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromandemi10-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
 LaTeX Font Warning: Font shape `TU/latinmodernroman/db/scsl' undefined
 (Font)              using `TU/latinmodernroman/db/sl' instead on input line ....
 LaTeX Font Info:    Font shape `TU/latinmodernroman/db/sl' in size <10> not available
@@ -110,54 +111,54 @@ LaTeX Font Info:    Font shape `TU/latinmodernroman/db/sl' in size <10> not avai
 [lfc font]: \<->ssub*latinmodernroman/db/it 
 LaTeX Font Warning: Font shape `TU/latinmodernroman/db/ui' undefined
 (Font)              using `TU/latinmodernroman/db/n' instead on input line ....
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromandemi10-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;0" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromandemi10-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
 ============================================================
 ============================================================
 TEST 4: latinmodernroman footnotesize m
 ============================================================
 [lfc font]: \<-5.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman5-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<5.5-6.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman6-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<6.5-7.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman7-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<7.5-8.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman8-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<8.5-9.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman9-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<9.5-11.0>"["TEXMFDIST/fonts/opentype/public/lm/lmroman10-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<11.0-14.0>"["TEXMFDIST/fonts/opentype/public/lm/lmroman12-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<14.0->"["TEXMFDIST/fonts/opentype/public/lm/lmroman17-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
 [lfc font]: \<-7.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman7-italic.otf"]:mode=node;language=dflt;script=dflt;+tlig"<7.5-8.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman8-italic.otf"]:mode=node;language=dflt;script=dflt;+tlig"<8.5-9.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman9-italic.otf"]:mode=node;language=dflt;script=dflt;+tlig"<9.5-11.0>"["TEXMFDIST/fonts/opentype/public/lm/lmroman10-italic.otf"]:mode=node;language=dflt;script=dflt;+tlig"<11.0->"["TEXMFDIST/fonts/opentype/public/lm/lmroman12-italic.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromancaps10-oblique.otf"]:mode=node;language=dflt;script=dflt;+tlig;0" 
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromancaps10-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;0" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromancaps10-oblique.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromancaps10-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
 LaTeX Font Info:    Font shape `TU/latinmodernroman/m/scsl' in size <8> not available
 (Font)              Font shape `TU/latinmodernroman/m/scit' tried instead on input line ....
 [lfc font]: \<->ssub*latinmodernroman/m/scit 
 [lfc font]: \<-8.5>"["TEXMFDIST/fonts/opentype/public/lm/lmromanslant8-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<8.5-9.5>"["TEXMFDIST/fonts/opentype/public/lm/lmromanslant9-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<9.5-11.0>"["TEXMFDIST/fonts/opentype/public/lm/lmromanslant10-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<11.0-14.0>"["TEXMFDIST/fonts/opentype/public/lm/lmromanslant12-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<14.0->"["TEXMFDIST/fonts/opentype/public/lm/lmromanslant17-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromanunsl10-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;0" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromanunsl10-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
 ============================================================
 ============================================================
 TEST 5: latinmodernroman footnotesize b
 ============================================================
 [lfc font]: \<-5.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman5-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<5.5-6.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman6-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<6.5-7.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman7-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<7.5-8.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman8-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<8.5-9.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman9-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<9.5-11.0>"["TEXMFDIST/fonts/opentype/public/lm/lmroman10-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<11.0-14.0>"["TEXMFDIST/fonts/opentype/public/lm/lmroman12-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<14.0->"["TEXMFDIST/fonts/opentype/public/lm/lmroman17-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
 [lfc font]: \<-5.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman5-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig"<5.5-6.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman6-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig"<6.5-7.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman7-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig"<7.5-8.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman8-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig"<8.5-9.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman9-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig"<9.5-11.0>"["TEXMFDIST/fonts/opentype/public/lm/lmroman10-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig"<11.0->"["TEXMFDIST/fonts/opentype/public/lm/lmroman12-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmroman10-bolditalic.otf"]:mode=node;language=dflt;script=dflt;+tlig;0" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmroman10-bolditalic.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
 LaTeX Font Warning: Font shape `TU/latinmodernroman/b/scit' undefined
 (Font)              using `TU/latinmodernroman/b/sc' instead on input line ....
 [lfc font]: \<-5.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman5-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp"<5.5-6.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman6-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp"<6.5-7.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman7-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp"<7.5-8.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman8-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp"<8.5-9.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman9-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp"<9.5-11.0>"["TEXMFDIST/fonts/opentype/public/lm/lmroman10-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp"<11.0->"["TEXMFDIST/fonts/opentype/public/lm/lmroman12-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp" 
 [lfc font]: \<-5.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman5-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp"<5.5-6.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman6-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp"<6.5-7.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman7-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp"<7.5-8.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman8-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp"<8.5-9.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman9-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp"<9.5-11.0>"["TEXMFDIST/fonts/opentype/public/lm/lmroman10-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp"<11.0->"["TEXMFDIST/fonts/opentype/public/lm/lmroman12-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp" 
 LaTeX Font Warning: Font shape `TU/latinmodernroman/b/scsl' undefined
 (Font)              using `TU/latinmodernroman/b/sl' instead on input line ....
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromanslant10-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;0" 
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromanslant10-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;0" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromanslant10-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromanslant10-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
 [lfc font]: \<-5.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman5-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig"<5.5-6.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman6-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig"<6.5-7.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman7-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig"<7.5-8.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman8-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig"<8.5-9.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman9-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig"<9.5-11.0>"["TEXMFDIST/fonts/opentype/public/lm/lmroman10-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig"<11.0->"["TEXMFDIST/fonts/opentype/public/lm/lmroman12-bold.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
 ============================================================
 ============================================================
 TEST 6: latinmodernroman footnotesize db
 ============================================================
 [lfc font]: \<-5.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman5-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<5.5-6.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman6-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<6.5-7.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman7-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<7.5-8.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman8-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<8.5-9.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman9-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<9.5-11.0>"["TEXMFDIST/fonts/opentype/public/lm/lmroman10-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<11.0-14.0>"["TEXMFDIST/fonts/opentype/public/lm/lmroman12-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<14.0->"["TEXMFDIST/fonts/opentype/public/lm/lmroman17-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromandemi10-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;0" 
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromandemi10-oblique.otf"]:mode=node;language=dflt;script=dflt;+tlig;0" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromandemi10-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromandemi10-oblique.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
 LaTeX Font Warning: Font shape `TU/latinmodernroman/db/scit' undefined
 (Font)              using `TU/latinmodernroman/db/sc' instead on input line ....
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromandemi10-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;0" 
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromandemi10-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;0" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromandemi10-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromandemi10-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
 LaTeX Font Warning: Font shape `TU/latinmodernroman/db/scsl' undefined
 (Font)              using `TU/latinmodernroman/db/sl' instead on input line ....
 LaTeX Font Info:    Font shape `TU/latinmodernroman/db/sl' in size <8> not available
 (Font)              Font shape `TU/latinmodernroman/db/it' tried instead on input line ....
 [lfc font]: \<->ssub*latinmodernroman/db/it 
 [lfc font]: \<->ssub*latinmodernroman/db/it 
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromandemi10-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;0" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/lm/lmromandemi10-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
 ============================================================
 [lfc font]: \<-5.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman5-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<5.5-6.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman6-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<6.5-7.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman7-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<7.5-8.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman8-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<8.5-9.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman9-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<9.5-11.0>"["TEXMFDIST/fonts/opentype/public/lm/lmroman10-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<11.0-14.0>"["TEXMFDIST/fonts/opentype/public/lm/lmroman12-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<14.0->"["TEXMFDIST/fonts/opentype/public/lm/lmroman17-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
 [lfc font]: \<-5.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman5-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<5.5-6.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman6-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<6.5-7.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman7-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<7.5-8.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman8-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<8.5-9.5>"["TEXMFDIST/fonts/opentype/public/lm/lmroman9-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<9.5-11.0>"["TEXMFDIST/fonts/opentype/public/lm/lmroman10-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<11.0-14.0>"["TEXMFDIST/fonts/opentype/public/lm/lmroman12-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<14.0->"["TEXMFDIST/fonts/opentype/public/lm/lmroman17-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 

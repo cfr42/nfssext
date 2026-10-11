@@ -11,9 +11,10 @@ Lua function __lfc_set_math:n = ...
 Lua function __lfc_set_fam_name:n = ...
 Lua function __lfc_set_fam_cfg:nn = ...
 Lua function __lfc_configure_doc_families: = ...
+Lua function __lfc_set_log_level:n = ...
 Lua function __lfc_debug_set_true: = ...
 Lua function __lfc_debug_set_false: = ...
-Lua function __lfc_debug_set_cats:n = ...
+Lua function __lfc_debug_set_cats_scanner:n = ...
 [lfc] Reading cache ...)
 ============================================================
 TEST 1: no-fontspec
@@ -110,7 +111,7 @@ Package tagpdf Info: luamml has been disabled and will not create a MathML file.
 [lfc font]: \<-9.0>"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans08-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<9.0->"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans10-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
 [lfc font]: \<-9.0>"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans08-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<9.0->"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans10-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
 [lfc font]: \<-9.0>"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans08-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<9.0->"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans10-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans10-Bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;0" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans10-Bold.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
 [lfc font]: \<-9.0>"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans08-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<9.0->"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans10-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
 [1]
 [lfc font]: \<-9.0>"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans08-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<9.0->"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans10-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
@@ -123,27 +124,27 @@ Package tagpdf Info: luamml has been disabled and will not create a MathML file.
 [lfc font]: \<-9.0>"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans08-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<9.0->"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans10-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
 [lfc font]: \<-9.0>"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans08-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<9.0->"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans10-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
 [lfc font]: \<-9.0>"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans08-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<9.0->"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans10-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans10-Bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;0" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans10-Bold.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
 [lfc font]: \<-9.0>"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans08-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<9.0->"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans10-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
 [2
 ]
 [lfc font]: \<-9.0>"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans08-Book.otf"]:mode=node;language=dflt;script=dflt;+tlig"<9.0->"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans10-Book.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
 [lfc font]: \<-9.0>"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans08-Book.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp"<9.0->"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans10-Book.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp" 
 [lfc font]: \<-9.0>"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans08-BookOblique.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp"<9.0->"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans10-BookOblique.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp" 
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans10-BoldOblique.otf"]:(+smcp)mode=node;language=dflt;script=dflt;+tlig;+smcp" 
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans10-Bold.otf"]:(+smcp)mode=node;language=dflt;script=dflt;+tlig;+smcp" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans10-BoldOblique.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans10-Bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp" 
 [lfc font]: \<-9.0>"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans08-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<9.0->"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans10-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
 [lfc font]: \<-9.0>"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans08-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp"<9.0->"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans10-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp" 
 LaTeX Font Warning: Font shape `TU/newcomputermodernsans/m/scsl' undefined
 (Font)              using `TU/newcomputermodernsans/m/scit' instead on input line ....
 [lfc font]: \<-9.0>"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans08-Oblique.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp"<9.0->"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans10-Oblique.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp" 
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans10-BoldOblique.otf"]:(+smcp)mode=node;language=dflt;script=dflt;+tlig;+smcp" 
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans10-Bold.otf"]:(+smcp)mode=node;language=dflt;script=dflt;+tlig;+smcp" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans10-BoldOblique.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans10-Bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;+smcp" 
 [lfc font]: \<-9.0>"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans08-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<9.0->"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans10-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
 [lfc font]: \<-9.0>"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans08-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<9.0->"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans10-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
 [lfc font]: \<-9.0>"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans08-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<9.0->"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans10-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
 [lfc font]: \<-9.0>"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans08-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<9.0->"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans10-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans10-Bold.otf"]:mode=node;language=dflt;script=dflt;+tlig;0" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans10-Bold.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
 [lfc font]: \<-9.0>"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans08-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig"<9.0->"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCMSans10-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
 [3
 ] (test-talk.aux)
