@@ -1,4 +1,4 @@
--- $Id: lua-font-config.lua 12109 2026-10-11 20:32:34Z cfrees $
+-- $Id: lua-font-config.lua 12111 2026-10-11 23:55:12Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -- Cache format:
@@ -1280,6 +1280,8 @@ end
 ---@Description declaration. <line> may include ["sub"] or ["ssub"].
 local function write_declare_shape(fam, pre, line, post, fea, size_spec) 
 
+  msg({"Preparing line for ", fam, "."}, "debug")
+
   msg_assert(fam and pre and line and post, 
     "Partial or no spec to write. This should never happen!")
 
@@ -1288,7 +1290,7 @@ local function write_declare_shape(fam, pre, line, post, fea, size_spec)
   size_spec = size_spec or str_onesize
 
   local out = {pre}
-  local kind = type(line[3]) or nil
+  local kind = line[3] and type(line[3]) or nil
 
   if kind then
     if kind == "string" then

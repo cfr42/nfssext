@@ -1,12 +1,9 @@
-%% $Id: test-ncm-math.lvt 12108 2026-10-11 17:27:12Z cfrees $
+%% $Id: test-ncm-math.lvt 12111 2026-10-11 23:55:12Z cfrees $
 \input lfc-support.tex
 \documentclass{article}
 \START
 \usepackage{lua-font-config}
 \fontconfig{%
-  debug = {%
-    categories = {"cache", "callback", "defn", "doc"},
-  },
   rm = newcomputermodern,
   sf = newcomputermodernsans,
   tt = newcomputermodernmono,
