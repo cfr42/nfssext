@@ -11,6 +11,13 @@
 }
 \START
 \usepackage{lua-font-config}
+\directlua{
+  local path = "../build/test/luatex-cache/generic/fonts/lfc/lfc_cache.lua"
+  if lfs.isfile(path) then
+    local cache = table.load(path)
+    inspect(cache)
+  end
+}
 \fontconfig{%
   debug = {
     categories = {cache, callback, defn, doc},
