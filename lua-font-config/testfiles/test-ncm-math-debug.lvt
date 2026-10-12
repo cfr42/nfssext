@@ -11,13 +11,6 @@
 }
 \START
 \usepackage{lua-font-config}
-\directlua{
-  local path = "../build/test/luatex-cache/generic/fonts/lfc/lfc_cache.lua"
-  if lfs.isfile(path) then
-    local cache = table.load(path)
-    inspect(cache)
-  end
-}
 \fontconfig{%
   debug = {
     categories = {cache, callback, defn, doc},
@@ -39,4 +32,11 @@ $\mathsf{x} \mathtt{x} \mathbf{x}$
     \sin\theta^2 + \cos\theta^2 = 1
 \]
 $\mathsf{x} \mathtt{x} \mathbf{x}$
+\directlua{
+  local path = "../build/test/luatex-cache/generic/fonts/lfc/lfc_cache.lua"
+  if lfs.isfile(path) then
+    local cache = table.load(path)
+    inspect(cache)
+  end
+}
 \end{document}
