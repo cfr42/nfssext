@@ -1,4 +1,4 @@
--- $Id: lua-font-config.lua 12112 2026-10-12 03:58:27Z cfrees $
+-- $Id: lua-font-config.lua 12113 2026-10-12 18:44:58Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -- Cache format:
@@ -101,9 +101,6 @@ local lfc   = lfc or {}
 
 -- Used to store cache for access during run.
 local lfc_cache
-
--- Used to store compilation-specific results for ease of reuse/modification.
-local lfc_tmp_cache = {fonts = {}, math = {}, rm = {}, sf = {}, tt = {}}
 
 -- Booleans
 local lfc_callback_smcp_active  = false
@@ -268,6 +265,11 @@ local function msg_config(log_level, cfg)
   lfc_log_level = log_level or (lfc_debug and "debug" or "info")
 
   if lfc_debug then
+
+    -- Max Chernoff: https://chat.stackexchange.com/transcript/message/69252312#69252312
+    function inspect(t)
+      write_nl("term and log", serialize(t, false))
+    end
   
     function msg_assert(cond, text, level) assert(cond, (type(text) == "string" 
       and text) or concat(text, "")) end
