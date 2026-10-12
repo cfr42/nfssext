@@ -1,4 +1,4 @@
--- $Id: lua-font-config.lua 12111 2026-10-11 23:55:12Z cfrees $
+-- $Id: lua-font-config.lua 12112 2026-10-12 03:58:27Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -- Cache format:
@@ -74,12 +74,13 @@ local new_lua_function      = luatexbase.new_luafunction
 local gsub, gmatch, match       = string.gsub, string.gmatch, string.match
 local find, format, lower       = string.find, string.format, string.lower
 -- table
-local append, hashed, insert    = table.append, table.hashed, table.insert
+local append, tohash, insert    = table.append, table.tohash, table.insert
 local copy, count, fastcopy     = table.copy, table.count, table.fastcopy
 local load, mirrored, sort      = table.load, table.mirrored, table.sort
 local save, setmetatableindex   = table.save, table.setmetatableindex
 local concat, serialize, unique = table.concat, table.serialize, table.unique
 local prepend, sortedpairs      = table.prepend, table.sortedpairs
+local hashed                    = table.hashed
 -- tex | texio | token
 local sprint                  = tex.sprint
 local write, write_nl         = texio.write, texio.write_nl
@@ -228,15 +229,18 @@ local msg_level = {
   log   = "Log",
   debug = "Debug",
 }
-local msg_log_levels = {
-  "bug",
-  "err",
-  "warn",
-  "info",
-  "log",
-  "debug",
-}
-msg_log_levels = hashed(msg_log_levels)
+local msg_log_levels 
+do
+  local h = {
+    "bug",
+    "err",
+    "warn",
+    "info",
+    "log",
+    "debug",
+  }
+  msg_log_levels = hashed(h)
+end
 
 local function msg(text, level)
   level = level or "warn"
@@ -275,9 +279,19 @@ local function msg_config(log_level, cfg)
       doc       = true,
     }
 
+    local skipped_msg = {
+      cache     = false,
+      callback  = false,
+      defn      = false,
+      doc       = false,
+    }
+
     function msg_debug(m, cat, ...)
       if cat and not cats[cat] then 
-        msg({"Skipped debug ", cat}, "debug") 
+        if not skipped_msg[cat] then
+          msg({"Skipping debug messages for ", cat}, "debug") 
+          skipped_msg[cat] = true
+        end
         return 
       end
       cat = cat or "generic"
@@ -2259,10 +2273,10 @@ local function get_cats_scanner()
           t[i] = nil
         end
       end
-      t = hashed(t)
+      local h = tohash(t)
       return msg_config(lfc_log_level, {
         state = lfc_debug and true or false,
-        categories = t,
+        categories = h,
       })
     end)
 end

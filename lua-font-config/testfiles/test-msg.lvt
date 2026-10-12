@@ -1,0 +1,23 @@
+%% $Id: test-msg.lvt 12112 2026-10-12 03:58:27Z cfrees $
+\input lfc-support.tex
+\documentclass{article}
+\parindent=0pt
+\START
+\usepackage{lua-font-config}
+\fontconfig{%
+  debug = {
+    categories = {defn, doc, cache}, 
+  },
+  family = {%
+    name = Lobster Two,
+    scale = 5,
+  },
+}
+\begin{document}
+
+\TEST{debug + scaling}{%
+  {\lobstertwo Lobster Two}%
+}
+
+\end{document}
+
