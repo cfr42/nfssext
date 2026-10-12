@@ -1,19 +1,11 @@
 %% $Id: test-ncm-math.lvt 12111 2026-10-11 23:55:12Z cfrees $
 \input lfc-support.tex
 \documentclass{article}
-\directlua {
-  function print(...)
-    local t = {...}
-    for _,i in ipairs(t) do
-      texio.write_nl(tostring(i))
-    end
-  end
-}
 \START
 \usepackage{lua-font-config}
 \fontconfig{%
   debug = {
-    categories = {cache, callback, defn, doc},
+    categories = {cache, defn},
   },
   rm = newcomputermodern,
   sf = newcomputermodernsans,
@@ -22,6 +14,7 @@
 }
 \parindent=0pt
 \begin{document}
+\OMIT
 \[
     \sin\theta^2 + \cos\theta^2 = 1
 \]
@@ -32,11 +25,5 @@ $\mathsf{x} \mathtt{x} \mathbf{x}$
     \sin\theta^2 + \cos\theta^2 = 1
 \]
 $\mathsf{x} \mathtt{x} \mathbf{x}$
-\directlua{
-  local path = "../build/test/luatex-cache/generic/fonts/lfc/lfc_cache.lua"
-  if lfs.isfile(path) then
-    local cache = table.load(path)
-    inspect(cache)
-  end
-}
+\TIMO
 \end{document}
