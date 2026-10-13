@@ -1,4 +1,4 @@
--- $Id: lua-font-config.lua 12114 2026-10-13 00:51:07Z cfrees $
+-- $Id: lua-font-config.lua 12115 2026-10-13 19:31:25Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -- Cache format:
@@ -416,15 +416,17 @@ lfc_env.fonts.names.load(false, false)
 -- lfc_env.fonts.names.load(true, true)
 
 -- Get the table of filenames
-local cleanfilename = lfc_env.fonts.names.cleanfilename
+
 
 -- }}}
+
 
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -- late locals {{{
 local lfc_fonts = lfc_env.fonts
 local names = lfc_fonts.names
+local cleanfilename = names.cleanfilename
 local resolve = names.resolve
 local lookup_font_file = names.lookup_font_file
 local font_data = names.data
@@ -560,18 +562,16 @@ local function get_font_data(fnt, force)
 
   -- We prefer cached even if we have data, as cached will be processed.
   local cached
-  -- if lfc_cache.meta_families and lfc_cache.meta_families.by_meta_fam then
-    if not force then
-      cached = lfc_cache.meta_families.by_meta_fam[fam_meta] or
-        lfc_cache.meta_families.by_meta_math[fam_meta]
-    else
-      lfc_cache.meta_families.by_meta_fam[fam_meta] = nil
-      lfc_cache.meta_families.by_meta_math[fam_meta] = nil
-    end
-  -- end
+  if not force then
+    cached = lfc_cache.meta_families.by_meta_fam[fam_meta] or
+    lfc_cache.meta_families.by_meta_math[fam_meta]
+  else
+    lfc_cache.meta_families.by_meta_fam[fam_meta] = nil
+    lfc_cache.meta_families.by_meta_math[fam_meta] = nil
+  end
   metadata.hash_key  = fam_meta
 
-  -- If a cached emulated .fd exists, we're done unless force was used.
+  -- If a cached emulated .fd exists, we're done.
   if cached then
     metadata.cached = cached
     msg_debug("Returning cached data:", "data", f)
@@ -583,36 +583,73 @@ local function get_font_data(fnt, force)
   -- Returns indexed list, limited coverage.
   -- local data = font_data.families[fam_meta]
 
+  msg({"get_font_data() :: search term: ", fam_meta}, "debug")
+
   -- Returns key-val list, wider coverage.
   local data = names.list(fam_meta .. ".*",false,true)
   if data == nil then return nil end
 
-  -- names.list returns duplicate names for some font files.
-  -- This de-duplicates the list, though I wonder if there's a better method?
-  local data_by_filename = {}
+  msg_debug("get_font_data() :: data:", "data", data)
 
-  -- One would prefer to use index IDs here, but I'm not sure how to get that
-  --  in a nice way.
-  for name, fdata in pairs(data) do
-    -- choice of name is arbitrary
-    data_by_filename[fdata.filename] = data_by_filename[fdata.filename] or name
+  -- Unfortunately, the returned names are strange.
+  -- Worse, different fonts get the same name, so some silently vanish.
+
+  local data_fams, data_by_cleanfilename = {}, {}
+  for _,datum in pairs(data) do
+    insert(data_fams, datum.familyname)
   end
-
-  -- ‘In place’ doesn't mean what you think :(
-  data_by_filename = mirrored(data_by_filename)
-
-  -- Discard dupes -- ??????
-  -- Data doesn't include full paths, so add these now.
-  for name, fdata in pairs(data) do
-    if data_by_filename[name] == nil then
-      data[name] = nil
-    elseif fdata.fullpath == nil then
-      -- Gets full path from file name.
-      fdata.fullpath = lookup_font_file(fdata.filename)
+  for _,famname in ipairs(data_fams) do
+    local t = font_data.families[famname]
+    for _,fntdata in pairs(t) do
+      fntdata.fullpath = lookup_font_file(fntdata.filename)
+      data_by_cleanfilename[fntdata.cleanfilename] = fntdata
     end
   end
 
-  f.data = data
+  -- Belt and braces ... and still don't get 100% of e.g. newcomputermodern,
+  --    due to the wonky metadata.
+  for name, fdata in pairs(data) do
+    local cname = fdata.cleanfilename
+    if data_by_cleanfilename[cname] == nil then
+      fdata.fullpath = lookup_font_file(fdata.filename)
+      data_by_cleanfilename[cname] = fdata
+    end
+  end
+
+  msg_debug("get_font_data() :: data_by_cleanfilename:", "data", 
+    data_by_cleanfilename)
+
+  -- -- names.list returns duplicate names for some font files.
+  -- -- This de-duplicates the list, though I wonder if there's a better method?
+  -- local data_by_filename = {}
+  --
+  -- -- One would prefer to use index IDs here, but I'm not sure how to get that
+  -- --  in a nice way.
+  -- for name, fdata in pairs(data) do
+  --   -- choice of name is arbitrary
+  --   data_by_filename[fdata.filename] = data_by_filename[fdata.filename] or name
+  -- end
+  --
+  -- msg_debug("get_font_data() :: data_by_filename:", "data", data_by_filename)
+  --
+  -- -- ‘In place’ doesn't mean what you think :(.
+  -- data_by_filename = mirrored(data_by_filename)
+  --
+  -- msg_debug("get_font_data() :: data_by_filename (mirrored):", "data", data_by_filename)
+
+  -- -- Discard dupes -- ??????
+  -- -- Data doesn't include full paths, so add these now.
+  -- for name, fdata in pairs(data) do
+  --   if data_by_filename[name] == nil then -- ?????
+  --     data[name] = nil
+  --   elseif fdata.fullpath == nil then
+  --     -- Gets full path from file name.
+  --     fdata.fullpath = lookup_font_file(fdata.filename)
+  --   end
+  -- end
+
+  -- f.data = data
+  f.data = data_by_cleanfilename
 
   msg_debug("Returning fresh data:", "data", f)
 

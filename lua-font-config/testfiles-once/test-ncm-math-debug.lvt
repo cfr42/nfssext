@@ -1,4 +1,4 @@
-%% $Id: test-ncm-math.lvt 12111 2026-10-11 23:55:12Z cfrees $
+%% $Id: test-ncm-math-debug.lvt 12117 2026-10-13 19:33:10Z cfrees $
 \input lfc-support.tex
 \documentclass{article}
 \START
