@@ -1,4 +1,4 @@
--- $Id: lua-font-config.lua 12113 2026-10-12 18:44:58Z cfrees $
+-- $Id: lua-font-config.lua 12114 2026-10-13 00:51:07Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -- Cache format:
@@ -66,6 +66,7 @@
 -- locals {{{
 
 -- imports {{{
+local inspect               = inspect
 local is_writable           = file.is_writable
 local isdir, isfile, mkdir  = lfs.isdir, lfs.isfile, lfs.mkdir
 local get_functions_table   = lua.get_functions_table
@@ -239,6 +240,10 @@ do
   msg_log_levels = hashed(h)
 end
 
+---@function msg(text, level) {{{
+---@param   text      <string|table>  Message.
+---@param   level     <string>        Minimum logging level for issuing message.
+---@status  internal
 local function msg(text, level)
   level = level or "warn"
   level_n = msg_log_levels[level] or msg_log_levels.debug
@@ -260,15 +265,29 @@ local function msg(text, level)
     error(2)
   end
 end
+-- }}}
+
+---@function msg_config(log_level, cfg) {{{
+---@param     log_level   <string>  Logging level from choices.
+---@param     cfg         <table>   Key-value configuration.
+---@status    internal
 local function msg_config(log_level, cfg)
   lfc_debug = (cfg and cfg.state) and true or false
   lfc_log_level = log_level or (lfc_debug and "debug" or "info")
 
   if lfc_debug then
 
-    -- Max Chernoff: https://chat.stackexchange.com/transcript/message/69252312#69252312
-    function inspect(t)
-      write_nl("term and log", serialize(t, false))
+    -- Max Chernoff: https://chat.stackexchange.com/transcript/message/69252312#69252312.
+    -- Also from fontloader-l-lua.lua.
+    function inspect(...)
+      for ind=1,select("#", ...) do
+        local thing = select(ind, ...)
+        local kind = type(thing)
+        write_nl("term and log", thing == nil and "nil" 
+          or (kind == "string" and thing 
+          or (kind == "table" and serialize(thing)
+          or tostring(thing))))
+      end
     end
   
     function msg_assert(cond, text, level) assert(cond, (type(text) == "string" 
@@ -280,6 +299,12 @@ local function msg_config(log_level, cfg)
       defn      = true,
       doc       = true,
     }
+
+    -- Debugging is typically enabled after the cache is read and the cache
+    --    saved after the log is closed, so dump it to the log now if required.
+    if cats.cache and lfc_cache ~= nil and #lfc_cache ~= 0 then
+      inspect(lfc_cache)
+    end
 
     local skipped_msg = {
       cache     = false,
@@ -314,6 +339,7 @@ local function msg_config(log_level, cfg)
 
   end
 end
+-- }}}
 msg_config(lfc.log_level, lfc.debug)
 -- }}}
 
@@ -443,9 +469,9 @@ local function write_cache()
   msg("Writing cache ...", "debug")
   if lfc_cache then
     local loc = get_cache_path()
+    msg_debug("Saving cache state:\n", "cache", lfc_cache)
     -- Duplicates data referenced by pointers/links/whatever they are.
     save (loc, lfc_cache)
-    msg_debug("Saved cache state:\n", "cache", lfc_cache)
   end
 end
 -- }}}
@@ -1675,6 +1701,7 @@ local function use_cached_fd(fam, fea, scale, now, suffix)
   msg({"Using cached fd emulation for ", fam, "."}, "debug")
   now = now or false
 
+  msg_debug("Cached fd:\n", "cache", lfc_cache[fam].fake_fd)
   if now then
     return write_fake_fd(fam, lfc_cache[fam].fake_fd, fea, scale, suffix) 
   else
