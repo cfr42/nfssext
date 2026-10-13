@@ -5,7 +5,7 @@
 \usepackage{lua-font-config}
 \fontconfig{%
   debug = {
-    categories = {cache, defn},
+    categories = {cache, data},
   },
   rm = newcomputermodern,
   sf = newcomputermodernsans,

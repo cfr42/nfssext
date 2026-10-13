@@ -296,6 +296,7 @@ local function msg_config(log_level, cfg)
     local cats = cfg.categories or {
       cache     = true,
       callback  = true,
+      data      = true,
       defn      = true,
       doc       = true,
     }
@@ -309,6 +310,7 @@ local function msg_config(log_level, cfg)
     local skipped_msg = {
       cache     = false,
       callback  = false,
+      data      = false,
       defn      = false,
       doc       = false,
     }
@@ -572,6 +574,7 @@ local function get_font_data(fnt, force)
   -- If a cached emulated .fd exists, we're done unless force was used.
   if cached then
     metadata.cached = cached
+    msg_debug("Returning cached data:", "data", f)
     return f
   end
 
@@ -610,6 +613,8 @@ local function get_font_data(fnt, force)
   end
 
   f.data = data
+
+  msg_debug("Returning fresh data:", "data", f)
 
   return f
 end 
