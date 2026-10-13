@@ -1,4 +1,4 @@
--- $Id: lua-font-config.lua 12115 2026-10-13 19:31:25Z cfrees $
+-- $Id: lua-font-config.lua 12119 2026-10-13 22:34:41Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -- Cache format:
@@ -1806,6 +1806,8 @@ local function font_config(targ, config, immediate)
     --    - Reduce width + weight -> series
     --    - Reduce style + variant -> shape
     for name,font in pairs(data) do
+      msg_debug("font_config() :: NFSSify " .. name, "data", font)
+
       local fullname = font.fullname
       -- text: 0 ; maths: 1; other: 2
       local typeset_mode = 0
@@ -1845,11 +1847,16 @@ local function font_config(targ, config, immediate)
         end
 
         -- For latin modern roman unslanted, which claims to be perfectly ‘normal’
-        if (find(name, "unslanted")) then
+        if (find(family, "unslanted")) then
+          msg_debug("Found \'unslanted\' in family name.", "data", family)
+
           family = (gsub(family, "unslanted", ""))
           if (style == "normal" or style == "regular") and variant == "normal" then
             style = "uprightitalic"
           end
+
+          msg({name, ": family -> ", family, "; style -> ", style, "."}, "debug")
+
         end
 
       end
