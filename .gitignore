@@ -420,3 +420,5 @@ nfssext-cfr/pre-dtx
 nfssext-cfr/timeout
 fnt-prawf
 fixtounicode/fixtounicode.pdf
+lua-font-config/lua-font-config.pdf
+lua-font-config/scratch.*
