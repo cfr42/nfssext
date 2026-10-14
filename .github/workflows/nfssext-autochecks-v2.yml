@@ -175,11 +175,13 @@ jobs:
           CTAN_RET: ${{ steps.build.outputs.ctan_ret }}
         run: |
           module="${{ matrix.module }}"
-          echo -e "fnttarg_ret_${module}=${BUILD_RET}" >> "$GITHUB_OUTPUT" 
+          pretarget="${{ matrix.pre_target }}"
+          [[ "$pretarget" != "" ]] && echo -e "fnttarg_ret_${module}=${BUILD_RET}" >> "$GITHUB_OUTPUT" 
           echo -e "ctan_ret_${module}=${CTAN_RET}" >> "$GITHUB_OUTPUT" 
           cat "$GITHUB_OUTPUT"
           allan=0
-          ([[ ${BUILD_RET} != 0  || ${CTAN_RET} != 0 ]])  && allan=1
+          [[ ${CTAN_RET} != 0 ]] && allan=1
+          [[ ${BUILD_RET} != 0  && "$pretarget" != "" ]]  && allan=1
           exit $allan
 
   # addaswyd o https://github.com/latex3/latex2e/blob/develop/.github/workflows/main.yaml
