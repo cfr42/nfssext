@@ -33,7 +33,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12105 2026-10-11 05:12:51Z cfrees $}[v0.0 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12120 2026-10-14 01:21:30Z cfrees $}[v0.0 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -622,7 +622,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12105 2026-10-11 05:12:51Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12120 2026-10-14 01:21:30Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -686,7 +686,9 @@
 \clist_map_inline:nn {rm, sf, tt} {
   \keys_define:nn {lfc} {
     #1 .code:n            = { 
+      \tl_clear:N \l_@@_tmpa_tl
       \keys_set_exclude_groups:nnnN {lfc/#1} {config} {##1} \l_@@_tmpa_tl
+%<debug>    \tl_log:N \l_@@_tmpa_tl
       \keys_set:nV {lfc/#1} \l_@@_tmpa_tl
       \bool_set_true:N \l_@@_tmpa_bool
     },
@@ -732,13 +734,17 @@
 %    \begin{macrocode}
 \keys_define:nn {lfc} {
   debug   .code:n           = { 
+    \tl_clear:N \l_@@_tmpa_tl
     \keys_set_groups:nnnN
       {lfc/debug} {toggle} {state = true, #1} \l_@@_tmpa_tl
+%<debug>    \tl_log:N \l_@@_tmpa_tl
     \keys_set:nV {lfc/debug} \l_@@_tmpa_tl
   },
   debug   .usage:n          = general,
   family  .code:n           = { 
+    \tl_clear:N \l_@@_tmpa_tl
     \keys_set_exclude_groups:nnnN {lfc/fam} {config} {#1} \l_@@_tmpa_tl
+%<debug>    \tl_log:N \l_@@_tmpa_tl
     \keys_set:nV {lfc/fam} \l_@@_tmpa_tl
     \bool_set_true:N \l_@@_tmpa_bool
   },
@@ -750,7 +756,9 @@
     } {
       \msg_info:nnn {lfc} {loading} {lua-unicode-math} 
       \RequirePackage{lua-unicode-math}
+      \tl_clear:N \l_@@_tmpa_tl
       \keys_set_exclude_groups:nnnN {lfc/math} {config} {#1} \l_@@_tmpa_tl
+%<debug>    \tl_log:N \l_@@_tmpa_tl
       \keys_set:nV {lfc/math} \l_@@_tmpa_tl
       \bool_set_true:N \l_@@_tmpa_bool
     }
@@ -934,7 +942,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %</ee-lmr>
 %
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12105 2026-10-11 05:12:51Z cfrees $
+%% $Id: lua-font-config.dtx 12120 2026-10-14 01:21:30Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}

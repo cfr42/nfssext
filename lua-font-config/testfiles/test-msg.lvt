@@ -1,19 +1,28 @@
-%% $Id: test-msg.lvt 12119 2026-10-13 22:34:41Z cfrees $
+%% $Id: test-msg.lvt 12120 2026-10-14 01:21:30Z cfrees $
 \input lfc-support.tex
+\makeatletter
+\csname protected\endcsname\long\def\TESTTITLE#1{%
+  \global\advance\gTESTint by 1 %
+  \SEPARATOR
+  \LONGTYPEOUT{TEST \the\gTESTint: \detokenize{#1}}%
+  \SEPARATOR
+}
+\makeatother
 \documentclass{article}
 \parindent=0pt
 \START
 \usepackage{lua-font-config}
-\TEST{debug + config}{%
-  \fontconfig{%
-    debug = {
-      categories = {defn, doc, cache}, 
-    },
-    family = {%
-      name = Lobster Two,
-      scale = 5,
-    },
-  }%
+\SEPARATOR
+\TESTTITLE{debug + config}
+\fontconfig{%
+  debug = {
+    categories = {defn, doc, cache}, 
+  },
+  family = {%
+    name = Lobster Two,
+    scale = 5,
+    command = \lobstertwo,
+  },
 }
 \OMIT
 \begin{document}
