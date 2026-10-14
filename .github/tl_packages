@@ -204,3 +204,5 @@ playfair
 lua-unicode-math
 ltx-talk
 minted
+kpfonts-otf
+standalone
