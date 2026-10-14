@@ -33,7 +33,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12121 2026-10-14 01:58:14Z cfrees $}[v0.0 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12123 2026-10-14 14:46:43Z cfrees $}[v0.0 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -44,9 +44,11 @@
 }
 \endgroup
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/ 
-\def\MakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
+\def\MyMakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
 \documentclass[british,a4paper]{ltxdoc}
 % ltnews42 / ateb David Carlisle: https://tex.stackexchange.com/a/754799/ (sylwad Ulrike Fischer rhywle ond alla i ddim canfod o hyd iddo fe)
+\let\OrigMakePrivateLetters\MakePrivateLetters
+\let\MakePrivateLetters\MyMakePrivateLetters
 \partokencontext=0
 \usepackage{babel}
 \usepackage{lua-font-config}
@@ -77,7 +79,8 @@
 \RecordChanges
 %^^A \OnlyDescription
 %^^A \ExplSyntaxOn
-\DoNotIndex{\verb,\ProvidesPackageSVN,\NeedsTeXFormat,\ProcessKeyOptions,\ExplSyntaxOn,\ExplSyntaxOff,\RequirePackage,\NeedsTeXFormat,\DefineFileInfoSVN,\GetInfoSVN,\@ifundefined,\@ifl@t@r\ExplLoaderFileDate,\endinput,\PackageError,\PackageWarning,\PackageInfo,\keys_define:nn,\keys_set:nn,\ProcessKeysOptionns,\author,\title,\maketitle,\date,\revinfo,\ProcessKeysOptions,\MessageBreak,\fmtversion,\documentclass,\ExplLoaderFileDate,\filebase,\fileversion,\fileinfo,\filebase:,\filedate,\documentclass,\@ifl@t@r,\begin,\end,\item,\IfFormatAtLeastTF}
+% Note that some things are here because doc gets confused and erroneously thinks them macros.
+\DoNotIndex{\verb,\ProvidesPackageSVN,\NeedsTeXFormat,\ProcessKeyOptions,\ExplSyntaxOn,\ExplSyntaxOff,\RequirePackage,\DefineFileInfoSVN,\GetInfoSVN,\@ifundefined,\@ifl@t@r,\ExplLoaderFileDate,\endinput,\PackageError,\PackageWarning,\PackageInfo,\author,\title,\maketitle,\date,\revinfo,\ProcessKeysOptions,\MessageBreak,\fmtversion,\filebase,\fileversion,\fileinfo,\filebase:,\filedate,\documentclass,\begin,\end,\item,\IfFormatAtLeastTF,\msg}
 %^^A \ExplSyntaxOff
 \definecolor{strawberry}{rgb}{1.000,0.000,0.502}
 \definecolor{blueberry}{rgb}{0.000,0.000,1.000}
@@ -92,11 +95,6 @@
   pdfproducer={LuaTeX},
   urlcolor={blueberry}%
 }
-% \NewDocElement[%
-%   idxtype=opt.,
-%   idxgroup=options,
-%   printtype=\textit{opt.},
-% ]{Opt}{option}
 \NewDocElement[%
   idxtype=key,
   idxgroup=keys,
@@ -587,7 +585,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12121 2026-10-14 01:58:14Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12123 2026-10-14 14:46:43Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -621,10 +619,26 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \ExplSyntaxOn
 \prop_gput:NnV \g_msg_module_name_prop {lfc} \lfc@base
+%    \end{macrocode}
+% %^^A Switch cat codes to protect \verb|~|.
+% \let\MakePrivateLetters\OrigMakePrivateLetters
+% Messages.
+% 
+% Note that \verb|\msg_*| are not recognised in the indexing; \cs{msg} appears instead.
+% This is a limitation of the \pkg{doc} package, as far as I know.
+%    \begin{macrocode}
 \msg_new:nnnn {lfc} {needs-luatex} {
   \msg_critical_text:n {lfc} :: ~requires~LuaLaTeX~\msg_line_context:
 } { \msg_see_documentation_text:n {lfc} }
+%    \end{macrocode}
+% %^^A Switch temporarily back to catch the next \pkg{expl3} function.
+% \let\MakePrivateLetters\MyMakePrivateLetters
+%    \begin{macrocode}
 \sys_if_engine_luatex:F { \msg_critical:nn {lfc} {needs-luatex} }
+%    \end{macrocode}
+% %^^A Switch cat codes to protect \verb|~|.
+% \let\MakePrivateLetters\OrigMakePrivateLetters
+%    \begin{macrocode}
 \msg_new:nnnn {lfc} {math-needs-lum} {
   \msg_error_text:n {lfc} :: ~math~config~requires~lua-unicode-math,~but~
   you've~loaded~unicode-math.~This~cannot~work~\msg_line_context:
@@ -638,6 +652,9 @@
   \msg_line_context:
 } { \msg_see_documentation_text:n {lfc} }
 %    \end{macrocode}
+% %^^A Switch back now we're done with message setup.
+% \let\MakePrivateLetters\MyMakePrivateLetters
+% 
 % \begin{variable}{\l_@@_tmpa_tl,\l_@@_tmpa_bool}
 %   Custom ephemeral variables.
 %    \begin{macrocode}
@@ -653,7 +670,6 @@
     #1 .code:n            = { 
       \tl_clear:N \l_@@_tmpa_tl
       \keys_set_exclude_groups:nnnN {lfc/#1} {config} {##1} \l_@@_tmpa_tl
-%<debug>    \tl_log:N \l_@@_tmpa_tl
       \keys_set:nV {lfc/#1} \l_@@_tmpa_tl
       \bool_set_true:N \l_@@_tmpa_bool
     },
@@ -702,14 +718,12 @@
     \tl_clear:N \l_@@_tmpa_tl
     \keys_set_groups:nnnN
       {lfc/debug} {toggle} {state = true, #1} \l_@@_tmpa_tl
-%<debug>    \tl_log:N \l_@@_tmpa_tl
     \keys_set:nV {lfc/debug} \l_@@_tmpa_tl
   },
   debug   .usage:n          = general,
   family  .code:n           = { 
     \tl_clear:N \l_@@_tmpa_tl
     \keys_set_exclude_groups:nnnN {lfc/fam} {config} {#1} \l_@@_tmpa_tl
-%<debug>    \tl_log:N \l_@@_tmpa_tl
     \keys_set:nV {lfc/fam} \l_@@_tmpa_tl
     \bool_set_true:N \l_@@_tmpa_bool
   },
@@ -723,7 +737,6 @@
       \RequirePackage{lua-unicode-math}
       \tl_clear:N \l_@@_tmpa_tl
       \keys_set_exclude_groups:nnnN {lfc/math} {config} {#1} \l_@@_tmpa_tl
-%<debug>    \tl_log:N \l_@@_tmpa_tl
       \keys_set:nV {lfc/math} \l_@@_tmpa_tl
       \bool_set_true:N \l_@@_tmpa_bool
     }
@@ -841,6 +854,7 @@
 %    \end{macrocode}
 % \end{function}
 % \begin{function}{\_@@_declare_lum_symbol_fonts:nn}
+% Maths setup function.
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \_@@_declare_lum_symbol_fonts:nn #1#2 {
   \DeclareSymbolFont{lummain}{TU}{#1}{m}{n}
@@ -848,6 +862,8 @@
 }
 %    \end{macrocode}
 % \end{function}
+% Compatibility code for \pkg{ltx-talk}.
+%
 % This should be equivalent to the default setup, modulo any differences between emulating the package and using \cs{setmathfont} for \pkg{lua-unicode-math}.
 %    \begin{macrocode}
 \hook_gput_code:nnn {class/ltx-talk/before} {.} {
@@ -861,9 +877,24 @@
     \tagpdfsetup { math / mathml / luamml / load = true }
   }
 }
+%    \end{macrocode}
+% \begin{function}{%
+%   \_@@_set_fam_cfg:nn,
+%   \_@@_set_fam_name:n,
+%   \_@@_set_mathrm:,
+%   \_@@_set_mathsf:,
+%   \_@@_set_mathtt:,
+%   \_@@_configure_doc_families:,
+%   \_@@_debug_set_cats_scanner:n,
+%   \_@@_debug_set_false:,
+%   \_@@_debug_set_true:%
+% }
+% The Lua modules do the actual work.
+%    \begin{macrocode}
 \lua_load_module:n {lua-font-config}
 \ExplSyntaxOff
 %    \end{macrocode}
+% \end{function}
 %</sty>
 %
 % \iffalse
@@ -907,7 +938,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %</ee-lmr>
 %
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12121 2026-10-14 01:58:14Z cfrees $
+%% $Id: lua-font-config.dtx 12123 2026-10-14 14:46:43Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -1082,7 +1113,7 @@ This is some ordinary text in the default \LaTeXe{} font.
 {\lobster This is Lobster Two.
   \textit{Italics but no \textsc{small-caps}} \textsc{even in upright}.
   We do have \textbf{bold and \textit{bold italics}}, but there is no, 
-  \textsl{oblique, so here we get italics, too.}%
+  \textsl{oblique, so here we get italics, too.}\par
 }
 
 Back to the default.
