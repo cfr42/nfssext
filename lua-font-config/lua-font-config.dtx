@@ -33,7 +33,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12120 2026-10-14 01:21:30Z cfrees $}[v0.0 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12121 2026-10-14 01:58:14Z cfrees $}[v0.0 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -205,10 +205,8 @@
 % \maketitle
 % \begin{abstract}
 % An opentype font configuration package for Lua\LaTeXe{}.
-% The aim is to provide an alternative to \pkg{fontspec} which is both faster
-% and more powerful, by doing as much processing as possible in Lua.
-% To avoid loading fonts unnecessarily, the data used is corrected during 
-% compilation and the results cached for future use.
+% The aim is to provide an alternative to \pkg{fontspec} which is both faster and more powerful, by doing as much processing as possible in Lua.
+% To avoid loading fonts unnecessarily, the data used is corrected during compilation and the results cached for future use.
 %
 % \emph{This package is experimental.}
 % \end{abstract}
@@ -225,40 +223,29 @@
 %
 % \emph{The user interface is currently \textbf{extremely} basic.}
 %
-% All that is properly supported is the choice of font family for the standard
-% families --- i.e.~roman/serif, sans, typewriter/mono and (Unicode) maths 
-% (main, script and calligraphic) --- and configuration of additional fonts, 
-% again by family.
+% All that is properly supported is the choice of font family for the standard families --- i.e.~roman/serif, sans, typewriter/mono and (Unicode) maths (main, script and calligraphic) --- and configuration of additional fonts, again by family.
 % In addition to this, scaling and raw feature selection are supported.
-% That is, most things are supported in the sense that they are possible, but
-% the interface is rudimentary in the extreme.
+% That is, most things are supported in the sense that they are possible, but the interface is rudimentary in the extreme.
 %
 % That said, the automated configuration is quite extensive.
-% By default, the package tries to configure font families which are as rich
-% as possible, insofar as the fonts support this. 
+% By default, the package tries to configure font families which are as rich as possible, insofar as the fonts support this. 
 % This includes
 % \begin{itemize}
 %   \item multiple widths and shapes, insofar as \textsc{nfss} supports them;
 %   \item italic, oblique, upright italic, reverse italic, reverse oblique;
 %   \item small-caps, italic small-caps, oblique small-caps\footnote{%
-%     This should work whether small-caps are in separate fonts (e.g.~Latin 
-%     Modern) or implemented by the \texttt{smcp} feature (e.g.~\TeX{}-Gyre
-%     Pagella).};
+%     This should work whether small-caps are in separate fonts (e.g.~Latin Modern) or implemented by the \texttt{smcp} feature (e.g.~\TeX{}-Gyre Pagella).%
+%   };
 %   \item optical sizes.
 % \end{itemize}
 % Of course, this depends on the quality of the data the fonts provide.
 % It is not always good or, even, vaguely accurate. 
-% If things do not fit, some (currently minimal) effort is made to 
-% accommodate them as distinct font families, so they are still available 
-% at document level.
+% If things do not fit, some (currently minimal) effort is made to accommodate them as distinct font families, so they are still available at document level.
 %
-% At present, this is a bit chaotic and a bit hard to use, as the 
-% results are ‘hidden’ from you (in, of course, plain sight).
-% Even so, you should typically need to do much less to access the fonts you
-% want than you might otherwise expect. 
+% At present, this is a bit chaotic and a bit hard to use, as the results are ‘hidden’ from you (in, of course, plain sight).
+% Even so, you should typically need to do much less to access the fonts you want than you might otherwise expect. 
 %
-% The advantage of this is that if a font has several widths, you can easily
-% adjust the one used for bold by simply redefining the relevant default.
+% The advantage of this is that if a font has several widths, you can easily adjust the one used for bold by simply redefining the relevant default.
 % This is not very user friendly yet, but it is not completely terrible.
 % 
 %
@@ -308,7 +295,8 @@
 % \DescribeKey{fam}\val{key-val list}\par
 % Specify an additional text family.
 % This will create a macro which can be used to switch to the requested family\footnote{%
-%   Sorry: right now you must figure out what this is.%
+%   Usually you will want to specify which macro, since otherwise you must figure out the family name the code uses, which may or may not match the one requested.
+%   See \cref{subsubsec:keys-text-add}.%
 % }.
 %
 % Available keys are listed below.
@@ -326,10 +314,14 @@
 % If you wish to use \pkg{unicode-math}, do not use this option.
 % Instead, load \pkg{unicode-math} and use \cs{setmathfont} as usual.
 %
+% \DescribeKey{debug}\val{key-val list}\par
+% This can be used to enable debugging and/or modify the logging level.
+% It is primarily intended for use in debugging the package and unlikely to be of use in production.
+% However, it may be useful the use this key if reporting a bug which cannot be reproduced e.g.~which is platform specific or depends on system fonts.
+%
 % \subsection{Keys for specifying font families}\label{subsec:keys-cfg}
 %
-% All keys described in \cref{subsec:keys} accept either a simple family name,
-% as shown in the example above, or a braced key-value list.
+% All keys described in \cref{subsec:keys} accept either a simple family name, as shown in the example above, or a braced key-value list.
 % For example,
 % \iffalse
 %<*verb>
@@ -362,63 +354,48 @@
 %
 % \subsubsection{Common keys}\label{subsubsec:common}
 %
-% These keys accepted by all of \texttt{rm}, \texttt{sf}, \texttt{tt}, \texttt{fam}
-% and \texttt{math}.
+% These keys are accepted by all of \texttt{rm}, \texttt{sf}, \texttt{tt},
+% \texttt{fam} and \texttt{math}.
 %
 % \DescribeKey{name}\val{lookup name}\par
 % The ‘name’ to lookup.
 % This may, but need not be, the name of a font family.
-% Shorter, less specific names will configure more families; longer, more
-% specific names will configure fewer.
+% Shorter, less specific names will configure more families; longer, more specific names will configure fewer.
 %
-% For example, \texttt{name = texgyrepagellax,} will configure fewer than 
-% \texttt{name = texgyrepagella,} since the latter string matches both 
-% families, while the former does not.
+% For example, \texttt{name = texgyrepagellax,} will configure fewer than \texttt{name = texgyrepagella,} since the latter string matches both families, while the former does not.
 % 
 % The name is lower-cased prior to lookup. 
-% The data used to generate actual font families uses a cleaned up version 
-% of the given name or, sometimes, a variation, depending on the data
-% returned from the database.
+% The data used to generate actual font families uses a cleaned up version of the given name or, sometimes, a variation, depending on the data returned from the database.
 %
-% For example, \texttt{tex gyre PaGellA} yields the same results as 
-% \texttt{texgyrepagella}.
+% For example, \texttt{tex gyre PaGellA} yields the same results as \texttt{texgyrepagella}.
 %
 % Numbers are likewise removed\footnote{%
-%   This is problematic for fonts which depend on digits in their names to 
-%   distinguish them e.g.~Venturis ADF has four distinct ‘titling’ 
-%   fonts, whose names differ by a single character, which is \texttt{1}, 
-%   \texttt{2}, \texttt{3} or \texttt{4}. 
-%   The algorithm used to sort the fonts into \textsc{nfss} families 
-%   currently gets confused by this, leading to misleading warnings 
-%   about ‘apparent duplicate’ fonts. 
+%   This is problematic for fonts which depend on digits in their names to distinguish them e.g.~Venturis ADF has four distinct ‘titling’ fonts, whose names differ by a single character, which is \texttt{1}, \texttt{2}, \texttt{3} or \texttt{4}. 
+%   The algorithm used to sort the fonts into \textsc{nfss} families currently gets confused by this, leading to misleading warnings about ‘apparent duplicate’ fonts. 
 %   (Something is indeed awry, but they are not duplicates.
 %   Rather what should be four families appears to be only one.)%
 % }.
 %
 %
 % \DescribeKey{force}\vals{true,false}\par
-% Boolean which determines whether cached data is to be regenerated on the 
-% basis of a new search of the font-loader's database.
+% Boolean which determines whether cached data is to be regenerated on the basis of a new search of the font-loader's database.
 %
 % Note that this doesn't regenerate the loader's database itself. 
 % It simply zaps data stored by this module for one or more font families.
 %
 % \DescribeKey{scale}\val{factor}\par
-% Optional factor by which the font should be scaled e.g.~\texttt{20} or 
-% \texttt{0.8}.
+% Optional factor by which the font should be scaled e.g.~\texttt{20} or \texttt{0.8}.
 % Ignored if a family includes distinct optical sizes.
 %
 % \subsubsection{Text-mode keys}\label{subsubsec:keys-text}
-% These keys are accepted in all key-value specifications except for the 
-% top-level \texttt{math} key used to configure Unicode maths.
+% These keys are accepted in all key-value specifications except for the top-level \texttt{math} key used to configure Unicode maths.
 %
 % Currently there is only one key in this category.
 %
 % \DescribeKey{fea}\val{opentype feature spec.}\par
 % Optional list of font features \textbf{for text fonts only}. 
 % 
-% Note that the specification is currently passed to the font loader with 
-% minimal processing, so you must use ‘raw’ feature specifications.
+% Note that the specification is currently passed to the font loader with minimal processing, so you must use ‘raw’ feature specifications.
 %
 \iffalse
 % The default is \texttt{script=dflt}, \texttt{mode=node}, \texttt{+tlig},
@@ -426,27 +403,20 @@
 \fi
 % The default is \texttt{fea=}%
 %   \marg{mode=node;scrpt=dflt;language=dflt;+tlig}.
-% Unless provided in separate fonts, \texttt{+smcp} is added, if available, 
-% for upright, italic and oblique small-caps.
+% Unless provided in separate fonts, \texttt{+smcp} is added, if available, for upright, italic and oblique small-caps.
 % 
-% Features apply to \emph{all} fonts configured as a result of the lookup, so
-% you should not specify features you do not wish applied to all fonts to which
-% the specification applies.
+% Features apply to \emph{all} fonts configured as a result of the lookup, so you should not specify features you do not wish applied to all fonts to which the specification applies.
 % 
 % \subsubsection{Default text family keys}\label{subsubsec:keys-text-def}
-% These keys are accepted by \texttt{rm}, \texttt{sf} and \texttt{tt} i.e.~when
-% specifying the default text families for the document.
+% These keys are accepted by \texttt{rm}, \texttt{sf} and \texttt{tt} i.e.~when specifying the default text families for the document.
 %
-% These keys all do the same thing, so you may use your preferred syntactic
-% sweetener. 
+% These keys all do the same thing, so you may use your preferred syntactic sweetener. 
 %
 % \DescribeKey{math}\vals{true,false}\par
 % \DescribeKey{maths}
-% Should the current specification also be used for the corresponding text
-% family in maths?
+% Should the current specification also be used for the corresponding text family in maths?
 %
-% For example, if you are configuring the main document family with 
-% \texttt{rm}, should that family also be used for operators, \cs{mathrm} etc.?
+% For example, if you are configuring the main document family with \texttt{rm}, should that family also be used for operators, \cs{mathrm} etc.?
 %
 % The default is equivalent to \texttt{math = true}.
 %
@@ -457,14 +427,10 @@
 % \subsubsection{Additional text family keys}\label{subsubsec:keys-text-add}
 %
 % \DescribeKey{command}|=\command|\par
-% Use \cs{command} to switch to the font family, rather than creating a command
-% from the family name.
+% Use \cs{command} to switch to the font family, rather than creating a command from the family name.
 % 
-% By default the command to switch to the font family depends on the discovered
-% family name i.e.~on the result of searching the database for the specified 
-% family.
-% In many cases, this will be the value passed to the \texttt{name} key, but often
-% it will not and sometimes this may not be the command name you want anyway.
+% By default the command to switch to the font family depends on the discovered family name i.e.~on the result of searching the database for the specified family.
+% In many cases, this will be the value passed to the \texttt{name} key, but often it will not and sometimes this may not be the command name you want anyway.
 % \texttt{command} allows you to override it.
 %
 % For example, the following would setup \cs{playfair} to switch to Playfair 
@@ -484,6 +450,17 @@
 % \iffalse
 %</verb>
 % \fi
+%
+% \section{Compatibility}\label{sec:compat}
+% 
+% \subsection{\pkg{ltx-talk}}\label{subsec:compat-talk}
+%
+% Load with \cs{RequirePackage} \emph{before} loading the class.
+% The package emulates the class settings by default, so the main benefit of loading it is speed.
+% If you wish to change the fonts, use \cs{fontconfig} after the class is loaded\footnote{%
+%   If this turns out to be something people want to do, I can adjust things to avoid configuring fonts twice.
+%   For now, this is just a good way for me to test the code and avoid the pain of watching \pkg{fontspec} load New Computer Modern.%
+% }
 %
 % \section{Examples}\label{sec:eeiau}
 %
@@ -509,29 +486,24 @@
 %
 % \section{TO DOs}\label{sec:todo}
 %
-% These are not in any particular order, though there is some tendency for 
-%   higher priority items to be earlier.
+% These are not in any particular order, though there is some tendency for higher priority items to be earlier.
 % \begin{enumerate}
 %   \item Conceptual
 %     \begin{itemize}
-%       \item Abandon the whole thing since packages are not supposed to meddle 
-%         with fonts?
+%       \item Abandon the whole thing since packages are not supposed to meddle with fonts?
 %     \end{itemize}
 %   \item \textsc{nfss}
 %     \begin{itemize}
-%       \item Support multiple font configurations e.g.~for multiple languages 
-%         with multiple scripts.
+%       \item Support multiple font configurations e.g.~for multiple languages with multiple scripts.
 %         \begin{itemize}
 %           \item Support for \pkg{babel}?
-%           \item[] \pkg{babel} provides e.g. \cs{babelfont}, which uses 
-%             \cs{fontspec}.
+%           \item[] \pkg{babel} provides e.g. \cs{babelfont}, which uses \cs{fontspec}.
 %             Should \pkg{lua-font-config} provide this?
 %         \end{itemize}
 %      \end{itemize}
 %   \item Interface
 %     \begin{itemize}
-%       \item Provide a proper user interface (more similar to Con\TeX{}t, 
-%           since we're using the same (\textsc{mkiv}) sorting?
+%       \item Provide a proper user interface (more similar to Con\TeX{}t, since we're using the same (\textsc{mkiv}) sorting?
 %       \item Information for user.
 %       \item Accommodate \texttt{.ttc}. 
 %       \begin{itemize}
@@ -540,8 +512,7 @@
 %       \end{itemize}
 %       \item Way to define individual font commands for text and (maybe) maths.
 %         \begin{itemize}
-%           \item Text is already in the infrastructure, but the defined macro is 
-%             unpredictable \& non-configurable.
+%           \item Text is already in the infrastructure, but the defined macro is unpredictable \& non-configurable.
 %         \end{itemize}
 %     \end{itemize}
 %   \item Loader
@@ -574,21 +545,16 @@
 %     \end{itemize}
 %   \item Documentation
 %     \begin{itemize}
-%       \item Not everything implemented in terms of the \textsc{ui} is 
-%         in the user doc.
-%       \item The Lua code has some comments, but these don't always amount to
-%         documentation.
-%       \item The overall infrastructure isn't really documented, except for
-%         a partially accurate \textsc{ascii} database schema included inline.
-%       \item Registered Lua functions mapped to \pkg{expl3} names are not 
-%         documented.
+%       \item Not everything implemented in terms of the \textsc{ui} is in the user doc.
+%       \item The Lua code has some comments, but these don't always amount to documentation.
+%       \item The overall infrastructure isn't really documented, except for a partially accurate \textsc{ascii} database schema included inline.
+%       \item Registered Lua functions mapped to \pkg{expl3} names are not documented.
 %       \item Use of callbacks, hooks etc.\ is more-or-less undocumented.
 %     \end{itemize}
 %   \item Code
 %     \begin{itemize}
 %       \item Should be cleaned up -- I cannot need 2,500 lines to load a font!
-%       \item[Unnumbered Gripe] The code is too long, too complex, too clunky and too 
-%          simplistic.
+%       \item[Unnumbered Gripe] The code is too long, too complex, too clunky and too simplistic.
 %          (Yes, of course, it can be both.)
 %       \item Loading the ConTeXt file differently?
 %       \item Improve formal \LaTeX{} representation (see \pkg{ltluatexbase}.
@@ -600,8 +566,7 @@
 %     \end{itemize}
 %   \item Test suite
 %     \begin{itemize}
-%       \item There are no unit tests (cf.\ \pkg{nfssext-cfr}, where the tests
-%         are much more focused).
+%       \item There are no unit tests (cf.\ \pkg{nfssext-cfr}, where the tests are much more focused).
 %         I don't know how to implement this for (non-public) Lua functions.
 %     \end{itemize}
 % \end{enumerate}
@@ -622,7 +587,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12120 2026-10-14 01:21:30Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12121 2026-10-14 01:58:14Z cfrees $}[v0.0 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -883,7 +848,7 @@
 }
 %    \end{macrocode}
 % \end{function}
-% This should be equivalent to the default setup, modulo any differences between loading the package and using \cs{setmathfont} for \pkg{lua-unicode-math}.
+% This should be equivalent to the default setup, modulo any differences between emulating the package and using \cs{setmathfont} for \pkg{lua-unicode-math}.
 %    \begin{macrocode}
 \hook_gput_code:nnn {class/ltx-talk/before} {.} {
   \hook_gput_code:nnn {package/mathtools/after} {.} {
@@ -942,7 +907,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %</ee-lmr>
 %
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12120 2026-10-14 01:21:30Z cfrees $
+%% $Id: lua-font-config.dtx 12121 2026-10-14 01:58:14Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
