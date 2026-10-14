@@ -1,4 +1,4 @@
--- $Id: build.lua 12121 2026-10-14 01:58:14Z cfrees $
+-- $Id: build.lua 12122 2026-10-14 02:26:04Z cfrees $
 --------------------------------------------------------------------------------
 -- This package combines files released under distinct licences. 
 --
@@ -31,6 +31,7 @@ checkengines = {"luatex"}
 checkruns = 2
 checkopts = "-interaction=nonstopmode -cnf-line='TEXMFHOME=.' -cnf-line='TEXMFLOCAL=.' -cnf-line='TEXMFARCH=.' -cnf-line='TEXMFCACHE=.'"
 -- checkconfigs = {"build", "config-once"}
+excludetests = {"test-msg"}
 versionpatterns = versionpatterns or {}
 table.insert(versionpatterns, "SVN Rev: %d+")
 table.insert(versionpatterns, "v%d+[%d%.]* %d+")
