@@ -1,4 +1,4 @@
--- $Id: build.lua 12125 2026-10-15 04:05:25Z cfrees $
+-- $Id: build.lua 12127 2026-10-15 06:49:18Z cfrees $
 --------------------------------------------------------------------------------
 -- This package combines files released under distinct licences. 
 --
@@ -40,7 +40,7 @@ table.insert(versionpatterns, "v%d+[%d%.]* %d+")
 -- demofiles = {"example-*.tex"}
 typesetexe = "lualatex"
 typesetopts = "-interaction=nonstopmode -cnf-line='TEXMFHOME=.' -cnf-line='TEXMFLOCAL=.' -cnf-line='TEXMFARCH=.'"
-date = "2026"
+date = "2026-2026"
 if fileexists(maindir .. "tag.lua") then
   dofile(maindir .. "/tag.lua")
 elseif direxists(sourcefiledir .. "/../../adnoddau/l3build") then
@@ -136,7 +136,7 @@ uploadconfig = {
 	pkg           = ctanpkg,
 	summary       = "Lua-based opentype font configuration for LuaLaTeX.",
   uploader      = "Clea F. Rees",
-	version       = "v0.0",
+	version       = "v0.1",
   -- optional --
 	bugtracker    = {"https://codeberg.org/cfr/nfssext/issues"},
   description   = "Fast and simple opentype font configuration for LuaLaTeX.\z
