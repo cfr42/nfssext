@@ -1,0 +1,27 @@
+%% $Id: test-add.lvt 12102 2026-10-10 04:30:24Z cfrees $
+\input lfc-support.tex
+\documentclass{article}
+\parindent=0pt
+\START
+\usepackage{lua-font-config}
+\fontconfig{%
+  family = {%
+    name = Lobster Two,
+  },
+  family = {%
+    name = Playfair Display,
+    command = \aardvark,
+  },
+}
+\begin{document}
+
+\TEST{family default macro}{%
+  {\lobstertwo Lobster Two}%
+}
+
+\TEST{family custom macro}{%
+  {\aardvark Playfair Display}%
+}
+
+\end{document}
+

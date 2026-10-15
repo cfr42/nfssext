@@ -1,0 +1,29 @@
+%% $Id: test-ncm-math-debug.lvt 12117 2026-10-13 19:33:10Z cfrees $
+\input lfc-support.tex
+\documentclass{article}
+\START
+\usepackage{lua-font-config}
+\fontconfig{%
+  debug = {
+    categories = {cache, data},
+  },
+  rm = newcomputermodern,
+  sf = newcomputermodernsans,
+  tt = newcomputermodernmono,
+  math = newcomputermodernmath,
+}
+\parindent=0pt
+\begin{document}
+\OMIT
+\[
+    \sin\theta^2 + \cos\theta^2 = 1
+\]
+$\mathsf{x} \mathtt{x} \mathbf{x}$
+
+\mathversion{bold}
+\[
+    \sin\theta^2 + \cos\theta^2 = 1
+\]
+$\mathsf{x} \mathtt{x} \mathbf{x}$
+\TIMO
+\end{document}

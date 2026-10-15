@@ -1,0 +1,67 @@
+%% $Id: test-lmr.lvt 12086 2026-10-02 06:44:44Z cfrees $
+\input lfc-support.tex
+\documentclass{article}
+\parindent=0pt
+\START
+\usepackage{lua-font-config}
+\fontconfig{rm = latinmodernroman}
+\begin{document}
+\TEST{latinmodernroman m}{%
+  Upright \textit{Italics \textsc{Italic Small Caps}} 
+  \textsc{Small Caps \textsl{Oblique Small Caps}} \textsl{Oblique}
+  \fontshape{ui}\selectfont Upright Italics
+}
+\OMIT
+\normalfont
+\TIMO
+
+\TEST{latinmodernroman b}{%
+  \bfseries
+  Upright \textit{Italics \textsc{Italic Small Caps (NA)}} 
+  \textsc{Small Caps (NA) \textsl{Oblique Small Caps (NA)}} \textsl{Oblique}
+  \fontshape{ui}\selectfont Upright Italics (NA)
+}
+\OMIT
+\normalfont
+\TIMO
+
+\TEST{latinmodernroman db}{%
+  \fontseries{db}\selectfont
+  Upright \textit{Italics \textsc{Italic Small Caps (NA)}} 
+  \textsc{Small Caps (NA) \textsl{Oblique Small Caps (NA)}} \textsl{Oblique}
+  \fontshape{ui}\selectfont Upright Italics (NA)
+}
+\OMIT
+\normalfont
+\TIMO
+
+\TEST{latinmodernroman footnotesize m}{%
+  \footnotesize
+  Upright \textit{Italics \textsc{Italic Small Caps}} 
+  \textsc{Small Caps \textsl{Oblique Small Caps}} \textsl{Oblique}
+  \fontshape{ui}\selectfont Upright Italics
+}
+\OMIT
+\normalfont
+\TIMO
+
+\TEST{latinmodernroman footnotesize b}{%
+  \footnotesize
+  \bfseries
+  Upright \textit{Italics \textsc{Italic Small Caps (NA)}} 
+  \textsc{Small Caps (NA) \textsl{Oblique Small Caps (NA)}} \textsl{Oblique}
+  \fontshape{ui}\selectfont Upright Italics (NA)
+}
+\OMIT
+\normalfont
+\TIMO
+
+\TEST{latinmodernroman footnotesize db}{%
+  \footnotesize
+  \fontseries{db}\selectfont
+  Upright \textit{Italics \textsc{Italic Small Caps (NA)}} 
+  \textsc{Small Caps (NA) \textsl{Oblique Small Caps (NA)}} \textsl{Oblique}
+  \fontshape{ui}\selectfont Upright Italics (NA)
+}
+\end{document}
+
