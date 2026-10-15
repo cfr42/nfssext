@@ -1,4 +1,4 @@
--- $Id: build.lua 12122 2026-10-14 02:26:04Z cfrees $
+-- $Id: build.lua 12125 2026-10-15 04:05:25Z cfrees $
 --------------------------------------------------------------------------------
 -- This package combines files released under distinct licences. 
 --
@@ -22,9 +22,10 @@ ctanpkg = module
 -- But don't make lua-font-config a dependency or dependant. <-- Doesn't work.
 maindir = ".."
 sourcefiledir = "."
-sourcefiles = {"*.dtx", "*.ins", "lua-font-config.lua", "lfc*.lua"}
+sourcefiles = {"*.dtx", "*.ins", "lua-font-config.lua", "lfc-context-font-syn.lua"}
+-- excludefiles = {"scratch.lua", "lfc-fea-lookup.lua"}
 manifestfile = "manifest.txt"
-installfiles = {"lua-font-config.lua", "lfc*.lua", "*.sty"}
+installfiles = {"lua-font-config.lua", "lfc-context-font-syn.lua", "*.sty"}
 checkengines = {"luatex"}
 -- 2 runs to avoid cache-creation messages in logs and ensure cache is used on
 -- subsequent runs.
@@ -52,6 +53,22 @@ elseif direxists(sourcefiledir .. "/../../adnoddau/l3build") then
 end
 function manifest_setup ()
   unpack()
+  local devfiles = {}
+  local t = {testfiledir, sourcefiledir .. "/testfiles-once"}
+  for _,curr in ipairs(t) do 
+    for item in lfs.dir(curr) do
+      local attr = lfs.attributes(curr .. "/" .. item, "mode")
+      if attr == "file" then
+        table.insert(devfiles, item)
+      elseif attr == "directory" and item ~= "." and item ~= ".." then
+        for this in lfs.dir(curr .. "/" .. item) do
+          if lfs.attributes(curr .. "/" .. item .. "/" .. this, "mode") == "file" then
+            table.insert(devfiles, this)
+          end
+        end
+      end
+    end
+  end
   local groups = {
     {
       subheading = "Source files",
@@ -59,8 +76,15 @@ function manifest_setup ()
     {
       name = "Package files",
       dir = sourcefiledir,
-      files = {"*.dtx","*.ins","*.lua","*.md"},
-      exclude = {derivedfiles,"lfc-context-font-syn.lua"},
+      files = {"*.dtx","*.ins","lua-font-config.lua","*.md"},
+      exclude = {derivedfiles,excludefiles},
+      description= "** NB lfc-context-font-syn.lua NOT included here **\n"
+    },
+    {
+      name = "Development files",
+      files = {"build.lua", "config-once.lua"},
+      dir = sourcefiledir,
+      description = "* " .. table.concat(devfiles, "\n* ")
     },
     {
       subheading = "Derived files",
@@ -68,16 +92,19 @@ function manifest_setup ()
     {
       name = "Package files",
       dir = unpackdir,
-      -- files = {"*.cls","*.sty","example-*.tex"},
       files = {"*.cls","*.sty"},
       exclude = sourcefiles,
       description = "* manifest.txt",
     },
+    { 
+      name = "Example files",
+      dir = unpackdir,
+      files = {"example-*.tex"},
+    },
     {
       name = "Typeset documentation",
-      -- files = {typesetfiles,typesetdemofiles},
       files = typesetfiles,
-      excludefiles = {".","..","example-*.pdf"},
+      excludefiles = {".",".."},
       dir = sourcefiledir,
       rename = {"%.%w+$",".pdf"},
     },
@@ -90,6 +117,7 @@ tdslocations  = {
   "doc/lualatex/lua-font-config/*.md",
   "doc/lualatex/lua-font-config/*.pdf",
   "doc/lualatex/lua-font-config/example-*.tex",
+  "doc/lualatex/lua-font-config/example-*.pdf",
   "doc/lualatex/lua-font-config/*.txt",
   "source/lualatex/lua-font-config/*.dtx",
   "source/lualatex/lua-font-config/*.ins",
@@ -114,11 +142,10 @@ uploadconfig = {
   description   = "Fast and simple opentype font configuration for LuaLaTeX.\z
     Efficient auto-generation of font families providing easy access to the multiple shapes, weights, widths and features provided by many of today's fonts.\z
     Engine callbacks, LaTeX hooks and caching are used to eliminate pre-loading, reduce lookups and minimise pre-defining.\z
-    This allows very rich font families to be quicky generated, with minimal user input and no configuration files.\z
+    This allows very rich font families to be quicky generated, with minimal user input and zero configuration files.\z
     The core code consists of two Lua modules: one taken as-is from ConTeXt (MKIV) and one providing the LaTeX interface and data processing.\n\n\z
-    The package is experimental.\z
-    While already usable in many cases, it currently(?) provides only a small part of fontspec's functionality.\z
-    Implemented features include configuration of the main document font families (roman, sans, typewriter), use of these families in maths mode, creation of additional families (text mode) and support for Unicode maths (using lua-unicode-math).\z
+    The package is experimental and, while already usable in many cases, currently(?) provides only a small part of fontspec's functionality.\z
+    Implemented features include configuration of the main document font families (roman, sans, typewriter), use of these families in maths mode, creation of additional families (text mode) and support for Unicode maths (via lua-unicode-math).\z
     Missing features include support for multi-lingual typesetting, variable fonts, spot colours etc. and a user interface beyond the rudimentary.",
   -- development {}
   -- home {}
@@ -199,7 +226,6 @@ function docinit_hook()
   return 0
 end
 --------------------------------------------------------------------------------
-kpse.set_program_name("texlua", "l3build")
 local kpse_texmfdist = (string.gsub(kpse.expand_var("$TEXMFDIST"), "%-", "%%-"))
 function normalize_log_hook(line)
   return (string.gsub(line, kpse_texmfdist, "TEXMFDIST"))
