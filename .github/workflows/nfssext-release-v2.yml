@@ -148,24 +148,28 @@ jobs:
       check_librisadf_output: ${{ steps.exit.outputs.check_ret_librisadf }}
       check_romandeadf_output: ${{ steps.exit.outputs.check_ret_romandeadf }}
       check_venturisadf_output: ${{ steps.exit.outputs.check_ret_venturisadf }}
+      check_lfc_output: ${{ steps.exit.outputs.check_ret_lfc }}
       ctan_baskervaldadf_output: ${{ steps.exit.outputs.ctan_ret_baskervaldadf }}
       ctan_berenisadf_output: ${{ steps.exit.outputs.ctan_ret_berenisadf }}
       ctan_electrumadf_output: ${{ steps.exit.outputs.ctan_ret_electrumadf }}
       ctan_librisadf_output: ${{ steps.exit.outputs.ctan_ret_librisadf }}
       ctan_romandeadf_output: ${{ steps.exit.outputs.ctan_ret_romandeadf }}
       ctan_venturisadf_output: ${{ steps.exit.outputs.ctan_ret_venturisadf }}
+      ctan_lfc_output: ${{ steps.exit.outputs.ctan_ret_lfc }}
       ctanrel_baskervaldadf_output: ${{ steps.exit.outputs.ctanrel_ret_baskervaldadf }}
       ctanrel_berenisadf_output: ${{ steps.exit.outputs.ctanrel_ret_berenisadf }}
       ctanrel_electrumadf_output: ${{ steps.exit.outputs.ctanrel_ret_electrumadf }}
       ctanrel_librisadf_output: ${{ steps.exit.outputs.ctanrel_ret_librisadf }}
       ctanrel_romandeadf_output: ${{ steps.exit.outputs.ctanrel_ret_romandeadf }}
       ctanrel_venturisadf_output: ${{ steps.exit.outputs.ctanrel_ret_venturisadf }}
+      ctanrel_lfc_output: ${{ steps.exit.outputs.ctanrel_ret_lfc }}
       doc_baskervaldadf_output: ${{ steps.exit.outputs.doc_ret_baskervaldadf }}
       doc_berenisadf_output: ${{ steps.exit.outputs.doc_ret_berenisadf }}
       doc_electrumadf_output: ${{ steps.exit.outputs.doc_ret_electrumadf }}
       doc_librisadf_output: ${{ steps.exit.outputs.doc_ret_librisadf }}
       doc_romandeadf_output: ${{ steps.exit.outputs.doc_ret_romandeadf }}
       doc_venturisadf_output: ${{ steps.exit.outputs.doc_ret_venturisadf }}
+      doc_lfc_output: ${{ steps.exit.outputs.doc_ret_lfc }}
       fnttarg_baskervaldadf_output: ${{ steps.exit.outputs.fnttarg_ret_baskervaldadf }}
       fnttarg_berenisadf_output: ${{ steps.exit.outputs.fnttarg_ret_berenisadf }}
       fnttarg_electrumadf_output: ${{ steps.exit.outputs.fnttarg_ret_electrumadf }}
@@ -178,12 +182,14 @@ jobs:
       manifest_librisadf_output: ${{ steps.exit.outputs.manifest_ret_librisadf }}
       manifest_romandeadf_output: ${{ steps.exit.outputs.manifest_ret_romandeadf }}
       manifest_venturisadf_output: ${{ steps.exit.outputs.manifest_ret_venturisadf }}
+      manifest_lfc_output: ${{ steps.exit.outputs.manifest_ret_lfc }}
       release_baskervaldadf_output: ${{ steps.exit.outputs.release_ret_baskervaldadf }}
       release_berenisadf_output: ${{ steps.exit.outputs.release_ret_berenisadf }}
       release_electrumadf_output: ${{ steps.exit.outputs.release_ret_electrumadf }}
       release_librisadf_output: ${{ steps.exit.outputs.release_ret_librisadf }}
       release_romandeadf_output: ${{ steps.exit.outputs.release_ret_romandeadf }}
       release_venturisadf_output: ${{ steps.exit.outputs.release_ret_venturisadf }}
+      release_lfc_output: ${{ steps.exit.outputs.release_ret_lfc }}
     # don't abandon other builds if one module fails
     # continue-on-error: true
     strategy:
@@ -213,6 +219,8 @@ jobs:
           - module: venturisadf
             working_directory: arkandis/venturisadf
             pre_target: fnttarg
+          - module: lfc
+            working_directory: lua-font-config
     name: "Test build: ${{ matrix.module }}"
     steps:
       - name: Checkout repo
@@ -259,20 +267,25 @@ jobs:
           module="${{ matrix.module }}"
           echo -e "check_ret_${module}=$checkret\nctan_ret_${module}=$ctanret\nctanrel_ret_${module}=$ctanrelret\nfnttarg_ret_${module}=$fnttargret\nmanifest_ret_${module}=$manifestret\nrelease_ret_${module}=$releaseret\n" >> "$GITHUB_OUTPUT"
           # fail if either fnttarg or ctan failed to build
-          [[ $fnttargret == 0 ]] || allan=1
-          printf %b "fnttarg ret ${fnttargret} --> allan ${allan}\n"
+          [[ $pretarget == "" || $fnttargret == 0 ]] || allan=1
+          [[ $pretarget != "" ]] && printf %b "fnttarg ret ${fnttargret} --> allan ${allan}\n"
+          # fail if check failed
           [[ $checkret == "" || $checkret == 0 ]] || allan=1
           printf %b "check ret ${checkret} --> allan ${allan}\n"
-          [[ $ctanret == "" || $ctanret == 0 ]] || allan=1
-          printf %b "ctan ret ${ctanret} --> allan ${allan}\n"
+          # fail if doc failed
           [[ $docret == "" || $docret == 0 ]] || allan=1
           printf %b "doc ret ${docret} --> allan ${allan}\n"
+          # fail if ctan failed
+          [[ $ctanret == "" || $ctanret == 0 ]] || allan=1
+          printf %b "ctan ret ${ctanret} --> allan ${allan}\n"
           printf %b "releasing ${releasing}\n"
           if [ $releasing != "false" ]
           then
+            # fail if releasing and ctan or ctanrel failed
             printf %b "ctan ret ${ctanret}, ctanrel ret ${ctanrelret} --> allan ${allan}\n"
             [[ $ctanret == 0 || $ctanrelret == 0 ]] || allan=1
             printf %b "release ret ${releaseret}, manifest ret ${manifestret} --> allan ${allan}\n"
+            # fail if release or manifest failed
             [[ $releaseret == 0 && $manifestret == 0 ]] || allan=1
           fi
           cat "$GITHUB_OUTPUT"
@@ -416,6 +429,7 @@ jobs:
           ctanlibrisadf: ${{ needs.nfssext.outputs.ctan_librisadf_output }}
           ctanromandeadf: ${{ needs.nfssext.outputs.ctan_romandeadf_output }}
           ctanventurisadf: ${{ needs.nfssext.outputs.ctan_venturisadf_output }}
+          ctanlfc: ${{ needs.nfssext.outputs.ctan_lfc_output }}
           fnttargadforn: ${{ needs.nfssext-needy.outputs.fnttarg_adforn_output }}
           fnttargadfsymbols: ${{ needs.nfssext-needy.outputs.fnttarg_adfsymbols_output }}
           ctanadforn: ${{ needs.nfssext-needy.outputs.ctan_adforn_output }}
@@ -425,6 +439,7 @@ jobs:
         run: |
           allan=0
           ([[ $fnttargclm != 0 || $ctanclm != 0 || $fnttargbaskervaldadf != 0 || $fnttargberenisadf != 0 || $fnttargelectrumadf != 0 || $fnttarglibrisadf != 0 || $fnttargromandeadf != 0 || $fnttargventurisadf != 0 || $ctanbaskervaldadf != 0 || $ctanberenisadf != 0 || $ctanelectrumadf != 0 || $ctanlibrisadf != 0 || $ctanromandeadf != 0 || $ctanventurisadf != 0 || $fnttargadforn != 0 || $fnttargadfsymbols != 0 || $ctanadforn != 0 || $ctanadfsymbols != 0 || $ctanfontscripts != 0 || $ctannfssextcfr != 0 ]]) && allan=1
+          [[ $ctanlfc != 0 ]] && allan=1
           echo "Summary status: $allan"
           echo -e "BUILD_RET=${allan}" >> "$GITHUB_OUTPUT" 
           exit "$allan"
