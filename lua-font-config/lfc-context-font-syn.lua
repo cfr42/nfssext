@@ -6,53 +6,53 @@ if not modules then modules = { } end modules ['font-syn'] = {
     license   = "see context related readme files"
 }
 
--- todo: subs in lookups requests
--- todo: see if the (experimental) lua reader (on my machine) be used (it's a bit slower so maybe wait till lua 5.3)
+local _ENV = table.copy(luaotfload.fontloader)
 
--- identifying ttf/otf/ttc/afm : 2200 fonts:
---
--- old ff  loader: 140 sec
--- new lua loader:   5 sec
+local split = "^(.-)([^/]-)([^/]-)$"
+local function dowithfilesintree(pattern, handle, before, after)
+  local files = luaotfload.aux.font_index().files.full
+  for i = 1, #files do
+    local filename = files[i]
+    if string.match(filename, pattern) then
+      local root, path, name = string.match(filename, split)
+      -- Path is always empty.
+      handle("file", root, path, name)
+    end
+  end
+end
 
--- maybe find(...,strictname,1,true)
+local function setmetatableindex(t, k)
+  if k == "self" then
+    return table.setmetatableindex(t, function(tt, kk)
+      tt[kk] = kk
+      return kk
+    end)
+  else
+    return table.setmetatableindex(t, k)
+  end
+end
 
-local next, tonumber, type, tostring = next, tonumber, type, tostring
-local sub, gsub, match, find, lower, upper = string.sub, string.gsub, string.match, string.find, string.lower, string.upper
-local concat, sort, fastcopy, tohash = table.concat, table.sort, table.fastcopy, table.tohash
+local next, tonumber = next, tonumber
+local sub, gsub, find, lower, upper = string.sub, string.gsub, string.find, string.lower, string.upper
+local sort, fastcopy = table.sort, table.fastcopy
 local serialize, sortedhash = table.serialize, table.sortedhash
+local formatters = string.formatters
+local P, Cs = lpeg.P, lpeg.Cs
 local lpegmatch = lpeg.match
-local unpack = unpack or table.unpack
-local formatters, topattern = string.formatters, string.topattern
-local round = math.round
-local P, R, S, C, Cc, Ct, Cs = lpeg.P, lpeg.R, lpeg.S, lpeg.C, lpeg.Cc, lpeg.Ct, lpeg.Cs
-local lpegmatch, lpegpatterns = lpeg.match, lpeg.patterns
 local isfile, modificationtime = lfs.isfile, lfs.modification
 
 local allocate             = utilities.storage.allocate
-local sparse               = utilities.storage.sparse
-local setmetatableindex    = table.setmetatableindex
-
 local removesuffix         = file.removesuffix
 local splitbase            = file.splitbase
 local splitname            = file.splitname
 local basename             = file.basename
-local nameonly             = file.nameonly
 local pathpart             = file.pathpart
-local suffixonly           = file.suffix
 local filejoin             = file.join
 local is_qualified_path    = file.is_qualified_path
 local exists               = io.exists
 
 local findfile             = resolvers.findfile
-local cleanpath            = resolvers.cleanpath
 local resolveprefix        = resolvers.resolve
-
-local settings_to_hash     = utilities.parsers.settings_to_hash_tolerant
-
-local trace_names          = false  trackers.register("fonts.names",          function(v) trace_names          = v end)
-local trace_warnings       = false  trackers.register("fonts.warnings",       function(v) trace_warnings       = v end)
-local trace_specifications = false  trackers.register("fonts.specifications", function(v) trace_specifications = v end)
-local trace_rejections     = false  trackers.register("fonts.rejections",     function(v) trace_rejections     = v end)
 
 local report_names         = logs.reporter("fonts","names")
 
@@ -63,6 +63,7 @@ fonts                      = fonts or { } -- also used elsewhere
 
 local names                = fonts.names or allocate { }
 fonts.names                = names
+local names = {}
 
 local filters              = names.filters or { }
 names.filters              = filters
@@ -82,9 +83,6 @@ names.cache                = containers.define("fonts","data",names.version,true
 
 local usesystemfonts       = true
 local autoreload           = true
-
-directives.register("fonts.autoreload",     function(v) autoreload     = toboolean(v) end)
-directives.register("fonts.usesystemfonts", function(v) usesystemfonts = toboolean(v) end)
 
 -- -- what to do with these -- --
 --
@@ -130,26 +128,9 @@ local weights = Cs ( -- not extra
   + P("heavy")
   + P("ultra")
   + P("black")
---+ P("bol")      / "bold" -- blocks
   + P("bol")
   + P("regular")  / "normal"
 )
-
--- local weights = {
---     [100] = "thin",
---     [200] = "extralight",
---     [300] = "light",
---     [400] = "normal",
---     [500] = "medium",
---     [600] = "semibold", -- demi demibold
---     [700] = "bold",
---     [800] = "extrabold",
---     [900] = "black",
--- }
-
-local normalized_weights = sparse {
-    regular = "normal",
-}
 
 local styles = Cs (
     P("reverseoblique") / "reverseitalic"
@@ -161,34 +142,22 @@ local styles = Cs (
   + P("roman")          / "normal"
   + P("ital")           / "italic" -- might be tricky
   + P("ita")            / "italic" -- might be tricky
---+ P("obli")           / "oblique"
 )
-
-local normalized_styles = sparse {
-    reverseoblique = "reverseitalic",
-    regular        = "normal",
-    oblique        = "italic",
-}
 
 local widths = Cs(
     P("condensed")
   + P("thin")
   + P("expanded")
   + P("cond")     / "condensed"
---+ P("expa")     / "expanded"
   + P("normal")
   + P("book")     / "normal"
 )
-
-local normalized_widths = sparse()
 
 local variants = Cs( -- fax casual
     P("smallcaps")
   + P("oldstyle")
   + P("caps")      / "smallcaps"
 )
-
-local normalized_variants = sparse()
 
 names.knownweights = {
     "black",
@@ -278,16 +247,8 @@ function names.splitspec(askedname)
     style   = style   and lpegmatch(styles,  style)   or style
     width   = width   and lpegmatch(widths,  width)   or width
     variant = variant and lpegmatch(variants,variant) or variant
-    if trace_names then
-        report_names("requested name %a split in name %a, weight %a, style %a, width %a and variant %a",
-            askedname,name,weight,style,width,variant)
-    end
     if not weight or not weight or not width or not variant then
         weight, style, width, variant = weight or "normal", style or "normal", width or "normal", variant or "normal"
-        if trace_names then
-            report_names("request %a normalized to '%s-%s-%s-%s-%s'",
-                askedname,name,weight,style,width,variant)
-        end
     end
     return name or askedname, weight, style, width, variant
 end
@@ -307,103 +268,7 @@ filters.afm = fonts.handlers.afm.readers.getinfo
 filters.otf = fonts.handlers.otf.readers.getinfo
 filters.ttf = filters.otf
 filters.ttc = filters.otf
--------.ttx = filters.otf
 
--- local function normalize(t) -- only for afm parsing
---     local boundingbox = t.boundingbox or t.fontbbox
---     if boundingbox then
---         for i=1,#boundingbox do
---             boundingbox[i] = tonumber(boundingbox[i])
---         end
---     else
---         boundingbox = { 0, 0, 0, 0 }
---     end
---     return {
---         copyright     = t.copyright,
---         fontname      = t.fontname,
---         fullname      = t.fullname,
---         familyname    = t.familyname,
---         weight        = t.weight,
---         widtht        = t.width,
---         italicangle   = tonumber(t.italicangle) or 0,
---         monospaced    = t.monospaced or toboolean(t.isfixedpitch) or false,
---         boundingbox   = boundingbox,
---         version       = t.version, -- not used
---         capheight     = tonumber(t.capheight),
---         xheight       = tonumber(t.xheight),
---         ascender      = tonumber(t.ascender),
---         descender     = tonumber(t.descender),
---     }
--- end
---
--- function filters.afm(name)
---     -- we could parse the afm file as well, and then report an error but
---     -- it's not worth the trouble
---     local pfbname = findfile(removesuffix(name)..".pfb","pfb") or ""
---     if pfbname == "" then
---         pfbname = findfile(nameonly(name)..".pfb","pfb") or ""
---     end
---     if pfbname ~= "" then
---         local f = io.open(name)
---         if f then
---             local hash = { }
---             local okay = false
---             for line in f:lines() do -- slow but only a few lines at the beginning
---                 if find(line,"StartCharMetrics",1,true) then
---                     break
---                 else
---                     local key, value = match(line,"^(.+)%s+(.+)%s*$")
---                     if key and #key > 0 then
---                         hash[lower(key)] = value
---                     end
---                 end
---             end
---             f:close()
---             return normalize(hash)
---         end
---     end
---     return nil, "no matching pfb file"
--- end
-
--- local p_spaces  = lpegpatterns.whitespace
--- local p_number  = (R("09")+S(".-+"))^1 / tonumber
--- local p_boolean = P("false") * Cc(false)
---                 + P("false") * Cc(false)
--- local p_string  = P("(") * C((lpegpatterns.nestedparents + 1 - P(")"))^1) * P(")")
--- local p_array   = P("[") * Ct((p_number + p_boolean + p_string + p_spaces^1)^1) * P("]")
---                 + P("{") * Ct((p_number + p_boolean + p_string + p_spaces^1)^1) * P("}")
---
--- local p_key     = P("/") * C(R("AZ","az")^1)
--- local p_value   = p_string
---                 + p_number
---                 + p_boolean
---                 + p_array
---
--- local p_entry   = p_key * p_spaces^0 * p_value
---
--- function filters.pfb(name)
---     local f = io.open(name)
---     if f then
---         local hash = { }
---         local okay = false
---         for line in f:lines() do -- slow but only a few lines at the beginning
---             if find(line,"dict begin",1,true) then
---                 okay = true
---             elseif not okay then
---                 -- go on
---             elseif find(line,"currentdict end",1,true) then
---                 break
---             else
---                 local key, value = lpegmatch(p_entry,line)
---                 if key and value then
---                     hash[lower(key)] = value
---                 end
---             end
---         end
---         f:close()
---         return normalize(hash)
---     end
--- end
 
 -- The scanner loops over the filters using the information stored in the file
 -- databases. Watch how we check not only for the names, but also for combination
@@ -423,11 +288,11 @@ names.runtimefontsvariable = "RUNTIMEFONTS" -- the official way, in minimals etc
 filters.paths = { }
 filters.names = { }
 
-function names.getpaths(trace)
+function names.getpaths()
     local hash, result, r = { }, { }, 0
     local function collect(t,where)
         for i=1,#t do
-            local v = cleanpath(t[i])
+            local v = nil
             v = gsub(v,"/+$","") -- not needed any more
             local key = lower(v)
             report_names("variable %a specifies path %a",where,v)
@@ -462,9 +327,6 @@ function names.getpaths(trace)
                 end
             end
             if name ~= "" and isfile(name) then
-                if trace_names then
-                    report_names("%s fontconfig file %a","loading",name)
-                end
                 local xmldata = xml.load(name)
                 -- begin of untested mess
                 xml.include(xmldata,"include","",true,function(incname)
@@ -475,19 +337,11 @@ function names.getpaths(trace)
                         end
                     end
                     if isfile(incname) then
-                        if trace_names then
-                            report_names("%s fontconfig file %a","merging included",incname)
-                        end
                         return io.loaddata(incname)
-                    elseif trace_names then
-                        report_names("%s fontconfig file: %a","ignoring included",incname)
                     end
                 end)
                 -- end of untested mess
                 local fontdirs = xml.collect_texts(xmldata,"dir",true)
-                if trace_names then
-                    report_names("%s dirs found in fontconfig",#fontdirs)
-                end
                 collect(fontdirs,"fontconfig file")
             end
         end
@@ -524,24 +378,8 @@ local sorter = function(a,b)
     return a > b -- longest first
 end
 
--- local sorter = nil
-
 names.cleanname     = cleanname
 names.cleanfilename = cleanfilename
-
--- local function check_names(result)
---     local names = result.names
---     if names then
---         for i=1,#names do
---             local name = names[i]
---             if name.lang == "English (US)" then
---                 return name.names
---             end
---         end
---     end
---     return result
--- end
-
 
 local function check_name(data,result,filename,modification,suffix,subfont)
     -- shortcuts
@@ -553,8 +391,6 @@ local function check_name(data,result,filename,modification,suffix,subfont)
     local subfamily      = result.subfamily
     local familyname     = result.familyname
     local subfamilyname  = result.subfamilyname
- -- local compatiblename = result.compatiblename
- -- local cfffullname    = result.cfffullname
     local weight         = result.weight
     local width          = result.width
     local italicangle    = tonumber(result.italicangle)
@@ -569,8 +405,6 @@ local function check_name(data,result,filename,modification,suffix,subfont)
     subfamily      = subfamily      and cleanname(subfamily)
     familyname     = familyname     and cleanname(familyname)
     subfamilyname  = subfamilyname  and cleanname(subfamilyname)
- -- compatiblename = compatiblename and cleanname(compatiblename)
- -- cfffullname    = cfffullname    and cleanname(cfffullname)
     weight         = weight         and cleanname(weight)
     width          = width          and cleanname(width)
     italicangle    = italicangle == 0 and nil
@@ -796,9 +630,6 @@ local function collecthashes()
             local format         = specification.format
             local fullname       = specification.fullname
             local fontname       = specification.fontname
-         -- local rawname        = specification.rawname
-         -- local compatiblename = specification.compatiblename
-         -- local cfffullname    = specification.cfffullname
             local familyname     = specification.familyname or specification.family
             local subfamilyname  = specification.subfamilyname
             local subfamily      = specification.subfamily
@@ -821,14 +652,6 @@ local function collecthashes()
                     nofmappings       = nofmappings + 1
                 end
             end
-         -- if compatiblename and not mapping[compatiblename] then
-         --     mapping[compatiblename] = index
-         --     nofmappings             = nofmappings + 1
-         -- end
-         -- if cfffullname and not mapping[cfffullname] then
-         --     mapping[cfffullname] = index
-         --     nofmappings          = nofmappings + 1
-         -- end
             if familyname then
                 if weight and weight ~= sub(familyname,#familyname-#weight+1,#familyname) then
                     local madename = familyname .. weight
@@ -924,9 +747,6 @@ local function checkduplicate(where) -- fails on "Romantik" but that's a border 
     for k, v in sortedhash(loaded) do
         local nv = #v
         if nv > 1 then
-            if trace_warnings then
-                report_names("lookup %a clashes with %a",k,v)
-            end
             n = n + nv
         end
     end
@@ -988,11 +808,6 @@ local function unpackreferences()
 end
 
 local function analyzefiles(olddata)
-
-    if not trace_warnings then
-        report_names("warnings are disabled (tracker 'fonts.warnings')")
-    end
-
     local data               = names.data
     local done               = { }
     local totalnofread       = 0
@@ -1008,13 +823,12 @@ local function analyzefiles(olddata)
     local oldspecifications  = olddata and olddata.specifications or { }
     local oldrejected        = olddata and olddata.rejected       or { }
     local treatmentdata      = treatments.data or { } -- when used outside context
-    ----- walked             = setmetatableindex("number")
 
     local function walk_tree(pathlist,suffix,identify)
         if pathlist then
             for i=1,#pathlist do
                 local path = pathlist[i]
-                path = cleanpath(path .. "/")
+                path = nil
                 path = gsub(path,"/+","/")
                 local pattern = path .. "**." .. suffix -- ** forces recurse
                 report_names("globbing path %a",pattern)
@@ -1024,7 +838,6 @@ local function analyzefiles(olddata)
                     local completename = t[j]
                     identify(completename,basename(completename),suffix,completename)
                 end
-             -- walked[path] = walked[path] + #t
             end
         end
     end
@@ -1034,38 +847,23 @@ local function analyzefiles(olddata)
         nofread = nofread + 1
         local treatment = treatmentdata[completename] or treatmentdata[basepart]
         if treatment and treatment.ignored then
-            if trace_names or trace_rejections then
-                report_names("%s font %a is ignored, reason %a",suffix,completename,treatment.comment or "unknown")
-            end
             nofskipped = nofskipped + 1
         elseif done[name] then
             if lower(completename) ~= lower(done[name]) then
                 -- already done (avoid otf afm clash)
-                if trace_names or trace_rejections then
-                    report_names("%s font %a already done as %a",suffix,completename,done[name])
-                end
                 nofduplicates = nofduplicates + 1
                 nofskipped = nofskipped + 1
             end
         elseif not exists(completename) then
             -- weird error
-            if trace_names or trace_rejections then
-                report_names("%s font %a does not really exist",suffix,completename)
-            end
             nofskipped = nofskipped + 1
         elseif not is_qualified_path(completename) and findfile(completename,suffix) == "" then
             -- not locatable by backend anyway
-            if trace_names or trace_rejections then
-                report_names("%s font %a cannot be found by backend",suffix,completename)
-            end
             nofskipped = nofskipped + 1
         else
             if #skip_paths > 0 then
                 for i=1,#skip_paths do
                     if find(pathpart,skip_paths[i]) then
-                        if trace_names or trace_rejections then
-                            report_names("rejecting path of %s font %a",suffix,completename)
-                        end
                         nofskipped = nofskipped + 1
                         return
                     end
@@ -1075,16 +873,10 @@ local function analyzefiles(olddata)
                 for i=1,#skip_paths do
                     if find(basepart,skip_names[i]) then
                         done[name] = true
-                        if trace_names or trace_rejections then
-                            report_names("rejecting name of %s font %a",suffix,completename)
-                        end
                         nofskipped = nofskipped + 1
                         return
                     end
                 end
-            end
-            if trace_names then
-                report_names("identifying %s font %a",suffix,completename)
             end
             -- needs checking with ttc / ttx : date not updated ?
             local result = nil
@@ -1119,17 +911,10 @@ local function analyzefiles(olddata)
                     else
                         check_name(data,result,storedname,modification,suffix)
                     end
-                    if trace_warnings and message and message ~= "" then
-                        report_names("warning when identifying %s font %a, %s",suffix,completename,message)
-                    end
-                elseif trace_warnings then
-                    nofskipped = nofskipped + 1
-                    report_names("error when identifying %s font %a, %s",suffix,completename,message or "unknown")
                 end
             end
             done[name] = completename
         end
-        logs.flush() --  a bit overkill for each font, maybe not needed here
     end
 
     local function traverse(what, method)
@@ -1148,13 +933,12 @@ local function analyzefiles(olddata)
             local elapsed = os.gettimeofday() - t
             report_names("%s %s files identified, %s skipped, %s duplicates, %s hash entries added, runtime %0.3f seconds",nofread,what,nofskipped,nofduplicates,nofread-nofskipped,elapsed)
         end
-        logs.flush()
     end
 
     -- problem .. this will not take care of duplicates
 
     local function withtree(suffix)
-        resolvers.dowithfilesintree(
+        dowithfilesintree(
             ".*%." .. suffix .. "$",
             function(method,root,path,name)
                 if method == "file" or method == "tree" then
@@ -1178,8 +962,7 @@ local function analyzefiles(olddata)
     local function withlsr(suffix) -- all trees
         -- we do this only for a stupid names run, not used for context itself,
         -- using the vars is too clumsy so we just stick to a full scan instead
-        local pathlist = resolvers.splitpath(resolvers.showpath("ls-R") or "")
-        walk_tree(pathlist,suffix,identify)
+        walk_tree(nil,suffix,identify)
     end
 
     local function withsystem(suffix) -- OSFONTDIR cum suis
@@ -1233,9 +1016,6 @@ local function rejectclashes() -- just to be sure, so no explicit afm will be fo
             local fnd = used[f]
             local fnm = s.filename
             if fnd then
-                if trace_warnings then
-                    report_names("fontname %a clashes, %a rejected in favor of %a",f,fnm,fnd)
-                end
                 rejected[f] = s.modification
             else
                 used[f] = fnm
@@ -1272,19 +1052,14 @@ local function resetdata()
         names          = { },
         indices        = { },
         rejected       = { },
-        datastate      = resolvers.datastate(),
+        datastate      = { },
     }
 end
 
 local plugin = false
 
-if CONTEXTLMTXMODE and CONTEXTLMTXMODE > 0 then
-    function names.setplugin(f)
-        plugin = type(f) == "function" and f or false
-    end
-end
-
 function names.identify(force)
+    texio.write_nl("Generating font name database...")
     if plugin then
         plugin("before")
     end
@@ -1302,6 +1077,7 @@ function names.identify(force)
     if plugin then
         plugin("after")
     end
+    texio.write(" done.\n")
 end
 
 function names.is_permitted(name)
@@ -1392,12 +1168,9 @@ local function is_reloaded()
     if not reloaded then
         local data = names.data
         if autoreload then
-            local c_status = serialize(resolvers.datastate())
+            local c_status = serialize({ })
             local f_status = serialize(data.datastate)
             if c_status == f_status then
-                if trace_names then
-                    report_names("font database has matching configuration and file hashes")
-                end
                 return
             else
                 report_names("font database has mismatching configuration and file hashes")
@@ -1407,7 +1180,6 @@ local function is_reloaded()
         end
         names.loaded = false
         reloaded = true
-        logs.flush()
         names.load(true)
     end
 end
@@ -1475,9 +1247,6 @@ local function foundname(name,sub) -- sub is not used currently
         local l = list[i]
         local found = mappings[l][name]
         if found then
-            if trace_names then
-                report_names("resolved via direct name match: %a",name)
-            end
             return checkinstance(found,name)
         end
     end
@@ -1485,9 +1254,6 @@ local function foundname(name,sub) -- sub is not used currently
         local l = list[i]
         local found, fname = fuzzy(mappings[l],sorted_mappings[l],name,sub)
         if found then
-            if trace_names then
-                report_names("resolved via fuzzy name match: %a onto %a",name,fname)
-            end
             return checkinstance(found,name)
         end
     end
@@ -1495,9 +1261,6 @@ local function foundname(name,sub) -- sub is not used currently
         local l = list[i]
         local found = fallbacks[l][name]
         if found then
-            if trace_names then
-                report_names("resolved via direct fallback match: %a",name)
-            end
             return checkinstance(found,name)
         end
     end
@@ -1505,14 +1268,8 @@ local function foundname(name,sub) -- sub is not used currently
         local l = list[i]
         local found, fname = fuzzy(sorted_mappings[l],sorted_fallbacks[l],name,sub)
         if found then
-            if trace_names then
-                report_names("resolved via fuzzy fallback match: %a onto %a",name,fname)
-            end
             return checkinstance(found,name)
         end
-    end
-    if trace_names then
-        report_names("font with name %a cannot be found",name)
     end
 end
 
@@ -1534,77 +1291,6 @@ function names.resolve(askedname,sub)
         return found.filename, found.subfont and found.rawname, found.subfont, found.instance
     end
 end
-
--- function names.getfilename(askedname,suffix) -- last resort, strip funny chars
---     names.load()
---     local files = names.data.files
---     askedname = files and files[cleanfilename(askedname,suffix)] or ""
---     if askedname == "" then
---         return ""
---     else -- never entered
---         return resolvers.findbinfile(askedname,suffix) or ""
---     end
--- end
-
-local runtimefiles = { }
-local runtimedone  = false
-
-local function addruntimepath(path)
-    names.load()
-    local paths    = type(path) == "table" and path or { path }
-    local suffixes = tohash(filters.list)
-    for i=1,#paths do
-        local path = resolveprefix(paths[i])
-        if path ~= "" then
-            local list = dir.glob(path.."/*")
-            for i=1,#list do
-                local fullname = list[i]
-                local suffix   = lower(suffixonly(fullname))
-                if suffixes[suffix] then
-                    local c = cleanfilename(fullname)
-                    runtimefiles[c] = fullname
-                    if trace_names then
-                        report_names("adding runtime filename %a for %a",c,fullname)
-                    end
-                end
-            end
-        end
-    end
-end
-
-local function addruntimefiles(variable)
-    local paths = variable and resolvers.expandedpathlistfromvariable(variable)
-    if paths and #paths > 0 then
-        addruntimepath(paths)
-    end
-end
-
-names.addruntimepath  = addruntimepath
-names.addruntimefiles = addruntimefiles
-
-function names.getfilename(askedname,suffix) -- last resort, strip funny chars
-    if not runtimedone then
-        addruntimefiles(names.runtimefontsvariable)
-        runtimedone = true
-    end
-    local cleanname = cleanfilename(askedname,suffix)
-    local found     = runtimefiles[cleanname]
-    if found then
-        return found
-    end
-    names.load()
-    local files = names.data.files
-    local found = files and files[cleanname] or ""
-    if found == "" and is_reloaded() then
-        files = names.data.files
-        found = files and files[cleanname] or ""
-    end
-    if found and found ~= "" then
-        return resolvers.findbinfile(found,suffix) or "" -- we still need to locate it
-    end
-end
-
--- specified search
 
 local function s_collect_weight_style_width_variant(found,done,all,weight,style,width,variant,family)
     if family then
@@ -1806,63 +1492,36 @@ local function collect(stage,found,done,name,weight,style,width,variant,all)
     local sorted = data.sorted_families
     local strictname = "^".. name -- to be checked
     local family = families[name]
-    if trace_names then
-        report_names("resolving name %a, weight %a, style %a, width %a, variant %a",name,weight,style,width,variant)
-    end
     if weight and weight ~= "" then
         if style and style ~= "" then
             if width and width ~= "" then
                 if variant and variant ~= "" then
-                    if trace_names then
-                        report_names("resolving stage %s, name %a, weight %a, style %a, width %a, variant %a",stage,name,weight,style,width,variant)
-                    end
                     s_collect_weight_style_width_variant(found,done,all,weight,style,width,variant,family)
                     m_collect_weight_style_width_variant(found,done,all,weight,style,width,variant,families,sorted,strictname)
                 else
-                    if trace_names then
-                        report_names("resolving stage %s, name %a, weight %a, style %a, width %a",stage,name,weight,style,width)
-                    end
                     s_collect_weight_style_width(found,done,all,weight,style,width,family)
                     m_collect_weight_style_width(found,done,all,weight,style,width,families,sorted,strictname)
                 end
             else
-                if trace_names then
-                    report_names("resolving stage %s, name %a, weight %a, style %a",stage,name,weight,style)
-                end
                 s_collect_weight_style(found,done,all,weight,style,family)
                 m_collect_weight_style(found,done,all,weight,style,families,sorted,strictname)
             end
         else
-            if trace_names then
-                report_names("resolving stage %s, name %a, weight %a",stage,name,weight)
-            end
             s_collect_weight(found,done,all,weight,family)
             m_collect_weight(found,done,all,weight,families,sorted,strictname)
         end
     elseif style and style ~= "" then
         if width and width ~= "" then
-            if trace_names then
-                report_names("resolving stage %s, name %a, style %a, width %a",stage,name,style,width)
-            end
             s_collect_style_width(found,done,all,style,width,family)
             m_collect_style_width(found,done,all,style,width,families,sorted,strictname)
         else
-            if trace_names then
-                report_names("resolving stage %s, name %a, style %a",stage,name,style)
-            end
             s_collect_style(found,done,all,style,family)
             m_collect_style(found,done,all,style,families,sorted,strictname)
         end
     elseif width and width ~= "" then
-        if trace_names then
-            report_names("resolving stage %s, name %a, width %a",stage,name,width)
-        end
         s_collect_width(found,done,all,width,family)
         m_collect_width(found,done,all,width,families,sorted,strictname)
     else
-        if trace_names then
-            report_names("resolving stage %s, name %a",stage,name)
-        end
         s_collect(found,done,all,family)
         m_collect(found,done,all,families,sorted,strictname)
     end
@@ -1893,16 +1552,8 @@ local function heuristic(name,weight,style,width,variant,all) -- todo: fallbacks
     end
     --
     local nf = #found
-    if trace_names then
-        if nf then
-            local t = { }
-            for i=1,nf do
-                t[i] = formatters["%a"](found[i].fontname)
-            end
-            report_names("name %a resolved to %s instances: % t",name,nf,t)
-        else
-            report_names("name %a unresolved",name)
-        end
+    if nf == 0 then
+        report_names("name %a unresolved",name)
     end
     if all then
         return nf > 0 and found
@@ -1926,23 +1577,6 @@ function names.specification(askedname,weight,style,width,variant,reload,all)
     end
 end
 
-function names.collect(askedname,weight,style,width,variant,reload,all)
-    if askedname and askedname ~= "" and names.enabled then
-        askedname = cleanname(askedname) -- or cleanname
-        names.load(reload)
-        local list = heuristic(askedname,weight,style,width,variant,true)
-        if not list or #list == 0 and is_reloaded() then
-            list = heuristic(askedname,weight,style,width,variant,true)
-        end
-        return list
-    end
-end
-
-function names.collectspec(askedname,reload,all)
-    local name, weight, style, width, variant = names.splitspec(askedname)
-    return names.collect(name,weight,style,width,variant,reload,all)
-end
-
 function names.resolvespec(askedname,sub) -- redefined later
     local found = names.specification(names.splitspec(askedname))
     if found then
@@ -1950,237 +1584,7 @@ function names.resolvespec(askedname,sub) -- redefined later
     end
 end
 
-function names.collectfiles(askedname,reload) -- no all
-    if askedname and askedname ~= "" and names.enabled then
-        askedname = cleanname(askedname) -- or cleanname
-        names.load(reload)
-        local list = { }
-        local specifications = names.data.specifications
-        for i=1,#specifications do
-            local s = specifications[i]
-            if find(cleanname(basename(s.filename)),askedname) then
-                list[#list+1] = s
-            end
-        end
-        return list
-    end
-end
-
--- todo:
---
--- blacklisted = {
---     ["cmr10.ttf"] = "completely messed up",
--- }
-
-function names.exists(name)
-    local found = false
-    local list = filters.list
-    for k=1,#list do
-        local v = list[k]
-        found = (findfile(name,v) or "") ~= ""
-        if found then
-            return found
-        end
-    end
-    return (findfile(name,"tfm") or "") ~= "" or (names.resolve(name) or "") ~= ""
-end
-
-local lastlookups, lastpattern = { }, ""
-
--- function names.lookup(pattern,name,reload) -- todo: find
---     if lastpattern ~= pattern then
---         names.load(reload)
---         local specifications = names.data.specifications
---         local families = names.data.families
---         local lookups = specifications
---         if name then
---             lookups = families[name]
---         elseif not find(pattern,"=",1,true) then
---             lookups = families[pattern]
---         end
---         if trace_names then
---             report_names("starting with %s lookups for %a",#lookups,pattern)
---         end
---         if lookups then
---             for key, value in gmatch(pattern,"([^=,]+)=([^=,]+)") do
---                 local t, n = { }, 0
---                 if find(value,"*",1,true) then
---                     value = topattern(value)
---                     for i=1,#lookups do
---                         local s = lookups[i]
---                         if find(s[key],value) then
---                             n = n + 1
---                             t[n] = lookups[i]
---                         end
---                     end
---                 else
---                     for i=1,#lookups do
---                         local s = lookups[i]
---                         if s[key] == value then
---                             n = n + 1
---                             t[n] = lookups[i]
---                         end
---                     end
---                 end
---                 if trace_names then
---                     report_names("%s matches for key %a with value %a",#t,key,value)
---                 end
---                 lookups = t
---             end
---         end
---         lastpattern = pattern
---         lastlookups = lookups or { }
---     end
---     return #lastlookups
--- end
-
-local function look_them_up(lookups,specification)
-    for key, value in sortedhash(specification) do
-        local t = { }
-        local n = 0
-        if find(value,"*",1,true) then
-            value = topattern(value)
-            for i=1,#lookups do
-                local s = lookups[i]
-                if find(s[key],value) then
-                    n = n + 1
-                    t[n] = lookups[i]
-                end
-            end
-        else
-            for i=1,#lookups do
-                local s = lookups[i]
-                if s[key] == value then
-                    n = n + 1
-                    t[n] = lookups[i]
-                end
-            end
-        end
-        if trace_names then
-            report_names("%s matches for key %a with value %a",#t,key,value)
-        end
-        lookups = t
-    end
-    return lookups
-end
-
-local function first_look(name,reload)
-    names.load(reload)
-    local data           = names.data
-    local specifications = data.specifications
-    local families       = data.families
-    if name then
-        return families[name]
-    else
-        return specifications
-    end
-end
-
-function names.lookup(pattern,name,reload) -- todo: find
-    names.load(reload)
-    local data           = names.data
-    local specifications = data.specifications
-    local families       = data.families
-    local lookups        = specifications
-    if name then
-        name = cleanname(name)
-    end
-    if type(pattern) == "table" then
-        local familyname = pattern.familyname
-        if familyname then
-            familyname = cleanname(familyname)
-            pattern.familyname = familyname
-        end
-        local lookups = first_look(name or familyname,reload)
-        if lookups then
-            if trace_names then
-                report_names("starting with %s lookups for '%T'",#lookups,pattern)
-            end
-            lookups = look_them_up(lookups,pattern)
-        end
-        lastpattern = false
-        lastlookups = lookups or { }
-    elseif lastpattern ~= pattern then
-        local lookups = first_look(name or (not find(pattern,"=",1,true) and pattern),reload)
-        if lookups then
-            if trace_names then
-                report_names("starting with %s lookups for %a",#lookups,pattern)
-            end
-            local specification = settings_to_hash(pattern)
-            local familyname = specification.familyname
-            if familyname then
-                familyname = cleanname(familyname)
-                specification.familyname = familyname
-            end
-            lookups = look_them_up(lookups,specification)
-        end
-        lastpattern = pattern
-        lastlookups = lookups or { }
-    end
-    return #lastlookups
-end
-
-function names.getlookupkey(key,n)
-    local l = lastlookups[n or 1]
-    return (l and l[key]) or ""
-end
-
-function names.noflookups()
-    return #lastlookups
-end
-
-function names.getlookups(pattern,name,reload)
-    if pattern then
-        names.lookup(pattern,name,reload)
-    end
-    return lastlookups
-end
-
--- The following is new ... watch the overload!
-
 local specifications = allocate()
-names.specifications = specifications
-
--- files = {
---     name = "antykwapoltawskiego",
---     list = {
---         ["AntPoltLtCond-Regular.otf"] = {
---          -- name   = "antykwapoltawskiego",
---             style  = "regular",
---             weight = "light",
---             width  = "condensed",
---         },
---     },
--- }
-
-function names.register(files)
-    if files then
-        local list, commonname = files.list, files.name
-        if list then
-            local n, m = 0, 0
-            for filename, filespec in sortedhash(list) do
-                local name = lower(filespec.name or commonname)
-                if name and name ~= "" then
-                    local style    = normalized_styles  [lower(filespec.style   or "normal")]
-                    local width    = normalized_widths  [lower(filespec.width   or "normal")]
-                    local weight   = normalized_weights [lower(filespec.weight  or "normal")]
-                    local variant  = normalized_variants[lower(filespec.variant or "normal")]
-                    local weights  = specifications[name  ] if not weights  then weights  = { } specifications[name  ] = weights  end
-                    local styles   = weights       [weight] if not styles   then styles   = { } weights       [weight] = styles   end
-                    local widths   = styles        [style ] if not widths   then widths   = { } styles        [style ] = widths   end
-                    local variants = widths        [width ] if not variants then variants = { } widths        [width ] = variants end
-                    variants[variant] = filename
-                    n = n + 1
-                else
-                    m = m + 1
-                end
-            end
-            if trace_specifications then
-                report_names("%s filenames registered, %s filenames rejected",n,m)
-            end
-        end
-    end
-end
 
 function names.registered(name,weight,style,width,variant)
     local ok = specifications[name]
@@ -2195,50 +1599,29 @@ function names.registered(name,weight,style,width,variant)
         return {
             filename = ok,
             subname  = "",
-         -- rawname  = nil,
         }
     end
 end
 
 function names.resolvespec(askedname,sub) -- overloads previous definition
     local name, weight, style, width, variant = names.splitspec(askedname)
-    if trace_specifications then
-        report_names("resolving specification: %a to name=%s, weight=%s, style=%s, width=%s, variant=%s",askedname,name,weight,style,width,variant)
-    end
     local found = names.registered(name,weight,style,width,variant)
     if found and found.filename then
-        if trace_specifications then
-            report_names("resolved by registered names: %a to %s",askedname,found.filename)
-        end
         return found.filename, found.subname, found.rawname
     else
         found = names.specification(name,weight,style,width,variant)
         if found and found.filename then
-            if trace_specifications then
-                report_names("resolved by font database: %a to %s",askedname,found.filename)
-            end
             return found.filename, found.subfont and found.rawname
         end
     end
-    if trace_specifications then
-        report_names("unresolved: %s",askedname)
-    end
 end
 
-function fonts.names.ignoredfile(filename) -- only supported in mkiv
-    return false -- will be overloaded
-end
-
--- example made for luatex list (unlikely to be used):
---
--- local command = [[reg QUERY "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts"]]
--- local pattern = ".-[\n\r]+%s+(.-)%s%(([^%)]+)%)%s+REG_SZ%s+(%S+)%s+"
---
--- local function getnamesfromregistry()
---     local data = os.resultof(command)
---     local list = { }
---     for name, format, filename in string.gmatch(data,pattern) do
---         list[name] = filename
---     end
---     return list
--- end
+return {
+    cache = names.cache,
+    cleanfilename = names.cleanfilename,
+    get_data = function() return names.data end,
+    list = names.list,
+    load = names.load,
+    resolve = names.resolve,
+    writable = names.cache.writable,
+}
