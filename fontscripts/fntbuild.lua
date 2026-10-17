@@ -1,4 +1,4 @@
--- $Id: fntbuild.lua 10802 2025-02-12 20:11:33Z cfrees $
+-- $Id: fntbuild.lua 12133 2026-10-17 06:02:18Z cfrees $
 -------------------------------------------------
 -------------------------------------------------
 -- I don't know how to bootstrap this ... 
@@ -20,6 +20,8 @@ local ntarg = "fnttarg"
 -- uniquifyencs
 ---@usage private
 local utarg = "uniquifyencs"
+---@usage private
+local unitarg = "unitarg"
 -------------------------------------------------
 -- fnt.gwall {{{
 ---@param msg string 
@@ -109,6 +111,21 @@ target_list[utarg] = {
       exit(1)
     else
       names = names or fnt.encodingtag or ""
+    end
+    return 0
+  end
+}
+-- }}}
+-- unitarg {{{
+target_list[unitarg] = {
+  func = fnt.fntuni,
+  desc = "Creates TU fd files from 8 bit versions",
+  pre = function(names)
+    fnt.standalone = true
+    if names then
+      print("unitarg does not need names\n")
+      help()
+      exit(1)
     end
     return 0
   end
