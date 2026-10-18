@@ -1,4 +1,4 @@
-%% $Id: test-ncm-math-debug.lvt 12117 2026-10-13 19:33:10Z cfrees $
+%% $Id: test-ncm-math-debug.lvt 12135 2026-10-18 17:06:22Z cfrees $
 \input lfc-support.tex
 \documentclass{article}
 \START
@@ -16,13 +16,13 @@
 \begin{document}
 \OMIT
 \[
-    \sin\theta^2 + \cos\theta^2 = 1
+    \sin^2\theta + \cos^2\theta = 1
 \]
 $\mathsf{x} \mathtt{x} \mathbf{x}$
 
 \mathversion{bold}
 \[
-    \sin\theta^2 + \cos\theta^2 = 1
+    \sin^2\theta + \cos^2\theta = 1
 \]
 $\mathsf{x} \mathtt{x} \mathbf{x}$
 \TIMO

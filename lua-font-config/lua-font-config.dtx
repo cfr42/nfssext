@@ -33,7 +33,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12127 2026-10-15 06:49:18Z cfrees $}[v0.1 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12135 2026-10-18 17:06:22Z cfrees $}[v0.1 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -585,7 +585,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12127 2026-10-15 06:49:18Z cfrees $}[v0.1 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12135 2026-10-18 17:06:22Z cfrees $}[v0.1 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -938,7 +938,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %</ee-lmr>
 %
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12127 2026-10-15 06:49:18Z cfrees $
+%% $Id: lua-font-config.dtx 12135 2026-10-18 17:06:22Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -1016,14 +1016,14 @@ New Computer Modern Mono with default settings.
 \normalfont
 New Computer Modern Math with text fonts as above:
 \[
-    \sin\theta^2 + \cos\theta^2 = 1
+    \sin^2\theta + \cos^2\theta = 1
 \]
 \[
     \mathscr{ABC abc} \mathcal{ABC abc}
 \]
 \mathversion{bold}
 \[
-    \sin\theta^2 + \cos\theta^2 = 1
+    \sin^2\theta + \cos^2\theta = 1
 \]
 \[
     \mathscr{ABC abc} \mathcal{ABC abc}
@@ -1043,13 +1043,13 @@ New Computer Modern Math with text fonts as above:
 \parindent=0pt
 \begin{document}
 \[
-    \sin\theta^2 + \cos\theta^2 = 1
+    \sin^2\theta + \cos^2\theta = 1
 \]
 $\mathsf{x} \mathtt{x} \mathbf{x}$
 
 \mathversion{bold}
 \[
-    \sin\theta^2 + \cos\theta^2 = 1
+    \sin^2\theta + \cos^2\theta = 1
 \]
 $\mathsf{x} \mathtt{x} \mathbf{x}$
 \end{document}

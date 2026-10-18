@@ -1,4 +1,4 @@
-%% $Id: test-ncm-math.lvt 12111 2026-10-11 23:55:12Z cfrees $
+%% $Id: test-ncm-math.lvt 12135 2026-10-18 17:06:22Z cfrees $
 \input lfc-support.tex
 \documentclass{article}
 \START
@@ -12,13 +12,13 @@
 \parindent=0pt
 \begin{document}
 \[
-    \sin\theta^2 + \cos\theta^2 = 1
+    \sin^2\theta + \cos^2\theta = 1
 \]
 $\mathsf{x} \mathtt{x} \mathbf{x}$
 
 \mathversion{bold}
 \[
-    \sin\theta^2 + \cos\theta^2 = 1
+    \sin^2\theta + \cos^2\theta = 1
 \]
 $\mathsf{x} \mathtt{x} \mathbf{x}$
 \end{document}
