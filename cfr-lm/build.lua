@@ -1,4 +1,4 @@
--- $Id: build.lua 12136 2026-10-19 02:33:02Z cfrees $
+-- $Id: build.lua 12137 2026-10-19 05:38:21Z cfrees $
 -- Build configuration for cfr-lm
 -------------------------------------------------------------------------------
 -- l3build.pdf listing 1 tudalen 9
@@ -19,7 +19,7 @@ module = "cfr-lm"
 fnt = {}
 fnt.vendor = "public"
 fnt.autotestfds = { "t1clm.fd", "t1clm2.fd", "t1clm2d.fd", "t1clm2dj.fd", "t1clm2j.fd", "t1clm2jqs.fd", "t1clm2js.fd", "t1clm2jt.fd", "t1clm2jv.fd", "t1clm2qs.fd", "t1clm2s.fd", "t1clm2t.fd", "t1clm2v.fd", "t1clmd.fd", "t1clmdj.fd", "t1clmj.fd", "t1clmjqs.fd", "t1clmjs.fd", "t1clmjt.fd", "t1clmjv.fd", "t1clmqs.fd", "t1clms.fd", "t1clmt.fd", "t1clmv.fd" }
-checkconfigs = {"build.lua", "config-tu.lua"}
+checkconfigs = {"build", "config-tu"}
 dofile(maindir .. "/fontscripts/fntbuild.lua")
 -- local srcfiles = {"dotsc2.etx", "dotscbuild.mtx", "dotscmisc.mtx", "newlatin-dotsc.mtx", "t1-dotinf.etx", "t1-dotsup.etx", "ts1-dotinf.etx", "ts1-dotsup.etx"}
 -- for i,j in ipairs(srcfiles) do table.insert(sourcefiles,j) end
