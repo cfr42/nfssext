@@ -1,4 +1,4 @@
--- $Id: build.lua 12137 2026-10-19 05:38:21Z cfrees $
+-- $Id: build.lua 12139 2026-10-19 06:54:17Z cfrees $
 -- Build configuration for cfr-lm
 -------------------------------------------------------------------------------
 -- l3build.pdf listing 1 tudalen 9
@@ -255,7 +255,7 @@ uploadconfig = {
 	pkg        = ctanpkg,
 	summary    = "Extended support for Latin Modern on all engines",
   uploader   = "Clea F. Rees",
-	version    = "v1.9",
+	version    = "v2.0",
   -- optional --
 	bugtracker = {"https://codeberg.org/cfr/nfssext/issues"},
   -- description
@@ -275,7 +275,7 @@ uploadconfig = {
 -------------------------------------------------------------------------------
 -- manifest
 -------------------------------------------------------------------------------
-date = "2008-2025"
+date = "2008-2026"
 dofile(maindir .. "/fnt-manifest.lua")
 -------------------------------------------------------------------------------
 -- pull afms & tfms from dist tree

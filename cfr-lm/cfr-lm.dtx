@@ -42,7 +42,7 @@
   \char_set_catcode_letter:N \:
 }
 \ExplSyntaxOff
-\ProvidesFileSVN{$Id: cfr-lm.dtx 12138 2026-10-19 06:14:41Z cfrees $}[v1.9 \revinfo][\filebase DTX: Latin Modern for 8-bit engines]
+\ProvidesFileSVN{$Id: cfr-lm.dtx 12139 2026-10-19 06:54:17Z cfrees $}[v2.0 \revinfo][\filebase DTX: Latin Modern for 8-bit engines]
 \DefineFileInfoSVN[cfr-lm]
 \documentclass[10pt,british]{ltxdoc}
 % ltnews42 / ateb David Carlisle: https://tex.stackexchange.com/a/754799/ (sylwad Ulrike Fischer rhywle ond alla i ddim canfod o hyd iddo fe)
@@ -1401,11 +1401,11 @@ updmap --sys --enable Map=clm.map
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: cfr-lm.dtx 12138 2026-10-19 06:14:41Z cfrees $}[v1.9 \revinfo][Extended support for Latin Modern 2.004]
+\ProvidesPackageSVN[\filebase.sty]{$Id: cfr-lm.dtx 12139 2026-10-19 06:54:17Z cfrees $}[v2.0 \revinfo][Extended support for Latin Modern 2.004]
 \DefineFileInfoSVN[clm]
 \RequirePackage{nfssext-cfr}[2024/01/01]
 %    \end{macrocode}
-% \changes{v0.0}{2026-10-18}{Support for Unicode engines.}
+% \changes{v2.0}{2026-10-18}{Support for Unicode engines.}
 %    \begin{macrocode}
 \ExplSyntaxOn
 \tl_new:N \g__clm_enc_tl
@@ -1627,7 +1627,7 @@ updmap --sys --enable Map=clm.map
 % \end{option}
 % \begin{option}{rm/zero}
 % Slashed zero
-% \changes{v0.0}{2026-10-19}{%
+% \changes{v2.0}{2026-10-19}{%
 %   \texttt{rm / zero-slashed} option for Unicode engines.%
 % }
 %    \begin{macrocode}
@@ -1719,7 +1719,7 @@ updmap --sys --enable Map=clm.map
 % \end{option}
 % \begin{option}{sf/zero}
 % Slashed zero
-% \changes{v0.0}{2026-10-19}{%
+% \changes{v2.0}{2026-10-19}{%
 %   \texttt{sf / zero-slashed} option for Unicode engines.%
 % }
 %    \begin{macrocode}
@@ -1852,7 +1852,7 @@ updmap --sys --enable Map=clm.map
 % \end{option}
 % \begin{option}{sf/zero}
 % Slashed zero
-% \changes{v0.0}{2026-10-19}{%
+% \changes{v2.0}{2026-10-19}{%
 %   \texttt{tt / zero-slashed} option for Unicode engines.%
 % }
 %    \begin{macrocode}
@@ -1914,7 +1914,7 @@ updmap --sys --enable Map=clm.map
 % \begin{option}{nomaths,nomath}
 % \changes{v1.9}{2025-06-21}{Follow \file{lmodern.sty}: add \texttt{nomaths}/
 %   \texttt{nomath} option.}
-% \changes{v0.0}{2026-10-18}{Deprecate options \texttt{nomaths} and \texttt{nomath}.}
+% \changes{v2.0}{2026-10-18}{Deprecate options \texttt{nomaths} and \texttt{nomath}.}
 % Make maths configuration optional.
 %    \begin{macrocode}
   nomaths .bool_set_inverse:N = \l__clm_classicmaths_bool,
@@ -1928,7 +1928,7 @@ updmap --sys --enable Map=clm.map
 %    \end{macrocode}
 % \end{option}
 % \begin{option}{maths,math}
-% \changes{v0.0}{2026-10-18}{Add \texttt{maths}/\texttt{math} option to configure maths, if used.}
+% \changes{v2.0}{2026-10-18}{Add \texttt{maths}/\texttt{math} option to configure maths, if used.}
 % Make maths configuration flexible to accommodate Unicode options.
 %    \begin{macrocode}
   maths .choices:nn = {classic, lum, unicode-math, none} {
@@ -2168,7 +2168,7 @@ updmap --sys --enable Map=clm.map
 %    \end{macrocode}
 % \begin{macro}{\mathbf,\mathsf,\mathit,\mathtt}
 % maths alphabets
-% \changes{v0.0}{2026-10-18}{Correct typewriter series in maths bold version.}
+% \changes{v2.0}{2026-10-18}{Correct typewriter series in maths bold version.}
 %    \begin{macrocode}
   \SetMathAlphabet{\mathbf}{normal}{OT1}{lmr}{bx}{n}
   \SetMathAlphabet{\mathsf}{normal}{OT1}{lmss}{m}{n}
