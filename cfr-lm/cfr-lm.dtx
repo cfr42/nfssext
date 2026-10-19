@@ -1,7 +1,7 @@
 % \iffalse meta-comment
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % cfr-lm.dtx
-% Additions and changes Copyright (C) 2008-2025 Clea F. Rees.
+% Additions and changes Copyright (C) 2008-2026 Clea F. Rees.
 % Code from skeleton.dtx Copyright (C) 2015-2024 Scott Pakin (see below).
 %
 % This work may be distributed and/or modified under the
@@ -42,7 +42,7 @@
   \char_set_catcode_letter:N \:
 }
 \ExplSyntaxOff
-\ProvidesFileSVN{$Id: cfr-lm.dtx 11371 2025-11-30 06:12:25Z cfrees $}[v1.9 \revinfo][\filebase DTX: Latin Modern for 8-bit engines]
+\ProvidesFileSVN{$Id: cfr-lm.dtx 12136 2026-10-19 02:33:02Z cfrees $}[v1.9 \revinfo][\filebase DTX: Latin Modern for 8-bit engines]
 \DefineFileInfoSVN[cfr-lm]
 \documentclass[10pt,british]{ltxdoc}
 % ltnews42 / ateb David Carlisle: https://tex.stackexchange.com/a/754799/ (sylwad Ulrike Fischer rhywle ond alla i ddim canfod o hyd iddo fe)
@@ -532,20 +532,26 @@
 % 		rm	&	\texttt{oldstyle}/\texttt{osf}\tnotex{tn:lo}				&	\texttt{true}, \texttt{false}			& default roman/serif figure style \tabularnewline
 % 				&	\texttt{lining}/\texttt{lf}\tnotex{tn:lo}					&				& \tabularnewline
 % 				&	\texttt{proportional}/\texttt{prop}		&				& \tabularnewline
-% 				&	\texttt{tabular}/\texttt{tab}				&				& \tabularnewline\midrule
+% 				&	\texttt{tabular}/\texttt{tab}				&				& \tabularnewline
+%         & \texttt{zero-slashed}   & \texttt{true}, \texttt{false} & slashed zero\tnotex{tn:slash} \tabularnewline\midrule
 % 		sf		&	\texttt{oldstyle}/\texttt{osf}\tnotex{tn:lo}				&	\texttt{true}, \texttt{false}			& default sans figure style \tabularnewline
 % 				&	\texttt{lining}/\texttt{lf}\tnotex{tn:lo}					&				& \tabularnewline
 % 				&	\texttt{proportional}/\texttt{prop}		&				& \tabularnewline
-% 				&	\texttt{tabular}/\texttt{tab}		&			& \tabularnewline\midrule
+% 				&	\texttt{tabular}/\texttt{tab}		&			& \tabularnewline
+% 				&	\texttt{variable}/\texttt{var}				&		& \tabularnewline
+%         & \texttt{zero-slashed}   & \texttt{true}, \texttt{false} & slashed zero\tnotex{tn:slash} \tabularnewline\midrule
 % 		tt		&	\texttt{oldstyle}/\texttt{osf}\tnotex{tn:lo}				&	\texttt{true}, \texttt{false}			& default typewriter figure style \tabularnewline
 % 				&	\texttt{lining}/\texttt{lf}\tnotex{tn:lo}					&				& \tabularnewline
 % 				&	\texttt{proportional}/\texttt{prop}		&				& \tabularnewline
 % 				&	\texttt{tabular}/\texttt{tab}				&				& \tabularnewline\cmidrule{2-4}
 % 				&	\texttt{monowidth}/\texttt{mono}			&	\texttt{true}, \texttt{false}			&	default typewriter family \tabularnewline
-% 				&	\texttt{variable}/\texttt{var}				&		& \tabularnewline\midrule
+% 				&	\texttt{variable}/\texttt{var}				&		& \tabularnewline
+%         & \texttt{zero-slashed}   & \texttt{true}, \texttt{false} & slashed zero\tnotex{tn:slash} \tabularnewline\midrule
 % 		qt	&	---	&	\texttt{true}, \texttt{false}	&	nothing unless \verb|\qtfont| is defined	\tabularnewline\midrule
-%     nomaths & maths & \texttt{true}, \texttt{false} & default is \texttt{false} \tabularnewline
-%     nomath & & & \tabularnewline
+%     maths & maths & \texttt{classic}, \texttt{lum}, & default is \texttt{classic} \tabularnewline
+%     math  & & \texttt{unicode-math}, \texttt{none} \tabularnewline\midrule
+%     nomaths\tnotex{tn:dep} & maths & \texttt{true}, \texttt{false} &  \tabularnewline
+%     nomath\tnotex{tn:dep} & & & \tabularnewline
 %       \bottomrule
 %     \end{tabular}
 %     \begin{tablenotes}
@@ -555,6 +561,9 @@
 %       \item\label{tn:pt}Proportional figures have variable widths, depending on the widths of the digits e.g.~‘1’ is typically narrower than ‘6’.
 %         Tabular figures have standard, constant width i.e.~‘1’ is as wide as ‘6’, so there is typically more space on each side of ‘1’ than ‘6’.
 %         These options are mutually exclusive and exhaustive.
+%       \item\label{tn:slash}Has no effect on 8bit engines. 
+%         Use \cs{zeroslash} instead.
+%       \item\label{tn:dep}Deprecated option, which should not be used in new code.
 %     \end{tablenotes}
 %   \end{threeparttable}
 % \end{table}
@@ -618,6 +627,12 @@ rm={prop=false}
 %</verb>
 % \fi
 %
+% \DescribeOpt{rm/zero-slashed}\vals{true,false}
+%
+% On Unicode engines, determines whether to enable the slashed zero.
+% The default is false.
+% Dunhill uses the same setting.
+%
 % \DescribeOpt{sf}\val{key-value list}
 %
 % Set default figure style for sans serif.
@@ -643,6 +658,11 @@ rm={prop=false}
 % \DescribeOpt{sf/tab}
 %
 % Whether to use tabular figures by default.
+%
+% \DescribeOpt{sf/zero-slashed}\vals{true,false}
+%
+% Whether to enable the slashed zero on Unicode engines.
+% If using quotation sans, the same setting will apply.
 %
 % The available keys and values are identical to those for serif explained above.
 %
@@ -701,19 +721,37 @@ tt={var=false}
 %</verb>
 % \fi
 %
+% \DescribeOpt{tt/zero-slashed}\vals{true,false}
+%
+% Whether to enable the slashed zero on Unicode engines.
+% If using quotation sans, the same setting will apply.
+%
 % \DescribeOpt{qt}\vals{true,false}
 % The fourth key itself takes a true or false value but has no effect unless \verb|\qtfont| is already defined\footnote{This key is designed to control use of LM Sans Quotation in conjunction with prior redefinitions of appropriate environments.
 % Since this is not the sort of redefining a font package should be doing, the option will have absolutely no effect unless you do some prior work to make use of it.
 % In any case, the font can still be accessed directly using the commands explained in \fref{sec:commands}.}.
 %
-% \DescribeOpt{nomaths}\vals{true,false}
-% \DescribeOpt{nomath}
-% 
-% Whether to forgo configuration of maths fonts.
-% Setting this option \texttt{true} or giving it without a value skips that setup.
-% If the option is not used, the default is to configure the maths fonts i.e.~the default is \texttt{false}.
+% \DescribeOpt{maths}\vals{classic,lum,unicode-math,none}
+% \DescribeOpt{math}
 %
-% The default value in all cases is \verb|true| if an option is given without a value.
+% Whether to configure maths fonts at all and, if so, how.
+% The only effective choices on 8 bit engines are \texttt{classic}, which is the default, and \texttt{none}, which forgoes the configuration of maths fonts altogether.
+%
+% On Unicode engines, \texttt{unicode-math} loads that package and sets the default maths font to \texttt{latinmodern-math.otf}.
+%
+% For Lua\LaTeXe{}, \texttt{lum} loads \lpack{lum-lmodern} and configures the text maths alphabets to use Latin Modern opentype fonts.
+% 
+% {\color{gray}%
+% \DescribeOpt{nomaths}\vals{true,false}\hfill\emph{Deprecated.}
+% \DescribeOpt{nomath}
+% }
+% 
+% These keys are deprecated and temporarily retained for compatibility with existing documents.
+% Please use \texttt{maths = none} or \texttt{math = none} instead to disable maths font configuration; or use \texttt{maths = classic} or \texttt{math = classic} to explicitly set the default, if desired.
+%
+% If \texttt{maths}/\texttt{math} is used without a value, the default \verb|classic| is used.
+% In all other cases, the default value is \verb|true| if an option is given without a value.
+%
 % For example, \verb|rm={oldstyle=true}| is equivalent to \verb|rm={oldstyle}|.
 % Many of the options are provided for ease of use but are essentially equivalent.
 % For example, \verb|proportional=false| is equivalent to \verb|tabular=true|.
@@ -726,14 +764,14 @@ tt={var=false}
   rm={lining=true,tabular=false},%
   sf={oldstyle,proportional},%
   tt={oldstyle=false,proportional=true,monowidth},%
-  nomaths%
+  maths,%
 ]{cfr-lm}
 
 \usepackage[%
   rm={oldstyle=false, proportional=true},%
   sf={lining=false,tabular=false},%
   tt={lining,proportional,variable=false},%
-  nomaths=true
+  maths=classic,%
 ]{cfr-lm}
 \end{verbatim}
 % \iffalse
@@ -750,7 +788,7 @@ tt={var=false}
   sf={oldstyle=true,proportional=true},%
   tt={oldstyle=true,proportional=true,variable=true},%
   qt=false,%
-  nomaths=false%
+  maths=classic%
 ]{cfr-lm}
 \end{verbatim}
 % \iffalse
@@ -1156,7 +1194,8 @@ tt={var=false}
 % 
 % \DescribeMacro{\zeroslash}
 % \lpack{cfr-lm}\ provides one additional command.
-% \verb|\zeroslash| will produce the \zeroslash\ character from the current font.
+% On 8bit engines, \verb|\zeroslash| will produce the \zeroslash\ character from the current font.
+% The behaviour is undefined on Unicode engines, where the \texttt{zero-slashed} package option should be used instead.
 % 
 % \section{Microtype}\label{sec:mt}
 % 
@@ -1362,10 +1401,21 @@ updmap --sys --enable Map=clm.map
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: cfr-lm.dtx 11371 2025-11-30 06:12:25Z cfrees $}[v1.9 \revinfo][Extended support for Latin Modern 2.004]
+\ProvidesPackageSVN[\filebase.sty]{$Id: cfr-lm.dtx 12136 2026-10-19 02:33:02Z cfrees $}[v1.9 \revinfo][Extended support for Latin Modern 2.004]
 \DefineFileInfoSVN[clm]
-\RequirePackage[T1]{fontenc}
 \RequirePackage{nfssext-cfr}[2024/01/01]
+%    \end{macrocode}
+% \changes{v0.0}{2026-10-18}{Support for Unicode engines.}
+%    \begin{macrocode}
+\ExplSyntaxOn
+\tl_new:N \g__clm_enc_tl
+\sys_if_engine_opentype:TF {
+  \tl_gset:Nn \g__clm_enc_tl {TU}
+} {
+  \RequirePackage[T1]{fontenc}
+  \tl_gset:Nn \g__clm_enc_tl {T1}
+}
+\ExplSyntaxOff
 %    \end{macrocode}
 % \lpack{nfssext-cfr} provides \cs{ProcessKeyOptions}, \cs{IfFormatAtLeastTF} on older kernels and ensures font encoding subset declarations are valid in font definition files if the format is post=2020 but not new enough to support them out-of-the-box.
 % The declarations themselves are inserted by \texttt{l3build} using \lpack{fontscripts}'s \texttt{fntbuild} and defined in \file{build.lua}\footnote{%
@@ -1475,12 +1525,18 @@ updmap --sys --enable Map=clm.map
 %    \begin{macrocode}
 \bool_new:N \l__clm_rm_osf_bool
 \bool_new:N \l__clm_rm_prop_bool
+\bool_new:N \l__clm_rm_zero_bool
 \bool_new:N \l__clm_sf_osf_bool
 \bool_new:N \l__clm_sf_prop_bool
+\bool_new:N \l__clm_sf_zero_bool
 \bool_new:N \l__clm_tt_osf_bool
 \bool_new:N \l__clm_tt_prop_bool
 \bool_new:N \l__clm_tt_mono_bool
+\bool_new:N \l__clm_tt_zero_bool
 \bool_new:N \l__clm_qt_bool
+\bool_new:N \l__clm_classicmaths_bool
+\bool_set_true:N \l__clm_classicmaths_bool
+\bool_set_false:N \l__clm_lum_bool
 %    \end{macrocode}
 % END bools
 %    \begin{macrocode}
@@ -1569,6 +1625,16 @@ updmap --sys --enable Map=clm.map
   rm / tab .default:n = true,
 %    \end{macrocode}
 % \end{option}
+% \begin{option}{rm/zero}
+% Slashed zero
+% \changes{v0.0}{2026-10-19}{%
+%   \texttt{rm / zero-slashed} option for Unicode engines.%
+% }
+%    \begin{macrocode}
+  rm / zero-slashed .bool_set:N = \l__clm_rm_zero_bool,
+  rm / zero-slashed .default:n = true,
+%    \end{macrocode}
+% \end{option}
 % \begin{option}{sf/oldstyle}
 % boolkeys for sans osf/lf
 % \changes{v1.6 2020-2024 (unpublished)}{2020/2024}{%
@@ -1649,6 +1715,16 @@ updmap --sys --enable Map=clm.map
 %    \begin{macrocode}
   sf / tab .bool_set_inverse:N = \l__clm_sf_prop_bool,
   sf / tab .default:n = true,
+%    \end{macrocode}
+% \end{option}
+% \begin{option}{sf/zero}
+% Slashed zero
+% \changes{v0.0}{2026-10-19}{%
+%   \texttt{sf / zero-slashed} option for Unicode engines.%
+% }
+%    \begin{macrocode}
+  sf / zero-slashed .bool_set:N = \l__clm_sf_zero_bool,
+  sf / zero-slashed .default:n = true,
 %    \end{macrocode}
 % \end{option}
 % \begin{option}{tt/oldstyle}
@@ -1774,6 +1850,16 @@ updmap --sys --enable Map=clm.map
   tt / var .default:n = true,
 %    \end{macrocode}
 % \end{option}
+% \begin{option}{sf/zero}
+% Slashed zero
+% \changes{v0.0}{2026-10-19}{%
+%   \texttt{tt / zero-slashed} option for Unicode engines.%
+% }
+%    \begin{macrocode}
+  tt / zero-slashed .bool_set:N = \l__clm_tt_zero_bool,
+  tt / zero-slashed .default:n = true,
+%    \end{macrocode}
+% \end{option}
 % \begin{option}{rm}
 % options for roman
 % \changes{v1.6 2020-2024 (unpublished)}{2020/2024}{%
@@ -1828,16 +1914,55 @@ updmap --sys --enable Map=clm.map
 % \begin{option}{nomaths,nomath}
 % \changes{v1.9}{2025-06-21}{Follow \file{lmodern.sty}: add \texttt{nomaths}/
 %   \texttt{nomath} option.}
+% \changes{v0.0}{2026-10-18}{Deprecate options \texttt{nomaths} and \texttt{nomath}.}
 % Make maths configuration optional.
 %    \begin{macrocode}
-  nomaths .bool_set:N = \l__clm_nomaths_bool,
+  nomaths .bool_set_inverse:N = \l__clm_classicmaths_bool,
   nomaths .default:n = true,
   nomaths .initial:n = false,
   nomaths .usage:n = load,
-  nomath .bool_set:N = \l__clm_nomaths_bool,
+  nomath .bool_set_inverse:N = \l__clm_classicmaths_bool,
   nomath .default:n = true,
   nomath .initial:n = false,
   nomath .usage:n = load,
+%    \end{macrocode}
+% \end{option}
+% \begin{option}{maths,math}
+% \changes{v0.0}{2026-10-18}{Add \texttt{maths}/\texttt{math} option to configure maths, if used.}
+% Make maths configuration flexible to accommodate Unicode options.
+%    \begin{macrocode}
+  maths .choices:nn = {classic, lum, unicode-math, none} {
+    \int_case:nnF {\l_keys_choice_int} {
+      1 {
+        \bool_set_true:N \l__clm_classicmaths_bool
+        \bool_set_false:N \l__clm_lum_bool
+      }
+      2 {
+        \sys_if_engine_luatex:T {
+          \bool_set_true:N \l__clm_lum_bool
+          \bool_set_false:N \l__clm_classicmaths_bool
+            \RequirePackage{lum-lmodern}
+          }
+        }
+      3 {
+        \sys_if_engine_opentype:T {
+          \bool_set_false:N \l__clm_classicmaths_bool
+          \bool_set_false:N \l__clm_lum_bool
+            \RequirePackage{unicode-math}
+            \setmathfont{latinmodern-math.otf}
+          }
+        }
+      4 {
+        \bool_set_false:N \l__clm_classicmaths_bool
+        \bool_set_false:N \l__clm_lum_bool
+      }
+    }
+  },
+  math .meta:n = {maths = #1},
+  maths .usage:n = load,
+  math .usage:n = load,
+  maths .default:n = classic,
+  math .default:n = classic,
 }
 %    \end{macrocode}
 % \end{option}
@@ -1859,6 +1984,108 @@ updmap --sys --enable Map=clm.map
   \RequirePackage { xparse }
   \providecommand \ExpandArgs [1]
   { \cs_if_exist_use:c { exp_args:N #1 } }
+}
+%    \end{macrocode}
+% There is not an easy path from postscript type1 to Unicode fonts.
+% In particular, the \cs{text}\meta{symbol} macros are simply not supported in many cases. 
+% In many fonts, the symbols aren't there anyway.
+% This being Latin Modern, they are\footnote{%
+%   Except in the monowidth fonts, for some reason.%
+% }.
+% The following definitions do \emph{not} give oldstyle numerals, but they do, at least, produce numerals.
+% The mapping here \emph{is} to oldstyle, but, if lining figures are active, they are mapped to lining figures by the font.
+% For monowidth fonts, it does not work anyway.
+%    \begin{macrocode}
+\ExplSyntaxOff
+\csname sys_if_engine_opentype:T\endcsname {%
+  \expandafter\chardef\csname TU\string\textcopyleft\endcsname"EB0F
+  \expandafter\chardef\csname TU\string\textleaf\endcsname"EB40
+  \expandafter\chardef\csname TU\string\textthreequartersemdash\endcsname"F6DE
+  \expandafter\chardef\csname TU\string\textcentoldstyle\endcsname"F7A2
+  \expandafter\chardef\csname TU\string\textdollaroldstyle\endcsname"F724
+  \expandafter\chardef\csname TU\string\textzerooldstyle\endcsname"F730
+  \expandafter\chardef\csname TU\string\textoneoldstyle\endcsname"F731
+  \expandafter\chardef\csname TU\string\texttwooldstyle\endcsname"F732
+  \expandafter\chardef\csname TU\string\textthreeoldstyle\endcsname"F733
+  \expandafter\chardef\csname TU\string\textfouroldstyle\endcsname"F734
+  \expandafter\chardef\csname TU\string\textfiveoldstyle\endcsname"F735
+  \expandafter\chardef\csname TU\string\textsixoldstyle\endcsname"F736
+  \expandafter\chardef\csname TU\string\textsevenoldstyle\endcsname"F737
+  \expandafter\chardef\csname TU\string\texteightoldstyle\endcsname"F738
+  \expandafter\chardef\csname TU\string\textnineoldstyle\endcsname"F739
+  \expandafter\chardef\csname TU\string\textquotestraightbase\endcsname"EB56
+  \expandafter\chardef\csname TU\string\textquotestraightdblbase\endcsname"EB52
+  \expandafter\chardef\csname TU\string\textdblhyphen\endcsname"EB31
+  \expandafter\chardef\csname TU\string\textdblhyphenchar\endcsname"EB32
+  \expandafter\chardef\csname TU\string\texttwelveudash\endcsname"EB6B
+  \expandafter\def\csname TU\string\capitaltie\endcsname{\add@accent{"EB63}}%
+  \expandafter\def\csname TU\string\capitalnewtie\endcsname{\add@accent{"EB64}}%
+  \expandafter\def\csname TU\string\capitalhungarumlaut\endcsname{\add@accent{"EA38}}%
+  \expandafter\def\csname TU\string\capitalring\endcsname{\add@accent{"EA40}}%
+  \expandafter\def\csname TU\string\capitalcedilla\endcsname#1{%
+    \hmode@bgroup\ooalign{\null #1\crcr\hidewidth\char "B8\hidewidth}\egroup
+  }%
+%    \end{macrocode}
+% The Latin Modern fonts are unfortunately rather buggy, so we need to patch them.
+% Arguably, this should be in the font definition files, but then it is harder to workaround if this is required at some point.
+% Also, I'm not so sure whether engine-specific code should live in such files and this will work only for Lua\TeX.
+%
+% Thanks to Marcel Krüger for the following patch\footnote{%
+%   \url{https://chat.stackexchange.com/transcript/message/69163054#69163054}.%
+% }.
+%    \begin{macrocode}
+  \csname sys_if_engine_luatex:TF\endcsname {%
+    \directlua{
+      local function assign_codepoints_to_names(name_cp_map)
+        return function(data)
+          local characters = data.characters
+          local descriptions = data.descriptions
+          local glyph_name_map = data.resources.unicodes
+          for name, cp in pairs(name_cp_map) do
+            local slot = glyph_name_map[name]
+            if slot then
+              characters[cp] = table.merged(descriptions[slot])
+            else
+              tex.error("Failed to find glyph with specified name")
+            end
+          end
+          return data
+        end
+      end
+
+      local remap_lmpatch = assign_codepoints_to_names{
+        gnaborretni = 0x2E18,
+        guarani = 0x20B2,
+        bigcircle = 0x25EF,
+        space_uni0330 = 0x02F7,
+        ['dblgrave.ts1'] = 0x02F5,
+      }
+      fonts.constructors.features.otf.register{
+        name = 'lmpatch',
+        description = "Patch Latin Modern",
+        initializers = {
+          node = remap_lmpatch,
+          base = remap_lmpatch,
+        },
+      }
+    }%
+    \long\def\clm@patch{+lmpatch;}%
+  }{%
+    \let\clm@patch\@empty
+  }%
+}
+\ExplSyntaxOn
+%    \end{macrocode}
+% Turn slashed zero options into font features or not.
+%    \begin{macrocode}
+\sys_if_engine_opentype:T {
+  \clist_map_inline:nn {rm, sf, tt} {
+    \bool_if:cTF {l__clm_#1_zero_bool} {
+      \expandafter\def\csname clm@#1@zero\endcsname{+zero;}
+    } {
+      \expandafter\let\csname clm@rm@zero\endcsname\@empty
+    }
+  }
 }
 %    \end{macrocode}
 % Translate user/default settings into bits of Berry names.
@@ -1922,7 +2149,7 @@ updmap --sys --enable Map=clm.map
 % Maths setup is ‘based on’ (i.e.~filched from) lmodern.sty
 % \changes{v1.9}{2025-06-21}{Maths configuration now optionally disabled.}
 %    \begin{macrocode}
-\bool_if:NF \l__clm_nomaths_bool
+\bool_if:NTF \l__clm_classicmaths_bool
 {
   \SetSymbolFont{operators}   {normal}{OT1}{lmr} {m}{n}
   \SetSymbolFont{letters}     {normal}{OML}{lmm} {m}{it}
@@ -1941,6 +2168,7 @@ updmap --sys --enable Map=clm.map
 %    \end{macrocode}
 % \begin{macro}{\mathbf,\mathsf,\mathit,\mathtt}
 % maths alphabets
+% \changes{v0.0}{2026-10-18}{Correct typewriter series in maths bold version.}
 %    \begin{macrocode}
   \SetMathAlphabet{\mathbf}{normal}{OT1}{lmr}{bx}{n}
   \SetMathAlphabet{\mathsf}{normal}{OT1}{lmss}{m}{n}
@@ -1949,7 +2177,7 @@ updmap --sys --enable Map=clm.map
   \SetMathAlphabet{\mathbf}{bold}  {OT1}{lmr}{bx}{n}
   \SetMathAlphabet{\mathsf}{bold}  {OT1}{lmss}{bx}{n}
   \SetMathAlphabet{\mathit}{bold}  {OT1}{lmr}{bx}{it}
-  \SetMathAlphabet{\mathtt}{bold}  {OT1}{lmtt}{m}{n}
+  \SetMathAlphabet{\mathtt}{bold}  {OT1}{lmtt}{bx}{n}
 % 
 %    \end{macrocode}
 % \end{macro}
@@ -1957,6 +2185,17 @@ updmap --sys --enable Map=clm.map
 % \mbox{}
 %    \begin{macrocode}
   \def\mathsterling{\mathit{\mathchar"70BF}}
+} {
+  \bool_if:NT \l__clm_lum_bool {
+    \SetMathAlphabet{\mathbf}{normal}{TU}{lmr}{bx}{n}
+    \SetMathAlphabet{\mathsf}{normal}{TU}{lmss}{m}{n}
+    \SetMathAlphabet{\mathit}{normal}{TU}{lmr}{m}{it}
+    \SetMathAlphabet{\mathtt}{normal}{TU}{lmtt}{m}{n}
+    \SetMathAlphabet{\mathbf}{bold}  {TU}{lmr}{bx}{n}
+    \SetMathAlphabet{\mathsf}{bold}  {TU}{lmss}{bx}{n}
+    \SetMathAlphabet{\mathit}{bold}  {TU}{lmr}{bx}{it}
+    \SetMathAlphabet{\mathtt}{bold}  {TU}{lmtt}{bx}{n}
+  }
 }
 \ExplSyntaxOff
 %    \end{macrocode}
@@ -1974,7 +2213,9 @@ updmap --sys --enable Map=clm.map
 % \begin{macro}{\zeroslash}
 % \changes{v1.1}{2010/05/02?}{%
 %   \cs{zeroslash} is provided to access the slashed zero.}
-% The slashed zero.
+% The slashed zero\footnote{%
+%   It would be possible to take this from the Unicode font, where applicable, but this is not currently implemented for per-character switches.%
+% }.
 %    \begin{macrocode}
 \newcommand*{\zeroslash}{\textdde{\char 250}}
 %    \end{macrocode}
@@ -1985,7 +2226,7 @@ updmap --sys --enable Map=clm.map
 % We need to set up aliases for the font families created by \lpack{cfr-lm} so that
 % \lpack{microtype} recognises them as similar to Computer Modern Roman.
 %
-% T1 families in cfr-lm: clm clm2 clm2d clm2dj clm2j clm2jqs clm2js clm2jt 
+% T1/TU families in cfr-lm: clm clm2 clm2d clm2dj clm2j clm2jqs clm2js clm2jt 
 % clm2jv clm2qs clm2s clm2t clm2v clmd clmdj clmj clmjqs clmjs clmjt clmjv 
 % clmqs clms clmt clmv
 %

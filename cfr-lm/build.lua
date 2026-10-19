@@ -1,4 +1,4 @@
--- $Id: build.lua 12134 2026-10-17 06:03:26Z cfrees $
+-- $Id: build.lua 12136 2026-10-19 02:33:02Z cfrees $
 -- Build configuration for cfr-lm
 -------------------------------------------------------------------------------
 -- l3build.pdf listing 1 tudalen 9
@@ -19,6 +19,7 @@ module = "cfr-lm"
 fnt = {}
 fnt.vendor = "public"
 fnt.autotestfds = { "t1clm.fd", "t1clm2.fd", "t1clm2d.fd", "t1clm2dj.fd", "t1clm2j.fd", "t1clm2jqs.fd", "t1clm2js.fd", "t1clm2jt.fd", "t1clm2jv.fd", "t1clm2qs.fd", "t1clm2s.fd", "t1clm2t.fd", "t1clm2v.fd", "t1clmd.fd", "t1clmdj.fd", "t1clmj.fd", "t1clmjqs.fd", "t1clmjs.fd", "t1clmjt.fd", "t1clmjv.fd", "t1clmqs.fd", "t1clms.fd", "t1clmt.fd", "t1clmv.fd" }
+checkconfigs = {"build.lua", "config-tu.lua"}
 dofile(maindir .. "/fontscripts/fntbuild.lua")
 -- local srcfiles = {"dotsc2.etx", "dotscbuild.mtx", "dotscmisc.mtx", "newlatin-dotsc.mtx", "t1-dotinf.etx", "t1-dotsup.etx", "ts1-dotinf.etx", "ts1-dotsup.etx"}
 -- for i,j in ipairs(srcfiles) do table.insert(sourcefiles,j) end
@@ -144,96 +145,96 @@ fnt.transformfds = {
       },
       enc = { T1 = "TU" },
     },
-    defeat = "\\UnicodeFontTeXLigatures",
+    defeat = "\\UnicodeFontTeXLigatures\\clm@patch",
   },
   { fd = "t1clm.fd",
-    feat = "+tnum;+lnum;",
+    feat = "\\clm@rm@zero+tnum;+lnum;",
   },
   { fd = "t1clm2.fd",
-    feat = "+pnum;+lnum;",
-    pre = function(current) return pre(current, "(clm%a*)([oi]?8t)", "%12%2") end,
+    feat = "\\clm@rm@zero+pnum;+lnum;",
+    pre = function(current) return pre(current, "(clm[^oi]*)([oi]?8t)", "%12%2") end,
   },
   { fd = "t1clm2d.fd",
-    feat = "+pnum;+lnum;",
+    feat = "\\clm@rm@zero+pnum;+lnum;",
     pre = function(current) return pre(current, "(clmdunh?)(o?8t)", "%12%2") end,
   },
   { fd = "t1clm2dj.fd",
-    feat = "+pnum;+onum;",
+    feat = "\\clm@rm@zero+pnum;+onum;",
     pre = function(current) return pre(current, "(clmdunh?)(o?8t)", "%12j%2") end,
   },
   { fd = "t1clm2j.fd",
-    feat = "+pnum;+onum;",
-    pre = function(current) return pre(current, "(clm[^io]*)(i?)(o?)", "%12%2j%3") end,
+    feat = "\\clm@rm@zero+pnum;+onum;",
+    pre = function(current) return pre(current, "(clm[^io]*)(i?)(o?8t)", "%12%2j%3") end,
   },
   { fd = "t1clm2jqs.fd",
-    feat = "+pnum;+onum;",
+    feat = "\\clm@sf@zero+pnum;+onum;",
     pre = function(current) return pre(current, "(clmssq[bx]*)(o?)", "%12j%2") end,
   },
   { fd = "t1clm2js.fd",
-    feat = "+pnum;+onum;",
+    feat = "\\clm@sf@zero+pnum;+onum;",
     pre = function(current) return pre(current, "(clmssd?b?x?c?)(o?)", "%12j%2") end,
   },
   { fd = "t1clm2jt.fd",
-    feat = "+tnum;+onum;", -- don't make mono proportional
+    feat = "\\clm@tt@zero-liga;-tlig;+tnum;+onum;", -- don't make mono proportional
     pre = function(current) return pre(current, "(clmt[^o8]*)(o?8t)", "%1j%2") end,
   },
   { fd = "t1clm2jv.fd",
-    feat = "+pnum;+onum;",
+    feat = "\\clm@tt@zero+pnum;+onum;",
     pre = function(current) return pre(current, "(vt[^o8]*)", "%12j") end,
   },
   { fd = "t1clm2qs.fd",
-    feat = "+pnum;+lnum;",
+    feat = "\\clm@sf@zero+pnum;+lnum;",
     pre = function(current) return pre(current, "(clmssq[^o8]*)", "%12") end,
   },
   { fd = "t1clm2s.fd",
-    feat = "+pnum;+lnum;",
+    feat = "\\clm@sf@zero+pnum;+lnum;",
     pre = function(current) return pre(current, "(clmss[obd]?[xc]*)(o?)", "%12%2") end,
   },
   { fd = "t1clm2t.fd",
-    feat = "+tnum;+lnum;",  -- don't make mono proportional
+    feat = "\\clm@tt@zero-liga;-tlig;+tnum;+lnum;",  -- don't make mono proportional
   },
   { fd = "t1clm2v.fd",
-    feat = "+pnum;+lnum;",
+    feat = "\\clm@tt@zero+pnum;+lnum;",
     pre = function(current) return pre(current, "(clmvt[tkl])(o?)", "%12%2") end,
   },
   { fd = "t1clmd.fd",
-    feat = "+tnum;+lnum;",
+    feat = "\\clm@rm@zero+tnum;+lnum;",
   },
   { fd = "t1clmdj.fd",
-    feat = "+tnum;+onum;",
+    feat = "\\clm@rm@zero+tnum;+onum;",
     pre = function(current) return pre(current, "(clmdunh?)(o?)", "%1j%2") end,
   },
   { fd = "t1clmj.fd",
-    feat = "+tnum;+onum;",
+    feat = "\\clm@rm@zero+tnum;+onum;",
     pre = function(current) return pre(current, "(clm[^io8]*)", "%1j") end,
   },
   { fd = "t1clmjqs.fd",
-    feat = "+tnum;+onum;",
+    feat = "\\clm@sf@zero+tnum;+onum;",
     pre = function(current) return pre(current, "([^o8])(o?8t)", "%1j%2") end,
   },
   { fd = "t1clmjs.fd",
-    feat = "+tnum;+onum;",
+    feat = "\\clm@sf@zero+tnum;+onum;",
     pre = function(current) return pre(current, "([^o8])(o?8t)", "%1j%2") end,
   },
   { fd = "t1clmjt.fd",
-    feat = "+tnum;+onum;",
+    feat = "\\clm@tt@zero-liga;-tlig;+tnum;+onum;",
     pre = function(current) return pre(current, "([^o8])(o?8t)", "%1j%2") end,
   },
   { fd = "t1clmjv.fd",
-    feat = "+tnum;+onum;",
+    feat = "\\clm@tt@zero+tnum;+onum;",
     pre = function(current) return pre(current, "([^o8])(o?8t)", "%1j%2") end,
   },
   { fd = "t1clmqs.fd",
-    feat = "+tnum;+lnum;",
+    feat = "\\clm@sf@zero+tnum;+lnum;",
   },
   { fd = "t1clms.fd",
-    feat = "+tnum;+lnum;",
+    feat = "\\clm@sf@zero+tnum;+lnum;",
   },
   { fd = "t1clmt.fd",
-    feat = "+tnum;+lnum;",
+    feat = "\\clm@tt@zero-liga;-tlig;+tnum;+lnum;",
   },
   { fd = "t1clmv.fd",
-    feat = "+tnum;+lnum;",
+    feat = "\\clm@tt@zero+tnum;+lnum;",
   },
 }
 -------------------------------------------------------------------------------
@@ -288,6 +289,10 @@ for _,i in ipairs(filelist(str .. "/fonts/afm/public/lm","*.afm")) do
 end
 for _,i in ipairs(filelist(str .. "/fonts/tfm/public/lm","ec-*")) do
   cp(i,str .. "/fonts/tfm/public/lm",sourcefiledir .. "/tfm")
+end
+-------------------------------------------------
+function normalize_log_hook(line)
+  return (string.gsub(line, "(%(function: 0x)%x+%)", "%1...)"))
 end
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
