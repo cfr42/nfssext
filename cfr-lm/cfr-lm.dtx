@@ -42,7 +42,7 @@
   \char_set_catcode_letter:N \:
 }
 \ExplSyntaxOff
-\ProvidesFileSVN{$Id: cfr-lm.dtx 12136 2026-10-19 02:33:02Z cfrees $}[v1.9 \revinfo][\filebase DTX: Latin Modern for 8-bit engines]
+\ProvidesFileSVN{$Id: cfr-lm.dtx 12138 2026-10-19 06:14:41Z cfrees $}[v1.9 \revinfo][\filebase DTX: Latin Modern for 8-bit engines]
 \DefineFileInfoSVN[cfr-lm]
 \documentclass[10pt,british]{ltxdoc}
 % ltnews42 / ateb David Carlisle: https://tex.stackexchange.com/a/754799/ (sylwad Ulrike Fischer rhywle ond alla i ddim canfod o hyd iddo fe)
@@ -1401,7 +1401,7 @@ updmap --sys --enable Map=clm.map
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: cfr-lm.dtx 12136 2026-10-19 02:33:02Z cfrees $}[v1.9 \revinfo][Extended support for Latin Modern 2.004]
+\ProvidesPackageSVN[\filebase.sty]{$Id: cfr-lm.dtx 12138 2026-10-19 06:14:41Z cfrees $}[v1.9 \revinfo][Extended support for Latin Modern 2.004]
 \DefineFileInfoSVN[clm]
 \RequirePackage{nfssext-cfr}[2024/01/01]
 %    \end{macrocode}
@@ -2031,7 +2031,7 @@ updmap --sys --enable Map=clm.map
 % Also, I'm not so sure whether engine-specific code should live in such files and this will work only for Lua\TeX.
 %
 % Thanks to Marcel Krüger for the following patch\footnote{%
-%   \url{https://chat.stackexchange.com/transcript/message/69163054#69163054}.%
+%   \expandafter\url\expandafter{\detokenize{https://chat.stackexchange.com/transcript/message/69163054#69163054}}.%
 % }.
 %    \begin{macrocode}
   \csname sys_if_engine_luatex:TF\endcsname {%
