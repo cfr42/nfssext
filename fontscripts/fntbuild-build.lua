@@ -1,4 +1,4 @@
--- $Id: fntbuild-build.lua 11967 2026-06-09 20:33:30Z cfrees $ 
+-- $Id: fntbuild-build.lua 12133 2026-10-17 06:02:18Z cfrees $ 
 -------------------------------------------------
 -- fntbuild-build
 -------------------------------------------------
@@ -440,6 +440,7 @@ local function fntuni ()
   local keepdir = fnt.keepdir or sourcedir .. "/keep"
   local fntdir = fnt.fntdir or builddir .. "/fnt"
   local transformfds = fnt.transformfds
+  if not transformfds or #transformfds == 0 then return 0 end
   local defaults = transformfds.defaults
   for i,j in pairs(defaults) do
     for _,t in ipairs(transformfds) do
@@ -673,12 +674,21 @@ local function fontinst (dir,mode)
   end
   errorlevel = fntsubsetter()
   if errorlevel ~= 0 then
-    fnt.gwall("Encoding fnt.subset definitions not inserted! fntsubsetter() ","",errorlevel)
+    fnt.gwall("Encoding fnt.subset definitions not inserted! fntsubsetter() ",
+      "",errorlevel)
   end
   errorlevel = fntkeeper()
   if errorlevel ~= 0 then
     fnt.gwall(
-      "FONT KEEPER FAILED! DO NOT MAKE STANDARD TARGETS WITHOUT RESOLVING!! fntkeeper() ", 
+      "FONT KEEPER FAILED! DO NOT MAKE STANDARD TARGETS WITHOUT RESOLVING!! \z
+      fntkeeper() ", 
+      dir, errorlevel)
+  end
+  errorlevel = fntuni()
+  if errorlevel ~= 0 then
+    fnt.gwall(
+      "FAILED TO CREATE TU FD FILES! \z
+      DO NOT MAKE STANDARD TARGETS WITHOUT RESOLVING!! fntuni() ", 
       dir, errorlevel)
   end
   return fnt.nifergwall

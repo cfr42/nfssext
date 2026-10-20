@@ -1,4 +1,4 @@
--- $Id: fnt-manifest.lua 10821 2025-02-19 07:51:11Z cfrees $
+-- $Id: fnt-manifest.lua 12141 2026-10-20 04:10:09Z cfrees $
 ---------------------------------------------------------------------
 -- local derivedfiles = derivedfiles or {"*.cls","*.enc","*.fd","*.map","*.sty","*.tfm","*.vf"}
 -- local origfntfiles = origfntfiles or {"*.afm","*.otf","*.pfb",".pfm","*.ttf","NOTICE.txt","COPYING"}
@@ -6,7 +6,52 @@
 -- local buildscripts = buildscripts or  {"*.lua", "Makefile", "../vendor/*.lua", "../../fntbuild.lua"}
 -- local fnttestdir = fnttestdir or maindir .. "/fnt-tests"
 -- local testfiles = testfiles or {"*.lvt","*.pvt","*.tlg","*.lve","*.tpf"}
+
+-- The changes below screw up the environment, since everything contaminates everything else in l3build.
+-- So only proceed if we are writing the manifest.
+if options.target ~= "manifest" then return end
 local fnttestfiles = fnttestfiles or "* " .. fnt.tablestemp .. "\n* " .. fnt.regress .. "\n* " .. fnt.testtemp
+local orig_testfiledir = testfiledir or sourcefiledir .. "/testfiles"
+local orig_testsuppdir = testsuppdir or orig_testfiledir .. "/support"
+local lvtext = lvtext or ".lvt"
+local tlgext = tlgext or ".tlg"
+local lveext = lveext or ".lve"
+if direxists(orig_testsuppdir) then
+  local s = filelist(orig_testsuppdir) 
+  for _,j in ipairs(s) do
+    if j ~= "." and j ~= ".." then
+      fnttestfiles = fnttestfiles .. "\n* " .. j
+    end
+  end
+end
+if #checkconfigs > 1 then
+  for _,i in ipairs(checkconfigs) do
+    if i ~= "build" then
+      dofile(sourcefiledir .. "/" .. i .. ".lua")
+      if testfiledir then
+        local testfiledir = sourcefiledir .. "/" .. testfiledir
+        testsuppdir = testsuppdir and sourcefiledir .. "/" .. testsuppdir or testfiledir .. "/support"
+        local t = filelist(testfiledir, "*" .. lvtext)
+        local r = filelist(testfiledir, "*" .. tlgext)
+        local e = filelist(testfiledir, "*" .. lveext)
+        local s = "\n* "
+        if #t > 0 then fnttestfiles = fnttestfiles .. s .. table.concat(t, s) end
+        if #r > 0 then fnttestfiles = fnttestfiles .. s .. table.concat(r, s) end
+        if #e > 0 then fnttestfiles = fnttestfiles .. s .. table.concat(e, s) end
+        if direxists(testsuppdir) then
+          local s = filelist(testsuppdir) 
+          for _,j in ipairs(s) do
+            if j ~= "." and j ~= ".." then
+              fnttestfiles = fnttestfiles .. "\n* " .. j
+            end
+          end
+        end
+      end
+    end
+  end
+  testfiledir = orig_testfiledir
+  testsuppdir = orig_testsuppdir
+end
 local derfntexcfiles = derfntexcfiles or '".",".."'
 -- local fnttablestemplate = fnttablestemplate or "* fntbuild-tables.tex"
 local function populatescripts()
@@ -14,7 +59,10 @@ local function populatescripts()
   local sourcefiledir = sourcefiledir or "."
   if buildscripts == nil then
     local bldscripts = ""
-    local possscripts = {sourcefiledir .. "/build.lua", maindir .. "/fnt-manifest.lua", maindir .. "/tag.lua", maindir .. "/fntbuild-config.lua", sourcefiledir .. "/fntbuild-config.lua"}
+    for _,i in ipairs(checkconfigs) do
+      bldscripts = bldscripts .. "\n* " .. i .. ".lua"
+    end
+    local possscripts = {maindir .. "/fnt-manifest.lua", maindir .. "/tag.lua", maindir .. "/fntbuild-config.lua", sourcefiledir .. "/fntbuild-config.lua"}
     for i,j in ipairs(possscripts) do
       if fileexists(j) then
         bldscripts = bldscripts .. "\n* " .. basename(j) 

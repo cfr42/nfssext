@@ -40,7 +40,7 @@ collection-basic
         ltxcmds
         mfnfss
         mptopdf
-        natbib
+        # natbib
         oberdiek
         pdfescape
         refcount
@@ -52,9 +52,9 @@ collection-basic
         url
 
 # From collection-latexextra
-        accsupp
+        # accsupp
         adjustbox
-        attachfile
+        # attachfile
         cleveref
         csquotes
         doclicense
@@ -84,16 +84,16 @@ collection-basic
         mleftright
         mlist
         mmap
-        mwe
+        # mwe
         pdfcolmk
         transparent
         varwidth
         xpatch
-        zref
+        # zref
         
 # from collection-luatex
         ctablestack
-        lua-ul
+        # lua-ul
         lua-uni-algos
         luacode
         luacolor
@@ -111,7 +111,7 @@ collection-basic
         xetexconfig
 
 # from collection-latexrecommended
-        attachfile2
+        # attachfile2
         booktabs
         caption
         etoolbox
@@ -149,16 +149,15 @@ marginnote
 babel-latin
 hyphen-latin
 psnfss
-tex-gyre
 hyperxmp
-babel-greek
-babel-spanish
-ntheorem
-babel-dutch
-hyphen-greek
-greek-fontenc
-greek-inputenc
-hyphen-ancientgreek
+# babel-greek
+# babel-spanish
+# ntheorem
+# babel-dutch
+# hyphen-greek
+# greek-fontenc
+# greek-inputenc
+# hyphen-ancientgreek
 
 # fonts
 amsfonts 
@@ -196,3 +195,14 @@ lm
 fancyref
 afm2pl
 show-pdf-tags
+
+# lfc
+lobster2
+tex-gyre
+newcomputermodern
+playfair
+lua-unicode-math
+ltx-talk
+minted
+kpfonts-otf
+standalone

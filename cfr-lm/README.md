@@ -1,6 +1,6 @@
-$Id: README.md 11038 2025-06-21 18:26:04Z cfrees $
+$Id: README.md 12139 2026-10-19 06:54:17Z cfrees $
 =================================================
-Copyright (C) 2008-2025 Clea F. Rees.
+Copyright (C) 2008-2026 Clea F. Rees.
 
 This work may be distributed and/or modified under the
 conditions of the LaTeX Project Public License, either version 1.3c
@@ -85,6 +85,14 @@ following the setup in current lmodern.sty. For versions of LaTeX prior to
 versions, nfssext-cfr ensures they are tolerated in the fd files, even though 
 they are likely to be ineffective.
 
+Version 2.0 adds support for Unicode engines. This configures the standard
+opentype fonts to correspond closely to the configuration for postscript type1.
+If LuaLaTeX is used, the fonts are patched to correct erroneous Unicode code
+points. Four options are now provided for maths: no interference, classic TeX 
+(type1), unicode-math (LuaLaTeX/XeLaTeX) and lua-unicode-math (LuaLaTeX). The 
+nomath/nomaths options are considered deprecated, but supported for backwards
+compatibility.
+
 A more detailed history is included in the documentation and sources.
 
 # Documentation
@@ -120,8 +128,8 @@ If you have comments about the fonts themselves, please contact GUST.
 
 
 Clea F. Rees
-Version 1.9
-2025-06-21
+Version 2.0
+2026-10-19
 
 =================================================
 vim: et:tw=80:sw=2:

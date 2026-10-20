@@ -18,14 +18,22 @@ It is automatically generated with `l3build manifest`.
 
 ### Development files
 
-* fnt-tables.tex
-* fnt-tests.tex
-* fnt-test.lvt
+* fntbuild-tables.tex
+* fntbuild-regression-test.tex
+* fntbuild-test.lvt
+* clm-tu-test.lvt
+* cfr-lm-auto-test.luatex.tlg
+* luaotfload.conf
 * build.lua
+* config-tu.lua
 * fnt-manifest.lua
 * tag.lua
 * fntbuild-config.lua
+* clm-maths.lvt 
+* clm-nomaths.lvt 
 * cfr-lm-auto-test.tlg 
+* clm-maths.tlg 
+* clm-nomaths.tlg 
 
 
 ## Derived files
@@ -90,6 +98,30 @@ It is automatically generated with `l3build manifest`.
 * ts1clms.fd 
 * ts1clmt.fd 
 * ts1clmv.fd 
+* tuclm.fd 
+* tuclm2.fd 
+* tuclm2d.fd 
+* tuclm2dj.fd 
+* tuclm2j.fd 
+* tuclm2jqs.fd 
+* tuclm2js.fd 
+* tuclm2jt.fd 
+* tuclm2jv.fd 
+* tuclm2qs.fd 
+* tuclm2s.fd 
+* tuclm2t.fd 
+* tuclm2v.fd 
+* tuclmd.fd 
+* tuclmdj.fd 
+* tuclmj.fd 
+* tuclmjqs.fd 
+* tuclmjs.fd 
+* tuclmjt.fd 
+* tuclmjv.fd 
+* tuclmqs.fd 
+* tuclms.fd 
+* tuclmt.fd 
+* tuclmv.fd 
 * uclm.fd 
 * uclm2.fd 
 * uclm2d.fd 
@@ -935,6 +967,8 @@ It is automatically generated with `l3build manifest`.
 
 ### Typeset documentation
 
-* cfr-lm-build.pdf 
-* cfr-lm.pdf 
+Note that font tables are automatically generated.
+
 * cfr-lm-tables.pdf 
+* cfr-lm.pdf 
+* cfr-lm-build.pdf 

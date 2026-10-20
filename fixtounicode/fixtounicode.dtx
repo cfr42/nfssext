@@ -32,7 +32,7 @@
 % ref. ateb Max Chernoff: https://tex.stackexchange.com/a/723294/
 \def\MyMakePrivateLetters{\makeatletter\ExplSyntaxOn\endlinechar13}
 \ExplSyntaxOff
-\ProvidesFileSVN{$Id: fixtounicode.dtx 12016 2026-08-31 15:05:18Z cfrees $}[v0.1.1 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: fixtounicode.dtx 12076 2026-09-28 19:47:57Z cfrees $}[v0.1.1 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[fixtounicodedoc]
 \documentclass[10pt,british]{ltxdoc}
 % l3doc loads fancyvrb
@@ -361,7 +361,7 @@
 %<*sty>
 %<@@=fixtounicode>
 %    \begin{macrocode}
-\GetIdInfo $Id: fixtounicode.dtx 12016 2026-08-31 15:05:18Z cfrees $ 
+\GetIdInfo $Id: fixtounicode.dtx 12076 2026-09-28 19:47:57Z cfrees $ 
   {Fix missing tounicode values in TeX fonts}
 \ProvidesExplPackage{\ExplFileName}
   {\ExplFileDate}{v0.1.1 \ExplFileVersion}{\ExplFileDescription}
@@ -792,6 +792,34 @@
 %    \end{macrocode}
 % \end{macro}
 %</sty>
+%
+%<*amssymb>
+%    \begin{macrocode}
+\GetIdInfo $Id: fixtounicode.dtx 12076 2026-09-28 19:47:57Z cfrees $ 
+  {Fix missing tounicode values in MSAM and MSBM}
+\ExpandArgs{ee}\ProvidesFile{\ExplFileName -amssymb}[v0.1.1 \ExplFileVersion\ \ExplFileDescription]
+%    \end{macrocode}
+% Use primitives in case \LaTeX{} wants this and since the format now provides
+% a wrapper for Lua\LaTeX.
+%    \begin{macrocode}
+\pdfglyphtounicode{arrowaxisleft}{2190}
+\pdfglyphtounicode{arrowaxisright}{2192}
+%^^A \pdfglyphtounicode{axisshort}{}
+\pdfglyphtounicode{barshort}{00304}
+\pdfglyphtounicode{greaterornotsimilar}{22E7}
+\pdfglyphtounicode{hatwider}{00302}
+\pdfglyphtounicode{hatwide}{00302}
+\pdfglyphtounicode{lessornotsimilar}{22E6}
+\pdfglyphtounicode{notshortbar}{2224}
+\pdfglyphtounicode{notshortparallel}{2226}
+\pdfglyphtounicode{parallelshort}{2225}
+\pdfglyphtounicode{squaresmallsolid}{25AA}
+\pdfglyphtounicode{subsetornoteql}{228A}% ?
+\pdfglyphtounicode{supersetornoteql}{228B}% ?
+\pdfglyphtounicode{tildewider}{00303}
+\pdfglyphtounicode{tildewide}{00303}
+%    \end{macrocode}
+%</amssymb>
 % 
 % \twreg
 % 

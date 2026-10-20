@@ -1,0 +1,2334 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+(lua-font-config.sty (../svn-prov.sty
+Package: svn-prov ....-..-.. v...2 Package Date/Version from SVN Keywords
+)
+Package: lua-font-config ....-..-.. v... (v...) lua-font-config: Font configuration for LuaLaTeX
+Lua function __lfc_set_rm:n = ...
+Lua function __lfc_set_sf:n = ...
+Lua function __lfc_set_tt:n = ...
+Lua function __lfc_set_math:n = ...
+Lua function __lfc_set_fam_name:n = ...
+Lua function __lfc_set_fam_cfg:nn = ...
+Lua function __lfc_configure_doc_families: = ...
+Lua function __lfc_set_log_level:n = ...
+Lua function __lfc_debug_set_true: = ...
+Lua function __lfc_debug_set_false: = ...
+Lua function __lfc_debug_set_cats_scanner:n = ...
+[lfc] Reading cache ...)
+============================================================
+============================================================
+TEST 1: debug + config
+============================================================
+[lfc] Debug:^^IScanned one: defn, doc, cache
+[lfc] Debug:^^IScanned one: Lobster Two
+[lfc] Debug:^^I[doc] NFSS doc families: 
+t={
+ ["curr"]="lobstertwo",
+ ["lobstertwo"]={
+  ["cleanname"]="lobstertwo",
+  ["name"]="Lobster Two",
+ },
+}
+[lfc] Debug:^^IScanned two: csname | lobstertwo
+[lfc] Debug:^^I[doc] Scanned family configuration: 
+t={
+ ["cleanname"]="lobstertwo",
+ ["csname"]="lobstertwo",
+ ["name"]="Lobster Two",
+}
+[lfc] Debug:^^IScanned two: scale | 5
+[lfc] Debug:^^I[doc] Scanned family configuration: 
+t={
+ ["cleanname"]="lobstertwo",
+ ["csname"]="lobstertwo",
+ ["name"]="Lobster Two",
+ ["scale"]="5",
+}
+[lfc] Debug:^^I[doc] Configuring doc families ...
+t={
+}
+t={
+ ["curr"]="lobstertwo",
+ ["lobstertwo"]={
+  ["cleanname"]="lobstertwo",
+  ["csname"]="lobstertwo",
+  ["name"]="Lobster Two",
+  ["scale"]="5",
+ },
+}
+t={
+ ["rm"]="<lua token 530547: 537404046>",
+ ["sf"]="<lua token 530548: 537404047>",
+ ["tt"]="<lua token 529419: 536872586>",
+}
+[lfc] Debug:^^ISkipping debug messages for data
+[lfc] Debug:^^IUsing cached fd emulation for lobstertwo.
+[lfc] Debug:^^I[cache] Cached fd:
+t={
+ { "m", "n", "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Regular.otf\"", 0, "" },
+ { "m", "it", "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Italic.otf\"", 0, "" },
+ {
+  "m",
+  "sl",
+  ["ssub"]={ "m", "it" },
+ },
+ "",
+ { "m", "scit", "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Italic.otf\"", 0, "+smcp" },
+ { "b", "it", "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-BoldItalic.otf\"", 0, "" },
+ {
+  "bx",
+  "it",
+  ["ssub"]={ "b", "it" },
+ },
+ { "b", "n", "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Bold.otf\"", 0, "" },
+ {
+  "bx",
+  "n",
+  ["ssub"]={ "b", "n" },
+ },
+ {
+  "b",
+  "sl",
+  ["ssub"]={ "b", "it" },
+ },
+ { "b", "sc", "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Bold.otf\"", 0, "+smcp" },
+ { "b", "scit", "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-BoldItalic.otf\"", 0, "+smcp" },
+}
+Lua function __lfc_tulobstertwo.fd = ...
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ {
+  "tulobstertwo.fd",
+ },
+ {
+  ".tex",
+ },
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391639: 536887808>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391639: 536887808>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ "tulobstertwo.fd",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+tulobstertwo.fd
+[lfc] Debug:^^I[defn] Returning toks: 
+tulobstertwo.fd
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "tulobstertwo.fd",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ ".tex",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+.tex
+[lfc] Debug:^^I[defn] Returning toks: 
+.tex
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ ".tex",
+}
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "tulobstertwo.fd",
+ ".tex",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ { "file/", "tulobstertwo.fd", "/before" },
+ {
+  ".",
+ },
+ {
+ },
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 530203: 536914872>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 530203: 536914872>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={ "file/", "tulobstertwo.fd", "/before" }
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+file/
+[lfc] Debug:^^I[defn] Returning toks: 
+file/
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+tulobstertwo.fd
+[lfc] Debug:^^I[defn] Returning toks: 
+tulobstertwo.fd
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+/before
+[lfc] Debug:^^I[defn] Returning toks: 
+/before
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={ "file/", "tulobstertwo.fd", "/before" }
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ ".",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+.
+[lfc] Debug:^^I[defn] Returning toks: 
+.
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ ".",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 517720: 537406163>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 517720: 537406163>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+}
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "file/",
+ "tulobstertwo.fd",
+ "/before",
+ ".",
+}
+[lfc] Debug:^^ICreating NFSS family lobstertwo
+Lua function lobstertwo = ...
+[lfc] Debug:^^I[doc] NFSS doc families: 
+t={
+ ["curr"]="lobstertwo",
+ ["lobstertwo"]={
+  ["cleanname"]="lobstertwo",
+  ["csname"]="lobstertwo",
+  ["name"]="Lobster Two",
+  ["nfss_fam"]="lobstertwo",
+  ["scale"]="5",
+ },
+}
+[lfc] Debug:^^ISetting default families ...
+============================================================
+TEST 2: debug + scaling
+============================================================
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ {
+  "lobstertwo",
+ },
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 530210: 537402776>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 530210: 537402776>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+lobstertwo
+[lfc] Debug:^^I[defn] Returning toks: 
+lobstertwo
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 529067: 536871135>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 529067: 536871135>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "lobstertwo",
+}
+LaTeX Font Info:    Trying to load font information for TU+lobstertwo on input line ....
+[lfc] Log:^^IEmulating font definition file for NFSS family lobstertwo with mode=node;language=dflt;script=dflt;+tlig scaled 5 suffixed [none].
+[lfc] Info:^^IScaling lobstertwo to 5.
+[lfc] Debug:^^IPreparing line: lobstertwo: mode=node;language=dflt;script=dflt;+tlig <->s*[5]
+[lfc] Debug:^^IPreparing line for lobstertwo.
+[lfc] Debug:^^IPreparing line: lobstertwo: mode=node;language=dflt;script=dflt;+tlig <->s*[5]
+[lfc] Debug:^^IPreparing line for lobstertwo.
+[lfc] Debug:^^IPreparing line: lobstertwo: mode=node;language=dflt;script=dflt;+tlig <->s*[5]
+[lfc] Debug:^^IPreparing line for lobstertwo.
+[lfc] Debug:^^IPreparing line: lobstertwo: mode=node;language=dflt;script=dflt;+tlig <->s*[5]
+[lfc] Debug:^^IPreparing line for lobstertwo.
+[lfc] Debug:^^IPreparing line: lobstertwo: mode=node;language=dflt;script=dflt;+tlig <->s*[5]
+[lfc] Debug:^^IPreparing line for lobstertwo.
+[lfc] Debug:^^IPreparing line: lobstertwo: mode=node;language=dflt;script=dflt;+tlig <->s*[5]
+[lfc] Debug:^^IPreparing line for lobstertwo.
+[lfc] Debug:^^IPreparing line: lobstertwo: mode=node;language=dflt;script=dflt;+tlig <->s*[5]
+[lfc] Debug:^^IPreparing line for lobstertwo.
+[lfc] Debug:^^IPreparing line: lobstertwo: mode=node;language=dflt;script=dflt;+tlig <->s*[5]
+[lfc] Debug:^^IPreparing line for lobstertwo.
+[lfc] Debug:^^IPreparing line: lobstertwo: mode=node;language=dflt;script=dflt;+tlig <->s*[5]
+[lfc] Debug:^^IPreparing line for lobstertwo.
+[lfc] Debug:^^IPreparing line: lobstertwo: mode=node;language=dflt;script=dflt;+tlig <->s*[5]
+[lfc] Debug:^^IPreparing line for lobstertwo.
+[lfc] Debug:^^IPreparing line: lobstertwo: mode=node;language=dflt;script=dflt;+tlig <->s*[5]
+[lfc] Debug:^^IPreparing line for lobstertwo.
+[lfc] Debug:^^I[defn] Out (partially tokenized): 
+t={
+ {
+  {
+   "TU",
+  },
+  {
+   "lobstertwo",
+  },
+ },
+ {
+ },
+ {
+  {
+   "TU",
+  },
+  {
+   "lobstertwo",
+  },
+ },
+ "m",
+ "n",
+ "<->s*[5]",
+ { "\"[", "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Regular.otf\"", "]:", "mode=node;language=dflt;script=dflt;+tlig", "\"" },
+ {
+ },
+ {
+  {
+   "TU",
+  },
+  {
+   "lobstertwo",
+  },
+ },
+ "m",
+ "it",
+ "<->s*[5]",
+ { "\"[", "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Italic.otf\"", "]:", "mode=node;language=dflt;script=dflt;+tlig", "\"" },
+ {
+ },
+ {
+  {
+   "TU",
+  },
+  {
+   "lobstertwo",
+  },
+ },
+ "m",
+ "sl",
+ "<->",
+ "ssub*",
+ "lobstertwo/m/it",
+ {
+ },
+ {
+  {
+   "TU",
+  },
+  {
+   "lobstertwo",
+  },
+ },
+ "m",
+ "scit",
+ "<->s*[5]",
+ { "\"[", "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Italic.otf\"", "]:", "mode=node;language=dflt;script=dflt;+tlig;+smcp", "\"" },
+ {
+ },
+ {
+  {
+   "TU",
+  },
+  {
+   "lobstertwo",
+  },
+ },
+ "b",
+ "it",
+ "<->s*[5]",
+ { "\"[", "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-BoldItalic.otf\"", "]:", "mode=node;language=dflt;script=dflt;+tlig", "\"" },
+ {
+ },
+ {
+  {
+   "TU",
+  },
+  {
+   "lobstertwo",
+  },
+ },
+ "bx",
+ "it",
+ "<->",
+ "ssub*",
+ "lobstertwo/b/it",
+ {
+ },
+ {
+  {
+   "TU",
+  },
+  {
+   "lobstertwo",
+  },
+ },
+ "b",
+ "n",
+ "<->s*[5]",
+ { "\"[", "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Bold.otf\"", "]:", "mode=node;language=dflt;script=dflt;+tlig", "\"" },
+ {
+ },
+ {
+  {
+   "TU",
+  },
+  {
+   "lobstertwo",
+  },
+ },
+ "bx",
+ "n",
+ "<->",
+ "ssub*",
+ "lobstertwo/b/n",
+ {
+ },
+ {
+  {
+   "TU",
+  },
+  {
+   "lobstertwo",
+  },
+ },
+ "b",
+ "sl",
+ "<->",
+ "ssub*",
+ "lobstertwo/b/it",
+ {
+ },
+ {
+  {
+   "TU",
+  },
+  {
+   "lobstertwo",
+  },
+ },
+ "b",
+ "sc",
+ "<->s*[5]",
+ { "\"[", "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Bold.otf\"", "]:", "mode=node;language=dflt;script=dflt;+tlig;+smcp", "\"" },
+ {
+ },
+ {
+  {
+   "TU",
+  },
+  {
+   "lobstertwo",
+  },
+ },
+ "b",
+ "scit",
+ "<->s*[5]",
+ { "\"[", "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-BoldItalic.otf\"", "]:", "mode=node;language=dflt;script=dflt;+tlig;+smcp", "\"" },
+ {
+ },
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ {
+  {
+   "TU",
+  },
+  {
+   "lobstertwo",
+  },
+ },
+ {
+ },
+ {
+  {
+   "TU",
+  },
+  {
+   "lobstertwo",
+  },
+ },
+ "m",
+ "n",
+ "<->s*[5]",
+ { "\"[", "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Regular.otf\"", "]:", "mode=node;language=dflt;script=dflt;+tlig", "\"" },
+ {
+ },
+ {
+  {
+   "TU",
+  },
+  {
+   "lobstertwo",
+  },
+ },
+ "m",
+ "it",
+ "<->s*[5]",
+ { "\"[", "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Italic.otf\"", "]:", "mode=node;language=dflt;script=dflt;+tlig", "\"" },
+ {
+ },
+ {
+  {
+   "TU",
+  },
+  {
+   "lobstertwo",
+  },
+ },
+ "m",
+ "sl",
+ "<->",
+ "ssub*",
+ "lobstertwo/m/it",
+ {
+ },
+ {
+  {
+   "TU",
+  },
+  {
+   "lobstertwo",
+  },
+ },
+ "m",
+ "scit",
+ "<->s*[5]",
+ { "\"[", "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Italic.otf\"", "]:", "mode=node;language=dflt;script=dflt;+tlig;+smcp", "\"" },
+ {
+ },
+ {
+  {
+   "TU",
+  },
+  {
+   "lobstertwo",
+  },
+ },
+ "b",
+ "it",
+ "<->s*[5]",
+ { "\"[", "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-BoldItalic.otf\"", "]:", "mode=node;language=dflt;script=dflt;+tlig", "\"" },
+ {
+ },
+ {
+  {
+   "TU",
+  },
+  {
+   "lobstertwo",
+  },
+ },
+ "bx",
+ "it",
+ "<->",
+ "ssub*",
+ "lobstertwo/b/it",
+ {
+ },
+ {
+  {
+   "TU",
+  },
+  {
+   "lobstertwo",
+  },
+ },
+ "b",
+ "n",
+ "<->s*[5]",
+ { "\"[", "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Bold.otf\"", "]:", "mode=node;language=dflt;script=dflt;+tlig", "\"" },
+ {
+ },
+ {
+  {
+   "TU",
+  },
+  {
+   "lobstertwo",
+  },
+ },
+ "bx",
+ "n",
+ "<->",
+ "ssub*",
+ "lobstertwo/b/n",
+ {
+ },
+ {
+  {
+   "TU",
+  },
+  {
+   "lobstertwo",
+  },
+ },
+ "b",
+ "sl",
+ "<->",
+ "ssub*",
+ "lobstertwo/b/it",
+ {
+ },
+ {
+  {
+   "TU",
+  },
+  {
+   "lobstertwo",
+  },
+ },
+ "b",
+ "sc",
+ "<->s*[5]",
+ { "\"[", "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Bold.otf\"", "]:", "mode=node;language=dflt;script=dflt;+tlig;+smcp", "\"" },
+ {
+ },
+ {
+  {
+   "TU",
+  },
+  {
+   "lobstertwo",
+  },
+ },
+ "b",
+ "scit",
+ "<->s*[5]",
+ { "\"[", "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-BoldItalic.otf\"", "]:", "mode=node;language=dflt;script=dflt;+tlig;+smcp", "\"" },
+ {
+ },
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 530719: 537403428>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 530719: 537403428>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ {
+  "TU",
+ },
+ {
+  "lobstertwo",
+ },
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ "TU",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+TU
+[lfc] Debug:^^I[defn] Returning toks: 
+TU
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "TU",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+lobstertwo
+[lfc] Debug:^^I[defn] Returning toks: 
+lobstertwo
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "TU",
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ {
+  "TU",
+ },
+ {
+  "lobstertwo",
+ },
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 529837: 536904765>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 529837: 536904765>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ "TU",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+TU
+[lfc] Debug:^^I[defn] Returning toks: 
+TU
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "TU",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+lobstertwo
+[lfc] Debug:^^I[defn] Returning toks: 
+lobstertwo
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "TU",
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+m
+[lfc] Debug:^^I[defn] Returning toks: 
+m
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+n
+[lfc] Debug:^^I[defn] Returning toks: 
+n
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<->s*[5]
+[lfc] Debug:^^I[defn] Returning toks: 
+<->s*[5]
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={ "\"[", "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Regular.otf\"", "]:", "mode=node;language=dflt;script=dflt;+tlig", "\"" }
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+"[
+[lfc] Debug:^^I[defn] Returning toks: 
+"[
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Regular.otf"
+[lfc] Debug:^^I[defn] Returning toks: 
+"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Regular.otf"
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+]:
+[lfc] Debug:^^I[defn] Returning toks: 
+]:
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+mode=node;language=dflt;script=dflt;+tlig
+[lfc] Debug:^^I[defn] Returning toks: 
+mode=node;language=dflt;script=dflt;+tlig
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+"
+[lfc] Debug:^^I[defn] Returning toks: 
+"
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={ "\"[", "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Regular.otf\"", "]:", "mode=node;language=dflt;script=dflt;+tlig", "\"" }
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ {
+  "TU",
+ },
+ {
+  "lobstertwo",
+ },
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 529837: 536904765>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 529837: 536904765>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ "TU",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+TU
+[lfc] Debug:^^I[defn] Returning toks: 
+TU
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "TU",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+lobstertwo
+[lfc] Debug:^^I[defn] Returning toks: 
+lobstertwo
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "TU",
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+m
+[lfc] Debug:^^I[defn] Returning toks: 
+m
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+it
+[lfc] Debug:^^I[defn] Returning toks: 
+it
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<->s*[5]
+[lfc] Debug:^^I[defn] Returning toks: 
+<->s*[5]
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={ "\"[", "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Italic.otf\"", "]:", "mode=node;language=dflt;script=dflt;+tlig", "\"" }
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+"[
+[lfc] Debug:^^I[defn] Returning toks: 
+"[
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Italic.otf"
+[lfc] Debug:^^I[defn] Returning toks: 
+"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Italic.otf"
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+]:
+[lfc] Debug:^^I[defn] Returning toks: 
+]:
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+mode=node;language=dflt;script=dflt;+tlig
+[lfc] Debug:^^I[defn] Returning toks: 
+mode=node;language=dflt;script=dflt;+tlig
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+"
+[lfc] Debug:^^I[defn] Returning toks: 
+"
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={ "\"[", "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Italic.otf\"", "]:", "mode=node;language=dflt;script=dflt;+tlig", "\"" }
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ {
+  "TU",
+ },
+ {
+  "lobstertwo",
+ },
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 529837: 536904765>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 529837: 536904765>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ "TU",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+TU
+[lfc] Debug:^^I[defn] Returning toks: 
+TU
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "TU",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+lobstertwo
+[lfc] Debug:^^I[defn] Returning toks: 
+lobstertwo
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "TU",
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+m
+[lfc] Debug:^^I[defn] Returning toks: 
+m
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+sl
+[lfc] Debug:^^I[defn] Returning toks: 
+sl
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<->
+[lfc] Debug:^^I[defn] Returning toks: 
+<->
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+ssub*
+[lfc] Debug:^^I[defn] Returning toks: 
+ssub*
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+lobstertwo/m/it
+[lfc] Debug:^^I[defn] Returning toks: 
+lobstertwo/m/it
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ {
+  "TU",
+ },
+ {
+  "lobstertwo",
+ },
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 529837: 536904765>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 529837: 536904765>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ "TU",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+TU
+[lfc] Debug:^^I[defn] Returning toks: 
+TU
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "TU",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+lobstertwo
+[lfc] Debug:^^I[defn] Returning toks: 
+lobstertwo
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "TU",
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+m
+[lfc] Debug:^^I[defn] Returning toks: 
+m
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+scit
+[lfc] Debug:^^I[defn] Returning toks: 
+scit
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<->s*[5]
+[lfc] Debug:^^I[defn] Returning toks: 
+<->s*[5]
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={ "\"[", "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Italic.otf\"", "]:", "mode=node;language=dflt;script=dflt;+tlig;+smcp", "\"" }
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+"[
+[lfc] Debug:^^I[defn] Returning toks: 
+"[
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Italic.otf"
+[lfc] Debug:^^I[defn] Returning toks: 
+"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Italic.otf"
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+]:
+[lfc] Debug:^^I[defn] Returning toks: 
+]:
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+mode=node;language=dflt;script=dflt;+tlig;+smcp
+[lfc] Debug:^^I[defn] Returning toks: 
+mode=node;language=dflt;script=dflt;+tlig;+smcp
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+"
+[lfc] Debug:^^I[defn] Returning toks: 
+"
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={ "\"[", "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Italic.otf\"", "]:", "mode=node;language=dflt;script=dflt;+tlig;+smcp", "\"" }
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ {
+  "TU",
+ },
+ {
+  "lobstertwo",
+ },
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 529837: 536904765>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 529837: 536904765>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ "TU",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+TU
+[lfc] Debug:^^I[defn] Returning toks: 
+TU
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "TU",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+lobstertwo
+[lfc] Debug:^^I[defn] Returning toks: 
+lobstertwo
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "TU",
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+b
+[lfc] Debug:^^I[defn] Returning toks: 
+b
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+it
+[lfc] Debug:^^I[defn] Returning toks: 
+it
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<->s*[5]
+[lfc] Debug:^^I[defn] Returning toks: 
+<->s*[5]
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={ "\"[", "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-BoldItalic.otf\"", "]:", "mode=node;language=dflt;script=dflt;+tlig", "\"" }
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+"[
+[lfc] Debug:^^I[defn] Returning toks: 
+"[
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-BoldItalic.otf"
+[lfc] Debug:^^I[defn] Returning toks: 
+"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-BoldItalic.otf"
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+]:
+[lfc] Debug:^^I[defn] Returning toks: 
+]:
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+mode=node;language=dflt;script=dflt;+tlig
+[lfc] Debug:^^I[defn] Returning toks: 
+mode=node;language=dflt;script=dflt;+tlig
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+"
+[lfc] Debug:^^I[defn] Returning toks: 
+"
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={ "\"[", "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-BoldItalic.otf\"", "]:", "mode=node;language=dflt;script=dflt;+tlig", "\"" }
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ {
+  "TU",
+ },
+ {
+  "lobstertwo",
+ },
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 529837: 536904765>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 529837: 536904765>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ "TU",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+TU
+[lfc] Debug:^^I[defn] Returning toks: 
+TU
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "TU",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+lobstertwo
+[lfc] Debug:^^I[defn] Returning toks: 
+lobstertwo
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "TU",
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+bx
+[lfc] Debug:^^I[defn] Returning toks: 
+bx
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+it
+[lfc] Debug:^^I[defn] Returning toks: 
+it
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<->
+[lfc] Debug:^^I[defn] Returning toks: 
+<->
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+ssub*
+[lfc] Debug:^^I[defn] Returning toks: 
+ssub*
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+lobstertwo/b/it
+[lfc] Debug:^^I[defn] Returning toks: 
+lobstertwo/b/it
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ {
+  "TU",
+ },
+ {
+  "lobstertwo",
+ },
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 529837: 536904765>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 529837: 536904765>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ "TU",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+TU
+[lfc] Debug:^^I[defn] Returning toks: 
+TU
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "TU",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+lobstertwo
+[lfc] Debug:^^I[defn] Returning toks: 
+lobstertwo
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "TU",
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+b
+[lfc] Debug:^^I[defn] Returning toks: 
+b
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+n
+[lfc] Debug:^^I[defn] Returning toks: 
+n
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<->s*[5]
+[lfc] Debug:^^I[defn] Returning toks: 
+<->s*[5]
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={ "\"[", "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Bold.otf\"", "]:", "mode=node;language=dflt;script=dflt;+tlig", "\"" }
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+"[
+[lfc] Debug:^^I[defn] Returning toks: 
+"[
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Bold.otf"
+[lfc] Debug:^^I[defn] Returning toks: 
+"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Bold.otf"
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+]:
+[lfc] Debug:^^I[defn] Returning toks: 
+]:
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+mode=node;language=dflt;script=dflt;+tlig
+[lfc] Debug:^^I[defn] Returning toks: 
+mode=node;language=dflt;script=dflt;+tlig
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+"
+[lfc] Debug:^^I[defn] Returning toks: 
+"
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={ "\"[", "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Bold.otf\"", "]:", "mode=node;language=dflt;script=dflt;+tlig", "\"" }
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ {
+  "TU",
+ },
+ {
+  "lobstertwo",
+ },
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 529837: 536904765>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 529837: 536904765>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ "TU",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+TU
+[lfc] Debug:^^I[defn] Returning toks: 
+TU
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "TU",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+lobstertwo
+[lfc] Debug:^^I[defn] Returning toks: 
+lobstertwo
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "TU",
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+bx
+[lfc] Debug:^^I[defn] Returning toks: 
+bx
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+n
+[lfc] Debug:^^I[defn] Returning toks: 
+n
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<->
+[lfc] Debug:^^I[defn] Returning toks: 
+<->
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+ssub*
+[lfc] Debug:^^I[defn] Returning toks: 
+ssub*
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+lobstertwo/b/n
+[lfc] Debug:^^I[defn] Returning toks: 
+lobstertwo/b/n
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ {
+  "TU",
+ },
+ {
+  "lobstertwo",
+ },
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 529837: 536904765>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 529837: 536904765>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ "TU",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+TU
+[lfc] Debug:^^I[defn] Returning toks: 
+TU
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "TU",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+lobstertwo
+[lfc] Debug:^^I[defn] Returning toks: 
+lobstertwo
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "TU",
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+b
+[lfc] Debug:^^I[defn] Returning toks: 
+b
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+sl
+[lfc] Debug:^^I[defn] Returning toks: 
+sl
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<->
+[lfc] Debug:^^I[defn] Returning toks: 
+<->
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+ssub*
+[lfc] Debug:^^I[defn] Returning toks: 
+ssub*
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+lobstertwo/b/it
+[lfc] Debug:^^I[defn] Returning toks: 
+lobstertwo/b/it
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ {
+  "TU",
+ },
+ {
+  "lobstertwo",
+ },
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 529837: 536904765>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 529837: 536904765>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ "TU",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+TU
+[lfc] Debug:^^I[defn] Returning toks: 
+TU
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "TU",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+lobstertwo
+[lfc] Debug:^^I[defn] Returning toks: 
+lobstertwo
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "TU",
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+b
+[lfc] Debug:^^I[defn] Returning toks: 
+b
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+sc
+[lfc] Debug:^^I[defn] Returning toks: 
+sc
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<->s*[5]
+[lfc] Debug:^^I[defn] Returning toks: 
+<->s*[5]
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={ "\"[", "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Bold.otf\"", "]:", "mode=node;language=dflt;script=dflt;+tlig;+smcp", "\"" }
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+"[
+[lfc] Debug:^^I[defn] Returning toks: 
+"[
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Bold.otf"
+[lfc] Debug:^^I[defn] Returning toks: 
+"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Bold.otf"
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+]:
+[lfc] Debug:^^I[defn] Returning toks: 
+]:
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+mode=node;language=dflt;script=dflt;+tlig;+smcp
+[lfc] Debug:^^I[defn] Returning toks: 
+mode=node;language=dflt;script=dflt;+tlig;+smcp
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+"
+[lfc] Debug:^^I[defn] Returning toks: 
+"
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={ "\"[", "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Bold.otf\"", "]:", "mode=node;language=dflt;script=dflt;+tlig;+smcp", "\"" }
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ {
+  "TU",
+ },
+ {
+  "lobstertwo",
+ },
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 529837: 536904765>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 529837: 536904765>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ "TU",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+TU
+[lfc] Debug:^^I[defn] Returning toks: 
+TU
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "TU",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+lobstertwo
+[lfc] Debug:^^I[defn] Returning toks: 
+lobstertwo
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "TU",
+ "lobstertwo",
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+b
+[lfc] Debug:^^I[defn] Returning toks: 
+b
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+scit
+[lfc] Debug:^^I[defn] Returning toks: 
+scit
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<->s*[5]
+[lfc] Debug:^^I[defn] Returning toks: 
+<->s*[5]
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={ "\"[", "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-BoldItalic.otf\"", "]:", "mode=node;language=dflt;script=dflt;+tlig;+smcp", "\"" }
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+"[
+[lfc] Debug:^^I[defn] Returning toks: 
+"[
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-BoldItalic.otf"
+[lfc] Debug:^^I[defn] Returning toks: 
+"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-BoldItalic.otf"
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+]:
+[lfc] Debug:^^I[defn] Returning toks: 
+]:
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+mode=node;language=dflt;script=dflt;+tlig;+smcp
+[lfc] Debug:^^I[defn] Returning toks: 
+mode=node;language=dflt;script=dflt;+tlig;+smcp
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+"
+[lfc] Debug:^^I[defn] Returning toks: 
+"
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={ "\"[", "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-BoldItalic.otf\"", "]:", "mode=node;language=dflt;script=dflt;+tlig;+smcp", "\"" }
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+t={
+}
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 528894: 2097275>
+[lfc] Debug:^^I[defn] Sequencing toks 'n things ...
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Returning toks: 
+<lua token 391316: 4194429>
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+}
+[lfc] Debug:^^I[defn] Sequenced toks: 
+t={
+ "TU",
+ "lobstertwo",
+ "TU",
+ "lobstertwo",
+ "m",
+ "n",
+ "<->s*[5]",
+ "\"[",
+ "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Regular.otf\"",
+ "]:",
+ "mode=node;language=dflt;script=dflt;+tlig",
+ "\"",
+ "TU",
+ "lobstertwo",
+ "m",
+ "it",
+ "<->s*[5]",
+ "\"[",
+ "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Italic.otf\"",
+ "]:",
+ "mode=node;language=dflt;script=dflt;+tlig",
+ "\"",
+ "TU",
+ "lobstertwo",
+ "m",
+ "sl",
+ "<->",
+ "ssub*",
+ "lobstertwo/m/it",
+ "TU",
+ "lobstertwo",
+ "m",
+ "scit",
+ "<->s*[5]",
+ "\"[",
+ "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Italic.otf\"",
+ "]:",
+ "mode=node;language=dflt;script=dflt;+tlig;+smcp",
+ "\"",
+ "TU",
+ "lobstertwo",
+ "b",
+ "it",
+ "<->s*[5]",
+ "\"[",
+ "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-BoldItalic.otf\"",
+ "]:",
+ "mode=node;language=dflt;script=dflt;+tlig",
+ "\"",
+ "TU",
+ "lobstertwo",
+ "bx",
+ "it",
+ "<->",
+ "ssub*",
+ "lobstertwo/b/it",
+ "TU",
+ "lobstertwo",
+ "b",
+ "n",
+ "<->s*[5]",
+ "\"[",
+ "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Bold.otf\"",
+ "]:",
+ "mode=node;language=dflt;script=dflt;+tlig",
+ "\"",
+ "TU",
+ "lobstertwo",
+ "bx",
+ "n",
+ "<->",
+ "ssub*",
+ "lobstertwo/b/n",
+ "TU",
+ "lobstertwo",
+ "b",
+ "sl",
+ "<->",
+ "ssub*",
+ "lobstertwo/b/it",
+ "TU",
+ "lobstertwo",
+ "b",
+ "sc",
+ "<->s*[5]",
+ "\"[",
+ "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Bold.otf\"",
+ "]:",
+ "mode=node;language=dflt;script=dflt;+tlig;+smcp",
+ "\"",
+ "TU",
+ "lobstertwo",
+ "b",
+ "scit",
+ "<->s*[5]",
+ "\"[",
+ "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-BoldItalic.otf\"",
+ "]:",
+ "mode=node;language=dflt;script=dflt;+tlig;+smcp",
+ "\"",
+}
+[lfc] Debug:^^I[defn] Out (streamed): 
+t={
+ "TU",
+ "lobstertwo",
+ "TU",
+ "lobstertwo",
+ "m",
+ "n",
+ "<->s*[5]",
+ "\"[",
+ "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Regular.otf\"",
+ "]:",
+ "mode=node;language=dflt;script=dflt;+tlig",
+ "\"",
+ "TU",
+ "lobstertwo",
+ "m",
+ "it",
+ "<->s*[5]",
+ "\"[",
+ "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Italic.otf\"",
+ "]:",
+ "mode=node;language=dflt;script=dflt;+tlig",
+ "\"",
+ "TU",
+ "lobstertwo",
+ "m",
+ "sl",
+ "<->",
+ "ssub*",
+ "lobstertwo/m/it",
+ "TU",
+ "lobstertwo",
+ "m",
+ "scit",
+ "<->s*[5]",
+ "\"[",
+ "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Italic.otf\"",
+ "]:",
+ "mode=node;language=dflt;script=dflt;+tlig;+smcp",
+ "\"",
+ "TU",
+ "lobstertwo",
+ "b",
+ "it",
+ "<->s*[5]",
+ "\"[",
+ "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-BoldItalic.otf\"",
+ "]:",
+ "mode=node;language=dflt;script=dflt;+tlig",
+ "\"",
+ "TU",
+ "lobstertwo",
+ "bx",
+ "it",
+ "<->",
+ "ssub*",
+ "lobstertwo/b/it",
+ "TU",
+ "lobstertwo",
+ "b",
+ "n",
+ "<->s*[5]",
+ "\"[",
+ "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Bold.otf\"",
+ "]:",
+ "mode=node;language=dflt;script=dflt;+tlig",
+ "\"",
+ "TU",
+ "lobstertwo",
+ "bx",
+ "n",
+ "<->",
+ "ssub*",
+ "lobstertwo/b/n",
+ "TU",
+ "lobstertwo",
+ "b",
+ "sl",
+ "<->",
+ "ssub*",
+ "lobstertwo/b/it",
+ "TU",
+ "lobstertwo",
+ "b",
+ "sc",
+ "<->s*[5]",
+ "\"[",
+ "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Bold.otf\"",
+ "]:",
+ "mode=node;language=dflt;script=dflt;+tlig;+smcp",
+ "\"",
+ "TU",
+ "lobstertwo",
+ "b",
+ "scit",
+ "<->s*[5]",
+ "\"[",
+ "\"TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-BoldItalic.otf\"",
+ "]:",
+ "mode=node;language=dflt;script=dflt;+tlig;+smcp",
+ "\"",
+}
+[lfc] Info:^^IAdding smcp callback.
+Inserting `lfc check for +smcp' in `luaotfload.patch_font'.
+[lfc] Info:^^IAdding data callback.
+Inserting `lfc cache font resources' in `luaotfload.patch_font'. (../.tex Fileignored)
+LaTeX Font Info:    Font shape `TU/lobstertwo/m/n' will be
+(Font)              scaled to size 50.0pt on input line ....
+[lfc font]: \<->s*[5]"["TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
+============================================================
