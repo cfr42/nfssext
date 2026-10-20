@@ -86,7 +86,7 @@ jobs:
           manifest: true
           module: clm
           pre_target: fnttarg
-          release: ${{ env.releasing }}
+          release: ${{ env.RELEASING }}
           tds: true
           texlive_cache_key: ${{ needs.texlive-cache.outputs.cache_key }}
           working_directory: cfr-lm
