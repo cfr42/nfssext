@@ -176,7 +176,7 @@ runs:
           ctan=1; check=0; doc=0; ctanrel=0 
         else
           # release + manifest + tds -> build ctan twice
-          ctan=0; check=1; doc=1; ctanrel=1 
+          ctan=0; check=1; doc=1; ctanrel=0 
         fi
         echo -e "ART=${art}\nCHECK=${check}\nCTAN=${ctan}\nDOC=${doc}\nMANIFEST=${manifest}\nRELEASE=${release}\nCTANREL=${ctanrel}\nTDS=${tds}\n" >> "$GITHUB_ENV"
         cat "$GITHUB_ENV"
