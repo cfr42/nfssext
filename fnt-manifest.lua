@@ -1,4 +1,4 @@
--- $Id: fnt-manifest.lua 12140 2026-10-19 22:26:20Z cfrees $
+-- $Id: fnt-manifest.lua 12141 2026-10-20 04:10:09Z cfrees $
 ---------------------------------------------------------------------
 -- local derivedfiles = derivedfiles or {"*.cls","*.enc","*.fd","*.map","*.sty","*.tfm","*.vf"}
 -- local origfntfiles = origfntfiles or {"*.afm","*.otf","*.pfb",".pfm","*.ttf","NOTICE.txt","COPYING"}
@@ -6,6 +6,10 @@
 -- local buildscripts = buildscripts or  {"*.lua", "Makefile", "../vendor/*.lua", "../../fntbuild.lua"}
 -- local fnttestdir = fnttestdir or maindir .. "/fnt-tests"
 -- local testfiles = testfiles or {"*.lvt","*.pvt","*.tlg","*.lve","*.tpf"}
+
+-- The changes below screw up the environment, since everything contaminates everything else in l3build.
+-- So only proceed if we are writing the manifest.
+if options.target ~= "manifest" then return end
 local fnttestfiles = fnttestfiles or "* " .. fnt.tablestemp .. "\n* " .. fnt.regress .. "\n* " .. fnt.testtemp
 local orig_testfiledir = testfiledir or sourcefiledir .. "/testfiles"
 local orig_testsuppdir = testsuppdir or orig_testfiledir .. "/support"
