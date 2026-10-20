@@ -124,7 +124,7 @@ local lfc_callback_data_active  = false
 local lfc_callback_cache_active = false
 
 -- Strings
-local function enquote(str) return format("\"%s\"", str) end
+local function enquote(str) return format("%q", str) end
 
 -- lpeg
 local p_semicolon_or_comma  = oneof(p_semicolon, p_comma)
@@ -254,7 +254,12 @@ do
   }
   msg_log_levels = hashed(h)
 end
-
+-- NOTE: Most editors won't recognize these messages, so you should either use
+-- the built-in `luatexbase.module_[info|warning|error]` functions, or format
+-- the messages like "Package lfc [Warning|Info]: [...]." and "! Package lfc
+-- Error: [...]". See
+-- https://github.com/gucci-on-fleek/lua-widow-control/issues/34#issuecomment-1129718112
+-- for some vaguely adjacent discussion.
 ---@function msg(text, level) {{{
 ---@param   text      <string|table>  Message.
 ---@param   level     <string>        Minimum logging level for issuing message.
@@ -368,67 +373,8 @@ msg_config(lfc.log_level, lfc.debug)
 
 ---@mcsubstitute -- {{{
 
--- Define a new private environment into which to load "font-syn.lua".
-local lfc_env = copy(luaotfload.fontloader)
-lfc_env.table = copy(lfc_env.table)
-
--- Define some functions required by "font-syn.lua".
-local split = "^(.-)([^/]-)([^/]-)$"
-
----@function lfc_env.resolvers.dowithfilesintree() -- {{{
-function lfc_env.resolvers.dowithfilesintree(pattern, handle, before, after)
-  local files = luaotfload.aux.font_index().files.full
-  for i = 1, #files do
-    local filename = files[i]
-    if match(filename, pattern) then
-      local root, path, name = match(filename, split)
-      -- Path is always empty.
-      handle("file", root, path, name)
-    end
-  end
-end
--- }}}
-
----@function lfc_env.table.setmetatableindex() -- {{{
-function lfc_env.table.setmetatableindex(t, k)
-  if k == "self" then
-    return setmetatableindex(t, function(tt, kk)
-      tt[kk] = kk
-      return kk
-    end)
-  else
-    return setmetatableindex(t, k)
-  end
-end
--- }}}
-
--- Define some dummy functions.
-function lfc_env.logs.flush         ()     return nil end
-function lfc_env.resolvers.cleanpath(path) return nil end
-function lfc_env.resolvers.datastate()     return {}  end
-function lfc_env.resolvers.showpath (name) return nil end
-function lfc_env.resolvers.splitpath(path) return nil end
-
--- Load "font-syn.lua" into our private environment.
--- loadfile(kpse.find_file("font-syn.lua"), "t", lfc_env)()
-loadfile(kpse.find_file("lfc-context-font-syn.lua"), "t", lfc_env)()
--- loadfile("lfc-context-font-syn.lua", "t", lfc_env)()
-
--- Print a message while generating our font name database so that users
--- don't get confused by the long pause.
-do
-  local saved = lfc_env.fonts.names.identify
-  function lfc_env.fonts.names.identify(force)
-    write_nl("Generating font name database...")
-    saved(force)
-    write(" done.\n")
-  end
-end
-
--- Unconditionally load the font name database, regenerating it if
--- necessary.
-lfc_env.fonts.names.load(false, false)
--- lfc_env.fonts.names.load(true, true)
+local names = require("lfc-context-font-syn")
+names.load(false, false)
 
 -- Get the table of filenames
 
@@ -439,12 +385,10 @@ lfc_env.fonts.names.load(false, false)
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -- late locals {{{
-local lfc_fonts = lfc_env.fonts
-local names = lfc_fonts.names
 local cleanfilename = names.cleanfilename
 local resolve = names.resolve
-local lookup_font_file = names.lookup_font_file
-local font_data = names.data
+local lookup_font_file = fonts.names.lookup_font_file
+local font_data = names.get_data()
 -- }}}
 
 -------------------------------------------------------------------------------
@@ -455,15 +399,15 @@ local font_data = names.data
 ---@statue internal
 local function get_cache_path()
   msg("Accessing cache ...", "debug")
-  local path = (gsub(lfc_fonts.names.cache.writable, "^(.*/)[^/]+$", "%1" ))
+  local path = (gsub(names.cache.writable, "^(.*/)[^/]+$", "%1" ))
   msg_assert(path ~= nil, "Cannot find place for cache!")
-  if not isdir(format("%s/lfc", path)) then
+  if not isdir(file.join(path, "lfc")) then
     msg_assert(is_writable(path), {"Cache ", path, " not writable!"})
-    msg_assert(mkdir(format("%s/lfc", path)), {"Cannot create cache ", path, 
+    msg_assert(mkdir(file.join(path, "lfc")), {"Cannot create cache ", path,
     "/lfc", " directory!"})
   end
-  path = format("%s/lfc", path)
-  return format("%s/lfc_cache.lua", path)
+  path = file.join(path, "lfc")
+  return file.join(path, "lfc_cache.lua")
 end
 -- }}}
 
@@ -533,8 +477,8 @@ local function get_font_data(fnt, force)
       --    in the data.
       ff = cleanfilename(ff)
 
-      local ext = (gsub(ff, "^(.*)%.([^.]+)", "%2"))
-      local basename = (gsub(ff, "([^/]*)%.([^.]+)", "%1"))
+      local ext = file.suffix(ff)
+      local basename = file.nameonly(ff)
 
       if ext and basename then
         fam_meta = font_data.mappings[ext][basename].familyname
@@ -842,6 +786,7 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
       end
       return t[1], t[2], t[3]
     else
+      -- NOTE: mfam is undefined here
       msg(format("Missing maths family %s for %s. Regenerating data.",
         mfam, fam))
     end
@@ -1353,18 +1298,7 @@ end
 -- This is an internal fn, so it should™ only receive valid input --- if not,
 --    I doubt type-checking here will help anything.
 local function get_toks(items)
-  msg_debug("Sequencing toks \'n things ...", "defn", items)
-  if type(items) == "table" then 
-    local toks = {}
-    for _,item in ipairs(items) do
-      append(toks, get_toks(item))
-    end
-    msg_debug("Sequenced toks: ", "defn", toks)
-    return toks
-  else 
-    msg_debug("Returning toks: ", "defn", items)
-    return {items}
-  end
+  return table.flattened({items})
 end
 -- }}}
 
@@ -1443,7 +1377,7 @@ local function write_declare_shape(fam, pre, line, post, fea, size_spec)
 
     append(out, {
       tok_group_begin, str_onesize, line.ssub and "ssub*" or "sub*",
-      format("%s/%s/%s", fam, subst[1], subst[2]), tok_group_end })
+      file.join(fam, subst[1], subst[2]), tok_group_end })
   end
 
   -- hyph or whatever
@@ -1604,13 +1538,10 @@ add_callback_data = function()
         
         fea.gsub = rfea.gsub and {} or nil
         if fea.gsub then
-          fea.gsub.tnum = rfea.gsub.tnum and true or false
-          fea.gsub.lnum = rfea.gsub.lnum and true or false
-          fea.gsub.onum = rfea.gsub.onum and true or false
-          fea.gsub.pnum = rfea.gsub.pnum and true or false
-          fea.gsub.smcp = rfea.gsub.smcp and true or false
-          fea.gsub.subs = rfea.gsub.subs and true or false
-          fea.gsub.sups = rfea.gsub.sups and true or false
+          for _,i in ipairs({"tnum", "lnum", "onum", "pnum", "smcp", "subs",
+            "sups"}) do
+            fea.gsub[i] = rfea.gsub[i] and true or false
+          end
         else
           fea.gsub = false
         end
