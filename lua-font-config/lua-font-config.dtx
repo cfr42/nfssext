@@ -33,7 +33,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12143 2026-10-20 19:48:36Z cfrees $}[v0.1 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12144 2026-10-21 04:45:46Z cfrees $}[v0.1 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -289,8 +289,8 @@
 %
 % Available keys are listed below.
 %
-% \DescribeKey{fam}\val{family name}\par
-% \DescribeKey{fam}\val{key-val list}\par
+% \DescribeKey{family}\val{family name}\par
+% \DescribeKey{family}\val{key-val list}\par
 % Specify an additional text family.
 % This will create a macro which can be used to switch to the requested family\footnote{%
 %   Usually you will want to specify which macro, since otherwise you must figure out the family name the code uses, which may or may not match the one requested.
@@ -353,7 +353,7 @@
 % \subsubsection{Common keys}\label{subsubsec:common}
 %
 % These keys are accepted by all of \texttt{rm}, \texttt{sf}, \texttt{tt},
-% \texttt{fam} and \texttt{math}.
+% \texttt{family} and \texttt{math}.
 %
 % \DescribeKey{name}\val{lookup name}\par
 % The ‘name’ to lookup.
@@ -585,7 +585,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12143 2026-10-20 19:48:36Z cfrees $}[v0.1 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12144 2026-10-21 04:45:46Z cfrees $}[v0.1 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -938,7 +938,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %</ee-lmr>
 %
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12143 2026-10-20 19:48:36Z cfrees $
+%% $Id: lua-font-config.dtx 12144 2026-10-21 04:45:46Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
