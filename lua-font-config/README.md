@@ -1,8 +1,8 @@
-<!-- $Id: README.md 12146 2026-10-22 05:17:47Z cfrees $ -->
+<!-- $Id: README.md 12148 2026-10-22 06:54:51Z cfrees $ -->
 
-=================================================
+-------------------------------------------------
 # lua-font-config
-=================================================
+-------------------------------------------------
 
 Fast and simple opentype font configuration for LuaLaTeX. Efficient 
 auto-generation of font families providing easy access to the multiple 
@@ -36,19 +36,17 @@ and Ubuntu (GitHub). Given how system-dependent Unicode font configuration
 is, I would particularly welcome feedback on whether and how well it works
 elsewhere.
 
-=================================================
+-------------------------------------------------
 # Compatibility
-=================================================
+-------------------------------------------------
 
 The package requires LuaLaTeX.
 
-=================================================
+-------------------------------------------------
 # Licence
-=================================================
+-------------------------------------------------
 
--------------------------------------------------
 ## ConTeXt module
--------------------------------------------------
 
 The file named lfc-context-font-syn.lua is a renamed copy of
 
@@ -59,7 +57,6 @@ The file named lfc-context-font-syn.lua is a renamed copy of
 
 -------------------------------------------------
 ## LaTeX adaption
--------------------------------------------------
 
 The following statement applies to all files except the ConTeXt module.
 
@@ -86,18 +83,18 @@ released under the LPPL.
 
 Other attributions are included in the source of the package itself.
 
-=================================================
+-------------------------------------------------
+
 ## Code Repositories
-=================================================
 
 Code for the LaTeX support package is hosted at 
 	https://codeberg.org/cfr/nfssext
 For convenience, the repository is mirrored at
   https://github.com/cfr42/nfssext
 
-=================================================
+-------------------------------------------------
+
 ## Contact Details
-=================================================
 
 Bug reports, feature requests etc. concerning the LaTeX support or packaging
 should be filed at
@@ -108,5 +105,7 @@ Clea F. Rees
 Version 0.1
 2026-10-15
 
-=================================================
+-------------------------------------------------
+<!--
 vim: et:tw=80:sw=2:
+-->
