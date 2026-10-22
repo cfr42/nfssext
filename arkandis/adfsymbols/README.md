@@ -1,4 +1,4 @@
-$Id: README.md 11700 2026-02-25 07:11:48Z cfrees $
+<!-- $Id: README.md 12147 2026-10-22 05:34:46Z cfrees $ -->
 
 # adfsymbols
 

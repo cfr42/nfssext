@@ -1,4 +1,4 @@
-$Id: README.md 10366 2024-09-18 14:25:21Z cfrees $
+<!-- $Id: README.md 12147 2026-10-22 05:34:46Z cfrees $ -->
 
 # romandeadf
 
@@ -41,4 +41,4 @@ Clea F. Rees
 Version 2.1
 2024-09-18
 
-<!-- vim: tw=80:et:sw=2: -->
+vim: tw=80:et:sw=2:

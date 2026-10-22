@@ -1,4 +1,4 @@
-$Id: README.md 10322 2024-09-05 05:31:35Z cfrees $
+<!-- $Id: README.md 12147 2026-10-22 05:34:46Z cfrees $ -->
 
 Copyright (C) 2008-2024 Hirwen Harendal and Clea F. Rees
 
@@ -221,4 +221,4 @@ For convenience, the repository is mirrored at
 Version 2.0
 2024/08/18
 
-<!-- vim: tw=80:et:sw=2: -->
+vim: tw=80:et:sw=2:

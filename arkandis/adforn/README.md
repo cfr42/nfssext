@@ -1,4 +1,4 @@
-$Id: README.md 11696 2026-02-25 05:39:12Z cfrees $
+<!-- $Id: README.md 12147 2026-10-22 05:34:46Z cfrees $ -->
 
 # adforn
 
@@ -51,4 +51,4 @@ Clea F. Rees
 Version 1.4
 2026-02-25
 
-<!-- vim: tw=80:et:sw=2: -->
+vim: tw=80:et:sw=2:
