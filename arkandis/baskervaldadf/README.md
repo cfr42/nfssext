@@ -1,4 +1,4 @@
-<!-- $Id: README.md 12147 2026-10-22 05:34:46Z cfrees $ -->
+<!-- $Id: README.md 12150 2026-10-22 07:39:05Z cfrees $ -->
 
 # baskervaldadf
 
@@ -47,4 +47,6 @@ Version 1.1
 2024-09-18
 
 
+<!--
 vim: tw=80:et:sw=2:
+-->

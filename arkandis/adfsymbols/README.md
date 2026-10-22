@@ -1,4 +1,4 @@
-<!-- $Id: README.md 12147 2026-10-22 05:34:46Z cfrees $ -->
+<!-- $Id: README.md 12150 2026-10-22 07:39:05Z cfrees $ -->
 
 # adfsymbols
 
@@ -44,4 +44,6 @@ Clea F. Rees
 Version 1.5
 2026-02-25
 
+<!--
 vim: tw=80:sw=2:et:
+-->
