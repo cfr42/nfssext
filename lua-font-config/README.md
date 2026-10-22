@@ -1,4 +1,4 @@
-<!-- $Id: README.md 12148 2026-10-22 06:54:51Z cfrees $ -->
+<!-- $Id: README.md 12149 2026-10-22 06:56:28Z cfrees $ -->
 
 -------------------------------------------------
 # lua-font-config
@@ -37,16 +37,16 @@ is, I would particularly welcome feedback on whether and how well it works
 elsewhere.
 
 -------------------------------------------------
-# Compatibility
+## Compatibility
 -------------------------------------------------
 
 The package requires LuaLaTeX.
 
 -------------------------------------------------
-# Licence
+## Licence
 -------------------------------------------------
 
-## ConTeXt module
+### ConTeXt module
 
 The file named lfc-context-font-syn.lua is a renamed copy of
 
@@ -56,7 +56,7 @@ The file named lfc-context-font-syn.lua is a renamed copy of
   licence:      GPL v2
 
 -------------------------------------------------
-## LaTeX adaption
+### LaTeX adaption
 
 The following statement applies to all files except the ConTeXt module.
 
