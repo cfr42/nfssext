@@ -81,11 +81,11 @@ end
 -- locals {{{
 
 -- imports {{{
-local inspect               = inspect
-local is_writable           = file.is_writable
-local isdir, isfile, mkdir  = lfs.isdir, lfs.isfile, lfs.mkdir
-local get_functions_table   = lua.get_functions_table
-local new_lua_function      = luatexbase.new_luafunction
+local inspect                   = inspect
+local is_writable, join         = file.is_writable, file.join
+local isdir, isfile, mkdir      = lfs.isdir, lfs.isfile, lfs.mkdir
+local get_functions_table       = lua.get_functions_table
+local new_lua_function          = luatexbase.new_luafunction
 -- string
 local gsub, gmatch, match       = string.gsub, string.gmatch, string.match
 local find, format, lower       = string.find, string.format, string.lower
@@ -96,7 +96,7 @@ local load, mirrored, sort      = table.load, table.mirrored, table.sort
 local save, setmetatableindex   = table.save, table.setmetatableindex
 local concat, serialize, unique = table.concat, table.serialize, table.unique
 local prepend, sortedpairs      = table.prepend, table.sortedpairs
-local hashed                    = table.hashed
+local hashed, flattened         = table.hashed, table.flattened
 -- tex | texio | token
 local sprint                  = tex.sprint
 local write, write_nl         = texio.write, texio.write_nl
@@ -124,7 +124,7 @@ local lfc_callback_data_active  = false
 local lfc_callback_cache_active = false
 
 -- Strings
-local function enquote(str) return format("\"%s\"", str) end
+local function enquote(str) return format("%q", str) end
 
 -- lpeg
 local p_semicolon_or_comma  = oneof(p_semicolon, p_comma)
@@ -457,13 +457,12 @@ local function get_cache_path()
   msg("Accessing cache ...", "debug")
   local path = (gsub(lfc_fonts.names.cache.writable, "^(.*/)[^/]+$", "%1" ))
   msg_assert(path ~= nil, "Cannot find place for cache!")
-  if not isdir(format("%s/lfc", path)) then
+  if not isdir(join(path, "lfc")) then
     msg_assert(is_writable(path), {"Cache ", path, " not writable!"})
-    msg_assert(mkdir(format("%s/lfc", path)), {"Cannot create cache ", path, 
+    msg_assert(mkdir(join(path, "lfc")), {"Cannot create cache ", path,
     "/lfc", " directory!"})
   end
-  path = format("%s/lfc", path)
-  return format("%s/lfc_cache.lua", path)
+  return join(path, "lfc", "lfc_cache.lua")
 end
 -- }}}
 
@@ -533,12 +532,12 @@ local function get_font_data(fnt, force)
       --    in the data.
       ff = cleanfilename(ff)
 
-      local ext = (gsub(ff, "^(.*)%.([^.]+)", "%2"))
-      local basename = (gsub(ff, "([^/]*)%.([^.]+)", "%1"))
+      local ff_ext = file.suffix(ff)
+      local ff_nameonly = file.nameonly(ff)
 
-      if ext and basename then
-        fam_meta = font_data.mappings[ext][basename].familyname
-        f.metadata.ext = ext
+      if ff_ext and ff_nameonly then
+        fam_meta = font_data.mappings[ff_ext][ff_nameonly].familyname
+        f.metadata.ext = ff_ext
       end
     end
 
@@ -1342,31 +1341,11 @@ end
 --- }}}
 -------------------------------------------------------------------------------
 -- Manage font definition files, cache etc.
--- get_toks()   write_declare_shape()   write_fake_fd()   add_callback_smcp()
+-- write_declare_shape()   write_fake_fd()   add_callback_smcp()
 -- add_callback_data()  add_callback_cache()  file_subs_empty()
 -- add_fake_fd() use_cached_fd()
 -------------------------------------------------------------------------------
 --- {{{
----@function get_toks(items) {{{
----@param items   <table> of [tables of] toks, strings
----@description   Returns sequence of toks, strings for sprint()
--- This is an internal fn, so it should™ only receive valid input --- if not,
---    I doubt type-checking here will help anything.
-local function get_toks(items)
-  msg_debug("Sequencing toks \'n things ...", "defn", items)
-  if type(items) == "table" then 
-    local toks = {}
-    for _,item in ipairs(items) do
-      append(toks, get_toks(item))
-    end
-    msg_debug("Sequenced toks: ", "defn", toks)
-    return toks
-  else 
-    msg_debug("Returning toks: ", "defn", items)
-    return {items}
-  end
-end
--- }}}
 
 ---@function write_declare_shape(fam, pre, line, post, fea [, size_spec]) {{{
 ---@param fam       <string>  for use in subs lines, should inc. suffix
@@ -1604,13 +1583,10 @@ add_callback_data = function()
         
         fea.gsub = rfea.gsub and {} or nil
         if fea.gsub then
-          fea.gsub.tnum = rfea.gsub.tnum and true or false
-          fea.gsub.lnum = rfea.gsub.lnum and true or false
-          fea.gsub.onum = rfea.gsub.onum and true or false
-          fea.gsub.pnum = rfea.gsub.pnum and true or false
-          fea.gsub.smcp = rfea.gsub.smcp and true or false
-          fea.gsub.subs = rfea.gsub.subs and true or false
-          fea.gsub.sups = rfea.gsub.sups and true or false
+          for _,i in ipairs({"tnum", "lnum", "onum", "pnum", "smcp", "subs",
+            "sups"}) do
+            fea.gsub[i] = rfea.gsub[i] and true or false
+          end
         else
           fea.gsub = false
         end
@@ -1693,7 +1669,7 @@ local function write_fake_fd(fam, fake_fd, fea, scale_factor, suffix)
   end
 
   msg_debug("Out (partially tokenized): ", "defn", out)
-  out = get_toks(out)
+  out = flattened({out})
   msg_debug("Out (streamed): ", "defn", out)
   sprint(-2,out)
 
@@ -1724,7 +1700,7 @@ end
 ---@param       <string> filename (with any extension; no path)
 ---@description Substitutes the `.tex` file for <filename> using the LaTeX fn.
 local function file_subs_empty(filename)
-  return sprint(-2, get_toks({tok_file_subs, embrace(filename), 
+  return sprint(-2, flattened({tok_file_subs, embrace(filename), 
     toks_file_empty}))
 end
 -- }}}
@@ -1741,7 +1717,7 @@ local function add_fake_fd(fam, fake_fd, fea, scale_factor, suffix)
   end, "protected")
   fn = create(fn)
   file_subs_empty(fd_filename)
-  sprint(-2, get_toks({tok_hook_gput_code, tok_group_begin, 
+  sprint(-2, flattened({tok_hook_gput_code, tok_group_begin, 
     hook_file_before(fd_filename), tok_group_end, toks_dot, embrace(fn)}))
 end
 -- }}}
@@ -2274,7 +2250,7 @@ local function configure_doc_families()
             if not cfg.default then
               msg({"Creating NFSS family ", nfss_fam}, "debug")
               luafunction_to_cs(cfg.csname or cfg.cleanname, function()
-                return sprint(-2, get_toks({tok_fontfamily, embrace(nfss_fam),
+                return sprint(-2, flattened({tok_fontfamily, embrace(nfss_fam),
                 tok_selectfont}), "protected")
               end)
             end
@@ -2299,7 +2275,7 @@ local function configure_doc_families()
           -- Use of text fonts in maths mode.
           local maths = cfg.maths or true
           msg({"Setting ", fam, " default to ", fam_name, "."}, "log")
-          sprint(-2, get_toks({tok_renewcommand, fam_defaults[fam], embrace(fam_name)}))
+          sprint(-2, flattened({tok_renewcommand, fam_defaults[fam], embrace(fam_name)}))
           if maths then
             msg({"Setting math", fam, "."}, "log")
             sprint(-2, fam_to_maths[fam])
@@ -2308,7 +2284,7 @@ local function configure_doc_families()
           -- Use of Unicode maths fonts in maths mode.
           -- This assumes lua-unicode-math.
           msg({"Setting main maths fonts to ", fam_name, "."}, "log")
-          sprint(-2, get_toks({tok_declare_lum_fnts, embrace(fam_name), 
+          sprint(-2, flattened({tok_declare_lum_fnts, embrace(fam_name), 
             embrace(fam_name)}))
         end
       else msg({"No family found for ", fam, "!"})
