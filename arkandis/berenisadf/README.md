@@ -1,4 +1,4 @@
-$Id: README.md 12064 2026-09-22 23:50:53Z cfrees $
+<!-- $Id: README.md 12150 2026-10-22 07:39:05Z cfrees $ -->
 
 # berenisadf
 
@@ -57,4 +57,6 @@ Clea F. Rees
 Version 3.0
 2026-09-23
 
-<!-- vim: tw=80:et:sw=2: -->
+<!--
+vim: tw=80:et:sw=2:
+-->

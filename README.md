@@ -1,4 +1,4 @@
-$Id: README.md 10643 2024-11-17 17:10:17Z cfrees $
+<!-- $Id: README.md 12147 2026-10-22 05:34:46Z cfrees $ -->
 
 [![Automatic Checks for nfssext](https://github.com/cfr42/nfssext/actions/workflows/nfssext-autochecks.yml/badge.svg)](https://github.com/cfr42/nfssext/actions/workflows/nfssext-autochecks.yml)
 
