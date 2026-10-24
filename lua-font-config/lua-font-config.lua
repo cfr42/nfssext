@@ -1,9 +1,9 @@
--- $Id: lua-font-config.lua 12128 2026-10-15 07:49:35Z cfrees $
+-- $Id: lua-font-config.lua 12151 2026-10-23 19:52:00Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 do
   local name, rev, date = string.match(
-    "$Id: lua-font-config.lua 12128 2026-10-15 07:49:35Z cfrees $", 
+    "$Id: lua-font-config.lua 12151 2026-10-23 19:52:00Z cfrees $", 
     "Id: ([a-z][a-z-]*)%.lua (%d%d*) (%d%d%d%d%-%d%d%-%d%d) ")
   luatexbase.provides_module({
     name      = name,
@@ -368,70 +368,11 @@ msg_config(lfc.log_level, lfc.debug)
 
 ---@mcsubstitute -- {{{
 
--- Define a new private environment into which to load "font-syn.lua".
-local lfc_env = copy(luaotfload.fontloader)
-lfc_env.table = copy(lfc_env.table)
-
--- Define some functions required by "font-syn.lua".
-local split = "^(.-)([^/]-)([^/]-)$"
-
----@function lfc_env.resolvers.dowithfilesintree() -- {{{
-function lfc_env.resolvers.dowithfilesintree(pattern, handle, before, after)
-  local files = luaotfload.aux.font_index().files.full
-  for i = 1, #files do
-    local filename = files[i]
-    if match(filename, pattern) then
-      local root, path, name = match(filename, split)
-      -- Path is always empty.
-      handle("file", root, path, name)
-    end
-  end
-end
--- }}}
-
----@function lfc_env.table.setmetatableindex() -- {{{
-function lfc_env.table.setmetatableindex(t, k)
-  if k == "self" then
-    return setmetatableindex(t, function(tt, kk)
-      tt[kk] = kk
-      return kk
-    end)
-  else
-    return setmetatableindex(t, k)
-  end
-end
--- }}}
-
--- Define some dummy functions.
-function lfc_env.logs.flush         ()     return nil end
-function lfc_env.resolvers.cleanpath(path) return nil end
-function lfc_env.resolvers.datastate()     return {}  end
-function lfc_env.resolvers.showpath (name) return nil end
-function lfc_env.resolvers.splitpath(path) return nil end
-
--- Load "font-syn.lua" into our private environment.
--- loadfile(kpse.find_file("font-syn.lua"), "t", lfc_env)()
-loadfile(kpse.find_file("lfc-context-font-syn.lua"), "t", lfc_env)()
--- loadfile("lfc-context-font-syn.lua", "t", lfc_env)()
-
--- Print a message while generating our font name database so that users
--- don't get confused by the long pause.
-do
-  local saved = lfc_env.fonts.names.identify
-  function lfc_env.fonts.names.identify(force)
-    write_nl("Generating font name database...")
-    saved(force)
-    write(" done.\n")
-  end
-end
-
+local names = require("lfc-context-font-syn")
 -- Unconditionally load the font name database, regenerating it if
 -- necessary.
-lfc_env.fonts.names.load(false, false)
--- lfc_env.fonts.names.load(true, true)
-
--- Get the table of filenames
-
+names.load(false, false)
+-- names.load(true, true)
 
 -- }}}
 
@@ -439,11 +380,10 @@ lfc_env.fonts.names.load(false, false)
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -- late locals {{{
-local lfc_fonts = lfc_env.fonts
-local names = lfc_fonts.names
 local cleanfilename = names.cleanfilename
 local resolve = names.resolve
-local lookup_font_file = names.lookup_font_file
+-- References the original function rather than the copy?
+local lookup_font_file = fonts.names.lookup_font_file
 local font_data = names.data
 -- }}}
 
@@ -455,7 +395,7 @@ local font_data = names.data
 ---@statue internal
 local function get_cache_path()
   msg("Accessing cache ...", "debug")
-  local path = (gsub(lfc_fonts.names.cache.writable, "^(.*/)[^/]+$", "%1" ))
+  local path = (gsub(names.cache.writable, "^(.*/)[^/]+$", "%1" ))
   msg_assert(path ~= nil, "Cannot find place for cache!")
   if not isdir(join(path, "lfc")) then
     msg_assert(is_writable(path), {"Cache ", path, " not writable!"})
