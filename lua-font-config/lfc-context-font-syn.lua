@@ -21,7 +21,7 @@ local _ENV = table.copy(luaotfload.fontloader)
 local split = "^(.-)([^/]-)([^/]-)$"
 
 ---@function dowithfilesintree() -- {{{
-function dowithfilesintree(pattern, handle, before, after)
+local function dowithfilesintree(pattern, handle, before, after)
   local files = luaotfload.aux.font_index().files.full
   local match = string.match
   for i = 1, #files do
@@ -36,7 +36,7 @@ end
 -- }}}
 
 ---@function setmetatableindex() -- {{{
-function setmetatableindex(t, k)
+local function setmetatableindex(t, k)
   if k == "self" then
     return table.setmetatableindex(t, function(tt, kk)
       tt[kk] = kk
@@ -69,7 +69,6 @@ local isfile, modificationtime = lfs.isfile, lfs.modification
 
 local allocate             = utilities.storage.allocate
 local sparse               = utilities.storage.sparse
-local setmetatableindex    = table.setmetatableindex
 
 local removesuffix         = file.removesuffix
 local splitbase            = file.splitbase
@@ -556,6 +555,7 @@ local function cleanupkeywords()
             local style   = b_style   or c_style   or d_style   or e_style   or f_style   or "normal"
             local width   = b_width   or c_width   or d_width   or e_width   or f_width   or "normal"
             local variant = b_variant or c_variant or d_variant or e_variant or f_variant or "normal"
+            inspect(remappedweights)
             weight  = remappedweights [weight  or ""]
             style   = remappedstyles  [style   or ""]
             width   = remappedwidths  [width   or ""]
@@ -1120,10 +1120,15 @@ local function resetdata()
     }
 end
 
+local plugin = false
+
 function names.identify(force)
     -- Print a message while generating our font name database so that users
     -- don't get confused by the long pause.
     texio.write_nl("Generating font name database...")
+    if plugin then
+        plugin("before")
+    end
     local starttime = os.gettimeofday() -- use elapser
     resetdata()
     analyzefiles(not force and names.readdata(names.basename))
@@ -1135,6 +1140,9 @@ function names.identify(force)
     addfilenames()
  -- sorthashes() -- will be resorted when saved
     collectstatistics(os.gettimeofday()-starttime)
+    if plugin then
+        plugin("after")
+    end
     texio.write(" done.\n")
 end
 
