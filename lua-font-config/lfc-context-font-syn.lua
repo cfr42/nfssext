@@ -114,9 +114,6 @@ names.cache                = containers.define("fonts","data",names.version,true
 local usesystemfonts       = true
 local autoreload           = true
 
-directives.register("fonts.autoreload",     function(v) autoreload     = toboolean(v) end)
-directives.register("fonts.usesystemfonts", function(v) usesystemfonts = toboolean(v) end)
-
 -- -- what to do with these -- --
 --
 -- thin -> thin
@@ -884,7 +881,6 @@ local function analyzefiles(olddata)
     local oldspecifications  = olddata and olddata.specifications or { }
     local oldrejected        = olddata and olddata.rejected       or { }
     local treatmentdata      = treatments.data or { } -- when used outside context
-    ----- walked             = setmetatableindex("number")
 
     local function walk_tree(pathlist,suffix,identify)
         if pathlist then
@@ -900,7 +896,6 @@ local function analyzefiles(olddata)
                     local completename = t[j]
                     identify(completename,basename(completename),suffix,completename)
                 end
-             -- walked[path] = walked[path] + #t
             end
         end
     end
@@ -1047,10 +1042,6 @@ local function analyzefiles(olddata)
     data.statistics.skippedfiles   = totalnofskipped
     data.statistics.duplicatefiles = totalnofduplicates
 
- -- for k, v in sortedhash(walked) do
- --     report_names("%s : %i",k,v)
- -- end
-
 end
 
 local function addfilenames()
@@ -1126,9 +1117,6 @@ function names.identify(force)
     -- Print a message while generating our font name database so that users
     -- don't get confused by the long pause.
     texio.write_nl("Generating font name database...")
-    if plugin then
-        plugin("before")
-    end
     local starttime = os.gettimeofday() -- use elapser
     resetdata()
     analyzefiles(not force and names.readdata(names.basename))
@@ -1140,9 +1128,6 @@ function names.identify(force)
     addfilenames()
  -- sorthashes() -- will be resorted when saved
     collectstatistics(os.gettimeofday()-starttime)
-    if plugin then
-        plugin("after")
-    end
     texio.write(" done.\n")
 end
 
