@@ -384,7 +384,8 @@ local cleanfilename = names.cleanfilename
 local resolve = names.resolve
 -- References the original function rather than the copy?
 local lookup_font_file = fonts.names.lookup_font_file
-local font_data = names.data
+-- local font_data = names.data
+local font_data = names.get_data()
 -- }}}
 
 -------------------------------------------------------------------------------

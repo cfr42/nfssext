@@ -50,10 +50,10 @@ end
 
 -- Define some dummy functions.
 -- Todo: replace or exterminate.
-function resolvers.cleanpath(path) return nil end
-function resolvers.datastate()     return {}  end
-function resolvers.showpath (name) return nil end
-function resolvers.splitpath(path) return nil end
+local function cleanpath(path) return nil end
+local function datastate()     return {}  end
+local function showpath (name) return nil end
+local function splitpath(path) return nil end
 
 -------------------------------------------------------------------------------
 
@@ -82,7 +82,6 @@ local is_qualified_path    = file.is_qualified_path
 local exists               = io.exists
 
 local findfile             = resolvers.findfile
-local cleanpath            = resolvers.cleanpath
 local resolveprefix        = resolvers.resolve
 
 local settings_to_hash     = utilities.parsers.settings_to_hash_tolerant
@@ -1026,7 +1025,7 @@ local function analyzefiles(olddata)
     local function withlsr(suffix) -- all trees
         -- we do this only for a stupid names run, not used for context itself,
         -- using the vars is too clumsy so we just stick to a full scan instead
-        local pathlist = resolvers.splitpath(resolvers.showpath("ls-R") or "")
+        local pathlist = splitpath(showpath("ls-R") or "")
         walk_tree(pathlist,suffix,identify)
     end
 
@@ -1117,7 +1116,7 @@ local function resetdata()
         names          = { },
         indices        = { },
         rejected       = { },
-        datastate      = resolvers.datastate(),
+        datastate      = datastate(),
     }
 end
 
@@ -1227,7 +1226,7 @@ local function is_reloaded()
     if not reloaded then
         local data = names.data
         if autoreload then
-            local c_status = serialize(resolvers.datastate())
+            local c_status = serialize(datastate())
             local f_status = serialize(data.datastate)
             if c_status == f_status then
                 return
@@ -1733,12 +1732,6 @@ function names.collectfiles(askedname,reload) -- no all
     end
 end
 
--- todo:
---
--- blacklisted = {
---     ["cmr10.ttf"] = "completely messed up",
--- }
-
 function names.exists(name)
     local found = false
     local list = filters.list
@@ -1924,6 +1917,7 @@ return {
     cache = names.cache,
     cleanfilename = names.cleanfilename,
     get_data = function() return names.data end,
+    -- data = names.data,
     list = names.list,
     load = names.load,
     resolve = names.resolve,
