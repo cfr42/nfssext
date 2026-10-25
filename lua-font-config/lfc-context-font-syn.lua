@@ -51,8 +51,8 @@ end
 -- Define some dummy functions.
 -- Todo: replace or exterminate.
 local function datastate()     return {}  end
-local function showpath (name) return nil end
-local function splitpath(path) return nil end
+--?-- local function showpath (name) return nil end
+-- local function splitpath(path) return nil end
 
 -------------------------------------------------------------------------------
 
@@ -112,6 +112,23 @@ names.cache                = containers.define("fonts","data",names.version,true
 
 local usesystemfonts       = true
 local autoreload           = true
+
+-------------------------------------------------------------------------------
+--?-- local splitpath     = file.splitpath
+
+--?-- local checkedsplit  = string.checkedsplit
+--?-- local joinpath      = file.joinpath
+
+-- From l-file.lua and elsewhere
+--?-- local reslasher = lpeg.replacer(P("\\"),"/")
+--?-- local function reslash(str)
+--?--     return str and lpegmatch(reslasher,str)
+--?-- end
+-- From data-res.lua
+-- local function showpath(name)     -- output search path for file type NAME
+--     return joinpath(resolvers.expandedpathlist(resolvers.formatofvariable(name)))
+-- end
+-------------------------------------------------------------------------------
 
 -- -- what to do with these -- --
 --
@@ -881,23 +898,24 @@ local function analyzefiles(olddata)
     local oldrejected        = olddata and olddata.rejected       or { }
     local treatmentdata      = treatments.data or { } -- when used outside context
 
-    local function walk_tree(pathlist,suffix,identify)
-        if pathlist then
-            for i=1,#pathlist do
-                local path = pathlist[i]
-                path = path .. "/"
-                path = gsub(path,"/+","/")
-                local pattern = path .. "**." .. suffix -- ** forces recurse
-                report_names("globbing path %a",pattern)
-                local t = dir.glob(pattern)
-                sort(t,sorter)
-                for j=1,#t do
-                    local completename = t[j]
-                    identify(completename,basename(completename),suffix,completename)
-                end
-            end
-        end
-    end
+--?--     local function walk_tree(pathlist,suffix,identify)
+--?--         if pathlist then
+--?--             texio.write_nl("Bagpuss walk_tree!\n")
+--?--             for i=1,#pathlist do
+--?--                 local path = pathlist[i]
+--?--                 path = path .. "/"
+--?--                 path = gsub(path,"/+","/")
+--?--                 local pattern = path .. "**." .. suffix -- ** forces recurse
+--?--                 report_names("globbing path %a",pattern)
+--?--                 local t = dir.glob(pattern)
+--?--                 sort(t,sorter)
+--?--                 for j=1,#t do
+--?--                     local completename = t[j]
+--?--                     identify(completename,basename(completename),suffix,completename)
+--?--                 end
+--?--             end
+--?--         end
+--?--     end
 
     local function identify(completename,name,suffix,storedname)
         local pathpart, basepart = splitbase(completename)
@@ -1016,26 +1034,26 @@ local function analyzefiles(olddata)
         )
     end
 
-    local function withlsr(suffix) -- all trees
-        -- we do this only for a stupid names run, not used for context itself,
-        -- using the vars is too clumsy so we just stick to a full scan instead
-        local pathlist = splitpath(showpath("ls-R") or "")
-        walk_tree(pathlist,suffix,identify)
-    end
-
-    local function withsystem(suffix) -- OSFONTDIR cum suis
-        walk_tree(names.getpaths(trace),suffix,identify)
-    end
+--?--     local function withlsr(suffix) -- all trees
+--?--         -- we do this only for a stupid names run, not used for context itself,
+--?--         -- using the vars is too clumsy so we just stick to a full scan instead
+--?--         local pathlist = splitpath(showpath("ls-R") or "")
+--?--         walk_tree(pathlist,suffix,identify)
+--?--     end
+--?-- 
+--?--     local function withsystem(suffix) -- OSFONTDIR cum suis
+--?--         walk_tree(names.getpaths(trace),suffix,identify)
+--?--     end
 
     traverse("tree",withtree) -- TEXTREE only
 
-    if not usesystemfonts then
-        report_names("ignoring system fonts")
-    elseif texconfig.kpse_init then
-        traverse("lsr", withlsr)
-    else
-        traverse("system", withsystem)
-    end
+--?--     if not usesystemfonts then
+--?--         report_names("ignoring system fonts")
+--?--     elseif texconfig.kpse_init then
+--?--         traverse("lsr", withlsr)
+--?--     else
+--?--         traverse("system", withsystem)
+--?--     end
 
     data.statistics.readfiles      = totalnofread
     data.statistics.skippedfiles   = totalnofskipped
@@ -1226,7 +1244,7 @@ local function is_reloaded()
                 report_names("font database has mismatching configuration and file hashes")
             end
         else
-            report_names("font database is regenerated (controlled by directive 'fonts.autoreload')")
+            report_names("font database is regenerated")
         end
         names.loaded = false
         reloaded = true
