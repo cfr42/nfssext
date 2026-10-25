@@ -900,7 +900,6 @@ local function analyzefiles(olddata)
 
 --?--     local function walk_tree(pathlist,suffix,identify)
 --?--         if pathlist then
---?--             texio.write_nl("Bagpuss walk_tree!\n")
 --?--             for i=1,#pathlist do
 --?--                 local path = pathlist[i]
 --?--                 path = path .. "/"
