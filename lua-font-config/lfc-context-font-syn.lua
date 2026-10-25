@@ -50,7 +50,6 @@ end
 
 -- Define some dummy functions.
 -- Todo: replace or exterminate.
-local function cleanpath(path) return nil end
 local function datastate()     return {}  end
 local function showpath (name) return nil end
 local function splitpath(path) return nil end
@@ -350,7 +349,7 @@ function names.getpaths()
     local hash, result, r = { }, { }, 0
     local function collect(t,where)
         for i=1,#t do
-            local v = cleanpath(t[i])
+            local v = t[i]
             v = gsub(v,"/+$","") -- not needed any more
             local key = lower(v)
             report_names("variable %a specifies path %a",where,v)
@@ -886,7 +885,7 @@ local function analyzefiles(olddata)
         if pathlist then
             for i=1,#pathlist do
                 local path = pathlist[i]
-                path = cleanpath(path .. "/")
+                path = path .. "/"
                 path = gsub(path,"/+","/")
                 local pattern = path .. "**." .. suffix -- ** forces recurse
                 report_names("globbing path %a",pattern)
