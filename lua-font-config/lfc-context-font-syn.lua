@@ -21,7 +21,7 @@ local _ENV = table.copy(luaotfload.fontloader)
 local split = "^(.-)([^/]-)([^/]-)$"
 
 ---@function dowithfilesintree() -- {{{
-local function dowithfilesintree(pattern, handle, before, after)
+local function dowithfilesintree(pattern, handle)
   local files = luaotfload.aux.font_index().files.full
   local match = string.match
   for i = 1, #files do
@@ -51,8 +51,6 @@ end
 -- Define some dummy functions.
 -- Todo: replace or exterminate.
 local function datastate()     return {}  end
---?-- local function showpath (name) return nil end
--- local function splitpath(path) return nil end
 
 -------------------------------------------------------------------------------
 
@@ -113,21 +111,6 @@ names.cache                = containers.define("fonts","data",names.version,true
 local usesystemfonts       = true
 local autoreload           = true
 
--------------------------------------------------------------------------------
---?-- local splitpath     = file.splitpath
-
---?-- local checkedsplit  = string.checkedsplit
---?-- local joinpath      = file.joinpath
-
--- From l-file.lua and elsewhere
---?-- local reslasher = lpeg.replacer(P("\\"),"/")
---?-- local function reslash(str)
---?--     return str and lpegmatch(reslasher,str)
---?-- end
--- From data-res.lua
--- local function showpath(name)     -- output search path for file type NAME
---     return joinpath(resolvers.expandedpathlist(resolvers.formatofvariable(name)))
--- end
 -------------------------------------------------------------------------------
 
 -- -- what to do with these -- --
@@ -219,7 +202,6 @@ local widths = Cs(
   + P("thin")
   + P("expanded")
   + P("cond")     / "condensed"
---+ P("expa")     / "expanded"
   + P("normal")
   + P("book")     / "normal"
 )
@@ -322,7 +304,7 @@ function names.splitspec(askedname)
     style   = style   and lpegmatch(styles,  style)   or style
     width   = width   and lpegmatch(widths,  width)   or width
     variant = variant and lpegmatch(variants,variant) or variant
-    if not weight or not weight or not width or not variant then
+    if not weight or not style or not width or not variant then
         weight, style, width, variant = weight or "normal", style or "normal", width or "normal", variant or "normal"
     end
     return name or askedname, weight, style, width, variant
@@ -362,7 +344,7 @@ names.runtimefontsvariable = "RUNTIMEFONTS" -- the official way, in minimals etc
 filters.paths = { }
 filters.names = { }
 
-function names.getpaths()
+function names.getpaths() -- {{{
     local hash, result, r = { }, { }, 0
     local function collect(t,where)
         for i=1,#t do
@@ -426,6 +408,7 @@ function names.getpaths()
     end
     return result
 end
+-- }}}
 
 local function cleanname(name)
     return (gsub(lower(name),"[^%a%d]",""))
@@ -568,7 +551,6 @@ local function cleanupkeywords()
             local style   = b_style   or c_style   or d_style   or e_style   or f_style   or "normal"
             local width   = b_width   or c_width   or d_width   or e_width   or f_width   or "normal"
             local variant = b_variant or c_variant or d_variant or e_variant or f_variant or "normal"
-            inspect(remappedweights)
             weight  = remappedweights [weight  or ""]
             style   = remappedstyles  [style   or ""]
             width   = remappedwidths  [width   or ""]
@@ -898,24 +880,6 @@ local function analyzefiles(olddata)
     local oldrejected        = olddata and olddata.rejected       or { }
     local treatmentdata      = treatments.data or { } -- when used outside context
 
---?--     local function walk_tree(pathlist,suffix,identify)
---?--         if pathlist then
---?--             for i=1,#pathlist do
---?--                 local path = pathlist[i]
---?--                 path = path .. "/"
---?--                 path = gsub(path,"/+","/")
---?--                 local pattern = path .. "**." .. suffix -- ** forces recurse
---?--                 report_names("globbing path %a",pattern)
---?--                 local t = dir.glob(pattern)
---?--                 sort(t,sorter)
---?--                 for j=1,#t do
---?--                     local completename = t[j]
---?--                     identify(completename,basename(completename),suffix,completename)
---?--                 end
---?--             end
---?--         end
---?--     end
-
     local function identify(completename,name,suffix,storedname)
         local pathpart, basepart = splitbase(completename)
         nofread = nofread + 1
@@ -1021,38 +985,14 @@ local function analyzefiles(olddata)
                     identify(completename,name,suffix,name)
                     return true
                 end
-            end,
-            function(blobtype,blobpath,pattern)
-                blobpath = resolveprefix(blobpath) -- no shortcut
-                report_names("scanning path %a for %s files",blobpath,suffix)
-            end,
-            function(blobtype,blobpath,pattern,checked,done)
-                blobpath = resolveprefix(blobpath) -- no shortcut
-                report_names("%s %s files checked, %s okay",checked,suffix,done)
             end
         )
     end
 
---?--     local function withlsr(suffix) -- all trees
---?--         -- we do this only for a stupid names run, not used for context itself,
---?--         -- using the vars is too clumsy so we just stick to a full scan instead
---?--         local pathlist = splitpath(showpath("ls-R") or "")
---?--         walk_tree(pathlist,suffix,identify)
---?--     end
---?-- 
---?--     local function withsystem(suffix) -- OSFONTDIR cum suis
---?--         walk_tree(names.getpaths(trace),suffix,identify)
---?--     end
-
+    -- This include system fonts, I think, because dowithfilesintree() gets the
+    --    list from luaotfload's db and then augments that db.
+    -- So I think the comment on the next line doesn't apply here.
     traverse("tree",withtree) -- TEXTREE only
-
---?--     if not usesystemfonts then
---?--         report_names("ignoring system fonts")
---?--     elseif texconfig.kpse_init then
---?--         traverse("lsr", withlsr)
---?--     else
---?--         traverse("system", withsystem)
---?--     end
 
     data.statistics.readfiles      = totalnofread
     data.statistics.skippedfiles   = totalnofskipped
@@ -1947,3 +1887,5 @@ return {
 --     end
 --     return list
 -- end
+
+-- vim: et:foldmethod=marker:tw=4:sw=2:
