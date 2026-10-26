@@ -1,9 +1,9 @@
--- $Id: lua-font-config.lua 12152 2026-10-24 23:37:35Z cfrees $
+-- $Id: lua-font-config.lua 12156 2026-10-26 05:17:10Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 do
   local name, rev, date = string.match(
-    "$Id: lua-font-config.lua 12152 2026-10-24 23:37:35Z cfrees $", 
+    "$Id: lua-font-config.lua 12156 2026-10-26 05:17:10Z cfrees $", 
     "Id: ([a-z][a-z-]*)%.lua (%d%d*) (%d%d%d%d%-%d%d%-%d%d) ")
   luatexbase.provides_module({
     name      = name,
@@ -1495,10 +1495,7 @@ end
 ---@description Adds code into the luaotfload.patch_font callback.
 ---@description This just gathers data as fonts become available
 ---@description   to avoid pre-loading unnecessarily.
--- This was made local earlier so it could be used above.
--- Ref. https://stackoverflow.com/a/10272049/3186474 (but I do not want it in 
---  _G!
-add_callback_data = function()
+local function add_callback_data()
   if lfc_callback_data_active then
     msg("Callback already active.", "debug")
   end
