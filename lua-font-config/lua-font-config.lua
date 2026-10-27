@@ -1,9 +1,9 @@
--- $Id: lua-font-config.lua 12156 2026-10-26 05:17:10Z cfrees $
+-- $Id: lua-font-config.lua 12157 2026-10-27 02:35:02Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 do
   local name, rev, date = string.match(
-    "$Id: lua-font-config.lua 12156 2026-10-26 05:17:10Z cfrees $", 
+    "$Id: lua-font-config.lua 12157 2026-10-27 02:35:02Z cfrees $", 
     "Id: ([a-z][a-z-]*)%.lua (%d%d*) (%d%d%d%d%-%d%d%-%d%d) ")
   luatexbase.provides_module({
     name      = name,
@@ -2096,6 +2096,8 @@ local fam_to_maths = { -- {{{
 -- }}}
 -- }}}
 
+local nfss_doc_families_cnt = 0
+
 -- Scanner creators.
 -- {{{
 ---@function get_fam_default_scanner(fam) {{{
@@ -2106,18 +2108,16 @@ local function get_fam_default_scanner(fam)
   return do_with_one_scanner(
     function(fam_name)
       local cleanname = cleanfilename(fam_name)
-      if not nfss_doc_families[cleanname] then
-        nfss_doc_families[cleanname] = {
-          name = tostring(fam_name),
-          cleanname = cleanname,
-          default = {fam},
-        }
-      else
-        insert(nfss_doc_families[cleanname].default, fam)
-      end
-      nfss_doc_families[cleanname].typeset_mode = fam ~= "math" and 0 or 1
-      nfss_default_families[fam] = nfss_doc_families[cleanname]
-      nfss_doc_families.curr = cleanname
+      nfss_doc_families_cnt = nfss_doc_families_cnt + 1
+      local t_name = format("%s_%s", cleanname, nfss_doc_families_cnt)
+      nfss_doc_families[t_name] = {
+        name = tostring(fam_name),
+        cleanname = cleanname,
+        default = {fam},
+      }
+      nfss_doc_families[t_name].typeset_mode = fam ~= "math" and 0 or 1
+      nfss_default_families[fam] = nfss_doc_families[t_name]
+      nfss_doc_families.curr = t_name
       msg_debug("NFSS default families: ", "doc", nfss_default_families)
     end)
 end
@@ -2129,11 +2129,13 @@ local function get_fam_name_scanner()
   return do_with_one_scanner(
     function(name)
       local cleanname = cleanfilename(name)
-      nfss_doc_families[cleanname] = {
+      nfss_doc_families_cnt = nfss_doc_families_cnt + 1
+      local t_name = format("%s_%s", cleanname, nfss_doc_families_cnt)
+      nfss_doc_families[t_name] = {
         name = tostring(name),
         cleanname = cleanname,
       }
-      nfss_doc_families.curr = cleanname
+      nfss_doc_families.curr = t_name
       msg_debug("NFSS doc families: ", "doc", nfss_doc_families)
     end)
 end
@@ -2168,8 +2170,8 @@ local function configure_doc_families()
       nfss_doc_families,
       fam_defaults)
     local config = {fea = nil, scale = nil, force = nil, typeset_mode = nil}
-    for name,cfg in sortedpairs(nfss_doc_families) do
-      if name ~= "curr" then
+    for t_name,cfg in sortedpairs(nfss_doc_families) do
+      if t_name ~= "curr" then
         config.fea = cfg.fea or nil
         config.scale = cfg.scale or nil
         config.force = cfg.force or nil
@@ -2200,7 +2202,7 @@ local function configure_doc_families()
 
         else
           msg({"No family found for ", cfg.name, "!"}, "warn") 
-          nfss_doc_families[name] = nil
+          nfss_doc_families[t_name] = nil
         end
       end
     end

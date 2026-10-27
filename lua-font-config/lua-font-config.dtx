@@ -33,7 +33,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12144 2026-10-21 04:45:46Z cfrees $}[v0.1 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12157 2026-10-27 02:35:02Z cfrees $}[v0.1 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -585,7 +585,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12144 2026-10-21 04:45:46Z cfrees $}[v0.1 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12157 2026-10-27 02:35:02Z cfrees $}[v0.1 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -766,10 +766,12 @@
   scale     .value_required:n   = true,
   unknown   .value_forbidden:n  = true,
   name      .usage:n            = general,
+  command   .usage:n            = general,
   fea       .usage:n            = general,
   force     .usage:n            = general,
   scale     .usage:n            = general,
   unknown   .usage:n            = general,
+  command   .groups:n           = config,
   fea       .groups:n           = config,
   force     .groups:n           = config,
   scale     .groups:n           = config,
@@ -938,7 +940,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %</ee-lmr>
 %
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12144 2026-10-21 04:45:46Z cfrees $
+%% $Id: lua-font-config.dtx 12157 2026-10-27 02:35:02Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
