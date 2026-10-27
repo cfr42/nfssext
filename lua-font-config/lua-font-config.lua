@@ -1,9 +1,9 @@
--- $Id: lua-font-config.lua 12158 2026-10-27 03:11:17Z cfrees $
+-- $Id: lua-font-config.lua 12159 2026-10-27 06:22:08Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 do
   local name, rev, date = string.match(
-    "$Id: lua-font-config.lua 12158 2026-10-27 03:11:17Z cfrees $", 
+    "$Id: lua-font-config.lua 12159 2026-10-27 06:22:08Z cfrees $", 
     "Id: ([a-z][a-z-]*)%.lua (%d%d*) (%d%d%d%d%-%d%d%-%d%d) ")
   luatexbase.provides_module({
     name      = name,
@@ -98,10 +98,10 @@ local concat, serialize, unique = table.concat, table.serialize, table.unique
 local prepend, sortedpairs      = table.prepend, table.sortedpairs
 local hashed, flattened         = table.hashed, table.flattened
 -- tex | texio | token
-local sprint                  = tex.sprint
-local write, write_nl         = texio.write, texio.write_nl
+local sprint, inputlineno       = tex.sprint, tex.inputlineno
+local write, write_nl           = texio.write, texio.write_nl
 -- Max Chernoff: ‘The Lua function token.scan_argument accepts a boolean argument (token.scan_argument(true) or token.scan_argument(false)) which determines whether to expand the TeX string argument’ (https://chat.stackexchange.com/transcript/message/69210787#69210787)
-local create, param, set_lua  = token.create, token.scan_argument, token.set_lua
+local create, param, set_lua    = token.create, token.scan_argument, token.set_lua
 -- lpeg
 local oneof, stripper, keeper       = lpeg.oneof, lpeg.stripper, lpeg.keeper
 local firstofsplit, secondofsplit   = lpeg.firstofsplit, lpeg.secondofsplit
@@ -255,6 +255,24 @@ do
   msg_log_levels = hashed(h)
 end
 
+---@function msg_format(msg, level) {{{
+---@param   msg   <string|table>    Message.
+---@param   level <string>          Level as string.
+---@status  internal
+---@description Module specific logging format based on ltluatex.lua's.
+local function msg_format(msg, level)
+  local head = format("Package lfc %s: ", level)
+  if type(msg) == "table" then 
+    insert(msg, format("on input line %s", inputlineno))
+  else
+    msg = {tostring(msg), format("on input line %s.", inputlineno)}
+  end
+  -- this should ideally start (lfc)<space> 
+  local cont = (gsub(gsub(head, ".", " "), "^(.....)", "\n(lfc)"))
+  return format("%s%s", head, concat(msg, cont))
+end
+-- }}}
+
 ---@function msg(text, level) {{{
 ---@param   text      <string|table>  Message.
 ---@param   level     <string>        Minimum logging level for issuing message.
@@ -263,18 +281,19 @@ local function msg(text, level)
   level = level or "warn"
   level_n = msg_log_levels[level] or msg_log_levels.debug
   if level_n > msg_log_levels[lfc_log_level] then return end
-  if type(text) == "string" then
+  if level ~= "debug" then
+    write_nl(msg_format(text, msg_level[level]))
+  elseif type(text) == "string" then
     write_nl(concat({"[lfc] ", msg_level[level], ":\t", text, "\n"}, ""))
   else
     write_nl(concat({"[lfc] ", msg_level[level], ":\t", concat(text, ""), "\n"},
       ""))
   end
   if level == "bug" then
-    write_nl("[lfc] Bug:\tPlease report to one of\n\
-      [lfc] Bug:\t\thttps://www.codeberg.org/cfr/nfssext/issues\n\
-      [lfc] Bug:\t\thttps://www.github.com/cfr42/nfssext/issues\n\
-      [lfc] Bug:\tYou can get more information using\n\
-      [lfc] Bug:\t\t\\usepackage[debug]{lua-font-config}\n")
+    write_nl(msg_format({"Please report to one of",
+      "\thttps://www.codeberg.org/cfr/nfssext/issues",
+      "You can get more information using",
+      "\t\\usepackage[debug]{lua-font-config}"}))
     error(1)
   elseif level == "err" then
     error(2)
