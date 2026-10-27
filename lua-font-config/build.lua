@@ -1,4 +1,4 @@
--- $Id: build.lua 12130 2026-10-16 06:05:43Z cfrees $
+-- $Id: build.lua 12161 2026-10-27 07:15:54Z cfrees $
 --------------------------------------------------------------------------------
 -- This package combines files released under distinct licences. 
 --
@@ -112,7 +112,7 @@ function manifest_setup ()
   return groups
 end
 -- see if this helps ...
-packtdszip = true
+-- packtdszip = true
 tdslocations  = {
   "doc/lualatex/lua-font-config/*.md",
   "doc/lualatex/lua-font-config/*.pdf",
@@ -149,7 +149,7 @@ uploadconfig = {
     Missing features include support for multi-lingual typesetting, variable fonts, spot colours etc. and a user interface beyond the rudimentary.",
   -- development {}
   -- home {}
-	note          = "Non-standard layout. Please retain TDS.",
+	-- note          = "Non-standard layout. Please retain TDS.",
 	repository    = {"https://codeberg.org/cfr/nfssext", "https://github.com/cfr42/nfssext"},
   -- support {}
 	topic         = {"font-mgmt", "font-sel", "font-use", "luatex", "tagged-pdf"},
