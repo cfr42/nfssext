@@ -1,9 +1,9 @@
--- $Id: lua-font-config.lua 12157 2026-10-27 02:35:02Z cfrees $
+-- $Id: lua-font-config.lua 12158 2026-10-27 03:11:17Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 do
   local name, rev, date = string.match(
-    "$Id: lua-font-config.lua 12157 2026-10-27 02:35:02Z cfrees $", 
+    "$Id: lua-font-config.lua 12158 2026-10-27 03:11:17Z cfrees $", 
     "Id: ([a-z][a-z-]*)%.lua (%d%d*) (%d%d%d%d%-%d%d%-%d%d) ")
   luatexbase.provides_module({
     name      = name,
@@ -782,8 +782,7 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
       end
       return t[1], t[2], t[3]
     else
-      msg(format("Missing maths family %s for %s. Regenerating data.",
-        mfam, fam))
+      msg(format("Missing maths family for %s. Regenerating data.", fam))
     end
   end
   :: math_awol ::
