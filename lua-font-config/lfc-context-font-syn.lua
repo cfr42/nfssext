@@ -907,9 +907,7 @@ local function analyzefiles(olddata)
                         if oldmodification == modification then
                             result = oldspecification
                             specifications[#specifications + 1] = result
-                        -- else -- ??
                         end
-                    -- else -- ??
                     end
                 elseif oldrejected[storedname] == modification then
                     result = false
@@ -1044,8 +1042,6 @@ local function resetdata()
     }
 end
 
--- local plugin = false
--- 
 function names.identify(force)
     -- Print a message while generating our font name database so that users
     -- don't get confused by the long pause.
@@ -1059,7 +1055,7 @@ function names.identify(force)
     collecthashes()
     checkduplicates()
     addfilenames()
- -- sorthashes() -- will be resorted when saved
+    -- sorthashes() -- will be resorted when saved
     collectstatistics(os.gettimeofday()-starttime)
     texio.write(" done.\n")
 end
