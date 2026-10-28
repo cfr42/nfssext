@@ -56,10 +56,11 @@ local function datastate()     return {}  end
 local next, tonumber = next, tonumber
 local isfile, modificationtime = lfs.isfile, lfs.modification
 local P, Cs, lpegmatch = lpeg.P, lpeg.Cs, lpeg.match
-local sub, gsub, find, lower, upper, formatters = 
-    string.sub, string.gsub, string.find, string.lower, string.upper
+local sub, gsub, find, lower, upper, formatters = string.sub, string.gsub, 
+    string.find, string.lower, string.upper, string.formatters
 local sort, fastcopy, serialize, sortedhash = 
     table.sort, table.fastcopy, table.serialize, table.sortedhash
+
 local allocate             = utilities.storage.allocate
 
 local removesuffix         = file.removesuffix
