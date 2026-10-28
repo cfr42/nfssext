@@ -6,7 +6,6 @@ if not modules then modules = { } end modules ['font-syn'] = {
     license   = "see context related readme files"
 }
 
-
 -------------------------------------------------------------------------------
 -- Define a new private environment into which to load "font-syn.lua".
 
@@ -54,33 +53,26 @@ local function datastate()     return {}  end
 
 -------------------------------------------------------------------------------
 
-local next, tonumber, type = next, tonumber, type
-local sub, gsub, find, lower, upper = string.sub, string.gsub, string.find, string.lower, string.upper
-local sort, fastcopy, tohash = table.sort, table.fastcopy, table.tohash
-local serialize, sortedhash = table.serialize, table.sortedhash
-local lpegmatch = lpeg.match
-local formatters, topattern = string.formatters, string.topattern
-local P, Cs = lpeg.P, lpeg.Cs
-local lpegmatch, lpegpatterns = lpeg.match, lpeg.patterns
+local next, tonumber = next, tonumber
 local isfile, modificationtime = lfs.isfile, lfs.modification
-
+local P, Cs, lpegmatch = lpeg.P, lpeg.Cs, lpeg.match
+local sub, gsub, find, lower, upper, formatters = 
+    string.sub, string.gsub, string.find, string.lower, string.upper
+local sort, fastcopy, serialize, sortedhash = 
+    table.sort, table.fastcopy, table.serialize, table.sortedhash
 local allocate             = utilities.storage.allocate
-local sparse               = utilities.storage.sparse
 
 local removesuffix         = file.removesuffix
 local splitbase            = file.splitbase
 local splitname            = file.splitname
 local basename             = file.basename
 local pathpart             = file.pathpart
-local suffixonly           = file.suffix
 local filejoin             = file.join
 local is_qualified_path    = file.is_qualified_path
 local exists               = io.exists
 
 local findfile             = resolvers.findfile
 local resolveprefix        = resolvers.resolve
-
-local settings_to_hash     = utilities.parsers.settings_to_hash_tolerant
 
 local report_names         = logs.reporter("fonts","names")
 
@@ -174,10 +166,6 @@ local weights = Cs ( -- not extra
 --     [900] = "black",
 -- }
 
-local normalized_weights = sparse {
-    regular = "normal",
-}
-
 local styles = Cs (
     P("reverseoblique") / "reverseitalic"
   + P("regular")        / "normal"
@@ -191,12 +179,6 @@ local styles = Cs (
 --+ P("obli")           / "oblique"
 )
 
-local normalized_styles = sparse {
-    reverseoblique = "reverseitalic",
-    regular        = "normal",
-    oblique        = "italic",
-}
-
 local widths = Cs(
     P("condensed")
   + P("thin")
@@ -206,15 +188,11 @@ local widths = Cs(
   + P("book")     / "normal"  -- cfr: ???
 )
 
-local normalized_widths = sparse()
-
 local variants = Cs( -- fax casual
     P("smallcaps")
   + P("oldstyle")
   + P("caps")      / "smallcaps"
 )
-
-local normalized_variants = sparse()
 
 names.knownweights = {  -- cfr: book??
     "black",
@@ -928,11 +906,9 @@ local function analyzefiles(olddata)
                         if oldmodification == modification then
                             result = oldspecification
                             specifications[#specifications + 1] = result
-                        else
-                            -- ??
+                        -- else -- ??
                         end
-                    else
-                         -- ??
+                    -- else -- ??
                     end
                 elseif oldrejected[storedname] == modification then
                     result = false
@@ -1067,8 +1043,8 @@ local function resetdata()
     }
 end
 
-local plugin = false
-
+-- local plugin = false
+-- 
 function names.identify(force)
     -- Print a message while generating our font name database so that users
     -- don't get confused by the long pause.
@@ -1299,568 +1275,7 @@ function names.resolve(askedname,sub)
     end
 end
 
--- local runtimefiles = { }
--- local runtimedone  = false
---
--- local function addruntimepath(path)
---     names.load()
---     local paths    = type(path) == "table" and path or { path }
---     local suffixes = tohash(filters.list)
---     for i=1,#paths do
---         local path = resolveprefix(paths[i])
---         if path ~= "" then
---             local list = dir.glob(path.."/*")
---             for i=1,#list do
---                 local fullname = list[i]
---                 local suffix   = lower(suffixonly(fullname))
---                 if suffixes[suffix] then
---                     local c = cleanfilename(fullname)
---                     runtimefiles[c] = fullname
---                 end
---             end
---         end
---     end
--- end
---
--- local function addruntimefiles(variable)
---     local paths = variable and resolvers.expandedpathlistfromvariable(variable)
---     if paths and #paths > 0 then
---         addruntimepath(paths)
---     end
--- end
---
--- names.addruntimepath  = addruntimepath
--- names.addruntimefiles = addruntimefiles
---
--- function names.getfilename(askedname,suffix) -- last resort, strip funny chars
---     if not runtimedone then
---         addruntimefiles(names.runtimefontsvariable)
---         runtimedone = true
---     end
---     local cleanname = cleanfilename(askedname,suffix)
---     local found     = runtimefiles[cleanname]
---     if found then
---         return found
---     end
---     names.load()
---     local files = names.data.files
---     local found = files and files[cleanname] or ""
---     if found == "" and is_reloaded() then
---         files = names.data.files
---         found = files and files[cleanname] or ""
---     end
---     if found and found ~= "" then
---         return resolvers.findbinfile(found,suffix) or "" -- we still need to locate it
---     end
--- end
-
--- specified search
-
-local function s_collect_weight_style_width_variant(found,done,all,weight,style,width,variant,family)
-    if family then
-        for i=1,#family do
-            local f = family[i]
-            if f and weight == f.weight and style == f.style and width == f.width and variant == f.variant then
-                found[#found+1], done[f] = f, true
-                if not all then return end
-            end
-        end
-    end
-end
-local function m_collect_weight_style_width_variant(found,done,all,weight,style,width,variant,families,sorted,strictname)
-    for i=1,#sorted do
-        local k = sorted[i]
-        local family = families[k]
-        for i=1,#family do
-            local f = family[i]
-            if not done[f] and weight == f.weight and style == f.style and width == f.width and variant == f.variant and find(f.fontname,strictname) then
-                found[#found+1], done[f] = f, true
-                if not all then return end
-            end
-        end
-    end
-end
-
-local function s_collect_weight_style_width(found,done,all,weight,style,width,family)
-    if family then
-        for i=1,#family do
-            local f = family[i]
-            if f and weight == f.weight and style == f.style and width == f.width then
-                found[#found+1], done[f] = f, true
-                if not all then return end
-            end
-        end
-    end
-end
-local function m_collect_weight_style_width(found,done,all,weight,style,width,families,sorted,strictname)
-    for i=1,#sorted do
-        local k = sorted[i]
-        local family = families[k]
-        for i=1,#family do
-            local f = family[i]
-            if not done[f] and weight == f.weight and style == f.style and width == f.width and find(f.fontname,strictname) then
-                found[#found+1], done[f] = f, true
-                if not all then return end
-            end
-        end
-    end
-end
-
-local function s_collect_weight_style(found,done,all,weight,style,family)
-    if family then
-        for i=1,#family do local f = family[i]
-            if f and weight == f.weight and style == f.style then
-                found[#found+1], done[f] = f, true
-                if not all then return end
-            end
-        end
-    end
-end
-local function m_collect_weight_style(found,done,all,weight,style,families,sorted,strictname)
-    for i=1,#sorted do
-        local k = sorted[i]
-        local family = families[k]
-        for i=1,#family do
-            local f = family[i]
-            if not done[f] and weight == f.weight and style == f.style and find(f.fontname,strictname) then
-                found[#found+1], done[f] = f, true
-                if not all then return end
-            end
-        end
-    end
-end
-
-local function s_collect_style_width(found,done,all,style,width,family)
-    if family then
-        for i=1,#family do local f = family[i]
-            if f and style == f.style and width == f.width then
-                found[#found+1], done[f] = f, true
-                if not all then return end
-            end
-        end
-    end
-end
-local function m_collect_style_width(found,done,all,style,width,families,sorted,strictname)
-    for i=1,#sorted do
-        local k = sorted[i]
-        local family = families[k]
-        for i=1,#family do
-            local f = family[i]
-            if not done[f] and style == f.style and width == f.width and find(f.fontname,strictname) then
-                found[#found+1], done[f] = f, true
-                if not all then return end
-            end
-        end
-    end
-end
-
-local function s_collect_weight(found,done,all,weight,family)
-    if family then
-        for i=1,#family do local f = family[i]
-            if f and weight == f.weight then
-                found[#found+1], done[f] = f, true
-                if not all then return end
-            end
-        end
-    end
-end
-local function m_collect_weight(found,done,all,weight,families,sorted,strictname)
-    for i=1,#sorted do
-        local k = sorted[i]
-        local family = families[k]
-        for i=1,#family do
-            local f = family[i]
-            if not done[f] and weight == f.weight and find(f.fontname,strictname) then
-                found[#found+1], done[f] = f, true
-                if not all then return end
-            end
-        end
-    end
-end
-
-local function s_collect_style(found,done,all,style,family)
-    if family then
-        for i=1,#family do local f = family[i]
-            if f and style == f.style then
-                found[#found+1], done[f] = f, true
-                if not all then return end
-            end
-        end
-    end
-end
-local function m_collect_style(found,done,all,style,families,sorted,strictname)
-    for i=1,#sorted do
-        local k = sorted[i]
-        local family = families[k]
-        for i=1,#family do
-            local f = family[i]
-            if not done[f] and style == f.style and find(f.fontname,strictname) then
-                found[#found+1], done[f] = f, true
-                if not all then return end
-            end
-        end
-    end
-end
-
-local function s_collect_width(found,done,all,width,family)
-    if family then
-        for i=1,#family do local f = family[i]
-            if f and width == f.width then
-                found[#found+1], done[f] = f, true
-                if not all then return end
-            end
-        end
-    end
-end
-local function m_collect_width(found,done,all,width,families,sorted,strictname)
-    for i=1,#sorted do
-        local k = sorted[i]
-        local family = families[k]
-        for i=1,#family do
-            local f = family[i]
-            if not done[f] and width == f.width and find(f.fontname,strictname) then
-                found[#found+1], done[f] = f, true
-                if not all then return end
-            end
-        end
-    end
-end
-
-local function s_collect(found,done,all,family)
-    if family then
-        for i=1,#family do local f = family[i]
-            if f then
-                found[#found+1], done[f] = f, true
-                if not all then return end
-            end
-        end
-    end
-end
-local function m_collect(found,done,all,families,sorted,strictname)
-    for i=1,#sorted do
-        local k = sorted[i]
-        local family = families[k]
-        for i=1,#family do
-            local f = family[i]
-            if not done[f] and find(f.fontname,strictname) then
-                found[#found+1], done[f] = f, true
-                if not all then return end
-            end
-        end
-    end
-end
-
-local function collect(stage,found,done,name,weight,style,width,variant,all)
-    local data = names.data
-    local families = data.families
-    local sorted = data.sorted_families
-    local strictname = "^".. name -- to be checked
-    local family = families[name]
-    if weight and weight ~= "" then
-        if style and style ~= "" then
-            if width and width ~= "" then
-                if variant and variant ~= "" then
-                    s_collect_weight_style_width_variant(found,done,all,weight,style,width,variant,family)
-                    m_collect_weight_style_width_variant(found,done,all,weight,style,width,variant,families,sorted,strictname)
-                else
-                    s_collect_weight_style_width(found,done,all,weight,style,width,family)
-                    m_collect_weight_style_width(found,done,all,weight,style,width,families,sorted,strictname)
-                end
-            else
-                s_collect_weight_style(found,done,all,weight,style,family)
-                m_collect_weight_style(found,done,all,weight,style,families,sorted,strictname)
-            end
-        else
-            s_collect_weight(found,done,all,weight,family)
-            m_collect_weight(found,done,all,weight,families,sorted,strictname)
-        end
-    elseif style and style ~= "" then
-        if width and width ~= "" then
-            s_collect_style_width(found,done,all,style,width,family)
-            m_collect_style_width(found,done,all,style,width,families,sorted,strictname)
-        else
-            s_collect_style(found,done,all,style,family)
-            m_collect_style(found,done,all,style,families,sorted,strictname)
-        end
-    elseif width and width ~= "" then
-        s_collect_width(found,done,all,width,family)
-        m_collect_width(found,done,all,width,families,sorted,strictname)
-    else
-        s_collect(found,done,all,family)
-        m_collect(found,done,all,families,sorted,strictname)
-    end
-end
-
-local function heuristic(name,weight,style,width,variant,all) -- todo: fallbacks
-    local found, done = { }, { }
---~ print(name,weight,style,width,variant)
-    weight, style, width, variant = weight or "normal", style or "normal", width or "normal", variant or "normal"
-    name = cleanname(name)
-    collect(1,found,done,name,weight,style,width,variant,all)
-    -- still needed ?
-    if #found == 0 and variant ~= "normal" then -- not weight
-        variant = "normal"
-        collect(4,found,done,name,weight,style,width,variant,all)
-    end
-    if #found == 0 and width ~= "normal" then
-        width = "normal"
-        collect(2,found,done,name,weight,style,width,variant,all)
-    end
-    if #found == 0 and weight ~= "normal" then -- not style
-        weight = "normal"
-        collect(3,found,done,name,weight,style,width,variant,all)
-    end
-    if #found == 0 and style ~= "normal" then -- not weight
-        style = "normal"
-        collect(4,found,done,name,weight,style,width,variant,all)
-    end
-    --
-    local nf = #found
-    if nf == 0 then
-        report_names("name %a unresolved",name)
-    end
-    if all then
-        return nf > 0 and found
-    else
-        return found[1]
-    end
-end
-
-function names.specification(askedname,weight,style,width,variant,reload,all)
-    if askedname and askedname ~= "" and names.enabled then
-        askedname = cleanname(askedname) -- or cleanname
-        names.load(reload)
-        local found = heuristic(askedname,weight,style,width,variant,all)
-        if not found and is_reloaded() then
-            found = heuristic(askedname,weight,style,width,variant,all)
-            if not filename then
-                found = foundname(askedname) -- old method
-            end
-        end
-        return found
-    end
-end
-
--- function names.collect(askedname,weight,style,width,variant,reload,all)
---     if askedname and askedname ~= "" and names.enabled then
---         askedname = cleanname(askedname) -- or cleanname
---         names.load(reload)
---         local list = heuristic(askedname,weight,style,width,variant,true)
---         if not list or #list == 0 and is_reloaded() then
---             list = heuristic(askedname,weight,style,width,variant,true)
---         end
---         return list
---     end
--- end
---
--- function names.collectspec(askedname,reload,all)
---     local name, weight, style, width, variant = names.splitspec(askedname)
---     return names.collect(name,weight,style,width,variant,reload,all)
--- end
---
--- function names.resolvespec(askedname,sub) -- redefined later
---     local found = names.specification(names.splitspec(askedname))
---     if found then
---         return found.filename, found.subfont and found.rawname
---     end
--- end
-
--- function names.collectfiles(askedname,reload) -- no all
---     if askedname and askedname ~= "" and names.enabled then
---         askedname = cleanname(askedname) -- or cleanname
---         names.load(reload)
---         local list = { }
---         local specifications = names.data.specifications
---         for i=1,#specifications do
---             local s = specifications[i]
---             if find(cleanname(basename(s.filename)),askedname) then
---                 list[#list+1] = s
---             end
---         end
---         return list
---     end
--- end
---
--- function names.exists(name)
---     local found = false
---     local list = filters.list
---     for k=1,#list do
---         local v = list[k]
---         found = (findfile(name,v) or "") ~= ""
---         if found then
---             return found
---         end
---     end
---     return (findfile(name,"tfm") or "") ~= "" or (names.resolve(name) or "") ~= ""
--- end
---
--- local lastlookups, lastpattern = { }, ""
---
--- local function look_them_up(lookups,specification)
---     for key, value in sortedhash(specification) do
---         local t = { }
---         local n = 0
---         if find(value,"*",1,true) then
---             value = topattern(value)
---             for i=1,#lookups do
---                 local s = lookups[i]
---                 if find(s[key],value) then
---                     n = n + 1
---                     t[n] = lookups[i]
---                 end
---             end
---         else
---             for i=1,#lookups do
---                 local s = lookups[i]
---                 if s[key] == value then
---                     n = n + 1
---                     t[n] = lookups[i]
---                 end
---             end
---         end
---         lookups = t
---     end
---     return lookups
--- end
---
--- local function first_look(name,reload)
---     names.load(reload)
---     local data           = names.data
---     local specifications = data.specifications
---     local families       = data.families
---     if name then
---         return families[name]
---     else
---         return specifications
---     end
--- end
---
--- function names.lookup(pattern,name,reload) -- todo: find
---     names.load(reload)
---     local data           = names.data
---     local specifications = data.specifications
---     local families       = data.families
---     local lookups        = specifications
---     if name then
---         name = cleanname(name)
---     end
---     if type(pattern) == "table" then
---         local familyname = pattern.familyname
---         if familyname then
---             familyname = cleanname(familyname)
---             pattern.familyname = familyname
---         end
---         local lookups = first_look(name or familyname,reload)
---         if lookups then
---             lookups = look_them_up(lookups,pattern)
---         end
---         lastpattern = false
---         lastlookups = lookups or { }
---     elseif lastpattern ~= pattern then
---         local lookups = first_look(name or (not find(pattern,"=",1,true) and pattern),reload)
---         if lookups then
---             local specification = settings_to_hash(pattern)
---             local familyname = specification.familyname
---             if familyname then
---                 familyname = cleanname(familyname)
---                 specification.familyname = familyname
---             end
---             lookups = look_them_up(lookups,specification)
---         end
---         lastpattern = pattern
---         lastlookups = lookups or { }
---     end
---     return #lastlookups
--- end
-
--- function names.getlookupkey(key,n)
---     local l = lastlookups[n or 1]
---     return (l and l[key]) or ""
--- end
---
--- function names.noflookups()
---     return #lastlookups
--- end
---
--- function names.getlookups(pattern,name,reload)
---     if pattern then
---         names.lookup(pattern,name,reload)
---     end
---     return lastlookups
--- end
-
--- The following is new ... watch the overload!
-
 local specifications = allocate()
-names.specifications = specifications
-
--- files = {
---     name = "antykwapoltawskiego",
---     list = {
---         ["AntPoltLtCond-Regular.otf"] = {
---          -- name   = "antykwapoltawskiego",
---             style  = "regular",
---             weight = "light",
---             width  = "condensed",
---         },
---     },
--- }
-
--- function names.register(files)
---     if files then
---         local list, commonname = files.list, files.name
---         if list then
---             local n, m = 0, 0
---             for filename, filespec in sortedhash(list) do
---                 local name = lower(filespec.name or commonname)
---                 if name and name ~= "" then
---                     local style    = normalized_styles  [lower(filespec.style   or "normal")]
---                     local width    = normalized_widths  [lower(filespec.width   or "normal")]
---                     local weight   = normalized_weights [lower(filespec.weight  or "normal")]
---                     local variant  = normalized_variants[lower(filespec.variant or "normal")]
---                     local weights  = specifications[name  ] if not weights  then weights  = { } specifications[name  ] = weights  end
---                     local styles   = weights       [weight] if not styles   then styles   = { } weights       [weight] = styles   end
---                     local widths   = styles        [style ] if not widths   then widths   = { } styles        [style ] = widths   end
---                     local variants = widths        [width ] if not variants then variants = { } widths        [width ] = variants end
---                     variants[variant] = filename
---                     n = n + 1
---                 else
---                     m = m + 1
---                 end
---             end
---         end
---     end
--- end
---
--- function names.registered(name,weight,style,width,variant)
---     local ok = specifications[name]
---     ok = ok and (ok[(weight  and weight  ~= "" and weight ) or "normal"] or ok.normal)
---     ok = ok and (ok[(style   and style   ~= "" and style  ) or "normal"] or ok.normal)
---     ok = ok and (ok[(width   and width   ~= "" and width  ) or "normal"] or ok.normal)
---     ok = ok and (ok[(variant and variant ~= "" and variant) or "normal"] or ok.normal)
---     --
---     -- todo: same fallbacks as with database
---     --
---     if ok then
---         return {
---             filename = ok,
---             subname  = "",
---         }
---     end
--- end
---
--- function names.resolvespec(askedname,sub) -- overloads previous definition
---     local name, weight, style, width, variant = names.splitspec(askedname)
---     local found = names.registered(name,weight,style,width,variant)
---     if found and found.filename then
---         return found.filename, found.subname, found.rawname
---     else
---         found = names.specification(name,weight,style,width,variant)
---         if found and found.filename then
---             return found.filename, found.subfont and found.rawname
---         end
---     end
--- end
 
 return {
     cache = names.cache,
@@ -1872,30 +1287,7 @@ return {
     resolve = names.resolve,
     writable = names.cache.writable,
     -- ? --
-    -- collect = names.collect,
-    -- collectspec = names.collectspec,
-    -- collectfiles = names.collectfiles,
-    -- data = names.data,
     -- filters = names.filters,
-    -- getlookups = names.getlookups,
-    -- lookup = names.lookup,
-    -- resolvespec = names.resolvespec,
-    -- specifications = names.specifications,
 }
-
-
--- example made for luatex list (unlikely to be used):
---
--- local command = [[reg QUERY "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts"]]
--- local pattern = ".-[\n\r]+%s+(.-)%s%(([^%)]+)%)%s+REG_SZ%s+(%S+)%s+"
---
--- local function getnamesfromregistry()
---     local data = os.resultof(command)
---     local list = { }
---     for name, format, filename in string.gmatch(data,pattern) do
---         list[name] = filename
---     end
---     return list
--- end
 
 -- vim: et:foldmethod=marker:tw=4:sw=2:
