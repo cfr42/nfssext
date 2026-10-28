@@ -182,7 +182,7 @@ local styles = Cs (
     P("reverseoblique") / "reverseitalic"
   + P("regular")        / "normal"
   + P("italic")
-  + P("oblique")        / "italic"
+  + P("oblique")        / "italic"  -- cfr: "slanted"??
   + P("slanted")
   + P("slant")          / "slanted"
   + P("roman")          / "normal"
@@ -203,7 +203,7 @@ local widths = Cs(
   + P("expanded")
   + P("cond")     / "condensed"
   + P("normal")
-  + P("book")     / "normal"
+  + P("book")     / "normal"  -- cfr: ???
 )
 
 local normalized_widths = sparse()
@@ -216,7 +216,7 @@ local variants = Cs( -- fax casual
 
 local normalized_variants = sparse()
 
-names.knownweights = {
+names.knownweights = {  -- cfr: book??
     "black",
     "bold",
     "demi",
@@ -1299,60 +1299,60 @@ function names.resolve(askedname,sub)
     end
 end
 
-local runtimefiles = { }
-local runtimedone  = false
-
-local function addruntimepath(path)
-    names.load()
-    local paths    = type(path) == "table" and path or { path }
-    local suffixes = tohash(filters.list)
-    for i=1,#paths do
-        local path = resolveprefix(paths[i])
-        if path ~= "" then
-            local list = dir.glob(path.."/*")
-            for i=1,#list do
-                local fullname = list[i]
-                local suffix   = lower(suffixonly(fullname))
-                if suffixes[suffix] then
-                    local c = cleanfilename(fullname)
-                    runtimefiles[c] = fullname
-                end
-            end
-        end
-    end
-end
-
-local function addruntimefiles(variable)
-    local paths = variable and resolvers.expandedpathlistfromvariable(variable)
-    if paths and #paths > 0 then
-        addruntimepath(paths)
-    end
-end
-
-names.addruntimepath  = addruntimepath
-names.addruntimefiles = addruntimefiles
-
-function names.getfilename(askedname,suffix) -- last resort, strip funny chars
-    if not runtimedone then
-        addruntimefiles(names.runtimefontsvariable)
-        runtimedone = true
-    end
-    local cleanname = cleanfilename(askedname,suffix)
-    local found     = runtimefiles[cleanname]
-    if found then
-        return found
-    end
-    names.load()
-    local files = names.data.files
-    local found = files and files[cleanname] or ""
-    if found == "" and is_reloaded() then
-        files = names.data.files
-        found = files and files[cleanname] or ""
-    end
-    if found and found ~= "" then
-        return resolvers.findbinfile(found,suffix) or "" -- we still need to locate it
-    end
-end
+-- local runtimefiles = { }
+-- local runtimedone  = false
+--
+-- local function addruntimepath(path)
+--     names.load()
+--     local paths    = type(path) == "table" and path or { path }
+--     local suffixes = tohash(filters.list)
+--     for i=1,#paths do
+--         local path = resolveprefix(paths[i])
+--         if path ~= "" then
+--             local list = dir.glob(path.."/*")
+--             for i=1,#list do
+--                 local fullname = list[i]
+--                 local suffix   = lower(suffixonly(fullname))
+--                 if suffixes[suffix] then
+--                     local c = cleanfilename(fullname)
+--                     runtimefiles[c] = fullname
+--                 end
+--             end
+--         end
+--     end
+-- end
+--
+-- local function addruntimefiles(variable)
+--     local paths = variable and resolvers.expandedpathlistfromvariable(variable)
+--     if paths and #paths > 0 then
+--         addruntimepath(paths)
+--     end
+-- end
+--
+-- names.addruntimepath  = addruntimepath
+-- names.addruntimefiles = addruntimefiles
+--
+-- function names.getfilename(askedname,suffix) -- last resort, strip funny chars
+--     if not runtimedone then
+--         addruntimefiles(names.runtimefontsvariable)
+--         runtimedone = true
+--     end
+--     local cleanname = cleanfilename(askedname,suffix)
+--     local found     = runtimefiles[cleanname]
+--     if found then
+--         return found
+--     end
+--     names.load()
+--     local files = names.data.files
+--     local found = files and files[cleanname] or ""
+--     if found == "" and is_reloaded() then
+--         files = names.data.files
+--         found = files and files[cleanname] or ""
+--     end
+--     if found and found ~= "" then
+--         return resolvers.findbinfile(found,suffix) or "" -- we still need to locate it
+--     end
+-- end
 
 -- specified search
 
@@ -1641,153 +1641,153 @@ function names.specification(askedname,weight,style,width,variant,reload,all)
     end
 end
 
-function names.collect(askedname,weight,style,width,variant,reload,all)
-    if askedname and askedname ~= "" and names.enabled then
-        askedname = cleanname(askedname) -- or cleanname
-        names.load(reload)
-        local list = heuristic(askedname,weight,style,width,variant,true)
-        if not list or #list == 0 and is_reloaded() then
-            list = heuristic(askedname,weight,style,width,variant,true)
-        end
-        return list
-    end
-end
+-- function names.collect(askedname,weight,style,width,variant,reload,all)
+--     if askedname and askedname ~= "" and names.enabled then
+--         askedname = cleanname(askedname) -- or cleanname
+--         names.load(reload)
+--         local list = heuristic(askedname,weight,style,width,variant,true)
+--         if not list or #list == 0 and is_reloaded() then
+--             list = heuristic(askedname,weight,style,width,variant,true)
+--         end
+--         return list
+--     end
+-- end
+--
+-- function names.collectspec(askedname,reload,all)
+--     local name, weight, style, width, variant = names.splitspec(askedname)
+--     return names.collect(name,weight,style,width,variant,reload,all)
+-- end
+--
+-- function names.resolvespec(askedname,sub) -- redefined later
+--     local found = names.specification(names.splitspec(askedname))
+--     if found then
+--         return found.filename, found.subfont and found.rawname
+--     end
+-- end
 
-function names.collectspec(askedname,reload,all)
-    local name, weight, style, width, variant = names.splitspec(askedname)
-    return names.collect(name,weight,style,width,variant,reload,all)
-end
+-- function names.collectfiles(askedname,reload) -- no all
+--     if askedname and askedname ~= "" and names.enabled then
+--         askedname = cleanname(askedname) -- or cleanname
+--         names.load(reload)
+--         local list = { }
+--         local specifications = names.data.specifications
+--         for i=1,#specifications do
+--             local s = specifications[i]
+--             if find(cleanname(basename(s.filename)),askedname) then
+--                 list[#list+1] = s
+--             end
+--         end
+--         return list
+--     end
+-- end
+--
+-- function names.exists(name)
+--     local found = false
+--     local list = filters.list
+--     for k=1,#list do
+--         local v = list[k]
+--         found = (findfile(name,v) or "") ~= ""
+--         if found then
+--             return found
+--         end
+--     end
+--     return (findfile(name,"tfm") or "") ~= "" or (names.resolve(name) or "") ~= ""
+-- end
+--
+-- local lastlookups, lastpattern = { }, ""
+--
+-- local function look_them_up(lookups,specification)
+--     for key, value in sortedhash(specification) do
+--         local t = { }
+--         local n = 0
+--         if find(value,"*",1,true) then
+--             value = topattern(value)
+--             for i=1,#lookups do
+--                 local s = lookups[i]
+--                 if find(s[key],value) then
+--                     n = n + 1
+--                     t[n] = lookups[i]
+--                 end
+--             end
+--         else
+--             for i=1,#lookups do
+--                 local s = lookups[i]
+--                 if s[key] == value then
+--                     n = n + 1
+--                     t[n] = lookups[i]
+--                 end
+--             end
+--         end
+--         lookups = t
+--     end
+--     return lookups
+-- end
+--
+-- local function first_look(name,reload)
+--     names.load(reload)
+--     local data           = names.data
+--     local specifications = data.specifications
+--     local families       = data.families
+--     if name then
+--         return families[name]
+--     else
+--         return specifications
+--     end
+-- end
+--
+-- function names.lookup(pattern,name,reload) -- todo: find
+--     names.load(reload)
+--     local data           = names.data
+--     local specifications = data.specifications
+--     local families       = data.families
+--     local lookups        = specifications
+--     if name then
+--         name = cleanname(name)
+--     end
+--     if type(pattern) == "table" then
+--         local familyname = pattern.familyname
+--         if familyname then
+--             familyname = cleanname(familyname)
+--             pattern.familyname = familyname
+--         end
+--         local lookups = first_look(name or familyname,reload)
+--         if lookups then
+--             lookups = look_them_up(lookups,pattern)
+--         end
+--         lastpattern = false
+--         lastlookups = lookups or { }
+--     elseif lastpattern ~= pattern then
+--         local lookups = first_look(name or (not find(pattern,"=",1,true) and pattern),reload)
+--         if lookups then
+--             local specification = settings_to_hash(pattern)
+--             local familyname = specification.familyname
+--             if familyname then
+--                 familyname = cleanname(familyname)
+--                 specification.familyname = familyname
+--             end
+--             lookups = look_them_up(lookups,specification)
+--         end
+--         lastpattern = pattern
+--         lastlookups = lookups or { }
+--     end
+--     return #lastlookups
+-- end
 
-function names.resolvespec(askedname,sub) -- redefined later
-    local found = names.specification(names.splitspec(askedname))
-    if found then
-        return found.filename, found.subfont and found.rawname
-    end
-end
-
-function names.collectfiles(askedname,reload) -- no all
-    if askedname and askedname ~= "" and names.enabled then
-        askedname = cleanname(askedname) -- or cleanname
-        names.load(reload)
-        local list = { }
-        local specifications = names.data.specifications
-        for i=1,#specifications do
-            local s = specifications[i]
-            if find(cleanname(basename(s.filename)),askedname) then
-                list[#list+1] = s
-            end
-        end
-        return list
-    end
-end
-
-function names.exists(name)
-    local found = false
-    local list = filters.list
-    for k=1,#list do
-        local v = list[k]
-        found = (findfile(name,v) or "") ~= ""
-        if found then
-            return found
-        end
-    end
-    return (findfile(name,"tfm") or "") ~= "" or (names.resolve(name) or "") ~= ""
-end
-
-local lastlookups, lastpattern = { }, ""
-
-local function look_them_up(lookups,specification)
-    for key, value in sortedhash(specification) do
-        local t = { }
-        local n = 0
-        if find(value,"*",1,true) then
-            value = topattern(value)
-            for i=1,#lookups do
-                local s = lookups[i]
-                if find(s[key],value) then
-                    n = n + 1
-                    t[n] = lookups[i]
-                end
-            end
-        else
-            for i=1,#lookups do
-                local s = lookups[i]
-                if s[key] == value then
-                    n = n + 1
-                    t[n] = lookups[i]
-                end
-            end
-        end
-        lookups = t
-    end
-    return lookups
-end
-
-local function first_look(name,reload)
-    names.load(reload)
-    local data           = names.data
-    local specifications = data.specifications
-    local families       = data.families
-    if name then
-        return families[name]
-    else
-        return specifications
-    end
-end
-
-function names.lookup(pattern,name,reload) -- todo: find
-    names.load(reload)
-    local data           = names.data
-    local specifications = data.specifications
-    local families       = data.families
-    local lookups        = specifications
-    if name then
-        name = cleanname(name)
-    end
-    if type(pattern) == "table" then
-        local familyname = pattern.familyname
-        if familyname then
-            familyname = cleanname(familyname)
-            pattern.familyname = familyname
-        end
-        local lookups = first_look(name or familyname,reload)
-        if lookups then
-            lookups = look_them_up(lookups,pattern)
-        end
-        lastpattern = false
-        lastlookups = lookups or { }
-    elseif lastpattern ~= pattern then
-        local lookups = first_look(name or (not find(pattern,"=",1,true) and pattern),reload)
-        if lookups then
-            local specification = settings_to_hash(pattern)
-            local familyname = specification.familyname
-            if familyname then
-                familyname = cleanname(familyname)
-                specification.familyname = familyname
-            end
-            lookups = look_them_up(lookups,specification)
-        end
-        lastpattern = pattern
-        lastlookups = lookups or { }
-    end
-    return #lastlookups
-end
-
-function names.getlookupkey(key,n)
-    local l = lastlookups[n or 1]
-    return (l and l[key]) or ""
-end
-
-function names.noflookups()
-    return #lastlookups
-end
-
-function names.getlookups(pattern,name,reload)
-    if pattern then
-        names.lookup(pattern,name,reload)
-    end
-    return lastlookups
-end
+-- function names.getlookupkey(key,n)
+--     local l = lastlookups[n or 1]
+--     return (l and l[key]) or ""
+-- end
+--
+-- function names.noflookups()
+--     return #lastlookups
+-- end
+--
+-- function names.getlookups(pattern,name,reload)
+--     if pattern then
+--         names.lookup(pattern,name,reload)
+--     end
+--     return lastlookups
+-- end
 
 -- The following is new ... watch the overload!
 
@@ -1806,61 +1806,61 @@ names.specifications = specifications
 --     },
 -- }
 
-function names.register(files)
-    if files then
-        local list, commonname = files.list, files.name
-        if list then
-            local n, m = 0, 0
-            for filename, filespec in sortedhash(list) do
-                local name = lower(filespec.name or commonname)
-                if name and name ~= "" then
-                    local style    = normalized_styles  [lower(filespec.style   or "normal")]
-                    local width    = normalized_widths  [lower(filespec.width   or "normal")]
-                    local weight   = normalized_weights [lower(filespec.weight  or "normal")]
-                    local variant  = normalized_variants[lower(filespec.variant or "normal")]
-                    local weights  = specifications[name  ] if not weights  then weights  = { } specifications[name  ] = weights  end
-                    local styles   = weights       [weight] if not styles   then styles   = { } weights       [weight] = styles   end
-                    local widths   = styles        [style ] if not widths   then widths   = { } styles        [style ] = widths   end
-                    local variants = widths        [width ] if not variants then variants = { } widths        [width ] = variants end
-                    variants[variant] = filename
-                    n = n + 1
-                else
-                    m = m + 1
-                end
-            end
-        end
-    end
-end
-
-function names.registered(name,weight,style,width,variant)
-    local ok = specifications[name]
-    ok = ok and (ok[(weight  and weight  ~= "" and weight ) or "normal"] or ok.normal)
-    ok = ok and (ok[(style   and style   ~= "" and style  ) or "normal"] or ok.normal)
-    ok = ok and (ok[(width   and width   ~= "" and width  ) or "normal"] or ok.normal)
-    ok = ok and (ok[(variant and variant ~= "" and variant) or "normal"] or ok.normal)
-    --
-    -- todo: same fallbacks as with database
-    --
-    if ok then
-        return {
-            filename = ok,
-            subname  = "",
-        }
-    end
-end
-
-function names.resolvespec(askedname,sub) -- overloads previous definition
-    local name, weight, style, width, variant = names.splitspec(askedname)
-    local found = names.registered(name,weight,style,width,variant)
-    if found and found.filename then
-        return found.filename, found.subname, found.rawname
-    else
-        found = names.specification(name,weight,style,width,variant)
-        if found and found.filename then
-            return found.filename, found.subfont and found.rawname
-        end
-    end
-end
+-- function names.register(files)
+--     if files then
+--         local list, commonname = files.list, files.name
+--         if list then
+--             local n, m = 0, 0
+--             for filename, filespec in sortedhash(list) do
+--                 local name = lower(filespec.name or commonname)
+--                 if name and name ~= "" then
+--                     local style    = normalized_styles  [lower(filespec.style   or "normal")]
+--                     local width    = normalized_widths  [lower(filespec.width   or "normal")]
+--                     local weight   = normalized_weights [lower(filespec.weight  or "normal")]
+--                     local variant  = normalized_variants[lower(filespec.variant or "normal")]
+--                     local weights  = specifications[name  ] if not weights  then weights  = { } specifications[name  ] = weights  end
+--                     local styles   = weights       [weight] if not styles   then styles   = { } weights       [weight] = styles   end
+--                     local widths   = styles        [style ] if not widths   then widths   = { } styles        [style ] = widths   end
+--                     local variants = widths        [width ] if not variants then variants = { } widths        [width ] = variants end
+--                     variants[variant] = filename
+--                     n = n + 1
+--                 else
+--                     m = m + 1
+--                 end
+--             end
+--         end
+--     end
+-- end
+--
+-- function names.registered(name,weight,style,width,variant)
+--     local ok = specifications[name]
+--     ok = ok and (ok[(weight  and weight  ~= "" and weight ) or "normal"] or ok.normal)
+--     ok = ok and (ok[(style   and style   ~= "" and style  ) or "normal"] or ok.normal)
+--     ok = ok and (ok[(width   and width   ~= "" and width  ) or "normal"] or ok.normal)
+--     ok = ok and (ok[(variant and variant ~= "" and variant) or "normal"] or ok.normal)
+--     --
+--     -- todo: same fallbacks as with database
+--     --
+--     if ok then
+--         return {
+--             filename = ok,
+--             subname  = "",
+--         }
+--     end
+-- end
+--
+-- function names.resolvespec(askedname,sub) -- overloads previous definition
+--     local name, weight, style, width, variant = names.splitspec(askedname)
+--     local found = names.registered(name,weight,style,width,variant)
+--     if found and found.filename then
+--         return found.filename, found.subname, found.rawname
+--     else
+--         found = names.specification(name,weight,style,width,variant)
+--         if found and found.filename then
+--             return found.filename, found.subfont and found.rawname
+--         end
+--     end
+-- end
 
 return {
     cache = names.cache,
@@ -1871,6 +1871,16 @@ return {
     load = names.load,
     resolve = names.resolve,
     writable = names.cache.writable,
+    -- ? --
+    -- collect = names.collect,
+    -- collectspec = names.collectspec,
+    -- collectfiles = names.collectfiles,
+    -- data = names.data,
+    -- filters = names.filters,
+    -- getlookups = names.getlookups,
+    -- lookup = names.lookup,
+    -- resolvespec = names.resolvespec,
+    -- specifications = names.specifications,
 }
 
 
