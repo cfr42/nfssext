@@ -1,9 +1,9 @@
--- $Id: lua-font-config.lua 12159 2026-10-27 06:22:08Z cfrees $
+-- $Id: lua-font-config.lua 12167 2026-10-29 21:25:03Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 do
   local name, rev, date = string.match(
-    "$Id: lua-font-config.lua 12159 2026-10-27 06:22:08Z cfrees $", 
+    "$Id: lua-font-config.lua 12167 2026-10-29 21:25:03Z cfrees $", 
     "Id: ([a-z][a-z-]*)%.lua (%d%d*) (%d%d%d%d%-%d%d%-%d%d) ")
   luatexbase.provides_module({
     name      = name,
@@ -2168,8 +2168,12 @@ local function get_fam_cfg_scanner()
       local curr = nfss_doc_families.curr
       msg_assert(curr ~= nil, "No current family to set parameters for!")
       curr = nfss_doc_families[curr]
-      curr[key] = lower(tostring(value))
-      msg_debug("Scanned family configuration: ", "doc", curr)
+      if key ~= "fea" or not curr[key] then
+        curr[key] = lower(tostring(value))
+      else
+        curr.fea = format("%s%s;", curr.fea, lower(tostring(value)))
+      end
+      msg_debug("Scanned (std/late) family configuration: ", "doc", curr)
     end)
 end
 -- }}}

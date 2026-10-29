@@ -33,7 +33,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12157 2026-10-27 02:35:02Z cfrees $}[v0.1 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12167 2026-10-29 21:25:03Z cfrees $}[v0.1 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -387,13 +387,117 @@
 %
 % \subsubsection{Text-mode keys}\label{subsubsec:keys-text}
 % These keys are accepted in all key-value specifications except for the top-level \texttt{math} key used to configure Unicode maths.
+% They are used to configure font ‘features’ of various sorts.
+% These include opentype features provided by the fonts, but also some additions provided by the font-loader or in other ways.
 %
-% Currently there is only one key in this category.
+% There are currently two keys in this category.
+% \texttt{fea} is a relatively low-level interface.
+% It is fast, powerful and requires familiarity with opentype font features and the syntax supported by \lpack{luaotfload}.
+% \texttt{features} is a mid-level interface which aims to provide a more user-friendly wrapper around \texttt{fea}.
+%
+% \textbf{If you are not sure which to use, use \texttt{features}.}
+%
+% The two keys may be used to configure the same family.
+% If so, consistent options are combined; in case of conflicts, \texttt{features} takes precedence over \texttt{fea}.
+% This means you can use the more-user friendly interface for most things and still add any unsupported specialist setup, if necessary. 
+%
+% \DescribeKey{features}\val{key-value list}\par
+% Optional list of font features \textbf{for text fonts only}. 
+%
+% The default is equivalent to \texttt{features=}%
+%   \marg{ligatures=tex}.
+% Unless provided in separate fonts, small-caps are enabled, if available, for upright, italic and oblique small-caps.
+% 
+% Features apply to \emph{all} fonts in the family specified by \texttt{name}, so you should not specify features you do not wish applied to all of them.
+% 
+% Currently, nine keys are supported.
+% Where multiple values are listed, any combination of values is permitted in any order, but \textbf{inconsistent values should be avoided}.
+%
+% \DescribeKey{alternates}\val{key-value list}\par
+% \begin{tabular}{>{\ttfamily}ll}
+%   contextual & enable standard contextual alternates. \\
+%   nocontextual & disable them. \\
+%   contextualswash & enable contextual ‘swash’. \\
+%   swash & enable ‘swash’. \\
+%   linefinal & enable end-of-line forms. \\
+%   wordfinal & enable end-of-word forms. \\
+%   justification & enable forms designed to help justify text. \\
+% \end{tabular}
+% \begin{tabular}{>{\ttfamily}l@{\texttt{=}}ll}
+%   annotation & \meta{integer} & an ‘annotation’ form. \\
+%   charactervariant & \meta{integer}:\meta{integer} & a character variant. \\
+%   stylistic & \meta{integer} & a ‘stylistic’ form. \\
+%   sset & \meta{integer} & a set of ‘stylistic’ forms.  \\
+% \end{tabular}
+%
+% \DescribeKey{embolden}\val{factor}\par
+% Add ‘fake bold’ to make the family heavier.
+% Note that this applies to all fonts in the family; it is not intended to add fake bold to a family which lacks one.
+%
+% \DescribeKey{forms}\val{key-value list}\par
+% \begin{tabular}{>{\ttfamily}ll}
+%   capstopetite  & \texttt{ABC} become ‘petite’ caps \\
+%   capstosc      & \texttt{ABC} become small-caps \\
+%   smalltopetite & \texttt{abc} become ‘petite’ caps \\
+%   case        & enable forms designed for use in capitalised contexts \\
+%   nocase      & disable them \\
+%   hist        & enable ‘historical’ forms of characters \\
+%   historical  & \\
+%   random      & characters vary pseudo-randomly \\
+%   titling     & forms intended for use in titles \\
+%   unicase     & \texttt{ABCabc} become letters in a single-cased alphabet \\
+% \end{tabular}
+%
+% \DescribeKey{figures}\val{key-value list}\par
+% \begin{tabular}{>{\ttfamily}ll}
+%   lining	      & lining \\        
+%   oldstyle	    & oldstyle / hanging \\      
+%   osf	          &  \\           
+%   prop	        & proportional \\          
+%   proportional	&  \\  
+%   tab	          & tabular \\           
+%   tabular	      &  \\       
+%   zero	        & slashed zero \\          
+% \end{tabular}
+%
+% \DescribeKey{language}\val{language id}\par
+% \meta{language id} must currently be a valid identifier, as recognised by \lpack{luaotfload}.
+% \texttt{otfinfo -l }\meta{path to font file} may be used to determine identifiers supported by the font.
+%
+% \DescribeKey{ligatures}\val{key-value list}\par
+% \begin{tabular}{>{\ttfamily}ll}
+%   contextual	  & enable ‘contextual’ ligatures \\    
+%   nocontextual	& disable them \\                    
+%   discretionary	& enable discretionary (non-standard) ligatures \\                   
+%   hist	        & enable historical ligatures \\                            
+%   historic	    &  \\                        
+%   required	    & enable required ligatures \\                        
+%   norequired	  & disable them \\                      
+%   standard	    & enable standard (‘common’) ligatures \\                        
+%   nostandard	  & disable them \\    
+%   tex	          & enable \TeX{} ligatures e.g.~\texttt{--} \\           
+%   notex	        & disable them \\         
+% \end{tabular}
+%
+% \DescribeKey{mode}\vals{base,mode,harf}\par
+% Set the rendering mode.
+%
+% \DescribeKey{script}\val{script id}\par
+% \meta{script id} must currently be a valid identifier, as recognised by \lpack{luaotfload}.
+% \texttt{otfinfo -s }\meta{path to font file} may be used to determine identifiers supported by the font.
+%
+% \DescribeKey{spacing}\val{key-value list}\par
+% \begin{tabular}{>{\ttfamily}ll}
+%   capsspacing   & enable spacing designed for capitalised text \\
+%   kern          & enable kerning \\
+%   nokern        & disable kerning \\
+% \end{tabular}
+%
 %
 % \DescribeKey{fea}\val{opentype feature spec.}\par
 % Optional list of font features \textbf{for text fonts only}. 
 % 
-% Note that the specification is currently passed to the font loader with minimal processing, so you must use ‘raw’ feature specifications.
+% Note that the specification is passed to the font loader with minimal processing, so you must use ‘raw’ feature specifications.
 %
 \iffalse
 % The default is \texttt{script=dflt}, \texttt{mode=node}, \texttt{+tlig},
@@ -585,7 +689,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12157 2026-10-27 02:35:02Z cfrees $}[v0.1 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12167 2026-10-29 21:25:03Z cfrees $}[v0.1 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -655,11 +759,13 @@
 % %^^A Switch back now we're done with message setup.
 % \let\MakePrivateLetters\MyMakePrivateLetters
 % 
-% \begin{variable}{\l_@@_tmpa_tl,\l_@@_tmpa_bool}
+% \begin{variable}{\l_@@_features_clist,\l_@@_tmpa_bool,\l_@@_tmpa_tl,\l_@@_tmpb_tl}
 %   Custom ephemeral variables.
 %    \begin{macrocode}
-\tl_new:N \l_@@_tmpa_tl
 \bool_new:N \l_@@_tmpa_bool
+\seq_new:N \l_@@_features_seq
+\tl_new:N \l_@@_tmpa_tl
+\tl_new:N \l_@@_tmpb_tl
 %    \end{macrocode}
 % \end{variable}
 % \begin{keyname}{rm,sf,tt}
@@ -669,20 +775,25 @@
   \keys_define:nn {lfc} {
     #1 .code:n            = { 
       \tl_clear:N \l_@@_tmpa_tl
+      \tl_clear:N \l_@@_tmpb_tl
       \keys_set_exclude_groups:nnnN {lfc/#1} {config} {##1} \l_@@_tmpa_tl
-      \keys_set:nV {lfc/#1} \l_@@_tmpa_tl
+      \keys_set_groups:nnVN {lfc/#1} {config}     \l_@@_tmpa_tl \l_@@_tmpb_tl
+      \keys_set_groups:nnV  {lfc/#1} {lateconfig} \l_@@_tmpb_tl
       \bool_set_true:N \l_@@_tmpa_bool
     },
     #1 .value_required:n  = true,
     #1 .usage:n           = preamble,
   }
 %    \end{macrocode}
-% \begin{keyname}{name,fea,force,scale,maths,math,nomaths,nomath}
+% \begin{keyname}{rm/name,rm/fea,rm/force,rm/scale,rm/maths,rm/math,rm/nomaths,rm/nomath}
+% \begin{keyname}{sf/name,sf/fea,sf/force,sf/scale,sf/maths,sf/math,sf/nomaths,sf/nomath}
+% \begin{keyname}{tt/name,tt/fea,tt/force,tt/scale,tt/maths,tt/math,tt/nomaths,tt/nomath}
 % Configure keys for default text families.
 %    \begin{macrocode}
   \keys_define:nn {lfc/#1} {
     name      .code:n = { \use:c {_@@_set_#1:n} {##1} },
     fea       .code:n = { \keys_set:nn {lfc/fam} {fea      = {##1}} },
+    features  .code:n = { \keys_set:nn {lfc/fam} {features = {##1}} },
     force     .code:n = { \keys_set:nn {lfc/fam} {force    = {##1}} },
     scale     .code:n = { \keys_set:nn {lfc/fam} {scale    = {##1}} },
     maths     .code:n = { \_@@_set_fam_cfg:nn   {maths}{##1} },
@@ -699,6 +810,7 @@
     nomaths   .value_forbidden:n  = true,
     unknown   .value_forbidden:n  = true,
     fea       .groups:n           = config,
+    features  .groups:n           = lateconfig,
     force     .groups:n           = config,
     maths     .groups:n           = config,
     math      .groups:n           = config,
@@ -708,6 +820,8 @@
   }
 }
 %    \end{macrocode}
+% \end{keyname}
+% \end{keyname}
 % \end{keyname}
 % \end{keyname}
 % \begin{keyname}{debug,family,math}
@@ -723,8 +837,11 @@
   debug   .usage:n          = general,
   family  .code:n           = { 
     \tl_clear:N \l_@@_tmpa_tl
-    \keys_set_exclude_groups:nnnN {lfc/fam} {config} {#1} \l_@@_tmpa_tl
-    \keys_set:nV {lfc/fam} \l_@@_tmpa_tl
+    \tl_clear:N \l_@@_tmpb_tl
+    \keys_set_exclude_groups:nnnN 
+                          {lfc/fam} {config,lateconfig} {#1} \l_@@_tmpa_tl
+    \keys_set_groups:nnVN {lfc/fam} {config}      \l_@@_tmpa_tl \l_@@_tmpb_tl
+    \keys_set_groups:nnV  {lfc/fam} {lateconfig}  \l_@@_tmpb_tl
     \bool_set_true:N \l_@@_tmpa_bool
   },
   family  .value_required:n = true,
@@ -746,7 +863,7 @@
 }
 %    \end{macrocode}
 % \end{keyname}
-% \begin{keyname}{name,fea,force,scale}
+% \begin{keyname}{fam/name,fam/fea,fam/features,fam/force,fam/scale}
 % Configure keys for families.
 %    \begin{macrocode}
 \keys_define:nn {lfc/fam} {
@@ -755,6 +872,15 @@
     \exp_args:Nne \__@@_set_fam_cfg:nn {csname}{ \cs_to_str:N #1 }
   },
   fea       .code:n = { \__@@_set_fam_cfg:nn {fea}{#1} },
+  features  .code:n = { 
+    \seq_clear:N \l_@@_features_seq
+    \keys_set:nn {lfc/features} {#1} 
+    \seq_if_empty:NF \l_@@_features_seq {
+      \exp_args:Nne \__@@_set_fam_cfg:nn {fea} {
+        \seq_use:Nn \l_@@_features_seq {;}
+      }
+    }
+  },
   force     .code:n = { \__@@_set_fam_cfg:nn {force}{#1} },
   scale     .code:n = { \__@@_set_fam_cfg:nn {scale}{#1} },
   unknown   .code:n = {
@@ -762,23 +888,26 @@
   },
   name      .value_required:n   = true,
   fea       .value_required:n   = true,
+  features  .value_required:n   = true,
   force     .default:n          = true,
   scale     .value_required:n   = true,
   unknown   .value_forbidden:n  = true,
   name      .usage:n            = general,
   command   .usage:n            = general,
   fea       .usage:n            = general,
+  features  .usage:n            = general,
   force     .usage:n            = general,
   scale     .usage:n            = general,
   unknown   .usage:n            = general,
   command   .groups:n           = config,
   fea       .groups:n           = config,
+  features  .groups:n           = lateconfig,
   force     .groups:n           = config,
   scale     .groups:n           = config,
 }
 %    \end{macrocode}
 % \end{keyname}
-% \begin{keyname}{name,force,scale}
+% \begin{keyname}{math/name,math/force,math/scale}
 % Configure keys for Unicode maths.
 %    \begin{macrocode}
 \IfPackageLoadedF {unicode-math} {
@@ -803,7 +932,126 @@
 }
 %    \end{macrocode}
 % \end{keyname}
-% \begin{keyname}{state,categories}
+% \begin{keyname}{features/alternates,
+%   features/embolden,
+%   features/figures,
+%   features/forms,
+%   features/language,
+%   features/ligatures,
+%   features/mode,
+%   features/script,
+%   features/spacing,
+% }
+% Trying to be a more user-friendly wrapper around \texttt{fam/fea}.
+%    \begin{macrocode}
+\keys_define:nn {lfc/features} {
+  alt/annotation  .code:n = {
+    \seq_put_right:Ne \l_@@_features_seq { nalt=#1}
+  },
+  alt/charactervariant .code:n = {
+    \_@@_cvnn_aux:w #1 \q_stop
+  },
+  alt/stylistic   .code:n = {
+    \seq_put_right:Ne \l_@@_features_seq {salt=#1}
+  },
+  alt/sset    .code:n = {
+    \seq_put_right:Ne \l_@@_features_seq {
+      +ss
+      \int_compare:nNnT { 
+        \tl_count:e { \tl_trim_spaces:n {#1} }
+      } = {1} {0}
+      #1
+    }
+  },
+  alternates  .code:n = {
+    \keys_set_known:nnN {lfc/features/alt} {#1} \l_@@_tmpb_tl
+    \_@@_features_aux:Vn \l_@@_tmpb_tl {
+      {contextual}      {+calt}
+      {nocontextual}    {-calt}
+      {contextualswash} {+cswh}
+      {linefinal}       {+falt}
+      {wordfinal}       {+fina}
+      {justification}   {+jalt}
+      %% The spec suggests this should take a number, but fontspec does it
+      %% like this.
+      {swash}           {+swsh}
+    }
+  },
+  embolden    .code:n = {
+    \seq_put_right:Nn \l_@@_features_seq {embolden=#1}
+  },
+  figures     .code:n = {
+    \_@@_features_aux:nn {#1} {
+      {lining}        {+lnum}
+      {oldstyle}      {+onum}
+      {osf}           {+onum}
+      {prop}          {+pnum}
+      {proportional}  {+pnum}
+      {tab}           {+tnum}
+      {tabular}       {+tnum}
+      {zero}          {+zero}
+    }
+  },
+  forms         .code:n = {
+    \_@@_features_aux:nn {#1} {
+      {case}          {+case}
+      {nocase}        {-case}
+      {capstopetite}  {+c2pc}
+      {capstosc}      {+c2sc}
+      {hist}          {+hist}
+      {historical}    {+hist}
+      {smalltopetite} {+pcap}
+      {random}        {+rand}
+      {titling}       {+titl}
+      {unicase}       {+unic}
+    }
+  },
+  language      .code:n = {
+    \seq_put_right:Nn \l_@@_features_seq {language=#1}
+  },
+  ligatures     .code:n = {
+    \_@@_features_aux:nn {#1} {
+      {contextual}    {+clig}
+      {nocontextual}  {-clig}
+      {discretionary} {+dlig}
+      {hist}          {+hlig}
+      {historic}      {+hlig}
+      {required}      {+rlig}
+      {norequired}    {-rlig}
+      {standard}      {+liga}
+      {nostandard}    {-liga}
+      {tex}           {+tlig}
+      {notex}         {-tlig}
+    } \l_@@_tmpa_tl
+  },
+  mode          .choices:nn = {base,node,harf}{
+    \seq_put_right:Ne \l_@@_features_seq {mode=\l_keys_choice_str}
+  },
+  script        .code:n = {
+    \seq_put_right:Nn \l_@@_features_seq {script=#1}
+  },
+  spacing       .code:n = {
+    \_@@_features_aux:nn {#1} {
+      {capsspacing}   {+cpsp}
+      {kern}          {+kern}
+      {nokern}        {-kern}
+    }
+  },
+  alternates  .value_required:n = true,
+  embolden    .value_required:n = true,
+  figures     .value_required:n = true,
+  forms       .value_required:n = true,
+  language    .value_required:n = true,
+  ligatures   .value_required:n = true,
+  mode        .value_required:n = true,
+  script      .value_required:n = true,
+  spacing     .value_required:n = true,
+}
+%    \end{macrocode}
+%% ^^A ital?
+%% ^^A ordn? ornm? sinf? subs? sups?
+% \end{keyname}
+% \begin{keyname}{debug/state,debug/categories}
 % Configure keys for debugging.
 %    \begin{macrocode}
 \keys_define:nn {lfc/debug} {
@@ -819,6 +1067,38 @@
 }
 %    \end{macrocode}
 % \end{keyname}
+% \begin{function}{\_@@_cvnn_aux:w}
+%   Parser for \texttt{cv}\meta{digit}\meta{digit} substitutions.
+%   Should we do more checks here?
+%    \begin{macrocode}
+\cs_new_nopar:Npn \_@@_cvnn_aux:w #1:#2 \q_stop {
+  \seq_put_right:Ne \l_@@_features_seq {
+    cv
+    \int_compare:nNnT { 
+      \tl_count:e { \tl_trim_spaces:n {#1} }
+    } = {1} {0}
+    #1=#2;
+  }
+}
+%    \end{macrocode}
+% \end{function}
+% \begin{function}{\_@@_features_aux:nn,\_@@_features_aux:Vn}
+%   Parser for valueless \texttt{lfc/features} keys.
+%    \begin{macrocode}
+\cs_new_nopar:Npn \_@@_features_aux:nn #1#2 {
+  \clist_map_inline:nn {#1} {
+    \tl_if_blank:nF { \tl_trim_spaces:n {##1} } {
+      \seq_put_right:Ne \l_@@_features_seq {
+        \str_case:nnF {##1} {
+          #2
+        } {##1}
+      }
+    }
+  }
+}
+\cs_generate_variant:Nn \_@@_features_aux:nn {V}
+%    \end{macrocode}
+% \end{function}
 % \begin{macro}{\fontconfig}
 %   The main (and currently(?) only) public macro.
 %    \begin{macrocode}
@@ -940,7 +1220,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %</ee-lmr>
 %
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12157 2026-10-27 02:35:02Z cfrees $
+%% $Id: lua-font-config.dtx 12167 2026-10-29 21:25:03Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
