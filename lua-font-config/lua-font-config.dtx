@@ -33,7 +33,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12167 2026-10-29 21:25:03Z cfrees $}[v0.1 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12168 2026-10-30 03:09:32Z cfrees $}[v0.1 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -65,6 +65,8 @@
 \usepackage{graphicx}
 \usepackage{parskip}
 \usepackage{changepage}
+\usepackage{array}
+\usepackage{tabularx}
 \usepackage{xurl}
 % sicrhau hyperindex=false: llwytho CYN bookmark
 \usepackage{hypdoc}% ateb Ulrike Fischer: https://tex.stackexchange.com/a/695555/
@@ -115,6 +117,9 @@
 \NewDocumentCommand \val { m }
 {%
   {\ttfamily =\,\meta{#1}}%
+}
+\NewDocumentCommand \mval {m} {%
+  {\ttfamily=\,\marg{#1}}%
 }
 \ExplSyntaxOn
 \NewDocumentCommand \vals { m }
@@ -176,6 +181,22 @@
 \setcounter{IndexColumns}{2}
 \makeatletter
 \def\@xobeysp{\leavevmode\penalty100\ }
+\NewCommandCopy \lfc@orig@cs \cs
+\protected\def\lfc@safe@cs{%
+  \begingroup
+    \catcode`\_11\relax
+    \lfc@safe@cs@aux
+}
+\protected\long\def\lfc@safe@cs@aux#1{%
+    \lfc@orig@cs{#1}%
+  \endgroup
+}
+\newcommand*\usesafecs{%
+  \let\cs\lfc@safe@cs
+}
+\newcommand*\resetcs{%
+  \let\cs\lfc@orig@cs
+}
 \makeatother
 \begin{document}
   \DocInput{\filename}
@@ -219,13 +240,26 @@
 %
 % \section{Usage}\label{sec:pkg}
 %
-% \emph{The user interface is currently \textbf{extremely} basic.}
+% \emph{The user interface is currently somewhat basic\footnote{%
+%     \begin{tabular}{ll}
+%       v0.1: & ‘\textbf{extremely} basic’.\\
+%     \end{tabular}%
+%   }%
+% .}
 %
-% All that is properly supported is the choice of font family for the standard families --- i.e.~roman/serif, sans, typewriter/mono and (Unicode) maths (main, script and calligraphic) --- and configuration of additional fonts, again by family.
-% In addition to this, scaling and raw feature selection are supported.
-% That is, most things are supported in the sense that they are possible, but the interface is rudimentary in the extreme.
+% Currently documents using exclusively Latin scripts with no changes of the base font families are reasonably well supported \emph{via} key-value based configuration.
+% This enables the choice of font family for the standard families --- i.e.~roman/serif, sans, typewriter/mono and (Unicode) maths (main, script and calligraphic) --- and configuration of additional fonts, again by family.
+% In addition to this, scaling, ‘fake bold’, rendering mode, language choice and script selection may be configured for each family.
+% A reasonable\footnote{%
+%   Where ‘reasonable’ means I have some idea what they do and some, possibly merely theoretical, ability to test them.
+%   This is naturally a quite unreasonable definition of ‘reasonable’ with a clear Western European bias.
+%   Input from users of non-Latin scripts (initially for mono-script documents) would be particularly welcome.%
+% } variety of opentype font features have key-value support.
 %
-% That said, the automated configuration is quite extensive.
+% Alternatively or additionally, feature specifications may be passed more-or-less directly to the font loader.
+% This enables any loader-supported specification to used and is faster, but requires knowledge of the syntax and opentype tag names.
+%
+% That said, the automated configuration is already quite extensive.
 % By default, the package tries to configure font families which are as rich as possible, insofar as the fonts support this. 
 % This includes
 % \begin{itemize}
@@ -240,11 +274,11 @@
 % It is not always good or, even, vaguely accurate. 
 % If things do not fit, some (currently minimal) effort is made to accommodate them as distinct font families, so they are still available at document level.
 %
-% At present, this is a bit chaotic and a bit hard to use, as the results are ‘hidden’ from you (in, of course, plain sight).
+% At present, this is still a bit chaotic and probably not that easy to use, as the results are ‘hidden’ from you (in, of course, plain sight).
 % Even so, you should typically need to do much less to access the fonts you want than you might otherwise expect. 
 %
 % The advantage of this is that if a font has several widths, you can easily adjust the one used for bold by simply redefining the relevant default.
-% This is not very user friendly yet, but it is not completely terrible.
+% This is not very user friendly yet, but it is now a bit better than not completely terrible.
 % 
 %
 % Simple usage looks like this:
@@ -272,25 +306,25 @@
 % Keys for use in key-value lists are described in \cref{subsec:keys-cfg}.
 %
 % \DescribeKey{rm}\val{family name}\par
-% \DescribeKey{rm}\val{key-val list}\par
+% \DescribeKey{rm}\mval{key-val list}\par
 % Specify family to use as the main document font, typically a serif or ‘roman’ family.
 %
 % Available keys are listed below.
 %
 % \DescribeKey{sf}\val{family name}\par
-% \DescribeKey{sf}\val{key-val list}\par
+% \DescribeKey{sf}\mval{key-val list}\par
 % Specify family to use as the default sans family, typically a sans-serif.
 %
 % Available keys are listed below.
 %
 % \DescribeKey{tt}\val{family name}\par
-% \DescribeKey{tt}\val{key-val list}\par
+% \DescribeKey{tt}\mval{key-val list}\par
 % Specify family to use as the default ‘typewriter’ family, typically monowidth.
 %
 % Available keys are listed below.
 %
 % \DescribeKey{family}\val{family name}\par
-% \DescribeKey{family}\val{key-val list}\par
+% \DescribeKey{family}\mval{key-val list}\par
 % Specify an additional text family.
 % This will create a macro which can be used to switch to the requested family\footnote{%
 %   Usually you will want to specify which macro, since otherwise you must figure out the family name the code uses, which may or may not match the one requested.
@@ -312,7 +346,7 @@
 % If you wish to use \pkg{unicode-math}, do not use this option.
 % Instead, load \pkg{unicode-math} and use \cs{setmathfont} as usual.
 %
-% \DescribeKey{debug}\val{key-val list}\par
+% \DescribeKey{debug}\mval{key-val list}\par
 % This can be used to enable debugging and/or modify the logging level.
 % It is primarily intended for use in debugging the package and unlikely to be of use in production.
 % However, it may be useful the use this key if reporting a bug which cannot be reproduced e.g.~which is platform specific or depends on system fonts.
@@ -392,7 +426,7 @@
 %
 % There are currently two keys in this category.
 % \texttt{fea} is a relatively low-level interface.
-% It is fast, powerful and requires familiarity with opentype font features and the syntax supported by \lpack{luaotfload}.
+% It is fast, powerful and requires familiarity with opentype font features and the syntax supported by \pkg{luaotfload}.
 % \texttt{features} is a mid-level interface which aims to provide a more user-friendly wrapper around \texttt{fea}.
 %
 % \textbf{If you are not sure which to use, use \texttt{features}.}
@@ -401,11 +435,17 @@
 % If so, consistent options are combined; in case of conflicts, \texttt{features} takes precedence over \texttt{fea}.
 % This means you can use the more-user friendly interface for most things and still add any unsupported specialist setup, if necessary. 
 %
-% \DescribeKey{features}\val{key-value list}\par
+% \DescribeKey{features}\mval{key-value list}\par
 % Optional list of font features \textbf{for text fonts only}. 
 %
-% The default is equivalent to \texttt{features=}%
-%   \marg{ligatures=tex}.
+% The default is equivalent to \texttt{%
+%   features=\{%
+%     script=dflt,
+%     mode=node,
+%     language=dflt,
+%     ligatures=tex%
+%   \}%
+% }.
 % Unless provided in separate fonts, small-caps are enabled, if available, for upright, italic and oblique small-caps.
 % 
 % Features apply to \emph{all} fonts in the family specified by \texttt{name}, so you should not specify features you do not wish applied to all of them.
@@ -413,59 +453,71 @@
 % Currently, nine keys are supported.
 % Where multiple values are listed, any combination of values is permitted in any order, but \textbf{inconsistent values should be avoided}.
 %
-% \DescribeKey{alternates}\val{key-value list}\par
-% \begin{tabular}{>{\ttfamily}ll}
-%   contextual & enable standard contextual alternates. \\
-%   nocontextual & disable them. \\
-%   contextualswash & enable contextual ‘swash’. \\
-%   swash & enable ‘swash’. \\
-%   linefinal & enable end-of-line forms. \\
-%   wordfinal & enable end-of-word forms. \\
-%   justification & enable forms designed to help justify text. \\
-% \end{tabular}
-% \begin{tabular}{>{\ttfamily}l@{\texttt{=}}ll}
-%   annotation & \meta{integer} & an ‘annotation’ form. \\
-%   charactervariant & \meta{integer}:\meta{integer} & a character variant. \\
-%   stylistic & \meta{integer} & a ‘stylistic’ form. \\
-%   sset & \meta{integer} & a set of ‘stylistic’ forms.  \\
-% \end{tabular}
+% A \meta{key list} requires a comma-separated list of keys \emph{without values}:
+%
+% \texttt{\{\meta{key1},\meta{key2},\dots\}}
+%
+% A \meta{key-value list} requires a comma-separated list of key-values:
+% \texttt{\{\meta{key1}=\meta{value1},\meta{key2}=\meta{value2},\dots\}}
+%
+% \DescribeKey{alternates}\mval{key/key-value list}\par
+% \meta{key/key-value list} should be a comma-separate list of one or more of the following valueless keys\par
+% \begin{tabularx}\linewidth{>{\ttfamily}lX}
+%   contextual & enable standard contextual alternates \\
+%   nocontextual & disable them \\
+%   contextualswash & enable contextual ‘swash’ \\
+%   swash & enable ‘swash’ \\
+%   linefinal & enable end-of-line forms \\
+%   wordfinal & enable end-of-word forms \\
+%   justification & enable forms designed to help justify text \\
+% \end{tabularx}\par
+% and/or one or more of the following key-value pairs\par
+% \begin{tabularx}\linewidth{>{\ttfamily}l@{\,\texttt{=}\,}lX}
+%   annotation & \meta{integer} & enable ‘annotation’ form \meta{integer} \\
+%   charactervariant & \meta{integer i}:\meta{integer j} & enable the \emph{i}th character mapping, selecting the \emph{j}th variant \\
+%   stylistic & \meta{integer} & enable ‘stylistic’ form \meta{integer} \\
+%   sset & \meta{integer} & enable the set of ‘stylistic’ forms \meta{integer} \\
+% \end{tabularx}
 %
 % \DescribeKey{embolden}\val{factor}\par
 % Add ‘fake bold’ to make the family heavier.
 % Note that this applies to all fonts in the family; it is not intended to add fake bold to a family which lacks one.
 %
-% \DescribeKey{forms}\val{key-value list}\par
-% \begin{tabular}{>{\ttfamily}ll}
-%   capstopetite  & \texttt{ABC} become ‘petite’ caps \\
-%   capstosc      & \texttt{ABC} become small-caps \\
-%   smalltopetite & \texttt{abc} become ‘petite’ caps \\
+% \DescribeKey{forms}\mval{key list}\par
+% \meta{key list} should be a comma-separate list of one or more of the following valueless keys\par
+% \begin{tabularx}\linewidth{>{\ttfamily}lX}
+%   capstopetite  & map \texttt{ABC} to ‘petite’ caps \\
+%   capstosc      & map \texttt{ABC} to small-caps \\
+%   smalltopetite & map \texttt{abc} to ‘petite’ caps \\
 %   case        & enable forms designed for use in capitalised contexts \\
 %   nocase      & disable them \\
 %   hist        & enable ‘historical’ forms of characters \\
 %   historical  & \\
 %   random      & characters vary pseudo-randomly \\
-%   titling     & forms intended for use in titles \\
-%   unicase     & \texttt{ABCabc} become letters in a single-cased alphabet \\
-% \end{tabular}
+%   titling     & enable forms intended for use in titles \\
+%   unicase     & map \texttt{ABCabc} to letters in a single-cased alphabet \\
+% \end{tabularx}
 %
-% \DescribeKey{figures}\val{key-value list}\par
-% \begin{tabular}{>{\ttfamily}ll}
-%   lining	      & lining \\        
-%   oldstyle	    & oldstyle / hanging \\      
-%   osf	          &  \\           
-%   prop	        & proportional \\          
-%   proportional	&  \\  
-%   tab	          & tabular \\           
-%   tabular	      &  \\       
-%   zero	        & slashed zero \\          
-% \end{tabular}
+% \DescribeKey{figures}\mval{key list}\par
+% \meta{key list} should be a comma-separate list of one or more of the following valueless keys\par
+% \begin{tabularx}\linewidth{>{\ttfamily}lX}
+%   lining	      & use lining digits \\
+%   oldstyle	    & use oldstyle / hanging digits \\
+%   osf	          &  \\
+%   prop	        & use proportional digits \\
+%   proportional	&  \\
+%   tab	          & use tabular digits \\
+%   tabular	      &  \\
+%   zero	        & use the slashed zero \\
+% \end{tabularx}
 %
 % \DescribeKey{language}\val{language id}\par
-% \meta{language id} must currently be a valid identifier, as recognised by \lpack{luaotfload}.
+% \meta{language id} must currently be a valid identifier, as recognised by \pkg{luaotfload}.
 % \texttt{otfinfo -l }\meta{path to font file} may be used to determine identifiers supported by the font.
 %
-% \DescribeKey{ligatures}\val{key-value list}\par
-% \begin{tabular}{>{\ttfamily}ll}
+% \DescribeKey{ligatures}\mval{key list}\par
+% \meta{key list} should be a comma-separate list of one or more of the following valueless keys\par
+% \begin{tabularx}\linewidth{>{\ttfamily}lX}
 %   contextual	  & enable ‘contextual’ ligatures \\    
 %   nocontextual	& disable them \\                    
 %   discretionary	& enable discretionary (non-standard) ligatures \\                   
@@ -477,34 +529,31 @@
 %   nostandard	  & disable them \\    
 %   tex	          & enable \TeX{} ligatures e.g.~\texttt{--} \\           
 %   notex	        & disable them \\         
-% \end{tabular}
+% \end{tabularx}
 %
 % \DescribeKey{mode}\vals{base,mode,harf}\par
 % Set the rendering mode.
 %
 % \DescribeKey{script}\val{script id}\par
-% \meta{script id} must currently be a valid identifier, as recognised by \lpack{luaotfload}.
+% \meta{script id} must currently be a valid identifier, as recognised by \pkg{luaotfload}.
 % \texttt{otfinfo -s }\meta{path to font file} may be used to determine identifiers supported by the font.
 %
-% \DescribeKey{spacing}\val{key-value list}\par
-% \begin{tabular}{>{\ttfamily}ll}
+% \DescribeKey{spacing}\mval{key list}\par
+% \meta{key list} should be a comma-separate list of one or more of the following valueless keys\par
+% \begin{tabularx}\linewidth{>{\ttfamily}lX}
 %   capsspacing   & enable spacing designed for capitalised text \\
 %   kern          & enable kerning \\
 %   nokern        & disable kerning \\
-% \end{tabular}
+% \end{tabularx}
 %
 %
-% \DescribeKey{fea}\val{opentype feature spec.}\par
+% \DescribeKey{fea}\mval{opentype feature spec.}\par
 % Optional list of font features \textbf{for text fonts only}. 
 % 
 % Note that the specification is passed to the font loader with minimal processing, so you must use ‘raw’ feature specifications.
+% \emph{If you do not know what these are, use the \texttt{features} key rather than this one; if you need an unsupported feature, file an issue on the bug tracker (link below).}
 %
-\iffalse
-% The default is \texttt{script=dflt}, \texttt{mode=node}, \texttt{+tlig},
-% \texttt{language=dflt}.
-\fi
-% The default is \texttt{fea=}%
-%   \marg{mode=node;scrpt=dflt;language=dflt;+tlig}.
+% The default is equivalent to \texttt{fea=\{mode=node;scrpt=dflt;language=dflt;+tlig\}}.
 % Unless provided in separate fonts, \texttt{+smcp} is added, if available, for upright, italic and oblique small-caps.
 % 
 % Features apply to \emph{all} fonts configured as a result of the lookup, so you should not specify features you do not wish applied to all fonts to which the specification applies.
@@ -555,7 +604,7 @@
 %
 % \section{Compatibility}\label{sec:compat}
 % 
-% \subsection{\pkg{ltx-talk}}\label{subsec:compat-talk}
+% \subsection{\cls{ltx-talk}}\label{subsec:compat-talk}
 %
 % Load with \cs{RequirePackage} \emph{before} loading the class.
 % The package emulates the class settings by default, so the main benefit of loading it is speed.
@@ -565,6 +614,13 @@
 % }
 %
 % \section{Examples}\label{sec:eeiau}
+%
+% \Cref{fig:ee-lmr,fig:ee-ncm-math,fig:ee-ncm-complete} demonstrate simple use of the package to configure the main document font, a Unicode maths font (\emph{via} \pkg{lua-unicode-math} and a complete font configuration (roman/serif, sans, typewriter and maths).
+% These examples use the default configurations for text and maths fonts, so the configurations are extremely simple.
+%
+% \Cref{fig:ee-features,fig:ee-fea,fig:ee-add} demonstrate slightly more complex setups.
+%
+% \Cref{fig:ee-talk} demonstrates how to use \pkg{lua-font-config} to speed up the compilation of presentations created with \cls{ltx-talk}.
 %
 % \lfcdocfile [label=example-lmr -- \cref{fig:ee-lmr}] {example-lmr}
 % \lfcee{lmr}
@@ -576,11 +632,28 @@
 %   {example-ncm-complete}
 % \lfcee{ncm-complete}
 %
+% Note that \cref{fig:ee-features,fig:ee-fea} give exactly the same output; the only difference is that one uses \texttt{features} and the other \texttt{fea} to configure features for the configured families.
+% See \cref{subsubsec:keys-text}.
+% 
+% \lfcdocfile [label=example-features -- \cref{fig:ee-features}] {example-features}
+% \lfcee{features}
+%
 % \lfcdocfile [label=example-fea -- \cref{fig:ee-fea}] {example-fea}
 % \lfcee{fea}
 %
+% \Cref{fig:ee-add} demonstrates usage of the \texttt{fam} key to configure an additional family and a custom font switch to access it.
+%
 % \lfcdocfile [label=example-add -- \cref{fig:ee-add}] {example-add}
 % \lfcee{add}
+%
+% \Cref{fig:ee-talk} demonstrates the default configuration for \cls{ltx-talk}.
+% This is approximately equivalent to the default setup if \pkg{lua-font-config} is not loaded.
+% Note the way the package is loaded \emph{before} \cs{documentclass}.
+% If we used \cs{usepackage} after the class was loaded, we would not benefit from the faster compilation our Lua-based approach provides\footnote{%
+%   In fact, although \pkg{lua-font-config} \emph{is} faster generally and although this is likely due to greater use of Lua, the size of the difference in this particular case suggests some additional factor is involved.
+%   However, I've not tried to confirm this or to identify the cause.%
+% }.
+% See \cref{subsec:compat-talk}.
 %
 % \lfcdocfile [label=example-talk -- \cref{fig:ee-talk},
 %   rangestartstring={\\DocumentMetadata}]{example-talk}
@@ -599,6 +672,7 @@
 %       \item Support multiple font configurations e.g.~for multiple languages with multiple scripts.
 %         \begin{itemize}
 %           \item Support for \pkg{babel}?
+%             This!!!
 %           \item[] \pkg{babel} provides e.g. \cs{babelfont}, which uses \cs{fontspec}.
 %             Should \pkg{lua-font-config} provide this?
 %         \end{itemize}
@@ -606,16 +680,13 @@
 %   \item Interface
 %     \begin{itemize}
 %       \item Provide a proper user interface (more similar to Con\TeX{}t, since we're using the same (\textsc{mkiv}) sorting?
-%       \item Information for user.
+%         The interface is now not too dissimilar to a \LaTeX-ified version of this, I suppose, except there are no goodies or typefaces and our families are a bit richer and more flexible.
+%       \item Information for user - a bit better now, hopefully, as we use the standard mechanisms, except for debug messages.
 %       \item Accommodate \texttt{.ttc}. 
 %       \begin{itemize}
 %         \item The basis is done, but not sure what, if any, interface is needed?
 %         \item How to test this??
 %       \end{itemize}
-%       \item Way to define individual font commands for text and (maybe) maths.
-%         \begin{itemize}
-%           \item Text is already in the infrastructure, but the defined macro is unpredictable \& non-configurable.
-%         \end{itemize}
 %     \end{itemize}
 %   \item Loader
 %     \begin{itemize}
@@ -658,13 +729,12 @@
 %       \item Should be cleaned up -- I cannot need 2,500 lines to load a font!
 %       \item[Unnumbered Gripe] The code is too long, too complex, too clunky and too simplistic.
 %          (Yes, of course, it can be both.)
-%       \item Loading the ConTeXt file differently?
-%       \item Improve formal \LaTeX{} representation (see \pkg{ltluatexbase}.
+%       \item Some remaining cleanup in the ConTeXt file, though this is much better than it was.
 %       \item Improve performance.
 %         \begin{itemize}
 %           \item There is some duplication and too many pre-definitions for my taste.
 %         \end{itemize}
-%       \item Possibly modify database creation to avoid sorting the data twice??
+%       \item Possibly modify database creation to avoid correcting the data again??
 %     \end{itemize}
 %   \item Test suite
 %     \begin{itemize}
@@ -674,9 +744,12 @@
 % \end{enumerate}
 %
 % \changes{v0.1}{2026-10-15}{First public release.}
+% \changes{v0.0}{2026-10-29}{Bug fixes, code cleanup, somewhat better UI, doc improvements.}
 %
 % \MaybeStop{%
+%   \usesafecs
 %   \PrintChanges
+%   \resetcs
 %   \PrintIndex
 % }
 % 
@@ -689,7 +762,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12167 2026-10-29 21:25:03Z cfrees $}[v0.1 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12168 2026-10-30 03:09:32Z cfrees $}[v0.1 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -759,8 +832,9 @@
 % %^^A Switch back now we're done with message setup.
 % \let\MakePrivateLetters\MyMakePrivateLetters
 % 
-% \begin{variable}{\l_@@_features_clist,\l_@@_tmpa_bool,\l_@@_tmpa_tl,\l_@@_tmpb_tl}
+% \begin{variable}{\l_@@_features_seq,\l_@@_tmpa_bool,\l_@@_tmpa_tl,\l_@@_tmpb_tl}
 %   Custom ephemeral variables.
+%   \changes{v0.0}{2026-10-29}{Added \cs{l_@@_features_seq}, \cs{l_@@_tmpb_tl}.}
 %    \begin{macrocode}
 \bool_new:N \l_@@_tmpa_bool
 \seq_new:N \l_@@_features_seq
@@ -824,8 +898,10 @@
 % \end{keyname}
 % \end{keyname}
 % \end{keyname}
-% \begin{keyname}{debug,family,math}
+% \begin{keyname}{debug,math}
+% \begin{keyname}{family}
 % Top-level keys for additional families, Unicode maths and debugging.
+% \changes{v0.0}{2026-10-29}{\texttt{family} adjusted to support addition of \texttt{features} interface.}
 %    \begin{macrocode}
 \keys_define:nn {lfc} {
   debug   .code:n           = { 
@@ -863,8 +939,10 @@
 }
 %    \end{macrocode}
 % \end{keyname}
+% \end{keyname}
 % \begin{keyname}{fam/name,fam/fea,fam/features,fam/force,fam/scale}
 % Configure keys for families.
+% \changes{v0.0}{2026-10-29}{Add \texttt{fea} user-interface wrapper: \texttt{features} provides a key-value interface for configuration.}
 %    \begin{macrocode}
 \keys_define:nn {lfc/fam} {
   name      .code:n = { \__@@_set_fam_name:n {#1} },
@@ -942,6 +1020,7 @@
 %   features/script,
 %   features/spacing,
 % }
+% \changes{v0.0}{2026-10-29}{Initial \texttt{features} keys: \texttt{alternates}, \texttt{embolden}, \texttt{figures}, \texttt{forms}, \texttt{language}, \texttt{ligatures}, \texttt{node}, \texttt{script}, \texttt{spacing}.}
 % Trying to be a more user-friendly wrapper around \texttt{fam/fea}.
 %    \begin{macrocode}
 \keys_define:nn {lfc/features} {
@@ -1069,6 +1148,7 @@
 % \end{keyname}
 % \begin{function}{\_@@_cvnn_aux:w}
 %   Parser for \texttt{cv}\meta{digit}\meta{digit} substitutions.
+%   \changes{v0.0}{2026-10-29}{Added.}
 %   Should we do more checks here?
 %    \begin{macrocode}
 \cs_new_nopar:Npn \_@@_cvnn_aux:w #1:#2 \q_stop {
@@ -1084,6 +1164,7 @@
 % \end{function}
 % \begin{function}{\_@@_features_aux:nn,\_@@_features_aux:Vn}
 %   Parser for valueless \texttt{lfc/features} keys.
+%   \changes{v0.0}{2026-10-29}{Added.}
 %    \begin{macrocode}
 \cs_new_nopar:Npn \_@@_features_aux:nn #1#2 {
   \clist_map_inline:nn {#1} {
@@ -1199,8 +1280,34 @@ It features \textit{italics} and \textsl{oblique}.
 The ‘demi-bold’ is of regular width, with \textsl{oblique}.
 
 \normalfont
-Where optical sizes are available, thes provide higher quality output than simple scaling.
+\Huge
+Where optical sizes are available, these provide higher quality output than simple scaling.
 
+\LARGE
+Where optical sizes are available, these provide higher quality output than simple scaling.
+
+\Large
+Where optical sizes are available, these provide higher quality output than simple scaling.
+
+\large
+Where optical sizes are available, these provide higher quality output than simple scaling.
+
+\normalsize
+Where optical sizes are available, these provide higher quality output than simple scaling.
+
+\small
+Where optical sizes are available, these provide higher quality output than simple scaling.
+
+\footnotesize
+Where optical sizes are available, these provide higher quality output than simple scaling.
+
+\scriptsize
+Where optical sizes are available, these provide higher quality output than simple scaling.
+
+\tiny
+Where optical sizes are available, these provide higher quality output than simple scaling.
+
+\normalsize
 \footnotesize
 This is footnote-sized Latin Modern Roman.
 It features \textit{italics} and \textsl{oblique}.
@@ -1220,7 +1327,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %</ee-lmr>
 %
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12167 2026-10-29 21:25:03Z cfrees $
+%% $Id: lua-font-config.dtx 12168 2026-10-30 03:09:32Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -1277,6 +1384,71 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 \end{document}
 %</ee-fea>
 %
+%<*ee-features>
+%% $Id: lua-font-config.dtx 12168 2026-10-30 03:09:32Z cfrees $
+\documentclass{article}
+\parindent=0pt
+\usepackage{lua-font-config}
+\fontconfig{%
+  rm = {% serif uses oldstyle, proportional figures
+    name = TeX Gyre Pagella,
+    features = {%
+      figures = {oldstyle, proportional},
+    },
+  },
+  sf = {% sans uses proportional lining figures
+    name = texgyreheros,
+    features = {%
+      figures = {lining, proportional},
+    },
+  },
+  tt = {% typewriter uses tabular lining figures and no ligatures
+    name = texgyrecursor,
+    features = {%
+      figures = {lining, tabular},
+      ligatures = {notex, nostandard},
+    },
+  },
+}
+\begin{document}
+{%
+  \TeX-Gyre Pagella: 0123456789
+}
+
+{%
+  \sffamily
+  \TeX-Gyre Heros: 0123456789
+}
+
+{%
+  \ttfamily
+  \TeX-Gyre Cursor 0123456789
+  -- --- outfitted officials affluently affiliate fish finials flagranty, first
+  finalising infinite floral affinities of fish-filled fingers
+}
+
+% No maths font is configured, so Computer Modern is used.
+% But the ‘text’ fonts in maths matches the text by default.
+\[
+    \sin\quad
+    \mathrm{rm}\quad
+    \mathsf{sf}\quad
+    \mathtt{tt}\quad
+    \mathit{it}\quad
+    \mathbf{bf}
+\]
+\mathversion{bold}
+\[
+    \sin\quad
+    \mathrm{rm}\quad
+    \mathsf{sf}\quad
+    \mathtt{tt}\quad
+    \mathit{it}\quad
+    \mathbf{bf}
+\]
+\end{document}
+%</ee-features>
+% 
 %<*ee-ncm-complete>
 \documentclass{article}
 \usepackage{lua-font-config}
@@ -1287,13 +1459,13 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
   math  = New Computer Modern Math,
 }
 \begin{document}
-New Computer Modern with default settings.
+New Computer \textsl{Modern} \textit{with} \textsc{\textit{default} settings}.
 
 \sffamily
-New Computer Modern Sans with default settings.
+New Computer \textsl{Modern} \textit{with} \textsc{\textit{default} settings}.
 
 \ttfamily
-New Computer Modern Mono with default settings.
+New Computer \textsl{Modern} \textit{with} \textsc{\textit{default} settings}.
 
 \normalfont
 New Computer Modern Math with text fonts as above:
