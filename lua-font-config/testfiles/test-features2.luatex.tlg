@@ -1,0 +1,19 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+============================================================
+TEST 1: family default macro
+============================================================
+LaTeX Font Info:    Trying to load font information for TU+lobstertwo-+salt:1-script:latn on input line ....
+Package lfc Info: Adding smcp callback.
+(lfc)             on input line ....
+Inserting `lfc check for +smcp' in `luaotfload.patch_font'.
+Package lfc Info: Adding data callback.
+(lfc)             on input line ....
+Inserting `lfc cache font resources' in `luaotfload.patch_font'. (../.tex Fileignored)
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;+salt=1;script=latn" 
+============================================================
+[lfc font]: \<-5.5>"[lmroman5-regular]:+tlig;"<5.5-6.5>"[lmroman6-regular]:+tlig;"<6.5-7.5>"[lmroman7-regular]:+tlig;"<7.5-8.5>"[lmroman8-regular]:+tlig;"<8.5-9.5>"[lmroman9-regular]:+tlig;"<9.5-11>"[lmroman10-regular]:+tlig;"<11-15>"[lmroman12-regular]:+tlig;"<15->"[lmroman17-regular]:+tlig;" 
+[lfc font]: \<-5.5>"[lmroman5-regular]:+tlig;"<5.5-6.5>"[lmroman6-regular]:+tlig;"<6.5-7.5>"[lmroman7-regular]:+tlig;"<7.5-8.5>"[lmroman8-regular]:+tlig;"<8.5-9.5>"[lmroman9-regular]:+tlig;"<9.5-11>"[lmroman10-regular]:+tlig;"<11-15>"[lmroman12-regular]:+tlig;"<15->"[lmroman17-regular]:+tlig;" 
+[lfc font]: \<-5.5>"[lmroman5-regular]:+tlig;"<5.5-6.5>"[lmroman6-regular]:+tlig;"<6.5-7.5>"[lmroman7-regular]:+tlig;"<7.5-8.5>"[lmroman8-regular]:+tlig;"<8.5-9.5>"[lmroman9-regular]:+tlig;"<9.5-11>"[lmroman10-regular]:+tlig;"<11-15>"[lmroman12-regular]:+tlig;"<15->"[lmroman17-regular]:+tlig;" 
+[1
+] (test-features2.aux)

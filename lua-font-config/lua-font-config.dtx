@@ -33,7 +33,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12168 2026-10-30 03:09:32Z cfrees $}[v0.1 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12170 2026-10-30 04:43:09Z cfrees $}[v0.1 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -762,7 +762,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12168 2026-10-30 03:09:32Z cfrees $}[v0.1 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12170 2026-10-30 04:43:09Z cfrees $}[v0.1 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -1025,13 +1025,13 @@
 %    \begin{macrocode}
 \keys_define:nn {lfc/features} {
   alt/annotation  .code:n = {
-    \seq_put_right:Ne \l_@@_features_seq { nalt=#1}
+    \seq_put_right:Ne \l_@@_features_seq {+nalt=#1}
   },
   alt/charactervariant .code:n = {
     \_@@_cvnn_aux:w #1 \q_stop
   },
   alt/stylistic   .code:n = {
-    \seq_put_right:Ne \l_@@_features_seq {salt=#1}
+    \seq_put_right:Ne \l_@@_features_seq {+salt=#1}
   },
   alt/sset    .code:n = {
     \seq_put_right:Ne \l_@@_features_seq {
@@ -1153,7 +1153,7 @@
 %    \begin{macrocode}
 \cs_new_nopar:Npn \_@@_cvnn_aux:w #1:#2 \q_stop {
   \seq_put_right:Ne \l_@@_features_seq {
-    cv
+    +cv
     \int_compare:nNnT { 
       \tl_count:e { \tl_trim_spaces:n {#1} }
     } = {1} {0}
@@ -1327,7 +1327,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %</ee-lmr>
 %
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12168 2026-10-30 03:09:32Z cfrees $
+%% $Id: lua-font-config.dtx 12170 2026-10-30 04:43:09Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -1385,7 +1385,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %</ee-fea>
 %
 %<*ee-features>
-%% $Id: lua-font-config.dtx 12168 2026-10-30 03:09:32Z cfrees $
+%% $Id: lua-font-config.dtx 12170 2026-10-30 04:43:09Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}

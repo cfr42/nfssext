@@ -1,0 +1,25 @@
+%% $Id: test-features2.lvt 12170 2026-10-30 04:43:09Z cfrees $
+\input lfc-support.tex
+\documentclass{article}
+\parindent=0pt
+\usepackage{lua-font-config}
+\fontconfig{%
+  family = {%
+    name = Lobster Two,
+    features = {
+      alternates = {
+        stylistic = 1
+      },
+      script = latn,
+    },
+  },
+}
+\begin{document}
+\START
+
+\TEST{family default macro}{%
+  {\lobstertwo A B E k N p}%
+}
+
+\end{document}
+
