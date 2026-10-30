@@ -12,8 +12,3 @@ Package lfc Info: Adding data callback.
 Inserting `lfc cache font resources' in `luaotfload.patch_font'. (../.tex Fileignored)
 [lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;script=latn;ss02=true" 
 ============================================================
-[lfc font]: \<-5.5>"[lmroman5-regular]:+tlig;"<5.5-6.5>"[lmroman6-regular]:+tlig;"<6.5-7.5>"[lmroman7-regular]:+tlig;"<7.5-8.5>"[lmroman8-regular]:+tlig;"<8.5-9.5>"[lmroman9-regular]:+tlig;"<9.5-11>"[lmroman10-regular]:+tlig;"<11-15>"[lmroman12-regular]:+tlig;"<15->"[lmroman17-regular]:+tlig;" 
-[lfc font]: \<-5.5>"[lmroman5-regular]:+tlig;"<5.5-6.5>"[lmroman6-regular]:+tlig;"<6.5-7.5>"[lmroman7-regular]:+tlig;"<7.5-8.5>"[lmroman8-regular]:+tlig;"<8.5-9.5>"[lmroman9-regular]:+tlig;"<9.5-11>"[lmroman10-regular]:+tlig;"<11-15>"[lmroman12-regular]:+tlig;"<15->"[lmroman17-regular]:+tlig;" 
-[lfc font]: \<-5.5>"[lmroman5-regular]:+tlig;"<5.5-6.5>"[lmroman6-regular]:+tlig;"<6.5-7.5>"[lmroman7-regular]:+tlig;"<7.5-8.5>"[lmroman8-regular]:+tlig;"<8.5-9.5>"[lmroman9-regular]:+tlig;"<9.5-11>"[lmroman10-regular]:+tlig;"<11-15>"[lmroman12-regular]:+tlig;"<15->"[lmroman17-regular]:+tlig;" 
-[1
-] (test-features3.aux)
