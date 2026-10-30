@@ -1,0 +1,26 @@
+%% $Id: test-features3.lvt 12171 2026-10-30 05:05:43Z cfrees $
+\input lfc-support.tex
+\documentclass{article}
+\parindent=0pt
+\usepackage{lua-font-config}
+\fontconfig{%
+  family = {%
+    name = texgyrepagella,
+    command = \tgpag,
+    features = {
+      alternates = {
+        sset = 2,
+      },
+      script = latn,
+    },
+  },
+}
+\begin{document}
+\START
+
+\TEST{key-value features: alternates: sset}{%
+  {\tgpag \P}%
+}
+\END
+\end{document}
+
