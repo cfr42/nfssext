@@ -10,7 +10,7 @@ Inserting `lfc check for +smcp' in `luaotfload.patch_font'.
 Package lfc Info: Adding data callback.
 (lfc)             on input line ....
 Inserting `lfc cache font resources' in `luaotfload.patch_font'. (../.tex Fileignored)
-[lfc font]: \<-9.0>"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCM08-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;+cv01=1;+cv02=1;+cv03=5;script=latn"<9.0->"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCM10-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;+cv01=1;+cv02=1;+cv03=5;script=latn" 
+[lfc font]: \<-9.0>"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCM08-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;+cv01=1;+cv02=1;+cv03=5;script=latn;"<9.0->"["TEXMFDIST/fonts/opentype/public/newcomputermodern/NewCM10-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;+cv01=1;+cv02=1;+cv03=5;script=latn;" 
 ============================================================
 [lfc font]: \<-5.5>"[lmroman5-regular]:+tlig;"<5.5-6.5>"[lmroman6-regular]:+tlig;"<6.5-7.5>"[lmroman7-regular]:+tlig;"<7.5-8.5>"[lmroman8-regular]:+tlig;"<8.5-9.5>"[lmroman9-regular]:+tlig;"<9.5-11>"[lmroman10-regular]:+tlig;"<11-15>"[lmroman12-regular]:+tlig;"<15->"[lmroman17-regular]:+tlig;" 
 [lfc font]: \<-5.5>"[lmroman5-regular]:+tlig;"<5.5-6.5>"[lmroman6-regular]:+tlig;"<6.5-7.5>"[lmroman7-regular]:+tlig;"<7.5-8.5>"[lmroman8-regular]:+tlig;"<8.5-9.5>"[lmroman9-regular]:+tlig;"<9.5-11>"[lmroman10-regular]:+tlig;"<11-15>"[lmroman12-regular]:+tlig;"<15->"[lmroman17-regular]:+tlig;" 

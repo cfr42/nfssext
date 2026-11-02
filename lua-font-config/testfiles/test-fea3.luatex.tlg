@@ -1,0 +1,14 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+============================================================
+TEST 1: fea3: +ss02
+============================================================
+LaTeX Font Info:    Trying to load font information for TU+texgyrepagella-script:latn-ss02 on input line ....
+Package lfc Info: Adding smcp callback.
+(lfc)             on input line ....
+Inserting `lfc check for +smcp' in `luaotfload.patch_font'.
+Package lfc Info: Adding data callback.
+(lfc)             on input line ....
+Inserting `lfc cache font resources' in `luaotfload.patch_font'. (../.tex Fileignored)
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;script=latn;ss02=true;" 
+============================================================

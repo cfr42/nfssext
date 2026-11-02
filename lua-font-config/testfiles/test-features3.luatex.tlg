@@ -10,5 +10,5 @@ Inserting `lfc check for +smcp' in `luaotfload.patch_font'.
 Package lfc Info: Adding data callback.
 (lfc)             on input line ....
 Inserting `lfc cache font resources' in `luaotfload.patch_font'. (../.tex Fileignored)
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;script=latn;ss02=true" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;script=latn;ss02=true;" 
 ============================================================

@@ -1,9 +1,9 @@
--- $Id: lua-font-config.lua 12167 2026-10-29 21:25:03Z cfrees $
+-- $Id: lua-font-config.lua 12174 2026-11-02 01:58:17Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 do
   local name, rev, date = string.match(
-    "$Id: lua-font-config.lua 12167 2026-10-29 21:25:03Z cfrees $", 
+    "$Id: lua-font-config.lua 12174 2026-11-02 01:58:17Z cfrees $", 
     "Id: ([a-z][a-z-]*)%.lua (%d%d*) (%d%d%d%d%-%d%d%-%d%d) ")
   luatexbase.provides_module({
     name      = name,
@@ -96,7 +96,7 @@ local load, mirrored, sort      = table.load, table.mirrored, table.sort
 local save, setmetatableindex   = table.save, table.setmetatableindex
 local concat, serialize, unique = table.concat, table.serialize, table.unique
 local prepend, sortedpairs      = table.prepend, table.sortedpairs
-local hashed, flattened         = table.hashed, table.flattened
+local hashed, flattened, merged = table.hashed, table.flattened, table.merged
 -- tex | texio | token
 local sprint, inputlineno       = tex.sprint, tex.inputlineno
 local write, write_nl           = texio.write, texio.write_nl
@@ -106,8 +106,12 @@ local create, param, set_lua    = token.create, token.scan_argument, token.set_l
 local oneof, stripper, keeper       = lpeg.oneof, lpeg.stripper, lpeg.keeper
 local firstofsplit, secondofsplit   = lpeg.firstofsplit, lpeg.secondofsplit
 local Ct, splitat, lpeg_match       = lpeg.Ct, lpeg.splitat, lpeg.match
-local p_comma, p_semicolon          = lpeg.patterns.comma, lpeg.patterns.semicolon
-local p_is_sign, p_space            = lpeg.patterns.sign, lpeg.patterns.space
+local checkedsplit                  = lpeg.checkedsplit
+local patterns                      = lpeg.patterns
+local p_comma, p_semicolon          = patterns.comma, patterns.semicolon
+local p_is_sign, p_space            = patterns.sign, patterns.space
+local p_equal, p_whitespace         = patterns.equal, patterns.whitespace
+local p_colon                       = patterns.colon
 -- }}}
 
 -- ours {{{
@@ -162,7 +166,7 @@ end
 -- }}}
 
 local str_onesize           = "<->"
-local str_fea_default       = "mode=node;language=dflt;script=dflt;+tlig"
+local str_fea_default       = "mode=node;language=dflt;script=dflt;+tlig;"
 local str_fea_math_default  = "mode=basic;language=dflt;script=math;"
 local str_fea_math_sf       = "ssty=1"
 local str_fea_math_ssf      = "ssty=2"
@@ -1163,6 +1167,72 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
 end
 -- }}}
 
+---@table fea_lookup, fea_ignore {{{
+local fea_lookup = {
+  figures       = {
+    "lnum",
+    "onum",
+    "pnum",
+    "subs",
+    "sups",
+    "tnum",
+  },
+  -- script    = {default = "dflt", latin = "ltn"},
+  -- language    = {
+  -- },
+  mode       = {
+    harfbuzz      = "harf",
+    node          = nil,
+  },
+  -- script      = {
+  -- },
+}
+local fea_ignore = {
+  calt          = "true",
+  kern          = "true",
+  language      = "dflt",
+  liga          = "true",
+  lnum          = "true",
+  mode          = "node",
+  rlig          = "true",
+  script        = "dflt",
+  tlig          = "true",
+  tnum          = "true",
+}
+local fea_known = {
+  c2pc          = true, 
+  c2sc          = true, 
+  calt          = true, 
+  case          = true, 
+  clig          = true, 
+  cpsp          = true, 
+  cswh          = true, 
+  dlig          = true, 
+  falt          = true, 
+  fina          = true, 
+  frac          = true,
+  hist          = true, 
+  hlig          = true, 
+  jalt          = true, 
+  kern          = true, 
+  liga          = true, 
+  lnum          = true,
+  onum          = true,
+  pcap          = true,
+  pnum          = true,
+  rand          = true,
+  rlig          = true, 
+  sinf          = true,
+  subs          = true,
+  sups          = true,
+  swsh          = true,
+  titl          = true,
+  tlig          = true,
+  tnum          = true,
+  unic          = true,
+  zero          = true,
+}
+-- }}}
 ---@function parse_fea(fea) {{{
 ---@param       <string>
 ---@return      (string) <feature spec.>, (string) <suffix> or nil
@@ -1174,59 +1244,20 @@ local function parse_fea(fea)
   local t_fea = fea_split(lower(tostring(fea)))
   local suffix = {}
   local cat_suffix
-  local fea_lookup = {
-    -- script    = {default = "dflt", latin = "ltn"},
-    -- language  = {},
-    figures  = {
-      lining        = "lnum", 
-      oldstyle      = "onum", 
-      proportional  = "pnum", 
-      tabular       = "tnum",
-      superscript   = "sups",
-      subscript     = "subs",
-    },
-    -- language    = {
-    -- },
-    ligatures  = {
-      discretionary = "dlig",
-      historical    = "hlig",
-      tex           = "tlig",
-    },
-    mode       = {
-      harfbuzz      = "harf",
-      node          = nil,
-    },
-    -- script      = {
-    -- },
-    -- Use a metamethod here, probably?
-    -- numbers    = fea_lookup.figures,
-  }
-  local fea_ignore = {
-    language      = "dflt",
-    liga          = "true",
-    lnum          = "true",
-    mode          = "node",
-    script        = "dflt",
-    tlig          = "true",
-    tnum          = "true",
-  }
-  local fea_known = {
-    lnum          = true,
-    onum          = true,
-    pnum          = true,
-    tnum          = true,
-    subs          = true,
-    sups          = true,
-    tlig          = true,
-  }
   -- Paid â cheisio leihau nifer o dablau yma!!!
   local t_feat = {}
   -- sortedpairs for regression testing ...
   for key,val in sortedpairs(t_fea) do
-    if fea_ignore[key] and fea_ignore[key] == val then
+    if key == "" then
+      t_fea[key] = nil
+    elseif fea_ignore[key] and fea_ignore[key] == val then
       t_fea[key] = nil
     elseif fea_known[key] then
       insert(t_feat, format("%s=%s", key, val))
+    elseif find(key, "^+cv%d%d$") or find(key, "^[+-]nalt$") or 
+      find(key, "^[+-]salt$") then insert(t_feat, format("%s=%s", key, val))
+    elseif find(key, "^[+-]ss%d%d$") then
+      insert(t_feat, key)
     else
       local code = fea_lookup[key]
       if code then
@@ -1234,7 +1265,7 @@ local function parse_fea(fea)
         if c then
           t_fea[key]  = nil
           t_fea[c] = "true"
-          insert(t_feat, format("%s=\"true\"", c))
+          insert(t_feat, format("%s=true", c))
         else 
           insert(t_feat, format("%s=%s", key, val)) 
         end
@@ -1243,7 +1274,7 @@ local function parse_fea(fea)
       end
     end
   end
-  fea = format("%s;%s", s_fea, concat(t_feat, ";"))
+  fea = format("%s%s;", s_fea, concat(t_feat, ";"))
   -- According to fntguide, these should use the autoinst suffixes,
   -- but this makes things really awkward because then (mapping to 
   -- nfssext) we have
@@ -1278,7 +1309,7 @@ local function parse_fea(fea)
       cat_suffix = cat_suffix and format("%s-osf", cat_suffix) or "-osf"
     end
   end
-  for _,i in pairs(fea_lookup.figures) do t_fea[i] = nil end
+  for _,i in ipairs(fea_lookup.figures) do t_fea[i] = nil end
   if t_fea.tlig  == "false" then insert(suffix, "-notlig") end
   if t_fea.liga  == "false" then insert(suffix, "-noliga") end
   t_fea.tlig = nil
@@ -1287,7 +1318,7 @@ local function parse_fea(fea)
     if val == "true" or val == "false" then
       insert(suffix, format("-%s%s", val == "true" and "" or "no", key))
     else
-      insert(suffix, format("-%s:%s", key, val))
+      insert(suffix, format("-%s:%s", key, val or ""))
     end
   end
   if #suffix > 0 then 
@@ -1295,6 +1326,132 @@ local function parse_fea(fea)
     cat_suffix = cat_suffix and format("%s%s", cat_suffix, suffix) or suffix
   end
   return fea, cat_suffix
+end
+-- }}}
+---@table features_lookup {{{
+local features_lookup = {
+  -- script    = {default = "dflt", latin = "ltn"},
+  -- language  = {},
+  alternates = {
+    ["annotation"]        = function(val) 
+      if type(val) == "string" then return format("+nalt=%d", tonumber(val)) end
+      for i,v in ipairs(val) do val[i] = format("+nalt=%d", tonumber(v)) end
+      return concat(val, ";")
+    end,
+    ["charactervariant"]  = function(val) 
+      if type(val) == "string" then val = {val} end
+      for n,v in ipairs(val) do
+        local t = lpeg_match(Ct(splitat(p_colon,true)), v)
+        for i,j in ipairs(t) do t[i] = tonumber(j) end
+        val[n] = format("+cv%02d=%d", t[1] or 0, t[2] or 0)
+      end
+      return concat(val, ";")
+    end,
+    ["stylistic"]         = function(val) 
+      if type(val) == "string" then return format("+salt=%d", tonumber(val)) end
+      for i,v in ipairs(val) do val[i] = format("+salt=%d", tonumber(v)) end
+      return concat(val, ";")
+    end,
+    ["sset"]              = function(val) 
+      if type(val) == "string" then return format("+ss%02d", tonumber(val)) end
+      for i,v in ipairs(val) do val[i] = format("+ss%02d", tonumber(v)) end
+      return concat(val, ";")
+    end,
+    ["contextual"]        = "calt",
+    ["contextualswash"]   = "cswh",
+    ["linefinal"]         = "falt",
+    ["wordfinal"]         = "fina",
+    ["justification"]     = "jalt",
+    -- The spec suggests this should take a number, but fontspec does it
+    -- like this.
+    ["swash"]             = "swsh",
+  },
+  figures  = {
+    ["lining"]        = "lnum", 
+    ["oldstyle"]      = "onum", 
+    ["osf"]           = "onum", 
+    ["prop"]          = "pnum", 
+    ["proportional"]  = "pnum", 
+    ["tab"]           = "tnum",
+    ["tabular"]       = "tnum",
+    ["superscript"]   = "sups",
+    ["subscript"]     = "subs",
+    ["zero"]          = "zero",
+  },
+  forms = {
+    ["capstopetite"]  = "c2pc",
+    ["capstosc"]      = "c2sc",
+    ["case"]          = "case",
+    ["hist"]          = "hist",
+    ["historical"]    = "hist",
+    ["random"]        = "rand",
+    ["smalltopetite"] = "pcap",
+    ["titling"]       = "titl",
+    ["unicase"]       = "unic",
+  },
+  language    = {
+    dflt          = "dflt",
+  },
+  ligatures  = {
+    ["contextual"]    = "clig",
+    ["discretionary"] = "dlig",
+    ["hist"]          = "hlig",
+    ["historic"]      = "hlig",
+    ["required"]      = "rlig",
+    ["standard"]      = "liga",
+    ["tex"]           = "tlig",
+  },
+  mode       = {
+    ["base"]          = "base",
+    ["harf"]          = "harf",
+    ["harfbuzz"]      = "harf",
+    ["node"]          = "node",
+  },
+  script      = {
+    dflt          = "dflt",
+  },
+  -- Use a metamethod here, probably?
+  -- numbers    = fea_lookup.figures,
+  spacings = {
+    ["capsspacing"]   = "cpsp",
+    ["kern"]          = "kern",
+  },
+}
+-- }}}
+---@function parse_features(t_fea,fea_type) {{{
+---@param       t_fea     <table>
+---@param       fea_type  <string>  (optional)
+---@return      (string) <feature spec.>
+---@description Turns a features kv list into a fea spec,
+local function parse_features(t_fea,fea_type)
+  if not t_fea then return nil end
+  -- Paid â cheisio leihau nifer o dablau yma!!!
+  local t_feat = {}
+  local lookup = (fea_type and features_lookup[fea_type]) and 
+    features_lookup[fea_type] or features_lookup
+  -- sortedpairs for regression testing ...
+  for key,val in sortedpairs(t_fea) do
+    if key ~= "" then
+      local nokey = (gsub(key, "^no", ""))
+      local code = lookup[key]
+      local nocode = lookup[nokey]
+      if not code and nocode then
+        code = nocode
+        key = nokey
+        val = "false"
+      end
+      if code and type(code) == "string" then
+        insert(t_feat, format("%s=%s", code, val))
+      elseif code then
+        local tag = code(val)
+        insert(t_feat, tag)
+      else
+        t_fea[key] = nil
+        msg(format("Unknown key \'%s\' in %s: ignoring", key, fea_type or "features"))
+      end
+    end
+  end
+  return concat(t_feat, ";")
 end
 -- }}}
 --- }}}
@@ -1331,10 +1488,10 @@ local function write_declare_shape(fam, pre, line, post, fea, size_spec)
 
   if kind then
     if kind == "string" then
-      fea = (line[5] ~= "") and format("%s;%s", fea, line[5]) or fea
+      fea = (line[5] ~= "") and format("%s%s;", fea, line[5]) or fea
     else
       msg_assert(kind == "table", {"Unexpected type ", kind, "!"})
-      fea = line[4] ~= "" and format("%s;%s", fea, line[4]) or fea
+      fea = line[4] ~= "" and format("%s%s;", fea, line[4]) or fea
     end
   end
 
@@ -2177,6 +2334,41 @@ local function get_fam_cfg_scanner()
     end)
 end
 -- }}}
+
+---@function get_fam_features_scanner() {{{
+---@description Returns a function which takes a key-val specification, 
+---@description   turns it into a fea spec and stores it.
+local function get_fam_features_scanner()
+  return do_with_two_scanner(
+    function(fea_type, list)
+      local curr = nfss_doc_families.curr
+      msg_assert(curr ~= nil, "No current family to set features for!")
+      curr = nfss_doc_families[curr]
+      if fea_type == "" then fea_type = nil end
+      list = checkedsplit(",", lpeg_match(stripper(p_whitespace),
+        lower(tostring(list))))
+      local t = {}
+      for i,j in ipairs(list) do
+        list[i] = lpeg_match(Ct(splitat(p_equal,true)), j)
+        local tag, value = list[i][1] or j, list[i][2] or "true"
+        if tag and tag ~= "" then 
+          if not t[tag] or value == "true" or value == "false" then
+            t[tag] = value 
+          elseif type(t[tag]) == "table" then
+            insert(t[tag], value)
+          else
+            t[tag] = {t[tag], value}
+          end
+        end
+      end
+      local feas = parse_features(t, fea_type)
+      if feas and feas ~= "" then
+        curr.fea = format("%s%s;", curr.fea or str_fea_default, feas)
+      end
+      msg_debug("Scanned kv features family configuration: ", "doc", curr, key)
+    end)
+end
+-- }}}
 -- }}}
 
 -- Configuration function.
@@ -2194,6 +2386,13 @@ local function configure_doc_families()
     local config = {fea = nil, scale = nil, force = nil, typeset_mode = nil}
     for t_name,cfg in sortedpairs(nfss_doc_families) do
       if t_name ~= "curr" then
+        if cfg.features then
+          if cfg.fea then
+            cfg.fea = format("%s%s;", cfg.fea, concat(cfg.features, ";"))
+          else
+            cfg.fea = format("%s;", concat(cfg.features, ";"))
+          end
+        end
         config.fea = cfg.fea or nil
         config.scale = cfg.scale or nil
         config.force = cfg.force or nil
@@ -2267,10 +2466,11 @@ luafunction_to_cs("__lfc_set_tt:n",   get_fam_default_scanner("tt"))
 luafunction_to_cs("__lfc_set_math:n", get_fam_default_scanner("math"))
 -- }}}
 
--- Scanners for additional family names and a general one for features.
+-- Scanners for additional family names, a general one for features, and a specific one for the features key-value interface.
 -- {{{
 luafunction_to_cs("__lfc_set_fam_name:n", get_fam_name_scanner())
 luafunction_to_cs("__lfc_set_fam_cfg:nn", get_fam_cfg_scanner())
+luafunction_to_cs("__lfc_set_fam_features:nn", get_fam_features_scanner())
 -- }}}
 
 -- A macro to actually configure the font families.

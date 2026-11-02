@@ -1,0 +1,14 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+============================================================
+TEST 1: fea2: +salt=01
+============================================================
+LaTeX Font Info:    Trying to load font information for TU+lobstertwo-+salt:01-script:latn on input line ....
+Package lfc Info: Adding smcp callback.
+(lfc)             on input line ....
+Inserting `lfc check for +smcp' in `luaotfload.patch_font'.
+Package lfc Info: Adding data callback.
+(lfc)             on input line ....
+Inserting `lfc cache font resources' in `luaotfload.patch_font'. (../.tex Fileignored)
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/impallari/lobster2/LobsterTwo-Regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;+salt=01;script=latn;" 
+============================================================

@@ -1,0 +1,21 @@
+%% $Id: test-fea4.lvt 12174 2026-11-02 01:58:17Z cfrees $
+\input lfc-support.tex
+\documentclass{article}
+\parindent=0pt
+\usepackage{lua-font-config}
+\fontconfig{%
+  family = {%
+    name = newcomputermodern,
+    command = \ncm,
+    fea     = {script=latn;+cv01=1;+cv02=1;+cv03=3;+cv03=5},
+  },
+}
+\begin{document}
+\START
+
+\TEST{key-value features: alternates: cv**}{%
+  {\ncm aha cede ahem cairn occur hack kip}%
+}
+% \END
+\end{document}
+

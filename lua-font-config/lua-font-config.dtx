@@ -33,7 +33,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12173 2026-10-30 20:26:15Z cfrees $}[v0.1 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12174 2026-11-02 01:58:17Z cfrees $}[v0.1 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -438,6 +438,16 @@
 % \DescribeKey{features}\mval{key-value list}\par
 % Optional list of font features \textbf{for text fonts only}. 
 %
+% \textbf{Note that this interface is \emph{highly} experimental: it may, and very likely will, change\footnote{%
+%   It is almost certain that it excludes things people need; it may also include things they don't.
+%   Moreover, the groups of options are somewhat arbitrary, as are the keys' names.
+%   It needs significant user input to determine what works best here, as \pkg{fontspec}'s framework is quite different.
+% 
+%   At some point, it also needs to be extended to permit per-font configuration e.g.~so that fake bold can be applied to create an additional weight, such as the \texttt{bf} series for a family which lacks bold.
+%   And it should also be possible to specify different default weights and widths for the stand \texttt{md} and \texttt{bf} series e.g.~to use light and demi-bold, rather than regular and bold.
+%   Right now, none of this is possible \emph{via} the key-value interface, though the latter is straightforward to do for users familiar with the roles of macros such as \cs{mddefault} and \cs{bfdefault}, at least in simple cases.%
+% .}
+%
 % The default is equivalent to \texttt{%
 %   features=\{%
 %     script=dflt,
@@ -466,10 +476,10 @@
 %   contextual & enable standard contextual alternates \\
 %   nocontextual & disable them \\
 %   contextualswash & enable contextual ‘swash’ \\
-%   swash & enable ‘swash’ \\
 %   linefinal & enable end-of-line forms \\
 %   wordfinal & enable end-of-word forms \\
 %   justification & enable forms designed to help justify text \\
+%   swash & enable ‘swash’ \\
 % \end{tabularx}\par
 % and/or one or more of the following key-value pairs\par
 % \begin{tabularx}\linewidth{>{\ttfamily}l@{\,\texttt{=}\,}lX}
@@ -483,32 +493,28 @@
 % Add ‘fake bold’ to make the family heavier.
 % Note that this applies to all fonts in the family; it is not intended to add fake bold to a family which lacks one.
 %
-% \DescribeKey{forms}\mval{key list}\par
-% \meta{key list} should be a comma-separate list of one or more of the following valueless keys\par
-% \begin{tabularx}\linewidth{>{\ttfamily}lX}
-%   capstopetite  & map \texttt{ABC} to ‘petite’ caps \\
-%   capstosc      & map \texttt{ABC} to small-caps \\
-%   smalltopetite & map \texttt{abc} to ‘petite’ caps \\
-%   case        & enable forms designed for use in capitalised contexts \\
-%   nocase      & disable them \\
-%   hist        & enable ‘historical’ forms of characters \\
-%   historical  & \\
-%   random      & characters vary pseudo-randomly \\
-%   titling     & enable forms intended for use in titles \\
-%   unicase     & map \texttt{ABCabc} to letters in a single-cased alphabet \\
-% \end{tabularx}
-%
 % \DescribeKey{figures}\mval{key list}\par
 % \meta{key list} should be a comma-separate list of one or more of the following valueless keys\par
 % \begin{tabularx}\linewidth{>{\ttfamily}lX}
-%   lining	      & use lining digits \\
-%   oldstyle	    & use oldstyle / hanging digits \\
-%   osf	          &  \\
-%   prop	        & use proportional digits \\
-%   proportional	&  \\
-%   tab	          & use tabular digits \\
-%   tabular	      &  \\
-%   zero	        & use the slashed zero \\
+%   lining	                  & use lining digits \\
+%   osf\textbar oldstyle      & use oldstyle / hanging digits \\
+%   prop\textbar proportional & use proportional digits \\
+%   tab\textbar tabular       & use tabular digits \\
+%   zero	                    & use the slashed zero \\
+% \end{tabularx}
+%
+% \DescribeKey{forms}\mval{key list}\par
+% \meta{key list} should be a comma-separate list of one or more of the following valueless keys\par
+% \begin{tabularx}\linewidth{>{\ttfamily}lX}
+%   capstopetite            & map \texttt{ABC} to ‘petite’ caps \\
+%   capstosc                & map \texttt{ABC} to small-caps \\
+%   case                    & enable forms designed for use in capitalised contexts \\
+%   nocase                  & disable them \\
+%   hist\textbar historical & enable ‘historical’ forms of characters \\
+%   random                  & characters vary pseudo-randomly \\
+%   smalltopetite           & map \texttt{abc} to ‘petite’ caps \\
+%   titling                 & enable forms intended for use in titles \\
+%   unicase                 & map \texttt{ABCabc} to letters in a single-cased alphabet \\
 % \end{tabularx}
 %
 % \DescribeKey{language}\val{language id}\par
@@ -518,20 +524,19 @@
 % \DescribeKey{ligatures}\mval{key list}\par
 % \meta{key list} should be a comma-separate list of one or more of the following valueless keys\par
 % \begin{tabularx}\linewidth{>{\ttfamily}lX}
-%   contextual	  & enable ‘contextual’ ligatures \\    
-%   nocontextual	& disable them \\                    
-%   discretionary	& enable discretionary (non-standard) ligatures \\                   
-%   hist	        & enable historical ligatures \\                            
-%   historic	    &  \\                        
-%   required	    & enable required ligatures \\                        
-%   norequired	  & disable them \\                      
-%   standard	    & enable standard (‘common’) ligatures \\                        
-%   nostandard	  & disable them \\    
-%   tex	          & enable \TeX{} ligatures e.g.~\texttt{--} \\           
-%   notex	        & disable them \\         
+%   contextual	          & enable ‘contextual’ ligatures \\    
+%   nocontextual	        & disable them \\                    
+%   discretionary	        & enable discretionary ligatures \\                   
+%   hist\textbar historic & enable historical ligatures \\                            
+%   required	            & enable required ligatures \\                        
+%   norequired	          & disable them \\                      
+%   standard	            & enable standard (‘common’) ligatures \\                        
+%   nostandard	          & disable them \\    
+%   tex	                  & enable \TeX{} ligatures e.g.~\texttt{--} \\           
+%   notex	                & disable them \\         
 % \end{tabularx}
 %
-% \DescribeKey{mode}\vals{base,mode,harf}\par
+% \DescribeKey{mode}\vals{base,node,harf,harfbuzz}\par
 % Set the rendering mode.
 %
 % \DescribeKey{script}\val{script id}\par
@@ -762,7 +767,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12173 2026-10-30 20:26:15Z cfrees $}[v0.1 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12174 2026-11-02 01:58:17Z cfrees $}[v0.1 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -1024,97 +1029,36 @@
 % Trying to be a more user-friendly wrapper around \texttt{fam/fea}.
 %    \begin{macrocode}
 \keys_define:nn {lfc/features} {
-  alt/annotation  .code:n = {
-    \seq_put_right:Ne \l_@@_features_seq {+nalt=#1}
-  },
-  alt/charactervariant .code:n = {
-    \_@@_cvnn_aux:w #1 \q_stop
-  },
-  alt/stylistic   .code:n = {
-    \seq_put_right:Ne \l_@@_features_seq {+salt=#1}
-  },
-  alt/sset    .code:n = {
-    \seq_put_right:Ne \l_@@_features_seq {
-      +ss
-      \int_compare:nNnT { 
-        \tl_count:e { \tl_trim_spaces:n {#1} }
-      } = {1} {0}
-      #1
-    }
-  },
   alternates  .code:n = {
-    \keys_set_known:nnN {lfc/features/alt} {#1} \l_@@_tmpb_tl
-    \_@@_features_aux:Vn \l_@@_tmpb_tl {
-      {contextual}      {+calt}
-      {nocontextual}    {-calt}
-      {contextualswash} {+cswh}
-      {linefinal}       {+falt}
-      {wordfinal}       {+fina}
-      {justification}   {+jalt}
-      %% The spec suggests this should take a number, but fontspec does it
-      %% like this.
-      {swash}           {+swsh}
-    }
+    \_@@_set_fam_features:nn {alternates} {#1}
   },
   embolden    .code:n = {
+    %% \_@@_set_fam_features:nn {}{embolden=#1}
     \seq_put_right:Nn \l_@@_features_seq {embolden=#1}
   },
   figures     .code:n = {
-    \_@@_features_aux:nn {#1} {
-      {lining}        {+lnum}
-      {oldstyle}      {+onum}
-      {osf}           {+onum}
-      {prop}          {+pnum}
-      {proportional}  {+pnum}
-      {tab}           {+tnum}
-      {tabular}       {+tnum}
-      {zero}          {+zero}
-    }
+    \_@@_set_fam_features:nn {figures} {#1}
   },
   forms         .code:n = {
-    \_@@_features_aux:nn {#1} {
-      {case}          {+case}
-      {nocase}        {-case}
-      {capstopetite}  {+c2pc}
-      {capstosc}      {+c2sc}
-      {hist}          {+hist}
-      {historical}    {+hist}
-      {smalltopetite} {+pcap}
-      {random}        {+rand}
-      {titling}       {+titl}
-      {unicase}       {+unic}
-    }
+    \_@@_set_fam_features:nn {forms} {#1}
   },
   language      .code:n = {
+    %% \_@@_set_fam_features:nn {}{language=#1}
     \seq_put_right:Nn \l_@@_features_seq {language=#1}
   },
   ligatures     .code:n = {
-    \_@@_features_aux:nn {#1} {
-      {contextual}    {+clig}
-      {nocontextual}  {-clig}
-      {discretionary} {+dlig}
-      {hist}          {+hlig}
-      {historic}      {+hlig}
-      {required}      {+rlig}
-      {norequired}    {-rlig}
-      {standard}      {+liga}
-      {nostandard}    {-liga}
-      {tex}           {+tlig}
-      {notex}         {-tlig}
-    } \l_@@_tmpa_tl
+    \_@@_set_fam_features:nn {ligatures} {#1}
   },
   mode          .choices:nn = {base,node,harf}{
+    %% \_@@_set_fam_features:nn {mode}{#1}
     \seq_put_right:Ne \l_@@_features_seq {mode=\l_keys_choice_str}
   },
   script        .code:n = {
+    %% \_@@_set_fam_features:nn {}{script=#1}
     \seq_put_right:Nn \l_@@_features_seq {script=#1}
   },
   spacing       .code:n = {
-    \_@@_features_aux:nn {#1} {
-      {capsspacing}   {+cpsp}
-      {kern}          {+kern}
-      {nokern}        {-kern}
-    }
+    \_@@_set_fam_features:nn {spacings} {#1}
   },
   alternates  .value_required:n = true,
   embolden    .value_required:n = true,
@@ -1146,45 +1090,6 @@
 }
 %    \end{macrocode}
 % \end{keyname}
-% \begin{function}{\_@@_cvnn_aux:w}
-%   Parser for \texttt{cv}\meta{digit}\meta{digit} substitutions.
-%   \changes{v0.0}{2026-10-29}{Added.}
-%   Should we do more checks here?
-%
-%   Avoiding \cs{expanded} here requires four more \verb|\exp_after:w|s because \cs{use:e} is a macro, \verb|\tex_expanded:D| is do-not-use and the \texttt{unbraced} expansion functions do not have a documented number of expansions. 
-%   This is at least a little saner, though the temptation to \cs{def} in non-\pkg{expl3} when I'm cheating anyway is great.
-%   Maybe a Lua function would make sense here?
-%    \begin{macrocode}
-\exp_after:w \cs_new_nopar:Npn \exp_after:w 
-  \_@@_cvnn_aux:w \expanded {#1 \c_colon_str #2} \q_stop {
-  \seq_put_right:Ne \l_@@_features_seq {
-    +cv
-    \int_compare:nNnT { 
-      \tl_count:e { \tl_trim_spaces:n {#1} }
-    } = {1} {0}
-    #1=#2
-  }
-}
-%    \end{macrocode}
-% \end{function}
-% \begin{function}{\_@@_features_aux:nn,\_@@_features_aux:Vn}
-%   Parser for valueless \texttt{lfc/features} keys.
-%   \changes{v0.0}{2026-10-29}{Added.}
-%    \begin{macrocode}
-\cs_new_nopar:Npn \_@@_features_aux:nn #1#2 {
-  \clist_map_inline:nn {#1} {
-    \tl_if_blank:nF { \tl_trim_spaces:n {##1} } {
-      \seq_put_right:Ne \l_@@_features_seq {
-        \str_case:nnF {##1} {
-          #2
-        } {##1}
-      }
-    }
-  }
-}
-\cs_generate_variant:Nn \_@@_features_aux:nn {V}
-%    \end{macrocode}
-% \end{function}
 % \begin{macro}{\fontconfig}
 %   The main (and currently(?) only) public macro.
 %   \changes{v0.0}{2026-10-30}{Forbid \cs{par} in input.}
@@ -1249,6 +1154,7 @@
 %    \end{macrocode}
 % \begin{function}{%
 %   \_@@_set_fam_cfg:nn,
+%   \_@@_set_fam_features:nn,
 %   \_@@_set_fam_name:n,
 %   \_@@_set_mathrm:,
 %   \_@@_set_mathsf:,
@@ -1333,7 +1239,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %</ee-lmr>
 %
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12173 2026-10-30 20:26:15Z cfrees $
+%% $Id: lua-font-config.dtx 12174 2026-11-02 01:58:17Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -1391,7 +1297,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %</ee-fea>
 %
 %<*ee-features>
-%% $Id: lua-font-config.dtx 12173 2026-10-30 20:26:15Z cfrees $
+%% $Id: lua-font-config.dtx 12174 2026-11-02 01:58:17Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}

@@ -1,0 +1,25 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+============================================================
+TEST 1: features: unknown
+============================================================
+! LaTeX Error: The key 'lfc/features/bolden' is unknown and is being ignored.
+For immediate help type H <return>.
+ ...                                              
+l. ...}
+The module 'lfc/features' does not have a key called 'lfc/features/bolden'.
+Check that you have spelled the key name correctly.
+Package lfc Warning: Unknown key 'allcaps' in alternates: ignoring
+(lfc)                on input line ....
+Package lfc Warning: Unknown key 'delux' in alternates: ignoring
+(lfc)                on input line ....
+! LaTeX Error: The key 'lfc/features/styleforms' is unknown and is being ignored.
+For immediate help type H <return>.
+ ...                                              
+l. ...}
+The module 'lfc/features' does not have a key called 'lfc/features/styleforms'.
+Check that you have spelled the key name correctly.
+Lua function __lfc_tuimfellenglishsc-+salt:3.fd = ...
+Lua function __lfc_tuimfellenglish-+salt:3.fd = ...
+Lua function imfellbf = ...
+============================================================

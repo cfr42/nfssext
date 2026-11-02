@@ -5,14 +5,14 @@ TEST 1: family default macro
 ============================================================
 LaTeX Font Info:    Trying to load font information for TU+imfellenglish on input line ....
 (../.tex Fileignored)
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/iginomarini/imfellenglish/IMFeENrm28P.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/iginomarini/imfellenglish/IMFeENit28P.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/iginomarini/imfellenglish/IMFeENrm28P.otf"]:mode=node;language=dflt;script=dflt;+tlig;" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/iginomarini/imfellenglish/IMFeENit28P.otf"]:mode=node;language=dflt;script=dflt;+tlig;" 
 ============================================================
 ============================================================
 TEST 2: family variant macro
 ============================================================
 LaTeX Font Info:    Trying to load font information for TU+imfellenglish-embolden:10 on input line ....
 (../.tex Fileignored)
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/iginomarini/imfellenglish/IMFeENrm28P.otf"]:mode=node;language=dflt;script=dflt;+tlig;embolden=10" 
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/iginomarini/imfellenglish/IMFeENit28P.otf"]:mode=node;language=dflt;script=dflt;+tlig;embolden=10" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/iginomarini/imfellenglish/IMFeENrm28P.otf"]:mode=node;language=dflt;script=dflt;+tlig;embolden=10;" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/iginomarini/imfellenglish/IMFeENit28P.otf"]:mode=node;language=dflt;script=dflt;+tlig;embolden=10;" 
 ============================================================

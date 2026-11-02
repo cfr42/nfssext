@@ -1,0 +1,20 @@
+%% $Id: test-fea2.lvt 12174 2026-11-02 01:58:17Z cfrees $
+\input lfc-support.tex
+\documentclass{article}
+\parindent=0pt
+\usepackage{lua-font-config}
+\fontconfig{%
+  family = {%
+    name = Lobster Two,
+    fea = {script=latn;+salt=01},
+  },
+}
+\begin{document}
+\START
+
+\TEST{fea2: +salt=01}{%
+  {\lobstertwo A B E k N p}%
+}
+\END
+\end{document}
+

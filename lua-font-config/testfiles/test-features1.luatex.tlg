@@ -3,17 +3,17 @@ Don't change this file in any respect.
 ============================================================
 TEST 1: texgyrepagella osf prop
 ============================================================
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;onum=true;pnum=true" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;onum=true;pnum=true;" 
 ============================================================
 ============================================================
 TEST 2: texgyreheros prop lining
 ============================================================
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyreheros-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;pnum=true" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyreheros-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;pnum=true;" 
 ============================================================
 ============================================================
 TEST 3: texgyrecursor notex tab lining
 ============================================================
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrecursor-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;liga=false;tlig=false" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrecursor-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;liga=false;tlig=false;" 
 ============================================================
 Overfull \hbox (12.08298pt too wide) in paragraph at lines ...
 []\TU/texgyrecursor-notlig-noliga/m/n/10 T[]X-Gyre Cur-sor 0123456789 -- --- out-fit-ted of-fi-cials af-flu-
@@ -187,14 +187,14 @@ TEST 4: family default macro
 ============================================================
 LaTeX Font Info:    Trying to load font information for TU+imfellenglish on input line ....
 (../.tex Fileignored)
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/iginomarini/imfellenglish/IMFeENrm28P.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/iginomarini/imfellenglish/IMFeENit28P.otf"]:mode=node;language=dflt;script=dflt;+tlig" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/iginomarini/imfellenglish/IMFeENrm28P.otf"]:mode=node;language=dflt;script=dflt;+tlig;" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/iginomarini/imfellenglish/IMFeENit28P.otf"]:mode=node;language=dflt;script=dflt;+tlig;" 
 ============================================================
 ============================================================
 TEST 5: family variant macro
 ============================================================
 LaTeX Font Info:    Trying to load font information for TU+imfellenglish-embolden:10 on input line ....
 (../.tex Fileignored)
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/iginomarini/imfellenglish/IMFeENrm28P.otf"]:mode=node;language=dflt;script=dflt;+tlig;embolden=10" 
-[lfc font]: \<->"["TEXMFDIST/fonts/opentype/iginomarini/imfellenglish/IMFeENit28P.otf"]:mode=node;language=dflt;script=dflt;+tlig;embolden=10" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/iginomarini/imfellenglish/IMFeENrm28P.otf"]:mode=node;language=dflt;script=dflt;+tlig;embolden=10;" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/iginomarini/imfellenglish/IMFeENit28P.otf"]:mode=node;language=dflt;script=dflt;+tlig;embolden=10;" 
 ============================================================

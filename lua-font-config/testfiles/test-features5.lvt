@@ -1,0 +1,27 @@
+%% $Id: test-features5.lvt 12174 2026-11-02 01:58:17Z cfrees $
+%% $Id: test-features5.lvt 12174 2026-11-02 01:58:17Z cfrees $
+\input lfc-support.tex
+\documentclass{article}
+\parindent=0pt
+\usepackage{lua-font-config}
+\START
+\TEST{features: unknown}{%
+  \fontconfig{%
+    family = {%
+      name = imfellenglish,
+      command = \imfellbf,
+      features = {bolden=10,
+        alternates = {
+          allcaps,
+          stylistic = 3,
+          delux = 09:03,
+        },
+        styleforms = {
+          petitecaps,
+        },
+      },
+    },
+  }%
+}
+\END
+
