@@ -33,7 +33,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12174 2026-11-02 01:58:17Z cfrees $}[v0.1 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12177 2026-11-02 02:21:30Z cfrees $}[v0.1 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -438,15 +438,16 @@
 % \DescribeKey{features}\mval{key-value list}\par
 % Optional list of font features \textbf{for text fonts only}. 
 %
-% \textbf{Note that this interface is \emph{highly} experimental: it may, and very likely will, change\footnote{%
-%   It is almost certain that it excludes things people need; it may also include things they don't.
-%   Moreover, the groups of options are somewhat arbitrary, as are the keys' names.
-%   It needs significant user input to determine what works best here, as \pkg{fontspec}'s framework is quite different.
+% {\bfseries Note that this interface is \emph{highly} experimental: it may, and very likely will, change\footnote{%
+%     It is almost certain that it excludes things people need; it may also include things they don't.
+%     Moreover, the groups of options are somewhat arbitrary, as are the keys' names.
+%     It needs significant user input to determine what works best here, as \pkg{fontspec}'s framework is quite different.
 % 
-%   At some point, it also needs to be extended to permit per-font configuration e.g.~so that fake bold can be applied to create an additional weight, such as the \texttt{bf} series for a family which lacks bold.
-%   And it should also be possible to specify different default weights and widths for the stand \texttt{md} and \texttt{bf} series e.g.~to use light and demi-bold, rather than regular and bold.
-%   Right now, none of this is possible \emph{via} the key-value interface, though the latter is straightforward to do for users familiar with the roles of macros such as \cs{mddefault} and \cs{bfdefault}, at least in simple cases.%
-% .}
+%     At some point, it also needs to be extended to permit per-font configuration e.g.~so that fake bold can be applied to create an additional weight, such as the \texttt{bf} series for a family which lacks bold.
+%     And it should also be possible to specify different default weights and widths for the stand \texttt{md} and \texttt{bf} series e.g.~to use light and demi-bold, rather than regular and bold.
+%     Right now, none of this is possible \emph{via} the key-value interface, though the latter is straightforward to do for users familiar with the roles of macros such as \cs{mddefault} and \cs{bfdefault}, at least in simple cases.%
+%   }.%
+% }
 %
 % The default is equivalent to \texttt{%
 %   features=\{%
@@ -471,7 +472,7 @@
 % \texttt{\{\meta{key1}=\meta{value1},\meta{key2}=\meta{value2},\dots\}}
 %
 % \DescribeKey{alternates}\mval{key/key-value list}\par
-% \meta{key/key-value list} should be a comma-separate list of one or more of the following valueless keys\par
+% \meta{key/key-value list} should be a comma-separated list of one or more of the following valueless keys\par
 % \begin{tabularx}\linewidth{>{\ttfamily}lX}
 %   contextual & enable standard contextual alternates \\
 %   nocontextual & disable them \\
@@ -494,7 +495,7 @@
 % Note that this applies to all fonts in the family; it is not intended to add fake bold to a family which lacks one.
 %
 % \DescribeKey{figures}\mval{key list}\par
-% \meta{key list} should be a comma-separate list of one or more of the following valueless keys\par
+% \meta{key list} should be a comma-separated list of one or more of the following valueless keys\par
 % \begin{tabularx}\linewidth{>{\ttfamily}lX}
 %   lining	                  & use lining digits \\
 %   osf\textbar oldstyle      & use oldstyle / hanging digits \\
@@ -504,7 +505,7 @@
 % \end{tabularx}
 %
 % \DescribeKey{forms}\mval{key list}\par
-% \meta{key list} should be a comma-separate list of one or more of the following valueless keys\par
+% \meta{key list} should be a comma-separated list of one or more of the following valueless keys\par
 % \begin{tabularx}\linewidth{>{\ttfamily}lX}
 %   capstopetite            & map \texttt{ABC} to ‘petite’ caps \\
 %   capstosc                & map \texttt{ABC} to small-caps \\
@@ -522,7 +523,7 @@
 % \texttt{otfinfo -l }\meta{path to font file} may be used to determine identifiers supported by the font.
 %
 % \DescribeKey{ligatures}\mval{key list}\par
-% \meta{key list} should be a comma-separate list of one or more of the following valueless keys\par
+% \meta{key list} should be a comma-separated list of one or more of the following valueless keys\par
 % \begin{tabularx}\linewidth{>{\ttfamily}lX}
 %   contextual	          & enable ‘contextual’ ligatures \\    
 %   nocontextual	        & disable them \\                    
@@ -544,7 +545,7 @@
 % \texttt{otfinfo -s }\meta{path to font file} may be used to determine identifiers supported by the font.
 %
 % \DescribeKey{spacing}\mval{key list}\par
-% \meta{key list} should be a comma-separate list of one or more of the following valueless keys\par
+% \meta{key list} should be a comma-separated list of one or more of the following valueless keys\par
 % \begin{tabularx}\linewidth{>{\ttfamily}lX}
 %   capsspacing   & enable spacing designed for capitalised text \\
 %   kern          & enable kerning \\
@@ -767,7 +768,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12174 2026-11-02 01:58:17Z cfrees $}[v0.1 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12177 2026-11-02 02:21:30Z cfrees $}[v0.1 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -1239,7 +1240,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %</ee-lmr>
 %
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12174 2026-11-02 01:58:17Z cfrees $
+%% $Id: lua-font-config.dtx 12177 2026-11-02 02:21:30Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -1297,7 +1298,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %</ee-fea>
 %
 %<*ee-features>
-%% $Id: lua-font-config.dtx 12174 2026-11-02 01:58:17Z cfrees $
+%% $Id: lua-font-config.dtx 12177 2026-11-02 02:21:30Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
