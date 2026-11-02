@@ -33,7 +33,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12179 2026-11-02 02:35:01Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12180 2026-11-02 02:55:44Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -204,7 +204,11 @@
 %</driver>
 % \fi
 % \expandafter\title\expandafter{\csname lfc@base\endcsname}
-% \author{Clea F. Rees}%^^A\thanks{%
+% \author{Clea F. Rees\thanks{%
+%     Many thanks to everyone who provided feedback on version 0.1.
+%     I'd particularly like to thank Max Chernoff who is primarily responsible for cleaning up the Con\TeX{}t code, made many other suggestions and demonstrated remarkable patience in the face of my ineptitude.%
+%   }%
+% }%^^A\thanks{%
 % \AddToHook{shipout/foreground}{%
 %   \put (5mm,\dimeval{\baselineskip-\paperheight}) {%
 %     \hbox to \dimeval{\paperwidth-10mm} {%
@@ -768,7 +772,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12179 2026-11-02 02:35:01Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12180 2026-11-02 02:55:44Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -1245,7 +1249,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %</ee-lmr>
 %
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12179 2026-11-02 02:35:01Z cfrees $
+%% $Id: lua-font-config.dtx 12180 2026-11-02 02:55:44Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -1303,7 +1307,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %</ee-fea>
 %
 %<*ee-features>
-%% $Id: lua-font-config.dtx 12179 2026-11-02 02:35:01Z cfrees $
+%% $Id: lua-font-config.dtx 12180 2026-11-02 02:55:44Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
