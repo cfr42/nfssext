@@ -33,7 +33,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12178 2026-11-02 02:24:51Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12179 2026-11-02 02:35:01Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -768,7 +768,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12178 2026-11-02 02:24:51Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12179 2026-11-02 02:35:01Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -907,7 +907,7 @@
 % \begin{keyname}{debug,math}
 % \begin{keyname}{family}
 % Top-level keys for additional families, Unicode maths and debugging.
-% \changes{v0.2}{2026-10-29}{\texttt{family} adjusted to support addition of \texttt{features} interface.}
+% \changes{v0.2}{2026-10-29}{Adjusted to support addition of \texttt{features} interface.}
 %    \begin{macrocode}
 \keys_define:nn {lfc} {
   debug   .code:n           = { 
@@ -946,9 +946,11 @@
 %    \end{macrocode}
 % \end{keyname}
 % \end{keyname}
-% \begin{keyname}{fam/name,fam/fea,fam/features,fam/force,fam/scale}
+% \begin{keyname}{fam}
 % Configure keys for families.
 % \changes{v0.2}{2026-10-29}{Add \texttt{fea} user-interface wrapper: \texttt{features} provides a key-value interface for configuration.}
+% \begin{keyname}{fam/name,fam/fea,fam/features,fam/force,fam/scale}
+% Configure keys for families.
 %    \begin{macrocode}
 \keys_define:nn {lfc/fam} {
   name      .code:n = { \__@@_set_fam_name:n {#1} },
@@ -991,6 +993,7 @@
 }
 %    \end{macrocode}
 % \end{keyname}
+% \end{keyname}
 % \begin{keyname}{math/name,math/force,math/scale}
 % Configure keys for Unicode maths.
 %    \begin{macrocode}
@@ -1016,6 +1019,8 @@
 }
 %    \end{macrocode}
 % \end{keyname}
+% \begin{keyname}{features}
+% \changes{v0.2}{2026-10-29}{Initial \texttt{features} keys: \texttt{alternates}, \texttt{embolden}, \texttt{figures}, \texttt{forms}, \texttt{language}, \texttt{ligatures}, \texttt{node}, \texttt{script}, \texttt{spacing}.}
 % \begin{keyname}{features/alternates,
 %   features/embolden,
 %   features/figures,
@@ -1026,7 +1031,6 @@
 %   features/script,
 %   features/spacing,
 % }
-% \changes{v0.2}{2026-10-29}{Initial \texttt{features} keys: \texttt{alternates}, \texttt{embolden}, \texttt{figures}, \texttt{forms}, \texttt{language}, \texttt{ligatures}, \texttt{node}, \texttt{script}, \texttt{spacing}.}
 % Trying to be a more user-friendly wrapper around \texttt{fam/fea}.
 %    \begin{macrocode}
 \keys_define:nn {lfc/features} {
@@ -1074,6 +1078,7 @@
 %    \end{macrocode}
 %% ^^A ital?
 %% ^^A ordn? ornm? sinf? subs? sups?
+% \end{keyname}
 % \end{keyname}
 % \begin{keyname}{debug/state,debug/categories}
 % Configure keys for debugging.
@@ -1240,7 +1245,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %</ee-lmr>
 %
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12178 2026-11-02 02:24:51Z cfrees $
+%% $Id: lua-font-config.dtx 12179 2026-11-02 02:35:01Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -1298,7 +1303,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %</ee-fea>
 %
 %<*ee-features>
-%% $Id: lua-font-config.dtx 12178 2026-11-02 02:24:51Z cfrees $
+%% $Id: lua-font-config.dtx 12179 2026-11-02 02:35:01Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
