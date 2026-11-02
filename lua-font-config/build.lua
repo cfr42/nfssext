@@ -1,4 +1,4 @@
--- $Id: build.lua 12178 2026-11-02 02:24:51Z cfrees $
+-- $Id: build.lua 12183 2026-11-02 05:14:44Z cfrees $
 --------------------------------------------------------------------------------
 -- This package combines files released under distinct licences. 
 --
@@ -153,7 +153,7 @@ uploadconfig = {
 	repository    = {"https://codeberg.org/cfr/nfssext", "https://github.com/cfr42/nfssext"},
   -- support {}
 	topic         = {"font-mgmt", "font-sel", "font-use", "luatex", "tagged-pdf"},
-	update        = false,
+	update        = true,
   -- files --
   -- announcement_file
   -- note_file
