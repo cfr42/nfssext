@@ -1,4 +1,4 @@
-<!-- $Id: README.md 12178 2026-11-02 02:24:51Z cfrees $ -->
+<!-- $Id: README.md 12187 2026-11-03 12:22:58Z cfrees $ -->
 
 -------------------------------------------------
 # lua-font-config
@@ -10,10 +10,10 @@ shapes, weights, widths and features provided by many of today's fonts.
 
 Engine callbacks, LaTeX hooks and caching are used to eliminate pre-loading,
 reduce lookups and minimise pre-defining. This allows very rich font families 
-to be quicky generated, with minimal user input and zero configuration files. 
+to be quickly generated, with minimal user input and zero configuration files. 
 
-The core code consists of two Lua modules: one taken as-is from ConTeXt (MKIV)
-and one providing the LaTeX interface and data processing.
+The core code consists of two Lua modules: one taken modified from ConTeXt
+(MKIV) and one providing the LaTeX interface and data processing.
 
 The package is experimental and, while already usable in many cases, 
 currently(?) provides only a small part of fontspec's functionality.
@@ -23,13 +23,14 @@ Implemented features include:
     typewriter); 
 - optional use of these families in maths mode;
 - creation of additional families (text mode);
+- key-value or 'raw' features specifications for text fonts;
 - support for Unicode maths (via lua-unicode-math).
 
 Missing features include:
 - support for multi-lingual typesetting;
 - support for variable fonts;
 - spot colours etc.;
-- a user interface beyond the rudimentary.
+- a more complete key-value interface.
 
 While I have tested the package, I can only do this on Arch Linux (locally)
 and Ubuntu (GitHub). Given how system-dependent Unicode font configuration
@@ -48,7 +49,7 @@ The package requires LuaLaTeX.
 
 ### ConTeXt module
 
-The file named lfc-context-font-syn.lua is a renamed copy of
+The file named lfc-context-font-syn.lua is a modified renamed copy of
 
   filename:     context-font-syn.lua 
   author:       Hans Hagen, PRAGMA-ADE, Hasselt NL
