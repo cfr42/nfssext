@@ -1,4 +1,4 @@
--- $Id: build.lua 12183 2026-11-02 05:14:44Z cfrees $
+-- $Id: build.lua 12188 2026-11-03 20:36:47Z cfrees $
 --------------------------------------------------------------------------------
 -- This package combines files released under distinct licences. 
 --
@@ -41,6 +41,7 @@ table.insert(versionpatterns, "v%d+[%d%.]* %d+")
 typesetexe = "lualatex"
 typesetopts = "-interaction=nonstopmode -cnf-line='TEXMFHOME=.' -cnf-line='TEXMFLOCAL=.' -cnf-line='TEXMFARCH=.'"
 date = "2026-2026"
+tagfiles = {"README.md", "*.dtx", checkconfigs, "lua-font-config.lua", "*.ins", manifestfile}
 if fileexists(maindir .. "tag.lua") then
   dofile(maindir .. "/tag.lua")
 elseif direxists(sourcefiledir .. "/../../adnoddau/l3build") then
