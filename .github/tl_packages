@@ -207,3 +207,7 @@ minted
 kpfonts-otf
 standalone
 imfellenglish
+
+# hyperref has hard dependency on nameref, but no longer includes it
+# and this is not listed as a dependency (2026-11-04 re. changes 2026-11-03)
+nameref
