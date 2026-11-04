@@ -33,7 +33,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12180 2026-11-02 02:55:44Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12189 2026-11-04 06:15:23Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -772,7 +772,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12180 2026-11-02 02:55:44Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12189 2026-11-04 06:15:23Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -1039,35 +1039,35 @@
 %    \begin{macrocode}
 \keys_define:nn {lfc/features} {
   alternates  .code:n = {
-    \_@@_set_fam_features:nn {alternates} {#1}
+    \_@@_set_fam_features:nnn {*,*} {alternates} {#1}
   },
   embolden    .code:n = {
-    %% \_@@_set_fam_features:nn {}{embolden=#1}
+    %% \_@@_set_fam_features:nnn {*,*} {}{embolden=#1}
     \seq_put_right:Nn \l_@@_features_seq {embolden=#1}
   },
   figures     .code:n = {
-    \_@@_set_fam_features:nn {figures} {#1}
+    \_@@_set_fam_features:nnn {*,*} {figures} {#1}
   },
   forms         .code:n = {
-    \_@@_set_fam_features:nn {forms} {#1}
+    \_@@_set_fam_features:nnn {*,*} {forms} {#1}
   },
   language      .code:n = {
-    %% \_@@_set_fam_features:nn {}{language=#1}
+    %% \_@@_set_fam_features:nnn {*,*} {}{language=#1}
     \seq_put_right:Nn \l_@@_features_seq {language=#1}
   },
   ligatures     .code:n = {
-    \_@@_set_fam_features:nn {ligatures} {#1}
+    \_@@_set_fam_features:nnn {*,*} {ligatures} {#1}
   },
   mode          .choices:nn = {base,node,harf}{
-    %% \_@@_set_fam_features:nn {mode}{#1}
+    %% \_@@_set_fam_features:nnn {*,*} {mode}{#1}
     \seq_put_right:Ne \l_@@_features_seq {mode=\l_keys_choice_str}
   },
   script        .code:n = {
-    %% \_@@_set_fam_features:nn {}{script=#1}
+    %% \_@@_set_fam_features:nnn {*,*} {}{script=#1}
     \seq_put_right:Nn \l_@@_features_seq {script=#1}
   },
   spacing       .code:n = {
-    \_@@_set_fam_features:nn {spacings} {#1}
+    \_@@_set_fam_features:nnn {*,*} {spacings} {#1}
   },
   alternates  .value_required:n = true,
   embolden    .value_required:n = true,
@@ -1164,7 +1164,8 @@
 %    \end{macrocode}
 % \begin{function}{%
 %   \_@@_set_fam_cfg:nn,
-%   \_@@_set_fam_features:nn,
+%   \_@@_set_fam_fea_scoped:nn,
+%   \_@@_set_fam_features:nnn,
 %   \_@@_set_fam_name:n,
 %   \_@@_set_mathrm:,
 %   \_@@_set_mathsf:,
@@ -1174,6 +1175,7 @@
 %   \_@@_debug_set_false:,
 %   \_@@_debug_set_true:%
 % }
+% \changes{v0.0}{2026-11-04}{\cs{_@@_set_fam_features:nnn} replaces \cs{_@@_set_fam_features:nn}. Added \cs{_@@_set_fam_fea_scoped:nn}.}
 % The Lua modules do the actual work.
 %    \begin{macrocode}
 \lua_load_module:n {lua-font-config}
@@ -1249,7 +1251,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %</ee-lmr>
 %
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12180 2026-11-02 02:55:44Z cfrees $
+%% $Id: lua-font-config.dtx 12189 2026-11-04 06:15:23Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -1307,7 +1309,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %</ee-fea>
 %
 %<*ee-features>
-%% $Id: lua-font-config.dtx 12180 2026-11-02 02:55:44Z cfrees $
+%% $Id: lua-font-config.dtx 12189 2026-11-04 06:15:23Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
