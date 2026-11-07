@@ -1,5 +1,4 @@
-%% $Id: test-features5.lvt 12174 2026-11-02 01:58:17Z cfrees $
-%% $Id: test-features5.lvt 12174 2026-11-02 01:58:17Z cfrees $
+%% $Id: test-features5.lvt 12193 2026-11-05 04:05:04Z cfrees $
 \input lfc-support.tex
 \documentclass{article}
 \parindent=0pt

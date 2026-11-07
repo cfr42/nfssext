@@ -1,9 +1,9 @@
--- $Id: lua-font-config.lua 12189 2026-11-04 06:15:23Z cfrees $
+-- $Id: lua-font-config.lua 12194 2026-11-07 03:56:57Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 do
   local name, rev, date = string.match(
-    "$Id: lua-font-config.lua 12189 2026-11-04 06:15:23Z cfrees $", 
+    "$Id: lua-font-config.lua 12194 2026-11-07 03:56:57Z cfrees $", 
     "Id: ([a-z][a-z-]*)%.lua (%d%d*) (%d%d%d%d%-%d%d%-%d%d) ")
   luatexbase.provides_module({
     name      = name,
@@ -2399,10 +2399,10 @@ local function get_fam_cfg_scanner()
       local curr = nfss_doc_families.curr
       msg_assert(curr ~= nil, "No current family to set parameters for!")
       curr = nfss_doc_families[curr]
-      if key ~= "fea" or not curr[key] then
+      if key ~= "fea" then
         curr[key] = lower(tostring(value))
       else
-        curr.fea = format("%s%s;", curr.fea, lower(tostring(value)))
+        curr.fea = format("%s%s;", curr.fea or "", lower(tostring(value)))
       end
       msg_debug("Scanned (std/late) family configuration: ", "doc", curr)
     end)
@@ -2428,7 +2428,7 @@ local function get_fam_scoped_fea_scanner()
       end
 
       if not cfg.fea then
-        cfg.fea = lower(tostring(value))
+        cfg.fea = format("%s;", lower(tostring(value)))
       else
         cfg.fea = format("%s%s;", cfg.fea, lower(tostring(value)))
       end
@@ -2450,7 +2450,7 @@ local function get_fam_features_scanner()
       curr = nfss_doc_families[curr]
 
       local cfg
-      if scope_hash ~= "*:*" then
+      if scope_hash == "*:*" then
         curr.fea = curr.fea or str_fea_default
         cfg = curr
       else
@@ -2516,6 +2516,7 @@ local function configure_doc_families()
         config.fea = cfg.fea or nil
         config.scale = cfg.scale or nil
         config.force = cfg.force or nil
+        config.cfg_scoped = cfg.cfg_scoped or nil
 
         -- text: 0, maths: 1
         config.typeset_mode = cfg.typeset_mode or 0
@@ -2590,7 +2591,7 @@ luafunction_to_cs("__lfc_set_math:n", get_fam_default_scanner("math"))
 -- {{{
 luafunction_to_cs("__lfc_set_fam_name:n", get_fam_name_scanner())
 luafunction_to_cs("__lfc_set_fam_cfg:nn", get_fam_cfg_scanner())
-luafunction_to_cs("__lfc_set_fam_fea_scoped:nn", get_fam_scoped_fea_scanner())
+luafunction_to_cs("__lfc_set_fam_scoped_fea:nn", get_fam_scoped_fea_scanner())
 luafunction_to_cs("__lfc_set_fam_features:nnn", get_fam_features_scanner())
 -- }}}
 

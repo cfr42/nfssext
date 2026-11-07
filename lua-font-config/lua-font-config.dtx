@@ -33,7 +33,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12189 2026-11-04 06:15:23Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12194 2026-11-07 03:56:57Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -567,7 +567,29 @@
 % Unless provided in separate fonts, \texttt{+smcp} is added, if available, for upright, italic and oblique small-caps.
 % 
 % Features apply to \emph{all} fonts configured as a result of the lookup, so you should not specify features you do not wish applied to all fonts to which the specification applies.
+%
+% \DescribeKey{scoped}\mval{scope spec.}\marg{opentype feature spec.}\par
+% \meta{scope spec.}: \meta{series}\texttt{:}\meta{shape}\par
+% Optional list of font features \textbf{for a subset of text fonts only}. 
+%
+% \meta{series} and \meta{shape} have take the usual \texttt{nfss} values, except that \texttt{book} is \texttt{k}, if a family also has a regular variant, and \texttt{medium} is \texttt{f}, if a family also has either book or regular.
+% \textbf{These specifiers are non-standard and may change without notice, if I can think of a way to avoid them.}
 % 
+% Features apply \emph{only} to fonts covered by \meta{scope spec.}
+% The \meta{opentype feature spec.} is \emph{added} to the features applied to all fonts configured by the lookup.
+% So, if you want oldstyle figures for all fonts except bold oblique, you must add \texttt{+lnum} for the \texttt{b:sl} scope.
+% 
+% Note that both the scope and feature specifications are passed to \LaTeX{} and the font loader with minimal processing, so you must use low-level series/shape representations and ‘raw’ feature specifications.
+% \emph{If you do not know what these are, use the \texttt{features} key rather than this one; if you need an unsupported feature, file an issue on the bug tracker (link below).}
+% 
+% Note that although arbitrary scopes and features may minimally work, \textbf{this is not recommended}.
+% The intended usage is to change spacing or figures in small-caps variants (see \cref{ee-scoped}, say, or to substitute petite for small caps or make similar adjustments.
+% In particular, note that the underlying family names become unpredictable and possibly inconsistent if too many changes create a hodgepodge rather than a coherent family.
+% Moreover, documents typeset with such fonts will generally be typographically inconsistent, too.
+% If more variety is really needed, create additional font families and switch between them rather than abusing \texttt{scoped}.
+%
+% Note that this key cannot be used to add ‘fake’ fonts: you cannot add a fake bold or oblique this way.
+%
 % \subsubsection{Default text family keys}\label{subsubsec:keys-text-def}
 % These keys are accepted by \texttt{rm}, \texttt{sf} and \texttt{tt} i.e.~when specifying the default text families for the document.
 %
@@ -655,6 +677,11 @@
 %
 % \lfcdocfile [label=example-add -- \cref{fig:ee-add}] {example-add}
 % \lfcee{add}
+%
+% \Cref{fig:ee-scoped} demonstrates usage of the low-level \texttt{scoped} key to enable features selectively.
+%
+% \lfcdocfile [label=example-scoped -- \cref{fig:ee-scoped}] {example-scoped}
+% \lfcee{scoped}
 %
 % \Cref{fig:ee-talk} demonstrates the default configuration for \cls{ltx-talk}.
 % This is approximately equivalent to the default setup if \pkg{lua-font-config} is not loaded.
@@ -772,7 +799,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12189 2026-11-04 06:15:23Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12194 2026-11-07 03:56:57Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -842,14 +869,20 @@
 % %^^A Switch back now we're done with message setup.
 % \let\MakePrivateLetters\MyMakePrivateLetters
 % 
-% \begin{variable}{\l_@@_features_seq,\l_@@_tmpa_bool,\l_@@_tmpa_tl,\l_@@_tmpb_tl}
-%   Custom ephemeral variables.
+% \begin{variable}{\l_@@_features_seq,\l_@@_scope_seq,\l_@@_do_bool,\l_@@_tmpa_tl,\l_@@_tmpb_tl,\l_@@_tmpc_tl,\l_@@_tmpa_str,\l_@@_scope_str,\c_@@_scope_default_str}
+%   Custom ephemeral variables, named variables and constants.
 %   \changes{v0.2}{2026-10-29}{Added \cs{l_@@_features_seq}, \cs{l_@@_tmpb_tl}.}
+%   \changes{v0.0}{2026-11-05}{Added temporary string, tl and \cs{l_@@_do_bool}, \cs{l_@@_scope_str}, \cs{l_@@_scope_seq}, \cs{c_@@_scope_default_str.}
 %    \begin{macrocode}
-\bool_new:N \l_@@_tmpa_bool
+\bool_new:N \l_@@_do_bool
 \seq_new:N \l_@@_features_seq
+\seq_new:N \l_@@_scope_seq
+\str_new:N \l_@@_scope_str
+\str_new:N \l_@@_tmpa_str
+\str_const:Ne \c_@@_scope_default_str {*\c_colon_str*}
 \tl_new:N \l_@@_tmpa_tl
 \tl_new:N \l_@@_tmpb_tl
+\tl_new:N \l_@@_tmpc_tl
 %    \end{macrocode}
 % \end{variable}
 % \begin{keyname}{rm,sf,tt}
@@ -863,7 +896,7 @@
       \keys_set_exclude_groups:nnnN {lfc/#1} {config} {##1} \l_@@_tmpa_tl
       \keys_set_groups:nnVN {lfc/#1} {config}     \l_@@_tmpa_tl \l_@@_tmpb_tl
       \keys_set_groups:nnV  {lfc/#1} {lateconfig} \l_@@_tmpb_tl
-      \bool_set_true:N \l_@@_tmpa_bool
+      \bool_set_true:N \l_@@_do_bool
     },
     #1 .value_required:n  = true,
     #1 .usage:n           = preamble,
@@ -875,12 +908,12 @@
 % Configure keys for default text families.
 %    \begin{macrocode}
   \keys_define:nn {lfc/#1} {
-    name      .code:n = { \use:c {_@@_set_#1:n} {##1} },
+    name      .code:n = { \use:c {__@@_set_#1:n} {##1} },
     fea       .code:n = { \keys_set:nn {lfc/fam} {fea      = {##1}} },
     features  .code:n = { \keys_set:nn {lfc/fam} {features = {##1}} },
     force     .code:n = { \keys_set:nn {lfc/fam} {force    = {##1}} },
     scale     .code:n = { \keys_set:nn {lfc/fam} {scale    = {##1}} },
-    maths     .code:n = { \_@@_set_fam_cfg:nn   {maths}{##1} },
+    maths     .code:n = { \__@@_set_fam_cfg:nn   {maths}{##1} },
     math      .meta:n = { maths = {##1} },
     nomaths   .meta:n = { maths = false },
     nomath    .meta:n = { nomaths },
@@ -924,11 +957,12 @@
   family  .code:n           = { 
     \tl_clear:N \l_@@_tmpa_tl
     \tl_clear:N \l_@@_tmpb_tl
+    \str_clear:N \l_@@_scope_str
     \keys_set_exclude_groups:nnnN 
                           {lfc/fam} {config,lateconfig} {#1} \l_@@_tmpa_tl
     \keys_set_groups:nnVN {lfc/fam} {config}      \l_@@_tmpa_tl \l_@@_tmpb_tl
     \keys_set_groups:nnV  {lfc/fam} {lateconfig}  \l_@@_tmpb_tl
-    \bool_set_true:N \l_@@_tmpa_bool
+    \bool_set_true:N \l_@@_do_bool
   },
   family  .value_required:n = true,
   family  .usage:n          = general,
@@ -941,7 +975,7 @@
       \tl_clear:N \l_@@_tmpa_tl
       \keys_set_exclude_groups:nnnN {lfc/math} {config} {#1} \l_@@_tmpa_tl
       \keys_set:nV {lfc/math} \l_@@_tmpa_tl
-      \bool_set_true:N \l_@@_tmpa_bool
+      \bool_set_true:N \l_@@_do_bool
     }
   },
   math    .value_required:n = true,
@@ -953,47 +987,76 @@
 % \begin{keyname}{fam}
 % Configure keys for families.
 % \changes{v0.2}{2026-10-29}{Add \texttt{fea} user-interface wrapper: \texttt{features} provides a key-value interface for configuration.}
+% \changes{v0.0}{2026-11-06}{Add \texttt{scoped} key: low-level interface to configure font features selectively. 
+%   This is intended to complement the \texttt{fea} key and similarly supports expert/advanced usage, prioritising performance with few checks and a relatively low-level interface.}
 % \begin{keyname}{fam/name,fam/fea,fam/features,fam/force,fam/scale}
 % Configure keys for families.
+%
+% Note to self: \pkg{l3keys} does not work the way you think!!!
+% \emph{The hierarchy is not a tree!}
 %    \begin{macrocode}
 \keys_define:nn {lfc/fam} {
-  name      .code:n = { \__@@_set_fam_name:n {#1} },
-  command   .code:n = { 
+  name        .code:n = { \__@@_set_fam_name:n {#1} },
+  command     .code:n = { 
     \exp_args:Nne \__@@_set_fam_cfg:nn {csname}{ \cs_to_str:N #1 }
   },
-  fea       .code:n = { \__@@_set_fam_cfg:nn {fea}{#1} },
-  features  .code:n = { 
+  fea         .code:n = { \__@@_set_fam_cfg:nn {fea} {#1} },
+  scoped.code:n = {
+    \str_set:Ne \l_@@_tmpa_str {
+      \_@@_second_of_two:w #1 \q_stop
+    }
+    \str_if_empty:NTF \l_@@_tmpa_str {
+      \__@@_set_fam_cfg:nn {fea} {#1}
+    } {
+      \__@@_set_fam_scoped_fea:nn #1
+    }
+  },
+  features    .code:n = { 
     \seq_clear:N \l_@@_features_seq
-    \keys_set:nn {lfc/features} {#1} 
+    \str_set:Ne \l_@@_scope_str {*\c_colon_str*}
+
+    \keys_set_groups:nnnN {lfc/features} {scope} {#1} \l_@@_tempc_tl
+    \keys_set:nV {lfc/features} \l_@@_tempc_tl 
+
     \seq_if_empty:NF \l_@@_features_seq {
-      \exp_args:Nne \__@@_set_fam_cfg:nn {fea} {
-        \seq_use:Nn \l_@@_features_seq {;}
+      \str_if_eq:eeTF {\l_@@_scope_str} {\c_@@_scope_default_str} {
+        \exp_args:Nne \__@@_set_fam_cfg:nn {fea} {
+          \seq_use:Nn \l_@@_features_seq {;}
+        }
+      } {
+        \__@@_set_fam_scoped_fea:Ve \l_@@_scope_str {
+          \seq_use:Nn \l_@@_features_seq {;}
+        }
       }
     }
+    \str_clear:N \l_@@_scope_str
   },
   force     .code:n = { \__@@_set_fam_cfg:nn {force}{#1} },
   scale     .code:n = { \__@@_set_fam_cfg:nn {scale}{#1} },
   unknown   .code:n = {
     \exp_args:NV \__@@_set_fam_name:n \l_keys_key_str 
   },
-  name      .value_required:n   = true,
-  fea       .value_required:n   = true,
-  features  .value_required:n   = true,
-  force     .default:n          = true,
-  scale     .value_required:n   = true,
-  unknown   .value_forbidden:n  = true,
-  name      .usage:n            = general,
-  command   .usage:n            = general,
-  fea       .usage:n            = general,
-  features  .usage:n            = general,
-  force     .usage:n            = general,
-  scale     .usage:n            = general,
-  unknown   .usage:n            = general,
-  command   .groups:n           = config,
-  fea       .groups:n           = config,
-  features  .groups:n           = lateconfig,
-  force     .groups:n           = config,
-  scale     .groups:n           = config,
+  name          .value_required:n   = true,
+  fea           .value_required:n   = true,
+  scoped        .value_required:n   = true,
+  features      .value_required:n   = true,
+  force         .default:n          = true,
+  scale         .value_required:n   = true,
+  unknown       .value_forbidden:n  = true,
+  name          .usage:n            = general,
+  command       .usage:n            = general,
+  fea           .usage:n            = general,
+  scoped        .usage:n            = general,
+  features      .usage:n            = general,
+  force         .usage:n            = general,
+  scale         .usage:n            = general,
+  unknown       .usage:n            = general,
+  command       .groups:n           = config,
+  fea           .groups:n           = config,
+  scoped        .groups:n           = config,
+  features      .groups:n           = lateconfig,
+  force         .groups:n           = config,
+  scale         .groups:n           = config,
 }
 %    \end{macrocode}
 % \end{keyname}
@@ -1003,11 +1066,11 @@
 %    \begin{macrocode}
 \IfPackageLoadedF {unicode-math} {
   \keys_define:nn {lfc/math} {
-    name      .code:n = { \use:c {_@@_set_math:n} {#1} },
+    name      .code:n = { \use:c {__@@_set_math:n} {#1} },
     force     .code:n = { \keys_set:nn {lfc/fam} {force    = {#1}} },
     scale     .code:n = { \keys_set:nn {lfc/fam} {scale    = {#1}} },
     unknown   .code:n = {
-      \exp_args:NnV \use:c {_@@_set_math:n} \l_keys_key_str
+      \exp_args:NnV \use:c {__@@_set_math:n} \l_keys_key_str
     },
     name      .value_required:n   = true,
     force     .default:n          = true,
@@ -1025,6 +1088,8 @@
 % \end{keyname}
 % \begin{keyname}{features}
 % \changes{v0.2}{2026-10-29}{Initial \texttt{features} keys: \texttt{alternates}, \texttt{embolden}, \texttt{figures}, \texttt{forms}, \texttt{language}, \texttt{ligatures}, \texttt{node}, \texttt{script}, \texttt{spacing}.}
+% \changes{v0.0}{2026-11-05}{Add \texttt{scope} key.
+%   This provides a more user-friendly wrapper around the \texttt{scoped} key.}
 % \begin{keyname}{features/alternates,
 %   features/embolden,
 %   features/figures,
@@ -1032,6 +1097,7 @@
 %   features/language,
 %   features/ligatures,
 %   features/mode,
+%   features/scope,
 %   features/script,
 %   features/spacing,
 % }
@@ -1039,35 +1105,122 @@
 %    \begin{macrocode}
 \keys_define:nn {lfc/features} {
   alternates  .code:n = {
-    \_@@_set_fam_features:nnn {*,*} {alternates} {#1}
+    \exp_args:NV \__@@_set_fam_features:nnn \l_@@_scope_str {alternates} {#1}
   },
   embolden    .code:n = {
-    %% \_@@_set_fam_features:nnn {*,*} {}{embolden=#1}
+    %% ^^A \exp_args:NV \__@@_set_fam_features:nnn \l_@@_scope_str {}{embolden=#1}
     \seq_put_right:Nn \l_@@_features_seq {embolden=#1}
   },
   figures     .code:n = {
-    \_@@_set_fam_features:nnn {*,*} {figures} {#1}
+    \exp_args:NV \__@@_set_fam_features:nnn \l_@@_scope_str {figures} {#1}
   },
   forms         .code:n = {
-    \_@@_set_fam_features:nnn {*,*} {forms} {#1}
+    \exp_args:NV \__@@_set_fam_features:nnn \l_@@_scope_str {forms} {#1}
   },
   language      .code:n = {
-    %% \_@@_set_fam_features:nnn {*,*} {}{language=#1}
+    %% ^^A \exp_args:NV \__@@_set_fam_features:nnn \l_@@_scope_str {}{language=#1}
     \seq_put_right:Nn \l_@@_features_seq {language=#1}
   },
   ligatures     .code:n = {
-    \_@@_set_fam_features:nnn {*,*} {ligatures} {#1}
+    \exp_args:NV \__@@_set_fam_features:nnn \l_@@_scope_str {ligatures} {#1}
   },
   mode          .choices:nn = {base,node,harf}{
-    %% \_@@_set_fam_features:nnn {*,*} {mode}{#1}
+    %% ^^A \exp_args:NV \__@@_set_fam_features:nnn \l_@@_scope_str {mode}{#1}
     \seq_put_right:Ne \l_@@_features_seq {mode=\l_keys_choice_str}
   },
+  scope           .code:n = {
+    %% ^^A \l_@@_scope_str, \l_@@_tmpa_str are set below, so no need to clear
+    \seq_set_split:Nnn \l_@@_scope_seq {,} {,,,}
+    \keys_set:nn {lfc/features/scoped} {#1}
+    \seq_map_indexed_inline:Nn \l_@@_scope_seq {
+      \str_if_empty:nF {##2} {
+        \int_case:nn {##1} {
+          {1} {
+            \exp_args:NNne \seq_set_item:Nnn \l_@@_scope_seq {1} {
+              \seq_item:Nn \c_@@_weight_seq {##2}
+            }
+          }
+          {2} {
+            \exp_args:NNne \seq_set_item:Nnn \l_@@_scope_seq {2} {
+              \seq_item:Nn \c_@@_width_seq {##2}
+            }
+          }
+          {3} {
+            \exp_args:NNne \seq_set_item:Nnn \l_@@_scope_seq {3} {
+              \seq_item:Nn \c_@@_shape_seq {##2}
+            }
+          }
+          {4} {
+            \exp_args:NNne \seq_set_item:Nnn \l_@@_scope_seq {4} {
+              \seq_item:Nn \c_@@_case_seq {##2}
+            }
+          }
+        }
+      }
+    }
+    \seq_map_indexed_inline:Nn \l_@@_scope_seq {
+      \int_case:nn {##1} {
+        {1} { \str_set:Nn \l_@@_tmpa_str {##2} }
+        {2} { 
+          \bool_case:nF {
+            { %% ^^A weight empty, width empty --> use *
+              \bool_lazy_and_p:nn { \str_if_empty_p:n {##2} } {
+                \str_if_empty_p:N \l_@@_tmpa_str }
+            } { \str_set:Nn \l_@@_scope_str {*} }
+            { %% ^^A weight m, width non-empty --> use width
+              \bool_lazy_and_p:nn { \str_if_eq_p:Vn \l_@@_tmpa_str {m} } {
+                ! \str_if_empty_p:n {##2} }
+            } { \str_set:Nn \l_@@_scope_str {##2} }
+            { %% ^^A weight non-empty, width m --> use weight
+              \bool_lazy_and_p:nn { ! \str_if_empty_p:N \l_@@_scope_str } {
+                \str_if_eq_p:nn {##2} {m} }
+            } { \str_set_eq:NN \l_@@_scope_str \l_@@_tmpa_str }
+          } { %% ^^A o/w --> use concat
+            \str_set:Ne \l_@@_scope_str {\l_@@_tmpa_str ##2}
+          }
+          \str_put_right:NV \l_@@_scope_str \c_colon_str 
+        }
+        {3} { \str_set:Nn \l_@@_tmpa_str {##2} }
+        {4} {
+          \bool_case:nF {
+            { %% ^^A shape empty, case empty --> use *
+              \bool_lazy_and_p:nn { \str_if_empty_p:n {##2} } {
+                \str_if_empty_p:N \l_@@_tmpa_str
+              }
+            } { \str_put_right:Nn \l_@@_scope_str {*} }
+            { %% ^^A shape n, case non-empty --> use case
+              \bool_lazy_and_p:nn { \str_if_eq_p:Vn \l_@@_tmpa_str {n} } { 
+                ! \str_if_empty_p:n {##2} }
+            } { \str_put_right:Nn \l_@@_scope_str {##2} }
+            { %% ^^A shape non-empty, case n --> use shape
+              \bool_lazy_and_p:nn { ! \str_if_empty_p:N \l_@@_tmpa_str } {
+                \str_if_eq_p:nn {##2} {n} }
+            } { \str_put_right:NV \l_@@_scope_str \l_@@_tmpa_str }
+          } { %% ^^A o/w --> concat
+            \str_put_right:Ne \l_@@_scope_str {\l_@@_tmpa_str ##2}
+          }
+        }
+      }
+    }
+  },
+  scoped / weight .choices:nn = {bold, book, demibold, extralight, extrabold, light, medium, regular, semibold, semilight, ultralight, ultrabold} {
+    \exp_args:NNnV \seq_set_item:Nnn \l_@@_scope_seq {1} \l_keys_choice_int
+  },
+  scoped / width  .choices:nn = {condensed, expanded, extracondensed, extraexpanded, medium, semicondensed, semiexpanded, ultracondensed, ultraexpanded} { 
+    \exp_args:NNnV \seq_set_item:Nnn \l_@@_scope_seq {2} \l_keys_choice_int
+  },
+  scoped / shape  .choices:nn = {italic, oblique, upright} {
+    \exp_args:NNnV \seq_set_item:Nnn \l_@@_scope_seq {3} \l_keys_choice_int
+  },
+  scoped / case   .choices:nn = {mixed, smallcaps} {
+    \exp_args:NNnV \seq_set_item:Nnn \l_@@_scope_seq {4} \l_keys_choice_int
+  },
   script        .code:n = {
-    %% \_@@_set_fam_features:nnn {*,*} {}{script=#1}
+    %% ^^A \exp_args:NV \__@@_set_fam_features:nnn \l_@@_scope_str {} {script=#1}
     \seq_put_right:Nn \l_@@_features_seq {script=#1}
   },
   spacing       .code:n = {
-    \_@@_set_fam_features:nnn {*,*} {spacings} {#1}
+    \exp_args:NV \__@@_set_fam_features:nnn \l_@@_scope_str {spacings} {#1}
   },
   alternates  .value_required:n = true,
   embolden    .value_required:n = true,
@@ -1076,22 +1229,41 @@
   language    .value_required:n = true,
   ligatures   .value_required:n = true,
   mode        .value_required:n = true,
+  scope       .value_required:n = true,
   script      .value_required:n = true,
   spacing     .value_required:n = true,
+  scope       .groups:n         = scope,
 }
 %    \end{macrocode}
 %% ^^A ital?
 %% ^^A ordn? ornm? sinf? subs? sups?
 % \end{keyname}
 % \end{keyname}
+% \begin{variable}{\c_@@_weight_seq,\c_@@_width_seq,\c_@@_shape_seq,\c_@@_case_seq}
+%   Indexing variables.
+%   This hold the relevant parts of the series and shape representations in \textsc{nfss}, split into 4 axes: weight, width, shape and case.
+%   (Names for the last two may not be standard, but I don't know what the last should be called.)
+%
+%   The choice lists above correspond to these, so we can pull these using the integer position of the descriptor the user selects from the list.
+%
+%   Most of the code above deals with the annoyances of \LaTeX's outdated font management system and its weird treatment of ‘m’ and ‘n’.
+%
+%   \texttt{k} and \texttt{f} are \textbf{not} standard and may disappear or transform if I think of some better (or, at least, more standard) way to do this.
+%    \begin{macrocode}
+\seq_const_from_clist:Nn \c_@@_weight_seq {b, db, k, el, eb, l, f, m, sb, sl, ul, ub}
+\seq_const_from_clist:Nn \c_@@_width_seq {c, x, ec, ex, m, sc, sx, uc, ux}
+\seq_const_from_clist:Nn \c_@@_shape_seq {it, sl, n}
+\seq_const_from_clist:Nn \c_@@_case_seq {n, sc}
+%    \end{macrocode}
+% \end{variable}
 % \begin{keyname}{debug/state,debug/categories}
 % Configure keys for debugging.
 %    \begin{macrocode}
 \keys_define:nn {lfc/debug} {
-  categories  .code:n             = { \_@@_debug_set_cats_scanner:n {#1} },
+  categories  .code:n             = { \__@@_debug_set_cats_scanner:n {#1} },
   state       .choice:,
-  state/false .code:n             = { \_@@_debug_set_false: },
-  state/true  .code:n             = { \_@@_debug_set_true: },
+  state/false .code:n             = { \__@@_debug_set_false: },
+  state/true  .code:n             = { \__@@_debug_set_true: },
   categories  .usage:n            = general,
   state       .usage:n            = general,
   categories  .value_required:n   = true,
@@ -1105,10 +1277,10 @@
 %   \changes{v0.2}{2026-10-30}{Forbid \cs{par} in input.}
 %    \begin{macrocode}
 \NewDocumentCommand\fontconfig { m }{
-  \bool_set_false:N \l_@@_tmpa_bool
+  \bool_set_false:N \l_@@_do_bool
   \keys_set:nn {lfc} {#1}
-  \bool_if:NT \l_@@_tmpa_bool {
-    \_@@_configure_doc_families:
+  \bool_if:NT \l_@@_do_bool {
+    \__@@_configure_doc_families:
   }
 }
 %    \end{macrocode}
@@ -1146,6 +1318,14 @@
 }
 %    \end{macrocode}
 % \end{function}
+% \begin{function}{\_@@_second_of_two:w}
+% Auxiliary because \TeX\ still makes more sense to me here.
+% I know I'm meant to use something like \cs{use_romannumeral_delimited_by_something:w} but figuring out which \dots.
+% (I can just search for the translation of ‘firstof’, but there isn't one to find for ‘secondof’ \dots.)
+%    \begin{macrocode}
+\cs_new_nopar:Npn \_@@_second_of_two:w #1#2 \q_stop {#2}
+%    \end{macrocode}
+% \end{function}
 % Compatibility code for \pkg{ltx-talk}.
 %
 % This should be equivalent to the default setup, modulo any differences between emulating the package and using \cs{setmathfont} for \pkg{lua-unicode-math}.
@@ -1163,22 +1343,24 @@
 }
 %    \end{macrocode}
 % \begin{function}{%
-%   \_@@_set_fam_cfg:nn,
-%   \_@@_set_fam_fea_scoped:nn,
-%   \_@@_set_fam_features:nnn,
-%   \_@@_set_fam_name:n,
-%   \_@@_set_mathrm:,
-%   \_@@_set_mathsf:,
-%   \_@@_set_mathtt:,
-%   \_@@_configure_doc_families:,
-%   \_@@_debug_set_cats_scanner:n,
-%   \_@@_debug_set_false:,
-%   \_@@_debug_set_true:%
+%   \__@@_set_fam_cfg:nn,
+%   \__@@_set_fam_fea_scoped:nn,
+%   \__@@_set_fam_fea_scoped:Ve,
+%   \__@@_set_fam_features:nnn,
+%   \__@@_set_fam_name:n,
+%   \__@@_set_mathrm:,
+%   \__@@_set_mathsf:,
+%   \__@@_set_mathtt:,
+%   \__@@_configure_doc_families:,
+%   \__@@_debug_set_cats_scanner:n,
+%   \__@@_debug_set_false:,
+%   \__@@_debug_set_true:%
 % }
 % \changes{v0.0}{2026-11-04}{\cs{_@@_set_fam_features:nnn} replaces \cs{_@@_set_fam_features:nn}. Added \cs{_@@_set_fam_fea_scoped:nn}.}
 % The Lua modules do the actual work.
 %    \begin{macrocode}
 \lua_load_module:n {lua-font-config}
+\cs_generate_variant:Nn \__@@_set_fam_scoped_fea:nn {Ve}
 \ExplSyntaxOff
 %    \end{macrocode}
 % \end{function}
@@ -1251,7 +1433,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %</ee-lmr>
 %
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12189 2026-11-04 06:15:23Z cfrees $
+%% $Id: lua-font-config.dtx 12194 2026-11-07 03:56:57Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -1309,7 +1491,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %</ee-fea>
 %
 %<*ee-features>
-%% $Id: lua-font-config.dtx 12189 2026-11-04 06:15:23Z cfrees $
+%% $Id: lua-font-config.dtx 12194 2026-11-07 03:56:57Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -1497,6 +1679,29 @@ This is some ordinary text in the default \LaTeXe{} font.
 Back to the default.
 \end{document}
 %</ee-add>
+%
+%<*ee-scoped>
+\documentclass{article}
+\usepackage{lua-font-config}
+\fontconfig{%
+  family = {%
+    name = texgyrepagella,
+    command = \tgpag,
+    fea = {script=latn;+pnum;+onum},
+    scoped = {*:sc}{+cpsp},
+  },
+}
+\begin{document}
+\tgpag Oh, sphinx of black quartz, judge my vow!
+
+\textbf{Oh, sphinx of black quartz, judge my vow!}
+
+\scshape
+Oh, sphinx of black quartz, judge my vow!
+
+\textbf{Oh, sphinx of black quartz, judge my vow!}
+\end{document}
+%</ee-scoped>
 %
 % \fi
 % 
