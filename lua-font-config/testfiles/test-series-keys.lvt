@@ -1,0 +1,37 @@
+%% $Id: test-series-keys.lvt 12195 2026-11-07 19:09:23Z cfrees $
+\input lfc-support.tex
+\documentclass{article}
+\parindent=0pt
+\usepackage{lua-font-config}
+\START
+\fontconfig{%
+  rm = {%
+    name = TeX Gyre Pagella,
+    bfseries = m,
+    mdseries = b,
+  },
+  sf = {% 
+    name = texgyreheros,
+    normal = {weight = bold},
+    bold = {weight = regular, width = medium},
+  },
+  tt = {% 
+    name = texgyrecursor,
+  },
+}
+\begin{document}
+\TEST{series switched: texgyrepagella}{%
+  \TeX-Gyre Pagella:  normal \textbf{bold}
+}
+
+\TEST{series switched: texgyreheros}{%
+  \sffamily
+  \TeX-Gyre Heros:  normal \textbf{bold}
+}
+
+\TEST{series NOT switched: texgyrecursor}{%
+  \ttfamily
+  \TeX-Gyre Cursor: normal \textbf{bold}
+}
+\end{document}
+

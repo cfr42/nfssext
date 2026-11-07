@@ -1,9 +1,9 @@
--- $Id: lua-font-config.lua 12194 2026-11-07 03:56:57Z cfrees $
+-- $Id: lua-font-config.lua 12195 2026-11-07 19:09:23Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 do
   local name, rev, date = string.match(
-    "$Id: lua-font-config.lua 12194 2026-11-07 03:56:57Z cfrees $", 
+    "$Id: lua-font-config.lua 12195 2026-11-07 19:09:23Z cfrees $", 
     "Id: ([a-z][a-z-]*)%.lua (%d%d*) (%d%d%d%d%-%d%d%-%d%d) ")
   luatexbase.provides_module({
     name      = name,
@@ -750,7 +750,7 @@ local variants = { -- {{{
 
 -------------------------------------------------------------------------------
 -- Parsers
--- parse_spec()   prepare_fake_fd() parse_fea()
+-- parse_spec() parse_nfss() prepare_fake_fd() parse_fea()
 -------------------------------------------------------------------------------
 --- {{{
 ---@function parse_spec -- {{{
@@ -764,6 +764,26 @@ local function parse_spec(kind, descriptor)
     msg({descriptor, " not a valid value."})
     return descriptor
   end
+end
+-- }}}
+
+---@function parse_nfss(nfss_rep1, nfss_rep2, nfss_default_rep) -- {{{
+---@param   nfss_rep1         nfss_weight | nfss_variant
+---@param   nfss_rep2         nfss_case   | nfss_style
+---@param   nfss_default_rep  m           | n
+local function parse_nfss(nfss_rep1, nfss_rep2, nfss_default_rep)
+  local nfss_rep
+  -- ‘m’ must not be combined, as of the 2020 changes, so ‘mb’ is
+  --    not allowed
+  -- Likewise ‘n’, but I never saw anybody combine this, so nothing broken
+  if nfss_rep1 == nfss_default_rep then
+    nfss_rep = nfss_rep2
+  elseif nfss_rep2 == nfss_default_rep then
+    nfss_rep = nfss_rep1
+  else 
+    nfss_rep = format("%s%s", nfss_rep1, nfss_rep2)
+  end
+  return nfss_rep
 end
 -- }}}
 
@@ -2008,24 +2028,8 @@ local function font_config(targ, config, immediate)
       local nfss_style    = parse_spec(styles, style)
       local nfss_variant  = parse_spec(variants, variant)
 
-      -- ‘m’ must not be combined, as of the 2020 changes, so ‘mb’ is
-      --    not allowed
-      if nfss_weight == "m" then
-        series = nfss_width
-      elseif nfss_width == "m" then
-        series = nfss_weight
-      else 
-        series = format("%s%s", nfss_weight, nfss_width)
-      end
-
-      -- Likewise ‘n’, but I never saw anybody combine this, so nothing broken
-      if nfss_style == "n" then
-        shape = nfss_variant
-      elseif nfss_variant == "n" then
-        shape = nfss_style
-      else
-        shape = format("%s%s", nfss_variant, nfss_style)
-      end
+      series  = parse_nfss(nfss_weight, nfss_width, "m")
+      shape   = parse_nfss(nfss_variant, nfss_style, "n")
 
       -- Hash is <family>:<series>:<shape>[<minsize>:<maxsize>]
       local nfss_hash = format("%s:%s:%s%s%s", family, series, shape, 
@@ -2280,6 +2284,19 @@ end
 
 -------------------------------------------------------------------------------
 -- LaTeX interface things
+-- do_with_<one|two|three>_scanner()
+-- get_fam_default_scanner()  get_fam_name_scanner()  get_fam_cfg_scanner()
+-- get_fam_scoped_fea_scanner()         get_fam_features_scanner()
+-- configure_doc_families()
+-- \__lfc_set_rm:n    \__lfc_set_sf:n   \__lfc_set_tt:n   \__lfc_set_math:n
+-- \__lfc_set_fam_name:n                \__lfc_set_fam_cfg:nn   
+-- \__lfc_set_fam_scoped_fea:nn         \__lfc_set_fam_features:nnn
+-- \__lfc_configure_doc_families:
+-- parse_spec_scanner()                 \__lfc_parse_spec:nn
+-- parse_nfss_scanner()                 \__lfc_parse_nfss:nnn
+-- tables: fam_defaults, fam_to_maths
+-- \__lfc_set_log_level:n \__lfc_debug_set_true:  \__lfc_debug_set_false:
+-- \__lfc_debug_set_cats_scanner:n
 -------------------------------------------------------------------------------
 --- {{{
 -- Scanners for 1, 2 or 3 arguments.
@@ -2587,7 +2604,7 @@ luafunction_to_cs("__lfc_set_tt:n",   get_fam_default_scanner("tt"))
 luafunction_to_cs("__lfc_set_math:n", get_fam_default_scanner("math"))
 -- }}}
 
--- Scanners for additional family names, a general one for features, and a specific one for the features key-value interface.
+-- Scanners for additional family names, a general one for features, and specifics one for scoped features and the features key-value interface.
 -- {{{
 luafunction_to_cs("__lfc_set_fam_name:n", get_fam_name_scanner())
 luafunction_to_cs("__lfc_set_fam_cfg:nn", get_fam_cfg_scanner())
@@ -2597,6 +2614,30 @@ luafunction_to_cs("__lfc_set_fam_features:nnn", get_fam_features_scanner())
 
 -- A macro to actually configure the font families.
 luafunction_to_cs("__lfc_configure_doc_families:", configure_doc_families())
+
+-- Auxiliary utility functions.
+-- Reuse fn. rather than messing about with complicated sequence lookups in LaTeX.
+-- This simplifies the key-val code, but erroneous input is left there (for now).
+---@function parse_spec_scanner() {{{
+local function parse_spec_scanner()
+  return do_with_two_scanner(function(kind,descriptor)
+    local kinds = {
+      ["case"]    = variants,
+      ["shape"]   = shapes,
+      ["weight"]  = weights,
+      ["width"]   = widths
+    }
+    return sprint(-2, parse_spec(kinds[kind],descriptor))
+  end)
+end
+-- }}}
+luafunction_to_cs("__lfc_parse_spec:nn", parse_spec_scanner())
+luafunction_to_cs("__lfc_parse_series:nn", 
+  do_with_two_scanner(function(weight,width)
+    weight = lower(weight)
+    width = lower(width)
+    return sprint(-2, parse_nfss(weights[weight] or "m", widths[width] or "m", "m"))
+  end))
 
 ---@function get_log_level_scanner() {{{
 local function get_log_level_scanner()
