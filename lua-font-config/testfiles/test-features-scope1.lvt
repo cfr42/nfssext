@@ -1,0 +1,26 @@
+%% $Id: test-features-scope1.lvt 12194 2026-11-07 03:56:57Z cfrees $
+\input lfc-support.tex
+\documentclass{article}
+\parindent=0pt
+\usepackage{lua-font-config}
+\fontconfig{%
+  family = {%
+    name = texgyrepagella,
+    command = \tgpag,
+    features = {script=latn,figures={prop,osf}},
+    features = {scope={weight=bold,shape=italic},alternates={sset=02}},
+    features = {scope={weight=regular,case=smallcaps},figures=lining},
+  },
+}
+\begin{document}
+\START
+
+\TEST{features scope 1: b/it: +ss02}{%
+  {\tgpag \P\ (regular) \itshape \P\ (regular) \bfseries\P\ (ss02)}%
+}
+\TEST{features scope 1: m/sc: +lnum}{%
+  {\tgpag 0123456789 (osf, prop) \itshape 0123456789  (osf, prop) \upshape 0123456789 (osf, prop) \scshape 0123456789 (lining, prop)}%
+}
+\END
+\end{document}
+

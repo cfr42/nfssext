@@ -1,0 +1,24 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+============================================================
+TEST 1: fea scoped 1: b/it: +ss02
+============================================================
+LaTeX Font Info:    Trying to load font information for TU+texgyrepagella-prop-osf-script:latn on input line ....
+Package lfc Info: Adding smcp callback.
+(lfc)             on input line ....
+Inserting `lfc check for +smcp' in `luaotfload.patch_font'.
+Package lfc Info: Adding data callback.
+(lfc)             on input line ....
+Inserting `lfc cache font resources' in `luaotfload.patch_font'. (../.tex Fileignored)
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;onum=true;pnum=true;script=latn;" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-italic.otf"]:mode=node;language=dflt;script=dflt;+tlig;onum=true;pnum=true;script=latn;" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-bolditalic.otf"]:mode=node;language=dflt;script=dflt;+tlig;onum=true;pnum=true;script=latn;+ss02;" 
+============================================================
+============================================================
+TEST 2: fea scoped 1: m/sc: +lnum
+============================================================
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;onum=true;pnum=true;script=latn;" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-italic.otf"]:mode=node;language=dflt;script=dflt;+tlig;onum=true;pnum=true;script=latn;" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;onum=true;pnum=true;script=latn;" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;onum=true;pnum=true;script=latn;+lnum;+smcp;" 
+============================================================
