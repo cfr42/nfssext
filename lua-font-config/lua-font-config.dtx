@@ -33,7 +33,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12196 2026-11-08 04:14:29Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12197 2026-11-08 09:09:40Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -244,9 +244,10 @@
 %
 % \section{Usage}\label{sec:pkg}
 %
-% \emph{The user interface is currently somewhat basic\footnote{%
+% \emph{The user interface is currently rather basic\footnote{%
 %     \begin{tabular}{ll}
 %       v0.1: & ‘\textbf{extremely} basic’.\\
+%       v0.2: & ‘currently somewhat basic’.\\
 %     \end{tabular}%
 %   }%
 % .}
@@ -561,10 +562,10 @@
 % 
 % \meta{key-value list} should be a comma-separated list of one or more of the following keys with their desired values\par
 % \begin{tabularx}\linewidth{>{\ttfamily}l>{\ttfamily}X}
-%   weight  & bold\textbar book\textbar demibold\textbar extralight\textbar extrabold\textbar light\textbar medium\textbar regular\textbar semibold\textbar semilight\textbar ultralight\textbar ultrabold \\
-%   width   & condensed\textbar expanded\textbar extracondensed\textbar extraexpanded\textbar medium\textbar semicondensed\textbar semiexpanded\textbar ultracondensed\textbar ultraexpanded \\
-%   case    & mixed\textbar smallcaps \\
-%   style   & italic\textbar oblique\textbar upright \\
+%   weight  & bold\,\textbar\, book\,\textbar\, demibold\,\textbar\, extralight\,\textbar\, extrabold\,\textbar\, light\,\textbar\, medium\,\textbar\, regular\,\textbar\, semibold\,\textbar\, semilight\,\textbar\, ultralight\,\textbar\, ultrabold \\
+%   width   & condensed\,\textbar\, expanded\,\textbar\, extracondensed\,\textbar\, extraexpanded\,\textbar\, medium\,\textbar\, semicondensed\,\textbar\, semiexpanded\,\textbar\, ultracondensed\,\textbar\, ultraexpanded \\
+%   case    & mixed\,\textbar\, smallcaps \\
+%   style   & italic\,\textbar\, oblique\,\textbar\, upright \\
 % \end{tabularx}
 % Note that \texttt{medium} is \emph{not} a synonym for \texttt{regular}.
 % If you aren't sure which you need, try \texttt{regular}.
@@ -590,8 +591,12 @@
 % Features apply to \emph{all} fonts configured as a result of the lookup, so you should not specify features you do not wish applied to all fonts to which the specification applies.
 %
 % \DescribeKey{scoped}\mval{scope spec.}\marg{opentype feature spec.}\par
-% \meta{scope spec.}: \meta{series}\texttt{:}\meta{shape}\par
 % Optional list of font features \textbf{for a subset of text fonts only}. 
+%
+% \meta{scope spec.} is a colon-separated expression consisting of a series specifier followed by a shape specifier i.e.~\meta{series}\texttt{:}\meta{shape}.
+% One expression may be \texttt{*} meaning all series or all shapes.
+%
+% For example, \texttt{scoped={*:sc}{+cpsp}} would add ‘capital spacing’ to all small-caps fonts, regardless of series.
 %
 % \meta{series} and \meta{shape} have take the usual \texttt{nfss} values, except that \texttt{book} is \texttt{k}, if a family also has a regular variant, and \texttt{medium} is \texttt{f}, if a family also has either book or regular.
 % \textbf{These specifiers are non-standard and may change without notice, if I can think of a way to avoid them.}
@@ -604,7 +609,7 @@
 % \emph{If you do not know what these are, use the \texttt{features} key rather than this one; if you need an unsupported feature, file an issue on the bug tracker (link below).}
 % 
 % Note that although arbitrary scopes and features may minimally work, \textbf{this is not recommended}.
-% The intended usage is to change spacing or figures in small-caps variants (see \cref{ee-scoped}, say, or to substitute petite for small caps or make similar adjustments.
+% The intended usage is to change spacing or figures in small-caps variants (see \cref{fig:ee-scoped}), say, or to substitute petite for small caps or make similar adjustments.
 % In particular, note that the underlying family names become unpredictable and possibly inconsistent if too many changes create a hodgepodge rather than a coherent family.
 % Moreover, documents typeset with such fonts will generally be typographically inconsistent, too.
 % If more variety is really needed, create additional font families and switch between them rather than abusing \texttt{scoped}.
@@ -633,7 +638,7 @@
 % These first four keys all do the same thing, so you may use your preferred syntactic sweetener. 
 %
 % \DescribeKey{math}\vals{true,false}\par
-% \DescribeKey{maths}
+% \DescribeKey{maths}\kern0pt\par
 % Should the current specification also be used for the corresponding text family in maths?
 %
 % For example, if you are configuring the main document family with \texttt{rm}, should that family also be used for operators, \cs{mathrm} etc.?
@@ -643,6 +648,7 @@
 % \DescribeKey{nomath}
 % \DescribeKey{nomaths}
 % Equivalent to \texttt{math = false}.
+% \par\kern0pt\par
 %
 % \DescribeKey{bold}\mval{key-value list}\par
 % \DescribeKey{normal}\mval{key-value list}\par
@@ -650,8 +656,24 @@
 %
 % Each \meta{key-value list} may take one or both of the following keys:
 %
-% \DescribeKey{weight}\vals{bold, book, demibold, extralight, extrabold, light, medium, regular, semibold, semilight, ultralight, ultrabold}\par
-% \DescribeKey{width}\vals{condensed, expanded, extracondensed, extraexpanded, medium, semicondensed, semiexpanded, ultracondensed, ultraexpanded}\par
+% \DescribeKey{weight}\val{weight selector}\par
+% \DescribeKey{width}\val{width selector}\par
+% Supported selectors:\par
+% \begin{tabular}{>{\ttfamily}l>{\ttfamily}l}
+%   \textsf{Weight selectors} & \textsf{Width selectors} \\
+%   ultrabold   & ultraexpanded   \\
+%   extrabold   & extraexpanded   \\       
+%   bold        & expanded        \\  
+%   semibold    & semiexpanded    \\
+%   demibold    &                 \\
+%   medium      &                 \\
+%   book        &                 \\
+%   regular     & medium          \\
+%   semilight   & semicondensed   \\  
+%   light       & condensed       \\
+%   extralight  & extracondensed  \\
+%   ultralight  & ultracondensed  \\
+% \end{tabular}
 %
 % Advanced users may alternatively set the \textsc{nfss} series directly:
 %
@@ -856,7 +878,7 @@
 % There is very little here, because almost everything is done in Lua.
 %
 % \pkg{expl3} function names use the standard syntax conventions.
-% In the source a function which begins \cs{__@@_} is defined in the Lua module or is a variant of such a function; one which begins \cs{_@@_} is defined in the package itself.
+% In the source a function which begins \verb|\__@@_| is defined in the Lua module or is a variant of such a function; one which begins \verb|\_@@_| is defined in the package itself.
 % This distinction disappears in the generated package code.
 %
 %% ^^A sty <<<
@@ -865,7 +887,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12196 2026-11-08 04:14:29Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12197 2026-11-08 09:09:40Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -1387,7 +1409,7 @@
 % \end{function}
 % \begin{function}{\_@@_second_of_two:w}
 % Auxiliary because \TeX\ still makes more sense to me here.
-% I know I'm meant to use something like \cs{use_romannumeral_delimited_by_something:w} but figuring out which \dots.
+% I know I'm meant to use something like \verb|\use_romannumeral_delimited_by_something:w| but figuring out which \dots.
 % (I can just search for the translation of ‘firstof’, but there isn't one to find for ‘secondof’ \dots.)
 %    \begin{macrocode}
 \cs_new_nopar:Npn \_@@_second_of_two:w #1#2 \q_stop {#2}
@@ -1510,7 +1532,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-fea <<<
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12196 2026-11-08 04:14:29Z cfrees $
+%% $Id: lua-font-config.dtx 12197 2026-11-08 09:09:40Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -1570,7 +1592,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-features <<<
 %<*ee-features>
-%% $Id: lua-font-config.dtx 12196 2026-11-08 04:14:29Z cfrees $
+%% $Id: lua-font-config.dtx 12197 2026-11-08 09:09:40Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -1796,4 +1818,6 @@ Oh, sphinx of black quartz, judge my vow!
 % \fi
 % 
 %\Finale
+% \iffalse
 %% vim: foldmethod=marker:fmr=<<<,>>>:
+% \fi
