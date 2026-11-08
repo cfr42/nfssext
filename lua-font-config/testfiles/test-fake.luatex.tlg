@@ -1,0 +1,14 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+============================================================
+TEST 1: family with fake series/shape from m/n m/it
+============================================================
+LaTeX Font Info:    Trying to load font information for TU+imfellenglish on input line ....
+(../.tex Fileignored)
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/iginomarini/imfellenglish/IMFeENrm28P.otf"]:mode=node;language=dflt;script=dflt;+tlig;" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/iginomarini/imfellenglish/IMFeENit28P.otf"]:mode=node;language=dflt;script=dflt;+tlig;" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/iginomarini/imfellenglish/IMFeENrm28P.otf"]:mode=node;language=dflt;script=dflt;+tlig;slant=0.9;" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/iginomarini/imfellenglish/IMFeENrm28P.otf"]:mode=node;language=dflt;script=dflt;+tlig;embolden=1.5;" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/iginomarini/imfellenglish/IMFeENit28P.otf"]:mode=node;language=dflt;script=dflt;+tlig;embolden=1.5;" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/iginomarini/imfellenglish/IMFeENrm28P.otf"]:mode=node;language=dflt;script=dflt;+tlig;embolden=1.5;slant=0.9;" 
+============================================================

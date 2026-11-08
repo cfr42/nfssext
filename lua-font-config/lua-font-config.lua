@@ -1,9 +1,9 @@
--- $Id: lua-font-config.lua 12195 2026-11-07 19:09:23Z cfrees $
+-- $Id: lua-font-config.lua 12196 2026-11-08 04:14:29Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 do
   local name, rev, date = string.match(
-    "$Id: lua-font-config.lua 12195 2026-11-07 19:09:23Z cfrees $", 
+    "$Id: lua-font-config.lua 12196 2026-11-08 04:14:29Z cfrees $", 
     "Id: ([a-z][a-z-]*)%.lua (%d%d*) (%d%d%d%d%-%d%d%-%d%d) ")
   luatexbase.provides_module({
     name      = name,
@@ -1771,6 +1771,75 @@ local function write_fake_fd(fam, fake_fd, fea, scale_factor, suffix, cfg_scoped
   suffix = suffix ~= "" and suffix or nil
   scale_factor = (scale_factor and scale_factor ~= 1) and scale_factor or nil
 
+  -- Note this **DEPENDS** on b preceding o when sorted ....
+  local fake_lookup = {
+    ["fakebold"]    = {"b","*", function(curr, val) return format("%sembolden=%s;", curr, val) end},
+    ["fakeoblique"] = {"*","sl", function(curr, val) return format("%sslant=%s;", curr, val) end},
+  }
+  if cfg_scoped and cfg_scoped.fake then
+    local t = {}
+    for no,line in ipairs(fake_fd) do
+      if line ~= "" then
+        t[line[1]] = t[line[1]] or {}
+        t[line[1]][line[2]] = no
+      end
+    end
+    for fake,value in sortedpairs(cfg_scoped.fake) do
+      -- t must be updated when changes are made to ensure that e.g. bold oblique is faked.
+      local lookup = fake_lookup[fake]
+      if lookup then
+        if lookup[1] ~= "*" and not t[lookup[1]] then
+          local newlines = t.m and t.m or (t.k and t.k or (t.f and t.f or nil))
+          if newlines then
+            t[lookup[1]] = {}
+            for shape,newline in pairs(newlines) do
+              local l = fastcopy(fake_fd[newline])
+              local base = l[1]
+              l[1] = lookup[1]
+              if l.ssub and l.ssub[1] == base then
+                l.ssub[1] = lookup[1]
+              end
+              insert(fake_fd, l)
+              t[lookup[1]][shape] = #fake_fd
+            end
+            local hash = format("%s:%s", lookup[1], lookup[2])
+            cfg_scoped[hash] = cfg_scoped[hash] or {}
+            cfg_scoped[hash].fea = lookup[3](cfg_scoped[hash].fea or "", value)
+          else
+            msg(format("Sorry, but I cannot make %s as I can't find a base series.", fake))
+          end
+        elseif lookup[2] ~= "*" then
+          for series,shapes in pairs(t) do
+            local no
+            if shapes[lookup[2]] then
+              local l = fake_fd[shapes[lookup[2]]]
+              if l.ssub then
+                no = shapes[lookup[2]]
+              end
+            elseif not shapes[lookup[2]] then
+              no = #fake_fd + 1
+            end
+            if no then
+              if shapes.n then
+                local l = fastcopy(fake_fd[shapes.n])
+                l[2] = lookup[2]
+                fake_fd[no] = l
+                local hash = format("%s:%s", series, lookup[2])
+                cfg_scoped[hash] = cfg_scoped[hash] or {}
+                cfg_scoped[hash].fea = lookup[3](cfg_scoped[hash].fea or "", value)
+                t[series][lookup[2]] = no
+              else
+                msg(format("Sorry, but I cannot make %s without a base shape.", fake))
+              end
+            end
+          end
+        end
+      else
+        msg(format("Sorry. I do not know how to make %s.", fake))
+      end
+    end
+  end
+
   local use_name = suffix and format("%s%s", fam, suffix) or fam
   local pre = {fastcopy(toks_enc_tu), embrace(use_name)}
   local out = {
@@ -1986,6 +2055,7 @@ local function font_config(targ, config, immediate)
 
         if variant == "smallcaps" then
           family = (gsub(family, "caps", ""))
+          family = (gsub(family, "sc", ""))
         end
 
         -- For latin modern roman unslanted, which claims to be perfectly ‘normal’
@@ -2416,7 +2486,11 @@ local function get_fam_cfg_scanner()
       local curr = nfss_doc_families.curr
       msg_assert(curr ~= nil, "No current family to set parameters for!")
       curr = nfss_doc_families[curr]
-      if key ~= "fea" then
+      if find(key, "^fake") then
+        curr.cfg_scoped = curr.cfg_scoped or {}
+        curr.cfg_scoped.fake = curr.cfg_scoped.fake or {}
+        curr.cfg_scoped.fake[key] = value
+      elseif key ~= "fea" then
         curr[key] = lower(tostring(value))
       else
         curr.fea = format("%s%s;", curr.fea or "", lower(tostring(value)))
@@ -2632,12 +2706,14 @@ local function parse_spec_scanner()
 end
 -- }}}
 luafunction_to_cs("__lfc_parse_spec:nn", parse_spec_scanner())
+
 luafunction_to_cs("__lfc_parse_series:nn", 
   do_with_two_scanner(function(weight,width)
     weight = lower(weight)
     width = lower(width)
     return sprint(-2, parse_nfss(weights[weight] or "m", widths[width] or "m", "m"))
-  end))
+  end)
+)
 
 ---@function get_log_level_scanner() {{{
 local function get_log_level_scanner()

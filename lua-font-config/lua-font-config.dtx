@@ -33,7 +33,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12195 2026-11-07 19:09:23Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12196 2026-11-08 04:14:29Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -428,7 +428,9 @@
 % They are used to configure font ‘features’ of various sorts.
 % These include opentype features provided by the fonts, but also some additions provided by the font-loader or in other ways.
 %
-% There are currently two keys in this category.
+% There are currently four keys in this category.
+% Two provide alternative methods for configuring font features; two provide methods of last resort for faking bold and oblique fonts, when these are not available.
+%
 % \texttt{fea} is a relatively low-level interface.
 % It is fast, powerful and requires familiarity with opentype font features and the syntax supported by \pkg{luaotfload}.
 % \texttt{features} is a mid-level interface which aims to provide a more user-friendly wrapper around \texttt{fea}.
@@ -548,6 +550,25 @@
 % \meta{script id} must currently be a valid identifier, as recognised by \pkg{luaotfload}.
 % \texttt{otfinfo -s }\meta{path to font file} may be used to determine identifiers supported by the font.
 %
+% \DescribeKey{scope}\mval{key-value list}\par
+% Limit effect of current list of features to fonts satisfying the conditions specified by the \meta{key-value} list.
+%
+% This key is special: it does not itself provide access to font features; instead, it limits the application of features specified using the other keys.
+%
+% \emph{This key should be used with caution.}
+% It should be used only where an option only makes sense for certain fonts e.g.~special spacing for small-caps.
+% It is not designed to support hodgepodge families of random sets of features applied to different members.
+% 
+% \meta{key-value list} should be a comma-separated list of one or more of the following keys with their desired values\par
+% \begin{tabularx}\linewidth{>{\ttfamily}l>{\ttfamily}X}
+%   weight  & bold\textbar book\textbar demibold\textbar extralight\textbar extrabold\textbar light\textbar medium\textbar regular\textbar semibold\textbar semilight\textbar ultralight\textbar ultrabold \\
+%   width   & condensed\textbar expanded\textbar extracondensed\textbar extraexpanded\textbar medium\textbar semicondensed\textbar semiexpanded\textbar ultracondensed\textbar ultraexpanded \\
+%   case    & mixed\textbar smallcaps \\
+%   style   & italic\textbar oblique\textbar upright \\
+% \end{tabularx}
+% Note that \texttt{medium} is \emph{not} a synonym for \texttt{regular}.
+% If you aren't sure which you need, try \texttt{regular}.
+%
 % \DescribeKey{spacing}\mval{key list}\par
 % \meta{key list} should be a comma-separated list of one or more of the following valueless keys\par
 % \begin{tabularx}\linewidth{>{\ttfamily}lX}
@@ -589,11 +610,27 @@
 % If more variety is really needed, create additional font families and switch between them rather than abusing \texttt{scoped}.
 %
 % Note that this key cannot be used to add ‘fake’ fonts: you cannot add a fake bold or oblique this way.
+% Use the keys below for this, if necessary.
+%
+% \DescribeKey{fakebold}\val{factor}\par
+% \DescribeKey{fakeoblique}\val{factor}\par
+% Add fake bold and/or oblique to families which lack them.
+%
+% \meta{factor} is optional in both cases. 
+% The default values are \texttt{1.5} and \texttt{0.2} respectively.
+% These values were shamelessly stolen from \pkg{fontspec}.
+%
+% \emph{Note that this is always a bad idea, in my opinion, and I would personally never use this in production.}
+% Even those more sympathetic to such methods typically agree it is \emph{almost} always a bad idea.
+% Fonts reflect designers' aesthetic and artistic conceptions, the typographic norms of the cultures and periods in which they are created and their intended applications.
+% Adding bold to a garamond or oblique to IM Fell English is typographically monstrous and the results should never be used in production.
+%
+% Consider these features ones provided for outrageous typographic expressions, typesetting shock tactics, font-based rebellions and the like.
 %
 % \subsubsection{Default text family keys}\label{subsubsec:keys-text-def}
 % These keys are accepted by \texttt{rm}, \texttt{sf} and \texttt{tt} i.e.~when specifying the default text families for the document.
 %
-% These keys all do the same thing, so you may use your preferred syntactic sweetener. 
+% These first four keys all do the same thing, so you may use your preferred syntactic sweetener. 
 %
 % \DescribeKey{math}\vals{true,false}\par
 % \DescribeKey{maths}
@@ -606,6 +643,30 @@
 % \DescribeKey{nomath}
 % \DescribeKey{nomaths}
 % Equivalent to \texttt{math = false}.
+%
+% \DescribeKey{bold}\mval{key-value list}\par
+% \DescribeKey{normal}\mval{key-value list}\par
+% Respectively set the default used for bold (\cs{bfseries}) and regular/normal (\cs{mdseries}).
+%
+% Each \meta{key-value list} may take one or both of the following keys:
+%
+% \DescribeKey{weight}\vals{bold, book, demibold, extralight, extrabold, light, medium, regular, semibold, semilight, ultralight, ultrabold}\par
+% \DescribeKey{width}\vals{condensed, expanded, extracondensed, extraexpanded, medium, semicondensed, semiexpanded, ultracondensed, ultraexpanded}\par
+%
+% Advanced users may alternatively set the \textsc{nfss} series directly:
+%
+% \DescribeKey{bfseries}\val{series specifier}\par
+% \DescribeKey{mdseries}\val{series specifier}\par
+% Series are those \emph{and only those} documented as supported by \LaTeX's \textsc{nfss}\footnote{%
+%   If you wish to specify ‘book’ or ‘medium’ for a font which also has a regular (and/or book) weight, please use the \texttt{normal} and/or \texttt{bold} keys.
+%   These weights do not have a standard representation distinct from \texttt{m}.
+%   This is a limitation of the schema provided by \LaTeX's font management.
+%   Ideally, \LaTeX{} would provide symbolic representations of these weights, since many fonts now have them \emph{as well as} regular, rather than instead.
+%   However, it doesn't, so \pkg{lua-font-config} does nefarious things which innocent readers, even the expert ones, should not wish to know.
+%   More seriously, the implementation will change without notice if I find a way to avoid the nefarious.
+%   If you really want to ignore this warning, see \texttt{scoped} above.
+%   \emph{Only series documented in \LaTeX's \texttt{fntguide} are supported.}%
+% }.
 %
 % \subsubsection{Additional text family keys}\label{subsubsec:keys-text-add}
 %
@@ -794,13 +855,17 @@
 %
 % There is very little here, because almost everything is done in Lua.
 %
+% \pkg{expl3} function names use the standard syntax conventions.
+% In the source a function which begins \cs{__@@_} is defined in the Lua module or is a variant of such a function; one which begins \cs{_@@_} is defined in the package itself.
+% This distinction disappears in the generated package code.
+%
 %% ^^A sty <<<
 %<*sty>
 %<@@=lfc>
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12195 2026-11-07 19:09:23Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12196 2026-11-08 04:14:29Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -1027,8 +1092,12 @@
   command     .code:n = { 
     \exp_args:Nne \__@@_set_fam_cfg:nn {csname}{ \cs_to_str:N #1 }
   },
-  fakebold    .code:n = {},
-  fakeoblique .code:n = {},
+  fakebold    .code:n = {
+    \__@@_set_fam_cfg:nn {fakebold} {#1}
+  },
+  fakeoblique .code:n = {
+    \__@@_set_fam_cfg:nn {fakeoblique} {#1}
+  },
   fea         .code:n = { \__@@_set_fam_cfg:nn {fea} {#1} },
   features    .code:n = { 
     \seq_clear:N \l_@@_features_seq
@@ -1066,8 +1135,8 @@
     \exp_args:NV \__@@_set_fam_name:n \l_keys_key_str 
   },
   name          .value_required:n   = true,
-  fakebold      .default:n          = ,
-  fakeoblique   .default:n          = ,
+  fakebold      .default:n          = 1.5,
+  fakeoblique   .default:n          = 0.2,
   fea           .value_required:n   = true,
   scoped        .value_required:n   = true,
   features      .value_required:n   = true,
@@ -1225,7 +1294,7 @@
       \__@@_parse_spec:nV {case} \l_keys_choice_str
     }
   },
-  scoped / shape  .choices:nn = {italic, oblique, upright} {
+  scoped / style  .choices:nn = {italic, oblique, upright} {
     \exp_args:NNne \seq_set_item:Nnn \l_@@_scope_seq {4} {
       \__@@_parse_spec:nV {shape} \l_keys_choice_str
     }
@@ -1441,7 +1510,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-fea <<<
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12195 2026-11-07 19:09:23Z cfrees $
+%% $Id: lua-font-config.dtx 12196 2026-11-08 04:14:29Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -1501,7 +1570,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-features <<<
 %<*ee-features>
-%% $Id: lua-font-config.dtx 12195 2026-11-07 19:09:23Z cfrees $
+%% $Id: lua-font-config.dtx 12196 2026-11-08 04:14:29Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
