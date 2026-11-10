@@ -1,9 +1,9 @@
--- $Id: lua-font-config.lua 12198 2026-11-10 02:44:24Z cfrees $
+-- $Id: lua-font-config.lua 12199 2026-11-10 20:48:03Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 do
   local name, rev, date = string.match(
-    "$Id: lua-font-config.lua 12198 2026-11-10 02:44:24Z cfrees $", 
+    "$Id: lua-font-config.lua 12199 2026-11-10 20:48:03Z cfrees $", 
     "Id: ([a-z][a-z-]*)%.lua (%d%d*) (%d%d%d%d%-%d%d%-%d%d) ")
   luatexbase.provides_module({
     name      = name,
@@ -1752,23 +1752,31 @@ end
 --    are likely required.
 -------------------------------------------------------------------------------
 
----@function write_fake_fd(fam, fake_fd, fea, scale_factor, suffix[, cfg_scoped]) {{{
+---@function write_fake_fd(fam, fake_fd, fake_fd_cfg) {{{
 ---@param fam:            <string>  NFSS family
 ---@param fake_fd:        <table>   If not cached
----@param fea:            <string>  Features
----@param scale_factor:   <number>  Scaling factor
----@param suffix:         <string>  Suffix for NFSS family
----@param cfg_scoped:     <table>   Special feature configs (if required)
+---@param fake_fd_cfg:    <table>   Configuration details
+---         fea           = <string>  Features
+---         scale_factor  = <number>  Scaling factor
+---         suffix        = <string>  Suffix for NFSS family
+---         cfg_scoped    = <table>   Special feature configs (if required)
+---         load_settings = <string>  Special feature configs (if required)
 ---@description fake_fd should not be nil unless something has gone wrong.
 ---@description This should never happen in the automated case.
 -- Cache format: see above
-local function write_fake_fd(fam, fake_fd, fea, scale_factor, suffix, cfg_scoped)
+local function write_fake_fd(fam, fake_fd, fake_fd_cfg)
+  local fea, scale_factor, suffix, cfg_scoped, load_settings
+    = fake_fd_cfg.fea,
+      fake_fd_cfg.scale or nil,
+      fake_fd_cfg.suffix or nil, 
+      fake_fd_cfg.cfg_scoped or nil,
+      fake_fd_cfg.load_settings or ""
+
   msg({"Emulating font definition file for NFSS family ", fam, " with ",
     fea, " scaled ", scale_factor or "1", " suffixed ", suffix or "[none]",
+    " load_settings ", load_settings or "[none]",
     cfg_scoped and " with special configs." or "."}, "log")
 
-  suffix = suffix ~= "" and suffix or nil
-  scale_factor = (scale_factor and scale_factor ~= 1) and scale_factor or nil
 
   -- Note this **DEPENDS** on b preceding o when sorted ....
   local fake_lookup = {
@@ -1844,7 +1852,8 @@ local function write_fake_fd(fam, fake_fd, fea, scale_factor, suffix, cfg_scoped
   local use_name = suffix and format("%s%s", fam, suffix) or fam
   local pre = {fastcopy(toks_enc_tu), embrace(use_name)}
   local out = {
-    tok_declare_fam, fastcopy(pre), toks_empty_n
+    tok_declare_fam, fastcopy(pre), 
+    load_settings and embrace(load_settings) or toks_empty_n
   }
   insert(pre, 1, tok_declare_shape)
 
@@ -1926,15 +1935,16 @@ local function file_subs_empty(filename)
 end
 -- }}}
 
----@function add_fake_fd(fam, fake_fd, fea, scale_factor, suffix, cfg_scoped) {{{
+---@function add_fake_fd(fam, fake_fd, fake_fd_cfg) {{{
 ---@see         write_fake_fd()
 ---@description A wrapper around write_fake_fd() which avoids defining fonts
 ---@description   unnecessarily (and so avoids unnecessary callbacks etc.).
-local function add_fake_fd(fam, fake_fd, fea, scale_factor, suffix, cfg_scoped)
+local function add_fake_fd(fam, fake_fd, fake_fd_cfg)
+  local suffix = fake_fd_cfg.suffix or nil
   local fd_filename = suffix and format("tu%s%s.fd", fam, suffix) or format("tu%s.fd", fam)
   local fn = format("__lfc_%s", fd_filename)
   luafunction_to_cs(fn, function ()
-    return write_fake_fd(fam, fake_fd, fea, scale_factor, suffix, cfg_scoped)
+    return write_fake_fd(fam, fake_fd, fake_fd_cfg)
   end, "protected")
   fn = create(fn)
   file_subs_empty(fd_filename)
@@ -1943,23 +1953,20 @@ local function add_fake_fd(fam, fake_fd, fea, scale_factor, suffix, cfg_scoped)
 end
 -- }}}
 
----@function use_cached_fd(fam, fea, scale, now, suffix[, cfg_scoped]) {{{
----@param fam        <string>   Name of a cached meta-family.
----@param fea        <string>   Font features.
----@param scale      <numeric>  Potential scaling factor or nil.
----@param now        <boolean>  Whether to write defns or setup hook.
----@param suffix     <string>   Family suffix.
----@param cfg_scoped <table>    Special configs, If required.
-local function use_cached_fd(fam, fea, scale, now, suffix, cfg_scoped) 
+---@function use_cached_fd(fam, fake_fd_cfg, now) {{{
+---@param fam         <string>    Name of a cached meta-family.
+---@param fake_fd_cfg <table>     See write_fake_fd()
+---@param now         <boolean>   Whether to write defns or setup hook.
+local function use_cached_fd(fam, fake_fd_cfg, now) 
   msg_assert(lfc_cache[fam] and lfc_cache[fam].fake_fd,
     "Cache failure. Try removing the cache before recompiling.")
   msg({"Using cached fd emulation for ", fam, "."}, "debug")
 
   msg_debug("Cached fd:\n", "cache", lfc_cache[fam].fake_fd)
   if now then
-    return write_fake_fd(fam, lfc_cache[fam].fake_fd, fea, scale, suffix, cfg_scoped) 
+    return write_fake_fd(fam, lfc_cache[fam].fake_fd, fake_fd_cfg) 
   else
-    return add_fake_fd(fam, lfc_cache[fam].fake_fd, fea, scale, suffix, cfg_scoped) 
+    return add_fake_fd(fam, lfc_cache[fam].fake_fd, fake_fd_cfg) 
   end
 end
 -- }}}
@@ -1967,24 +1974,34 @@ end
 --- }}}
 -------------------------------------------------------------------------------
 -- Main configuration function & auxiliaries 
--- font_config_aux()  font_config()
+-- font_config_aux_sel()  font_config_aux()  font_config()
 -------------------------------------------------------------------------------
+---@function font_config_aux_sel(fam, config, property, fallback) {{{
+---@param   fam       <string>
+---@param   config    <table>
+---@param   property  <string>    e.g. "scale"
+---@param   fallback  <anything>  e.g. 1
+local function font_config_aux_sel(fam, config, property, fallback)
+  return (config[fam] and config[fam][property] and config[fam][property]) or
+    (config[property] and config[property]) or fallback
+end
+-- }}}
 ---@function font_config_aux(fam, config, typeset_mode) {{{
 ---@param   fam           <string>  family name
 ---@param   config        <table>   overall config passed/created/modified 
 ---                                   to/by font_config()
 ---@param   typeset_mode  <int>     0 (text) or 1 (math)
----@description Returns configured features (string), scale (number) or 1, 
----@description   suffix (string) or "" and cfg_scoped (table) or nil
+---@description Returns keyed table:
+---@description   fea   configured features (string),
+---@description   scale (number) or nil, 
+---@description   suffix (string) or nil
+---@description   cfg_scoped (table) or nil
+---@description   load_settings (string) or ""
 ---@description These may be passed more-or-less as-is to the writing 
 ---@description   functions.
 local function font_config_aux(fam, config, typeset_mode)
 
-  local scale = (config[fam] and config[fam].scale and config[fam].scale) or
-    (config.scale and config.scale) or 1
-
-  local fea = (config[fam] and config[fam].fea and config[fam].fea) or
-    (config.fea and config.fea) or nil
+  local fea = font_config_aux_sel(fam, config, "fea", nil)
 
   local suffix
   if typeset_mode == 0 and fea then fea, suffix = parse_fea(fea) 
@@ -1993,9 +2010,7 @@ local function font_config_aux(fam, config, typeset_mode)
   end
   msg_assert(fea ~= nil, "fea should never be nil!")
 
-  local cfg_scoped = (config[fam] and config[fam].cfg_scoped and
-    config[fam].cfg_scoped) or (config.cfg_scoped and config.cfg_scoped)
-    or nil
+  local cfg_scoped = font_config_aux_sel(fam, config, "cfg_scoped", nil)
   if cfg_scoped then
     for this,cfg_scope in ipairs(cfg_scoped) do
       if cfg_scope.fea then
@@ -2007,7 +2022,13 @@ local function font_config_aux(fam, config, typeset_mode)
     end
   end
 
-  return fea, scale, suffix or "", cfg_scoped
+  return {
+    cfg_scoped = cfg_scoped or nil,
+    fea = fea, 
+    load_settings = font_config_aux_sel(fam, config, "load_settings", ""),
+    scale = font_config_aux_sel(fam, config, "scale", nil),
+    suffix = suffix,
+  }
 end
 -- }}}
 
@@ -2206,7 +2227,8 @@ local function font_config(targ, config, immediate)
     local by_meta_fam = lfc_cache.meta_families.by_meta_fam[fam_meta]
 
 
-    for fam,fam_data in pairs(parsed_fam) do
+    -- sortedpairs() for consistent regression tests.
+    for fam,fam_data in sortedpairs(parsed_fam) do
 
       local typeset_mode
       for series,shapes in pairs(fam_data) do
@@ -2256,35 +2278,35 @@ local function font_config(targ, config, immediate)
         end
 
 
-        local fea, scale, suffix, cfg_scoped = 
+        local fake_fd_cfg = 
           font_config_aux(fam, config, typeset_mode)
 
-
         if immediate then
-          write_fake_fd(fam, fake_fd, fea, scale, suffix, cfg_scoped) 
+          write_fake_fd(fam, fake_fd, fake_fd_cfg) 
 
           if fake_fd_sf then 
-            write_fake_fd(fam_sf, fake_fd_sf, fea, scale, suffix, cfg_scoped) 
+            write_fake_fd(fam_sf, fake_fd_sf, fake_fd_cfg) 
           end
           if fake_fd_ssf then 
-            write_fake_fd(fam_ssf, fake_fd_ssf, fea, scale, suffix, cfg_scoped)
+            write_fake_fd(fam_ssf, fake_fd_ssf, fake_fd_cfg)
           end
         else
-          add_fake_fd(fam, fake_fd, fea, scale, suffix, cfg_scoped)
+          add_fake_fd(fam, fake_fd, fake_fd_cfg)
 
           if fake_fd_sf then 
-            add_fake_fd(fam_sf, fake_fd_sf, fea, scale, suffix, cfg_scoped)
+            add_fake_fd(fam_sf, fake_fd_sf, fake_fd_cfg)
           end
           if fake_fd_ssf then 
-            add_fake_fd(fam_ssf, fake_fd_ssf, fea, scale, suffix, cfg_scoped)
+            add_fake_fd(fam_ssf, fake_fd_ssf, fake_fd_cfg)
           end
         end
 
-        suffix = suffix ~= "" and suffix or nil
 
         -- Need a different way to handle this.
         -- It shouldn't be disconnected this way.
-        if suffix and fam_meta == fam then meta_suffix = suffix end
+        if fake_fd_cfg.suffix and fam_meta == fam then 
+          meta_suffix = fake_fd_cfg.suffix
+        end
       end
 
     end
@@ -2306,34 +2328,35 @@ local function font_config(targ, config, immediate)
         local typeset_mode = lfc_cache[fam].typeset_mode
 
 
-        local fea, scale, suffix, cfg_scoped = 
+        local fake_fd_cfg = 
           font_config_aux(fam, config, typeset_mode)
 
 
         if typeset_mode ~= 1 then
-          use_cached_fd(fam, fea, scale, immediate, suffix, cfg_scoped) 
+          use_cached_fd(fam, fake_fd_cfg, immediate) 
         else
           -- Pick up the additional maths fds.
           local meta_math = lfc_cache.meta_families.by_meta_math[fam]
           msg_assert(meta_math, "Missing meta math from cache!")
           for _,mfam in ipairs(meta_math) do
-            use_cached_fd(mfam, fea, scale, immediate, suffix, cfg_scoped) 
+            use_cached_fd(mfam, fake_fd_cfg, immediate) 
           end
         end
 
-        suffix = suffix ~= "" and suffix or nil
 
         -- Need a different way to handle this.
         -- It shouldn't be disconnected this way.
-        if suffix and fam_meta == fam then meta_suffix = suffix end
+        if fake_fd_cfg.suffix and fam_meta == fam then
+          meta_suffix = fake_fd_cfg.suffix
+        end
       end
     else
       for _,fam in ipairs(by_meta_fam) do
         -- Not sure if scale is really appropriate here.
-        local scale = (config[fam] and config[fam].scale and 
-          config[fam].scale) or (config.scale and config.scale) or 1
+        local scale = font_config_aux_sel(fam, config, "scale", nil)
 
-        use_cached_fd(fam, str_fea_math_default, scale, immediate, "", nil)
+        use_cached_fd(fam,
+          {fea = str_fea_math_default, scale = scale}, immediate)
       end
     end
 
@@ -2599,6 +2622,7 @@ local function configure_doc_families()
         config.scale = cfg.scale or nil
         config.force = cfg.force or nil
         config.cfg_scoped = cfg.cfg_scoped or nil
+        config.load_settings = cfg.load_settings or nil
 
         -- text: 0, maths: 1
         config.typeset_mode = cfg.typeset_mode or 0
