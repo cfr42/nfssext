@@ -1,9 +1,9 @@
--- $Id: lua-font-config.lua 12196 2026-11-08 04:14:29Z cfrees $
+-- $Id: lua-font-config.lua 12198 2026-11-10 02:44:24Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 do
   local name, rev, date = string.match(
-    "$Id: lua-font-config.lua 12196 2026-11-08 04:14:29Z cfrees $", 
+    "$Id: lua-font-config.lua 12198 2026-11-10 02:44:24Z cfrees $", 
     "Id: ([a-z][a-z-]*)%.lua (%d%d*) (%d%d%d%d%-%d%d%-%d%d) ")
   luatexbase.provides_module({
     name      = name,
@@ -800,8 +800,8 @@ end
 local function prepare_fake_fd(fam, fam_data, typeset_mode, force) 
   force = force or false
   typeset_mode = typeset_mode or 0
-  msg(format("prepare_fake_fd params: %s, %s, %s, %s", fam, fam_data, 
-    typeset_mode, force), "info")
+  msg(concat({"prepare_fake_fd params:", fam, tostring(fam_data), typeset_mode,
+    tostring(force)}, " "), "info")
 
   lfc_cache[fam] = lfc_cache[fam] or {}
 
@@ -813,9 +813,8 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
       for ind,mfam in ipairs(t) do
         t[ind] = lfc_cache[mfam].fake_fd
         if not t[ind] then 
-          msg(format("Missing defns for %s (family %s).\n\z
-            This should not really happen, but I will try to recover.",
-            mfam, fam))
+          msg(concat({"Missing defns for ", mfam, " (family ", fam, ").\n\z
+            This should not really happen, but I will try to recover."}, ""))
           goto math_awol 
         end
       end
@@ -825,7 +824,7 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
       end
       return t[1], t[2], t[3]
     else
-      msg(format("Missing maths family for %s. Regenerating data.", fam))
+      msg(concat({"Missing maths family for ", fam, ". Regenerating data."}, ""))
     end
   end
   :: math_awol ::
@@ -1141,7 +1140,7 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
     msg("(prepare_fake_fd) typeset_mode is 1", "info")
 
     local sf, ssf = format("%s-sf", fam), format("%s-ssf", fam)
-    msg(format("Emulating %s and %s.", sf, ssf), "log")
+    msg(concat({"Emulating ", sf, " and ", ssf, "."}, ""), "log")
 
     -- We need extra cache data for maths families so that cache look-up
     -- catches scripts.
@@ -1260,12 +1259,11 @@ local fea_known = {
 ---@description constructs suffix for family name.
 local function parse_fea(fea)
   if not fea then return str_fea_default, nil end
-  local s_fea = str_fea_default
   local t_fea = fea_split(lower(tostring(fea)))
   local suffix = {}
   local cat_suffix
   -- Paid â cheisio leihau nifer o dablau yma!!!
-  local t_feat = {}
+  local t_feat = {str_fea_default}
   -- sortedpairs for regression testing ...
   for key,val in sortedpairs(t_fea) do
     if key == "" then
@@ -1273,11 +1271,11 @@ local function parse_fea(fea)
     elseif fea_ignore[key] and fea_ignore[key] == val then
       t_fea[key] = nil
     elseif fea_known[key] then
-      insert(t_feat, format("%s=%s", key, val))
+      insert(t_feat, format("%s=%s;", key, val))
     elseif find(key, "^+cv%d%d$") or find(key, "^[+-]nalt$") or 
-      find(key, "^[+-]salt$") then insert(t_feat, format("%s=%s", key, val))
+      find(key, "^[+-]salt$") then insert(t_feat, format("%s=%s;", key, val))
     elseif find(key, "^[+-]ss%d%d$") then
-      insert(t_feat, key)
+      insert(t_feat, key .. ";")
     else
       local code = fea_lookup[key]
       if code then
@@ -1285,16 +1283,16 @@ local function parse_fea(fea)
         if c then
           t_fea[key]  = nil
           t_fea[c] = "true"
-          insert(t_feat, format("%s=true", c))
+          insert(t_feat, format("%s=true;", c))
         else 
-          insert(t_feat, format("%s=%s", key, val)) 
+          insert(t_feat, format("%s=%s;", key, val)) 
         end
       else
-        insert(t_feat, format("%s=%s", key, val)) 
+        insert(t_feat, format("%s=%s;", key, val)) 
       end
     end
   end
-  fea = format("%s%s;", s_fea, concat(t_feat, ";"))
+  fea = concat(t_feat, "")
   -- According to fntguide, these should use the autoinst suffixes,
   -- but this makes things really awkward because then (mapping to 
   -- nfssext) we have
@@ -1467,7 +1465,8 @@ local function parse_features(t_fea,fea_type)
         insert(t_feat, tag)
       else
         t_fea[key] = nil
-        msg(format("Unknown key \'%s\' in %s: ignoring", key, fea_type or "features"))
+        msg(concat({"Unknown key \'", key, "\' in ", fea_type or "features",
+          ": ignoring"}, ""))
       end
     end
   end
@@ -1558,7 +1557,7 @@ local function write_declare_shape(fam, pre, line, post, fea, size_spec)
 
     append(out, {
       tok_group_begin, str_onesize, line.ssub and "ssub*" or "sub*",
-      format("%s/%s/%s", fam, subst[1], subst[2]), tok_group_end })
+      fam, "/", subst[1], "/", subst[2], tok_group_end })
   end
 
   -- hyph or whatever
@@ -1773,8 +1772,10 @@ local function write_fake_fd(fam, fake_fd, fea, scale_factor, suffix, cfg_scoped
 
   -- Note this **DEPENDS** on b preceding o when sorted ....
   local fake_lookup = {
-    ["fakebold"]    = {"b","*", function(curr, val) return format("%sembolden=%s;", curr, val) end},
-    ["fakeoblique"] = {"*","sl", function(curr, val) return format("%sslant=%s;", curr, val) end},
+    ["fakebold"]    = {"b","*", function(curr, val) 
+      return concat({curr, "embolden=", val, ";"}, "") end},
+    ["fakeoblique"] = {"*","sl", function(curr, val) 
+      return concat({curr, "slant=", val, ";"}, "") end},
   }
   if cfg_scoped and cfg_scoped.fake then
     local t = {}
@@ -1806,7 +1807,7 @@ local function write_fake_fd(fam, fake_fd, fea, scale_factor, suffix, cfg_scoped
             cfg_scoped[hash] = cfg_scoped[hash] or {}
             cfg_scoped[hash].fea = lookup[3](cfg_scoped[hash].fea or "", value)
           else
-            msg(format("Sorry, but I cannot make %s as I can't find a base series.", fake))
+            msg({"Sorry, but I cannot make ", fake, " as I can't find a base series."})
           end
         elseif lookup[2] ~= "*" then
           for series,shapes in pairs(t) do
@@ -1829,13 +1830,13 @@ local function write_fake_fd(fam, fake_fd, fea, scale_factor, suffix, cfg_scoped
                 cfg_scoped[hash].fea = lookup[3](cfg_scoped[hash].fea or "", value)
                 t[series][lookup[2]] = no
               else
-                msg(format("Sorry, but I cannot make %s without a base shape.", fake))
+                msg({"Sorry, but I cannot make ", fake, " without a base shape."})
               end
             end
           end
         end
       else
-        msg(format("Sorry. I do not know how to make %s.", fake))
+        msg({"Sorry. I do not know how to make ", fake, "."})
       end
     end
   end
@@ -1851,7 +1852,7 @@ local function write_fake_fd(fam, fake_fd, fea, scale_factor, suffix, cfg_scoped
   if scale_factor then
     if lfc_cache[fam].scalable then
       msg({"Scaling ", use_name, " to ", scale_factor, "."}, "info")
-      onesize = format("%ss*[%s]", onesize, scale_factor)
+      onesize = concat({onesize, "s*[", scale_factor, "]"}, "")
     else
       msg("Ignoring scaling factor for fonts with optical sizes.")
     end
@@ -1864,13 +1865,13 @@ local function write_fake_fd(fam, fake_fd, fea, scale_factor, suffix, cfg_scoped
       msg({"Preparing line: ", use_name, ": ", fea, " ", onesize}, "debug")
       local fea = fea
       if cfg_scoped then
-        local scope_hash_series = format("%s:*", line[1])
-        local scope_hash_shape = format("*:%s", line[2])
-        local scope_hash = format("%s:%s", line[1], line[2])
+        local scope_hash_series = concat({line[1], ":*"}, "")
+        local scope_hash_shape = concat({"*:", line[2]}, "")
+        local scope_hash = concat({line[1], line[2]}, ":")
         for _,h in ipairs({scope_hash_series, scope_hash_shape, scope_hash}) do
           if cfg_scoped[h] then
             local cfg = cfg_scoped[h]
-            fea = cfg.fea and format("%s%s", fea or "", cfg.fea) or fea
+            fea = cfg.fea and concat({fea or "", cfg.fea}, "") or fea
           end 
         end
       end
@@ -1965,9 +1966,51 @@ end
 
 --- }}}
 -------------------------------------------------------------------------------
--- Main configuration function
--- font_config()
+-- Main configuration function & auxiliaries 
+-- font_config_aux()  font_config()
 -------------------------------------------------------------------------------
+---@function font_config_aux(fam, config, typeset_mode) {{{
+---@param   fam           <string>  family name
+---@param   config        <table>   overall config passed/created/modified 
+---                                   to/by font_config()
+---@param   typeset_mode  <int>     0 (text) or 1 (math)
+---@description Returns configured features (string), scale (number) or 1, 
+---@description   suffix (string) or "" and cfg_scoped (table) or nil
+---@description These may be passed more-or-less as-is to the writing 
+---@description   functions.
+local function font_config_aux(fam, config, typeset_mode)
+
+  local scale = (config[fam] and config[fam].scale and config[fam].scale) or
+    (config.scale and config.scale) or 1
+
+  local fea = (config[fam] and config[fam].fea and config[fam].fea) or
+    (config.fea and config.fea) or nil
+
+  local suffix
+  if typeset_mode == 0 and fea then fea, suffix = parse_fea(fea) 
+  else 
+    fea = typeset_mode ~= 1 and str_fea_default or str_fea_math_default
+  end
+  msg_assert(fea ~= nil, "fea should never be nil!")
+
+  local cfg_scoped = (config[fam] and config[fam].cfg_scoped and
+    config[fam].cfg_scoped) or (config.cfg_scoped and config.cfg_scoped)
+    or nil
+  if cfg_scoped then
+    for this,cfg_scope in ipairs(cfg_scoped) do
+      if cfg_scope.fea then
+        cfg_scope.fea, discard = parse_fea(cfg_scope.fea)
+      else
+        -- Discard do-nothing entries.
+        cfg_scoped[this] = nil
+      end
+    end
+  end
+
+  return fea, scale, suffix or "", cfg_scoped
+end
+-- }}}
+
 ---@function font_config(targ, config[, immediate]) -- {{{
 ---@param target    required <string>   Font specification to resolve.
 ---@param config    optional <table>    Configuration details.
@@ -2212,35 +2255,9 @@ local function font_config(targ, config, immediate)
           }
         end
 
-        local scale = (config[fam] and config[fam].scale and 
-          config[fam].scale) or (config.scale and config.scale) or 1
 
-        local fea = (config[fam] and config[fam].fea and config[fam].fea) or
-          (config.fea and config.fea) or nil
-
-        local suffix
-        if typeset_mode == 0 and fea then fea, suffix = parse_fea(fea) 
-        else 
-          fea = typeset_mode ~= 1 and str_fea_default or str_fea_math_default
-        end
-
-        local cfg_scoped = (config[fam] and config[fam].cfg_scoped and
-          config[fam].cfg_scoped) or (config.cfg_scoped and config.cfg_scoped)
-          or nil
-
-        if cfg_scoped then
-          for this,cfg_scope in ipairs(cfg_scoped) do
-            if cfg_scope.fea then
-              cfg_scope.fea, discard = parse_fea(cfg_scope.fea)
-            else
-              -- Discard do-nothing entries.
-              cfg_scoped[this] = nil
-            end
-          end
-        end
-
-        suffix = suffix or ""
-        msg_assert(fea ~= nil, "fea should never be nil!")
+        local fea, scale, suffix, cfg_scoped = 
+          font_config_aux(fam, config, typeset_mode)
 
 
         if immediate then
@@ -2284,45 +2301,20 @@ local function font_config(targ, config, immediate)
     end
 
     if not all_math then
-      for _,fam_name in ipairs(by_meta_fam) do
-        local scale = (config[fam_name] and config[fam_name].scale and 
-        config[fam_name].scale) or (config.scale and config.scale) or 1
+      for _,fam in ipairs(by_meta_fam) do
 
-        local fea = (config[fam_name] and config[fam_name].fea and 
-        config[fam_name].fea) or (config.fea and config.fea)
+        local typeset_mode = lfc_cache[fam].typeset_mode
 
-        local suffix
-        local typeset_mode = lfc_cache[fam_name].typeset_mode
-        if typeset_mode == 0 and fea then 
-          fea, suffix = parse_fea(fea) 
-        else 
-          fea = typeset_mode ~= 1 and str_fea_default 
-          or str_fea_math_default
-        end
 
-        local cfg_scoped = (config[fam_name] and config[fam_name].cfg_scoped and
-          config[fam_name].cfg_scoped) or (config.cfg_scoped and config.cfg_scoped)
-          or nil
+        local fea, scale, suffix, cfg_scoped = 
+          font_config_aux(fam, config, typeset_mode)
 
-        if cfg_scoped then
-          for this,cfg_scope in ipairs(cfg_scoped) do
-            if cfg_scope.fea then
-              cfg_scope.fea, discard = parse_fea(cfg_scope.fea)
-            else
-              -- Discard do-nothing entries.
-              cfg_scoped[this] = nil
-            end
-          end
-        end
-
-        suffix = suffix or ""
-        msg_assert(fea ~= nil, "fea should never be nil!")
 
         if typeset_mode ~= 1 then
-          use_cached_fd(fam_name, fea, scale, immediate, suffix, cfg_scoped) 
+          use_cached_fd(fam, fea, scale, immediate, suffix, cfg_scoped) 
         else
           -- Pick up the additional maths fds.
-          local meta_math = lfc_cache.meta_families.by_meta_math[fam_name]
+          local meta_math = lfc_cache.meta_families.by_meta_math[fam]
           msg_assert(meta_math, "Missing meta math from cache!")
           for _,mfam in ipairs(meta_math) do
             use_cached_fd(mfam, fea, scale, immediate, suffix, cfg_scoped) 
@@ -2333,15 +2325,15 @@ local function font_config(targ, config, immediate)
 
         -- Need a different way to handle this.
         -- It shouldn't be disconnected this way.
-        if suffix and fam_meta == fam_name then meta_suffix = suffix end
+        if suffix and fam_meta == fam then meta_suffix = suffix end
       end
     else
-      for _,fam_name in ipairs(by_meta_fam) do
+      for _,fam in ipairs(by_meta_fam) do
         -- Not sure if scale is really appropriate here.
-        local scale = (config[fam_name] and config[fam_name].scale and 
-          config[fam_name].scale) or (config.scale and config.scale) or 1
+        local scale = (config[fam] and config[fam].scale and 
+          config[fam].scale) or (config.scale and config.scale) or 1
 
-        use_cached_fd(fam_name, str_fea_math_default, scale, immediate, "", nil)
+        use_cached_fd(fam, str_fea_math_default, scale, immediate, "", nil)
       end
     end
 
@@ -2445,7 +2437,7 @@ local function get_fam_default_scanner(fam)
     function(fam_name)
       local cleanname = cleanfilename(fam_name)
       nfss_doc_families_cnt = nfss_doc_families_cnt + 1
-      local t_name = format("%s_%s", cleanname, nfss_doc_families_cnt)
+      local t_name = concat({cleanname, nfss_doc_families_cnt}, "_")
       nfss_doc_families[t_name] = {
         name = tostring(fam_name),
         cleanname = cleanname,
@@ -2466,7 +2458,7 @@ local function get_fam_name_scanner()
     function(name)
       local cleanname = cleanfilename(name)
       nfss_doc_families_cnt = nfss_doc_families_cnt + 1
-      local t_name = format("%s_%s", cleanname, nfss_doc_families_cnt)
+      local t_name = concat({cleanname, nfss_doc_families_cnt}, "_")
       nfss_doc_families[t_name] = {
         name = tostring(name),
         cleanname = cleanname,
@@ -2574,9 +2566,8 @@ local function get_fam_features_scanner()
       if feas and feas ~= "" then
         cfg.fea = format("%s%s;", cfg.fea or "", feas)
       end
-      msg_debug(format("Scanned kv features family configuration%s%s: ",
-        scope_hash and " " or "", scope_hash or ""), "doc",
-        nfss_doc_families[curr], key)
+      msg_debug(concat({"Scanned kv features family configuration", scope_hash and " "
+        or "", scope_hash or "", ": "}), "doc", nfss_doc_families[curr], key)
     end)
 end
 -- }}}

@@ -28,12 +28,13 @@
 %
 % \iffalse
 %<*driver>
+%% ^^A <<<
 \directlua{
   pdf.setmajorversion(2)
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12197 2026-11-08 09:09:40Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12198 2026-11-10 02:44:24Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -67,6 +68,7 @@
 \usepackage{changepage}
 \usepackage{array}
 \usepackage{tabularx}
+\usepackage{booktabs}
 \usepackage{xurl}
 % sicrhau hyperindex=false: llwytho CYN bookmark
 \usepackage{hypdoc}% ateb Ulrike Fischer: https://tex.stackexchange.com/a/695555/
@@ -203,6 +205,9 @@
 \end{document}
 %</driver>
 % \fi
+%% ^^A >>>
+%
+%% ^^A \maketitle etc. <<<
 % \expandafter\title\expandafter{\csname lfc@base\endcsname}
 % \author{Clea F. Rees\thanks{%
 %     Many thanks to everyone who provided feedback on version 0.1.
@@ -226,40 +231,45 @@
 %   \textsc{svn}: \UseName{lfc@rev} \UseName{lfc@date}%
 % }}
 % \maketitle
-% \begin{abstract}
+%% ^^A >>>
+% \begin{abstract}% ^^A <<<
 % An opentype font configuration package for Lua\LaTeXe{}.
 % The aim is to provide an alternative to \pkg{fontspec} which is both faster and more powerful, by doing as much processing as possible in Lua.
 % To avoid loading fonts unnecessarily, the data used is corrected during compilation and the results cached for future use.
 %
 % \emph{This package is experimental.}
 % \end{abstract}
+%% ^^A >>>
 % 
-% \section{Requirements}\label{sec:require}
+% \section{Requirements}\label{sec:require}% ^^A <<<
 %
 % The package requires Lua\LaTeXe.
 % It will not work with any other engine or format.
 %
 % Unicode maths is supported \emph{via} \pkg{lua-unicode-math}.
 % It will \textbf{not} work with \pkg{unicode-math}.
+%% ^^A >>>
 %
-% \section{Usage}\label{sec:pkg}
+% \section{Usage}\label{sec:pkg}% ^^A <<<
 %
-% \emph{The user interface is currently rather basic\footnote{%
+% \emph{The key-value user interface is currently highly experimental\footnote{%
 %     \begin{tabular}{ll}
-%       v0.1: & ‘\textbf{extremely} basic’.\\
-%       v0.2: & ‘currently somewhat basic’.\\
-%     \end{tabular}%
+%       v0.1: & ‘The user interface is currently \textbf{extremely} basic.’\\
+%       v0.2: & ‘The user interface is currently currently somewhat basic.’\\
+%     \end{tabular}
+%     The lower-level interface is more stable, though still experimental, but this remains \emph{extremely} basic by design.%
 %   }%
 % .}
 %
 % Currently documents using exclusively Latin scripts with no changes of the base font families are reasonably well supported \emph{via} key-value based configuration.
 % This enables the choice of font family for the standard families --- i.e.~roman/serif, sans, typewriter/mono and (Unicode) maths (main, script and calligraphic) --- and configuration of additional fonts, again by family.
-% In addition to this, scaling, ‘fake bold’, rendering mode, language choice and script selection may be configured for each family.
+% In addition to this, scaling, ‘fake bold’, ‘fake oblique’ rendering mode, language choice and script selection may be configured for each family.
 % A reasonable\footnote{%
 %   Where ‘reasonable’ means I have some idea what they do and some, possibly merely theoretical, ability to test them.
 %   This is naturally a quite unreasonable definition of ‘reasonable’ with a clear Western European bias.
 %   Input from users of non-Latin scripts (initially for mono-script documents) would be particularly welcome.%
 % } variety of opentype font features have key-value support.
+% ‘Scoped’ features, which apply to only some fonts in a family, are also supported.
 %
 % Alternatively or additionally, feature specifications may be passed more-or-less directly to the font loader.
 % This enables any loader-supported specification to used and is faster, but requires knowledge of the syntax and opentype tag names.
@@ -368,16 +378,26 @@
   \fontconfig{%
     rm = {%
       name = texgyrepagella, 
-      fea  = {script=ltn;+tlig;+pnum},
+      features  = {%
+        script=ltn,
+        figures={proportional,oldstyle},
+        % tex ligatures are anyway default
+        ligatures=tex,
+      },
     },
     sf = {%
       name  = texgyreheros,
       scale = 1.2,
-      fea   = {script=cyrl;},
+      features   = {%
+        script=cyrl,
+        figures={proportional,lining},
+      },
     },
     tt = {%
       name  = texgyrecursor,
-      fea   = {+zero;},
+      features   = {%
+        figures={tabular,lining,zero},
+      },
       %% for completeness: false is anyway the default
       force = false,
     },
@@ -429,18 +449,8 @@
 % They are used to configure font ‘features’ of various sorts.
 % These include opentype features provided by the fonts, but also some additions provided by the font-loader or in other ways.
 %
-% There are currently four keys in this category.
-% Two provide alternative methods for configuring font features; two provide methods of last resort for faking bold and oblique fonts, when these are not available.
-%
-% \texttt{fea} is a relatively low-level interface.
-% It is fast, powerful and requires familiarity with opentype font features and the syntax supported by \pkg{luaotfload}.
-% \texttt{features} is a mid-level interface which aims to provide a more user-friendly wrapper around \texttt{fea}.
-%
-% \textbf{If you are not sure which to use, use \texttt{features}.}
-%
-% The two keys may be used to configure the same family.
-% If so, consistent options are combined; in case of conflicts, \texttt{features} takes precedence over \texttt{fea}.
-% This means you can use the more-user friendly interface for most things and still add any unsupported specialist setup, if necessary. 
+% There are currently three keys in this category.
+% One provides a general way to configure font features; two provide methods of last resort for faking bold and oblique fonts, when these are not available.
 %
 % \DescribeKey{features}\mval{key-value list}\par
 % Optional list of font features \textbf{for text fonts only}. 
@@ -481,6 +491,8 @@
 % \DescribeKey{alternates}\mval{key/key-value list}\par
 % \meta{key/key-value list} should be a comma-separated list of one or more of the following valueless keys\par
 % \begin{tabularx}\linewidth{>{\ttfamily}lX}
+%   \toprule
+%   \textsf{Valueless key} & \textsf{Effect}  \\\midrule
 %   contextual & enable standard contextual alternates \\
 %   nocontextual & disable them \\
 %   contextualswash & enable contextual ‘swash’ \\
@@ -488,6 +500,7 @@
 %   wordfinal & enable end-of-word forms \\
 %   justification & enable forms designed to help justify text \\
 %   swash & enable ‘swash’ \\
+%   \bottomrule
 % \end{tabularx}\par
 % and/or one or more of the following key-value pairs\par
 % \begin{tabularx}\linewidth{>{\ttfamily}l@{\,\texttt{=}\,}lX}
@@ -504,6 +517,9 @@
 % \DescribeKey{figures}\mval{key list}\par
 % \meta{key list} should be a comma-separated list of one or more of the following valueless keys\par
 % \begin{tabularx}\linewidth{>{\ttfamily}lX}
+%   \toprule
+%   \textsf{Valueless key} & \textsf{Effect}  \\\midrule
+%   \bottomrule
 %   lining	                  & use lining digits \\
 %   osf\textbar oldstyle      & use oldstyle / hanging digits \\
 %   prop\textbar proportional & use proportional digits \\
@@ -514,6 +530,8 @@
 % \DescribeKey{forms}\mval{key list}\par
 % \meta{key list} should be a comma-separated list of one or more of the following valueless keys\par
 % \begin{tabularx}\linewidth{>{\ttfamily}lX}
+%   \toprule
+%   \textsf{Valueless key} & \textsf{Effect}  \\\midrule
 %   capstopetite            & map \texttt{ABC} to ‘petite’ caps \\
 %   capstosc                & map \texttt{ABC} to small-caps \\
 %   case                    & enable forms designed for use in capitalised contexts \\
@@ -523,6 +541,7 @@
 %   smalltopetite           & map \texttt{abc} to ‘petite’ caps \\
 %   titling                 & enable forms intended for use in titles \\
 %   unicase                 & map \texttt{ABCabc} to letters in a single-cased alphabet \\
+%   \bottomrule
 % \end{tabularx}
 %
 % \DescribeKey{language}\val{language id}\par
@@ -532,6 +551,8 @@
 % \DescribeKey{ligatures}\mval{key list}\par
 % \meta{key list} should be a comma-separated list of one or more of the following valueless keys\par
 % \begin{tabularx}\linewidth{>{\ttfamily}lX}
+%   \toprule
+%   \textsf{Valueless key} & \textsf{Effect}  \\\midrule
 %   contextual	          & enable ‘contextual’ ligatures \\    
 %   nocontextual	        & disable them \\                    
 %   discretionary	        & enable discretionary ligatures \\                   
@@ -542,6 +563,7 @@
 %   nostandard	          & disable them \\    
 %   tex	                  & enable \TeX{} ligatures e.g.~\texttt{--} \\           
 %   notex	                & disable them \\         
+%   \bottomrule
 % \end{tabularx}
 %
 % \DescribeKey{mode}\vals{base,node,harf,harfbuzz}\par
@@ -560,62 +582,43 @@
 % It should be used only where an option only makes sense for certain fonts e.g.~special spacing for small-caps.
 % It is not designed to support hodgepodge families of random sets of features applied to different members.
 % 
-% \meta{key-value list} should be a comma-separated list of one or more of the following keys with their desired values\par
-% \begin{tabularx}\linewidth{>{\ttfamily}l>{\ttfamily}X}
-%   weight  & bold\,\textbar\, book\,\textbar\, demibold\,\textbar\, extralight\,\textbar\, extrabold\,\textbar\, light\,\textbar\, medium\,\textbar\, regular\,\textbar\, semibold\,\textbar\, semilight\,\textbar\, ultralight\,\textbar\, ultrabold \\
-%   width   & condensed\,\textbar\, expanded\,\textbar\, extracondensed\,\textbar\, extraexpanded\,\textbar\, medium\,\textbar\, semicondensed\,\textbar\, semiexpanded\,\textbar\, ultracondensed\,\textbar\, ultraexpanded \\
-%   case    & mixed\,\textbar\, smallcaps \\
-%   style   & italic\,\textbar\, oblique\,\textbar\, upright \\
-% \end{tabularx}
+% \DescribeKey{weight}\val{weight selector}\par
+% \DescribeKey{width}\val{width selector}\par
+% \DescribeKey{case}\val{case selector}\par
+% \DescribeKey{style}\val{style selector}\par
+% \meta{key-value list} should be a comma-separated list of one or more of these keys with the desired selector(s).
+% Supported selectors:\par
+% \begin{tabular}{*{4}{>{\ttfamily}l}>{\sffamily\footnotesize}l}
+%   \toprule
+%   \textsf{weight} & \textsf{width} &  \textsf{case} & \textsf{style} \\\midrule
+%   ultrabold   & ultraexpanded   &   && \\
+%   extrabold   & extraexpanded   &   && \\
+%   semibold    & semiexpanded    &   && \\
+%   demibold    &                 &   && \\
+%   bold        & expanded        &   && \\
+%   medium      &                 &   && \\
+%   book        &                 &   && \\
+%   regular     & medium          & mixed     & upright & \textcolor{gray}{default} \\
+%   semilight   & semicondensed   & smallcaps & italic  & \\ 
+%   light       & condensed       &           & oblique & \\
+%   extralight  & extracondensed  &   && \\
+%   ultralight  & ultracondensed  &   && \\
+%   \bottomrule
+% \end{tabular}
 % Note that \texttt{medium} is \emph{not} a synonym for \texttt{regular}.
 % If you aren't sure which you need, try \texttt{regular}.
 %
 % \DescribeKey{spacing}\mval{key list}\par
 % \meta{key list} should be a comma-separated list of one or more of the following valueless keys\par
 % \begin{tabularx}\linewidth{>{\ttfamily}lX}
+%   \toprule
+%   \textsf{Valueless key} & \textsf{Effect}  \\\midrule
 %   capsspacing   & enable spacing designed for capitalised text \\
 %   kern          & enable kerning \\
 %   nokern        & disable kerning \\
+%   \bottomrule
 % \end{tabularx}
 %
-%
-% \DescribeKey{fea}\mval{opentype feature spec.}\par
-% Optional list of font features \textbf{for text fonts only}. 
-% 
-% Note that the specification is passed to the font loader with minimal processing, so you must use ‘raw’ feature specifications.
-% \emph{If you do not know what these are, use the \texttt{features} key rather than this one; if you need an unsupported feature, file an issue on the bug tracker (link below).}
-%
-% The default is equivalent to \texttt{fea=\{mode=node;scrpt=dflt;language=dflt;+tlig\}}.
-% Unless provided in separate fonts, \texttt{+smcp} is added, if available, for upright, italic and oblique small-caps.
-% 
-% Features apply to \emph{all} fonts configured as a result of the lookup, so you should not specify features you do not wish applied to all fonts to which the specification applies.
-%
-% \DescribeKey{scoped}\mval{scope spec.}\marg{opentype feature spec.}\par
-% Optional list of font features \textbf{for a subset of text fonts only}. 
-%
-% \meta{scope spec.} is a colon-separated expression consisting of a series specifier followed by a shape specifier i.e.~\meta{series}\texttt{:}\meta{shape}.
-% One expression may be \texttt{*} meaning all series or all shapes.
-%
-% For example, \texttt{scoped={*:sc}{+cpsp}} would add ‘capital spacing’ to all small-caps fonts, regardless of series.
-%
-% \meta{series} and \meta{shape} have take the usual \texttt{nfss} values, except that \texttt{book} is \texttt{k}, if a family also has a regular variant, and \texttt{medium} is \texttt{f}, if a family also has either book or regular.
-% \textbf{These specifiers are non-standard and may change without notice, if I can think of a way to avoid them.}
-% 
-% Features apply \emph{only} to fonts covered by \meta{scope spec.}
-% The \meta{opentype feature spec.} is \emph{added} to the features applied to all fonts configured by the lookup.
-% So, if you want oldstyle figures for all fonts except bold oblique, you must add \texttt{+lnum} for the \texttt{b:sl} scope.
-% 
-% Note that both the scope and feature specifications are passed to \LaTeX{} and the font loader with minimal processing, so you must use low-level series/shape representations and ‘raw’ feature specifications.
-% \emph{If you do not know what these are, use the \texttt{features} key rather than this one; if you need an unsupported feature, file an issue on the bug tracker (link below).}
-% 
-% Note that although arbitrary scopes and features may minimally work, \textbf{this is not recommended}.
-% The intended usage is to change spacing or figures in small-caps variants (see \cref{fig:ee-scoped}), say, or to substitute petite for small caps or make similar adjustments.
-% In particular, note that the underlying family names become unpredictable and possibly inconsistent if too many changes create a hodgepodge rather than a coherent family.
-% Moreover, documents typeset with such fonts will generally be typographically inconsistent, too.
-% If more variety is really needed, create additional font families and switch between them rather than abusing \texttt{scoped}.
-%
-% Note that this key cannot be used to add ‘fake’ fonts: you cannot add a fake bold or oblique this way.
-% Use the keys below for this, if necessary.
 %
 % \DescribeKey{fakebold}\val{factor}\par
 % \DescribeKey{fakeoblique}\val{factor}\par
@@ -660,7 +663,8 @@
 % \DescribeKey{width}\val{width selector}\par
 % Supported selectors:\par
 % \begin{tabular}{>{\ttfamily}l>{\ttfamily}l}
-%   \textsf{Weight selectors} & \textsf{Width selectors} \\
+%   \toprule
+%   \textsf{Weight selectors} & \textsf{Width selectors} \\\midrule
 %   ultrabold   & ultraexpanded   \\
 %   extrabold   & extraexpanded   \\       
 %   bold        & expanded        \\  
@@ -673,6 +677,7 @@
 %   light       & condensed       \\
 %   extralight  & extracondensed  \\
 %   ultralight  & ultracondensed  \\
+%   \bottomrule
 % \end{tabular}
 %
 % Advanced users may alternatively set the \textsc{nfss} series directly:
@@ -716,9 +721,18 @@
 % \iffalse
 %</verb>
 % \fi
+%% ^^A >>>
 %
-% \section{Compatibility}\label{sec:compat}
+% \section{Compatibility}\label{sec:compat}% ^^A <<<
 % 
+% \subsection{\pkg{fontspec}}\label{subsec:compat-fontspec}
+%
+% The package should be compatible with \pkg{fontspec}, provided particular fonts are configured with commands from one or neither package.
+% However, this is not tested and obviously documents cannot benefit from any performance gains to the extent they rely on \pkg{fontspec}\footnote{%
+%   But \pkg{fontspec}'s performance is quite good if you do not use fonts with \texttt{.fontspec} files or which are especially large.
+%   E.g.~Latin Modern and \TeX-Gyre fonts are generally fine, but New Computer Modern is rather painful.%
+% }.
+%
 % \subsection{\cls{ltx-talk}}\label{subsec:compat-talk}
 %
 % Load with \cs{RequirePackage} \emph{before} loading the class.
@@ -726,9 +740,21 @@
 % If you wish to change the fonts, use \cs{fontconfig} after the class is loaded\footnote{%
 %   If this turns out to be something people want to do, I can adjust things to avoid configuring fonts twice.
 %   For now, this is just a good way for me to test the code and avoid the pain of watching \pkg{fontspec} load New Computer Modern.%
-% }
+% }.
 %
-% \section{Examples}\label{sec:eeiau}
+% \subsection{\pkg{lua-unicode-math}}\label{subsec:compat-lum}
+%
+% \pkg{lua-font-config} is definitely compatible with \pkg{lua-unicode-math} and will load it if the top-level \texttt{math} key is used for Unicode maths configuration.
+% Note that if you do use this key, none of the \texttt{.fd} or font-specific \texttt{.sty} files will be used; instead, the maths fonts will be configured using the same process as the text fonts and results cached in the same way.
+%
+% \subsection{\pkg{unicode-math}}\label{subsec:compat-um}
+%
+% The package should be compatible with \pkg{unicode-math}, provided the top-level \texttt{math} key is not used to configure Unicode maths fonts.
+% See \cref{subsec:compat-fontspec}, but there is really no performance reason to use \pkg{lua-font-config} in this case, since \pkg{unicode-math} is extremely slow and this will easily dominate the time taken for font configuration.
+%
+%% ^^A >>>
+%
+% \section{Examples}\label{sec:eeiau}% ^^A <<<
 %
 % \Cref{fig:ee-lmr,fig:ee-ncm-math,fig:ee-ncm-complete} demonstrate simple use of the package to configure the main document font, a Unicode maths font (\emph{via} \pkg{lua-unicode-math} and a complete font configuration (roman/serif, sans, typewriter and maths).
 % These examples use the default configurations for text and maths fonts, so the configurations are extremely simple.
@@ -778,8 +804,95 @@
 % \lfcdocfile [label=example-talk -- \cref{fig:ee-talk},
 %   rangestartstring={\\DocumentMetadata}]{example-talk}
 % \lfcee*[1,2]{talk}
+%% ^^A >>>
 %
-% \section{TO DOs}\label{sec:todo}
+% \section{Advanced configuration}\label{sec:adv}% ^^A <<<
+%
+% \texttt{fea} and \texttt{scoped} provide a relatively lower-level interface to the functionality provided by the \texttt{features} key.
+% They apply to the configuration of text families only and require familiarity with both \textsc{nfss}, \pkg{luaotfload} and opentype feature tags.
+%
+% These keys are faster and more powerful than the keys described earlier.
+% They may be used in the same places as \texttt{features} (\cref{subsubsec:keys-text}).
+%
+% \textbf{If you are not sure which to use or lack familiarity with \textsc{nfss}, \pkg{luaotfload} or opentype feature tags, use \texttt{features}.}
+%
+% \texttt{fea} and \texttt{features} may be used to configure the same family.
+% If so, consistent options are combined; in case of conflicts, \texttt{features} takes precedence over \texttt{fea}.
+% This means you can use the more-user friendly interface for most things and still add any unsupported specialist setup, if necessary. 
+%
+% \DescribeKey{fea}\mval{opentype feature spec.}\par
+% Optional list of font features \textbf{for text fonts only}. 
+% 
+% Note that the specification is passed to the font loader with minimal processing, so you must use ‘raw’ feature specifications.
+% \emph{If you do not know what these are, use the \texttt{features} key rather than this one; if you need an unsupported feature, file an issue on the bug tracker (link below).}
+%
+% The default is equivalent to \texttt{fea=\{mode=node;scrpt=dflt;language=dflt;+tlig\}}.
+% Unless provided in separate fonts, \texttt{+smcp} is added, if available, for upright, italic and oblique small-caps.
+% 
+% Features apply to \emph{all} fonts configured as a result of the lookup, so you should not specify features you do not wish applied to all fonts to which the specification applies.
+%
+% For example,
+% \iffalse
+%<*verb>
+% \fi
+\begin{minted}{latex}
+  \usepackage{lua-font-config}
+  \fontconfig{%
+    rm = {%
+      name = texgyrepagella, 
+      fea  = {script=ltn;+tlig;+pnum},
+      % apply ‘capital spacing’ to small-caps upright/italic/oblique
+      scoped = {*:sc}{+cpsp},
+      scoped = {*:scit}{+cpsp},
+      scoped = {*:scsl}{+cpsp},
+    },
+    sf = {%
+      name  = texgyreheros,
+      scale = 1.2,
+      fea   = {script=cyrl;},
+    },
+    tt = {%
+      name  = texgyrecursor,
+      fea   = {+zero;},
+      %% for completeness: false is anyway the default
+      force = false,
+    },
+  }
+\end{minted}
+% \iffalse
+%</verb>
+% \fi
+%
+% \DescribeKey{scoped}\mval{scope spec.}\marg{opentype feature spec.}\par
+% Optional list of font features \textbf{for a subset of text fonts only}. 
+%
+% \meta{scope spec.} is a colon-separated expression consisting of a series specifier followed by a shape specifier i.e.~\meta{series}\texttt{:}\meta{shape}.
+% One expression may be \texttt{*} meaning all series or all shapes.
+%
+% For example, \texttt{scoped={*:sc}{+cpsp}} would add ‘capital spacing’ to all small-caps fonts, regardless of series.
+%
+% \meta{series} and \meta{shape} have take the usual \texttt{nfss} values, except that \texttt{book} is \texttt{k}, if a family also has a regular variant, and \texttt{medium} is \texttt{f}, if a family also has either book or regular.
+% \textbf{These specifiers are non-standard and may change without notice, if I can think of a way to avoid them.}
+% 
+% Features apply \emph{only} to fonts covered by \meta{scope spec.}
+% The \meta{opentype feature spec.} is \emph{added} to the features applied to all fonts configured by the lookup.
+% So, if you want oldstyle figures for all fonts except bold oblique, you must add \texttt{+lnum} for the \texttt{b:sl} scope.
+% 
+% Note that both the scope and feature specifications are passed to \LaTeX{} and the font loader with minimal processing, so you must use low-level series/shape representations and ‘raw’ feature specifications.
+% \emph{If you do not know what these are, use the \texttt{features} key rather than this one; if you need an unsupported feature, file an issue on the bug tracker (link below).}
+% 
+% Note that although arbitrary scopes and features may minimally work, \textbf{this is not recommended}.
+% The intended usage is to change spacing or figures in small-caps variants (see \cref{fig:ee-scoped}), say, or to substitute petite for small caps or make similar adjustments.
+% In particular, note that the underlying family names become unpredictable and possibly inconsistent if too many changes create a hodgepodge rather than a coherent family.
+% Moreover, documents typeset with such fonts will generally be typographically inconsistent, too.
+% If more variety is really needed, create additional font families and switch between them rather than abusing \texttt{scoped}.
+%
+% Note that this key cannot be used to add ‘fake’ fonts: you cannot add a fake bold or oblique this way.
+% Use \texttt{fakebold}, \texttt{fakeoblique} etc.\ (\cref{subsubsec:keys-text}) for this, if necessary.
+%
+%% ^^A >>>
+%
+% \section{TO DOs}\label{sec:todo}% ^^A <<<
 %
 % These are not in any particular order, though there is some tendency for higher priority items to be earlier.
 % \begin{enumerate}
@@ -872,8 +985,9 @@
 %   \resetcs
 %   \PrintIndex
 % }
+%% ^^A >>>
 % 
-% \section{Implementation}
+% \section{Implementation}% ^^A <<<
 %
 % There is very little here, because almost everything is done in Lua.
 %
@@ -887,7 +1001,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12197 2026-11-08 09:09:40Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12198 2026-11-10 02:44:24Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -1461,7 +1575,9 @@
 % \end{function}
 %</sty>
 %% ^^A >>>
+%% ^^A >>>
 %
+%% ^^A eeiau <<<
 % \iffalse
 %
 %% ^^A ee-lmr <<<
@@ -1532,7 +1648,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-fea <<<
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12197 2026-11-08 09:09:40Z cfrees $
+%% $Id: lua-font-config.dtx 12198 2026-11-10 02:44:24Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -1592,7 +1708,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-features <<<
 %<*ee-features>
-%% $Id: lua-font-config.dtx 12197 2026-11-08 09:09:40Z cfrees $
+%% $Id: lua-font-config.dtx 12198 2026-11-10 02:44:24Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -1816,6 +1932,7 @@ Oh, sphinx of black quartz, judge my vow!
 %% ^^A >>>
 %
 % \fi
+%% ^^A >>>
 % 
 %\Finale
 % \iffalse
