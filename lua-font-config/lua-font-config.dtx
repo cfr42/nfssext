@@ -34,7 +34,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12201 2026-11-11 04:35:45Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12202 2026-11-11 05:11:16Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -1030,7 +1030,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12201 2026-11-11 04:35:45Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12202 2026-11-11 05:11:16Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -1133,10 +1133,9 @@
     #1 .usage:n           = preamble,
   }
 %    \end{macrocode}
-% \begin{keyname}{rm/name,rm/bfseries,rm/bold,rm/mdseries,rm/normal,rm/fakebold,rm/fakeoblique,rm/fea,rm/force,rm/scale,rm/scoped,rm/maths,rm/math,rm/nomaths,rm/nomath,rm/hyphenchar}
-% \begin{keyname}{sf/name,sf/bfseries,sf/bold,sf/mdseries,sf/normal,sf/fakebold,sf/fakeoblique,sf/fea,sf/force,sf/scale,sf/scoped,sf/maths,sf/math,sf/nomaths,sf/nomath,sf/hyphenchar}
-% \begin{keyname}{tt/name,tt/bfseries,tt/bold,tt/mdseries,tt/normal,tt/fakebold,tt/fakeoblique,tt/fea,tt/force,tt/scale,tt/scoped,tt/maths,tt/math,tt/nomaths,tt/nomath,tt/hyphenchar}
+% \begin{keyname}{.../name,.../bfseries,.../bold,.../mdseries,.../normal,.../fakebold,.../fakeoblique,.../fea,.../force,.../scale,.../scoped,.../maths,.../math,.../nomaths,.../nomath,.../hyphenchar}
 % Configure keys for default text families.
+% Most of these just forward their values to \texttt{lfc/fam}.
 % \changes{v0.0}{2026-11-07}{Add keys to configure bold and regular series for default families and to enable use of fake bold and oblique.}
 % \changes{v0.0}{2026-11-10}{Add key to disable hyphenation character.}
 %    \begin{macrocode}
@@ -1196,8 +1195,6 @@
   }
 }
 %    \end{macrocode}
-% \end{keyname}
-% \end{keyname}
 % \end{keyname}
 % \end{keyname}
 % \begin{keyname}{debug,math}
@@ -1690,7 +1687,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-fea <<<
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12201 2026-11-11 04:35:45Z cfrees $
+%% $Id: lua-font-config.dtx 12202 2026-11-11 05:11:16Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -1750,7 +1747,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-features <<<
 %<*ee-features>
-%% $Id: lua-font-config.dtx 12201 2026-11-11 04:35:45Z cfrees $
+%% $Id: lua-font-config.dtx 12202 2026-11-11 05:11:16Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
