@@ -34,7 +34,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12198 2026-11-10 02:44:24Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12200 2026-11-11 01:16:28Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -59,6 +59,7 @@
   tt    = {%
     name  = kpmono,
     fea   = {mode=node;script=dflt;language=dflt;-tlig},
+    hyphenchar  = false,
   },
   math  = kpmath,
 }
@@ -544,6 +545,34 @@
 %   \bottomrule
 % \end{tabularx}
 %
+% \DescribeKey{hyphenchar}\vals{true,false}\par
+% Enables or disables hyphenation for the family.
+% Generally, this key should not be required except, possibly, to disable hyphenation for the ‘typewriter’ family, if this is used for code listings.
+%
+% For example, this document is typeset with the following configuration:
+% \iffalse
+%<*verb>
+% \fi
+\begin{minted}{latex}
+\usepackage{lua-font-config}
+\fontconfig{%
+  rm    = kproman,
+  sf    = kpsans,
+  tt    = {%
+    name  = kpmono,
+    % mode, script and language are unnecessary as these are anyway default
+    % -tlig disables TeX ligatures
+    fea   = {mode=node;script=dflt;language=dflt;-tlig},
+    % disable hyphenation as we don't want that in code listings
+    hyphenchar  = false,
+  },
+  math  = kpmath,
+}
+\end{minted}
+% \iffalse
+%</verb>
+% \fi
+%
 % \DescribeKey{language}\val{language id}\par
 % \meta{language id} must currently be a valid identifier, as recognised by \pkg{luaotfload}.
 % \texttt{otfinfo -l }\meta{path to font file} may be used to determine identifiers supported by the font.
@@ -1001,7 +1030,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12198 2026-11-10 02:44:24Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12200 2026-11-11 01:16:28Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -1104,11 +1133,12 @@
     #1 .usage:n           = preamble,
   }
 %    \end{macrocode}
-% \begin{keyname}{rm/name,rm/bfseries,rm/bold,rm/mdseries,rm/normal,rm/fakebold,rm/fakeoblique,rm/fea,rm/force,rm/scale,rm/scoped,rm/maths,rm/math,rm/nomaths,rm/nomath}
-% \begin{keyname}{sf/name,sf/bfseries,sf/bold,sf/mdseries,sf/normal,sf/fakebold,sf/fakeoblique,sf/fea,sf/force,sf/scale,sf/scoped,sf/maths,sf/math,sf/nomaths,sf/nomath}
-% \begin{keyname}{tt/name,tt/bfseries,tt/bold,tt/mdseries,tt/normal,tt/fakebold,tt/fakeoblique,tt/fea,tt/force,tt/scale,tt/scoped,tt/maths,tt/math,tt/nomaths,tt/nomath}
+% \begin{keyname}{rm/name,rm/bfseries,rm/bold,rm/mdseries,rm/normal,rm/fakebold,rm/fakeoblique,rm/fea,rm/force,rm/scale,rm/scoped,rm/maths,rm/math,rm/nomaths,rm/nomath,rm/hyphenchar}
+% \begin{keyname}{sf/name,sf/bfseries,sf/bold,sf/mdseries,sf/normal,sf/fakebold,sf/fakeoblique,sf/fea,sf/force,sf/scale,sf/scoped,sf/maths,sf/math,sf/nomaths,sf/nomath,sf/hyphenchar}
+% \begin{keyname}{tt/name,tt/bfseries,tt/bold,tt/mdseries,tt/normal,tt/fakebold,tt/fakeoblique,tt/fea,tt/force,tt/scale,tt/scoped,tt/maths,tt/math,tt/nomaths,tt/nomath,tt/hyphenchar}
 % Configure keys for default text families.
 % \changes{v0.0}{2026-11-07}{Add keys to configure bold and regular series for default families and to enable use of fake bold and oblique.}
+% \changes{v0.0}{2026-11-10}{Add key to disable hyphenation character.}
 %    \begin{macrocode}
   \keys_define:nn {lfc/#1} {
     name        .code:n   = { \use:c {__@@_set_#1:n} {##1} },
@@ -1137,6 +1167,7 @@
     fea         .code:n   = { \keys_set:nn {lfc/fam} {fea         = {##1}} },
     features    .code:n   = { \keys_set:nn {lfc/fam} {features    = {##1}} },
     force       .code:n   = { \keys_set:nn {lfc/fam} {force       = {##1}} },
+    hyphenchar  .code:n   = { \keys_set:nn {lfc/fam} {hyphenchar  = {##1}} },
     scale       .code:n   = { \keys_set:nn {lfc/fam} {scale       = {##1}} },
     scoped      .code:n   = { \keys_set:nn {lfc/fam} {scoped      =  ##1}  },
     maths       .code:n   = { \__@@_set_fam_cfg:nn   {maths}{##1} },
@@ -1146,21 +1177,22 @@
     unknown     .code:n   = {
       \exp_args:NnV \use:c {__@@_set_#1:n} \l_keys_key_str
     },
-    name      .value_required:n   = true,
-    math      .default:n          = true,
-    maths     .default:n          = true,
-    nomath    .value_forbidden:n  = true,
-    nomaths   .value_forbidden:n  = true,
-    unknown   .value_forbidden:n  = true,
-    fea       .groups:n           = config,
-    features  .groups:n           = lateconfig,
-    force     .groups:n           = config,
-    maths     .groups:n           = config,
-    math      .groups:n           = config,
-    nomath    .groups:n           = config,
-    nomaths   .groups:n           = config,
-    scale     .groups:n           = config,
-    scoped    .groups:n           = config,
+    name          .value_required:n   = true,
+    math          .default:n          = true,
+    maths         .default:n          = true,
+    nomath        .value_forbidden:n  = true,
+    nomaths       .value_forbidden:n  = true,
+    unknown       .value_forbidden:n  = true,
+    fea           .groups:n           = config,
+    features      .groups:n           = lateconfig,
+    force         .groups:n           = config,
+    hyphenchar    .groups:n           = config,
+    maths         .groups:n           = config,
+    math          .groups:n           = config,
+    nomath        .groups:n           = config,
+    nomaths       .groups:n           = config,
+    scale         .groups:n           = config,
+    scoped        .groups:n           = config,
   }
 }
 %    \end{macrocode}
@@ -1216,9 +1248,10 @@
 % \changes{v0.2}{2026-10-29}{Add \texttt{fea} user-interface wrapper: \texttt{features} provides a key-value interface for configuration.}
 % \changes{v0.0}{2026-11-06}{Add \texttt{scoped} key: low-level interface to configure font features selectively. 
 %   This is intended to complement the \texttt{fea} key and similarly supports expert/advanced usage, prioritising performance with few checks and a relatively low-level interface.}
-% \begin{keyname}{fam/name,fam/fakebold,fam/fakeoblique,fam/fea,fam/features,fam/force,fam/scale,fam/scoped}
+% \begin{keyname}{fam/name,fam/fakebold,fam/fakeoblique,fam/fea,fam/features,fam/force,fam/hyphenchar,fam/scale,fam/scoped}
 % Configure keys for families.
 % \changes{v0.0}{2026-11-07}{Add \texttt{scoped}, \texttt{fakebold}, \texttt{fakeoblique}.}
+% \changes{v0.0}{2026-11-10}{Add \texttt{hyphenchar}.}
 %
 % Note to self: \pkg{l3keys} does not work the way you think!!!
 % \emph{The hierarchy is not a tree!}
@@ -1255,8 +1288,11 @@
     }
     \str_clear:N \l_@@_scope_str
   },
-  force     .code:n = { \__@@_set_fam_cfg:nn {force}{#1} },
-  scale     .code:n = { \__@@_set_fam_cfg:nn {scale}{#1} },
+  force         .code:n = { \__@@_set_fam_cfg:nn {force}{#1} },
+  hyphenchar    .choices:nn = {false,true}{
+    \__@@_set_fam_cfg:nn {hyphenchar}{#1}
+  },
+  scale         .code:n = { \__@@_set_fam_cfg:nn {scale}{#1} },
   scoped.code:n = {
     \str_set:Ne \l_@@_tmpa_str {
       \_@@_second_of_two:w #1 \q_stop
@@ -1274,10 +1310,11 @@
   fakebold      .default:n          = 1.5,
   fakeoblique   .default:n          = 0.2,
   fea           .value_required:n   = true,
-  scoped        .value_required:n   = true,
   features      .value_required:n   = true,
   force         .default:n          = true,
+  hyphenchar    .default:n          = true,
   scale         .value_required:n   = true,
+  scoped        .value_required:n   = true,
   unknown       .value_forbidden:n  = true,
   name          .usage:n            = general,
   command       .usage:n            = general,
@@ -1291,10 +1328,11 @@
   fakebold      .groups:n           = config,
   fakeoblique   .groups:n           = config,
   fea           .groups:n           = config,
-  scoped        .groups:n           = config,
   features      .groups:n           = lateconfig,
   force         .groups:n           = config,
+  hyphenchar    .groups:n           = config,
   scale         .groups:n           = config,
+  scoped        .groups:n           = config,
 }
 %    \end{macrocode}
 % \end{keyname}
@@ -1346,7 +1384,6 @@
     \exp_args:NV \__@@_set_fam_features:nnn \l_@@_scope_str {alternates} {#1}
   },
   embolden    .code:n = {
-    %% ^^A \exp_args:NV \__@@_set_fam_features:nnn \l_@@_scope_str {}{embolden=#1}
     \seq_put_right:Nn \l_@@_features_seq {embolden=#1}
   },
   figures     .code:n = {
@@ -1356,18 +1393,15 @@
     \exp_args:NV \__@@_set_fam_features:nnn \l_@@_scope_str {forms} {#1}
   },
   language      .code:n = {
-    %% ^^A \exp_args:NV \__@@_set_fam_features:nnn \l_@@_scope_str {}{language=#1}
     \seq_put_right:Nn \l_@@_features_seq {language=#1}
   },
   ligatures     .code:n = {
     \exp_args:NV \__@@_set_fam_features:nnn \l_@@_scope_str {ligatures} {#1}
   },
   mode          .choices:nn = {base,node,harf}{
-    %% ^^A \exp_args:NV \__@@_set_fam_features:nnn \l_@@_scope_str {mode}{#1}
     \seq_put_right:Ne \l_@@_features_seq {mode=\l_keys_choice_str}
   },
   scope           .code:n = {
-    %% ^^A \l_@@_scope_str, \l_@@_tmpa_str are set below, so no need to clear
     \seq_set_split:Nnn \l_@@_scope_seq {,} {,,,}
     \keys_set:nn {lfc/features/scoped} {#1}
     \seq_map_indexed_inline:Nn \l_@@_scope_seq {
@@ -1375,19 +1409,19 @@
         {1} { \str_set:Nn \l_@@_tmpa_str {##2} }
         {2} { 
           \bool_case:nF {
-            { %% ^^A weight empty, width empty --> use *
+            { %% weight empty, width empty --> use *
               \bool_lazy_and_p:nn { \str_if_empty_p:n {##2} } {
                 \str_if_empty_p:N \l_@@_tmpa_str }
             } { \str_set:Nn \l_@@_scope_str {*} }
-            { %% ^^A weight m, width non-empty --> use width
+            { %% weight m, width non-empty --> use width
               \bool_lazy_and_p:nn { \str_if_eq_p:Vn \l_@@_tmpa_str {m} } {
                 ! \str_if_empty_p:n {##2} }
             } { \str_set:Nn \l_@@_scope_str {##2} }
-            { %% ^^A weight non-empty, width m --> use weight
+            { %% weight non-empty, width m --> use weight
               \bool_lazy_and_p:nn { ! \str_if_empty_p:N \l_@@_scope_str } {
                 \str_if_eq_p:nn {##2} {m} }
             } { \str_set_eq:NN \l_@@_scope_str \l_@@_tmpa_str }
-          } { %% ^^A o/w --> use concat
+          } { %% o/w --> use concat
             \str_set:Ne \l_@@_scope_str {\l_@@_tmpa_str ##2}
           }
           \str_put_right:NV \l_@@_scope_str \c_colon_str 
@@ -1395,20 +1429,20 @@
         {3} { \str_set:Nn \l_@@_tmpa_str {##2} }
         {4} {
           \bool_case:nF {
-            { %% ^^A shape empty, case empty --> use *
+            { %% shape empty, case empty --> use *
               \bool_lazy_and_p:nn { \str_if_empty_p:n {##2} } {
                 \str_if_empty_p:N \l_@@_tmpa_str
               }
             } { \str_put_right:Nn \l_@@_scope_str {*} }
-            { %% ^^A shape n, case non-empty --> use case
+            { %% shape n, case non-empty --> use case
               \bool_lazy_and_p:nn { \str_if_eq_p:Vn \l_@@_tmpa_str {n} } { 
                 ! \str_if_empty_p:n {##2} }
             } { \str_put_right:Nn \l_@@_scope_str {##2} }
-            { %% ^^A shape non-empty, case n --> use shape
+            { %% shape non-empty, case n --> use shape
               \bool_lazy_and_p:nn { ! \str_if_empty_p:N \l_@@_tmpa_str } {
                 \str_if_eq_p:nn {##2} {n} }
             } { \str_put_right:NV \l_@@_scope_str \l_@@_tmpa_str }
-          } { %% ^^A o/w --> concat
+          } { %% o/w --> concat
             \str_put_right:Ne \l_@@_scope_str {\l_@@_tmpa_str ##2}
           }
         }
@@ -1436,7 +1470,6 @@
     }
   },
   script        .code:n = {
-    %% ^^A \exp_args:NV \__@@_set_fam_features:nnn \l_@@_scope_str {} {script=#1}
     \seq_put_right:Nn \l_@@_features_seq {script=#1}
   },
   spacing       .code:n = {
@@ -1527,6 +1560,14 @@
 % (I can just search for the translation of ‘firstof’, but there isn't one to find for ‘secondof’ \dots.)
 %    \begin{macrocode}
 \cs_new_nopar:Npn \_@@_second_of_two:w #1#2 \q_stop {#2}
+%    \end{macrocode}
+% \end{function}
+% \begin{function}{\_@@_no_hyphenchar:}
+% Zap hyphen character.
+% A more general approach should be used here.
+% I don't \emph{think} this should be protected?
+%    \begin{macrocode}
+\cs_new_nopar:Npn \_@@_no_hyphenchar: {\hyphenchar\font\m@ne}
 %    \end{macrocode}
 % \end{function}
 % Compatibility code for \pkg{ltx-talk}.
@@ -1648,7 +1689,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-fea <<<
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12198 2026-11-10 02:44:24Z cfrees $
+%% $Id: lua-font-config.dtx 12200 2026-11-11 01:16:28Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -1708,7 +1749,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-features <<<
 %<*ee-features>
-%% $Id: lua-font-config.dtx 12198 2026-11-10 02:44:24Z cfrees $
+%% $Id: lua-font-config.dtx 12200 2026-11-11 01:16:28Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}

@@ -1,9 +1,9 @@
--- $Id: lua-font-config.lua 12199 2026-11-10 20:48:03Z cfrees $
+-- $Id: lua-font-config.lua 12200 2026-11-11 01:16:28Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 do
   local name, rev, date = string.match(
-    "$Id: lua-font-config.lua 12199 2026-11-10 20:48:03Z cfrees $", 
+    "$Id: lua-font-config.lua 12200 2026-11-11 01:16:28Z cfrees $", 
     "Id: ([a-z][a-z-]*)%.lua (%d%d*) (%d%d%d%d%-%d%d%-%d%d) ")
   luatexbase.provides_module({
     name      = name,
@@ -195,6 +195,8 @@ local tok_mathtt            = create("__lfc_set_mathtt:")
 
 local tok_declare_m_scr_map = create("DeclareMathScriptfontMapping")
 local tok_declare_lum_fnts  = create("__lfc_declare_lum_symbol_fonts:nn")
+
+local tok_nohyphenchar      = create("__lfc_no_hyphenchar:")
 
 -- Tables
 local nfss_default_families = {}
@@ -1760,21 +1762,21 @@ end
 ---         scale_factor  = <number>  Scaling factor
 ---         suffix        = <string>  Suffix for NFSS family
 ---         cfg_scoped    = <table>   Special feature configs (if required)
----         load_settings = <string>  Special feature configs (if required)
+---         loadsettings  = <string>  Special feature configs (if required)
 ---@description fake_fd should not be nil unless something has gone wrong.
 ---@description This should never happen in the automated case.
 -- Cache format: see above
 local function write_fake_fd(fam, fake_fd, fake_fd_cfg)
-  local fea, scale_factor, suffix, cfg_scoped, load_settings
+  local fea, scale_factor, suffix, cfg_scoped, loadsettings
     = fake_fd_cfg.fea,
       fake_fd_cfg.scale or nil,
       fake_fd_cfg.suffix or nil, 
       fake_fd_cfg.cfg_scoped or nil,
-      fake_fd_cfg.load_settings or ""
+      fake_fd_cfg.loadsettings or ""
 
   msg({"Emulating font definition file for NFSS family ", fam, " with ",
     fea, " scaled ", scale_factor or "1", " suffixed ", suffix or "[none]",
-    " load_settings ", load_settings or "[none]",
+    " loadsettings ", loadsettings or "[none]",
     cfg_scoped and " with special configs." or "."}, "log")
 
 
@@ -1853,7 +1855,7 @@ local function write_fake_fd(fam, fake_fd, fake_fd_cfg)
   local pre = {fastcopy(toks_enc_tu), embrace(use_name)}
   local out = {
     tok_declare_fam, fastcopy(pre), 
-    load_settings and embrace(load_settings) or toks_empty_n
+    loadsettings and embrace(loadsettings) or toks_empty_n
   }
   insert(pre, 1, tok_declare_shape)
 
@@ -1996,7 +1998,7 @@ end
 ---@description   scale (number) or nil, 
 ---@description   suffix (string) or nil
 ---@description   cfg_scoped (table) or nil
----@description   load_settings (string) or ""
+---@description   loadsettings (string) or ""
 ---@description These may be passed more-or-less as-is to the writing 
 ---@description   functions.
 local function font_config_aux(fam, config, typeset_mode)
@@ -2025,7 +2027,7 @@ local function font_config_aux(fam, config, typeset_mode)
   return {
     cfg_scoped = cfg_scoped or nil,
     fea = fea, 
-    load_settings = font_config_aux_sel(fam, config, "load_settings", ""),
+    loadsettings = font_config_aux_sel(fam, config, "loadsettings", ""),
     scale = font_config_aux_sel(fam, config, "scale", nil),
     suffix = suffix,
   }
@@ -2622,7 +2624,18 @@ local function configure_doc_families()
         config.scale = cfg.scale or nil
         config.force = cfg.force or nil
         config.cfg_scoped = cfg.cfg_scoped or nil
-        config.load_settings = cfg.load_settings or nil
+        local hyphenchar = cfg.hyphenchar or nil
+        if cfg.loadsettings then
+          if type(cfg.loadsettings) ~= "table" then
+            cfg.loadsettings = {cfg.loadsettings}
+          end
+        end
+        if hyphenchar == "false" then
+          cfg.loadsettings = cfg.loadsettings or {}
+          insert(cfg.loadsettings, tok_nohyphenchar)
+        end
+        cfg.hyphenchar = nil
+        config.loadsettings = cfg.loadsettings or nil
 
         -- text: 0, maths: 1
         config.typeset_mode = cfg.typeset_mode or 0
