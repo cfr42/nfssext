@@ -198,9 +198,41 @@ local tok_declare_lum_fnts  = create("__lfc_declare_lum_symbol_fonts:nn")
 
 local tok_nohyphenchar      = create("__lfc_no_hyphenchar:")
 
+-------------------------------------------------------------------------------
+-- Ephemeral data structure
+-- Note that the concept of meta family here is distinct from the one used
+--    in font_config() etc.
+-- A doc_meta_fam consists of 4+ families: rm, sf, tt, math.
+-- A doc_family consists of a 3-place sequence: {NFSS name, normal, bold} 
+--    where normal and bold are the relevant NFSS series.
+-------------------------------------------------------------------------------
 -- Tables
-local nfss_default_families = {}
-local nfss_doc_families     = {}
+local doc_meta_families     = {
+  curr    = "default",
+  default = {
+    nfss_default_families   = {},
+    nfss_doc_families       = {},
+  },
+}
+do
+  local mt  = {
+    __index     = function(t, key) 
+      t[key]    = {
+        nfss_default_families = {},
+        nfss_doc_families     = {},
+      }
+      t.curr    = key
+      return t[key]
+    end,
+  }
+  setmetatable(doc_meta_families, mt)
+end
+local function get_curr_nfss_families()
+  return doc_meta_families[doc_meta_families.curr].nfss_doc_families,
+         doc_meta_families[doc_meta_families.curr].nfss_default_families
+end
+-- local nfss_default_families = doc_meta_families.default.nfss_default_families
+-- local nfss_doc_families     = doc_meta_families.default.nfss_doc_families
 
 -- Token lists
 local toks_empty_n          = {tok_group_begin, tok_group_end}
@@ -2369,15 +2401,18 @@ local function font_config(targ, config, immediate)
 end
 -- }}}
 
+
 -------------------------------------------------------------------------------
 -- LaTeX interface things
 -- do_with_<one|two|three>_scanner()
 -- get_fam_default_scanner()  get_fam_name_scanner()  get_fam_cfg_scanner()
 -- get_fam_scoped_fea_scanner()         get_fam_features_scanner()
+-- get_doc_meta_fam_scanner()
 -- configure_doc_families()
 -- \__lfc_set_rm:n    \__lfc_set_sf:n   \__lfc_set_tt:n   \__lfc_set_math:n
 -- \__lfc_set_fam_name:n                \__lfc_set_fam_cfg:nn   
 -- \__lfc_set_fam_scoped_fea:nn         \__lfc_set_fam_features:nnn
+-- \__lfc_set_doc_meta_fam:n
 -- \__lfc_configure_doc_families:
 -- parse_spec_scanner()                 \__lfc_parse_spec:nn
 -- parse_nfss_scanner()                 \__lfc_parse_nfss:nnn
@@ -2460,6 +2495,7 @@ local nfss_doc_families_cnt = 0
 local function get_fam_default_scanner(fam) 
   return do_with_one_scanner(
     function(fam_name)
+      local nfss_doc_families, nfss_default_families = get_curr_nfss_families()
       local cleanname = cleanfilename(fam_name)
       nfss_doc_families_cnt = nfss_doc_families_cnt + 1
       local t_name = concat({cleanname, nfss_doc_families_cnt}, "_")
@@ -2481,6 +2517,7 @@ end
 local function get_fam_name_scanner()
   return do_with_one_scanner(
     function(name)
+      local nfss_doc_families, nfss_default_families = get_curr_nfss_families()
       local cleanname = cleanfilename(name)
       nfss_doc_families_cnt = nfss_doc_families_cnt + 1
       local t_name = concat({cleanname, nfss_doc_families_cnt}, "_")
@@ -2494,12 +2531,27 @@ local function get_fam_name_scanner()
 end
 -- }}}
 
+---@function get_doc_meta_fam_scanner() {{{
+---@description Returns a function which takes a name and creates a minimal
+---@description   document meta family of that name, if it doesn't exist,  
+---@description   and makes it the current doc meta family (dmf?).
+local function get_doc_meta_fam_scanner()
+  return do_with_one_scanner(
+    function(name)
+      name = name and tostring(name) or "default"
+      doc_meta_families.curr = name
+      msg_debug("lfc doc meta families: ", "doc", lfc_doc_meta_fams)
+    end)
+end
+-- }}}
+
 ---@function get_fam_cfg_scanner() {{{
 ---@description Returns a function which takes a param/val specification and 
 ---@description stores it.
 local function get_fam_cfg_scanner()
   return do_with_two_scanner(
     function(key, value)
+      local nfss_doc_families, nfss_default_families = get_curr_nfss_families()
       local curr = nfss_doc_families.curr
       msg_assert(curr ~= nil, "No current family to set parameters for!")
       curr = nfss_doc_families[curr]
@@ -2524,6 +2576,7 @@ end
 local function get_fam_scoped_fea_scanner()
   return do_with_two_scanner(
     function(scope_hash, value)
+      local nfss_doc_families, nfss_default_families = get_curr_nfss_families()
       local curr = nfss_doc_families.curr
       msg_assert(curr ~= nil, "No current family to set parameters for!")
       curr = nfss_doc_families[curr]
@@ -2553,6 +2606,7 @@ end
 local function get_fam_features_scanner()
   return do_with_three_scanner(
     function(scope_hash, fea_type, list)
+      local nfss_doc_families, nfss_default_families = get_curr_nfss_families()
       local curr = nfss_doc_families.curr
       msg_assert(curr ~= nil, "No current family to set features for!")
       curr = nfss_doc_families[curr]
@@ -2606,6 +2660,7 @@ end
 ---@description generator. Something to do with (Lua) scope, maybe?
 local function configure_doc_families()
   return function()
+    local nfss_doc_families, nfss_default_families = get_curr_nfss_families()
     msg_debug("Configuring doc families ...", "doc",
       nfss_default_families,
       nfss_doc_families,
@@ -2640,8 +2695,8 @@ local function configure_doc_families()
         -- text: 0, maths: 1
         config.typeset_mode = cfg.typeset_mode or 0
 
-        local nfss_fam = font_config(cfg.name, config, cfg.default and true or 
-        false)
+        local nfss_fam = font_config(cfg.name, config, (cfg.default and 
+          doc_meta_families.curr == "default") and true or false)
 
         if nfss_fam ~= nil then 
           cfg.nfss_fam = nfss_fam
@@ -2668,30 +2723,75 @@ local function configure_doc_families()
       end
     end
     msg_debug("NFSS doc families: ", "doc", nfss_doc_families)
-    msg("Setting default families ...", "debug") 
-    for fam,cfg in sortedpairs(nfss_default_families) do
-      if cfg.nfss_fam then
-        local fam_name = cfg.nfss_fam
-        if cfg.typeset_mode == 0 then
-          -- Use of text fonts in maths mode.
-          local maths = cfg.maths or true
-          msg({"Setting ", fam, " default to ", fam_name, "."}, "log")
-          sprint(-2, flattened({tok_renewcommand, fam_defaults[fam], embrace(fam_name)}))
-          if maths then
-            msg({"Setting math", fam, "."}, "log")
-            sprint(-2, fam_to_maths[fam])
+    local make_meta = false
+    if doc_meta_families.curr  == "default" then
+      msg("Setting default families ...", "debug") 
+      for fam,cfg in sortedpairs(nfss_default_families) do
+        if cfg.nfss_fam then
+          local fam_name = cfg.nfss_fam
+          if cfg.typeset_mode == 0 then
+            -- Use of text fonts in maths mode.
+            local maths = cfg.maths or true
+            msg({"Setting ", fam, " default to ", fam_name, "."}, "log")
+            sprint(-2, flattened({tok_renewcommand, fam_defaults[fam], embrace(fam_name)}))
+            if maths then
+              msg({"Setting math", fam, "."}, "log")
+              sprint(-2, fam_to_maths[fam])
+            end
+          elseif cfg.typeset_mode == 1 then
+            -- Use of Unicode maths fonts in maths mode.
+            -- This assumes lua-unicode-math.
+            msg({"Setting main maths fonts to ", fam_name, "."}, "log")
+            sprint(-2, flattened({tok_declare_lum_fnts, embrace(fam_name), 
+              embrace(fam_name)}))
           end
-        elseif cfg.typeset_mode == 1 then
-          -- Use of Unicode maths fonts in maths mode.
-          -- This assumes lua-unicode-math.
-          msg({"Setting main maths fonts to ", fam_name, "."}, "log")
-          sprint(-2, flattened({tok_declare_lum_fnts, embrace(fam_name), 
-            embrace(fam_name)}))
+          -- If there are other meta families, we need a way to reset the 
+          --    defaults.
+          if count(doc_meta_families) > 2 then make_meta = true end
+        else msg({"No family found for ", fam, "!"})
         end
-      else msg({"No family found for ", fam, "!"})
+      end
+    else
+      make_meta = true
+    end
+    if make_meta then
+      msg({"Configuring doc meta family ", doc_meta_families.curr, " ..."}, "debug")
+      local out = {}
+      for fam,cfg in sortedpairs(nfss_default_families) do
+        if cfg.nfss_fam then
+          local fam_name = cfg.nfss_fam
+          if cfg.typeset_mode == 0 then
+            local maths = cfg.maths or false
+            msg({"Setting ", fam, " for meta family ", doc_meta_families.curr,
+              " to ", fam_name, "."}, "log")
+            insert(out, flattened({tok_renewcommand, fam_defaults[fam],
+              embrace(fam_name)}))
+            -- TODO adjust series here
+            if maths then
+              msg({"Setting math for ", doc_meta_families.curr, " to ", 
+                fam_name, "."}, "log")
+              insert(out, fam_to_maths[fam])
+            end
+          elseif cfg.typeset_mode == 1 then
+            -- TODO WILL NOT WORK
+            -- msg({"Setting maths fonts for meta family ", doc_meta_families.curr,
+            --   " to ", fam_name, "."}, "log")
+            -- insert(out, flattened({tok_declare_lum_fnts, embrace(fam_name), 
+            --   embrace(fam_name)}))
+          end
+        else msg({"No family found for ", fam, "!"})
+          nfss_default_families[fam] = nil
+        end
+            
+        msg({"Creating meta family ", doc_meta_families.curr}, "debug")
+          luafunction_to_cs(concat({"__lfc_doc_meta_fam_",
+            doc_meta_families.curr, ":"}), function()
+            return sprint(-2, flattened(out), "protected")
+          end)
       end
     end
-    -- Discard data to avoid duplicating configuration if called again.
+    -- Discard data to avoid duplicating configuration if called again, but do
+    --    not zap the meta family.
     nfss_doc_families = {}
     nfss_default_families = {}
   end
@@ -2706,9 +2806,10 @@ luafunction_to_cs("__lfc_set_tt:n",   get_fam_default_scanner("tt"))
 luafunction_to_cs("__lfc_set_math:n", get_fam_default_scanner("math"))
 -- }}}
 
--- Scanners for additional family names, a general one for features, and specifics one for scoped features and the features key-value interface.
+-- Scanners for additional and family names, a general one for features, and specifics one for scoped features and the features key-value interface.
 -- {{{
 luafunction_to_cs("__lfc_set_fam_name:n", get_fam_name_scanner())
+luafunction_to_cs("__lfc_set_doc_meta_fam:n", get_doc_meta_fam_scanner())
 luafunction_to_cs("__lfc_set_fam_cfg:nn", get_fam_cfg_scanner())
 luafunction_to_cs("__lfc_set_fam_scoped_fea:nn", get_fam_scoped_fea_scanner())
 luafunction_to_cs("__lfc_set_fam_features:nnn", get_fam_features_scanner())
