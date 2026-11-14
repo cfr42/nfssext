@@ -206,7 +206,7 @@ local tok_nohyphenchar      = create("__lfc_no_hyphenchar:")
 -- A doc_family consists of a 3-place sequence: {NFSS name, normal, bold} 
 --    where normal and bold are the relevant NFSS series.
 -------------------------------------------------------------------------------
--- Tables
+-- Tables (doc meta families aka font sets) {{{
 local doc_meta_families     = {
   __curr    = "default",
   __known   = {
@@ -243,14 +243,24 @@ do
       end
     end,
     __newindex    = function(t, key, value)
-      local curr = t.__curr
-      local known = t.__known
-      if key == "nfss_default_families" or key == "nfss_doc_families" then
-        msg_assert(known[curr], {"Current doc meta family ", curr,
-          " does not exist!"}, "error")
-        known[curr][key] = value
-      else msg({"Invalid key ", key, " for a doc meta family!"}, "bug")
-      end
+      msg({"Invalid attempt to access doc meta family (key=", key, ", value=",
+        value, ". If you don't think you did this or do not know what this \z
+        means, please open an issue at \z
+        https://codeberg.org/cfr/nfssext/issues."})
+      -- local curr = t.__curr
+      -- local known = t.__known
+      -- if key == "nfss_default_families" or key == "nfss_doc_families" then
+      --   msg({"Invalid doc meta family access with key=", key, " value=", value,
+      --     "!"}, "bug")
+      -- elseif key == "default" and value == "nil" then
+      --   msg("Attempt to destroy default doc meta family!", "bug")
+      -- elseif known[curr] then
+      --   known[curr][key] = value
+      -- else
+      --   msg({"Current doc meta family ", curr, " does not exist!"},
+      --     "error")
+      -- else msg({"Invalid key ", key, " for a doc meta family!"}, "bug")
+      -- end
     end,
   }
   setmetatable(doc_meta_families, mt)
@@ -263,6 +273,7 @@ end
 local function new_doc_meta_family(name) 
   return doc_meta_families.__new(name)
 end
+-- }}}
 
 -- Token lists
 local toks_empty_n          = {tok_group_begin, tok_group_end}
