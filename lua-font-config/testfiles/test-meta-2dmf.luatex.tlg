@@ -1,0 +1,37 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+============================================================
+TEST 1: font set: default (initial)
+============================================================
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;onum=true;pnum=true;" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyreheros-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;pnum=true;" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrecursor-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;liga=false;tlig=false;" 
+============================================================
+============================================================
+TEST 2: font set: switch to latinii
+============================================================
+LaTeX Font Info:    Trying to load font information for TU+texgyreschola-prop-osf on input line ....
+(../.tex Fileignored)
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyreschola-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;onum=true;pnum=true;" 
+============================================================
+TEST 3: font set: latinii
+============================================================
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyreschola-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;onum=true;pnum=true;" 
+LaTeX Font Info:    Trying to load font information for TU+latinmodernsans-prop-osf on input line ....
+(../.tex Fileignored)
+[lfc font]: \<-8.5>"["TEXMFDIST/fonts/opentype/public/lm/lmsans8-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;onum=true;pnum=true;"<8.5-9.5>"["TEXMFDIST/fonts/opentype/public/lm/lmsans9-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;onum=true;pnum=true;"<9.5-11.0>"["TEXMFDIST/fonts/opentype/public/lm/lmsans10-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;onum=true;pnum=true;"<11.0-14.0>"["TEXMFDIST/fonts/opentype/public/lm/lmsans12-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;onum=true;pnum=true;"<14.0->"["TEXMFDIST/fonts/opentype/public/lm/lmsans17-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;onum=true;pnum=true;" 
+LaTeX Font Info:    Trying to load font information for TU+imfellenglish on input line ....
+(../.tex Fileignored)
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/iginomarini/imfellenglish/IMFeENrm28P.otf"]:mode=node;language=dflt;script=dflt;+tlig;" 
+============================================================
+============================================================
+TEST 4: font set: switch to default
+============================================================
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;onum=true;pnum=true;" 
+============================================================
+TEST 5: font set: default (reset)
+============================================================
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;onum=true;pnum=true;" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyreheros-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;pnum=true;" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrecursor-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;liga=false;tlig=false;" 
+============================================================

@@ -1,0 +1,10 @@
+%% $Id: test-defns.lvt 12203 2026-11-14 20:04:07Z cfrees $
+\input lfc-support.tex
+\documentclass{article}
+\parindent=0pt
+\usepackage{lua-font-config}
+\ExplSyntaxOn
+\START
+\TEST{\token_to_str:N \UTFencname}{\cs_log:N \UTFencname}
+\ExplSyntaxOff
+\END

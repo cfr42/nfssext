@@ -1,0 +1,65 @@
+%% $Id: test-meta-2dmf.lvt 12203 2026-11-14 20:04:07Z cfrees $
+\input lfc-support.tex
+\documentclass{article}
+\parindent=0pt
+\usepackage{lua-font-config}
+\textwidth=200mm\relax
+\oddsidemargin=-25mm\relax
+\fontconfig{%
+  rm = {%
+    name = TeX Gyre Pagella,
+    fea = {mode=node;script=dflt;lAngUaGe=DfLT;+TLIG;+ONUM;+PNUM},
+  },
+  sf = {% 
+    name = texgyreheros,
+    fea = {mode=node;script=dflt;lAngUaGe=DfLT;+TLIG;+pnum;+lnum},
+  },
+  tt = {% 
+    name = texgyrecursor,
+    fea = {mode=node;script=dflt;lAngUaGe=DfLT;-TLIG;+tnum;+lnum;-liga},
+  },
+  math = texgyrepagellamath,
+}
+\newfontset{latinii}
+\fontconfig[latinii]{
+  rm = {%
+    name = tex gyre schola,
+    fea = {+onum;+pnum},
+  },
+  sf = {%
+    name = latinmodernsans,
+    fea = {+onum;+pnum},
+  },
+  % for insanity's sake
+  tt = imfell english,
+}
+\def\testme{0123456789 -- --- affable official aficionado}
+\begin{document}
+\START
+\TEST{font set: default (initial)}{%
+  \rmfamily \TeX-Gyre Pagella: \testme\ (osf, prop)\par
+  \sffamily \TeX-Gyre Heros: \testme\ (lining, prop)\par
+  \ttfamily \TeX-Gyre Cursor \testme\ (tabular, lining, no tlig etc.)\par
+}
+
+\TESTTITLE{font set: switch to latinii}
+\usefontset{latinii}%
+
+\TEST{font set: latinii}{%
+  \rmfamily \TeX-Gyre Schola:  \testme\ (osf, prop)\par
+  \sffamily Latin Modern Sans: \testme\ (osf, prop)\par
+  \ttfamily IMFell English \testme\ (N/A)\par
+}
+
+\TESTTITLE{font set: switch to default}
+\usefontset{default}%
+
+
+\TEST{font set: default (reset)}{%
+  \rmfamily \TeX-Gyre Pagella: \testme\ (osf, prop)\par
+  \sffamily \TeX-Gyre Heros: \testme\ (lining, prop)\par
+  \ttfamily \TeX-Gyre Cursor \testme\ (tabular, lining, no tlig etc.)\par
+}
+\END
+\end{document}
+

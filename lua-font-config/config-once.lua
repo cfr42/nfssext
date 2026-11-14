@@ -1,4 +1,4 @@
--- $Id: config-once.lua 12116 2026-10-13 19:31:42Z cfrees $
+-- $Id: config-once.lua 12203 2026-11-14 20:04:07Z cfrees $
 
 testfiledir = "testfiles-once"
 excludetests = {"*-debug*"}

@@ -1,4 +1,4 @@
-%% $Id: test-fea.lvt 12195 2026-11-07 19:09:23Z cfrees $
+%% $Id: test-onlypreamble.lvt 12203 2026-11-14 20:04:07Z cfrees $
 \input lfc-support.tex
 \documentclass{article}
 \parindent=0pt
