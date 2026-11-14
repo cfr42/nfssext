@@ -31,7 +31,7 @@ checkengines = {"luatex"}
 -- subsequent runs.
 checkruns = 2
 checkopts = "-interaction=nonstopmode -cnf-line='TEXMFHOME=.' -cnf-line='TEXMFLOCAL=.' -cnf-line='TEXMFARCH=.' -cnf-line='TEXMFCACHE=.'"
--- checkconfigs = {"build", "config-once"}
+checkconfigs = {"build", "config-once"}
 excludetests = {"test-msg"}
 versionpatterns = versionpatterns or {}
 table.insert(versionpatterns, "SVN Rev: %d+")

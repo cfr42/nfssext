@@ -185,6 +185,7 @@ local tok_renewcommand      = create("renewcommand")
 local tok_rmdefault         = create("rmdefault")
 local tok_sfdefault         = create("sfdefault")
 local tok_ttdefault         = create("ttdefault")
+local tok_normalfont        = create("normalfont")
 
 local tok_file_subs         = create("declare@file@substitution")
 local tok_hook_gput_code    = create("hook_gput_code:nnn")
@@ -197,83 +198,6 @@ local tok_declare_m_scr_map = create("DeclareMathScriptfontMapping")
 local tok_declare_lum_fnts  = create("__lfc_declare_lum_symbol_fonts:nn")
 
 local tok_nohyphenchar      = create("__lfc_no_hyphenchar:")
-
--------------------------------------------------------------------------------
--- Ephemeral data structure
--- Note that the concept of meta family here is distinct from the one used
---    in font_config() etc.
--- A doc_meta_fam consists of 4+ families: rm, sf, tt, math.
--- A doc_family consists of a 3-place sequence: {NFSS name, normal, bold} 
---    where normal and bold are the relevant NFSS series.
--------------------------------------------------------------------------------
--- Tables (doc meta families aka font sets) {{{
-local doc_meta_families     = {
-  __curr    = "default",
-  __known   = {
-    default = {
-      nfss_default_families   = {},
-      nfss_doc_families       = {},
-    },
-  },
-  __new   = function(name) 
-    local known = doc_meta_families.__known
-    msg_assert(not find(name, "^__") and name ~= "default" and 
-      name ~= "nfss_default_families" and name ~= "nfss_doc_families", 
-      {"Doc meta family ", name, " not permitted!"}, "error")
-    msg_assert(not known[name], {"Doc meta family ", name, " already defined!"},
-      "error")
-    known[name] = {
-      nfss_default_families   = {},
-      nfss_doc_families       = {},
-    }
-    return known[name] 
-  end,
-}
-do
-  local mt  = {
-    __index     = function(t, key) 
-      local curr = t.__curr
-      local known = t.__known
-      if key == "nfss_default_families" or key == "nfss_doc_families" then
-        return known[curr][key]
-      else
-        msg_assert(known[key], {"Current doc meta family ", key, 
-          " does not exist!"}, "error")
-        return known[key]
-      end
-    end,
-    __newindex    = function(t, key, value)
-      msg({"Invalid attempt to access doc meta family (key=", key, ", value=",
-        value, ". If you don't think you did this or do not know what this \z
-        means, please open an issue at \z
-        https://codeberg.org/cfr/nfssext/issues."})
-      -- local curr = t.__curr
-      -- local known = t.__known
-      -- if key == "nfss_default_families" or key == "nfss_doc_families" then
-      --   msg({"Invalid doc meta family access with key=", key, " value=", value,
-      --     "!"}, "bug")
-      -- elseif key == "default" and value == "nil" then
-      --   msg("Attempt to destroy default doc meta family!", "bug")
-      -- elseif known[curr] then
-      --   known[curr][key] = value
-      -- else
-      --   msg({"Current doc meta family ", curr, " does not exist!"},
-      --     "error")
-      -- else msg({"Invalid key ", key, " for a doc meta family!"}, "bug")
-      -- end
-    end,
-  }
-  setmetatable(doc_meta_families, mt)
-end
-local function get_curr_nfss_families()
-  local curr = doc_meta_families.__curr
-  local known = doc_meta_families.__known
-  return known[curr].nfss_doc_families, known[curr].nfss_default_families
-end
-local function new_doc_meta_family(name) 
-  return doc_meta_families.__new(name)
-end
--- }}}
 
 -- Token lists
 local toks_empty_n          = {tok_group_begin, tok_group_end}
@@ -574,7 +498,7 @@ local function get_font_data(fnt, force)
       local ff_ext = file.suffix(ff)
       local ff_nameonly = file.nameonly(ff)
 
-      if ff_ext and ff_nameonly then
+      if ff_ext and ff_nameonly and font_data.mappings[ff_ext][ff_nameonly] then
         fam_meta = font_data.mappings[ff_ext][ff_nameonly].familyname
         f.metadata.ext = ff_ext
       end
@@ -2444,16 +2368,79 @@ end
 
 
 -------------------------------------------------------------------------------
+-- Ephemeral data structure
+-- Note that the concept of meta family here is distinct from the one used
+--    in font_config() etc.
+-- A doc_meta_fam consists of 4+ families: rm, sf, tt, math.
+-- A doc_family consists of a 3-place sequence: {NFSS name, normal, bold} 
+--    where normal and bold are the relevant NFSS series.
+-------------------------------------------------------------------------------
+-- Tables (doc meta families aka font sets) {{{
+local doc_meta_families     = {
+  __curr    = "default",
+  __known   = {
+    default = {
+      nfss_default_families   = {},
+      nfss_doc_families       = {},
+    },
+  },
+}
+doc_meta_families.__new   = function(name) 
+  local known = doc_meta_families.__known
+  msg_assert(not find(name, "^__") and name ~= "default" and 
+    name ~= "nfss_default_families" and name ~= "nfss_doc_families", 
+    {"Doc meta family ", name, " not permitted!"}, "error")
+  msg_assert(not known[name], {"Doc meta family ", name, " already defined!"},
+    "error")
+  known[name] = {
+    nfss_default_families   = {},
+    nfss_doc_families       = {},
+  }
+  return known[name] 
+end
+do
+  local mt  = {
+    __index     = function(t, key) 
+      local curr = t.__curr
+      local known = t.__known
+      if key == "nfss_default_families" or key == "nfss_doc_families" then
+        return known[curr][key]
+      else
+        msg_assert(known[key], {"Current doc meta family ", key, 
+          " does not exist!"}, "error")
+        return known[key]
+      end
+    end,
+    __newindex    = function(t, key, value)
+      msg({"Invalid attempt to access doc meta family (key=", key, ", value=",
+        value, ". If you don't think you did this or do not know what this \z
+        means, please open an issue at \z
+        https://codeberg.org/cfr/nfssext/issues."})
+    end,
+  }
+  setmetatable(doc_meta_families, mt)
+end
+local function get_curr_nfss_families()
+  local curr = doc_meta_families.__curr
+  local known = doc_meta_families.__known
+  return known[curr].nfss_doc_families, known[curr].nfss_default_families
+end
+local function new_doc_meta_family(name) 
+  return doc_meta_families.__new(name)
+end
+-- }}}
+
+-------------------------------------------------------------------------------
 -- LaTeX interface things
 -- do_with_<one|two|three>_scanner()
 -- get_fam_default_scanner()  get_fam_name_scanner()  get_fam_cfg_scanner()
 -- get_fam_scoped_fea_scanner()         get_fam_features_scanner()
--- get_doc_meta_fam_scanner()
+-- get_doc_meta_fam_scanner()            get_new_doc_meta_fam_scanner()
 -- configure_doc_families()
 -- \__lfc_set_rm:n    \__lfc_set_sf:n   \__lfc_set_tt:n   \__lfc_set_math:n
 -- \__lfc_set_fam_name:n                \__lfc_set_fam_cfg:nn   
 -- \__lfc_set_fam_scoped_fea:nn         \__lfc_set_fam_features:nnn
--- \__lfc_set_doc_meta_fam:n
+-- \__lfc_set_doc_meta_fam:n            \__lfc_new_doc_meta_fam:n            
 -- \__lfc_configure_doc_families:
 -- parse_spec_scanner()                 \__lfc_parse_spec:nn
 -- parse_nfss_scanner()                 \__lfc_parse_nfss:nnn
@@ -2715,6 +2702,7 @@ end
 local function configure_doc_families()
   return function()
     local nfss_doc_families, nfss_default_families = get_curr_nfss_families()
+    local dmf = doc_meta_families.__curr
     msg_debug("Configuring doc families ...", "doc",
       nfss_default_families,
       nfss_doc_families,
@@ -2749,8 +2737,9 @@ local function configure_doc_families()
         -- text: 0, maths: 1
         config.typeset_mode = cfg.typeset_mode or 0
 
-        local nfss_fam = font_config(cfg.name, config, (cfg.default and 
-          doc_meta_families.__curr == "default") and true or false)
+        -- Was cfg.name
+        local nfss_fam = font_config(cfg.cleanname, config, (cfg.default and 
+          dmf == "default") and true or false)
 
         if nfss_fam ~= nil then 
           cfg.nfss_fam = nfss_fam
@@ -2777,12 +2766,13 @@ local function configure_doc_families()
       end
     end
     msg_debug("NFSS doc families: ", "doc", nfss_doc_families)
-    if doc_meta_families.__curr  == "default" then
+    local out
+    if dmf  == "default" then
       msg("Setting default families ...", "debug") 
       -- Create fn always as additional sets may be created later, so counting
       --    metas is no good (and I do not want to do what um etc. all do and
       --    delay til begindocument - that just causes more problems.
-      local out = {}
+      out = {}
       for fam,cfg in sortedpairs(nfss_default_families) do
         if cfg.nfss_fam then
           local fam_name = cfg.nfss_fam
@@ -2797,7 +2787,8 @@ local function configure_doc_families()
             if maths then
               msg({"Setting math", fam, "."}, "log")
               sprint(-2, fam_to_maths[fam])
-              insert(out, fam_to_maths[fam])
+              -- TODO CANNOT WORK
+              -- insert(out, fam_to_maths[fam])
             end
           elseif cfg.typeset_mode == 1 then
             -- Use of Unicode maths fonts in maths mode.
@@ -2812,32 +2803,34 @@ local function configure_doc_families()
         else msg({"No family found for ", fam, "!"})
         end
       end
-      msg("Creating meta family default so defaults can be reset, if needed.",
-        "debug")
-      luafunction_to_cs("__lfc_doc_meta_fam_default:", function()
-        return sprint(-2, flattened(out), "protected")
+      msg({"Creating meta family default so defaults can be reset, if \z
+        needed.\nDoc meta family: ", dmf, "."}, "log")
+      insert(out, tok_normalfont)
+      luafunction_to_cs("__lfc_doc_meta_fam_default:",
+        function() return sprint(-2, flattened(out), "protected")
       end)
     else
-      msg({"Configuring doc meta family ", doc_meta_families.__curr, " ..."}, "debug")
-      local out = {}
+      msg({"Configuring doc meta family ", dmf, " ..."}, "debug")
+      out = {}
       for fam,cfg in sortedpairs(nfss_default_families) do
         if cfg.nfss_fam then
           local fam_name = cfg.nfss_fam
           if cfg.typeset_mode == 0 then
             local maths = cfg.maths or false
-            msg({"Setting ", fam, " for meta family ", doc_meta_families.__curr,
+            msg({"Setting ", fam, " for meta family ", dmf,
               " to ", fam_name, "."}, "log")
             insert(out, flattened({tok_renewcommand, fam_defaults[fam],
               embrace(fam_name)}))
             -- TODO adjust series here
             if maths then
-              msg({"Setting math for ", doc_meta_families.__curr, " to ", 
+              msg({"Setting math for ", dmf, " to ", 
                 fam_name, "."}, "log")
-              insert(out, fam_to_maths[fam])
+              -- TODO CANNOT WORK
+              -- insert(out, fam_to_maths[fam])
             end
           elseif cfg.typeset_mode == 1 then
             -- TODO WILL NOT WORK
-            -- msg({"Setting maths fonts for meta family ", doc_meta_families.__curr,
+            -- msg({"Setting maths fonts for meta family ", dmf,
             --   " to ", fam_name, "."}, "log")
             -- insert(out, flattened({tok_declare_lum_fnts, embrace(fam_name), 
             --   embrace(fam_name)}))
@@ -2846,16 +2839,12 @@ local function configure_doc_families()
           nfss_default_families[fam] = nil
         end
       end
-      msg({"Creating meta family ", doc_meta_families.__curr}, "debug")
-        luafunction_to_cs(concat({"__lfc_doc_meta_fam_",
-          doc_meta_families.__curr, ":"}), function()
-          return sprint(-2, flattened(out), "protected")
-        end)
+      msg({"Creating meta family.\nDoc meta family: ", dmf, "."}, "log")
+      insert(out, tok_normalfont)
+      luafunction_to_cs(concat({"__lfc_doc_meta_fam_", dmf, ":"}),
+        function() return sprint(-2, flattened(out), "protected")
+      end)
     end
-    -- Discard data to avoid duplicating configuration if called again, but do
-    --    not zap the meta family.
-    nfss_doc_families = {}
-    nfss_default_families = {}
   end
 end
 -- }}}

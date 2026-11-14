@@ -1,0 +1,16 @@
+%% $Id: test-fea.lvt 12195 2026-11-07 19:09:23Z cfrees $
+\input lfc-support.tex
+\documentclass{article}
+\parindent=0pt
+\usepackage{lua-font-config}
+\begin{document}
+\START
+\TEST{onlypreamble \fontconfig}{%
+  \fontconfig{rm=texgyrepagella}%
+}
+\TEST{onlypreamble \newfontset}{%
+  \newfontset{wombles}%
+}
+\END
+\end{document}
+

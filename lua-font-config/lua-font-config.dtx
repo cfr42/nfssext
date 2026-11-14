@@ -1573,8 +1573,7 @@
 % \begin{macro}{\fontconfig}
 %   The main configuration function and main public macro.
 %   \changes{v0.2}{2026-10-30}{Forbid \cs{par} in input.}
-%   \changes{v0.0}{2026-11-13}{Optional argument to set a ‘meta-family’.}
-%   Not sure if the optional argument is a good idea here?
+%   \changes{v0.0}{2026-11-13}{Optional argument to set a different ‘meta-family’.}
 %    \begin{macrocode}
 \NewDocumentCommand\fontconfig { O {default} m } {
   \_@@_font_config:nn {#1} {#2}
@@ -1591,8 +1590,8 @@
     \_@@_font_config:nn {#1} {#2}
   }
 }
-\NewDocumentCommand\usefontset { O{default} } {
-  \cs_if_exist_use:cF { __@@_lfc_doc_meta_fam_#1: } {
+\NewDocumentCommand\usefontset { m } {
+  \cs_if_exist_use:cF { __@@_doc_meta_fam_#1: } {
     \msg_error:nnn {lfc} {meta-fam-missing} {#1}
   }
 }
@@ -1696,12 +1695,16 @@
 %<discard>    ^^A     \msg_error:nnn {lfc} {preamble-only} {font~configuration~command}
 %<discard>    ^^A   }
 %<discard>    ^^A }
-\@onlypreamble \newfontset
-\@onlypreamble \fontconfig
 %    \end{macrocode}
 % \end{function}
-% Meta-families get functios such as \cs{_@@_lfc_doc_meta_fam_default:} where \texttt{default} is either literal or the name of a configured meta-family.
+% Meta-families get functios such as \cs{_@@_doc_meta_fam_default:} where \texttt{default} is either literal or the name of a configured meta-family.
+%
+% \cs{newfontset} and \cs{fontconfig} should not be used inside \env{document}.
+% Is there a (similarly simple) way to do this in \pkg{expl3}?
+% Well, I just learnt this from \pkg{babel} \dots, so maybe I'll find it in another few decades or so.
 %    \begin{macrocode}
+\@onlypreamble \newfontset
+\@onlypreamble \fontconfig
 \ExplSyntaxOff
 \ifcsname UTFencname\endcsname\relax\else\def\UTFencname{TU}\fi
 %    \end{macrocode}
@@ -1977,7 +1980,7 @@
 %   Currently this is only a concept plus a partial implementation.
 %    \begin{macrocode}
 \socket_new:nn {lfc/meta-fam} {0}
-\cs_new_protected:Npn \@@_lfc_meta_fam_new:nnnnn #1#2#3#4#5 {
+\cs_new_protected:Npn \@@_meta_fam_new:nnnnn #1#2#3#4#5 {
   \socket_new_plug:nnn      {lfc/meta-fam}  {#1}  {
     \socket_assign_plug:nn  {lfc/fam-rm}    {#2}
     \socket_assign_plug:nn  {lfc/fam-sf}    {#3}
@@ -1985,10 +1988,10 @@
     \socket_assign_plug:nn  {lfc/fam-math}  {#5}
   }
 }
-\cs_new_protected:Npn \@@_lfc_meta_fam_new:n #1 {
-  \@@_lfc_meta_fam_new:nnnnn  {#1} {#1} {#1} {#1} {#1}
+\cs_new_protected:Npn \@@_meta_fam_new:n #1 {
+  \@@_meta_fam_new:nnnnn  {#1} {#1} {#1} {#1} {#1}
 }
-\@@_lfc_meta_fam_new:n      {default}
+\@@_meta_fam_new:n      {default}
 %    \end{macrocode}
 % \end{plug}
 % \end{socket}
