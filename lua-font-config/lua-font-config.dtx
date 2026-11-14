@@ -1121,6 +1121,27 @@
   \msg_info_text:n {lfc} :: ~loading~#1~for~maths~support~
   \msg_line_context:
 } { \msg_see_documentation_text:n {lfc} }
+\msg_new:nnnn {lfc} {meta-fam-missing} {
+  \msg_info_text:n {lfc} :: ~font~set~#1~not~defined.~
+  Reported~\msg_line_context:
+} {
+  A~set~of~fonts~(meta-family)~must~be~defined~in~the~preamble~before~it~can~
+  be~used~in~your~document.~
+  \msg_see_documentation_text:n {lfc}
+}
+\msg_new:nnnn {lfc} {meta-fam-exists} {
+  \msg_info_text:n {lfc} :: ~font~set~#1~already~defined.~
+  Reported~\msg_line_context:
+} { 
+  You~tried~to~define~a~new~font~set~(meta-family)~with~the~same~name~as~an~
+  existing~set.~
+  \msg_see_documentation_text:n {lfc}
+}
+%<discard>    ^^A \msg_new:nnnn {lfc} {preamble-only} {
+%<discard>    ^^A   \msg_info_text:n {lfc} :: ~invalid~use~of~#1~after~
+%<discard>    ^^A     \tl_to_string:n {\begin{document}}.~
+%<discard>    ^^A   Reported~\msg_line_context:
+%<discard>    ^^A } { \msg_see_documentation_text:n {lfc} }
 %    \end{macrocode}
 % %^^A Switch back now we're done with message setup.
 % \let\MakePrivateLetters\MyMakePrivateLetters
@@ -1530,15 +1551,49 @@
 }
 %    \end{macrocode}
 % \end{keyname}
-% \begin{macro}{\fontconfig}
-%   The main (and currently(?) only) public macro.
-%   \changes{v0.2}{2026-10-30}{Forbid \cs{par} in input.}
+% \begin{function}{\_@@_font_config:nn}
+%   \changes{v0.0}{2026-11-13}{New internal function to support multiple configurations.}
+%   The same internal function supports standard and multiple configuration macros.
 %    \begin{macrocode}
-\NewDocumentCommand\fontconfig { m }{
+\cs_new_protected:Npn \_@@_font_config:nn #1#2 {
   \bool_set_false:N \l_@@_do_bool
-  \keys_set:nn {lfc} {#1}
+  \__@@_set_doc_meta_fam:n {#1}
+  \keys_set:nn {lfc} {#2}
   \bool_if:NT \l_@@_do_bool {
     \__@@_configure_doc_families:
+  }
+}
+%<discard>    ^^A \hook_gput_code:nnn {begindocument/end} {.} {
+%<discard>    ^^A   \cs_set_protected:Npn \_@@_font_config:nn #1#2 {
+%<discard>    ^^A     \msg_error:nnn {lfc} {preamble-only} {font~configuration~command}
+%<discard>    ^^A   }
+%<discard>    ^^A }
+%    \end{macrocode}
+% \end{function}
+% \begin{macro}{\fontconfig}
+%   The main configuration function and main public macro.
+%   \changes{v0.2}{2026-10-30}{Forbid \cs{par} in input.}
+%   \changes{v0.0}{2026-11-13}{Optional argument to set a ‘meta-family’.}
+%   Not sure if the optional argument is a good idea here?
+%    \begin{macrocode}
+\NewDocumentCommand\fontconfig { O {default} m } {
+  \_@@_font_config:nn {#1} {#2}
+}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\newfontset,\usefontset}
+%   \changes{v0.0}{2026-11-13}{Macros to define and switch ‘meta-families’ i.e.~between sets of fonts.}
+%   \cs{usefontset} is a simple wrapper around the Lua functions.
+%    \begin{macrocode}
+\NewDocumentCommand\newfontset { o m } {
+  \__@@_new_doc_meta_fam:n {#2}
+  \IfValueT {#1} {
+    \_@@_font_config:nn {#1} {#2}
+  }
+}
+\NewDocumentCommand\usefontset { O{default} } {
+  \cs_if_exist_use:cF { __@@_lfc_doc_meta_fam_#1: } {
+    \msg_error:nnn {lfc} {meta-fam-missing} {#1}
   }
 }
 %    \end{macrocode}
@@ -1615,6 +1670,7 @@
 %   \__@@_set_fam_features:nnn,
 %   \__@@_set_fam_name:n,
 %   \__@@_set_doc_meta_fam:n,
+%   \__@@_new_doc_meta_fam:n,
 %   \__@@_parse_series:nn,
 %   \__@@_parse_series:VV,
 %   \__@@_parse_spec:nn,
@@ -1635,8 +1691,16 @@
 \cs_generate_variant:Nn \__@@_set_fam_scoped_fea:nn {Ve}
 \cs_generate_variant:Nn \__@@_parse_spec:nn {nV}
 \cs_generate_variant:Nn \__@@_parse_series:nn {VV}
+%<discard>    ^^A \hook_gput_code:nnn {begindocument/end} {.} {
+%<discard>    ^^A   \cs_set_protected:Npn \__@@_new_doc_meta_fam:n #1 {
+%<discard>    ^^A     \msg_error:nnn {lfc} {preamble-only} {font~configuration~command}
+%<discard>    ^^A   }
+%<discard>    ^^A }
+\@onlypreamble \newfontset
+\@onlypreamble \fontconfig
 %    \end{macrocode}
 % \end{function}
+% Meta-families get functios such as \cs{_@@_lfc_doc_meta_fam_default:} where \texttt{default} is either literal or the name of a configured meta-family.
 %    \begin{macrocode}
 \ExplSyntaxOff
 \ifcsname UTFencname\endcsname\relax\else\def\UTFencname{TU}\fi
