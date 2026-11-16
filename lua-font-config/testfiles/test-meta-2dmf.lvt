@@ -1,10 +1,13 @@
-%% $Id: test-meta-2dmf.lvt 12203 2026-11-14 20:04:07Z cfrees $
+%% $Id: test-meta-2dmf.lvt 12205 2026-11-16 23:56:39Z cfrees $
 \input lfc-support.tex
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
 \textwidth=200mm\relax
 \oddsidemargin=-25mm\relax
+\newcount\lfccnt
+\lfccnt=0
+\everymath{\advance\lfccnt by 1 \csname lfc@math@aux\endcsname {\the\lfccnt}}
 \fontconfig{%
   rm = {%
     name = TeX Gyre Pagella,

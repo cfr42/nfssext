@@ -6,6 +6,51 @@ TEST 1: font set: default (initial)
 [lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;onum=true;pnum=true;" 
 [lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyreheros-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;pnum=true;" 
 [lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrecursor-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;liga=false;tlig=false;" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;onum=true;pnum=true;" 
+LaTeX Font Info:    Trying to load font information for TU+texgyrepagella-base on input line ....
+(../.tex Fileignored)
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line ....
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line ....
+[lfc]: math font 0: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-regular.otf]:mode=basic;
+[lfc]: math font 1: select font cmmi10
+[lfc]: math font 2: select font cmsy10
+[lfc]: math font 3: select font cmex10
+[lfc]: math font 4: select font [TEXMFDIST/fonts/opentype/public/tex-gyre-math/texgyrepagella-math.otf]:mode=basic;language=dflt;script=math;
+[lfc]: math font 5: select font nullfont
+LaTeX Font Info:    Font shape `TU/texgyrepagella-base/bx/n' in size <10> not available
+(Font)              Font shape `TU/texgyrepagella-base/b/n' tried instead on input line ....
+LaTeX Font Info:    Font shape `TU/texgyrepagella-base/bx/n' in size <7> not available
+(Font)              Font shape `TU/texgyrepagella-base/b/n' tried instead on input line ....
+LaTeX Font Info:    Font shape `TU/texgyrepagella-base/bx/n' in size <5> not available
+(Font)              Font shape `TU/texgyrepagella-base/b/n' tried instead on input line ....
+LaTeX Font Info:    Trying to load font information for TU+texgyreheros-base on input line ....
+(../.tex Fileignored)
+LaTeX Font Info:    Trying to load font information for TU+texgyrecursor-base on input line ....
+(../.tex Fileignored)
+[lfc]: math font 0: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-regular.otf]:mode=basic;
+[lfc]: math font 1: select font cmmi10
+[lfc]: math font 2: select font cmsy10
+[lfc]: math font 3: select font cmex10
+[lfc]: math font 4: select font [TEXMFDIST/fonts/opentype/public/tex-gyre-math/texgyrepagella-math.otf]:mode=basic;language=dflt;script=math;
+[lfc]: math font 5: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-regular.otf]:mode=basic;
+[lfc]: math font 6: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-bold.otf]:mode=basic;
+[lfc]: math font 7: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-italic.otf]:mode=basic;
+[lfc]: math font 8: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyreheros-regular.otf]:mode=basic;
+[lfc]: math font 9: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrecursor-regular.otf]:mode=basic;
+[lfc]: math font 10: select font nullfont
+[lfc]: math font 0: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-regular.otf]:mode=basic;
+[lfc]: math font 1: select font cmmi10
+[lfc]: math font 2: select font cmsy10
+[lfc]: math font 3: select font cmex10
+[lfc]: math font 4: select font [TEXMFDIST/fonts/opentype/public/tex-gyre-math/texgyrepagella-math.otf]:mode=basic;language=dflt;script=math;
+[lfc]: math font 5: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-regular.otf]:mode=basic;
+[lfc]: math font 6: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-bold.otf]:mode=basic;
+[lfc]: math font 7: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-italic.otf]:mode=basic;
+[lfc]: math font 8: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyreheros-regular.otf]:mode=basic;
+[lfc]: math font 9: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrecursor-regular.otf]:mode=basic;
+[lfc]: math font 10: select font nullfont
 ============================================================
 ============================================================
 TEST 2: font set: switch to latinii
@@ -23,6 +68,52 @@ LaTeX Font Info:    Trying to load font information for TU+latinmodernsans-prop-
 LaTeX Font Info:    Trying to load font information for TU+imfellenglish on input line ....
 (../.tex Fileignored)
 [lfc font]: \<->"["TEXMFDIST/fonts/opentype/iginomarini/imfellenglish/IMFeENrm28P.otf"]:mode=node;language=dflt;script=dflt;+tlig;" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyreschola-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;onum=true;pnum=true;" 
+LaTeX Font Info:    Trying to load font information for TU+texgyreschola-base on input line ....
+(../.tex Fileignored)
+LaTeX Font Info:    Trying to load font information for TU+texgyrescholamath on input line ....
+(../.tex Fileignored)
+LaTeX Font Info:    Trying to load font information for TU+texgyrescholamath-sf on input line ....
+(../.tex Fileignored)
+LaTeX Font Info:    Trying to load font information for TU+texgyrescholamath-ssf on input line ....
+(../.tex Fileignored)
+[lfc]: math font 0: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyreschola-regular.otf]:mode=basic;
+[lfc]: math font 1: select font cmmi10
+[lfc]: math font 2: select font cmsy10
+[lfc]: math font 3: select font cmex10
+[lfc]: math font 4: select font [TEXMFDIST/fonts/opentype/public/tex-gyre-math/texgyreschola-math.otf]:mode=basic;language=dflt;script=math;
+[lfc]: math font 5: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-regular.otf]:mode=basic;
+[lfc]: math font 6: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-bold.otf]:mode=basic;
+[lfc]: math font 7: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-italic.otf]:mode=basic;
+[lfc]: math font 8: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyreheros-regular.otf]:mode=basic;
+[lfc]: math font 9: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrecursor-regular.otf]:mode=basic;
+[lfc]: math font 10: select font nullfont
+LaTeX Font Info:    Trying to load font information for TU+latinmodernsans-base on input line ....
+(../.tex Fileignored)
+LaTeX Font Info:    Trying to load font information for TU+imfellenglish-base on input line ....
+(../.tex Fileignored)
+[lfc]: math font 0: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyreschola-regular.otf]:mode=basic;
+[lfc]: math font 1: select font cmmi10
+[lfc]: math font 2: select font cmsy10
+[lfc]: math font 3: select font cmex10
+[lfc]: math font 4: select font [TEXMFDIST/fonts/opentype/public/tex-gyre-math/texgyreschola-math.otf]:mode=basic;language=dflt;script=math;
+[lfc]: math font 5: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyreschola-regular.otf]:mode=basic;
+[lfc]: math font 6: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyreschola-bold.otf]:mode=basic;
+[lfc]: math font 7: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyreschola-italic.otf]:mode=basic;
+[lfc]: math font 8: select font [TEXMFDIST/fonts/opentype/public/lm/lmsans10-regular.otf]:mode=basic;
+[lfc]: math font 9: select font [TEXMFDIST/fonts/opentype/iginomarini/imfellenglish/IMFeENrm28P.otf]:mode=basic;
+[lfc]: math font 10: select font nullfont
+[lfc]: math font 0: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyreschola-regular.otf]:mode=basic;
+[lfc]: math font 1: select font cmmi10
+[lfc]: math font 2: select font cmsy10
+[lfc]: math font 3: select font cmex10
+[lfc]: math font 4: select font [TEXMFDIST/fonts/opentype/public/tex-gyre-math/texgyreschola-math.otf]:mode=basic;language=dflt;script=math;
+[lfc]: math font 5: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyreschola-regular.otf]:mode=basic;
+[lfc]: math font 6: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyreschola-bold.otf]:mode=basic;
+[lfc]: math font 7: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyreschola-italic.otf]:mode=basic;
+[lfc]: math font 8: select font [TEXMFDIST/fonts/opentype/public/lm/lmsans10-regular.otf]:mode=basic;
+[lfc]: math font 9: select font [TEXMFDIST/fonts/opentype/iginomarini/imfellenglish/IMFeENrm28P.otf]:mode=basic;
+[lfc]: math font 10: select font nullfont
 ============================================================
 ============================================================
 TEST 4: font set: switch to default
@@ -34,4 +125,43 @@ TEST 5: font set: default (reset)
 [lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;onum=true;pnum=true;" 
 [lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyreheros-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;pnum=true;" 
 [lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrecursor-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;liga=false;tlig=false;" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;onum=true;pnum=true;" 
+[lfc]: math font 0: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-regular.otf]:mode=basic;
+[lfc]: math font 1: select font cmmi10
+[lfc]: math font 2: select font cmsy10
+[lfc]: math font 3: select font cmex10
+[lfc]: math font 4: select font [TEXMFDIST/fonts/opentype/public/tex-gyre-math/texgyrepagella-math.otf]:mode=basic;language=dflt;script=math;
+[lfc]: math font 5: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-regular.otf]:mode=basic;
+[lfc]: math font 6: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-bold.otf]:mode=basic;
+[lfc]: math font 7: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-italic.otf]:mode=basic;
+[lfc]: math font 8: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyreheros-regular.otf]:mode=basic;
+[lfc]: math font 9: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrecursor-regular.otf]:mode=basic;
+[lfc]: math font 10: select font nullfont
+[lfc]: math font 0: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-regular.otf]:mode=basic;
+[lfc]: math font 1: select font cmmi10
+[lfc]: math font 2: select font cmsy10
+[lfc]: math font 3: select font cmex10
+[lfc]: math font 4: select font [TEXMFDIST/fonts/opentype/public/tex-gyre-math/texgyrepagella-math.otf]:mode=basic;language=dflt;script=math;
+[lfc]: math font 5: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-regular.otf]:mode=basic;
+[lfc]: math font 6: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-bold.otf]:mode=basic;
+[lfc]: math font 7: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-italic.otf]:mode=basic;
+[lfc]: math font 8: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyreheros-regular.otf]:mode=basic;
+[lfc]: math font 9: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrecursor-regular.otf]:mode=basic;
+[lfc]: math font 10: select font nullfont
+[lfc]: math font 0: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-regular.otf]:mode=basic;
+[lfc]: math font 1: select font cmmi10
+[lfc]: math font 2: select font cmsy10
+[lfc]: math font 3: select font cmex10
+[lfc]: math font 4: select font [TEXMFDIST/fonts/opentype/public/tex-gyre-math/texgyrepagella-math.otf]:mode=basic;language=dflt;script=math;
+[lfc]: math font 5: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-regular.otf]:mode=basic;
+[lfc]: math font 6: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-bold.otf]:mode=basic;
+[lfc]: math font 7: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-italic.otf]:mode=basic;
+[lfc]: math font 8: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyreheros-regular.otf]:mode=basic;
+[lfc]: math font 9: select font [TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrecursor-regular.otf]:mode=basic;
+[lfc]: math font 10: select font nullfont
 ============================================================
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;onum=true;pnum=true;" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;onum=true;pnum=true;" 
+[lfc font]: \<->"["TEXMFDIST/fonts/opentype/public/tex-gyre/texgyrepagella-regular.otf"]:mode=node;language=dflt;script=dflt;+tlig;onum=true;pnum=true;" 
+[1
+] (test-meta-2dmf.aux)
