@@ -1,4 +1,4 @@
-%% $Id: lfc-support.tex 12073 2026-09-28 16:51:42Z cfrees $
+%% $Id: lfc-support.tex 12205 2026-11-16 23:56:39Z cfrees $
 \input regression-test.tex
 \makeatletter
 \AddToHook {selectfont} [.] {\lfc@aux}
@@ -11,6 +11,17 @@
   \NEWLINE
   \TYPE{[lfc font]: #1}
   \NEWLINE
+  \NEWLINE
+}
+% David Carlisle: https://chat.stackexchange.com/transcript/message/69317522#69317522
+\def\lfc@math@aux#1{%
+  \count0=0
+  \loop
+    \NEWLINE
+    \TYPE{[lfc]: math font \the\count0: \expandafter\meaning\the\textfont\count0}
+    \expandafter\ifx\the\textfont\count0 \nullfont
+    \else \advance\count0 1
+    \repeat
   \NEWLINE
 }
 \makeatother

@@ -1,9 +1,9 @@
--- $Id: lua-font-config.lua 12204 2026-11-16 21:02:13Z cfrees $
+-- $Id: lua-font-config.lua 12205 2026-11-16 23:56:39Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 do
   local name, rev, date = string.match(
-    "$Id: lua-font-config.lua 12204 2026-11-16 21:02:13Z cfrees $", 
+    "$Id: lua-font-config.lua 12205 2026-11-16 23:56:39Z cfrees $", 
     "Id: ([a-z][a-z-]*)%.lua (%d%d*) (%d%d%d%d%-%d%d%-%d%d) ")
   luatexbase.provides_module({
     name      = name,
@@ -2552,6 +2552,7 @@ local fam_to_series = { -- {{{
 }
 -- }}}
 -- }}}
+-- }}}
 
 local nfss_doc_families_cnt = 0
 
@@ -2883,7 +2884,7 @@ local function configure_doc_families()
           local fam_name_base
           if cfg.typeset_mode == 0 then
             local maths = cfg.maths -- or true
-            fam_name_base = maths and (gsub(fam_name, "%-.*$", "-base")) or nil
+            fam_name_base = maths and format("%s-base", (gsub(fam_name, "%-.*$", ""))) or nil
             local bold     = embrace(cfg.bfseries or "b")
             local medium   = embrace(cfg.mdseries or "m")
             -- Default to true if the maths font is set and the option isn't
