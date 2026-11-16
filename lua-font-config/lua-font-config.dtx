@@ -34,7 +34,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12203 2026-11-14 20:04:07Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12204 2026-11-16 21:02:13Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -1086,7 +1086,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12203 2026-11-14 20:04:07Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12204 2026-11-16 21:02:13Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -1642,7 +1642,7 @@
 % \end{macro}
 % \begin{function}{\_@@_set_mathrm:n,\_@@_set_mathsf:n,\_@@_set_mathtt:n,
 %   \_@@_set_mathrm:nnnnnn,\_@@_set_mathsf:nnnnn,\_@@_set_mathtt:nnnnn,
-%   \_@@_set_mathrm:nVVVVV,\_@@_set_mathsf:nVVVV,\_@@_set_mathtt:nVVVV}
+%   \_@@_set_mathrm:nnVVVV,\_@@_set_mathsf:nnVVV,\_@@_set_mathtt:nnVVV}
 % TODO: move to hooks if module gets support for switching the families out e.g.~for language changes.
 % Currently, the code is too simple-minded for this to arise \dots.
 % \changes{v0.0}{2026-11-16}{Extended to support multiple doc meta families aka font sets.}
@@ -1686,18 +1686,18 @@
     \SetMathAlphabet \mathtt {bold@#1}   {TU} {#2} {#4} {#5}
   }
 }
-\cs_generate_variant:Nn \_@@_set_mathrm:nnnnnn {nVVVVV}
-\cs_generate_variant:Nn \_@@_set_mathsf:nnnnn {nVVVV}
-\cs_generate_variant:Nn \_@@_set_mathtt:nnnnn {nVVVV}
-\cs_new_protected_nopar:Npn \_@@_set_mathrm: {
-  \_@@_set_mathrm:nVVVVV  {} \rmdefault \mdseries@rm \bfseries@rm \shapedefault
+\cs_generate_variant:Nn \_@@_set_mathrm:nnnnnn {nnVVVV}
+\cs_generate_variant:Nn \_@@_set_mathsf:nnnnn {nnVVV}
+\cs_generate_variant:Nn \_@@_set_mathtt:nnnnn {nnVVV}
+\cs_new_protected_nopar:Npn \_@@_set_mathrm:n #1 {
+  \_@@_set_mathrm:nnVVVV  {} {#1} \mdseries@rm \bfseries@rm \shapedefault
     \itdefault
 }
-\cs_new_protected_nopar:Npn \_@@_set_mathsf: {
-  \_@@_set_mathsf:nVVVV  {} \sfdefault \mdseries@sf \bfseries@sf \shapedefault
+\cs_new_protected_nopar:Npn \_@@_set_mathsf:n #1 {
+  \_@@_set_mathsf:nnVVV  {} {#1} \mdseries@sf \bfseries@sf \shapedefault
 }
-\cs_new_protected_nopar:Npn \_@@_set_mathtt: {
-  \_@@_set_mathtt:nVVVV  {} \ttdefault \mdseries@tt \bfseries@tt \shapedefault
+\cs_new_protected_nopar:Npn \_@@_set_mathtt:n #1 {
+  \_@@_set_mathtt:nnVVV  {} {#1} \mdseries@tt \bfseries@tt \shapedefault
 }
 %    \end{macrocode}
 % \end{function}
@@ -1813,7 +1813,7 @@
 %     But maybe not \dots.
 % \end{description}
 %    \begin{macrocode}
-\ProvidesPackageSVN[\filebase-ui1.sty]{$Id: lua-font-config.dtx 12203 2026-11-14 20:04:07Z cfrees $}[v0.2 \revinfo][\filebase-ui1: UI 1]
+\ProvidesPackageSVN[\filebase-ui1.sty]{$Id: lua-font-config.dtx 12204 2026-11-16 21:02:13Z cfrees $}[v0.2 \revinfo][\filebase-ui1: UI 1]
 \DefineFileInfoSVN[lfcuii]
 %    \begin{macrocode}
 \ExplSyntaxOn
@@ -2159,7 +2159,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-fea <<<
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12203 2026-11-14 20:04:07Z cfrees $
+%% $Id: lua-font-config.dtx 12204 2026-11-16 21:02:13Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -2219,7 +2219,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-features <<<
 %<*ee-features>
-%% $Id: lua-font-config.dtx 12203 2026-11-14 20:04:07Z cfrees $
+%% $Id: lua-font-config.dtx 12204 2026-11-16 21:02:13Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}

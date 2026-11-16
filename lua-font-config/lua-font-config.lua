@@ -1,9 +1,9 @@
--- $Id: lua-font-config.lua 12203 2026-11-14 20:04:07Z cfrees $
+-- $Id: lua-font-config.lua 12204 2026-11-16 21:02:13Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 do
   local name, rev, date = string.match(
-    "$Id: lua-font-config.lua 12203 2026-11-14 20:04:07Z cfrees $", 
+    "$Id: lua-font-config.lua 12204 2026-11-16 21:02:13Z cfrees $", 
     "Id: ([a-z][a-z-]*)%.lua (%d%d*) (%d%d%d%d%-%d%d%-%d%d) ")
   luatexbase.provides_module({
     name      = name,
@@ -167,6 +167,7 @@ end
 
 local str_onesize           = "<->"
 local str_fea_default       = "mode=node;language=dflt;script=dflt;+tlig;"
+local str_fea_basic         = "mode=basic;"
 local str_fea_math_default  = "mode=basic;language=dflt;script=math;"
 local str_fea_math_sf       = "ssty=1"
 local str_fea_math_ssf      = "ssty=2"
@@ -196,9 +197,9 @@ local tok_bfseries_tt       = create("bfseries@tt")
 local tok_file_subs         = create("declare@file@substitution")
 local tok_hook_gput_code    = create("hook_gput_code:nnn")
 
-local tok_mathrm            = create("__lfc_set_mathrm:")
-local tok_mathsf            = create("__lfc_set_mathsf:")
-local tok_mathtt            = create("__lfc_set_mathtt:")
+local tok_mathrm            = create("__lfc_set_mathrm:n")
+local tok_mathsf            = create("__lfc_set_mathsf:n")
+local tok_mathtt            = create("__lfc_set_mathtt:n")
 local tok_mathrm_ver        = create("__lfc_set_mathrm:nnnnnn")
 local tok_mathsf_ver        = create("__lfc_set_mathsf:nnnnn")
 local tok_mathtt_ver        = create("__lfc_set_mathtt:nnnnn")
@@ -2005,20 +2006,21 @@ end
 ---@param   config        <table>   overall config passed/created/modified 
 ---                                   to/by font_config()
 ---@param   typeset_mode  <int>     0 (text) or 1 (math)
----@description Returns keyed table:
+---@description Returns keyed table and boolean or nil:
 ---@description   fea   configured features (string),
 ---@description   scale (number) or nil, 
 ---@description   suffix (string) or nil
 ---@description   cfg_scoped (table) or nil
 ---@description   loadsettings (string) or ""
----@description These may be passed more-or-less as-is to the writing 
+---@description The table may be passed more-or-less as-is to the writing 
 ---@description   functions.
 local function font_config_aux(fam, config, typeset_mode)
 
   local fea = font_config_aux_sel(fam, config, "fea", nil)
 
   local suffix
-  if typeset_mode == 0 and fea then fea, suffix = parse_fea(fea) 
+  if typeset_mode == 0 and fea then 
+    fea, suffix = parse_fea(fea) 
   else 
     fea = typeset_mode ~= 1 and str_fea_default or str_fea_math_default
   end
@@ -2042,7 +2044,8 @@ local function font_config_aux(fam, config, typeset_mode)
     loadsettings = font_config_aux_sel(fam, config, "loadsettings", ""),
     scale = font_config_aux_sel(fam, config, "scale", nil),
     suffix = suffix,
-  }
+  }, (font_config_aux_sel(fam, config, "default", nil) and typeset_mode == 0)
+    and font_config_aux_sel(fam, config, "maths", nil) or nil
 end
 -- }}}
 
@@ -2292,7 +2295,7 @@ local function font_config(targ, config, immediate)
         end
 
 
-        local fake_fd_cfg = 
+        local fake_fd_cfg, math_alpha = 
           font_config_aux(fam, config, typeset_mode)
 
         if immediate then
@@ -2313,6 +2316,15 @@ local function font_config(targ, config, immediate)
           if fake_fd_ssf then 
             add_fake_fd(fam_ssf, fake_fd_ssf, fake_fd_cfg)
           end
+        end
+
+        -- If needed -base for non-math fonts is never immediate.
+        if math_alpha then
+          local fake_fd_base_cfg = fastcopy(fake_fd_cfg)
+          -- TODO Should this use specified features?
+          fake_fd_base_cfg.fea = str_fea_basic
+          fake_fd_base_cfg.suffix = "-base"
+          add_fake_fd(fam, fake_fd, fake_fd_base_cfg)
         end
 
 
@@ -2342,12 +2354,22 @@ local function font_config(targ, config, immediate)
         local typeset_mode = lfc_cache[fam].typeset_mode
 
 
-        local fake_fd_cfg = 
+        local fake_fd_cfg, math_alpha = 
           font_config_aux(fam, config, typeset_mode)
 
 
         if typeset_mode ~= 1 then
           use_cached_fd(fam, fake_fd_cfg, immediate) 
+
+          -- If needed -base for non-math fonts is never immediate.
+          if math_alpha then
+            local fake_fd_base_cfg = fastcopy(fake_fd_cfg)
+            -- TODO Should this use specified features?
+            fake_fd_base_cfg.fea = str_fea_basic
+            fake_fd_base_cfg.suffix = "-base"
+            use_cached_fd(fam, fake_fd_base_cfg, false)
+          end
+
         else
           -- Pick up the additional maths fds.
           local meta_math = lfc_cache.meta_families.by_meta_math[fam]
@@ -2356,7 +2378,6 @@ local function font_config(targ, config, immediate)
             use_cached_fd(mfam, fake_fd_cfg, immediate) 
           end
         end
-
 
         -- Need a different way to handle this.
         -- It shouldn't be disconnected this way.
@@ -2550,7 +2571,7 @@ local function get_fam_default_scanner(fam)
       nfss_doc_families[t_name] = {
         name = tostring(fam_name),
         cleanname = cleanname,
-        default = {fam},
+        default = fam,
       }
       nfss_doc_families[t_name].typeset_mode = fam ~= "math" and 0 or 1
       nfss_default_families[fam] = nfss_doc_families[t_name]
@@ -2728,6 +2749,7 @@ local function configure_doc_families()
       nfss_doc_families,
       fam_defaults)
     local config = {fea = nil, scale = nil, force = nil, typeset_mode = nil}
+    local do_math = nfss_default_families.math and true or false
     for t_name,cfg in sortedpairs(nfss_doc_families) do
       if t_name ~= "curr" then
         if cfg.features then -- is this ever true?
@@ -2741,6 +2763,7 @@ local function configure_doc_families()
         config.scale = cfg.scale or nil
         config.force = cfg.force or nil
         config.cfg_scoped = cfg.cfg_scoped or nil
+
         local hyphenchar = cfg.hyphenchar or nil
         if cfg.loadsettings then
           if type(cfg.loadsettings) ~= "table" then
@@ -2756,6 +2779,13 @@ local function configure_doc_families()
 
         -- text: 0, maths: 1
         config.typeset_mode = cfg.typeset_mode or 0
+
+        config.default = cfg.default or nil
+        config.maths = cfg.maths or nil
+        config.maths = config.maths or ((cfg.default and (dmf == "default" or
+          do_math)) and true or false)
+        -- Needed below.
+        cfg.maths = config.maths
 
         -- Was cfg.name
         local nfss_fam = font_config(cfg.cleanname, config, (cfg.default and 
@@ -2796,9 +2826,11 @@ local function configure_doc_families()
       for fam,cfg in sortedpairs(nfss_default_families) do
         if cfg.nfss_fam then
           local fam_name = cfg.nfss_fam
+          local fam_name_base
           if cfg.typeset_mode == 0 then
             -- Use of text fonts in maths mode.
-            local maths = cfg.maths or true
+            local maths = cfg.maths -- or true
+            fam_name_base = maths and (gsub(fam_name, "%-.*$", "-base")) or nil
             local bold     = embrace(cfg.bfseries or "b")
             local medium   = embrace(cfg.mdseries or "m")
             msg({"Setting ", fam, " default to ", fam_name, "."}, "log")
@@ -2812,8 +2844,9 @@ local function configure_doc_families()
               bold}))
             if maths then
               msg({"Setting math", fam, "."}, "log")
-              sprint(-2, fam_to_maths[fam])
+              sprint(-2, flattened({fam_to_maths[fam], embrace(fam_name_base)}))
               needs_math = true
+              cfg.fam_name_base = fam_name_base
             end
           elseif cfg.typeset_mode == 1 then
             -- Use of Unicode maths fonts in maths mode.
@@ -2847,7 +2880,10 @@ local function configure_doc_families()
       for fam,cfg in sortedpairs(nfss_default_families) do
         if cfg.nfss_fam then
           local fam_name = cfg.nfss_fam
+          local fam_name_base
           if cfg.typeset_mode == 0 then
+            local maths = cfg.maths -- or true
+            fam_name_base = maths and (gsub(fam_name, "%-.*$", "-base")) or nil
             local bold     = embrace(cfg.bfseries or "b")
             local medium   = embrace(cfg.mdseries or "m")
             -- Default to true if the maths font is set and the option isn't
@@ -2861,11 +2897,12 @@ local function configure_doc_families()
               medium}))
             insert(out, flattened({tok_renewcommand, fam_to_series[fam][2],
               bold}))
-            -- TODO adjust series here
+            -- TODO adjust series here << done?
             if maths then
               msg({"Setting math for ", dmf, " to ", 
-                fam_name, "."}, "log")
-              out_math[fam] = {fam_name, medium, bold}
+                fam_name_base, "."}, "log")
+              out_math[fam] = {fam_name_base, medium, bold}
+              -- cfg.fam_name_base = fam_name_base
             end
           elseif cfg.typeset_mode == 1 then
             msg({"Setting maths fonts for meta family ", dmf,
