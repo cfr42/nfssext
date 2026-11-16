@@ -32,14 +32,21 @@
   },
   % for insanity's sake
   tt = imfell english,
+  math = texgyrescholamath,
 }
 \def\testme{0123456789 -- --- affable official aficionado}
+\def\testma{%
+  $\mathrm{ABC abc} \mathbf{d} \mathit{e} \mathsf{f} \mathtt{g} \sin$
+  $v = ut + \frac{1}{2}at^2$
+  $\mathscr{ABC} \mathcal{ABC}$%
+}
 \begin{document}
 \START
 \TEST{font set: default (initial)}{%
   \rmfamily \TeX-Gyre Pagella: \testme\ (osf, prop)\par
   \sffamily \TeX-Gyre Heros: \testme\ (lining, prop)\par
   \ttfamily \TeX-Gyre Cursor \testme\ (tabular, lining, no tlig etc.)\par
+  \normalfont \TeX-Gyre Pagella Math: \testma\par
 }
 
 \TESTTITLE{font set: switch to latinii}
@@ -49,6 +56,7 @@
   \rmfamily \TeX-Gyre Schola:  \testme\ (osf, prop)\par
   \sffamily Latin Modern Sans: \testme\ (osf, prop)\par
   \ttfamily IMFell English \testme\ (N/A)\par
+  \normalfont \TeX-Gyre Schola Math: \testma\par
 }
 
 \TESTTITLE{font set: switch to default}
@@ -59,7 +67,8 @@
   \rmfamily \TeX-Gyre Pagella: \testme\ (osf, prop)\par
   \sffamily \TeX-Gyre Heros: \testme\ (lining, prop)\par
   \ttfamily \TeX-Gyre Cursor \testme\ (tabular, lining, no tlig etc.)\par
+  \normalfont \TeX-Gyre Pagella Math: \testma\par
 }
-\END
+% \END
 \end{document}
 

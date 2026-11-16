@@ -300,7 +300,11 @@
 % Alternatively or additionally, feature specifications may be passed more-or-less directly to the font loader.
 % This enables any loader-supported specification to used and is faster, but requires knowledge of the syntax and opentype tag names.
 %
-% That said, the automated configuration is already quite extensive.
+% Version 0.3 adds \emph{doubly experimental and provisional} support for ‘font sets’.
+% These allow documents to switch between multiple sets of font configurations at any point, provided all such sets are specified before \verb|\begin{document}|.
+% Sets may include changes of Unicode maths font and text fonts used in \texttt{math} mode.
+%
+% Note that the automated configuration is already quite extensive.
 % By default, the package tries to configure font families which are as rich as possible, insofar as the fonts support this. 
 % This includes
 % \begin{itemize}
@@ -332,12 +336,39 @@
     rm = texgyrepagella,
     sf = texgyreheros,
     tt = texgyrecursor,
+    math = texgyrepagellamath,
+  }
+\end{minted}
+% \iffalse
+%</verb>
+% \fi
+% Or, adding a second set of fonts:
+% \iffalse
+%<*verb>
+% \fi
+\begin{minted}{latex}
+  \usepackage{lua-font-config}
+  \fontconfig{%
+    rm = texgyrepagella,
+    sf = texgyreheros,
+    tt = texgyrecursor,
+    math = texgyrepagellamath,
+  }
+  \newfontset{alts}
+  \fontconfig[alts]{%
+    rm = texgyreschola,
+    sf = texgyrebonum,
+    tt = texgyreadventor,
     math = texgyrescholamath,
   }
 \end{minted}
 % \iffalse
 %</verb>
 % \fi
+% With this setup, \cs{usefontset}\marg{alts} would switch to the second configuration and \cs{usefontset}\marg{default} would switch back to the original setup.
+% \cs{boldmath} may be used as usual while a font set is active; if a bold version is configured for the set, it will be used as usual\footnote{%
+%   But note that \verb|\mathversion{bold}| will switch to the default set's bold, which is probably not what you want.%
+% }.
 %
 % \DescribeMacro{\fontconfig}\marg{key-val list}\par
 % Specify font configuration.
@@ -1137,11 +1168,6 @@
   existing~set.~
   \msg_see_documentation_text:n {lfc}
 }
-%<discard>    ^^A \msg_new:nnnn {lfc} {preamble-only} {
-%<discard>    ^^A   \msg_info_text:n {lfc} :: ~invalid~use~of~#1~after~
-%<discard>    ^^A     \tl_to_string:n {\begin{document}}.~
-%<discard>    ^^A   Reported~\msg_line_context:
-%<discard>    ^^A } { \msg_see_documentation_text:n {lfc} }
 %    \end{macrocode}
 % %^^A Switch back now we're done with message setup.
 % \let\MakePrivateLetters\MyMakePrivateLetters
@@ -1162,6 +1188,22 @@
 \tl_new:N \l_@@_tmpc_tl
 %    \end{macrocode}
 % \end{variable}
+%% ^^A See David Carlisle's suggestions at \url{https://chat.stackexchange.com/transcript/message/69314513#69314513}.
+%% ^^A David suggested setting the entire list empty, but I don't really think a font package should be in the business of e.g.~enabling use of \cs{usepackage} (or \cs{documentstyle}!) inside the \env{document} environment.
+%% ^^A So let's try editing the list instead \dots.
+%% ^^A
+%% ^^A We don't enable anything disallowed for text fonts.
+%% ^^A Nor do we allow \emph{new} anything, but we do want to allow the assignment of maths fonts to be changed: specifically, we want \cs{SetMathAlphabet} and \cs{SetSymbolFont} to be usable.
+%% ^^A This avoids the need to define additional maths versions for switching doc meta families (i.e.~font sets) in-and-out in the document.
+%% ^^A It also means we can avoid even setting the definitions up if a set is never used.
+%% ^^A
+%% ^^A Query: is this more or less efficient than defining multiple versions?
+%% ^^A The worry is that now every change requires resetting everything, which is surely less efficient than doing it once per set.
+%% ^^A (True also for text.)
+%% ^^A 
+%% ^^A Mitigations: \LaTeX{} will only try to read the \texttt{.fd} file once, so the emulation code will run at most once (rather than exactly once).
+%% ^^A But, still, I bet there is a better way to do this \dots.
+%    \begin{macrocode}
 % \begin{keyname}{rm,sf,tt}
 % Top-level keys for default text families.
 %    \begin{macrocode}
@@ -1187,22 +1229,28 @@
 %    \begin{macrocode}
   \keys_define:nn {lfc/#1} {
     name        .code:n   = { \use:c {__@@_set_#1:n} {##1} },
-    bfseries    .tl_set:c = bfseries@#1,
+    bfseries    .code:n   = {
+      \tl_set:cn {bfseries@#1} {##1}
+      \__@@_parse_series:nn {bfseries} {##1}
+    },
     bold        .code:n   = {
       \str_set_eq:NN \l_@@_weight_str \c_empty_str
       \str_set_eq:NN \l_@@_width_str \c_empty_str
       \keys_set:nn {lfc/#1/series} {##1}
       \tl_set:ce {bfseries@#1} {
-        \__@@_parse_series:VV \l_@@_weight_str \l_@@_width_str
+        \__@@_parse_series:nVV {bfseries} \l_@@_weight_str \l_@@_width_str
       }
     },
-    mdseries    .tl_set:c = mdseries@#1,
+    mdseries    .code:n   = {
+      \tl_set:cn {mdseries@#1} {##1}
+      \__@@_parse_series:nn {mdseries} {##1}
+    },
     normal      .code:n   = {
       \str_set_eq:NN \l_@@_weight_str \c_empty_str
       \str_set_eq:NN \l_@@_width_str \c_empty_str
       \keys_set:nn {lfc/#1/series} {##1}
       \tl_set:ce {mdseries@#1} {
-        \__@@_parse_series:VV \l_@@_weight_str \l_@@_width_str
+        \__@@_parse_series:nVV {mdseries} \l_@@_weight_str \l_@@_width_str
       }
     },
     series / weight .str_set:N = \l_@@_weight_str,
@@ -1563,11 +1611,6 @@
     \__@@_configure_doc_families:
   }
 }
-%<discard>    ^^A \hook_gput_code:nnn {begindocument/end} {.} {
-%<discard>    ^^A   \cs_set_protected:Npn \_@@_font_config:nn #1#2 {
-%<discard>    ^^A     \msg_error:nnn {lfc} {preamble-only} {font~configuration~command}
-%<discard>    ^^A   }
-%<discard>    ^^A }
 %    \end{macrocode}
 % \end{function}
 % \begin{macro}{\fontconfig}
@@ -1597,36 +1640,82 @@
 }
 %    \end{macrocode}
 % \end{macro}
-% \begin{function}{\_@@_set_mathrm:,\_@@_set_mathsf:,\_@@_set_mathtt:}
+% \begin{function}{\_@@_set_mathrm:n,\_@@_set_mathsf:n,\_@@_set_mathtt:n,
+%   \_@@_set_mathrm:nnnnnn,\_@@_set_mathsf:nnnnn,\_@@_set_mathtt:nnnnn,
+%   \_@@_set_mathrm:nVVVVV,\_@@_set_mathsf:nVVVV,\_@@_set_mathtt:nVVVV}
 % TODO: move to hooks if module gets support for switching the families out e.g.~for language changes.
 % Currently, the code is too simple-minded for this to arise \dots.
+% \changes{v0.0}{2026-11-16}{Extended to support multiple doc meta families aka font sets.}
 %    \begin{macrocode}
+\cs_new_protected_nopar:Npn \_@@_set_mathrm:nnnnnn #1#2#3#4#5#6 {
+  \tl_if_blank:nTF {#1} {
+    \SetMathAlphabet \mathrm {normal} {TU} {#2} {#3} {#5}
+    \SetMathAlphabet \mathit {normal} {TU} {#2} {#3} {#6}
+    \SetMathAlphabet \mathbf {normal} {TU} {#2} {#4} {#5}
+    \SetMathAlphabet \mathrm {bold}   {TU} {#2} {#4} {#5}
+    \SetMathAlphabet \mathit {bold}   {TU} {#2} {#4} {#6}
+    \SetMathAlphabet \mathbf {bold}   {TU} {#2} {#4} {#5}
+    \SetSymbolFont{operators}{normal} {TU} {#2} {#3} {#5}
+    \SetSymbolFont{operators}{bold}   {TU} {#2} {#4} {#5}
+  } {
+    \SetMathAlphabet \mathrm {normal@#1} {TU} {#2} {#3} {#5}
+    \SetMathAlphabet \mathit {normal@#1} {TU} {#2} {#3} {#6}
+    \SetMathAlphabet \mathbf {normal@#1} {TU} {#2} {#4} {#5}
+    \SetMathAlphabet \mathrm {bold@#1}   {TU} {#2} {#4} {#5}
+    \SetMathAlphabet \mathit {bold@#1}   {TU} {#2} {#4} {#6}
+    \SetMathAlphabet \mathbf {bold@#1}   {TU} {#2} {#4} {#5}
+    \SetSymbolFont{operators}{normal@#1} {TU} {#2} {#3} {#5}
+    \SetSymbolFont{operators}{bold@#1}   {TU} {#2} {#4} {#5}
+  }
+}
+\cs_new_protected_nopar:Npn \_@@_set_mathsf:nnnnn #1#2#3#4#5 {
+  \tl_if_blank:nTF {#1} {
+    \SetMathAlphabet \mathsf {normal} {TU} {#2} {#3} {#5}
+    \SetMathAlphabet \mathsf {bold}   {TU} {#2} {#4} {#5}
+  } {
+    \SetMathAlphabet \mathsf {normal@#1} {TU} {#2} {#3} {#5}
+    \SetMathAlphabet \mathsf {bold@#1}   {TU} {#2} {#4} {#5}
+  }
+}
+\cs_new_protected_nopar:Npn \_@@_set_mathtt:nnnnn #1#2#3#4#5 {
+  \tl_if_blank:nTF {#1} {
+    \SetMathAlphabet \mathtt {normal} {TU} {#2} {#3} {#5}
+    \SetMathAlphabet \mathtt {bold}   {TU} {#2} {#4} {#5}
+  } {
+    \SetMathAlphabet \mathtt {normal@#1} {TU} {#2} {#3} {#5}
+    \SetMathAlphabet \mathtt {bold@#1}   {TU} {#2} {#4} {#5}
+  }
+}
+\cs_generate_variant:Nn \_@@_set_mathrm:nnnnnn {nVVVVV}
+\cs_generate_variant:Nn \_@@_set_mathsf:nnnnn {nVVVV}
+\cs_generate_variant:Nn \_@@_set_mathtt:nnnnn {nVVVV}
 \cs_new_protected_nopar:Npn \_@@_set_mathrm: {
-  \SetMathAlphabet \mathrm {normal} {TU} \rmdefault {\mdseries@rm} \shapedefault
-  \SetMathAlphabet \mathit {normal} {TU} \rmdefault {\mdseries@rm} \itdefault
-  \SetMathAlphabet \mathbf {normal} {TU} \rmdefault {\bfseries@rm} \shapedefault
-  \SetMathAlphabet \mathrm {bold}   {TU} \rmdefault {\bfseries@rm} \shapedefault
-  \SetMathAlphabet \mathit {bold}   {TU} \rmdefault {\bfseries@rm} \itdefault
-  \SetMathAlphabet \mathbf {bold}   {TU} \rmdefault {\bfseries@rm} \shapedefault
-  \SetSymbolFont{operators}{normal} {TU} \rmdefault {\mdseries@rm} \shapedefault
-  \SetSymbolFont{operators}{bold}   {TU} \rmdefault {\bfseries@rm} \shapedefault
+  \_@@_set_mathrm:nVVVVV  {} \rmdefault \mdseries@rm \bfseries@rm \shapedefault
+    \itdefault
 }
 \cs_new_protected_nopar:Npn \_@@_set_mathsf: {
-  \SetMathAlphabet \mathsf {normal} {TU} \sfdefault {\mdseries@sf} \shapedefault
-  \SetMathAlphabet \mathsf {bold}   {TU} \sfdefault {\bfseries@sf} \shapedefault
+  \_@@_set_mathsf:nVVVV  {} \sfdefault \mdseries@sf \bfseries@sf \shapedefault
 }
 \cs_new_protected_nopar:Npn \_@@_set_mathtt: {
-  \SetMathAlphabet \mathtt {normal} {TU} \ttdefault {\mdseries@tt} \shapedefault
-  \SetMathAlphabet \mathtt {bold}   {TU} \ttdefault {\bfseries@tt} \shapedefault
+  \_@@_set_mathtt:nVVVV  {} \ttdefault \mdseries@tt \bfseries@tt \shapedefault
 }
 %    \end{macrocode}
 % \end{function}
-% \begin{function}{\_@@_declare_lum_symbol_fonts:nn}
+% \begin{function}{\_@@_declare_lum_symbol_fonts:nn,\_@@_set_lum_symbol_fonts:nnn}
 % Maths setup function.
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \_@@_declare_lum_symbol_fonts:nn #1#2 {
   \DeclareSymbolFont{lummain}{TU}{#1}{m}{n}
   \SetSymbolFont{lummain}{bold}{TU}{#2}{b}{n}
+}
+\cs_new_protected_nopar:Npn \_@@_set_lum_symbol_fonts:nnnn #1#2#3#4 {
+  \tl_if_blank:nTF {#1} {
+    \SetSymbolFont{lummain}{normal}   {TU}{#2}{#3}{n}
+    \SetSymbolFont{lummain}{bold}     {TU}{#2}{#4}{n}
+  } {
+    \SetSymbolFont{lummain}{normal@#1}{TU}{#2}{#3}{n}
+    \SetSymbolFont{lummain}{bold@#1}  {TU}{#2}{#4}{n}
+  }
 }
 %    \end{macrocode}
 % \end{function}
@@ -1671,7 +1760,8 @@
 %   \__@@_set_doc_meta_fam:n,
 %   \__@@_new_doc_meta_fam:n,
 %   \__@@_parse_series:nn,
-%   \__@@_parse_series:VV,
+%   \__@@_parse_series:nnn,
+%   \__@@_parse_series:nVV,
 %   \__@@_parse_spec:nn,
 %   \__@@_parse_spec:nV,
 %   \__@@_set_mathrm:,
@@ -1682,19 +1772,14 @@
 %   \__@@_debug_set_false:,
 %   \__@@_debug_set_true:%
 % }
-% \changes{v0.0}{2026-11-04}{\cs{_@@_set_fam_features:nnn} replaces \cs{_@@_set_fam_features:nn}. Added \cs{_@@_set_fam_fea_scoped:nn}, \cs{_@@_parse_spec:nn}, \cs{_@@_parse_series:nn}.}
+% \changes{v0.0}{2026-11-04}{\cs{_@@_set_fam_features:nnn} replaces \cs{_@@_set_fam_features:nn}. Added \cs{_@@_set_fam_fea_scoped:nn}, \cs{_@@_parse_spec:nn}, , \cs{_@@_parse_series:nn}, \cs{_@@_parse_series:nnn}.}
 % \changes{v0.0}{2026-11-13}{Add \cs{_@@_set_doc_meta_fam:n}.}
 % The Lua modules do the actual work.
 %    \begin{macrocode}
 \lua_load_module:n {lua-font-config}
 \cs_generate_variant:Nn \__@@_set_fam_scoped_fea:nn {Ve}
 \cs_generate_variant:Nn \__@@_parse_spec:nn {nV}
-\cs_generate_variant:Nn \__@@_parse_series:nn {VV}
-%<discard>    ^^A \hook_gput_code:nnn {begindocument/end} {.} {
-%<discard>    ^^A   \cs_set_protected:Npn \__@@_new_doc_meta_fam:n #1 {
-%<discard>    ^^A     \msg_error:nnn {lfc} {preamble-only} {font~configuration~command}
-%<discard>    ^^A   }
-%<discard>    ^^A }
+\cs_generate_variant:Nn \__@@_parse_series:nnn {nVV}
 %    \end{macrocode}
 % \end{function}
 % Meta-families get functios such as \cs{_@@_doc_meta_fam_default:} where \texttt{default} is either literal or the name of a configured meta-family.
