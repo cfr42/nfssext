@@ -1,9 +1,9 @@
--- $Id: lua-font-config.lua 12205 2026-11-16 23:56:39Z cfrees $
+-- $Id: lua-font-config.lua 12207 2026-11-17 03:34:53Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 do
   local name, rev, date = string.match(
-    "$Id: lua-font-config.lua 12205 2026-11-16 23:56:39Z cfrees $", 
+    "$Id: lua-font-config.lua 12207 2026-11-17 03:34:53Z cfrees $", 
     "Id: ([a-z][a-z-]*)%.lua (%d%d*) (%d%d%d%d%-%d%d%-%d%d) ")
   luatexbase.provides_module({
     name      = name,
@@ -212,6 +212,8 @@ local tok_mathversion       = create("mathversion")
 local tok_boldmath_inner    = create("boldmath ")
 local tok_boldmath          = create("boldmath")
 local tok_atnomath          = create("@nomath")
+local tok_normalmath_inner  = create("normalmath ")
+local tok_normalmath        = create("normalmath")
 
 local tok_nohyphenchar      = create("__lfc_no_hyphenchar:")
 
@@ -2866,6 +2868,9 @@ local function configure_doc_families()
         insert(out, flattened({tok_mathversion, embrace("normal"),
           tok_renewcommand, tok_boldmath_inner, tok_group_begin,
           tok_atnomath, tok_boldmath, tok_mathversion, embrace("bold"),
+          tok_group_end,
+          tok_renewcommand, tok_normalmath_inner, tok_group_begin,
+          tok_atnomath, tok_normalmath, tok_mathversion, embrace("normal"),
           tok_group_end}))
       end
       -- TODO SHAPE RESTORE??
@@ -2939,6 +2944,9 @@ local function configure_doc_families()
         insert(out, flattened({tok_mathversion, embrace("normal@" .. dmf),
           tok_renewcommand, tok_boldmath_inner, tok_group_begin,
           tok_atnomath, tok_boldmath, tok_mathversion, embrace("bold@" .. dmf),
+          tok_group_end,
+          tok_renewcommand, tok_normalmath_inner, tok_group_begin,
+          tok_atnomath, tok_normalmath, tok_mathversion, embrace("normal@" .. dmf),
           tok_group_end}))
       end
       insert(out, tok_normalfont)
