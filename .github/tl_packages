@@ -38,8 +38,8 @@ collection-basic
         latexconfig
         letltxmacro
         ltxcmds
-        # mfnfss
-        # mptopdf
+        mfnfss
+        mptopdf
         # natbib
         oberdiek
         pdfescape
@@ -197,7 +197,7 @@ kpfonts-otf
 standalone
 imfellenglish
 # for texgyrepagellax to synchronise logs
-luatexja
+newpx
 
 # hyperref has hard dependency on nameref, but no longer includes it
 # and this is not listed as a dependency (2026-11-04 re. changes 2026-11-03)
