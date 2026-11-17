@@ -34,7 +34,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12207 2026-11-17 03:34:53Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12208 2026-11-17 08:08:48Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -1169,7 +1169,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12207 2026-11-17 03:34:53Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12208 2026-11-17 08:08:48Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -1894,7 +1894,9 @@
 \cs_generate_variant:Nn \__@@_parse_series:nnn {nVV}
 %    \end{macrocode}
 % \end{function}
+% \usesafecs
 % Meta-families get functios such as \cs{_@@_doc_meta_fam_default:} where \texttt{default} is either literal or the name of a configured meta-family.
+% \resetcs
 %
 % \cs{newfontset} and \cs{fontconfig} should not be used inside \env{document}.
 % Is there a (similarly simple) way to do this in \pkg{expl3}?
@@ -1925,7 +1927,7 @@
 %     But maybe not \dots.
 % \end{description}
 %    \begin{macrocode}
-\ProvidesPackageSVN[\filebase-ui1.sty]{$Id: lua-font-config.dtx 12207 2026-11-17 03:34:53Z cfrees $}[v0.2 \revinfo][\filebase-ui1: UI 1]
+\ProvidesPackageSVN[\filebase-ui1.sty]{$Id: lua-font-config.dtx 12208 2026-11-17 08:08:48Z cfrees $}[v0.2 \revinfo][\filebase-ui1: UI 1]
 \DefineFileInfoSVN[lfcuii]
 %    \begin{macrocode}
 \ExplSyntaxOn
@@ -2271,7 +2273,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-fea <<<
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12207 2026-11-17 03:34:53Z cfrees $
+%% $Id: lua-font-config.dtx 12208 2026-11-17 08:08:48Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -2331,7 +2333,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-features <<<
 %<*ee-features>
-%% $Id: lua-font-config.dtx 12207 2026-11-17 03:34:53Z cfrees $
+%% $Id: lua-font-config.dtx 12208 2026-11-17 08:08:48Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
