@@ -1,0 +1,46 @@
+%% $Id: test-fontset-errors.lvt 12210 2026-11-19 00:37:18Z cfrees $
+\input lfc-support.tex
+\documentclass{article}
+\parindent=0pt
+\usepackage{lua-font-config}
+\START
+\TESTTITLE{\newfontset error: default name forbidden}
+\newfontset{default}
+\SEPARATOR
+\TESTTITLE{\newfontset error: no default}
+\newfontset{wombles}
+\SEPARATOR
+\OMIT
+\fontconfig{%
+  rm = texgyrepagella,
+}
+\newfontset{fraggles}
+\fontconfig[fraggles]{
+  rm = texgyreschola,
+}
+\TIMO
+\TESTTITLE{\newfontset error: already exists}
+\newfontset{fraggles}
+\SEPARATOR
+\TESTTITLE{\newfontset error: forbidden names}
+\newfontset{__aardvark}
+\newfontset{nfss_doc_families}
+\newfontset{nfss_default_families}
+\SEPARATOR
+\TESTTITLE{\fontconfig error: font set does not exist}
+\fontconfig[trumpton]{
+  rm = imfellenglish,
+}
+\newfontset{ivor}
+\SEPARATOR
+\OMIT
+\begin{document}
+\TIMO
+\TEST{\usefontset error: unknown font set (undeclared)}{%
+  \usefontset{lucy}%
+}
+\TEST{\usefontset error: unknown font set (not configured)}{%
+  \usefontset{ivor}%
+}
+\END
+

@@ -34,7 +34,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12209 2026-11-17 09:16:24Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12210 2026-11-19 00:37:18Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -244,7 +244,7 @@
 % \AddToHook{shipout/foreground}{%
 %   \put (5mm,\dimeval{\baselineskip-\paperheight}) {%
 %     \hbox to \dimeval{\paperwidth-10mm} {%
-%       \footnotesize
+%       \normalfont\footnotesize
 %       Bug tracker:
 %       \href{https://codeberg.org/cfr/nfssext/issues}{\url{https://codeberg.org/cfr/nfssext/issues}}
 %       \textbar{} Code:
@@ -376,17 +376,17 @@
 %   But note that \verb|\mathversion{bold}| will switch to the default set's bold, which is probably not what you want.%
 % }.
 %
-% There are currently three commands: \cs{fontconfig} is the main command and the only one required in most documents.
+% There are currently three configuration commands: \cs{fontconfig} is the main command and the only one required in most documents.
 % Documents which need to switch font configurations in the body of the document also require \cs{newfontset} and \cs{usefontset}.
-% These commands are explained in \cref{sec:font-sets}.
+% These commands are explained in \cref{subsubsec:font-sets}.
 % 
 % \DescribeMacro{\fontconfig}\oarg{font set}\marg{key-val list}\par
 % Specify font configuration.
 % 
-% \meta{font set} is relevant only if multiple sets of fonts are required (see \cref{sec:font-sets}).
+% \meta{font set} is relevant only if multiple sets of fonts are required (see \cref{subsec:font-sets}).
 % The default is to specify the document's default font configuration i.e.~the one active at \verb|\begin{document}|.
 % 
-% \subsection{Keys}\label{subsec:keys}
+% \subsection{Keys}\label{subsec:keys}% ^^A <<<
 % Top-level keys are described here.
 % Keys for use in key-value lists are described in \cref{subsec:keys-cfg}.
 %
@@ -435,8 +435,9 @@
 % This can be used to enable debugging and/or modify the logging level.
 % It is primarily intended for use in debugging the package and unlikely to be of use in production.
 % However, it may be useful the use this key if reporting a bug which cannot be reproduced e.g.~which is platform specific or depends on system fonts.
+%% ^^A >>>
 %
-% \subsection{Keys for specifying font families}\label{subsec:keys-cfg}
+% \subsection{Keys for specifying font families}\label{subsec:keys-cfg}% ^^A <<<
 %
 % All keys described in \cref{subsec:keys} accept either a simple family name, as shown in the example above, or a braced key-value list.
 % For example,
@@ -528,11 +529,7 @@
 % {\bfseries Note that this interface is \emph{highly} experimental: it may, and very likely will, change\footnote{%
 %     It is almost certain that it excludes things people need; it may also include things they don't.
 %     Moreover, the groups of options are somewhat arbitrary, as are the keys' names.
-%     It needs significant user input to determine what works best here, as \pkg{fontspec}'s framework is quite different.
-% 
-%     At some point, it also needs to be extended to permit per-font configuration e.g.~so that fake bold can be applied to create an additional weight, such as the \texttt{bf} series for a family which lacks bold.
-%     And it should also be possible to specify different default weights and widths for the stand \texttt{md} and \texttt{bf} series e.g.~to use light and demi-bold, rather than regular and bold.
-%     Right now, none of this is possible \emph{via} the key-value interface, though the latter is straightforward to do for users familiar with the roles of macros such as \cs{mddefault} and \cs{bfdefault}, at least in simple cases.%
+%     It needs significant user input to determine what works best here, as \pkg{fontspec}'s framework is quite different.%
 %   }.%
 % }
 %
@@ -556,6 +553,7 @@
 % \texttt{\{\meta{key1},\meta{key2},\dots\}}
 %
 % A \meta{key-value list} requires a comma-separated list of key-values:
+%
 % \texttt{\{\meta{key1}=\meta{value1},\meta{key2}=\meta{value2},\dots\}}
 %
 % \DescribeKey{alternates}\mval{key/key-value list}\par
@@ -789,7 +787,7 @@
 %   Ideally, \LaTeX{} would provide symbolic representations of these weights, since many fonts now have them \emph{as well as} regular, rather than instead.
 %   However, it doesn't, so \pkg{lua-font-config} does nefarious things which innocent readers, even the expert ones, should not wish to know.
 %   More seriously, the implementation will change without notice if I find a way to avoid the nefarious.
-%   If you really want to ignore this warning, see \texttt{scoped} above.
+%   If you really want to ignore this warning, see \texttt{scoped} in \cref{subsec:adv}.
 %   \emph{Only series documented in \LaTeX's \texttt{fntguide} are supported.}%
 % }.
 %
@@ -821,126 +819,46 @@
 % \fi
 %% ^^A >>>
 %
-% \section{Compatibility}\label{sec:compat}% ^^A <<<
-% 
-% \subsection{\pkg{fontspec}}\label{subsec:compat-fontspec}
+% \subsection{‘Font sets’}\label{subsec:font-sets}% ^^A <<<
 %
-% The package should be compatible with \pkg{fontspec}, provided particular fonts are configured with commands from one or neither package.
-% However, this is not tested and obviously documents cannot benefit from any performance gains to the extent they rely on \pkg{fontspec}\footnote{%
-%   But \pkg{fontspec}'s performance is quite good if you do not use fonts with \texttt{.fontspec} files or which are especially large.
-%   E.g.~Latin Modern and \TeX-Gyre fonts are generally fine, but New Computer Modern is rather painful.%
-% }.
-%
-% \subsection{\cls{ltx-talk}}\label{subsec:compat-talk}
-%
-% Load with \cs{RequirePackage} \emph{before} loading the class.
-% The package emulates the class settings by default, so the main benefit of loading it is speed.
-% If you wish to change the fonts, use \cs{fontconfig} after the class is loaded\footnote{%
-%   If this turns out to be something people want to do, I can adjust things to avoid configuring fonts twice.
-%   For now, this is just a good way for me to test the code and avoid the pain of watching \pkg{fontspec} load New Computer Modern.%
-% }.
-%
-% \subsection{\pkg{lua-unicode-math}}\label{subsec:compat-lum}
-%
-% \pkg{lua-font-config} is definitely compatible with \pkg{lua-unicode-math} and will load it if the top-level \texttt{math} key is used for Unicode maths configuration.
-% Note that if you do use this key, none of the \texttt{.fd} or font-specific \texttt{.sty} files will be used; instead, the maths fonts will be configured using the same process as the text fonts and results cached in the same way.
-%
-% \subsection{\pkg{unicode-math}}\label{subsec:compat-um}
-%
-% The package should be compatible with \pkg{unicode-math}, provided the top-level \texttt{math} key is not used to configure Unicode maths fonts.
-% See \cref{subsec:compat-fontspec}, but there is really no performance reason to use \pkg{lua-font-config} in this case, since \pkg{unicode-math} is extremely slow and this will easily dominate the time taken for font configuration.
-%
-%% ^^A >>>
-%
-% \section{Examples}\label{sec:eeiau}% ^^A <<<
-%
-% \Cref{fig:ee-lmr,fig:ee-ncm-math,fig:ee-ncm-complete} demonstrate simple use of the package to configure the main document font, a Unicode maths font (\emph{via} \pkg{lua-unicode-math} and a complete font configuration (roman/serif, sans, typewriter and maths).
-% These examples use the default configurations for text and maths fonts, so the configurations are extremely simple.
-%
-% \Cref{fig:ee-talk} demonstrates how to use \pkg{lua-font-config} to speed up the compilation of presentations created with \cls{ltx-talk}.
-%
-% \Cref{fig:ee-features,fig:ee-fea,fig:ee-add} demonstrate slightly more complex setups.
-%
-% \Cref{fig:ee-fontsets} demonstrates how to configure alternative sets of fonts and how to switch sets in the document.
-% 
-% \Cref{fig:ee-scoped} demonstrates use of a lower-level interface to enable features for a customisable subset of fonts in a family.
-% 
-% \lfcdocfile [label=example-lmr -- \cref{fig:ee-lmr}] {example-lmr}
-% \lfcee{lmr}
-%
-% \lfcdocfile [label=example-ncm-math -- \cref{fig:ee-ncm-math}] {example-ncm-math}
-% \lfcee{ncm-math}
-%
-% \lfcdocfile [label=example-ncm-complete -- \cref{fig:ee-ncm-complete}] 
-%   {example-ncm-complete}
-% \lfcee{ncm-complete}
-%
-% \Cref{fig:ee-talk} demonstrates the default configuration for \cls{ltx-talk}.
-% This is approximately equivalent to the default setup if \pkg{lua-font-config} is not loaded.
-% Note the way the package is loaded \emph{before} \cs{documentclass}.
-% If we used \cs{usepackage} after the class was loaded, we would not benefit from the faster compilation our Lua-based approach provides\footnote{%
-%   In fact, although \pkg{lua-font-config} \emph{is} faster generally and although this is likely due to greater use of Lua, the size of the difference in this particular case suggests some additional factor is involved.
-%   However, I've not tried to confirm this or to identify the cause.%
-% }.
-% See \cref{subsec:compat-talk}.
-%
-% \lfcdocfile [label=example-talk -- \cref{fig:ee-talk},
-%   rangestartstring={\\DocumentMetadata}]{example-talk}
-% \lfcee*[1,2]{talk}
-%
-% Note that \cref{fig:ee-features,fig:ee-fea} give exactly the same output; the only difference is that one uses \texttt{features} and the other \texttt{fea} to configure features for the configured families.
-% See \cref{subsubsec:keys-text}.
-% 
-% \lfcdocfile [label=example-features -- \cref{fig:ee-features}] {example-features}
-% \lfcee{features}
-%
-% \lfcdocfile [label=example-fea -- \cref{fig:ee-fea}] {example-fea}
-% \lfcee{fea}
-%
-% \Cref{fig:ee-add} demonstrates usage of the \texttt{fam} key to configure an additional family and a custom font switch to access it.
-%
-% \lfcdocfile [label=example-add -- \cref{fig:ee-add}] {example-add}
-% \lfcee{add}
-%
-% \Cref{fig:ee-fontsets} demonstrates usage of ‘font sets’ to switch between multiple font configurations (\cref{sec:font-sets}).
-%
-% \lfcdocfile [label=example-fontsets -- \cref{fig:ee-fontsets}] {example-fontsets}
-% \lfcee{fontsets}
-%
-% \Cref{fig:ee-scoped} demonstrates usage of the low-level \texttt{scoped} key to enable features selectively.
-%
-% \lfcdocfile [label=example-scoped -- \cref{fig:ee-scoped}] {example-scoped}
-% \lfcee{scoped}
-%
-%% ^^A >>>
-%
-% \section{‘Font sets’}\label{sec:font-sets}% ^^A <<<
-%
-% \textbf{This feature requires \pkg{lua-unicode-math}.}
+% \textbf{Additional ‘font sets’ require \pkg{lua-unicode-math}.}
 % The package will be automatically loaded, if necessary, or an error produced, if the incompatible \pkg{unicode-math} is already loaded.
 %
+% ‘Font sets’ allow multiple, independent sets of fonts to be used in a document, in such a way that standard commands such as \cs{textsf}, \cs{bfseries} and \cs{boldmath} ‘just work’.
+%
+% Technically, \pkg{lua-font-config} always uses font sets, but most documents require only the \texttt{default} font set.
+% In this case, \pkg{lua-unicode-math} is not required (unless the top-level \texttt{math} key is used).
+%
+% This feature should not be interpreted as encouraging documents to use hodgepodges of different fonts; the vast majority of documents should use only a single font set.
+% However, sometimes it really is useful to enable additional font set(s): for example, if typesetting an older text together with a commentary or for multilingual documents requiring different scripts or features.
+% In these cases, the use of multiple font sets makes it possible to switch cleanly between the various configurations required.
+%
 % \begin{description}
-%   \item[Name:] \textbf{font set}
-%   \item[Concept:] A complete set of fonts which a document may activate at any point in the body of the document.
-%   \item[Components:] A font set consists of the following:
+%   \item[Name:]          \textbf{font set}
+%   \item[Concept:]       A complete set of fonts which may be activated at any point in the body of the document.
+%   \item[Behaviour:]     At any point during typesetting, exactly one font set should be active; activating an alternative font set should deactivate the current one.
+%   \item[Default:]       The \texttt{default} font set should always be present and active at the start of the document body.
+%   \item[Configuration:] Font sets should be configured independently of each other.
+%     The effect of switching to a different font set should produce the same behaviour as configuring that font set for the whole document.
+%   \item[Components:]    A font set consists of the following:
 %     \begin{itemize}
 %       \item A unique name.
-%         The default set is called \texttt{default}.
+%         \texttt{default} is reserved for the default font set.
 %         There are some restrictions on names, but any other combination of lowercase Latin letters is certainly safe.
-%         Names should be unique for the document using them.
-%       \item A serif/roman/main family, either specified using the \texttt{rm} key (\cref{sec:usage}) or \texttt{lmr}. 
-%       \item A sans family, either specified using the \texttt{sf} key (\cref{sec:usage}) or \texttt{lmss}. 
-%       \item A typewriter/monowidth/mono family, either specified using the \texttt{tt} key (\cref{sec:usage}) or \texttt{lmtt}. 
-%       \item A Unicode maths family, together with families for script and calligraphic alphabets, either specified using the \texttt{math} key (\cref{sec:usage}) or \texttt{lmm}.
+%         Names must be unique.
+%       \item A serif/roman/main family, either specified using the \texttt{rm} key (\cref{sec:pkg}) or \texttt{lmr}. 
+%       \item A sans family, either specified using the \texttt{sf} key (\cref{sec:pkg}) or \texttt{lmss}. 
+%       \item A typewriter/monowidth/mono family, either specified using the \texttt{tt} key (\cref{sec:pkg}) or \texttt{lmtt}. 
+%       \item A Unicode maths family, together with families for script and calligraphic alphabets, either specified using the \texttt{math} key (\cref{sec:pkg}) or \texttt{lmm}.
 %       \item Per-family weights for the default and bold series used in text (\cs{textbf} etc.). 
-%       \item \texttt{normal} and \texttt{bold} versions for mathematics, \emph{provided bold is accessed using \cs{normalmath} and \cs{boldmath}}.
+%       \item \texttt{normal} and \texttt{bold} versions for mathematics, \emph{provided these are accessed using \cs{normalmath} and \cs{boldmath}}.
 %     \end{itemize}
 % \end{description}
 % 
 % \DescribeMacro{\newfontset}\marg{identifier}\par
 % Initialise a font set \meta{identifier}.
 %
-% \cs{fontconfig}\oarg{identifier}\marg{key-value list} should then be used to configure the font set in the usual way (\cref{sec:usage}).
+% \cs{fontconfig}\oarg{identifier}\marg{key-value list} should then be used to configure the font set in the usual way (\cref{sec:pkg}).
 %
 % These commands are available in the preamble of the document.
 %
@@ -973,9 +891,7 @@
 %
 %% ^^A >>>
 %
-%
-%
-% \section{Advanced configuration}\label{sec:adv}% ^^A <<<
+% \subsection{Advanced configuration}\label{subsec:adv}% ^^A <<<
 %
 % \texttt{fea} and \texttt{scoped} provide a relatively lower-level interface to the functionality provided by the \texttt{features} key.
 % They apply to the configuration of text families only and require familiarity with both \textsc{nfss}, \pkg{luaotfload} and opentype feature tags.
@@ -1060,6 +976,103 @@
 % Use \texttt{fakebold}, \texttt{fakeoblique} etc.\ (\cref{subsubsec:keys-text}) for this, if necessary.
 %
 %% ^^A >>>
+%% ^^A >>>
+%
+% \section{Compatibility}\label{sec:compat}% ^^A <<<
+% 
+% \subsection{\pkg{fontspec}}\label{subsec:compat-fontspec}
+%
+% The package should be compatible with \pkg{fontspec}, provided particular fonts are configured with commands from one or neither package.
+% However, this is not tested and obviously documents cannot benefit from any performance gains to the extent they rely on \pkg{fontspec}\footnote{%
+%   But \pkg{fontspec}'s performance is quite good if you do not use fonts with \texttt{.fontspec} files or which are especially large.
+%   E.g.~Latin Modern and \TeX-Gyre fonts are generally fine, but New Computer Modern is rather painful.%
+% }.
+%
+% \subsection{\cls{ltx-talk}}\label{subsec:compat-talk}
+%
+% Load with \cs{RequirePackage} \emph{before} loading the class.
+% The package emulates the class settings by default, so the main benefit of loading it is speed.
+% If you wish to change the fonts, use \cs{fontconfig} after the class is loaded\footnote{%
+%   If this turns out to be something people want to do, I can adjust things to avoid configuring fonts twice.
+%   For now, this is just a good way for me to test the code and avoid the pain of watching \pkg{fontspec} load New Computer Modern.%
+% }.
+%
+% \subsection{\pkg{lua-unicode-math}}\label{subsec:compat-lum}
+%
+% \pkg{lua-font-config} is definitely compatible with \pkg{lua-unicode-math} and will load it if the top-level \texttt{math} key is used for Unicode maths or a non-default ‘font set’ is created.
+% Note that if you do use the \texttt{math} key and in any case for additional font sets, none of the \texttt{.fd} or font-specific \texttt{.sty} files will be used; instead, the maths fonts will be configured using the same process as the text fonts and results cached in the same way.
+%
+% \subsection{\pkg{unicode-math}}\label{subsec:compat-um}
+%
+% The package should be compatible with \pkg{unicode-math}, provided neither the top-level \texttt{math} key (for Unicode maths configuration) nor (non-default) ‘font sets’ are used.
+% See \cref{subsec:compat-fontspec}, but there is really no performance reason to use \pkg{lua-font-config} in this case, since \pkg{unicode-math} is extremely slow and this will easily dominate the time taken for font configuration.
+% In general, I see no reason to use \pkg{lua-font-config} together with \pkg{unicode-math}; if you need the latter, there is really no reason to use \pkg{lua-font-config} at all.
+%
+%% ^^A >>>
+%
+% \section{Examples}\label{sec:eeiau}% ^^A <<<
+%
+% \Cref{fig:ee-lmr,fig:ee-ncm-math,fig:ee-ncm-complete} demonstrate simple use of the package to configure the main document font, a Unicode maths font (\emph{via} \pkg{lua-unicode-math} and a complete font configuration (roman/serif, sans, typewriter and maths).
+% These examples use the default configurations for text and maths fonts, so the configurations are extremely simple.
+%
+% \Cref{fig:ee-talk} demonstrates how to use \pkg{lua-font-config} to speed up the compilation of presentations created with \cls{ltx-talk}.
+%
+% \Cref{fig:ee-features,fig:ee-fea,fig:ee-add} demonstrate slightly more complex setups.
+%
+% \Cref{fig:ee-fontsets} demonstrates how to configure alternative sets of fonts and how to switch sets in the document.
+% 
+% \Cref{fig:ee-scoped} demonstrates use of a lower-level interface to enable features for a customisable subset of fonts in a family.
+% 
+% \lfcdocfile [label=example-lmr -- \cref{fig:ee-lmr}] {example-lmr}
+% \lfcee{lmr}
+%
+% \lfcdocfile [label=example-ncm-math -- \cref{fig:ee-ncm-math}] {example-ncm-math}
+% \lfcee{ncm-math}
+%
+% \lfcdocfile [label=example-ncm-complete -- \cref{fig:ee-ncm-complete}] 
+%   {example-ncm-complete}
+% \lfcee{ncm-complete}
+%
+% \Cref{fig:ee-talk} demonstrates the default configuration for \cls{ltx-talk}.
+% This is approximately equivalent to the default setup if \pkg{lua-font-config} is not loaded.
+% Note the way the package is loaded \emph{before} \cs{documentclass}.
+% If we used \cs{usepackage} after the class was loaded, we would not benefit from the faster compilation our Lua-based approach provides\footnote{%
+%   In fact, although \pkg{lua-font-config} \emph{is} faster generally and although this is likely due to greater use of Lua, the size of the difference in this particular case suggests some additional factor is involved.
+%   However, I've not tried to confirm this or to identify the cause.%
+% }.
+% See \cref{subsec:compat-talk}.
+%
+% \lfcdocfile [label=example-talk -- \cref{fig:ee-talk},
+%   rangestartstring={\\DocumentMetadata}]{example-talk}
+% \lfcee*[1,2]{talk}
+%
+% Note that \cref{fig:ee-features,fig:ee-fea} give exactly the same output; the only difference is that one uses \texttt{features} and the other \texttt{fea} to configure features for the configured families.
+% See \cref{subsubsec:keys-text}.
+% 
+% \lfcdocfile [label=example-features -- \cref{fig:ee-features}] {example-features}
+% \lfcee{features}
+%
+% \lfcdocfile [label=example-fea -- \cref{fig:ee-fea}] {example-fea}
+% \lfcee{fea}
+%
+% \Cref{fig:ee-add} demonstrates usage of the \texttt{fam} key to configure an additional family and a custom font switch to access it.
+%
+% \lfcdocfile [label=example-add -- \cref{fig:ee-add}] {example-add}
+% \lfcee{add}
+%
+% \Cref{fig:ee-fontsets} demonstrates usage of ‘font sets’ to switch between multiple font configurations (\cref{subsec:font-sets}).
+%
+% \lfcdocfile [label=example-fontsets -- \cref{fig:ee-fontsets}] {example-fontsets}
+% \lfcee{fontsets}
+%
+% \Cref{fig:ee-scoped} demonstrates usage of the low-level \texttt{scoped} key to enable features selectively.
+%
+% \lfcdocfile [label=example-scoped -- \cref{fig:ee-scoped}] {example-scoped}
+% \lfcee{scoped}
+%
+%% ^^A >>>
+%
+%
 %
 % \section{TO DOs}\label{sec:todo}% ^^A <<<
 %
@@ -1170,7 +1183,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12209 2026-11-17 09:16:24Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12210 2026-11-19 00:37:18Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -1225,32 +1238,42 @@
 % \let\MakePrivateLetters\OrigMakePrivateLetters
 %    \begin{macrocode}
 \msg_new:nnnn {lfc} {math-needs-lum} {
-  \msg_error_text:n {lfc} :: ~#1~requires~lua-unicode-math,~but~
-  you've~loaded~unicode-math.~This~cannot~work~\msg_line_context:
+  #1~requires~lua-unicode-math,~but~
+  you've~loaded~unicode-math.~This~cannot~work~\msg_line_context:.
 } { To~configure~Unicode~maths~fonts~with~this~package,~we~need~to~load~
   lua-unicode-math,~but~unicode-math,~which~is~incompatible~has~already~
   been~loaded,~so~I'm~going~to~ignore~this~part~of~your~settings.~
   \msg_see_documentation_text:n {lfc}
 }
 \msg_new:nnnn {lfc} {loading} {
-  \msg_info_text:n {lfc} :: ~loading~#1~for~maths~support~
-  \msg_line_context:
+  Loading~#1~for~maths~support~\msg_line_context:.
 } { \msg_see_documentation_text:n {lfc} }
 \msg_new:nnnn {lfc} {meta-fam-missing} {
-  \msg_info_text:n {lfc} :: ~font~set~#1~not~defined.~
-  Reported~\msg_line_context:
+  Font~set~#1~not~defined.~Reported~\msg_line_context:.
 } {
   A~set~of~fonts~(meta-family)~must~be~defined~in~the~preamble~before~it~can~
-  be~used~in~your~document.~
-  \msg_see_documentation_text:n {lfc}
+  be~used~in~your~document.~\msg_see_documentation_text:n {lfc}
 }
 \msg_new:nnnn {lfc} {meta-fam-exists} {
-  \msg_info_text:n {lfc} :: ~font~set~#1~already~defined.~
-  Reported~\msg_line_context:
+  Font~set~#1~already~defined.~Reported~\msg_line_context:.
 } { 
   You~tried~to~define~a~new~font~set~(meta-family)~with~the~same~name~as~an~
-  existing~set.~
+  existing~set.~\msg_see_documentation_text:n {lfc}
+}
+\msg_new:nnnn {lfc} {meta-fam-default-name} {
+  Font~set~'default'~does~not~need~to~be~created.~
+  Ignoring~request~\msg_line_context:.
+} { 
+  You~tried~to~define~a~new~font~set~named~'default'~but~this~is~unneeded.~
+  Instead,~use~\token_to_str:N \fontconfig ~to~configure~the~set.~
   \msg_see_documentation_text:n {lfc}
+}
+\msg_new:nnnn {lfc} {meta-fam-no-default} {
+  The~'default'~font~set~is~not~configured.~Reported~\msg_line_context:.
+} { 
+  You~tried~to~define~a~new~font~set~before~configuring~a~default~set.~
+  This~is~not~possible.~You~need~first~to~use~\token_to_str:N \fontconfig ~
+  to~configure~the~default~set.~\msg_see_documentation_text:n {lfc}
 }
 %    \end{macrocode}
 % %^^A Switch back now we're done with message setup.
@@ -1717,21 +1740,26 @@
 %   \cs{usefontset} is a simple wrapper around the Lua functions.
 %    \begin{macrocode}
 \NewDocumentCommand\newfontset { m } {
-  \bool_show:N \g_@@_lum_done_bool
-  \bool_if:NF \g_@@_lum_done_bool {
-    \IfPackageLoadedTF {unicode-math} {
-      \msg_error:nnn {lfc} {math-needs-lum} {font~sets}
-    } {
-      \msg_info:nnn {lfc} {loading} {lua-unicode-math} 
-      \RequirePackage{lua-unicode-math}
-      \bool_gset_true:N \g_@@_lum_done_bool
-    }
-  }
-  \bool_show:N \g_@@_lum_done_bool
-  \cs_if_free:cTF { __@@_doc_meta_fam_#1: } {
-    \__@@_new_doc_meta_fam:n {#1}
+  \str_if_eq:eeTF {default} {#1} {
+    \msg_warning:nn {lfc} {meta-fam-default-name}
   } {
-    \msg_error:nnn {lfc} {meta-fam-exists} {#1}
+    \cs_if_exist:NF \__@@_doc_meta_fam_default:  {
+      \msg_error:nn {lfc} {meta-fam-no-default}
+    }
+    \bool_if:NF \g_@@_lum_done_bool {
+      \IfPackageLoadedTF {unicode-math} {
+        \msg_error:nnn {lfc} {math-needs-lum} {font~sets}
+      } {
+        \msg_info:nnn {lfc} {loading} {lua-unicode-math} 
+        \RequirePackage{lua-unicode-math}
+        \bool_gset_true:N \g_@@_lum_done_bool
+      }
+    }
+    \cs_if_free:cTF { __@@_doc_meta_fam_#1: } {
+      \__@@_new_doc_meta_fam:n {#1}
+    } {
+      \msg_error:nnn {lfc} {meta-fam-exists} {#1}
+    }
   }
 }
 \NewDocumentCommand\usefontset { m } {
@@ -1928,7 +1956,7 @@
 %     But maybe not \dots.
 % \end{description}
 %    \begin{macrocode}
-\ProvidesPackageSVN[\filebase-ui1.sty]{$Id: lua-font-config.dtx 12209 2026-11-17 09:16:24Z cfrees $}[v0.2 \revinfo][\filebase-ui1: UI 1]
+\ProvidesPackageSVN[\filebase-ui1.sty]{$Id: lua-font-config.dtx 12210 2026-11-19 00:37:18Z cfrees $}[v0.2 \revinfo][\filebase-ui1: UI 1]
 \DefineFileInfoSVN[lfcuii]
 %    \begin{macrocode}
 \ExplSyntaxOn
@@ -2275,7 +2303,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-fea <<<
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12209 2026-11-17 09:16:24Z cfrees $
+%% $Id: lua-font-config.dtx 12210 2026-11-19 00:37:18Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -2306,14 +2334,14 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 {%
   \ttfamily
   \TeX-Gyre Cursor 0123456789
-  -- --- outfitted officials affluently affiliate fish finials flagranty, first
+  -- --- outfitted officials affluently affiliate fish finials flagrantly, first
   finalising infinite floral affinities of fish-filled fingers
 }
 
 % No maths font is configured, so Computer Modern is used.
 % But the ‘text’ fonts in maths matches the text by default.
 \[
-    \sin\quad
+    \sin\theta\quad
     \mathrm{rm}\quad
     \mathsf{sf}\quad
     \mathtt{tt}\quad
@@ -2322,7 +2350,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 \]
 \mathversion{bold}
 \[
-    \sin\quad
+    \sin\theta\quad
     \mathrm{rm}\quad
     \mathsf{sf}\quad
     \mathtt{tt}\quad
@@ -2335,7 +2363,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-features <<<
 %<*ee-features>
-%% $Id: lua-font-config.dtx 12209 2026-11-17 09:16:24Z cfrees $
+%% $Id: lua-font-config.dtx 12210 2026-11-19 00:37:18Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -2373,14 +2401,14 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 {%
   \ttfamily
   \TeX-Gyre Cursor 0123456789
-  -- --- outfitted officials affluently affiliate fish finials flagranty, first
+  -- --- outfitted officials affluently affiliate fish finials flagrantly, first
   finalising infinite floral affinities of fish-filled fingers
 }
 
 % No maths font is configured, so Computer Modern is used.
 % But the ‘text’ fonts in maths matches the text by default.
 \[
-    \sin\quad
+    \sin\theta\quad
     \mathrm{rm}\quad
     \mathsf{sf}\quad
     \mathtt{tt}\quad
@@ -2389,7 +2417,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 \]
 \mathversion{bold}
 \[
-    \sin\quad
+    \sin\theta\quad
     \mathrm{rm}\quad
     \mathsf{sf}\quad
     \mathtt{tt}\quad
@@ -2515,18 +2543,19 @@ $\mathsf{x} \mathtt{x} \mathbf{x}$
 \fontconfig{%
   family  = {
     name    = Lobster Two,
-    scale   = 2,
+    scale   = 1.2,
     command = \lobster,
   },
 }
 \begin{document}
-This is some ordinary text in the default \LaTeXe{} font.
+This is some ordinary text in the default \LaTeXe{} font.\bigskip
 
-{\lobster This is Lobster Two.
-  \textit{Italics but no \textsc{small-caps}} \textsc{even in upright}.
-  We do have \textbf{bold and \textit{bold italics}}, but there is no, 
-  \textsl{oblique, so here we get italics, too.}\par
+{\lobster This is Lobster Two.\par
+  \textit{Lobster Two italics.}\par
+  \textbf{Lobster Two bold.}\par
+  \textit{\textbf{Lobster Two bold italics.}}\par
 }
+\bigskip
 
 Back to the default.
 \end{document}
@@ -2558,7 +2587,7 @@ Oh, sphinx of black quartz, judge my vow!
 %</ee-scoped>
 %% ^^A >>>
 %
-%% ^^A  ee-scoped <<<
+%% ^^A  ee-fontset <<<
 %<*ee-fontsets>
 \documentclass{article}
 \usepackage{lua-font-config}
@@ -2567,53 +2596,57 @@ Oh, sphinx of black quartz, judge my vow!
     name = TeX Gyre Pagella,
     features = {figures = {oldstyle,proportional},},
   },
-  sf = {% 
+  sf = {% We could omit lining here as it is the default for these fonts.
     name = TeX Gyre Heros,
     features = {figures = {lining,proportional},},
   },
-  tt = {% 
+  tt = {% Avoid ligatures in code listings etc.
     name = TeX Gyre Cursor,
     features = {figures = {lining,tabular}, ligatures = {nostandard,notex},},
   },
   math = TeX Gyre Pagella Math,
 }
-\newfontset{latinii}
-\fontconfig[latinii]{
-  rm = {%
+\newfontset{latinii}% Create a new font set named ‘latinii’.
+\fontconfig[latinii]{% Configure our alternative font set.
+  rm = {% We use lining, rather than oldstyle, figures for this set.
     name = TeX Gyre Schola,
     features = {figures = proportional},
   },
   sf = {%
-    name = TeX Gyre Bonum,
+    name = TeX Gyre Adventor,
     features = {figures = proportional},
   },
-  tt = Tex Gyre Adventor,
+  tt = {% We repeat our typewriter setup - w/o this, we'd get lmtt.
+    name = TeX Gyre Cursor,
+    features = {figures = {lining,tabular}, ligatures = {nostandard,notex},},
+  },
   math = TeX Gyre Schola Math,
 }
-\def\testme{ABCDEFGHIJKLMNOPQRSTUVWXYZ -- abcdefghijklmnopqrstuvwxyz --- 0123456789 Officially Infinite Effervescence\par}
-\def\testma{%
-  $\mathrm{ABC abc} \mathbf{Abc abc} \mathit{Abc abc} \mathsf{Abc abc} \mathtt{Abc abc} \sin \mathscr{ABC}$
+\newcommand*\testme{Oh, sphinx of black quartz, hear my vow! -- 0123456789 --- Infinity\par}
+\newcommand*\testma{%
+  $\mathrm{ABC abc} \mathbf{Abc abc} \mathit{Abc abc} \mathsf{Abc abc} \mathtt{Abc abc} \sin\theta \mathscr{ABC}$\par
   $v = ut + \frac{1}{2}at^2$\par
 }
 \begin{document}
-\rmfamily \TeX-Gyre Pagella: \testme
-\sffamily \TeX-Gyre Heros: \testme
-\ttfamily \TeX-Gyre Cursor \testme
-\normalfont \TeX-Gyre Pagella Math: \testma
+% Default font set
+\rmfamily \testme
+\sffamily \testme
+\ttfamily \testme
+\normalfont \testma
 
+% Switch to ‘latinii’ font set
 \usefontset{latinii}
+\rmfamily \testme
+\sffamily \testme
+\ttfamily \testme
+\normalfont \testma
 
-\rmfamily \TeX-Gyre Schola:  \testme
-\sffamily Latin Modern Sans: \testme
-\ttfamily IMFell English \testme
-\normalfont \TeX-Gyre Schola Math: \testma
-
+% Restore default font set
 \usefontset{default}
-
-\rmfamily \TeX-Gyre Pagella: \testme
-\sffamily \TeX-Gyre Heros: \testme
-\ttfamily \TeX-Gyre Cursor \testme
-\normalfont \TeX-Gyre Pagella Math: \testma
+\rmfamily \testme
+\sffamily \testme
+\ttfamily \testme
+\normalfont \testma
 \end{document}
 
 %</ee-fontsets>
