@@ -1,9 +1,9 @@
--- $Id: lua-font-config.lua 12210 2026-11-19 00:37:18Z cfrees $
+-- $Id: lua-font-config.lua 12211 2026-11-19 22:48:26Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 do
   local name, rev, date = string.match(
-    "$Id: lua-font-config.lua 12210 2026-11-19 00:37:18Z cfrees $", 
+    "$Id: lua-font-config.lua 12211 2026-11-19 22:48:26Z cfrees $", 
     "Id: ([a-z][a-z-]*)%.lua (%d%d*) (%d%d%d%d%-%d%d%-%d%d) ")
   luatexbase.provides_module({
     name      = name,
@@ -299,8 +299,8 @@ end
 ---@param   level     <string>        Minimum logging level for issuing message.
 ---@status  internal
 local function msg(text, level)
-  level = level or "warn"
-  level_n = msg_log_levels[level] or msg_log_levels.debug
+  level = level or "log"
+  level_n = msg_log_levels[level] or msg_log_levels.log
   if level_n > msg_log_levels[lfc_log_level] then return end
   if level ~= "debug" then
     write_nl(msg_format(text, msg_level[level]))
@@ -2821,159 +2821,308 @@ local function configure_doc_families_aux(dmf)
       end
     end
   end
+
   msg_debug("NFSS doc families: ", "doc", nfss_doc_families)
-  if dmf  == "default" then
-    msg("Setting default families ...", "debug") 
-    -- Create fn always as additional sets may be created later, so counting
-    --    metas is no good (and I do not want to do what um etc. all do and
-    --    delay til begindocument - that just causes more problems.
-    local out = {}
-    local needs_math = false
-    for fam,cfg in sortedpairs(nfss_default_families) do
-      if cfg.nfss_fam then
-        local fam_name = cfg.nfss_fam
-        local fam_name_base
-        if cfg.typeset_mode == 0 then
-          -- Use of text fonts in maths mode.
-          local maths = cfg.maths -- or true
-          fam_name_base = maths and (gsub(fam_name, "%-.*$", "-base")) or nil
-          local bold     = embrace(cfg.bfseries or "b")
-          local medium   = embrace(cfg.mdseries or "m")
-          msg({"Setting ", fam, " default to ", fam_name, "."}, "log")
-          sprint(-2, flattened({tok_renewcommand, fam_defaults[fam], 
-            embrace(fam_name)}))
-          insert(out, flattened({tok_renewcommand, fam_defaults[fam], 
-            embrace(fam_name)}))
-          insert(out, flattened({tok_renewcommand, fam_to_series[fam][1],
-            medium}))
-          insert(out, flattened({tok_renewcommand, fam_to_series[fam][2],
-            bold}))
-          if maths then
-            msg({"Setting math", fam, "."}, "log")
+
+  -- Create fn always as additional sets may be created later, so counting
+  --    metas is no good (and I do not want to do what um etc. all do and
+  --    delay til begindocument - that just causes more problems.
+  local dflt = dmf == "default" and true or false
+  local out = {}
+  local out_math = {}
+  local needs_math = false
+  msg(dflt and "Setting default families ..."
+    or {"Configuring doc meta family ", dmf, " ..."}, "log")
+  for fam,cfg in sortedpairs(nfss_default_families) do
+    if cfg.nfss_fam then
+      local fam_name = cfg.nfss_fam
+      local fam_name_base
+
+      if cfg.typeset_mode == 0 then
+
+        -- For the default series, set maths alphabets to text fonts by
+        --    default.
+        -- O/w, default to true if the maths font is set and the option isn't
+        --    specified; otherwise false.
+        local maths = cfg.maths or (dflt and true or do_maths)
+
+        -- Need double subs to accommodate case where there is no suffix.
+        fam_name_base = maths and format("%s-base", (gsub(fam_name, "%-.*$",
+          ""))) or nil
+        local bold     = embrace(cfg.bfseries or "b")
+        local medium   = embrace(cfg.mdseries or "m")
+
+        -- For current use of font set.
+        msg(concat({"Setting ", fam, " for font set \'", dmf,
+          "\' to ", fam_name, "."}), "log")
+        sprint(-2, flattened({tok_renewcommand, fam_defaults[fam], 
+          embrace(fam_name)}))
+        msg(concat({"Setting mdseries for ", fam, " for font set \'", dmf,
+          "\' to ", cfg.mdseries or "m", "."}), "log")
+        sprint(-2, flattened({tok_renewcommand, fam_to_series[fam][1],
+          medium}))
+        msg(concat({"Setting bfseries for ", fam, " for font set \'", dmf,
+          "\' to ", cfg.bfseries or "b", "."}), "log")
+        sprint(-2, flattened({tok_renewcommand, fam_to_series[fam][2],
+          bold}))
+
+        -- For later restoration of the font set.
+        insert(out, flattened({tok_renewcommand, fam_defaults[fam],
+          embrace(fam_name)}))
+        insert(out, flattened({tok_renewcommand, fam_to_series[fam][1],
+          medium}))
+        insert(out, flattened({tok_renewcommand, fam_to_series[fam][2],
+          bold}))
+
+        if maths then
+          msg(concat({"Setting math for font set \'", dmf, "\' to ", 
+            fam_name_base, "."}), "log")
+          -- Here we must split, since the non-default case requires a not-
+          --    yet-defined maths version.
+          if dflt then
             sprint(-2, flattened({fam_to_maths[fam], embrace(fam_name_base)}))
             needs_math = true
             cfg.fam_name_base = fam_name_base
-          end
-        elseif cfg.typeset_mode == 1 then
-          -- Use of Unicode maths fonts in maths mode.
-          -- This assumes lua-unicode-math.
-          msg({"Setting main maths fonts to ", fam_name, "."}, "log")
-          sprint(-2, flattened({tok_declare_lum_fnts, embrace(fam_name), 
-            embrace(fam_name)}))
-          needs_math = true
-        end
-      else msg({"No family found for ", fam, "!"})
-      end
-    end
-    msg({"Creating meta family default so defaults can be reset, if \z
-      needed.\nDoc meta family: ", dmf, "."}, "log")
-    if needs_math then 
-      insert(out, flattened({tok_mathversion, embrace("normal"),
-        tok_renewcommand, tok_boldmath_inner, tok_group_begin,
-        tok_atnomath, tok_boldmath, tok_mathversion, embrace("bold"),
-        tok_group_end,
-        tok_renewcommand, tok_normalmath_inner, tok_group_begin,
-        tok_atnomath, tok_normalmath, tok_mathversion, embrace("normal"),
-        tok_group_end}))
-    end
-    -- TODO SHAPE RESTORE??
-    insert(out, tok_normalfont)
-    luafunction_to_cs("__lfc_doc_meta_fam_default:",
-      function() return sprint(-2, flattened(out), "protected")
-    end)
-  else
-    msg({"Configuring doc meta family ", dmf, " ..."}, "debug")
-    local out = {}
-    local out_math = {}
-    local do_maths = false
-    for fam,cfg in sortedpairs(nfss_default_families) do
-      if cfg.nfss_fam then
-        local fam_name = cfg.nfss_fam
-        local fam_name_base
-        if cfg.typeset_mode == 0 then
-          local maths = cfg.maths -- or true
-          fam_name_base = maths and format("%s-base", (gsub(fam_name, "%-.*$", ""))) or nil
-          local bold     = embrace(cfg.bfseries or "b")
-          local medium   = embrace(cfg.mdseries or "m")
-          -- Default to true if the maths font is set and the option isn't
-          --    specified; otherwise false.
-          local maths = cfg.maths ~= nil and cfg.maths or do_maths
-          msg(concat({"Setting ", fam, " for font set \'", dmf,
-            "\' to ", fam_name, "."}), "log")
-          sprint(-2, flattened({tok_renewcommand, fam_defaults[fam], 
-            embrace(fam_name)}))
-          sprint(-2, flattened({tok_renewcommand, fam_to_series[fam][1],
-            medium}))
-          sprint(-2, flattened({tok_renewcommand, fam_to_series[fam][2],
-            bold}))
-
-          insert(out, flattened({tok_renewcommand, fam_defaults[fam],
-            embrace(fam_name)}))
-          insert(out, flattened({tok_renewcommand, fam_to_series[fam][1],
-            medium}))
-          insert(out, flattened({tok_renewcommand, fam_to_series[fam][2],
-            bold}))
-
-          -- TODO adjust series here << done?
-          if maths then
-            msg(concat({"Setting math for font set \'", dmf, "\' to ", 
-              fam_name_base, "."}), "log")
+          else
             out_math[fam] = {fam_name_base, medium, bold}
             -- cfg.fam_name_base = fam_name_base
           end
-        elseif cfg.typeset_mode == 1 then
-          msg(concat({"Setting maths fonts for meta family \'", dmf,
-            "\' to ", fam_name, "."}), "log")
+        end
+
+
+      elseif cfg.typeset_mode == 1 then
+        -- Use of Unicode maths fonts in maths mode.
+        -- This assumes lua-unicode-math.
+        msg(concat({"Setting maths fonts for meta family \'", dmf,
+          "\' to ", fam_name, "."}), "log")
+
+        if dflt then
+          sprint(-2, flattened({tok_declare_lum_fnts, embrace(fam_name), 
+            embrace(fam_name)}))
+          needs_math = true
+        else
           out_math.math = fam_name
           do_maths = true
         end
-      else msg(concat({"No family found for \'", fam, "\'!"}))
-        nfss_default_families[fam] = nil
+
       end
+    else msg({"No family found for ", fam, "!"})
+      -- This was only for the default, but that seems wrong?
+      nfss_default_families[fam] = nil
     end
-    msg(concat({"Creating meta family.\nFont set: \'", dmf, "\'."}), "log")
-    if count(out_math) > 0 then
-      msg(concat({"New math versions: normal@", dmf, " and bold@", dmf, "."}),
-        "log")
-      sprint(-2, flattened({tok_declaremathversion, embrace("normal@" .. dmf),
-        tok_declaremathversion, embrace("bold@" .. dmf)}))
-      local vmath = out_math.math or "lmm"
-      -- TODO SERIES SHAPE
-      sprint(-2, flattened({tok_set_lum_fnts, embrace(dmf),
-        embrace(vmath), embrace("m"), embrace("b") -- for now
-      }))
-      local vrm = out_math.rm or {"lmr", embrace("m"), embrace("bx")}
-      local vsf = out_math.sf or {"lmss", embrace("m"), embrace("bx")}
-      local vtt = out_math.tt or {"lmtt", embrace("m"), embrace("bx")}
-      -- TODO SHAPE ???
-      sprint(-2, flattened({tok_mathrm_ver, embrace(dmf),
-        embrace(vrm[1]), vrm[2], vrm[3], embrace("n"),
-          embrace("it"),
-        tok_mathsf_ver, embrace(dmf), embrace(vsf[1]), vsf[2],
-          vsf[3], embrace("n"),
-        tok_mathtt_ver, embrace(dmf), embrace(vtt[1]), vtt[2],
-          vtt[3], embrace("n")})) -- for now
-      sprint(-2, flattened({tok_mathversion, embrace("normal@" .. dmf),
-        tok_renewcommand, tok_boldmath_inner, tok_group_begin,
-        tok_atnomath, tok_boldmath, tok_mathversion, embrace("bold@" .. dmf),
-        tok_group_end,
-        tok_renewcommand, tok_normalmath_inner, tok_group_begin,
-        tok_atnomath, tok_normalmath, tok_mathversion, embrace("normal@" .. dmf),
-        tok_group_end}))
-      insert(out, flattened({tok_mathversion, embrace("normal@" .. dmf),
-        tok_renewcommand, tok_boldmath_inner, tok_group_begin,
-        tok_atnomath, tok_boldmath, tok_mathversion, embrace("bold@" .. dmf),
-        tok_group_end,
-        tok_renewcommand, tok_normalmath_inner, tok_group_begin,
-        tok_atnomath, tok_normalmath, tok_mathversion, embrace("normal@" .. dmf),
-        tok_group_end}))
-    end
-    sprint(-2, tok_normalfont)
-    insert(out, tok_normalfont)
-    luafunction_to_cs(concat({"__lfc_doc_meta_fam_", dmf, ":"}),
-      function() return sprint(-2, flattened(out), "protected")
-    end)
   end
+  if dflt then
+    msg({"Creating meta family default so defaults can be reset, if \z
+      needed.\nDoc meta family: ", dmf, "."}, "log")
+  else
+    msg(concat({"Creating meta family.\nFont set: \'", dmf, "\'."}), "log")
+  end
+
+
+
+  local vnormal = dflt and "normal" or "normal@" .. dmf
+  local vbold = dflt and "bold" or "bold@" .. dmf
+
+  -- out_math is specific to non-default dmfs.
+  if count(out_math) > 0 then
+    msg(concat({"New math versions: ", vnormal, " and ", vbold, "."}),
+      "log")
+    sprint(-2, flattened({tok_declaremathversion, embrace(vnormal),
+      tok_declaremathversion, embrace(vbold)}))
+    local vmath = out_math.math or "lmm"
+    -- TODO SERIES SHAPE
+    sprint(-2, flattened({tok_set_lum_fnts, embrace(dmf),
+      embrace(vmath), embrace("m"), embrace("b") -- for now
+    }))
+    local vrm = out_math.rm or {"lmr", embrace("m"), embrace("bx")}
+    local vsf = out_math.sf or {"lmss", embrace("m"), embrace("bx")}
+    local vtt = out_math.tt or {"lmtt", embrace("m"), embrace("bx")}
+    -- TODO SHAPE ???
+    sprint(-2, flattened({tok_mathrm_ver, embrace(dmf),
+      embrace(vrm[1]), vrm[2], vrm[3], embrace("n"),
+        embrace("it"),
+      tok_mathsf_ver, embrace(dmf), embrace(vsf[1]), vsf[2],
+        vsf[3], embrace("n"),
+      tok_mathtt_ver, embrace(dmf), embrace(vtt[1]), vtt[2],
+        vtt[3], embrace("n")})) -- for now
+    sprint(-2, flattened({tok_mathversion, embrace(vnormal),
+      tok_renewcommand, tok_boldmath_inner, tok_group_begin,
+      tok_atnomath, tok_boldmath, tok_mathversion, embrace(vbold),
+      tok_group_end,
+      tok_renewcommand, tok_normalmath_inner, tok_group_begin,
+      tok_atnomath, tok_normalmath, tok_mathversion, embrace(vnormal),
+      tok_group_end}))
+    needs_math = true
+  end
+  -- This now catches both default and non-default dmfs.
+  if needs_math then 
+    insert(out, flattened({tok_mathversion, embrace(vnormal),
+      tok_renewcommand, tok_boldmath_inner, tok_group_begin,
+      tok_atnomath, tok_boldmath, tok_mathversion, embrace(vbold),
+      tok_group_end,
+      tok_renewcommand, tok_normalmath_inner, tok_group_begin,
+      tok_atnomath, tok_normalmath, tok_mathversion, embrace(vnormal),
+      tok_group_end}))
+  end
+
+  if not dflt then
+    sprint(-2, tok_normalfont)
+  end
+
+  -- TODO SHAPE RESTORE??
+  insert(out, tok_normalfont)
+  -- These should always be global, protected.
+  luafunction_to_cs(concat({"__lfc_doc_meta_fam_", dmf, ":"}),
+    function() return sprint(-2, flattened(out), "global", "protected")
+  end)
+
+
+
+  -- if dflt then
+  --   -- Create fn always as additional sets may be created later, so counting
+  --   --    metas is no good (and I do not want to do what um etc. all do and
+  --   --    delay til begindocument - that just causes more problems.
+  --   for fam,cfg in sortedpairs(nfss_default_families) do
+  --     if cfg.nfss_fam then
+  --       local fam_name = cfg.nfss_fam
+  --       local fam_name_base
+  --       if cfg.typeset_mode == 0 then
+  --         -- Use of text fonts in maths mode.
+  --         local maths = cfg.maths -- or true
+  --         fam_name_base = maths and (gsub(fam_name, "%-.*$", "-base")) or nil
+  --         local bold     = embrace(cfg.bfseries or "b")
+  --         local medium   = embrace(cfg.mdseries or "m")
+  --         msg({"Setting ", fam, " default to ", fam_name, "."}, "log")
+  --         sprint(-2, flattened({tok_renewcommand, fam_defaults[fam], 
+  --           embrace(fam_name)}))
+  --         insert(out, flattened({tok_renewcommand, fam_defaults[fam], 
+  --           embrace(fam_name)}))
+  --         insert(out, flattened({tok_renewcommand, fam_to_series[fam][1],
+  --           medium}))
+  --         insert(out, flattened({tok_renewcommand, fam_to_series[fam][2],
+  --           bold}))
+  --         if maths then
+  --           msg({"Setting math", fam, "."}, "log")
+  --           sprint(-2, flattened({fam_to_maths[fam], embrace(fam_name_base)}))
+  --           needs_math = true
+  --           cfg.fam_name_base = fam_name_base
+  --         end
+  --       elseif cfg.typeset_mode == 1 then
+  --         -- Use of Unicode maths fonts in maths mode.
+  --         -- This assumes lua-unicode-math.
+  --         msg({"Setting main maths fonts to ", fam_name, "."}, "log")
+  --         sprint(-2, flattened({tok_declare_lum_fnts, embrace(fam_name), 
+  --           embrace(fam_name)}))
+  --         needs_math = true
+  --       end
+  --     else msg({"No family found for ", fam, "!"})
+  --     end
+  --   end
+  --   msg({"Creating meta family default so defaults can be reset, if \z
+  --     needed.\nDoc meta family: ", dmf, "."}, "log")
+  --   if needs_math then 
+  --     insert(out, flattened({tok_mathversion, embrace("normal"),
+  --       tok_renewcommand, tok_boldmath_inner, tok_group_begin,
+  --       tok_atnomath, tok_boldmath, tok_mathversion, embrace("bold"),
+  --       tok_group_end,
+  --       tok_renewcommand, tok_normalmath_inner, tok_group_begin,
+  --       tok_atnomath, tok_normalmath, tok_mathversion, embrace("normal"),
+  --       tok_group_end}))
+  --   end
+  --   -- TODO SHAPE RESTORE??
+  --   insert(out, tok_normalfont)
+  --   luafunction_to_cs("__lfc_doc_meta_fam_default:",
+  --     function() return sprint(-2, flattened(out), "protected")
+  --   end)
+  -- else
+  --   for fam,cfg in sortedpairs(nfss_default_families) do
+  --     if cfg.nfss_fam then
+  --       local fam_name = cfg.nfss_fam
+  --       local fam_name_base
+  --       if cfg.typeset_mode == 0 then
+  --         local maths = cfg.maths -- or true
+  --         fam_name_base = maths and format("%s-base", (gsub(fam_name, "%-.*$", ""))) or nil
+  --         local bold     = embrace(cfg.bfseries or "b")
+  --         local medium   = embrace(cfg.mdseries or "m")
+  --         -- Default to true if the maths font is set and the option isn't
+  --         --    specified; otherwise false.
+  --         local maths = cfg.maths ~= nil and cfg.maths or do_maths
+  --         msg(concat({"Setting ", fam, " for font set \'", dmf,
+  --           "\' to ", fam_name, "."}), "log")
+  --         sprint(-2, flattened({tok_renewcommand, fam_defaults[fam], 
+  --           embrace(fam_name)}))
+  --         sprint(-2, flattened({tok_renewcommand, fam_to_series[fam][1],
+  --           medium}))
+  --         sprint(-2, flattened({tok_renewcommand, fam_to_series[fam][2],
+  --           bold}))
+  --
+  --         insert(out, flattened({tok_renewcommand, fam_defaults[fam],
+  --           embrace(fam_name)}))
+  --         insert(out, flattened({tok_renewcommand, fam_to_series[fam][1],
+  --           medium}))
+  --         insert(out, flattened({tok_renewcommand, fam_to_series[fam][2],
+  --           bold}))
+  --
+  --         -- TODO adjust series here << done?
+  --         if maths then
+  --           msg(concat({"Setting math for font set \'", dmf, "\' to ", 
+  --             fam_name_base, "."}), "log")
+  --           out_math[fam] = {fam_name_base, medium, bold}
+  --           -- cfg.fam_name_base = fam_name_base
+  --         end
+  --       elseif cfg.typeset_mode == 1 then
+  --         msg(concat({"Setting maths fonts for meta family \'", dmf,
+  --           "\' to ", fam_name, "."}), "log")
+  --         out_math.math = fam_name
+  --         do_maths = true
+  --       end
+  --     else msg(concat({"No family found for \'", fam, "\'!"}))
+  --       nfss_default_families[fam] = nil
+  --     end
+  --   end
+  --   msg(concat({"Creating meta family.\nFont set: \'", dmf, "\'."}), "log")
+  --   if count(out_math) > 0 then
+  --     msg(concat({"New math versions: normal@", dmf, " and bold@", dmf, "."}),
+  --       "log")
+  --     sprint(-2, flattened({tok_declaremathversion, embrace("normal@" .. dmf),
+  --       tok_declaremathversion, embrace("bold@" .. dmf)}))
+  --     local vmath = out_math.math or "lmm"
+  --     -- TODO SERIES SHAPE
+  --     sprint(-2, flattened({tok_set_lum_fnts, embrace(dmf),
+  --       embrace(vmath), embrace("m"), embrace("b") -- for now
+  --     }))
+  --     local vrm = out_math.rm or {"lmr", embrace("m"), embrace("bx")}
+  --     local vsf = out_math.sf or {"lmss", embrace("m"), embrace("bx")}
+  --     local vtt = out_math.tt or {"lmtt", embrace("m"), embrace("bx")}
+  --     -- TODO SHAPE ???
+  --     sprint(-2, flattened({tok_mathrm_ver, embrace(dmf),
+  --       embrace(vrm[1]), vrm[2], vrm[3], embrace("n"),
+  --         embrace("it"),
+  --       tok_mathsf_ver, embrace(dmf), embrace(vsf[1]), vsf[2],
+  --         vsf[3], embrace("n"),
+  --       tok_mathtt_ver, embrace(dmf), embrace(vtt[1]), vtt[2],
+  --         vtt[3], embrace("n")})) -- for now
+  --     sprint(-2, flattened({tok_mathversion, embrace("normal@" .. dmf),
+  --       tok_renewcommand, tok_boldmath_inner, tok_group_begin,
+  --       tok_atnomath, tok_boldmath, tok_mathversion, embrace("bold@" .. dmf),
+  --       tok_group_end,
+  --       tok_renewcommand, tok_normalmath_inner, tok_group_begin,
+  --       tok_atnomath, tok_normalmath, tok_mathversion, embrace("normal@" .. dmf),
+  --       tok_group_end}))
+  --     insert(out, flattened({tok_mathversion, embrace("normal@" .. dmf),
+  --       tok_renewcommand, tok_boldmath_inner, tok_group_begin,
+  --       tok_atnomath, tok_boldmath, tok_mathversion, embrace("bold@" .. dmf),
+  --       tok_group_end,
+  --       tok_renewcommand, tok_normalmath_inner, tok_group_begin,
+  --       tok_atnomath, tok_normalmath, tok_mathversion, embrace("normal@" .. dmf),
+  --       tok_group_end}))
+  --   end
+  --   sprint(-2, tok_normalfont)
+  --   insert(out, tok_normalfont)
+  --   luafunction_to_cs(concat({"__lfc_doc_meta_fam_", dmf, ":"}),
+  --     function() return sprint(-2, flattened(out), "protected")
+  --   end)
+  -- end
 end
 -- }}}
 ---@function configure_doc_families() {{{
@@ -3059,9 +3208,11 @@ luafunction_to_cs("__lfc_parse_series:nnn",
     local nfss_doc_families, nfss_default_families = get_curr_nfss_families()
     local curr = nfss_doc_families and nfss_doc_families.curr
     curr = curr and nfss_doc_families[curr]
-    local rep = parse_nfss(weights[weight] or "m", widths[width] or "m", "m")
-    if curr then curr[series] = rep end
-    return sprint(-2, rep)
+    if curr then 
+      curr[series] = parse_nfss(weights[weight] or "m", widths[width] or "m", "m")
+    end
+    -- if curr then curr[series] = rep end
+    -- return sprint(-2, rep)
   end)
 )
 

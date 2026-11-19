@@ -1,4 +1,4 @@
-%% $Id: test-series-keys.lvt 12195 2026-11-07 19:09:23Z cfrees $
+%% $Id: test-series-keys.lvt 12211 2026-11-19 22:48:26Z cfrees $
 \input lfc-support.tex
 \documentclass{article}
 \parindent=0pt
@@ -21,17 +21,17 @@
 }
 \begin{document}
 \TEST{series switched: texgyrepagella}{%
-  \TeX-Gyre Pagella:  normal \textbf{bold}
+  \TeX-Gyre Pagella: \mdseries normal \textbf{bold}
 }
 
 \TEST{series switched: texgyreheros}{%
   \sffamily
-  \TeX-Gyre Heros:  normal \textbf{bold}
+  \TeX-Gyre Heros: \mdseries  normal \textbf{bold}
 }
 
 \TEST{series NOT switched: texgyrecursor}{%
   \ttfamily
-  \TeX-Gyre Cursor: normal \textbf{bold}
+  \TeX-Gyre Cursor: \mdseries normal \textbf{bold}
 }
 \end{document}
 

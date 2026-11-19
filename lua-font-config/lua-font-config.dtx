@@ -34,7 +34,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12210 2026-11-19 00:37:18Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12211 2026-11-19 22:48:26Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -1183,7 +1183,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12210 2026-11-19 00:37:18Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12211 2026-11-19 22:48:26Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -1340,28 +1340,22 @@
   \keys_define:nn {lfc/#1} {
     name        .code:n   = { \use:c {__@@_set_#1:n} {##1} },
     bfseries    .code:n   = {
-      \tl_set:cn {bfseries@#1} {##1}
       \__@@_parse_series:nn {bfseries} {##1}
     },
     bold        .code:n   = {
       \str_set_eq:NN \l_@@_weight_str \c_empty_str
       \str_set_eq:NN \l_@@_width_str \c_empty_str
       \keys_set:nn {lfc/#1/series} {##1}
-      \tl_set:ce {bfseries@#1} {
-        \__@@_parse_series:nVV {bfseries} \l_@@_weight_str \l_@@_width_str
-      }
+      \__@@_parse_series:nVV {bfseries} \l_@@_weight_str \l_@@_width_str
     },
     mdseries    .code:n   = {
-      \tl_set:cn {mdseries@#1} {##1}
       \__@@_parse_series:nn {mdseries} {##1}
     },
     normal      .code:n   = {
       \str_set_eq:NN \l_@@_weight_str \c_empty_str
       \str_set_eq:NN \l_@@_width_str \c_empty_str
       \keys_set:nn {lfc/#1/series} {##1}
-      \tl_set:ce {mdseries@#1} {
-        \__@@_parse_series:nVV {mdseries} \l_@@_weight_str \l_@@_width_str
-      }
+      \__@@_parse_series:nVV {mdseries} \l_@@_weight_str \l_@@_width_str
     },
     series / weight .str_set:N = \l_@@_weight_str,
     series / width  .str_set:N = \l_@@_width_str,
@@ -1957,7 +1951,7 @@
 %     But maybe not \dots.
 % \end{description}
 %    \begin{macrocode}
-\ProvidesPackageSVN[\filebase-ui1.sty]{$Id: lua-font-config.dtx 12210 2026-11-19 00:37:18Z cfrees $}[v0.2 \revinfo][\filebase-ui1: UI 1]
+\ProvidesPackageSVN[\filebase-ui1.sty]{$Id: lua-font-config.dtx 12211 2026-11-19 22:48:26Z cfrees $}[v0.2 \revinfo][\filebase-ui1: UI 1]
 \DefineFileInfoSVN[lfcuii]
 %    \begin{macrocode}
 \ExplSyntaxOn
@@ -2304,7 +2298,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-fea <<<
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12210 2026-11-19 00:37:18Z cfrees $
+%% $Id: lua-font-config.dtx 12211 2026-11-19 22:48:26Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -2364,7 +2358,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-features <<<
 %<*ee-features>
-%% $Id: lua-font-config.dtx 12210 2026-11-19 00:37:18Z cfrees $
+%% $Id: lua-font-config.dtx 12211 2026-11-19 22:48:26Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
