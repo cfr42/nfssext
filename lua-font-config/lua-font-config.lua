@@ -1,9 +1,9 @@
--- $Id: lua-font-config.lua 12211 2026-11-19 22:48:26Z cfrees $
+-- $Id: lua-font-config.lua 12213 2026-11-20 16:03:57Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 do
   local name, rev, date = string.match(
-    "$Id: lua-font-config.lua 12211 2026-11-19 22:48:26Z cfrees $", 
+    "$Id: lua-font-config.lua 12213 2026-11-20 16:03:57Z cfrees $", 
     "Id: ([a-z][a-z-]*)%.lua (%d%d*) (%d%d%d%d%-%d%d%-%d%d) ")
   luatexbase.provides_module({
     name      = name,
@@ -1484,7 +1484,7 @@ local function parse_features(t_fea,fea_type)
       else
         t_fea[key] = nil
         msg(concat({"Unknown key \'", key, "\' in ", fea_type or "features",
-          ": ignoring"}))
+          ": ignoring"}), "warn")
       end
     end
   end
