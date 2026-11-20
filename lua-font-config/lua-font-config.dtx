@@ -34,7 +34,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12211 2026-11-19 22:48:26Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12212 2026-11-20 11:16:52Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -1183,7 +1183,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12211 2026-11-19 22:48:26Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12212 2026-11-20 11:16:52Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -1279,15 +1279,17 @@
 % %^^A Switch back now we're done with message setup.
 % \let\MakePrivateLetters\MyMakePrivateLetters
 % 
-% \begin{variable}{\l_@@_features_seq,\l_@@_scope_seq,\l_@@_do_bool,\l_@@_tmpa_tl,\l_@@_tmpb_tl,\l_@@_tmpc_tl,\l_@@_tmpa_str,\l_@@_scope_str,\c_@@_scope_default_str,\g_@@_lum_done_bool}
+% \begin{variable}{\l_@@_features_seq,\l_@@_scope_seq,\l_@@_do_bool,\l_@@_tmpa_tl,\l_@@_tmpb_tl,\l_@@_tmpc_tl,\l_@@_tmpa_str,\l_@@_scope_str,\c_@@_scope_default_str,\g_@@_lum_done_bool,\l_@@_tmpa_bool}
 %   Custom ephemeral variables, named variables and constants.
 %   \changes{v0.2}{2026-10-29}{Added \cs{l_@@_features_seq}, \cs{l_@@_tmpb_tl}.}
 %   \changes{v0.0}{2026-11-05}{Added temporary string, tl and \cs{l_@@_do_bool}, \cs{l_@@_scope_str}, \cs{l_@@_scope_seq}, \cs{c_@@_scope_default_str}.}
 %   \changes{v0.0}{2026-11-17}{Added \cs{g_@@_lum_done_bool}.}
+%   \changes{v0.0}{2026-11-20}{Added \cs{g_@@_tmpa_bool}.}
 %    \begin{macrocode}
 \bool_new:N \l_@@_do_bool
 \bool_new:N \g_@@_lum_done_bool
 \bool_gset_false:N \g_@@_lum_done_bool
+\bool_new:N \l_@@_tmp_bool
 \seq_new:N \l_@@_features_seq
 \seq_new:N \l_@@_scope_seq
 \str_new:N \l_@@_scope_str
@@ -1924,7 +1926,46 @@
 % Is there a (similarly simple) way to do this in \pkg{expl3}?
 % Well, I just learnt this from \pkg{babel} \dots, so maybe I'll find it in another few decades or so.
 %    \begin{macrocode}
-\cs_set_eq:NN \@preamblecmds \c_empty_tl
+\tl_set:Nn \l_@@_tmpb_tl {
+  \do
+  \alpha@elt
+  \alpha@list
+  \cdp@elt
+  \cdp@list
+  \DeclareMathVersion
+  \DeclareMathAlphabet
+  \DeclareSymbolFont
+  \dorestore@version
+  \get@cdp
+  \group@elt
+  \group@list
+  \init@restore@version
+  \new@mathalphabet
+  \new@mathgroup
+  \new@mathversion
+  \new@symbolfont
+  \restore@mathversion
+  \SetMathAlphabet
+  \SetMathAlphabet@
+  \SetSymbolFont@
+  \SetSymbolFont
+  \version@elt
+  \version@list
+}
+\tl_clear:N \l_@@_tmpa_tl
+\tl_map_inline:Nn \@preamblecmds {
+  \bool_set_true:N \l_@@_tmpa_bool
+  \tl_map_inline:Nn \l_@@_tmpb_tl {
+    \tl_if_eq:nnT {##1} {#1} {
+      \bool_set_false:N \l_@@_tmpa_bool
+      \tl_map_break:
+    }
+  }
+  \bool_if:NT \l_@@_tmpa_bool {
+    \tl_put_right:Nn \l_@@_tmpa_tl {\do #1}
+  }
+}
+\tl_set_eq:NN \@preamblecmds \l_@@_tmpa_tl
 \@onlypreamble \newfontset
 \@onlypreamble \fontconfig
 \ExplSyntaxOff
@@ -1951,7 +1992,7 @@
 %     But maybe not \dots.
 % \end{description}
 %    \begin{macrocode}
-\ProvidesPackageSVN[\filebase-ui1.sty]{$Id: lua-font-config.dtx 12211 2026-11-19 22:48:26Z cfrees $}[v0.2 \revinfo][\filebase-ui1: UI 1]
+\ProvidesPackageSVN[\filebase-ui1.sty]{$Id: lua-font-config.dtx 12212 2026-11-20 11:16:52Z cfrees $}[v0.2 \revinfo][\filebase-ui1: UI 1]
 \DefineFileInfoSVN[lfcuii]
 %    \begin{macrocode}
 \ExplSyntaxOn
@@ -2298,7 +2339,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-fea <<<
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12211 2026-11-19 22:48:26Z cfrees $
+%% $Id: lua-font-config.dtx 12212 2026-11-20 11:16:52Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -2358,7 +2399,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-features <<<
 %<*ee-features>
-%% $Id: lua-font-config.dtx 12211 2026-11-19 22:48:26Z cfrees $
+%% $Id: lua-font-config.dtx 12212 2026-11-20 11:16:52Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}

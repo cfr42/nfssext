@@ -1,10 +1,10 @@
-%% $Id: test-features5.lvt 12193 2026-11-05 04:05:04Z cfrees $
+%% $Id: test-features5.lvt 12212 2026-11-20 11:16:52Z cfrees $
 \input lfc-support.tex
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
 \START
-\TEST{features: unknown}{%
+\TEST{features: on defn: unknown}{%
   \fontconfig{%
     family = {%
       name = imfellenglish,
@@ -21,6 +21,12 @@
       },
     },
   }%
+}
+\OMIT
+\begin{document}
+\TIMO
+\TEST{features: on use: unknown}{%
+  \imfellbf
 }
 \END
 
