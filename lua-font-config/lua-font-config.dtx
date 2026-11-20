@@ -34,7 +34,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12217 2026-11-20 22:20:21Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12218 2026-11-20 22:46:43Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -732,7 +732,7 @@
 %   extralight  & extracondensed  &   && \\
 %   ultralight  & ultracondensed  &   && \\
 %   \bottomrule
-% \end{tabular}
+% \end{tabular}\par
 % Note that \texttt{medium} is \emph{not} a synonym for \texttt{regular}.
 % If you aren't sure which you need, try \texttt{regular}.
 %
@@ -764,7 +764,7 @@
 % Consider these features ones provided for outrageous typographic expressions, typesetting shock tactics, font-based rebellions and the like.
 %
 % \subsubsection{Default text family keys}\label{subsubsec:keys-text-def}
-% These keys are accepted by \texttt{rm}, \texttt{sf} and \texttt{tt} i.e.~when specifying the default text families for the document.
+% These keys are accepted by \texttt{rm}, \texttt{sf} and \texttt{tt} i.e.~when specifying the default text families for the document or ‘font set’.
 %
 % These first four keys all do the same thing, so you may use your preferred syntactic sweetener. 
 %
@@ -774,7 +774,10 @@
 %
 % For example, if you are configuring the main document family with \texttt{rm}, should that family also be used for operators, \cs{mathrm} etc.?
 %
-% The default is equivalent to \texttt{math = true}.
+% The default is equivalent to \texttt{math = true}\footnote{%
+%   If configuring a non-default font set, the default is \texttt{false} unless the set explicitly specifies a Unicode maths font with the \texttt{math} key, in which case, it defaults to \texttt{true}.
+%   \emph{It is strongly recommended to give the desired value of this option explicitly for non-default font sets, regardless of whether that value happens to coincide with the current default, which may change without notice.}%
+% }.
 %
 % \DescribeKey{nomath}
 % \DescribeKey{nomaths}
@@ -1033,6 +1036,20 @@
 %
 % \pkg{lua-font-config} is definitely compatible with \pkg{lua-unicode-math} and will load it if the top-level \texttt{math} key is used for Unicode maths or a non-default ‘font set’ is created.
 % Note that if you do use the \texttt{math} key and in any case for additional font sets, none of the \texttt{.fd} or font-specific \texttt{.sty} files will be used; instead, the maths fonts will be configured using the same process as the text fonts and results cached in the same way.
+% If you would prefer to use the \texttt{.fd} files from \pkg{lua-unicode-math}, but don't want to load one of the font-specific packages it provides, you can do so by using the correct family name in \cs{fontconfig}.
+% For example, the following should use \pkg{lua-unicode-math}'s font definitions from \texttt{tueuler-math.fd}, \texttt{tueuler-math-sf.fd} and \texttt{tueuler-math-ssf.fd} for Euler Math, without loading \pkg{lum-euler}.
+% \iffalse
+%<*verb>
+% \fi
+\begin{minted}{latex}
+\fontconfig{%
+  math = euler-math,
+}
+\end{minted}
+% \iffalse
+%</verb>
+% \fi
+% In general, \pkg{lua-font-config} will read existing font definitions, where these are available, but this requires an exact name match.
 %
 % \subsection{\pkg{unicode-math}}\label{subsec:compat-um}
 %
@@ -1217,7 +1234,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12217 2026-11-20 22:20:21Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12218 2026-11-20 22:46:43Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -2039,7 +2056,7 @@
 %     But maybe not \dots.
 % \end{description}
 %    \begin{macrocode}
-\ProvidesPackageSVN[\filebase-ui1.sty]{$Id: lua-font-config.dtx 12217 2026-11-20 22:20:21Z cfrees $}[v0.2 \revinfo][\filebase-ui1: UI 1]
+\ProvidesPackageSVN[\filebase-ui1.sty]{$Id: lua-font-config.dtx 12218 2026-11-20 22:46:43Z cfrees $}[v0.2 \revinfo][\filebase-ui1: UI 1]
 \DefineFileInfoSVN[lfcuii]
 %    \begin{macrocode}
 \ExplSyntaxOn
@@ -2386,7 +2403,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-fea <<<
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12217 2026-11-20 22:20:21Z cfrees $
+%% $Id: lua-font-config.dtx 12218 2026-11-20 22:46:43Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -2446,7 +2463,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-features <<<
 %<*ee-features>
-%% $Id: lua-font-config.dtx 12217 2026-11-20 22:20:21Z cfrees $
+%% $Id: lua-font-config.dtx 12218 2026-11-20 22:46:43Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
