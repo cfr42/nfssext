@@ -34,7 +34,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12215 2026-11-20 21:08:52Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12216 2026-11-20 21:14:21Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -1191,7 +1191,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12215 2026-11-20 21:08:52Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12216 2026-11-20 21:14:21Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -1290,7 +1290,7 @@
 % \let\MakePrivateLetters\MyMakePrivateLetters
 % ^^A >>>
 % 
-% \begin{variable}{\l_@@_features_seq,\l_@@_scope_seq,\l_@@_do_bool,\l_@@_tmpa_tl,\l_@@_tmpb_tl,\l_@@_tmpa_str,\l_@@_scope_str,\c_@@_scope_default_str,\g_@@_lum_done_bool,\l_@@_tmpa_bool}% <<<
+% \begin{variable}{\l_@@_features_seq,\l_@@_scope_seq,\l_@@_do_bool,\l_@@_tmpa_tl,\l_@@_tmpb_tl,\l_@@_tmpa_str,\l_@@_scope_str,\c_@@_scope_default_str,\g_@@_lum_done_bool,\l_@@_tmpa_bool}%% ^^A <<<
 %   Custom ephemeral variables, named variables and constants.
 %   \changes{v0.2}{2026-10-29}{Added \cs{l_@@_features_seq}, \cs{l_@@_tmpb_tl}.}
 %   \changes{v0.0}{2026-11-05}{Added temporary string, tl and \cs{l_@@_do_bool}, \cs{l_@@_scope_str}, \cs{l_@@_scope_seq}, \cs{c_@@_scope_default_str}.}
@@ -1309,8 +1309,8 @@
 \tl_new:N \l_@@_tmpa_tl
 \tl_new:N \l_@@_tmpb_tl
 %    \end{macrocode}
-% \end{variable}% >>>
-% \begin{keyname}{rm,sf,tt}% <<<
+% \end{variable}%% ^^A >>>
+% \begin{keyname}{rm,sf,tt}%% ^^A <<<
 %   Top-level keys for default text families.
 %    \begin{macrocode}
 \clist_map_inline:nn {rm, sf, tt} {
@@ -1327,8 +1327,8 @@
     #1 .usage:n           = preamble,
   }
 %    \end{macrocode}
-% \end{keyname}% >>>
-% \begin{keyname}{.../name,.../bfseries,.../bold,.../mdseries,.../normal,.../fakebold,.../fakeoblique,.../fea,.../force,.../scale,.../scoped,.../maths,.../math,.../nomaths,.../nomath,.../hyphenchar}% <<<
+% \end{keyname}%% ^^A >>>
+% \begin{keyname}{.../name,.../bfseries,.../bold,.../mdseries,.../normal,.../fakebold,.../fakeoblique,.../fea,.../force,.../scale,.../scoped,.../maths,.../math,.../nomaths,.../nomath,.../hyphenchar}%% ^^A <<<
 %   Configure keys for default text families.
 %   Most of these just forward their values to \texttt{lfc/fam}.
 %   \changes{v0.0}{2026-11-07}{Add keys to configure bold and regular series for default families and to enable use of fake bold and oblique.}
@@ -1390,9 +1390,9 @@
   }
 }
 %    \end{macrocode}
-% \end{keyname}% >>>
-% \begin{keyname}{debug,math}% <<<
-% \begin{keyname}{family}% <<<
+% \end{keyname}%% ^^A >>>
+% \begin{keyname}{debug,math}%% ^^A <<<
+% \begin{keyname}{family}%% ^^A <<<
 %   Top-level keys for additional families, Unicode maths and debugging.
 %   \changes{v0.2}{2026-10-29}{Adjusted to support addition of \texttt{features} interface.}
 %    \begin{macrocode}
@@ -1435,14 +1435,14 @@
   math    .usage:n          = preamble,
 }
 %    \end{macrocode}
-% \end{keyname}% >>>
-% \end{keyname}% >>>
-% \begin{keyname}{fam}% <<<
+% \end{keyname}%% ^^A >>>
+% \end{keyname}%% ^^A >>>
+% \begin{keyname}{fam}%% ^^A <<<
 %   Configure keys for families.
 %   \changes{v0.2}{2026-10-29}{Add \texttt{fea} user-interface wrapper: \texttt{features} provides a key-value interface for configuration.}
 %   \changes{v0.0}{2026-11-06}{Add \texttt{scoped} key: low-level interface to configure font features selectively. 
 %     This is intended to complement the \texttt{fea} key and similarly supports expert/advanced usage, prioritising performance with few checks and a relatively low-level interface.}
-% \begin{keyname}{fam/name,fam/fakebold,fam/fakeoblique,fam/fea,fam/features,fam/force,fam/hyphenchar,fam/scale,fam/scoped}% <<<
+% \begin{keyname}{fam/name,fam/fakebold,fam/fakeoblique,fam/fea,fam/features,fam/force,fam/hyphenchar,fam/scale,fam/scoped}%% ^^A <<<
 %   Configure keys for families.
 %   \changes{v0.0}{2026-11-07}{Add \texttt{scoped}, \texttt{fakebold}, \texttt{fakeoblique}.}
 %   \changes{v0.0}{2026-11-10}{Add \texttt{hyphenchar}.}
@@ -1529,9 +1529,9 @@
   scoped        .groups:n           = config,
 }
 %    \end{macrocode}
-% \end{keyname}% >>>
-% \end{keyname}% >>>
-% \begin{keyname}{math/name,math/force,math/scale}% <<<
+% \end{keyname}%% ^^A >>>
+% \end{keyname}%% ^^A >>>
+% \begin{keyname}{math/name,math/force,math/scale}%% ^^A <<<
 %   Configure keys for Unicode maths.
 %    \begin{macrocode}
 \IfPackageLoadedF {unicode-math} {
@@ -1555,8 +1555,8 @@
   }
 }
 %    \end{macrocode}
-% \end{keyname}% >>>
-% \begin{keyname}{features}% <<<
+% \end{keyname}%% ^^A >>>
+% \begin{keyname}{features}%% ^^A <<<
 % \changes{v0.2}{2026-10-29}{Initial \texttt{features} keys: \texttt{alternates}, \texttt{embolden}, \texttt{figures}, \texttt{forms}, \texttt{language}, \texttt{ligatures}, \texttt{node}, \texttt{script}, \texttt{spacing}.}
 % \changes{v0.0}{2026-11-05}{Add \texttt{scope} key.
 %   This provides a more user-friendly wrapper around the \texttt{scoped} key.}
@@ -1570,7 +1570,7 @@
 %   features/scope,
 %   features/script,
 %   features/spacing,
-% }% <<<
+% }%% ^^A <<<
 %   Trying to be a more user-friendly wrapper around \texttt{fam/fea}.
 %    \begin{macrocode}
 \keys_define:nn {lfc/features} {
@@ -1687,9 +1687,9 @@
 %    \end{macrocode}
 %% ^^A ital?
 %% ^^A ordn? ornm? sinf? subs? sups?
-% \end{keyname}% >>>
-% \end{keyname}% >>>
-% \begin{keyname}{debug/state,debug/categories}% <<<
+% \end{keyname}%% ^^A >>>
+% \end{keyname}%% ^^A >>>
+% \begin{keyname}{debug/state,debug/categories}%% ^^A <<<
 %   Configure keys for debugging.
 %    \begin{macrocode}
 \keys_define:nn {lfc/debug} {
@@ -1704,8 +1704,8 @@
   state       .groups:n           = toggle,
 }
 %    \end{macrocode}
-% \end{keyname}% >>>
-% \begin{function}{\_@@_font_config:nn}% <<<
+% \end{keyname}%% ^^A >>>
+% \begin{function}{\_@@_font_config:nn}%% ^^A <<<
 %   \changes{v0.0}{2026-11-13}{New internal function to support multiple configurations.}
 %   The same internal function supports standard and multiple configuration macros.
 %    \begin{macrocode}
@@ -1718,8 +1718,8 @@
   }
 }
 %    \end{macrocode}
-% \end{function}% >>>
-% \begin{macro}{\fontconfig}% <<<
+% \end{function}%% ^^A >>>
+% \begin{macro}{\fontconfig}%% ^^A <<<
 %   The main configuration function and main public macro.
 %   \changes{v0.2}{2026-10-30}{Forbid \cs{par} in input.}
 %   \changes{v0.0}{2026-11-13}{Optional argument to set a different ‘meta-family’.}
@@ -1728,8 +1728,8 @@
   \_@@_font_config:nn {#1} {#2}
 }
 %    \end{macrocode}
-% \end{macro}% >>>
-% \begin{macro}{\newfontset,\usefontset}% <<<
+% \end{macro}%% ^^A >>>
+% \begin{macro}{\newfontset,\usefontset}%% ^^A <<<
 %   \changes{v0.0}{2026-11-13}{Two new macros to define and switch ‘meta-families’ i.e.~between sets of fonts.}
 %   \cs{usefontset} is a simple wrapper around the Lua functions.
 %    \begin{macrocode}
@@ -1762,8 +1762,8 @@
   }
 }
 %    \end{macrocode}
-% \end{macro}% >>>
-% \begin{macro}{\normalmath}% <<<
+% \end{macro}%% ^^A >>>
+% \begin{macro}{\normalmath}%% ^^A <<<
 %   The antithesis of \cs{boldmath}.
 %    \begin{macrocode}
 \cs_new:Npe \normalmath {
@@ -1773,10 +1773,10 @@
   \@nomath\normalmath \mathversion {normal}
 }
 %    \end{macrocode}
-% \end{macro}% >>>
+% \end{macro}%% ^^A >>>
 % \begin{function}{\_@@_set_mathrm:n,\_@@_set_mathsf:n,\_@@_set_mathtt:n,
 %   \_@@_set_mathrm:nnnnnn,\_@@_set_mathsf:nnnnn,\_@@_set_mathtt:nnnnn,
-%   \_@@_set_mathrm:nnVVVV,\_@@_set_mathsf:nnVVV,\_@@_set_mathtt:nnVVV}% <<<
+%   \_@@_set_mathrm:nnVVVV,\_@@_set_mathsf:nnVVV,\_@@_set_mathtt:nnVVV}%% ^^A <<<
 % \changes{v0.0}{2026-11-16}{Extended to support multiple doc meta families aka font sets.}
 %   These are set up slightly differently for \texttt{default} and non-default font sets.
 %    \begin{macrocode}
@@ -1833,8 +1833,8 @@
   \_@@_set_mathtt:nnVVV  {} {#1} \mdseries@tt \bfseries@tt \shapedefault
 }
 %    \end{macrocode}
-% \end{function}% >>>
-% \begin{function}{\_@@_declare_lum_symbol_fonts:nn,\_@@_set_lum_symbol_fonts:nnn}% <<<
+% \end{function}%% ^^A >>>
+% \begin{function}{\_@@_declare_lum_symbol_fonts:nn,\_@@_set_lum_symbol_fonts:nnn}%% ^^A <<<
 %   Maths setup functions.
 %   \changes{v0.0}{2026-22-20}{Accommodate multiple font sets.}
 %    \begin{macrocode}
@@ -1852,23 +1852,23 @@
   }
 }
 %    \end{macrocode}
-% \end{function}% >>>
-% \begin{function}{\_@@_second_of_two:w}% <<<
+% \end{function}%% ^^A >>>
+% \begin{function}{\_@@_second_of_two:w}%% ^^A <<<
 %   Auxiliary because \TeX\ still makes more sense to me here.
 %   I know I'm meant to use something like \verb|\use_romannumeral_delimited_by_something:w| but figuring out which \dots.
 %   (I can just search for the translation of ‘firstof’, but there isn't one to find for ‘secondof’ \dots.)
 %    \begin{macrocode}
 \cs_new_nopar:Npn \_@@_second_of_two:w #1#2 \q_stop {#2}
 %    \end{macrocode}
-% \end{function}% >>>
-% \begin{function}{\_@@_no_hyphenchar:}% <<<
+% \end{function}%% ^^A >>>
+% \begin{function}{\_@@_no_hyphenchar:}%% ^^A <<<
 %   Zap hyphen character.
 %   A more general approach should be used here.
 %   I don't \emph{think} this should be protected?
 %    \begin{macrocode}
 \cs_new_nopar:Npn \_@@_no_hyphenchar: {\hyphenchar\font\m@ne}
 %    \end{macrocode}
-% \end{function}% >>>
+% \end{function}%% ^^A >>>
 % Compatibility code for \pkg{ltx-talk}.
 %
 % This should be equivalent to the default setup, modulo any differences between emulating the package and using \cs{setmathfont} for \pkg{lua-unicode-math}.
@@ -1905,7 +1905,7 @@
 %   \__@@_debug_set_cats_scanner:n,
 %   \__@@_debug_set_false:,
 %   \__@@_debug_set_true:%
-% }% <<<
+% }%% ^^A <<<
 %   \changes{v0.0}{2026-11-04}{\cs{_@@_set_fam_features:nnn} replaces \cs{_@@_set_fam_features:nn}. Added \cs{_@@_set_fam_fea_scoped:nn}, \cs{_@@_parse_spec:nn}, , \cs{_@@_parse_series:nn}, \cs{_@@_parse_series:nnn}.}
 %   \changes{v0.0}{2026-11-13}{Add \cs{_@@_set_doc_meta_fam:n}.}
 %   The Lua modules do the actual work.
@@ -1915,12 +1915,12 @@
 \cs_generate_variant:Nn \__@@_parse_spec:nn {nV}
 \cs_generate_variant:Nn \__@@_parse_series:nnn {nVV}
 %    \end{macrocode}
-% \end{function}% >>>
+% \end{function}%% ^^A >>>
 % \usesafecs
 % Meta-families get functios such as \cs{_@@_doc_meta_fam_default:} where \texttt{default} is either literal or the name of a configured meta-family.
 % \resetcs
 %
-% \begin{macro}{\@preamblecmds}% <<<
+% \begin{macro}{\@preamblecmds}%% ^^A <<<
 %   The following removes various commands from \cs{@preamblecmds}, allowing them to be used in the body of the document and not only in the preamble.
 %
 %   This approach is based on David Carlisle's suggestions at \url{https://chat.stackexchange.com/transcript/message/69314513#69314513}.
@@ -1973,7 +1973,7 @@
 }
 \tl_set_eq:NN \@preamblecmds \l_@@_tmpa_tl
 %    \end{macrocode}
-% \end{macro}% >>>
+% \end{macro}%% ^^A >>>
 % We are hypocrites: we help make \LaTeX{} preamble-only macros available in the document body, but we disallow use of our own there.
 % This restriction is probably not necessary, but it is imposed pending the discovery of some compelling use-case requiring use in the document body.
 % 
@@ -1985,13 +1985,13 @@
 \@onlypreamble \newfontset
 \@onlypreamble \fontconfig
 %    \end{macrocode}
-% \begin{macro}{\UTFencname}% <<<
+% \begin{macro}{\UTFencname}%% ^^A <<<
 %   Only if it doesn't exist.
 %   I'm not sure whether this is actually useful (yet?) \dots.
 %    \begin{macrocode}
 \ifcsname UTFencname\endcsname\relax\else\def\UTFencname{TU}\fi
 %    \end{macrocode}
-% \end{macro}% >>>
+% \end{macro}%% ^^A >>>
 %</sty>
 %% ^^A >>>
 %
@@ -2013,7 +2013,7 @@
 %     But maybe not \dots.
 % \end{description}
 %    \begin{macrocode}
-\ProvidesPackageSVN[\filebase-ui1.sty]{$Id: lua-font-config.dtx 12215 2026-11-20 21:08:52Z cfrees $}[v0.2 \revinfo][\filebase-ui1: UI 1]
+\ProvidesPackageSVN[\filebase-ui1.sty]{$Id: lua-font-config.dtx 12216 2026-11-20 21:14:21Z cfrees $}[v0.2 \revinfo][\filebase-ui1: UI 1]
 \DefineFileInfoSVN[lfcuii]
 %    \begin{macrocode}
 \ExplSyntaxOn
@@ -2360,7 +2360,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-fea <<<
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12215 2026-11-20 21:08:52Z cfrees $
+%% $Id: lua-font-config.dtx 12216 2026-11-20 21:14:21Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -2420,7 +2420,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-features <<<
 %<*ee-features>
-%% $Id: lua-font-config.dtx 12215 2026-11-20 21:08:52Z cfrees $
+%% $Id: lua-font-config.dtx 12216 2026-11-20 21:14:21Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
