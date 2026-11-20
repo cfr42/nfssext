@@ -34,7 +34,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12216 2026-11-20 21:14:21Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12217 2026-11-20 22:20:21Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -265,10 +265,10 @@
 %
 %   The package introduces the concept of \emph{font sets} (see \cref{subsec:font-sets}).
 %   The idea is to allow authors to ‘switch out’ one font configuration for another at any point in the document.
-%   Font sets may include specifications for one or more of the standard three text families and/or a Unicode math font.
+%   Font sets may include specifications for one or more of the standard three text families and/or a Unicode maths font.
 %
 %   The package should be compatible with \pkg{fontspec} (\cref{subsec:compat-fontspec}), though this is not currently tested.
-%   However, while basic usage is compatible with \pkg{unicode-math} (\cref{subsec:compat-um}), maths font configuration and support for multiple font sets require \pkg{lua-unicode-math} (\cref{subsec:compat-lum}).
+%   Basic usage is also compatible with \pkg{unicode-math} (\cref{subsec:compat-um}), but maths font configuration and support for multiple font sets require \pkg{lua-unicode-math} (\cref{subsec:compat-lum}).
 %
 %   \emph{This package is experimental.}
 % \end{abstract}
@@ -377,9 +377,32 @@
 % \iffalse
 %</verb>
 % \fi
-% With this setup, \cs{usefontset}\marg{alts} would switch to the second configuration and \cs{usefontset}\marg{default} would switch back to the original setup.
+% With this setup, 
+% \iffalse
+%<*verb>
+% \fi
+\begin{minted}{latex}
+\usefontset{alts}
+\end{minted}
+% \iffalse
+%</verb>
+% \fi
+% would switch to the second configuration and
+% \iffalse
+%<*verb>
+% \fi
+\begin{minted}{latex}
+\usefontset{default}
+\end{minted}
+% \iffalse
+%</verb>
+% \fi
+% would switch back to the original setup.
 % \cs{boldmath} may be used as usual while a font set is active; if a bold version is configured for the set, it will be used as usual\footnote{%
-%   But note that \verb|\mathversion{bold}| will switch to the default set's bold, which is probably not what you want.%
+%   In contrast, note that \verb|\mathversion{bold}| will switch to the default set's bold, which is probably not what you want.%
+% }.
+% Similarly, \cs{normalmath} switches to the ‘normal’ version of the current font set\footnote{%
+%   Again, \verb|\mathversion{normal}| will switch to the \texttt{normal} version of the default set, which is probably not what you want if a different font set is enabled.%
 % }.
 %
 % There are currently three configuration commands: \cs{fontconfig} is the main command and the only one required in most documents.
@@ -578,10 +601,13 @@
 % \end{tabularx}\par
 % and/or one or more of the following key-value pairs\par
 % \begin{tabularx}\linewidth{>{\ttfamily}l@{\,\texttt{=}\,}lX}
+%   \toprule
+%   \textsf{key} & \textsf{Value} & \textsf{Effect}  \\\midrule
 %   annotation & \meta{integer} & enable ‘annotation’ form \meta{integer} \\
 %   charactervariant & \meta{integer i}:\meta{integer j} & enable the \emph{i}th character mapping, selecting the \emph{j}th variant \\
 %   stylistic & \meta{integer} & enable ‘stylistic’ form \meta{integer} \\
 %   sset & \meta{integer} & enable the set of ‘stylistic’ forms \meta{integer} \\
+%   \bottomrule
 % \end{tabularx}
 %
 % \DescribeKey{embolden}\val{factor}\par
@@ -593,12 +619,12 @@
 % \begin{tabularx}\linewidth{>{\ttfamily}lX}
 %   \toprule
 %   \textsf{Valueless key} & \textsf{Effect}  \\\midrule
-%   \bottomrule
 %   lining	                  & use lining digits \\
 %   osf\textbar oldstyle      & use oldstyle / hanging digits \\
 %   prop\textbar proportional & use proportional digits \\
 %   tab\textbar tabular       & use tabular digits \\
 %   zero	                    & use the slashed zero \\
+%   \bottomrule
 % \end{tabularx}
 %
 % \DescribeKey{forms}\mval{key list}\par
@@ -1191,7 +1217,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12216 2026-11-20 21:14:21Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12217 2026-11-20 22:20:21Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -2013,7 +2039,7 @@
 %     But maybe not \dots.
 % \end{description}
 %    \begin{macrocode}
-\ProvidesPackageSVN[\filebase-ui1.sty]{$Id: lua-font-config.dtx 12216 2026-11-20 21:14:21Z cfrees $}[v0.2 \revinfo][\filebase-ui1: UI 1]
+\ProvidesPackageSVN[\filebase-ui1.sty]{$Id: lua-font-config.dtx 12217 2026-11-20 22:20:21Z cfrees $}[v0.2 \revinfo][\filebase-ui1: UI 1]
 \DefineFileInfoSVN[lfcuii]
 %    \begin{macrocode}
 \ExplSyntaxOn
@@ -2360,7 +2386,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-fea <<<
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12216 2026-11-20 21:14:21Z cfrees $
+%% $Id: lua-font-config.dtx 12217 2026-11-20 22:20:21Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -2420,7 +2446,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-features <<<
 %<*ee-features>
-%% $Id: lua-font-config.dtx 12216 2026-11-20 21:14:21Z cfrees $
+%% $Id: lua-font-config.dtx 12217 2026-11-20 22:20:21Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
