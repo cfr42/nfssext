@@ -34,7 +34,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12224 2026-11-24 07:07:44Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12225 2026-11-24 20:29:03Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -808,8 +808,8 @@
 %
 % These first four keys all do the same thing, so you may use your preferred syntactic sweetener. 
 %
-% \DescribeKey{math}\vals{true,false}\par
-% \DescribeKey{maths}\kern0pt\par
+% \DescribeKey{math}\vals{true,false}
+% \DescribeKey{maths}\par
 % Should the current specification also be used for the corresponding text family in maths?
 %
 % For example, if you are configuring the main document family with \texttt{rm}, should that family also be used for operators, \cs{mathrm} etc.?
@@ -867,9 +867,11 @@
 % }.
 %
 % \subsubsection{Additional text family keys}\label{subsubsec:keys-text-add}
+% These keys are accepted by \texttt{family}} i.e.~when specifying additional non-default text families.
 %
 % \DescribeKey{command}|=\command|\par
 % Use \cs{command} to switch to the font family, rather than creating a command from the family name.
+% \textbf{Highly recommended.}
 % 
 % By default the command to switch to the font family depends on the discovered family name i.e.~on the result of searching the database for the specified family.
 % In many cases, this will be the value passed to the \texttt{name} key, but often it will not and sometimes this may not be the command name you want anyway.
@@ -896,7 +898,7 @@
 %
 % \subsection{Font sets}\label{subsec:font-sets}% ^^A <<<
 %
-% \hypertarget{subsec:font-sets-t}{Font sets} allow multiple, independent sets of fonts to be used in a document, in such a way that standard commands such as \cs{textsf}, \cs{bfseries} and \cs{boldmath} ‘just work’.
+% \hypertarget{subsec:font-sets-t}{Font sets} allow multiple, independent sets of fonts to be used in a document, in such a way that standard commands such as \cs{textsf}, \cs{bfseries} and \cs{boldmath} ‘just work’\footnote{Thanks to David Carlisle for guidance implementing this feature.}.
 %
 %
 % \begin{description}
@@ -913,22 +915,22 @@
 %         \texttt{default} is reserved for the default font set.
 %         There are some restrictions on names, but any other combination of lowercase Latin letters is certainly safe.
 %         Names must be unique.
-%       \item A serif/roman/main family, either specified using the \texttt{rm} key (\cref{sec:pkg}) or \texttt{lmr}. 
-%       \item A sans family, either specified using the \texttt{sf} key (\cref{sec:pkg}) or \texttt{lmss}. 
-%       \item A typewriter/monowidth/mono family, either specified using the \texttt{tt} key (\cref{sec:pkg}) or \texttt{lmtt}. 
-%       \item A Unicode maths family, together with families for script and calligraphic alphabets, either specified using the \texttt{math} key (\cref{sec:pkg}) or \texttt{lmm}.
+%       \item A serif/roman/main family, either specified using the \texttt{rm} key (\cref{subsec:keys,subsec:keys-cfg}) or \texttt{lmr}. 
+%       \item A sans family, either specified using the \texttt{sf} key (\cref{subsec:keys,subsec:keys-cfg}) or \texttt{lmss}. 
+%       \item A typewriter/monowidth/mono family, either specified using the \texttt{tt} key (\cref{subsec:keys,subsec:keys-cfg}) or \texttt{lmtt}. 
+%       \item A Unicode maths family, together with families for script and calligraphic alphabets, either specified using the \texttt{math} key (\cref{subsec:keys,subsec:keys-cfg}) or \texttt{lmm}.
 %       \item Per-family weights for the default and bold series used in text (\cs{textbf} etc.). 
-%       \item \texttt{normal} and \texttt{bold} versions for mathematics, \emph{provided these are accessed using \cs{normalmath} and \cs{boldmath}}.
+%       \item \texttt{normal} and \texttt{bold} versions for mathematics, \emph{provided these exist and are accessed using \cs{normalmath} and \cs{boldmath}}.
 %     \end{itemize}
-%   \item[Purpose:]       Documents which \emph{require} multiple font configurations e.g.~multilingual documents involving different scripts, features etc., older texts with contemporary commentaries, where the primary text should reflect typesetting conventions which have since changed (long ‘s’, ‘ß’) or documents which use the same mathematical characters with differences in meaning and spacing.
+%   \item[Purpose:]       Documents which require multiple font configurations e.g.~multilingual documents involving different scripts, features etc., older texts with contemporary commentaries, where the primary text should reflect typesetting conventions which have since changed (long ‘s’, ‘ß’) or documents which use the same mathematical characters with differences in meaning and spacing.
 %     Font sets are intended to allow easy setup of, and seamless switches between, the various configurations necessary.
 % \end{description}
 %
-% \textbf{Additional\footnote{%
+% \textbf{Font sets\footnote{%
 %     Technically, \pkg{lua-font-config} always uses font sets, but most documents require only the \texttt{default} font set.
 %     In this case, \pkg{lua-unicode-math} is not required (unless the top-level \texttt{math} key is used).%
 %   } %
-% font sets require \pkg{lua-unicode-math}.}
+% require \pkg{lua-unicode-math}.}
 % The package will be automatically loaded, if necessary, or an error produced, if the incompatible \pkg{unicode-math} is already loaded.
 %
 % \subsubsection{A schematic example}\label{subsubsec:font-set-ee}
@@ -952,12 +954,12 @@
 \newfontset{setb}
 % Configure font set ‘seta’.
 \fontconfig[seta]{%
-  % Specify **at least one of rm, sf, tt, math.
+  % Specify **at least one** of rm, sf, tt, math.
   ...
 }
 % Configure font set ‘setb’.
 \fontconfig[setb]{%
-  % Specify **at least one of rm, sf, tt, math.
+  % Specify **at least one** of rm, sf, tt, math.
   ...
 }
 \end{minted}
@@ -980,7 +982,7 @@
 %<*verb>
 % \fi
 \begin{minted}{latex}
-\usefontset{seta}
+\usefontset{setb}
 \end{minted}
 % \iffalse
 %</verb>
@@ -1030,12 +1032,7 @@
 %   In fact, it is provided even if nothing is configured with \cs{fontconfig}, so that the document fonts are untouched.
 %   In that case, it just works analogously to \cs{boldmath}.%
 % }.
-% \bigskip
 %
-% Note that font sets are isolated\footnote{%
-%   I have not yet decided if this is a feature, a misfeature, a limitation or a bug.
-%   This is one of several aspects of the implementation which is strictly provisional and feedback would therefore be especially welcome.%
-% }.
 %
 %% ^^A >>>
 %
@@ -1268,7 +1265,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12224 2026-11-24 07:07:44Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12225 2026-11-24 20:29:03Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -2211,7 +2208,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-fea <<<
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12224 2026-11-24 07:07:44Z cfrees $
+%% $Id: lua-font-config.dtx 12225 2026-11-24 20:29:03Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -2271,7 +2268,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-features <<<
 %<*ee-features>
-%% $Id: lua-font-config.dtx 12224 2026-11-24 07:07:44Z cfrees $
+%% $Id: lua-font-config.dtx 12225 2026-11-24 20:29:03Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -2570,7 +2567,7 @@ Oh, sphinx of black quartz, judge my vow!
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2-#3-#4\nil{#1-#2-#3}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName-doc]{$Id: lua-font-config.dtx 12224 2026-11-24 07:07:44Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName-doc]{$Id: lua-font-config.dtx 12225 2026-11-24 20:29:03Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \AddToHook{begindocument}{\OnlyDescription\setcounter{IndexColumns}{3}}
 \input{\MyFileBaseName.dtx}
@@ -2584,7 +2581,7 @@ Oh, sphinx of black quartz, judge my vow!
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2-#3-#4\nil{#1-#2-#3}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName-code]{$Id: lua-font-config.dtx 12224 2026-11-24 07:07:44Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName-code]{$Id: lua-font-config.dtx 12225 2026-11-24 20:29:03Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \AddToHook{begindocument}{\AlsoImplementation\setcounter{IndexColumns}{2}}
 \input{\MyFileBaseName.dtx}
