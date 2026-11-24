@@ -1,4 +1,4 @@
-<!-- $Id: README.md 12178 2026-11-02 02:24:51Z cfrees $ -->
+<!-- $Id: README.md 12227 2026-11-24 21:40:46Z cfrees $ -->
 
 -------------------------------------------------
 # lua-font-config
@@ -10,31 +10,38 @@ shapes, weights, widths and features provided by many of today's fonts.
 
 Engine callbacks, LaTeX hooks and caching are used to eliminate pre-loading,
 reduce lookups and minimise pre-defining. This allows very rich font families 
-to be quicky generated, with minimal user input and zero configuration files. 
+to be quickly generated, with minimal user input and zero configuration files. 
 
-The core code consists of two Lua modules: one taken as-is from ConTeXt (MKIV)
-and one providing the LaTeX interface and data processing.
+The core code consists of two Lua modules: one taken modified from ConTeXt
+(MKIV) and one providing the LaTeX interface and data processing.
+
+Version 0.3 introduces ‘font sets’: multiple independent font configurations
+which may be enabled and disabled during typesetting. Non-default font sets are
+only configured when first used, so may be defined in the preamble with minimal
+overhead.
 
 The package is experimental and, while already usable in many cases, 
-currently(?) provides only a small part of fontspec's functionality.
+lacks some features provided by fontspec.
 
-Implemented features include:
+Currently implemented:
 - configuration of the main document font families (roman, sans, 
     typewriter); 
-- optional use of these families in maths mode;
-- creation of additional families (text mode);
-- support for Unicode maths (via lua-unicode-math).
+- use of these families in maths mode;
+- support for Unicode maths (via lua-unicode-math);
+- ‘font sets’ as described above;
+- creation of additional specialist families (text mode);
+- key-value or 'raw' features specifications for text fonts.
 
 Missing features include:
-- support for multi-lingual typesetting;
-- support for variable fonts;
+- automated support for multi-lingual typesetting;
+- UI support for variable fonts;
 - spot colours etc.;
-- a user interface beyond the rudimentary.
+- a more complete key-value interface.
 
 While I have tested the package, I can only do this on Arch Linux (locally)
 and Ubuntu (GitHub). Given how system-dependent Unicode font configuration
-is, I would particularly welcome feedback on whether and how well it works
-elsewhere.
+is, I am very grateful to all those who provided feedback on version 0.1 and
+particularly welcome feedback on whether and how well it works elsewhere.
 
 -------------------------------------------------
 ## Compatibility
@@ -42,13 +49,16 @@ elsewhere.
 
 The package requires LuaLaTeX.
 
+Font sets and Unicode maths support require lua-unicode-math, which is
+incompatible with unicode-math.
+
 -------------------------------------------------
 ## Licence
 -------------------------------------------------
 
 ### ConTeXt module
 
-The file named lfc-context-font-syn.lua is a renamed copy of
+The file named lfc-context-font-syn.lua is a modified renamed copy of
 
   filename:     context-font-syn.lua 
   author:       Hans Hagen, PRAGMA-ADE, Hasselt NL
@@ -102,8 +112,8 @@ should be filed at
 
 
 Clea F. Rees 
-Version 0.2
-2026-11-02
+Version 0.3
+2026-11-24
 
 -------------------------------------------------
 <!--

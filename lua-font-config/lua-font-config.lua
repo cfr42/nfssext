@@ -1,15 +1,15 @@
--- $Id: lua-font-config.lua 12174 2026-11-02 01:58:17Z cfrees $
+-- $Id: lua-font-config.lua 12227 2026-11-24 21:40:46Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 do
   local name, rev, date = string.match(
-    "$Id: lua-font-config.lua 12174 2026-11-02 01:58:17Z cfrees $", 
+    "$Id: lua-font-config.lua 12227 2026-11-24 21:40:46Z cfrees $", 
     "Id: ([a-z][a-z-]*)%.lua (%d%d*) (%d%d%d%d%-%d%d%-%d%d) ")
   luatexbase.provides_module({
     name      = name,
     date      = date,
     revision  = rev,
-    version   = "v0.1",
+    version   = "v0.3",
   })
 end
 -------------------------------------------------------------------------------
@@ -167,6 +167,7 @@ end
 
 local str_onesize           = "<->"
 local str_fea_default       = "mode=node;language=dflt;script=dflt;+tlig;"
+local str_fea_basic         = "mode=basic;"
 local str_fea_math_default  = "mode=basic;language=dflt;script=math;"
 local str_fea_math_sf       = "ssty=1"
 local str_fea_math_ssf      = "ssty=2"
@@ -185,20 +186,36 @@ local tok_renewcommand      = create("renewcommand")
 local tok_rmdefault         = create("rmdefault")
 local tok_sfdefault         = create("sfdefault")
 local tok_ttdefault         = create("ttdefault")
+local tok_normalfont        = create("normalfont")
+local tok_mdseries_rm       = create("mdseries@rm")
+local tok_mdseries_sf       = create("mdseries@sf")
+local tok_mdseries_tt       = create("mdseries@tt")
+local tok_bfseries_rm       = create("bfseries@rm")
+local tok_bfseries_sf       = create("bfseries@sf")
+local tok_bfseries_tt       = create("bfseries@tt")
 
 local tok_file_subs         = create("declare@file@substitution")
 local tok_hook_gput_code    = create("hook_gput_code:nnn")
 
-local tok_mathrm            = create("__lfc_set_mathrm:")
-local tok_mathsf            = create("__lfc_set_mathsf:")
-local tok_mathtt            = create("__lfc_set_mathtt:")
+local tok_mathrm            = create("__lfc_set_mathrm:n")
+local tok_mathsf            = create("__lfc_set_mathsf:n")
+local tok_mathtt            = create("__lfc_set_mathtt:n")
+local tok_mathrm_ver        = create("__lfc_set_mathrm:nnnnnn")
+local tok_mathsf_ver        = create("__lfc_set_mathsf:nnnnn")
+local tok_mathtt_ver        = create("__lfc_set_mathtt:nnnnn")
 
 local tok_declare_m_scr_map = create("DeclareMathScriptfontMapping")
 local tok_declare_lum_fnts  = create("__lfc_declare_lum_symbol_fonts:nn")
+local tok_set_lum_fnts      = create("__lfc_set_lum_symbol_fonts:nnnn")
+local tok_declaremathversion= create("DeclareMathVersion")
+local tok_mathversion       = create("mathversion")
+local tok_boldmath_inner    = create("boldmath ")
+local tok_boldmath          = create("boldmath")
+local tok_atnomath          = create("@nomath")
+local tok_normalmath_inner  = create("normalmath ")
+local tok_normalmath        = create("normalmath")
 
--- Tables
-local nfss_default_families = {}
-local nfss_doc_families     = {}
+local tok_nohyphenchar      = create("__lfc_no_hyphenchar:")
 
 -- Token lists
 local toks_empty_n          = {tok_group_begin, tok_group_end}
@@ -282,19 +299,19 @@ end
 ---@param   level     <string>        Minimum logging level for issuing message.
 ---@status  internal
 local function msg(text, level)
-  level = level or "warn"
-  level_n = msg_log_levels[level] or msg_log_levels.debug
+  level = level or "log"
+  level_n = msg_log_levels[level] or msg_log_levels.log
   if level_n > msg_log_levels[lfc_log_level] then return end
   if level ~= "debug" then
     write_nl(msg_format(text, msg_level[level]))
   elseif type(text) == "string" then
-    write_nl(concat({"[lfc] ", msg_level[level], ":\t", text, "\n"}, ""))
+    write_nl(concat({"[lfc] ", msg_level[level], ":\t", text, "\n"}))
   else
-    write_nl(concat({"[lfc] ", msg_level[level], ":\t", concat(text, ""), "\n"},
+    write_nl(concat({"[lfc] ", msg_level[level], ":\t", concat(text), "\n"},
       ""))
   end
   if level == "bug" then
-    write_nl(msg_format({"Please report to one of",
+    write_nl(msg_format({"Please report to",
       "\thttps://www.codeberg.org/cfr/nfssext/issues",
       "You can get more information using",
       "\t\\usepackage[debug]{lua-font-config}"}))
@@ -329,7 +346,7 @@ local function msg_config(log_level, cfg)
     end
   
     function msg_assert(cond, text, level) assert(cond, (type(text) == "string" 
-      and text) or concat(text, "")) end
+      and text) or concat(text)) end
 
     local cats = cfg.categories or {
       cache     = true,
@@ -499,7 +516,7 @@ local function get_font_data(fnt, force)
       local ff_ext = file.suffix(ff)
       local ff_nameonly = file.nameonly(ff)
 
-      if ff_ext and ff_nameonly then
+      if ff_ext and ff_nameonly and font_data.mappings[ff_ext][ff_nameonly] then
         fam_meta = font_data.mappings[ff_ext][ff_nameonly].familyname
         f.metadata.ext = ff_ext
       end
@@ -529,7 +546,7 @@ local function get_font_data(fnt, force)
 
   local metadata = f.metadata
 
-  local fd = concat({"tu", fam_meta, ".fd"}, "")
+  local fd = concat({"tu", fam_meta, ".fd"})
   metadata.fd = fd
   local fd_file = kpse.find_file(fd, "tex") 
   -- If an .fd for family exists, use unless force was used.
@@ -750,7 +767,7 @@ local variants = { -- {{{
 
 -------------------------------------------------------------------------------
 -- Parsers
--- parse_spec()   prepare_fake_fd() parse_fea()
+-- parse_spec() parse_nfss() prepare_fake_fd() parse_fea()
 -------------------------------------------------------------------------------
 --- {{{
 ---@function parse_spec -- {{{
@@ -767,6 +784,26 @@ local function parse_spec(kind, descriptor)
 end
 -- }}}
 
+---@function parse_nfss(nfss_rep1, nfss_rep2, nfss_default_rep) -- {{{
+---@param   nfss_rep1         nfss_weight | nfss_variant
+---@param   nfss_rep2         nfss_case   | nfss_style
+---@param   nfss_default_rep  m           | n
+local function parse_nfss(nfss_rep1, nfss_rep2, nfss_default_rep)
+  local nfss_rep
+  -- ‘m’ must not be combined, as of the 2020 changes, so ‘mb’ is
+  --    not allowed
+  -- Likewise ‘n’, but I never saw anybody combine this, so nothing broken
+  if nfss_rep1 == nfss_default_rep then
+    nfss_rep = nfss_rep2
+  elseif nfss_rep2 == nfss_default_rep then
+    nfss_rep = nfss_rep1
+  else 
+    nfss_rep = format("%s%s", nfss_rep1, nfss_rep2)
+  end
+  return nfss_rep
+end
+-- }}}
+
 ---@function prepare_fake_fd(fam, fam_data, typeset_mode, force) {{{
 ---@description Returns a table of tables
 ---@description Each table uses fam[-suffix] containing lines 
@@ -780,8 +817,8 @@ end
 local function prepare_fake_fd(fam, fam_data, typeset_mode, force) 
   force = force or false
   typeset_mode = typeset_mode or 0
-  msg(format("prepare_fake_fd params: %s, %s, %s, %s", fam, fam_data, 
-    typeset_mode, force), "info")
+  msg(concat({"Preparing fake_fd for ", fam, " (typeset_mode ", typeset_mode,
+    force and ", force)" or ")"}), "info")
 
   lfc_cache[fam] = lfc_cache[fam] or {}
 
@@ -793,9 +830,8 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
       for ind,mfam in ipairs(t) do
         t[ind] = lfc_cache[mfam].fake_fd
         if not t[ind] then 
-          msg(format("Missing defns for %s (family %s).\n\z
-            This should not really happen, but I will try to recover.",
-            mfam, fam))
+          msg(concat({"Missing defns for ", mfam, " (family ", fam, ").\n\z
+            This should not really happen, but I will try to recover."}))
           goto math_awol 
         end
       end
@@ -805,7 +841,7 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
       end
       return t[1], t[2], t[3]
     else
-      msg(format("Missing maths family for %s. Regenerating data.", fam))
+      msg(concat({"Missing maths family for ", fam, ". Regenerating data."}))
     end
   end
   :: math_awol ::
@@ -832,13 +868,14 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
 
   local std_series = {b = {}, bx = {}}
 
-  for series,series_data in pairs(fam_data) do
+  -- sortedpairs for log consistency
+  for series,series_data in sortedpairs(fam_data) do
 
     local std_lines = {n = 0, it = 0, sl = 0, scit = 0, scsl = 0}
 
     for shape,fnts in pairs(series_data) do
 
-      msg({"Processing font(s) for ", series, " and ", shape}, "info")
+      msg(concat({"Processing font(s) for ", series, " and ", shape}), "info")
 
       msg_assert(#fnts ~= 0, "The number of fonts should never be zero!")
 
@@ -1121,7 +1158,7 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
     msg("(prepare_fake_fd) typeset_mode is 1", "info")
 
     local sf, ssf = format("%s-sf", fam), format("%s-ssf", fam)
-    msg(format("Emulating %s and %s.", sf, ssf), "log")
+    msg(concat({"Emulating ", sf, " and ", ssf, "."}), "log")
 
     -- We need extra cache data for maths families so that cache look-up
     -- catches scripts.
@@ -1240,12 +1277,11 @@ local fea_known = {
 ---@description constructs suffix for family name.
 local function parse_fea(fea)
   if not fea then return str_fea_default, nil end
-  local s_fea = str_fea_default
   local t_fea = fea_split(lower(tostring(fea)))
   local suffix = {}
   local cat_suffix
   -- Paid â cheisio leihau nifer o dablau yma!!!
-  local t_feat = {}
+  local t_feat = {str_fea_default}
   -- sortedpairs for regression testing ...
   for key,val in sortedpairs(t_fea) do
     if key == "" then
@@ -1253,11 +1289,11 @@ local function parse_fea(fea)
     elseif fea_ignore[key] and fea_ignore[key] == val then
       t_fea[key] = nil
     elseif fea_known[key] then
-      insert(t_feat, format("%s=%s", key, val))
+      insert(t_feat, format("%s=%s;", key, val))
     elseif find(key, "^+cv%d%d$") or find(key, "^[+-]nalt$") or 
-      find(key, "^[+-]salt$") then insert(t_feat, format("%s=%s", key, val))
+      find(key, "^[+-]salt$") then insert(t_feat, format("%s=%s;", key, val))
     elseif find(key, "^[+-]ss%d%d$") then
-      insert(t_feat, key)
+      insert(t_feat, key .. ";")
     else
       local code = fea_lookup[key]
       if code then
@@ -1265,16 +1301,16 @@ local function parse_fea(fea)
         if c then
           t_fea[key]  = nil
           t_fea[c] = "true"
-          insert(t_feat, format("%s=true", c))
+          insert(t_feat, format("%s=true;", c))
         else 
-          insert(t_feat, format("%s=%s", key, val)) 
+          insert(t_feat, format("%s=%s;", key, val)) 
         end
       else
-        insert(t_feat, format("%s=%s", key, val)) 
+        insert(t_feat, format("%s=%s;", key, val)) 
       end
     end
   end
-  fea = format("%s%s;", s_fea, concat(t_feat, ";"))
+  fea = concat(t_feat)
   -- According to fntguide, these should use the autoinst suffixes,
   -- but this makes things really awkward because then (mapping to 
   -- nfssext) we have
@@ -1322,7 +1358,7 @@ local function parse_fea(fea)
     end
   end
   if #suffix > 0 then 
-    suffix = concat(suffix, "")
+    suffix = concat(suffix)
     cat_suffix = cat_suffix and format("%s%s", cat_suffix, suffix) or suffix
   end
   return fea, cat_suffix
@@ -1393,12 +1429,12 @@ local features_lookup = {
     dflt          = "dflt",
   },
   ligatures  = {
+    ["common"]        = "liga",
     ["contextual"]    = "clig",
     ["discretionary"] = "dlig",
     ["hist"]          = "hlig",
     ["historic"]      = "hlig",
     ["required"]      = "rlig",
-    ["standard"]      = "liga",
     ["tex"]           = "tlig",
   },
   mode       = {
@@ -1447,7 +1483,8 @@ local function parse_features(t_fea,fea_type)
         insert(t_feat, tag)
       else
         t_fea[key] = nil
-        msg(format("Unknown key \'%s\' in %s: ignoring", key, fea_type or "features"))
+        msg(concat({"Unknown key \'", key, "\' in ", fea_type or "features",
+          ": ignoring"}), "warn")
       end
     end
   end
@@ -1538,7 +1575,7 @@ local function write_declare_shape(fam, pre, line, post, fea, size_spec)
 
     append(out, {
       tok_group_begin, str_onesize, line.ssub and "ssub*" or "sub*",
-      format("%s/%s/%s", fam, subst[1], subst[2]), tok_group_end })
+      fam, "/", subst[1], "/", subst[2], tok_group_end })
   end
 
   -- hyph or whatever
@@ -1733,32 +1770,116 @@ end
 --    are likely required.
 -------------------------------------------------------------------------------
 
----@function write_fake_fd(fam, fake_fd, fea[, scale_factor[, suffix]]) {{{
----@param fam:            NFSS family
----@param fake_fd:        If not cached
----@param fea:            Features
----@param scale_factor:   Scaling factor
----@param suffix:         Suffix for NFSS family (if required)
+---@function write_fake_fd(fam, fake_fd, fake_fd_cfg) {{{
+---@param fam:            <string>  NFSS family
+---@param fake_fd:        <table>   If not cached
+---@param fake_fd_cfg:    <table>   Configuration details
+---         fea           = <string>  Features
+---         scale_factor  = <number>  Scaling factor
+---         suffix        = <string>  Suffix for NFSS family
+---         cfg_scoped    = <table>   Special feature configs (if required)
+---         loadsettings  = <string>  Special feature configs (if required)
 ---@description fake_fd should not be nil unless something has gone wrong.
 ---@description This should never happen in the automated case.
 -- Cache format: see above
-local function write_fake_fd(fam, fake_fd, fea, scale_factor, suffix)
+local function write_fake_fd(fam, fake_fd, fake_fd_cfg)
+  local fea, scale_factor, suffix, cfg_scoped, loadsettings
+    = fake_fd_cfg.fea,
+      fake_fd_cfg.scale or nil,
+      fake_fd_cfg.suffix or nil, 
+      fake_fd_cfg.cfg_scoped or nil,
+      fake_fd_cfg.loadsettings or ""
+
   msg({"Emulating font definition file for NFSS family ", fam, " with ",
     fea, " scaled ", scale_factor or "1", " suffixed ", suffix or "[none]",
-    "."}, "log")
+    " loadsettings ", loadsettings or "[none]",
+    cfg_scoped and " with special configs." or "."}, "log")
+
+
+  -- Note this **DEPENDS** on b preceding o when sorted ....
+  local fake_lookup = {
+    ["fakebold"]    = {"b","*", function(curr, val) 
+      return concat({curr, "embolden=", val, ";"}) end},
+    ["fakeoblique"] = {"*","sl", function(curr, val) 
+      return concat({curr, "slant=", val, ";"}) end},
+  }
+  if cfg_scoped and cfg_scoped.fake then
+    local t = {}
+    for no,line in ipairs(fake_fd) do
+      if line ~= "" then
+        t[line[1]] = t[line[1]] or {}
+        t[line[1]][line[2]] = no
+      end
+    end
+    for fake,value in sortedpairs(cfg_scoped.fake) do
+      -- t must be updated when changes are made to ensure that e.g. bold oblique is faked.
+      local lookup = fake_lookup[fake]
+      if lookup then
+        if lookup[1] ~= "*" and not t[lookup[1]] then
+          local newlines = t.m and t.m or (t.k and t.k or (t.f and t.f or nil))
+          if newlines then
+            t[lookup[1]] = {}
+            for shape,newline in pairs(newlines) do
+              local l = fastcopy(fake_fd[newline])
+              local base = l[1]
+              l[1] = lookup[1]
+              if l.ssub and l.ssub[1] == base then
+                l.ssub[1] = lookup[1]
+              end
+              insert(fake_fd, l)
+              t[lookup[1]][shape] = #fake_fd
+            end
+            local hash = format("%s:%s", lookup[1], lookup[2])
+            cfg_scoped[hash] = cfg_scoped[hash] or {}
+            cfg_scoped[hash].fea = lookup[3](cfg_scoped[hash].fea or "", value)
+          else
+            msg({"Sorry, but I cannot make ", fake, " as I can't find a base series."})
+          end
+        elseif lookup[2] ~= "*" then
+          for series,shapes in pairs(t) do
+            local no
+            if shapes[lookup[2]] then
+              local l = fake_fd[shapes[lookup[2]]]
+              if l.ssub then
+                no = shapes[lookup[2]]
+              end
+            elseif not shapes[lookup[2]] then
+              no = #fake_fd + 1
+            end
+            if no then
+              if shapes.n then
+                local l = fastcopy(fake_fd[shapes.n])
+                l[2] = lookup[2]
+                fake_fd[no] = l
+                local hash = format("%s:%s", series, lookup[2])
+                cfg_scoped[hash] = cfg_scoped[hash] or {}
+                cfg_scoped[hash].fea = lookup[3](cfg_scoped[hash].fea or "", value)
+                t[series][lookup[2]] = no
+              else
+                msg({"Sorry, but I cannot make ", fake, " without a base shape."})
+              end
+            end
+          end
+        end
+      else
+        msg({"Sorry. I do not know how to make ", fake, "."})
+      end
+    end
+  end
 
   local use_name = suffix and format("%s%s", fam, suffix) or fam
   local pre = {fastcopy(toks_enc_tu), embrace(use_name)}
   local out = {
-    tok_declare_fam, fastcopy(pre), toks_empty_n
+    tok_declare_fam, fastcopy(pre), 
+    loadsettings and embrace(loadsettings) or toks_empty_n
   }
   insert(pre, 1, tok_declare_shape)
 
   local onesize = str_onesize
-  if scale_factor and scale_factor ~= 1 then
+  if scale_factor then
     if lfc_cache[fam].scalable then
       msg({"Scaling ", use_name, " to ", scale_factor, "."}, "info")
-      onesize = format("%ss*[%s]", onesize, scale_factor)
+      onesize = concat({onesize, "s*[", scale_factor, "]"})
     else
       msg("Ignoring scaling factor for fonts with optical sizes.")
     end
@@ -1769,6 +1890,20 @@ local function write_fake_fd(fam, fake_fd, fea, scale_factor, suffix)
   for _,line in ipairs(fake_fd) do
     if line ~= "" then 
       msg({"Preparing line: ", use_name, ": ", fea, " ", onesize}, "debug")
+      local fea = fea
+      if cfg_scoped then
+        local scope_hash_series = concat({line[1], ":*"})
+        local scope_hash_shape = concat({"*:", line[2]})
+        local scope_hash = concat({line[1], line[2]}, ":")
+        for _,h in ipairs({scope_hash_series, scope_hash_shape, scope_hash}) do
+          if cfg_scoped[h] then
+            local cfg = cfg_scoped[h]
+            fea = cfg.fea and concat({fea or "", cfg.fea}) or fea
+          end 
+        end
+      end
+      msg_debug("Concatenated fea: ", "defn", fea)
+      msg_debug(" ... for line: ", "defn", line)
       append(out, write_declare_shape(use_name, pre, line, toks_empty_n, fea, 
         onesize))
     end
@@ -1818,16 +1953,17 @@ local function file_subs_empty(filename)
 end
 -- }}}
 
----@function add_fake_fd(fam, fake_fd, fea, scale_factor, suffix) {{{
+---@function add_fake_fd(fam, fake_fd, fake_fd_cfg) {{{
 ---@see         write_fake_fd()
 ---@description A wrapper around write_fake_fd() which avoids defining fonts
 ---@description   unnecessarily (and so avoids unnecessary callbacks etc.).
-local function add_fake_fd(fam, fake_fd, fea, scale_factor, suffix)
+local function add_fake_fd(fam, fake_fd, fake_fd_cfg)
+  local suffix = fake_fd_cfg.suffix or nil
   local fd_filename = suffix and format("tu%s%s.fd", fam, suffix) or format("tu%s.fd", fam)
   local fn = format("__lfc_%s", fd_filename)
   luafunction_to_cs(fn, function ()
-    return write_fake_fd(fam, fake_fd, fea, scale_factor, suffix)
-  end, "protected")
+    return write_fake_fd(fam, fake_fd, fake_fd_cfg)
+  end, "global", "protected")
   fn = create(fn)
   file_subs_empty(fd_filename)
   sprint(-2, flattened({tok_hook_gput_code, tok_group_begin, 
@@ -1835,32 +1971,87 @@ local function add_fake_fd(fam, fake_fd, fea, scale_factor, suffix)
 end
 -- }}}
 
----@function use_cached_fd(fam, scale[, now]) {{{
----@param fam     <string>  Name of a cached meta-family.
----@param fea     <string>  Font features.
----@param scale   <numeric> Potential scaling factor or nil.
----@param now     <boolean> Whether to write defns or setup hook.
----@param suffix  <string>  If required.
-local function use_cached_fd(fam, fea, scale, now, suffix) 
+---@function use_cached_fd(fam, fake_fd_cfg, now) {{{
+---@param fam         <string>    Name of a cached meta-family.
+---@param fake_fd_cfg <table>     See write_fake_fd()
+---@param now         <boolean>   Whether to write defns or setup hook.
+local function use_cached_fd(fam, fake_fd_cfg, now) 
   msg_assert(lfc_cache[fam] and lfc_cache[fam].fake_fd,
     "Cache failure. Try removing the cache before recompiling.")
   msg({"Using cached fd emulation for ", fam, "."}, "debug")
-  now = now or false
 
   msg_debug("Cached fd:\n", "cache", lfc_cache[fam].fake_fd)
   if now then
-    return write_fake_fd(fam, lfc_cache[fam].fake_fd, fea, scale, suffix) 
+    return write_fake_fd(fam, lfc_cache[fam].fake_fd, fake_fd_cfg) 
   else
-    return add_fake_fd(fam, lfc_cache[fam].fake_fd, fea, scale, suffix) 
+    return add_fake_fd(fam, lfc_cache[fam].fake_fd, fake_fd_cfg) 
   end
 end
 -- }}}
 
 --- }}}
 -------------------------------------------------------------------------------
--- Main configuration function
--- font_config()
+-- Main configuration function & auxiliaries 
+-- font_config_aux_sel()  font_config_aux()  font_config()
 -------------------------------------------------------------------------------
+---@function font_config_aux_sel(fam, config, property, fallback) {{{
+---@param   fam       <string>
+---@param   config    <table>
+---@param   property  <string>    e.g. "scale"
+---@param   fallback  <anything>  e.g. 1
+local function font_config_aux_sel(fam, config, property, fallback)
+  return (config[fam] and config[fam][property] and config[fam][property]) or
+    (config[property] and config[property]) or fallback
+end
+-- }}}
+---@function font_config_aux(fam, config, typeset_mode) {{{
+---@param   fam           <string>  family name
+---@param   config        <table>   overall config passed/created/modified 
+---                                   to/by font_config()
+---@param   typeset_mode  <int>     0 (text) or 1 (math)
+---@description Returns keyed table and boolean or nil:
+---@description   fea   configured features (string),
+---@description   scale (number) or nil, 
+---@description   suffix (string) or nil
+---@description   cfg_scoped (table) or nil
+---@description   loadsettings (string) or ""
+---@description The table may be passed more-or-less as-is to the writing 
+---@description   functions.
+local function font_config_aux(fam, config, typeset_mode)
+
+  local fea = font_config_aux_sel(fam, config, "fea", nil)
+
+  local suffix
+  if typeset_mode == 0 and fea then 
+    fea, suffix = parse_fea(fea) 
+  else 
+    fea = typeset_mode ~= 1 and str_fea_default or str_fea_math_default
+  end
+  msg_assert(fea ~= nil, "fea should never be nil!")
+
+  local cfg_scoped = font_config_aux_sel(fam, config, "cfg_scoped", nil)
+  if cfg_scoped then
+    for this,cfg_scope in ipairs(cfg_scoped) do
+      if cfg_scope.fea then
+        cfg_scope.fea, discard = parse_fea(cfg_scope.fea)
+      else
+        -- Discard do-nothing entries.
+        cfg_scoped[this] = nil
+      end
+    end
+  end
+
+  return {
+    cfg_scoped = cfg_scoped or nil,
+    fea = fea, 
+    loadsettings = font_config_aux_sel(fam, config, "loadsettings", ""),
+    scale = font_config_aux_sel(fam, config, "scale", nil),
+    suffix = suffix,
+  }, (font_config_aux_sel(fam, config, "default", nil) and typeset_mode == 0)
+    and font_config_aux_sel(fam, config, "maths", nil) or nil
+end
+-- }}}
+
 ---@function font_config(targ, config[, immediate]) -- {{{
 ---@param target    required <string>   Font specification to resolve.
 ---@param config    optional <table>    Configuration details.
@@ -1948,6 +2139,7 @@ local function font_config(targ, config, immediate)
 
         if variant == "smallcaps" then
           family = (gsub(family, "caps", ""))
+          family = (gsub(family, "sc", ""))
         end
 
         -- For latin modern roman unslanted, which claims to be perfectly ‘normal’
@@ -1990,24 +2182,8 @@ local function font_config(targ, config, immediate)
       local nfss_style    = parse_spec(styles, style)
       local nfss_variant  = parse_spec(variants, variant)
 
-      -- ‘m’ must not be combined, as of the 2020 changes, so ‘mb’ is
-      --    not allowed
-      if nfss_weight == "m" then
-        series = nfss_width
-      elseif nfss_width == "m" then
-        series = nfss_weight
-      else 
-        series = format("%s%s", nfss_weight, nfss_width)
-      end
-
-      -- Likewise ‘n’, but I never saw anybody combine this, so nothing broken
-      if nfss_style == "n" then
-        shape = nfss_variant
-      elseif nfss_variant == "n" then
-        shape = nfss_style
-      else
-        shape = format("%s%s", nfss_variant, nfss_style)
-      end
+      series  = parse_nfss(nfss_weight, nfss_width, "m")
+      shape   = parse_nfss(nfss_variant, nfss_style, "n")
 
       -- Hash is <family>:<series>:<shape>[<minsize>:<maxsize>]
       local nfss_hash = format("%s:%s:%s%s%s", family, series, shape, 
@@ -2071,7 +2247,8 @@ local function font_config(targ, config, immediate)
     local by_meta_fam = lfc_cache.meta_families.by_meta_fam[fam_meta]
 
 
-    for fam,fam_data in pairs(parsed_fam) do
+    -- sortedpairs() for consistent regression tests.
+    for fam,fam_data in sortedpairs(parsed_fam) do
 
       local typeset_mode
       for series,shapes in pairs(fam_data) do
@@ -2120,41 +2297,45 @@ local function font_config(targ, config, immediate)
           }
         end
 
-        local scale = (config[fam] and config[fam].scale and 
-          config[fam].scale) or (config.scale and config.scale) or nil
 
-        local fea = (config[fam] and config[fam].fea and config[fam].fea) or
-          (config.fea and config.fea) or nil
-
-        local suffix
-        if typeset_mode == 0 and fea then fea, suffix = parse_fea(fea) 
-        else 
-          fea = typeset_mode ~= 1 and str_fea_default or str_fea_math_default
-        end
+        local fake_fd_cfg, math_alpha = 
+          font_config_aux(fam, config, typeset_mode)
 
         if immediate then
-          write_fake_fd(fam, fake_fd, fea, scale, suffix) 
+          write_fake_fd(fam, fake_fd, fake_fd_cfg) 
 
           if fake_fd_sf then 
-            write_fake_fd(fam_sf, fake_fd_sf, fea, scale, suffix) 
+            write_fake_fd(fam_sf, fake_fd_sf, fake_fd_cfg) 
           end
           if fake_fd_ssf then 
-            write_fake_fd(fam_ssf, fake_fd_ssf, fea, scale, suffix)
+            write_fake_fd(fam_ssf, fake_fd_ssf, fake_fd_cfg)
           end
         else
-          add_fake_fd(fam, fake_fd, fea, scale, suffix)
+          add_fake_fd(fam, fake_fd, fake_fd_cfg)
 
           if fake_fd_sf then 
-            add_fake_fd(fam_sf, fake_fd_sf, fea, scale, suffix)
+            add_fake_fd(fam_sf, fake_fd_sf, fake_fd_cfg)
           end
           if fake_fd_ssf then 
-            add_fake_fd(fam_ssf, fake_fd_ssf, fea, scale, suffix)
+            add_fake_fd(fam_ssf, fake_fd_ssf, fake_fd_cfg)
           end
         end
+
+        -- If needed -base for non-math fonts is never immediate.
+        if math_alpha then
+          local fake_fd_base_cfg = fastcopy(fake_fd_cfg)
+          -- TODO Should this use specified features?
+          fake_fd_base_cfg.fea = str_fea_basic
+          fake_fd_base_cfg.suffix = "-base"
+          add_fake_fd(fam, fake_fd, fake_fd_base_cfg)
+        end
+
 
         -- Need a different way to handle this.
         -- It shouldn't be disconnected this way.
-        if suffix and fam_meta == fam then meta_suffix = suffix end
+        if fake_fd_cfg.suffix and fam_meta == fam then 
+          meta_suffix = fake_fd_cfg.suffix
+        end
       end
 
     end
@@ -2171,44 +2352,49 @@ local function font_config(targ, config, immediate)
     end
 
     if not all_math then
-      for _,fam_name in ipairs(by_meta_fam) do
-        local scale = (config[fam_name] and config[fam_name].scale and 
-        config[fam_name].scale) or (config.scale and config.scale) or nil
+      for _,fam in ipairs(by_meta_fam) do
 
-        local fea = (config[fam_name] and config[fam_name].fea and 
-        config[fam_name].fea) or (config.fea and config.fea)
+        local typeset_mode = lfc_cache[fam].typeset_mode
 
-        local suffix
-        local typeset_mode = lfc_cache[fam_name].typeset_mode
-        if typeset_mode == 0 and fea then 
-          fea, suffix = parse_fea(fea) 
-        else 
-          fea = typeset_mode ~= 1 and str_fea_default 
-          or str_fea_math_default
-        end
+
+        local fake_fd_cfg, math_alpha = 
+          font_config_aux(fam, config, typeset_mode)
+
 
         if typeset_mode ~= 1 then
-          use_cached_fd(fam_name, fea, scale, immediate, suffix) 
+          use_cached_fd(fam, fake_fd_cfg, immediate) 
+
+          -- If needed -base for non-math fonts is never immediate.
+          if math_alpha then
+            local fake_fd_base_cfg = fastcopy(fake_fd_cfg)
+            -- TODO Should this use specified features?
+            fake_fd_base_cfg.fea = str_fea_basic
+            fake_fd_base_cfg.suffix = "-base"
+            use_cached_fd(fam, fake_fd_base_cfg, false)
+          end
+
         else
           -- Pick up the additional maths fds.
-          local meta_math = lfc_cache.meta_families.by_meta_math[fam_name]
+          local meta_math = lfc_cache.meta_families.by_meta_math[fam]
           msg_assert(meta_math, "Missing meta math from cache!")
           for _,mfam in ipairs(meta_math) do
-            use_cached_fd(mfam, fea, scale, immediate, suffix) 
+            use_cached_fd(mfam, fake_fd_cfg, immediate) 
           end
         end
 
         -- Need a different way to handle this.
         -- It shouldn't be disconnected this way.
-        if suffix and fam_meta == fam_name then meta_suffix = suffix end
+        if fake_fd_cfg.suffix and fam_meta == fam then
+          meta_suffix = fake_fd_cfg.suffix
+        end
       end
     else
-      for _,fam_name in ipairs(by_meta_fam) do
+      for _,fam in ipairs(by_meta_fam) do
         -- Not sure if scale is really appropriate here.
-        local scale = (config[fam_name] and config[fam_name].scale and 
-          config[fam_name].scale) or (config.scale and config.scale) or nil
+        local scale = font_config_aux_sel(fam, config, "scale", nil)
 
-        use_cached_fd(fam_name, str_fea_math_default, scale, immediate, nil)
+        use_cached_fd(fam,
+          {fea = str_fea_math_default, scale = scale}, immediate)
       end
     end
 
@@ -2219,11 +2405,117 @@ local function font_config(targ, config, immediate)
 end
 -- }}}
 
+
+-------------------------------------------------------------------------------
+-- Ephemeral data structure
+-- Note that the concept of meta family here is distinct from the one used
+--    in font_config() etc.
+-- A font_set consists of 4+ families: rm, sf, tt, math.
+-- A doc_family consists of a 3-place sequence: {NFSS name, normal, bold} 
+--    where normal and bold are the relevant NFSS series.
+-------------------------------------------------------------------------------
+-- Tables (font sets aka font sets) {{{
+local font_sets     = {
+  __curr    = "default",
+  __known   = {
+    default = {
+      nfss_default_families   = {},
+      nfss_doc_families       = {},
+    },
+  },
+}
+font_sets.__new   = function(name) 
+  local known = font_sets.__known
+  msg_assert(not find(name, "^__") and name ~= "default" and 
+    name ~= "nfss_default_families" and name ~= "nfss_doc_families", 
+    concat({"Font set \'", name, "\' not permitted!"}), "err")
+  msg_assert(not known[name], concat({"Font set \'", name,
+    "\' already defined!"}), "err")
+  known[name] = {
+    nfss_default_families   = {},
+    nfss_doc_families       = {},
+  }
+  return known[name] 
+end
+font_sets.__copy  = function(base,name) 
+  local known = font_sets.__known
+  local new = font_sets.__new(name)
+  msg_assert(known[base], concat({"Font set \'", base, "\' unknown!"}), "err")
+  msg_assert(known[base].nfss_doc_families and known[base].nfss_default_families,
+    concat({"Font set \'", base, "\' not setup properly!"}), "bug")
+  for i,j in sortedpairs(known[base].nfss_default_families) do
+    known[name].nfss_default_families[i] = j
+  end
+  for i,j in sortedpairs(known[base].nfss_doc_families) do
+    if j.default then
+      known[name].nfss_doc_families[i] = j
+    end
+  end
+  return known[name] 
+end
+do
+  local mt  = {
+    __index     = function(t, key) 
+      local curr = t.__curr
+      local known = t.__known
+      if key == "nfss_default_families" or key == "nfss_doc_families" then
+        return known[curr][key]
+      else
+        msg_assert(known[key], concat({"Current font set \'", key, 
+        "\' does not exist!"}), "err")
+        return known[key]
+      end
+    end,
+    __newindex    = function(t, key, value)
+      msg({"Invalid attempt to access font set (key=\"", key,
+        "\", value=\"", value, "\". If you don't think you did this or do \z
+        not know what this means, please open an issue at \z
+        https://codeberg.org/cfr/nfssext/issues."}, "err")
+    end,
+  }
+  setmetatable(font_sets, mt)
+end
+local function get_curr_nfss_families()
+  local curr = font_sets.__curr
+  local known = font_sets.__known
+  if known[curr] and known[curr].nfss_doc_families and 
+    known[curr].nfss_default_families then
+    return known[curr].nfss_doc_families, known[curr].nfss_default_families
+  elseif not known[curr] then
+    msg(concat({"Font set \'", curr, "\' not configured!"}), "err")
+  else
+    msg("No current font set!", "bug")
+  end
+end
+local function new_font_set(name) 
+  return font_sets.__new(name)
+end
+local function copy_font_set(base,name) 
+  return font_sets.__copy(base,name)
+end
+-- }}}
+
 -------------------------------------------------------------------------------
 -- LaTeX interface things
+-- do_with_<one|two|three>_scanner()
+-- get_fam_default_scanner()  get_fam_name_scanner()  get_fam_cfg_scanner()
+-- get_fam_scoped_fea_scanner()         get_fam_features_scanner()
+-- get_font_set_scanner()           get_new_font_set_scanner()
+-- set_font_set()                   get_copy_font_set_scanner()
+-- configure_doc_families()
+-- \__lfc_set_rm:n    \__lfc_set_sf:n   \__lfc_set_tt:n   \__lfc_set_math:n
+-- \__lfc_set_fam_name:n                \__lfc_set_fam_cfg:nn
+-- \__lfc_set_fam_scoped_fea:nn         \__lfc_set_fam_features:nnn
+-- \__lfc_set_font_set:n            \__lfc_new_font_set:n
+-- \__lfc_configure_doc_families:       \__lfc_new_font_set:nn
+-- parse_spec_scanner()                 \__lfc_parse_spec:nn
+-- parse_nfss_scanner()                 \__lfc_parse_nfss:nnn
+-- tables: fam_defaults, fam_to_maths
+-- \__lfc_set_log_level:n \__lfc_debug_set_true:  \__lfc_debug_set_false:
+-- \__lfc_debug_set_cats_scanner:n
 -------------------------------------------------------------------------------
 --- {{{
--- Scanners for 1 or 2 arguments.
+-- Scanners for 1, 2 or 3 arguments.
 -- {{{
 ---@function do_with_one_scanner(fn) {{{
 ---@param fn    <function>  Function to execute on argument.
@@ -2240,7 +2532,7 @@ end
 -- }}}
 
 ---@function do_with_two_scanner(fn) {{{
----@param fn    <function>  Function to execute on argument.
+---@param fn    <function>  Function to execute on arguments.
 ---@description Returns a function which picks up and does something with
 ---@description   two TeX arguments.
 local function do_with_two_scanner(fn)
@@ -2249,6 +2541,21 @@ local function do_with_two_scanner(fn)
     local two = param(false)
     msg({"Scanned two: ", one, " | ", two}, "debug")
     return fn(one, two)
+  end
+end
+-- }}}
+
+---@function do_with_three_scanner(fn) {{{
+---@param fn    <function>  Function to execute on arguments.
+---@description Returns a function which picks up and does something with
+---@description   three TeX arguments.
+local function do_with_three_scanner(fn)
+  return function()
+    local one = param(false)
+    local two = param(false)
+    local three = param(false)
+    msg({"Scanned three: ", one, " | ", two, " | ", three}, "debug")
+    return fn(one, two, three)
   end
 end
 -- }}}
@@ -2268,6 +2575,12 @@ local fam_to_maths = { -- {{{
   sf = tok_mathsf,
   tt = tok_mathtt,
 }
+local fam_to_series = { -- {{{
+  rm = {tok_mdseries_rm, tok_bfseries_rm},
+  sf = {tok_mdseries_sf, tok_bfseries_sf},
+  tt = {tok_mdseries_tt, tok_bfseries_tt},
+}
+-- }}}
 -- }}}
 -- }}}
 
@@ -2282,13 +2595,20 @@ local nfss_doc_families_cnt = 0
 local function get_fam_default_scanner(fam) 
   return do_with_one_scanner(
     function(fam_name)
+      local nfss_doc_families, nfss_default_families = get_curr_nfss_families()
+      if nfss_default_families[fam] then
+        -- In case this is a copied font set  and we're overriding an existing
+        --    family, drop it.
+        nfss_doc_families[nfss_default_families[fam]] = nil
+      end
       local cleanname = cleanfilename(fam_name)
       nfss_doc_families_cnt = nfss_doc_families_cnt + 1
-      local t_name = format("%s_%s", cleanname, nfss_doc_families_cnt)
+      local t_name = concat({cleanname, nfss_doc_families_cnt}, "_")
       nfss_doc_families[t_name] = {
         name = tostring(fam_name),
         cleanname = cleanname,
-        default = {fam},
+        default = fam,
+        t_name = t_name,
       }
       nfss_doc_families[t_name].typeset_mode = fam ~= "math" and 0 or 1
       nfss_default_families[fam] = nfss_doc_families[t_name]
@@ -2303,9 +2623,10 @@ end
 local function get_fam_name_scanner()
   return do_with_one_scanner(
     function(name)
+      local nfss_doc_families, nfss_default_families = get_curr_nfss_families()
       local cleanname = cleanfilename(name)
       nfss_doc_families_cnt = nfss_doc_families_cnt + 1
-      local t_name = format("%s_%s", cleanname, nfss_doc_families_cnt)
+      local t_name = concat({cleanname, nfss_doc_families_cnt}, "_")
       nfss_doc_families[t_name] = {
         name = tostring(name),
         cleanname = cleanname,
@@ -2316,21 +2637,107 @@ local function get_fam_name_scanner()
 end
 -- }}}
 
+---@function set_font_set(name) {{{
+---@param       name    <string>
+---@description Sets the current font set to name.
+---@description   font set to that name.
+local function set_font_set(name)
+  name = name and tostring(name) or "default"
+  font_sets.__curr = name
+  msg_debug("lfc font sets: ", "doc", font_sets)
+end
+-- }}}
+
+---@function get_font_set_scanner() {{{
+---@description Returns a function which takes a name and sets the current
+---@description   font set to that name.
+local function get_font_set_scanner()
+  return do_with_one_scanner(
+    function(name)
+      name = name and tostring(name) or "default"
+      font_sets.__curr = name
+      msg_debug("lfc font sets: ", "doc", font_sets)
+    end)
+end
+-- }}}
+
+---@function get_new_font_set_scanner() {{{
+---@description Returns a function which takes a name and creates a
+---@description   minimal font set of that name, if it
+---@description   doesn't exist, or returns an error o/w. 
+local function get_new_font_set_scanner()
+  return do_with_one_scanner(
+    function(name)
+      if not name then return nil end
+      new_font_set(tostring(name))
+      msg_debug("lfc font sets: ", "doc", font_sets)
+    end)
+end
+-- }}}
+
+---@function get_copy_font_set_scanner() {{{
+---@description Returns a function which takes two names and creates a
+---@description   copies a font set of the first name to a new
+---@description   font set of the second name.
+local function get_copy_font_set_scanner()
+  return do_with_two_scanner(
+    function(base, name)
+      if not base or not name then return nil end
+      copy_font_set(tostring(base), tostring(name))
+      msg_debug("lfc font sets: ", "doc", font_sets)
+    end)
+end
+-- }}}
+
 ---@function get_fam_cfg_scanner() {{{
 ---@description Returns a function which takes a param/val specification and 
 ---@description stores it.
 local function get_fam_cfg_scanner()
   return do_with_two_scanner(
     function(key, value)
+      local nfss_doc_families, nfss_default_families = get_curr_nfss_families()
       local curr = nfss_doc_families.curr
-      msg_assert(curr ~= nil, "No current family to set parameters for!")
       curr = nfss_doc_families[curr]
-      if key ~= "fea" or not curr[key] then
+      if find(key, "^fake") then
+        curr.cfg_scoped = curr.cfg_scoped or {}
+        curr.cfg_scoped.fake = curr.cfg_scoped.fake or {}
+        curr.cfg_scoped.fake[key] = value
+      elseif key ~= "fea" then
         curr[key] = lower(tostring(value))
       else
-        curr.fea = format("%s%s;", curr.fea, lower(tostring(value)))
+        curr.fea = format("%s%s;", curr.fea or "", lower(tostring(value)))
       end
       msg_debug("Scanned (std/late) family configuration: ", "doc", curr)
+    end)
+end
+-- }}}
+
+---@function get_fam_scoped_fea_scanner() {{{
+---@description scope: {<series or *>, <shape or *>}
+---@description Returns a function which takes a scope/fea specification and 
+---@description stores it.
+local function get_fam_scoped_fea_scanner()
+  return do_with_two_scanner(
+    function(scope_hash, value)
+      local nfss_doc_families, nfss_default_families = get_curr_nfss_families()
+      local curr = nfss_doc_families.curr
+      curr = nfss_doc_families[curr]
+
+      curr.cfg_scoped = curr.cfg_scoped or {}
+      local cfg = curr.cfg_scoped[scope_hash] or nil
+      if not cfg then
+        curr.cfg_scoped[scope_hash] = {}
+        cfg = curr.cfg_scoped[scope_hash]
+      end
+
+      if not cfg.fea then
+        cfg.fea = format("%s;", lower(tostring(value)))
+      else
+        cfg.fea = format("%s%s;", cfg.fea, lower(tostring(value)))
+      end
+
+      msg_debug("Scanned scoped (std/late) font configuration: ", "doc",
+        nfss_doc_families[curr])
     end)
 end
 -- }}}
@@ -2339,11 +2746,25 @@ end
 ---@description Returns a function which takes a key-val specification, 
 ---@description   turns it into a fea spec and stores it.
 local function get_fam_features_scanner()
-  return do_with_two_scanner(
-    function(fea_type, list)
+  return do_with_three_scanner(
+    function(scope_hash, fea_type, list)
+      local nfss_doc_families, nfss_default_families = get_curr_nfss_families()
       local curr = nfss_doc_families.curr
-      msg_assert(curr ~= nil, "No current family to set features for!")
       curr = nfss_doc_families[curr]
+
+      local cfg
+      if scope_hash == "*:*" then
+        curr.fea = curr.fea or str_fea_default
+        cfg = curr
+      else
+        curr.cfg_scoped = curr.cfg_scoped or {}
+        cfg = curr.cfg_scoped[scope_hash] or nil
+        if not cfg then
+          curr.cfg_scoped[scope_hash] = {}
+          cfg = curr.cfg_scoped[scope_hash]
+        end
+      end
+
       if fea_type == "" then fea_type = nil end
       list = checkedsplit(",", lpeg_match(stripper(p_whitespace),
         lower(tostring(list))))
@@ -2363,97 +2784,303 @@ local function get_fam_features_scanner()
       end
       local feas = parse_features(t, fea_type)
       if feas and feas ~= "" then
-        curr.fea = format("%s%s;", curr.fea or str_fea_default, feas)
+        cfg.fea = format("%s%s;", cfg.fea or "", feas)
       end
-      msg_debug("Scanned kv features family configuration: ", "doc", curr, key)
+      msg_debug(concat({"Scanned kv features family configuration", scope_hash and " "
+        or "", scope_hash or "", ": "}), "doc", nfss_doc_families[curr], key)
     end)
 end
 -- }}}
 -- }}}
 
--- Configuration function.
----@function configure_doc_families() {{{
+-- Configuration functions.
+---@function configure_doc_families_aux() {{{
 ---@description Configures requested fonts.
 ---@description Sets defaults for rm/sf/tt, if applicable.
 ---@description This doesn't work if I make this a direct fn. rather than a
 ---@description generator. Something to do with (Lua) scope, maybe?
-local function configure_doc_families()
-  return function()
-    msg_debug("Configuring doc families ...", "doc",
-      nfss_default_families,
-      nfss_doc_families,
-      fam_defaults)
-    local config = {fea = nil, scale = nil, force = nil, typeset_mode = nil}
-    for t_name,cfg in sortedpairs(nfss_doc_families) do
-      if t_name ~= "curr" then
-        if cfg.features then
-          if cfg.fea then
-            cfg.fea = format("%s%s;", cfg.fea, concat(cfg.features, ";"))
-          else
-            cfg.fea = format("%s;", concat(cfg.features, ";"))
-          end
-        end
-        config.fea = cfg.fea or nil
-        config.scale = cfg.scale or nil
-        config.force = cfg.force or nil
-
-        -- text: 0, maths: 1
-        config.typeset_mode = cfg.typeset_mode or 0
-
-        local nfss_fam = font_config(cfg.name, config, cfg.default and true or 
-        false)
-
-        if nfss_fam ~= nil then 
-          cfg.nfss_fam = nfss_fam
-
-          if config.typeset_mode == 0 then
-          -- text mode
-            if not cfg.default then
-              msg({"Creating NFSS family ", nfss_fam}, "debug")
-              luafunction_to_cs(cfg.csname or cfg.cleanname, function()
-                return sprint(-2, flattened({tok_fontfamily, embrace(nfss_fam),
-                tok_selectfont}), "protected")
-              end)
-            end
-
-          -- Support specific maths families?
-          -- elseif cfg.typeset_mode == 1 then
-
-          end
-
+local function configure_doc_families_aux(fontset)
+  local dflt = fontset == "default" and true or false
+  local nfss_doc_families, nfss_default_families = get_curr_nfss_families()
+  msg_debug("Configuring doc families ...", "doc",
+    nfss_default_families,
+    nfss_doc_families,
+    fam_defaults)
+  local config = {fea = nil, scale = nil, force = nil, typeset_mode = nil}
+  local do_math = nfss_default_families.math and true or dflt
+  for t_name,cfg in sortedpairs(nfss_doc_families) do
+    -- If fontset is a copy, configuration may or may not have been done for some
+    --    families, so check this explicitly.
+    if t_name ~= "curr" and not cfg.nfss_fam then
+      if cfg.features then -- is this ever true?
+        if cfg.fea then
+          cfg.fea = format("%s%s;", cfg.fea, concat(cfg.features, ";"))
         else
-          msg({"No family found for ", cfg.name, "!"}, "warn") 
-          nfss_doc_families[t_name] = nil
+          cfg.fea = format("%s;", concat(cfg.features, ";"))
         end
       end
-    end
-    msg_debug("NFSS doc families: ", "doc", nfss_doc_families)
-    msg("Setting default families ...", "debug") 
-    for fam,cfg in sortedpairs(nfss_default_families) do
-      if cfg.nfss_fam then
-        local fam_name = cfg.nfss_fam
-        if cfg.typeset_mode == 0 then
-          -- Use of text fonts in maths mode.
-          local maths = cfg.maths or true
-          msg({"Setting ", fam, " default to ", fam_name, "."}, "log")
-          sprint(-2, flattened({tok_renewcommand, fam_defaults[fam], embrace(fam_name)}))
-          if maths then
-            msg({"Setting math", fam, "."}, "log")
-            sprint(-2, fam_to_maths[fam])
+      config.fea = cfg.fea or nil
+      config.scale = cfg.scale or nil
+      config.force = cfg.force or nil
+      config.cfg_scoped = cfg.cfg_scoped or nil
+
+      local hyphenchar = cfg.hyphenchar or nil
+      if cfg.loadsettings then
+        if type(cfg.loadsettings) ~= "table" then
+          cfg.loadsettings = {cfg.loadsettings}
+        end
+      end
+      if hyphenchar == "false" then
+        cfg.loadsettings = cfg.loadsettings or {}
+        insert(cfg.loadsettings, tok_nohyphenchar)
+      end
+      cfg.hyphenchar = nil
+      config.loadsettings = cfg.loadsettings or nil
+
+      -- text: 0, maths: 1
+      config.typeset_mode = cfg.typeset_mode or 0
+
+      config.default = cfg.default or nil
+      config.maths = cfg.maths or do_math
+      -- Needed below.
+      cfg.maths = config.maths
+
+      -- Was cfg.name
+      -- Even though non-default font sets are not configured unless used,
+      --    it is still worth postponing fd creation since not all families 
+      --    may be used.
+      -- For the default set, things are different as LaTeX does things based
+      --    on the various text defaults etc. at begindocument, so these should
+      --    be written immediately.
+      local nfss_fam = font_config(cfg.cleanname, config, (cfg.default and
+        dflt) and true or false)
+
+      if nfss_fam ~= nil then 
+        cfg.nfss_fam = nfss_fam
+
+        if config.typeset_mode == 0 then
+        -- text mode
+          if not cfg.default then
+            msg({"Creating NFSS family ", nfss_fam}, "debug")
+            luafunction_to_cs(cfg.csname or cfg.cleanname, function()
+              return sprint(-2, flattened({tok_fontfamily, embrace(nfss_fam),
+              tok_selectfont}), "global", "protected")
+            end)
           end
-        elseif cfg.typeset_mode == 1 then
-          -- Use of Unicode maths fonts in maths mode.
-          -- This assumes lua-unicode-math.
-          msg({"Setting main maths fonts to ", fam_name, "."}, "log")
+
+        -- Support specific maths families?
+        -- elseif cfg.typeset_mode == 1 then
+
+        end
+
+      else
+        msg({"No family found for ", cfg.name or cfg.cleanname or t_name, "!"}, "warn") 
+        nfss_doc_families[t_name] = nil
+      end
+    end
+  end
+
+  msg_debug("NFSS doc families: ", "doc", nfss_doc_families)
+
+  -- Create fn always as additional sets may be created later, so counting
+  --    metas is no good (and I do not want to do what um etc. all do and
+  --    delay til begindocument - that just causes more problems.
+  local out = {}
+  local out_math = {}
+  -- do_math is used in the non-default case to trigger a switch to a true 
+  --    default for switching the math text alphabets to match the new text
+  --    fonts, if the math font is specified for the font set.
+  -- In the default case, we do not need to track here (I think?).
+  msg(dflt and "Setting default families ..."
+    or {"Configuring font set ", fontset, " ..."}, "log")
+  for fam,cfg in sortedpairs(nfss_default_families) do
+    if cfg.nfss_fam then
+      local fam_name = cfg.nfss_fam
+      local fam_name_base
+
+      if cfg.typeset_mode == 0 then
+
+        -- For the default series, set maths alphabets to text fonts by
+        --    default.
+        -- O/w, default to true if the maths font is set and the option isn't
+        --    specified; otherwise false.
+        -- Since we iterate over sortedpairs, we're guaranteed the math font
+        --    to be set before the text fonts, if there is one.
+        local maths = cfg.maths -- or (dflt and true or do_maths)
+
+        -- Need double subs to accommodate case where there is no suffix.
+        fam_name_base = maths and (cfg.fam_name_base or format("%s-base",
+          (gsub(fam_name, "%-.*$", "")))) or nil
+        local bold     = embrace(cfg.bfseries or "b")
+        local medium   = embrace(cfg.mdseries or "m")
+
+        local t = flattened({
+          tok_renewcommand, fam_defaults[fam], embrace(fam_name),
+          tok_renewcommand, fam_to_series[fam][1], medium,
+          tok_renewcommand, fam_to_series[fam][2], bold})
+
+        -- For current use of font set.
+        msg(concat({
+          "Setting ", fam, " for font set \'", fontset, "\' to ", fam_name, ".\n",
+          "Setting mdseries for ", fam, " for font set \'", fontset, "\' to ", 
+          cfg.mdseries or "m", ".\n",
+          "Setting bfseries for ", fam, " for font set \'", fontset, "\' to ",
+          cfg.bfseries or "b", ".\n"}), "log")
+
+        sprint(-2, t)
+
+        -- For later restoration of the font set.
+        append(out, t)
+
+        if maths then
+          msg(concat({"Setting math for font set \'", fontset, "\' to ", 
+            fam_name_base, "."}), "log")
+          cfg.fam_name_base = fam_name_base
+          -- Here we must split, since the non-default case requires a not-
+          --    yet-defined maths version.
+          if dflt then
+            sprint(-2, flattened({fam_to_maths[fam], embrace(fam_name_base)}))
+          else
+            out_math[fam] = {fam_name_base, medium, bold}
+          end
+        end
+
+
+      elseif cfg.typeset_mode == 1 then
+        -- Use of Unicode maths fonts in maths mode.
+        -- This assumes lua-unicode-math.
+        msg(concat({"Setting maths fonts for meta family \'", fontset,
+          "\' to ", fam_name, "."}), "log")
+
+        if dflt then
           sprint(-2, flattened({tok_declare_lum_fnts, embrace(fam_name), 
             embrace(fam_name)}))
+        else
+          -- Can't set this yet as we need to declare new maths versions first.
+          out_math.math = fam_name
         end
-      else msg({"No family found for ", fam, "!"})
+
       end
+    else msg({"No family found for ", fam, "!"})
+      -- This was only for the default, but that seems wrong?
+      nfss_default_families[fam] = nil
     end
-    -- Discard data to avoid duplicating configuration if called again.
-    nfss_doc_families = {}
-    nfss_default_families = {}
+  end
+
+  -- If a text family isn't specified, we use LaTeX's defaults when restoring.
+  local t = {}
+  if not nfss_default_families.rm then
+    t = flattened({tok_renewcommand, fam_defaults.rm, embrace("lmr")})
+  end
+  if not nfss_default_families.sf then
+    insert(t, flattened({tok_renewcommand, fam_defaults.sf, embrace("lmss")}))
+  end
+  if not nfss_default_families.tt then
+    insert(t, flattened({tok_renewcommand, fam_defaults.tt, embrace("lmtt")}))
+  end
+  append(out, flattened(t))
+  -- For the default font set, we do nothing now, but for a non-default set, we
+  --    switch (possibly back) to the LaTeX defaults now, too.
+  if not dflt then
+    sprint(-2, flattened(t))
+  end
+
+  -- We only touch the maths config if either the user requests this explicitly
+  --    or this is a non-default font set, so we need to (possibly re-)set the
+  --    default.
+  -- This will not quite work, though:
+  --    Suppose the user configures nothing special for maths by default, but 
+  --    adds a special maths config to an alternative font set.
+  --    Then the default math font will be lmm, since this is what 
+  --    lua-unicode-math uses by default, but it will not be included in the
+  --    restoration fn for the default set.
+  -- So for the dflt case, we always restore the normal/bold math versions when
+  --    resetting.
+
+  local vnormal = dflt and "normal" or "normal@" .. fontset
+  local vbold = dflt and "bold" or "bold@" .. fontset
+
+  -- out_math is specific to non-default fontsets.
+  if dflt or count(out_math) > 0 then
+    if not dflt then
+      -- These need special treatment as we need to create new math versions.
+      msg(concat({"New math versions: ", vnormal, " and ", vbold, "."}), "log")
+      -- Note this is anyway delayed for non-default font sets, so these are only
+      --    created if the font set is actually used in the document.
+      -- Font sets beyond the default require lua-unicode-math, so this is the
+      --    default.
+      local vmath = out_math.math or "lmm"
+      local vrm = out_math.rm or {"lmr-base", embrace("m"), embrace("bx")}
+      local vsf = out_math.sf or {"lmss-base", embrace("m"), embrace("bx")}
+      local vtt = out_math.tt or {"lmtt-base", embrace("m"), embrace("bx")}
+      sprint(-2, flattened({
+        tok_declaremathversion, embrace(vnormal), tok_declaremathversion,
+          embrace(vbold),
+      -- TODO SERIES ???
+        tok_set_lum_fnts, embrace(fontset), embrace(vmath), embrace("m"),
+          embrace("b"), -- for now
+      -- TODO SERIES SHAPE
+        tok_mathrm_ver, embrace(fontset), embrace(vrm[1]), vrm[2], vrm[3],
+          embrace("n"), embrace("it"),
+        tok_mathsf_ver, embrace(fontset), embrace(vsf[1]), vsf[2],
+          vsf[3], embrace("n"),
+        tok_mathtt_ver, embrace(fontset), embrace(vtt[1]), vtt[2],
+          vtt[3], embrace("n")})) -- for now
+      sprint(-2, flattened({tok_mathversion, embrace(vnormal),
+        tok_renewcommand, tok_boldmath_inner, tok_group_begin,
+        tok_atnomath, tok_boldmath, tok_mathversion, embrace(vbold),
+        tok_group_end,
+        tok_renewcommand, tok_normalmath_inner, tok_group_begin,
+        tok_atnomath, tok_normalmath, tok_mathversion, embrace(vnormal),
+        tok_group_end}))
+    end
+    -- This now catches both default and non-default fontsets.
+    insert(out, flattened({tok_mathversion, embrace(vnormal),
+      tok_renewcommand, tok_boldmath_inner, tok_group_begin,
+      tok_atnomath, tok_boldmath, tok_mathversion, embrace(vbold),
+      tok_group_end,
+      tok_renewcommand, tok_normalmath_inner, tok_group_begin,
+      tok_atnomath, tok_normalmath, tok_mathversion, embrace(vnormal),
+      tok_group_end}))
+  end
+
+  if not dflt then
+    sprint(-2, tok_normalfont)
+  end
+
+  if dflt then
+    msg({"Creating meta family default so defaults can be reset, if \z
+      needed.\nFont set: ", fontset, "."}, "log")
+  else
+    msg(concat({"Creating meta family.\nFont set: \'", fontset, "\'."}), "log")
+  end
+
+  -- TODO SHAPE RESTORE??
+  insert(out, tok_normalfont)
+  -- These should always be global, protected.
+  luafunction_to_cs(concat({"__lfc_font_set_", fontset, ":"}),
+    function() return sprint(-2, flattened(out), "global", "protected")
+  end)
+
+end
+-- }}}
+
+---@function configure_doc_families() {{{
+---@description The purpose of this wrapper is to enable us to delay 
+---@description   non-default font set (aka fontset) configuration and avoid it
+---@description   completely if the font set is never used.
+---@description This method delays font_config() in addition to the usual
+---@description   things.
+---@description However, I do not really expect that it will work ...
+local function configure_doc_families()
+  return function()
+    local fontset = font_sets.__curr
+    if fontset == "default" then
+      configure_doc_families_aux("default")
+    else
+      local function fn() return configure_doc_families_aux(fontset) end
+      luafunction_to_cs(concat({"__lfc_font_set_", fontset, ":"}), fn, "global", "protected")
+    end
   end
 end
 -- }}}
@@ -2466,15 +3093,62 @@ luafunction_to_cs("__lfc_set_tt:n",   get_fam_default_scanner("tt"))
 luafunction_to_cs("__lfc_set_math:n", get_fam_default_scanner("math"))
 -- }}}
 
--- Scanners for additional family names, a general one for features, and a specific one for the features key-value interface.
+-- Scanners for additional and family names, a general one for features, and specifics one for scoped features and the features key-value interface.
 -- {{{
 luafunction_to_cs("__lfc_set_fam_name:n", get_fam_name_scanner())
+luafunction_to_cs("__lfc_set_font_set:n", get_font_set_scanner())
+luafunction_to_cs("__lfc_new_font_set:n", get_new_font_set_scanner())
+luafunction_to_cs("__lfc_new_font_set:nn", get_copy_font_set_scanner())
 luafunction_to_cs("__lfc_set_fam_cfg:nn", get_fam_cfg_scanner())
-luafunction_to_cs("__lfc_set_fam_features:nn", get_fam_features_scanner())
+luafunction_to_cs("__lfc_set_fam_scoped_fea:nn", get_fam_scoped_fea_scanner())
+luafunction_to_cs("__lfc_set_fam_features:nnn", get_fam_features_scanner())
 -- }}}
 
 -- A macro to actually configure the font families.
 luafunction_to_cs("__lfc_configure_doc_families:", configure_doc_families())
+
+-- Auxiliary utility functions.
+-- Reuse fn. rather than messing about with complicated sequence lookups in LaTeX.
+-- This simplifies the key-val code, but erroneous input is left there (for now).
+---@function parse_spec_scanner() {{{
+local function parse_spec_scanner()
+  return do_with_two_scanner(function(kind,descriptor)
+    local kinds = {
+      ["case"]    = variants,
+      ["shape"]   = shapes,
+      ["weight"]  = weights,
+      ["width"]   = widths
+    }
+    return sprint(-2, parse_spec(kinds[kind],descriptor))
+  end)
+end
+-- }}}
+luafunction_to_cs("__lfc_parse_spec:nn", parse_spec_scanner())
+
+luafunction_to_cs("__lfc_parse_series:nn",
+  do_with_two_scanner(function(series,value)
+    local nfss_doc_families, nfss_default_families = get_curr_nfss_families()
+    local curr = nfss_doc_families and nfss_doc_families.curr
+    curr = curr and nfss_doc_families[curr]
+    if curr then curr[series] = value end
+  end)
+)
+
+luafunction_to_cs("__lfc_parse_series:nnn", 
+  do_with_three_scanner(function(series,weight,width)
+    weight = lower(weight)
+    width = lower(width)
+    series = lower(series)
+    local nfss_doc_families, nfss_default_families = get_curr_nfss_families()
+    local curr = nfss_doc_families and nfss_doc_families.curr
+    curr = curr and nfss_doc_families[curr]
+    if curr then 
+      curr[series] = parse_nfss(weights[weight] or "m", widths[width] or "m", "m")
+    end
+    -- if curr then curr[series] = rep end
+    -- return sprint(-2, rep)
+  end)
+)
 
 ---@function get_log_level_scanner() {{{
 local function get_log_level_scanner()

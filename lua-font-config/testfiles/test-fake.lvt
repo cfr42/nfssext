@@ -1,0 +1,30 @@
+%% $Id: test-fake.lvt 12196 2026-11-08 04:14:29Z cfrees $
+\input lfc-support.tex
+\documentclass{article}
+\parindent=0pt
+\usepackage{lua-font-config}
+\fontconfig{%
+  family={%
+    name = imfellenglish,
+    command = \imfell,
+    fakebold,
+    fakeoblique = 0.9,
+  },
+}
+\begin{document}
+\fontsize{13.5}{15}%
+\START
+\TEST{family with fake series/shape from m/n m/it}{%
+  \imfell
+  This is standard IM FELL English Roman
+
+  \textit{This is standard IM FELL English Italic}
+
+  \textsl{This is faked oblique IM FELL English Roman}
+
+  \bfseries
+  This is faked bold with \textit{italics} and \textsl{faked oblique}.
+}
+\OMIT
+
+\end{document}

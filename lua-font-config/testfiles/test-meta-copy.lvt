@@ -1,0 +1,68 @@
+%% $Id: test-meta-copy.lvt 12219 2026-11-24 03:31:45Z cfrees $
+\input lfc-support.tex
+\documentclass{article}
+\parindent=0pt
+\usepackage{lua-font-config}
+\makeatletter
+\newcount\lfccnt
+\lfccnt=0
+\everymath{\advance\lfccnt by 1 \csname lfc@math@aux\endcsname {\the\lfccnt}}
+\makeatother
+\fontconfig{%
+  rm = {%
+    name = TeX Gyre Pagella,
+    fea = {mode=node;script=dflt;language=dflt;+tlig;+onum;+pnum},
+  },
+  math = texgyrepagellamath,
+}
+\newfontset[default]{latinii}
+\fontconfig[latinii]{%
+  rm = {%
+    name = tex gyre schola,
+    fea = {+onum;+pnum},
+  },
+  sf = {%
+    name = texgyrebonum,
+  },
+  math = texgyrescholamath,
+}
+\newfontset[latinii]{latiniii}
+\fontconfig[latiniii]{%
+  tt = texgyreadventor,
+}
+\def\testme{0123456789}
+\def\testma{$\llap{\kern0pt}$\kern0pt$\sqrt{2} \notin \mathbb{Q} \mathrm{a}\mathit{a}\mathbf{a}\mathsf{a}\mathtt{a} \cos$}
+\makeatletter
+\let\@premablecmds\@empty
+\makeatother
+\begin{document}
+\START
+\TEST{font set: default (initial)}{%
+  \rmfamily \TeX-Gyre Pagella: \testme\ (osf, prop)\par
+  \sffamily lmss: \testme\par
+  \ttfamily lmtt: \testme\par
+  \normalfont \TeX-Gyre Pagella Math: \testma\par
+}
+
+\TESTTITLE{font set: switch to latinii}
+\usefontset{latinii}%
+
+\TEST{font set: latinii}{%
+  \rmfamily \TeX-Gyre Schola:  \testme\ (osf, prop)\par
+  \sffamily \TeX-Gyre Bonum: \testme\par
+  \ttfamily lmtt: \testme\par
+  \normalfont \TeX-Gyre Schola Math: \testma\par
+}
+
+\TESTTITLE{font set: switch to latiniii}
+\usefontset{latiniii}%
+
+\TEST{font set: switch to latiniii}{%
+  \rmfamily \TeX-Gyre Schola:  \testme\ (osf, prop)\par
+  \sffamily \TeX-Gyre Bonum: \testme\par
+  \ttfamily \TeX-Gyre Adventor: \testme\par
+  \normalfont \TeX-Gyre Schola Math: \testma\par
+}
+% \END
+\end{document}
+

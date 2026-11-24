@@ -1,0 +1,161 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+============================================================
+TEST 1: \newfontset error: default name forbidden
+============================================================
+Package lua-font-config Warning: Font set 'default' does not need to be created. Ignoring request on line ....
+============================================================
+============================================================
+TEST 2: \newfontset error: no default
+============================================================
+! Package lua-font-config Error: The 'default' font set is not configured. Reported on line ....
+For immediate help type H <return>.
+ ...                                              
+l. ...\newfontset{wombles}
+You tried to define a new font set before configuring a default set. This is not possible. You need first to use \fontconfigto configure the default set. See the lua-font-config documentation for further information.
+Package lua-font-config Info: Loading lua-unicode-math for maths support on line ....
+(../lua-unicode-math.sty
+Package: lua-unicode-math ....-..-.. v... Opentype Math support for LuaLaTeX
+\symlummain=\mathgroup4
+LaTeX Font Info:    Overwriting symbol font `lummain' in version `bold'
+(Font)                  TU/lmm/m/n --> TU/lmm/b/n on input line ....
+\mathfamattr=\attribute...
+Lua-only attribute leftroot = ...
+Lua-only attribute uproot = ...
+Inserting `lua-unicode-math' in `pre_mlist_to_hlist_filter'.
+Custom whatsit prime = 1
+Lua function prime_helper:w = ...
+Custom whatsit not = 2
+Lua function not = ...
+Custom whatsit dots = 3
+Lua function dots = ...
+Lua function __l_uni_math_set_previous_dots_type:w = ...
+Lua function __l_uni_math_set_mathstyle_mappings:NNNNNN = ...
+Lua function __l_uni_math_uproot:w = ...
+Lua function __l_uni_math_leftroot:w = ...
+Lua function __l_uni_math_is_integral_cp:wTF = ...
+Lua function __l_uni_math_every_math_size: = ...
+Lua function __l_uni_math_variation_selector:w = ...
+\g__l_uni_math_max_mathstyle_int=\count...
+(../unicode-math-table.tex)
+LaTeX template Info: Declaring template type 'lua-unicode-math-style' taking 0 argument(s) on line ....
+LaTeX template Info: Declaring template type 'lua-unicode-math-style-cmd' taking 1 argument(s) on line ....
+)
+LaTeX Font Info:    Overwriting math alphabet `\mathrm' in version `normal'
+(Font)                  TU/lmr-base/m/n --> TU/lmr-base/m/n on input line ....
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
+(Font)                  TU/lmr-base/m/it --> TU/lmr-base/m/it on input line ....
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
+(Font)                  TU/lmr-base/bx/n --> TU/lmr-base/bx/n on input line ....
+LaTeX Font Info:    Overwriting math alphabet `\mathrm' in version `bold'
+(Font)                  TU/lmr-base/bx/n --> TU/lmr-base/bx/n on input line ....
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
+(Font)                  TU/lmr-base/bx/it --> TU/lmr-base/bx/it on input line ....
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `bold'
+(Font)                  TU/lmr-base/bx/n --> TU/lmr-base/bx/n on input line ....
+LaTeX Font Info:    Redeclaring symbol font `operators' on input line ....
+LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
+(Font)                  TU/lmr-base/m/n --> TU/lmr-base/m/n on input line ....
+LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
+(Font)                  TU/lmr-base/bx/n --> TU/lmr-base/m/n on input line ....
+LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
+(Font)                  TU/lmr-base/m/n --> TU/lmr-base/bx/n on input line ....
+LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
+(Font)                  TU/lmss-base/m/n --> TU/lmss-base/m/n on input line ....
+LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
+(Font)                  TU/lmss-base/bx/n --> TU/lmss-base/bx/n on input line ....
+LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
+(Font)                  TU/lmtt-base/m/n --> TU/lmtt-base/m/n on input line ....
+LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
+(Font)                  TU/lmtt-base/m/n --> TU/lmtt-base/bx/n on input line ....
+============================================================
+============================================================
+TEST 3: \newfontset error: already exists
+============================================================
+! Package lua-font-config Error: Font set fraggles already defined. Reported on line ....
+For immediate help type H <return>.
+ ...                                              
+l. ...\newfontset{fraggles}
+You tried to define a new font set (meta-family) with the same name as an existing set. See the lua-font-config documentation for further information.
+============================================================
+============================================================
+TEST 4: \newfontset error: forbidden names
+============================================================
+Package lfc Error: Font set '__aardvark' not permitted!
+(lfc)              on input line ....2
+stack traceback:
+^^I[C]: in function 'error'
+^^I./lua-font-config.lua:...: in upvalue 'msg'
+^^I./lua-font-config.lua:...: in upvalue 'msg_assert'
+^^I./lua-font-config.lua:...: in function <./lua-font-config.lua:...>
+^^I(...tail calls...)
+^^I./lua-font-config.lua:...: in function <./lua-font-config.lua:...>
+^^I(...tail calls...).
+<argument> \__lfc_new_font_set:n {__aardvark}
+l. ...\newfontset{__aardvark}
+The lua interpreter ran into a problem, so the
+remainder of this lua chunk will be ignored.
+Package lfc Error: Font set 'nfss_doc_families' not permitted!
+(lfc)              on input line ....2
+stack traceback:
+^^I[C]: in function 'error'
+^^I./lua-font-config.lua:...: in upvalue 'msg'
+^^I./lua-font-config.lua:...: in upvalue 'msg_assert'
+^^I./lua-font-config.lua:...: in function <./lua-font-config.lua:...>
+^^I(...tail calls...)
+^^I./lua-font-config.lua:...: in function <./lua-font-config.lua:...>
+^^I(...tail calls...).
+<argument> ...c_new_font_set:n {nfss_doc_families}
+l. ...\newfontset{nfss_doc_families}
+The lua interpreter ran into a problem, so the
+remainder of this lua chunk will be ignored.
+Package lfc Error: Font set 'nfss_default_families' not permitted!
+(lfc)              on input line ....2
+stack traceback:
+^^I[C]: in function 'error'
+^^I./lua-font-config.lua:...: in upvalue 'msg'
+^^I./lua-font-config.lua:...: in upvalue 'msg_assert'
+^^I./lua-font-config.lua:...: in function <./lua-font-config.lua:...>
+^^I(...tail calls...)
+^^I./lua-font-config.lua:...: in function <./lua-font-config.lua:...>
+^^I(...tail calls...).
+<argument> ...w_font_set:n {nfss_default_families}
+l. ...\newfontset{nfss_default_families}
+The lua interpreter ran into a problem, so the
+remainder of this lua chunk will be ignored.
+============================================================
+============================================================
+TEST 5: \fontconfig error: font set does not exist
+============================================================
+Package lfc Error: Font set 'trumpton' not configured!
+(lfc)              on input line ....2
+stack traceback:
+^^I[C]: in function 'error'
+^^I./lua-font-config.lua:...: in upvalue 'msg'
+^^I./lua-font-config.lua:...: in upvalue 'get_curr_nfss_families'
+^^I./lua-font-config.lua:...: in function <./lua-font-config.lua:...>
+^^I(...tail calls...).
+<inserted text> ...{__lfc_set_rm:n}{imfellenglish}
+l. ...}
+The lua interpreter ran into a problem, so the
+remainder of this lua chunk will be ignored.
+Lua function __lfc_font_set_trumpton: = ...
+============================================================
+============================================================
+TEST 6: \usefontset error: unknown font set (undeclared)
+============================================================
+! Package lua-font-config Error: Font set lucy not defined. Reported on line ....
+For immediate help type H <return>.
+ ...                                              
+l. ...}
+A set of fonts (meta-family) must be defined in the preamble before it can be used in your document. See the lua-font-config documentation for further information.
+============================================================
+============================================================
+TEST 7: \usefontset error: unknown font set (not configured)
+============================================================
+! Package lua-font-config Error: Font set ivor not defined. Reported on line ....
+For immediate help type H <return>.
+ ...                                              
+l. ...}
+A set of fonts (meta-family) must be defined in the preamble before it can be used in your document. See the lua-font-config documentation for further information.
+============================================================

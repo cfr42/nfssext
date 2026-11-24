@@ -1,0 +1,25 @@
+%% $Id: test-no-hyph.lvt 12200 2026-11-11 01:16:28Z cfrees $
+\input lfc-support.tex
+\documentclass{article}
+\parindent=0pt
+\usepackage{lua-font-config}
+\START
+\fontconfig{%
+  tt = {% 
+    name = texgyrecursor,
+    fea = {-tlig;+tnum;+lnum;-rlig;-liga},
+    hyphenchar = false,
+  },
+}
+\newbox\testbox
+\begin{document}
+\TEST{texgyrecursor tab lining -tlig -rlig -liga no hyphenchar}{%
+  \setbox\testbox=\vbox{%
+    \hsize=2cm
+    \ttfamily
+    A transcendentally enabled box.%
+  }%
+  \showbox\testbox
+}
+\end{document}
+

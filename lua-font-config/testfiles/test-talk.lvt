@@ -1,11 +1,9 @@
-%% $Id: test-talk.lvt 12079 2026-09-29 16:08:03Z cfrees $
+%% $Id: test-talk.lvt 12195 2026-11-07 19:09:23Z cfrees $
 \input lfc-support.tex
 \DocumentMetadata{}
-\START
 \RequirePackage{lua-font-config}%
-\OMIT
 \documentclass{ltx-talk}
-\TIMO
+\START
 \TEST{no-fontspec}{%
   \IfPackageLoadedTF{fontspec}{\ERROR}{\TYPE{OK!}}%
 }
@@ -41,4 +39,5 @@
 
   \textsc{Small-Caps \textsl{italics \textbf{bold}} \textbf{bold}}
 \end{frame}
+\END
 \end{document}

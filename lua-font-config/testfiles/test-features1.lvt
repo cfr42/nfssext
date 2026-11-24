@@ -1,5 +1,5 @@
-%% $Id: test-features1.lvt 12171 2026-10-30 05:05:43Z cfrees $
-%% $Id: test-features1.lvt 12171 2026-10-30 05:05:43Z cfrees $
+%% $Id: test-features1.lvt 12219 2026-11-24 03:31:45Z cfrees $
+%% $Id: test-features1.lvt 12219 2026-11-24 03:31:45Z cfrees $
 \input lfc-support.tex
 \documentclass{article}
 \parindent=0pt
@@ -31,7 +31,7 @@
       mode=node,
       script=dflt,
       language=dflt,
-      ligatures={notex,nostandard},
+      ligatures={notex,nocommon},
       figures={lining,tab},
     },
   },

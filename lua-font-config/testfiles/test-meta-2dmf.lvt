@@ -1,0 +1,77 @@
+%% $Id: test-meta-2dmf.lvt 12205 2026-11-16 23:56:39Z cfrees $
+\input lfc-support.tex
+\documentclass{article}
+\parindent=0pt
+\usepackage{lua-font-config}
+\textwidth=200mm\relax
+\oddsidemargin=-25mm\relax
+\newcount\lfccnt
+\lfccnt=0
+\everymath{\advance\lfccnt by 1 \csname lfc@math@aux\endcsname {\the\lfccnt}}
+\fontconfig{%
+  rm = {%
+    name = TeX Gyre Pagella,
+    fea = {mode=node;script=dflt;lAngUaGe=DfLT;+TLIG;+ONUM;+PNUM},
+  },
+  sf = {% 
+    name = texgyreheros,
+    fea = {mode=node;script=dflt;lAngUaGe=DfLT;+TLIG;+pnum;+lnum},
+  },
+  tt = {% 
+    name = texgyrecursor,
+    fea = {mode=node;script=dflt;lAngUaGe=DfLT;-TLIG;+tnum;+lnum;-liga},
+  },
+  math = texgyrepagellamath,
+}
+\newfontset{latinii}
+\fontconfig[latinii]{
+  rm = {%
+    name = tex gyre schola,
+    fea = {+onum;+pnum},
+  },
+  sf = {%
+    name = latinmodernsans,
+    fea = {+onum;+pnum},
+  },
+  % for insanity's sake
+  tt = imfell english,
+  math = texgyrescholamath,
+}
+\def\testme{0123456789 -- --- affable official aficionado}
+\def\testma{%
+  $\mathrm{ABC abc} \mathbf{d} \mathit{e} \mathsf{f} \mathtt{g} \sin$
+  $v = ut + \frac{1}{2}at^2$
+  $\mathscr{ABC} \mathcal{ABC}$%
+}
+\begin{document}
+\START
+\TEST{font set: default (initial)}{%
+  \rmfamily \TeX-Gyre Pagella: \testme\ (osf, prop)\par
+  \sffamily \TeX-Gyre Heros: \testme\ (lining, prop)\par
+  \ttfamily \TeX-Gyre Cursor \testme\ (tabular, lining, no tlig etc.)\par
+  \normalfont \TeX-Gyre Pagella Math: \testma\par
+}
+
+\TESTTITLE{font set: switch to latinii}
+\usefontset{latinii}%
+
+\TEST{font set: latinii}{%
+  \rmfamily \TeX-Gyre Schola:  \testme\ (osf, prop)\par
+  \sffamily Latin Modern Sans: \testme\ (osf, prop)\par
+  \ttfamily IMFell English \testme\ (N/A)\par
+  \normalfont \TeX-Gyre Schola Math: \testma\par
+}
+
+\TESTTITLE{font set: switch to default}
+\usefontset{default}%
+
+
+\TEST{font set: default (reset)}{%
+  \rmfamily \TeX-Gyre Pagella: \testme\ (osf, prop)\par
+  \sffamily \TeX-Gyre Heros: \testme\ (lining, prop)\par
+  \ttfamily \TeX-Gyre Cursor \testme\ (tabular, lining, no tlig etc.)\par
+  \normalfont \TeX-Gyre Pagella Math: \testma\par
+}
+% \END
+\end{document}
+

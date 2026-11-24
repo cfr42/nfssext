@@ -1,0 +1,15 @@
+%% $Id: test-defns.lvt 12207 2026-11-17 03:34:53Z cfrees $
+\input lfc-support.tex
+\documentclass{article}
+\parindent=0pt
+\usepackage{lua-font-config}
+\ExplSyntaxOn
+\START
+\TEST{\token_to_str:N \UTFencname}{\cs_log:N \UTFencname}
+\TEST{\token_to_str:N \normalmath}{\cs_log:N \normalmath}
+\TEST{\token_to_str:c {normalmath\c_space_tl}}{\cs_log:c {normalmath\c_space_tl}}
+% \boldmath should not be changed from the default in this test.
+\TEST{\token_to_str:N \boldmath}{\cs_log:N \boldmath}
+\TEST{\token_to_str:c {boldmath\c_space_tl}}{\cs_log:c {boldmath\c_space_tl}}
+\ExplSyntaxOff
+\END
