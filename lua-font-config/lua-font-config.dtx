@@ -34,7 +34,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12221 2026-11-24 05:06:37Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12222 2026-11-24 06:32:53Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -255,9 +255,11 @@
   }%
 }
 \makeatother
+%% ^^A document <<<
 \begin{document}
   \DocInput{\filename}
 \end{document}
+%% ^^A >>>
 %</driver>
 % \fi
 %% ^^A >>>
@@ -324,16 +326,13 @@
 %   }%
 % .}
 %
-% The key-value based configuration currently supports configuring the base text font families and Unicode maths fonts (using \pkg{lua-unicode-math}.
-% Multiple sets of such fonts may be setup and the sets switched in-and-out as required during typesetting.
-% Each set includes none or more of a roman/serif, sans, typewriter/mono and (Unicode) maths (main, script and calligraphic) families.
+% Key-value configuration currently supports setting up the base text font families and Unicode maths fonts (using \pkg{lua-unicode-math}).
+% Multiple independent configurations for maths and text (\fontsettarg*) may be specified in the preamble, enabling one to switch between them at any point in the document.
+% Overhead is minimal: if a set is never used, no fonts are defined and no families configured.
+% Support for \fontsettarg*\ is \emph{doubly experimental and provisional}.
 %
 % In addition, specialist text families may be configured and accessed \emph{via} customisable command switches (e.g.~\cs{MyFancyTitleFont} or whatever).
 % These may be accessed independently of the current font set.
-%
-% Support for \fontsettarg*\ is \emph{doubly experimental and provisional}.
-% As mentioned above, these allow documents to switch between multiple sets of font configurations at any point, provided all such sets are specified before \verb|\begin{document}|.
-% Sets may include changes of Unicode maths font and text fonts used in \texttt{math} mode.
 %
 % By default, the package tries to provide font families which are as rich and flexible as possible.
 % For example, many families will include a variety of widths and weights, both italic and oblique upright and small-caps etc.\ out-of-the-box\footnote{%
@@ -342,20 +341,19 @@
 %   If things do not fit, some (currently minimal) effort is made to accommodate them as distinct font families, so they are still available at document level.%
 % }.
 %
-% The package adds no ‘fake’ effects by default: if no bold or oblique is found, the family will have neither\footnote{%
+% ‘Fake’ fonts (e.g.~bold or oblique) are supported, but the package never adds such effects by default --- if no bold or oblique is found, the family will have neither, unless explicitly requested\footnote{%
 %   If you use Unicode maths, note that \pkg{lua-unicode-math} \emph{does} add fake bold if otherwise unavailable.
 %   This is mainly an issue for Latin Modern Math, since this is the only case where \pkg{lua-font-config} uses \pkg{lua-unicode-math}'s font definitions.%
 % }.
-% These effects are available, but must be explicitly enabled by the user.
 %
 % A reasonable\footnote{%
 %   Where ‘reasonable’ means I have some idea what they do and some, possibly merely theoretical, ability to test them.
 %   This is naturally a quite unreasonable definition of ‘reasonable’ with a clear Western European bias.
 %   Input from users of non-Latin scripts (initially for mono-script documents) would be particularly welcome.%
-% } variety of general options and opentype font features have key-value support for text families.
+% } variety of general options and opentype font features now have key-value support for text families.
 % ‘Scoped’ features, which apply to only some fonts in a family, are also supported.
 %
-% Alternatively or additionally, for text families, opentype feature specifications may be passed more-or-less directly to the font loader.
+% Advanced users may also pass opentype feature specifications for text families more-or-less directly to the font loader.
 % This enables any loader-supported specification to be used and is faster, but requires knowledge of the syntax and opentype tag names.
 %
 % Simple usage looks like this:
@@ -1246,11 +1244,19 @@
 %   Two new public commands: \cs{newfontset} and \cs{usefontset} allow users to manage these and \cs{fontconfig} gets a new optional argument to accommodate them.}
 % \changes{v0.0}{2026-11-24}{Separate user documentation.}
 %
+% \MaybeStop{%
+%   \def\glossaryname{Change History}%
+%   \usesafecs
+%   \PrintChanges
+%   \resetcs
+%   \PrintIndex
+% }
 % \twmarg
 % 
 % \section{Implementation}% ^^A <<<
 %
-% There is very little here, because almost everything is done in Lua.
+% There was very little here, because almost everything is done in Lua.
+% While there is more here now, it is still mostly a wrapper around the Lua.
 %
 % \pkg{expl3} function names use the standard syntax conventions.
 % In the source a function which begins \verb|\__@@_| is defined in the Lua module or is a variant of such a function; one which begins \verb|\_@@_| is defined in the package itself.
@@ -1262,7 +1268,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12221 2026-11-24 05:06:37Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12222 2026-11-24 06:32:53Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -1880,19 +1886,6 @@
 %   These are set up slightly differently for \texttt{default} and non-default \fontsettarg*.
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \_@@_set_mathrm:nnnnnn #1#2#3#4#5#6 {
-%<debug>      \msg_log:nnnn {lfc} {info} {
-%<debug>        Configuring~math~versions~normal@#1~and~bold@#1
-%<debug>      } {
-%<debug>        \token_to_str:N \mathrm ~->~ #2,~#3,~#5.~
-%<debug>        \token_to_str:N \mathit ~->~ #2,~#3,~#6.~
-%<debug>        \token_to_str:N \mathbf ~->~ #2,~#4,~#5.~
-%<debug>        oerators ~->~ #2,~#3,~#5.~
-%<debug>        and~
-%<debug>        \token_to_str:N \mathrm ~->~ #2,~#4,~#6.~
-%<debug>        \token_to_str:N \mathit ~->~ #2,~#4,~#6.~
-%<debug>        \token_to_str:N \mathbf ~->~ #2,~#3,~#5.~
-%<debug>        oerators ~->~ #2,~#4,~#5.~
-%<debug>      }
   \tl_if_blank:nTF {#1} {
     \SetMathAlphabet \mathrm {normal} {TU} {#2} {#3} {#5}
     \SetMathAlphabet \mathit {normal} {TU} {#2} {#3} {#6}
@@ -1915,13 +1908,6 @@
   }
 }
 \cs_new_protected_nopar:Npn \_@@_set_mathsf:nnnnn #1#2#3#4#5 {
-%<debug>      \msg_log:nnnn {lfc} {info} {
-%<debug>        Configuring~math~versions~normal@#1~and~bold@#1
-%<debug>      } {
-%<debug>        \mathsf ~->~ #2,~#3,~#5.~
-%<debug>        and~
-%<debug>        \mathsf ~->~ #2,~#4,~#5.
-%<debug>      }
   \tl_if_blank:nTF {#1} {
     \SetMathAlphabet \mathsf {normal} {TU} {#2} {#3} {#5}
     \SetMathAlphabet \mathsf {bold}   {TU} {#2} {#4} {#5}
@@ -1932,13 +1918,6 @@
   }
 }
 \cs_new_protected_nopar:Npn \_@@_set_mathtt:nnnnn #1#2#3#4#5 {
-%<debug>      \msg_log:nnnn {lfc} {info} {
-%<debug>        Configuring~math~versions~normal@#1~and~bold@#1
-%<debug>      } {
-%<debug>        \mathtt ~->~ #2,~#3,~#5.~
-%<debug>        and~
-%<debug>        \mathtt ~->~ #2,~#4,~#5.
-%<debug>      }
   \tl_if_blank:nTF {#1} {
     \SetMathAlphabet \mathtt {normal} {TU} {#2} {#3} {#5}
     \SetMathAlphabet \mathtt {bold}   {TU} {#2} {#4} {#5}
@@ -2177,7 +2156,7 @@
 %     But maybe not \dots.
 % \end{description}
 %    \begin{macrocode}
-\ProvidesPackageSVN[\filebase-ui1.sty]{$Id: lua-font-config.dtx 12221 2026-11-24 05:06:37Z cfrees $}[v0.2 \revinfo][\filebase-ui1: UI 1]
+\ProvidesPackageSVN[\filebase-ui1.sty]{$Id: lua-font-config.dtx 12222 2026-11-24 06:32:53Z cfrees $}[v0.2 \revinfo][\filebase-ui1: UI 1]
 \DefineFileInfoSVN[lfcuii]
 %    \begin{macrocode}
 \ExplSyntaxOn
@@ -2524,7 +2503,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-fea <<<
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12221 2026-11-24 05:06:37Z cfrees $
+%% $Id: lua-font-config.dtx 12222 2026-11-24 06:32:53Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -2584,7 +2563,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-features <<<
 %<*ee-features>
-%% $Id: lua-font-config.dtx 12221 2026-11-24 05:06:37Z cfrees $
+%% $Id: lua-font-config.dtx 12222 2026-11-24 06:32:53Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -2883,7 +2862,7 @@ Oh, sphinx of black quartz, judge my vow!
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2-#3-#4\nil{#1-#2-#3}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName-doc]{$Id: lua-font-config.dtx 12221 2026-11-24 05:06:37Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName-doc]{$Id: lua-font-config.dtx 12222 2026-11-24 06:32:53Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \AddToHook{begindocument}{\OnlyDescription\setcounter{IndexColumns}{3}}
 \input{\MyFileBaseName.dtx}
@@ -2897,7 +2876,7 @@ Oh, sphinx of black quartz, judge my vow!
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2-#3-#4\nil{#1-#2-#3}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName-code]{$Id: lua-font-config.dtx 12221 2026-11-24 05:06:37Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName-code]{$Id: lua-font-config.dtx 12222 2026-11-24 06:32:53Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \AddToHook{begindocument}{\AlsoImplementation\setcounter{IndexColumns}{2}}
 \input{\MyFileBaseName.dtx}
