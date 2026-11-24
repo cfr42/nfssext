@@ -34,7 +34,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12220 2026-11-24 03:59:40Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12221 2026-11-24 05:06:37Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -308,15 +308,14 @@
 % The package requires Lua\LaTeXe.
 % It will not work with any other engine or format.
 %
-% Unicode maths is supported \emph{via} \pkg{lua-unicode-math}.
-% It will \textbf{not} work with \pkg{unicode-math}.
-%
+% Unicode maths and \fontsettarg*\ are supported \emph{via} \pkg{lua-unicode-math}.
+% These features will \textbf{not} work with \pkg{unicode-math}.
 % 
 %% ^^A >>>
 %
 % \section{Introduction}\label{sec:intro}% ^^A <<<
 %
-% \emph{The key-value user interface and support for font sets are currently highly experimental\footnote{%
+% {\em The key-value user interface and support for font sets are currently highly experimental\footnote{%
 %     \begin{tabular}{ll}
 %       v0.1: & ‘The user interface is currently \textbf{extremely} basic.’\\
 %       v0.2: & ‘The user interface is currently currently somewhat basic.’\\
@@ -327,47 +326,37 @@
 %
 % The key-value based configuration currently supports configuring the base text font families and Unicode maths fonts (using \pkg{lua-unicode-math}.
 % Multiple sets of such fonts may be setup and the sets switched in-and-out as required during typesetting.
-% In addition, specialist text families may be configured and accessed \emph{via} customisable command switches (e.g.~\cs{MyFancyTitleFont} or whatever).
 % Each set includes none or more of a roman/serif, sans, typewriter/mono and (Unicode) maths (main, script and calligraphic) families.
-% Specialist families can be accessed independently of the current font set.
 %
-% In addition to this, scaling, ‘fake bold’, ‘fake oblique’ rendering mode, language choice, script selection and default regular and bold series may be configured for each text family.
-% A reasonable\footnote{%
-%   Where ‘reasonable’ means I have some idea what they do and some, possibly merely theoretical, ability to test them.
-%   This is naturally a quite unreasonable definition of ‘reasonable’ with a clear Western European bias.
-%   Input from users of non-Latin scripts (initially for mono-script documents) would be particularly welcome.%
-% } variety of opentype font features have key-value support.
-% ‘Scoped’ features, which apply to only some fonts in a family, are also supported.
-%
-% Alternatively or additionally, for text families, feature specifications may be passed more-or-less directly to the font loader.
-% This enables any loader-supported specification to used and is faster, but requires knowledge of the syntax and opentype tag names.
+% In addition, specialist text families may be configured and accessed \emph{via} customisable command switches (e.g.~\cs{MyFancyTitleFont} or whatever).
+% These may be accessed independently of the current font set.
 %
 % Support for \fontsettarg*\ is \emph{doubly experimental and provisional}.
 % As mentioned above, these allow documents to switch between multiple sets of font configurations at any point, provided all such sets are specified before \verb|\begin{document}|.
 % Sets may include changes of Unicode maths font and text fonts used in \texttt{math} mode.
 %
-% Note that the automated configuration is already quite extensive.
-% By default, the package tries to configure font families which are as rich as possible, insofar as the fonts support this. 
-% This includes
-% \begin{itemize}
-%   \item multiple widths and shapes, insofar as \textsc{nfss} supports them;
-%   \item italic, oblique, upright italic, reverse italic, reverse oblique;
-%   \item small-caps, italic small-caps, oblique small-caps\footnote{%
-%     This should work whether small-caps are in separate fonts (e.g.~Latin Modern) or implemented by the \texttt{smcp} feature (e.g.~\TeX{}-Gyre Pagella).%
-%   };
-%   \item optical sizes;
-%   \item use of text fonts for the text font commands in \texttt{math} mode (e.g.~\cs{mathrm} etc.).
-% \end{itemize}
-% Of course, this depends on the quality of the data the fonts provide.
-% It is not always good or, even, vaguely accurate. 
-% If things do not fit, some (currently minimal) effort is made to accommodate them as distinct font families, so they are still available at document level.
+% By default, the package tries to provide font families which are as rich and flexible as possible.
+% For example, many families will include a variety of widths and weights, both italic and oblique upright and small-caps etc.\ out-of-the-box\footnote{%
+%   At present, this depends almost entirely on the quality of the data the fonts provide.
+%   It is not always good or, even, vaguely accurate. 
+%   If things do not fit, some (currently minimal) effort is made to accommodate them as distinct font families, so they are still available at document level.%
+% }.
 %
-% At present, this is still a bit chaotic and probably not that easy to use, as the results are ‘hidden’ from you (in, of course, plain sight).
-% Even so, you should typically need to do much less to access the fonts you want than you might otherwise expect. 
+% The package adds no ‘fake’ effects by default: if no bold or oblique is found, the family will have neither\footnote{%
+%   If you use Unicode maths, note that \pkg{lua-unicode-math} \emph{does} add fake bold if otherwise unavailable.
+%   This is mainly an issue for Latin Modern Math, since this is the only case where \pkg{lua-font-config} uses \pkg{lua-unicode-math}'s font definitions.%
+% }.
+% These effects are available, but must be explicitly enabled by the user.
 %
-% The advantage of this is that if a font has several widths, you can easily adjust the one used for bold by simply redefining the relevant default.
-% This is not very user friendly yet, but it is now a bit better than not completely terrible.
-% 
+% A reasonable\footnote{%
+%   Where ‘reasonable’ means I have some idea what they do and some, possibly merely theoretical, ability to test them.
+%   This is naturally a quite unreasonable definition of ‘reasonable’ with a clear Western European bias.
+%   Input from users of non-Latin scripts (initially for mono-script documents) would be particularly welcome.%
+% } variety of general options and opentype font features have key-value support for text families.
+% ‘Scoped’ features, which apply to only some fonts in a family, are also supported.
+%
+% Alternatively or additionally, for text families, opentype feature specifications may be passed more-or-less directly to the font loader.
+% This enables any loader-supported specification to be used and is faster, but requires knowledge of the syntax and opentype tag names.
 %
 % Simple usage looks like this:
 % \iffalse
@@ -1251,105 +1240,12 @@
 %% ^^A >>>
 %
 %
-%
-% \section{TO DOs}\label{sec:todo}% ^^A <<<
-%
-% These are not in any particular order, though there is some tendency for higher priority items to be earlier.
-% \begin{enumerate}
-%   \item Conceptual
-%     \begin{itemize}
-%       \item Abandon the whole thing since packages are not supposed to meddle with fonts?
-%     \end{itemize}
-%   \item \textsc{nfss}
-%     \begin{itemize}
-%       \item Multiple font configurations are now supported, but there is zero integration with e.g.~for multiple languages with multiple scripts.
-%         \begin{itemize}
-%           \item Support for \pkg{babel}?
-%             This!!!
-%           \item[] \pkg{babel} provides e.g. \cs{babelfont}, which uses \cs{fontspec}.
-%             Should \pkg{lua-font-config} provide this?
-%         \end{itemize}
-%      \end{itemize}
-%   \item Interface
-%     \begin{itemize}
-%       \item Provide a proper user interface (more similar to Con\TeX{}t, since we're using the same (\textsc{mkiv}) sorting?
-%         The interface is now not too dissimilar to a \LaTeX-ified version of this, I suppose, except there are no goodies or typefaces and our families are a bit richer and more flexible.
-%       \item Information for user - a bit better now, hopefully, as we use the standard mechanisms, except for debug messages.
-%       \item Accommodate \texttt{.ttc}. 
-%       \begin{itemize}
-%         \item The basis is done, but not sure what, if any, interface is needed?
-%         \item How to test this??
-%       \end{itemize}
-%     \end{itemize}
-%   \item Loader
-%     \begin{itemize}
-%       \item Test with \texttt{.ttf}. 
-%         \begin{itemize}
-%           \item What needs testing exactly??
-%             Or is this all on the loader?
-%         \end{itemize}
-%       \item Variable fonts.
-%         \begin{itemize}
-%           \item How to do or test??
-%         \end{itemize}
-%       \item Colour. 
-%         Do??
-%         \begin{itemize}
-%           \item What does ‘Do??’ refer to?
-%         \end{itemize}
-%       \item Cope with (text) symbol fonts?
-%         Not sure is that really needed?
-%       \item Combo, fallback \& all that.
-%     \end{itemize}
-%   \item Cache
-%     \begin{itemize}
-%       \item Cached data should depend on db/fnt versions.
-%         \begin{itemize}
-%           \item Or is this automatic?
-%           \item Or maybe it shouldn't?
-%         \end{itemize}
-%     \end{itemize}
-%   \item Documentation
-%     \begin{itemize}
-%       \item Not everything implemented in terms of the \textsc{ui} is in the user doc.
-%       \item The Lua code has some comments, but these don't always amount to documentation.
-%       \item The overall infrastructure isn't really documented, except for a partially accurate \textsc{ascii} database schema included inline.
-%       \item Registered Lua functions mapped to \pkg{expl3} names are not documented.
-%       \item Use of callbacks, hooks etc.\ is more-or-less undocumented.
-%     \end{itemize}
-%   \item Code
-%     \begin{itemize}
-%       \item Should be cleaned up -- I cannot need 2,500 lines to load a font!
-%       \item[Unnumbered Gripe] The code is too long, too complex, too clunky and too simplistic.
-%          (Yes, of course, it can be both.)
-%       \item Some remaining cleanup in the ConTeXt file, though this is much better than it was.
-%       \item Improve performance.
-%         \begin{itemize}
-%           \item There is some duplication and too many pre-definitions for my taste.
-%         \end{itemize}
-%       \item Possibly modify database creation to avoid correcting the data again??
-%     \end{itemize}
-%   \item Test suite
-%     \begin{itemize}
-%       \item There are no unit tests (cf.\ \pkg{nfssext-cfr}, where the tests are much more focused).
-%         I don't know how to implement this for (non-public) Lua functions.
-%     \end{itemize}
-% \end{enumerate}
-%
 % \changes{v0.1}{2026-10-15}{First public release.}
 % \changes{v0.2}{2026-10-29}{Bug fixes, code cleanup, somewhat better UI, doc improvements.}
 % \changes{v0.0}{2026-11-20}{Introduction of font sets to support multiple switchable font configurations.
 %   Two new public commands: \cs{newfontset} and \cs{usefontset} allow users to manage these and \cs{fontconfig} gets a new optional argument to accommodate them.}
+% \changes{v0.0}{2026-11-24}{Separate user documentation.}
 %
-% \MaybeStop{%
-%   \usesafecs
-%   \twreg
-%   \PrintChanges
-%   \resetcs
-%   \PrintIndex
-% }
-%% ^^A >>>
-% 
 % \twmarg
 % 
 % \section{Implementation}% ^^A <<<
@@ -1366,7 +1262,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12220 2026-11-24 03:59:40Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12221 2026-11-24 05:06:37Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -2281,7 +2177,7 @@
 %     But maybe not \dots.
 % \end{description}
 %    \begin{macrocode}
-\ProvidesPackageSVN[\filebase-ui1.sty]{$Id: lua-font-config.dtx 12220 2026-11-24 03:59:40Z cfrees $}[v0.2 \revinfo][\filebase-ui1: UI 1]
+\ProvidesPackageSVN[\filebase-ui1.sty]{$Id: lua-font-config.dtx 12221 2026-11-24 05:06:37Z cfrees $}[v0.2 \revinfo][\filebase-ui1: UI 1]
 \DefineFileInfoSVN[lfcuii]
 %    \begin{macrocode}
 \ExplSyntaxOn
@@ -2628,7 +2524,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-fea <<<
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12220 2026-11-24 03:59:40Z cfrees $
+%% $Id: lua-font-config.dtx 12221 2026-11-24 05:06:37Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -2688,7 +2584,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-features <<<
 %<*ee-features>
-%% $Id: lua-font-config.dtx 12220 2026-11-24 03:59:40Z cfrees $
+%% $Id: lua-font-config.dtx 12221 2026-11-24 05:06:37Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -2987,7 +2883,7 @@ Oh, sphinx of black quartz, judge my vow!
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2-#3-#4\nil{#1-#2-#3}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName-doc]{$Id: lua-font-config.dtx 12220 2026-11-24 03:59:40Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName-doc]{$Id: lua-font-config.dtx 12221 2026-11-24 05:06:37Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \AddToHook{begindocument}{\OnlyDescription\setcounter{IndexColumns}{3}}
 \input{\MyFileBaseName.dtx}
@@ -3001,7 +2897,7 @@ Oh, sphinx of black quartz, judge my vow!
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2-#3-#4\nil{#1-#2-#3}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName-code]{$Id: lua-font-config.dtx 12220 2026-11-24 03:59:40Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName-code]{$Id: lua-font-config.dtx 12221 2026-11-24 05:06:37Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \AddToHook{begindocument}{\AlsoImplementation\setcounter{IndexColumns}{2}}
 \input{\MyFileBaseName.dtx}
