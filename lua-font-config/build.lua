@@ -1,4 +1,4 @@
--- $Id: build.lua 12219 2026-11-24 03:31:45Z cfrees $
+-- $Id: build.lua 12223 2026-11-24 06:56:28Z cfrees $
 --------------------------------------------------------------------------------
 -- This package combines files released under distinct licences. 
 --
@@ -230,6 +230,7 @@ end
 --------------------------------------------------------------------------------
 local kpse_texmfdist = (string.gsub(kpse.expand_var("$TEXMFDIST"), "%-", "%%-"))
 function normalize_log_hook(line)
+  if string.find(line, "__lfc_tutexgyrebonumcompanion[%-sf]*%.fd") then return "" end
   line = (string.gsub(line, "(%.%/lua%-font%-config%.lua:.* in function %<%./lua%-font%-config%.lua:)%d+(%>)", "%1...%2"))
   return (string.gsub(line, kpse_texmfdist, "TEXMFDIST"))
 end
