@@ -1,9 +1,9 @@
--- $Id: lua-font-config.lua 12214 2026-11-20 19:11:29Z cfrees $
+-- $Id: lua-font-config.lua 12219 2026-11-24 03:31:45Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 do
   local name, rev, date = string.match(
-    "$Id: lua-font-config.lua 12214 2026-11-20 19:11:29Z cfrees $", 
+    "$Id: lua-font-config.lua 12219 2026-11-24 03:31:45Z cfrees $", 
     "Id: ([a-z][a-z-]*)%.lua (%d%d*) (%d%d%d%d%-%d%d%-%d%d) ")
   luatexbase.provides_module({
     name      = name,
@@ -1429,12 +1429,12 @@ local features_lookup = {
     dflt          = "dflt",
   },
   ligatures  = {
+    ["common"]        = "liga",
     ["contextual"]    = "clig",
     ["discretionary"] = "dlig",
     ["hist"]          = "hlig",
     ["historic"]      = "hlig",
     ["required"]      = "rlig",
-    ["standard"]      = "liga",
     ["tex"]           = "tlig",
   },
   mode       = {
@@ -1963,7 +1963,7 @@ local function add_fake_fd(fam, fake_fd, fake_fd_cfg)
   local fn = format("__lfc_%s", fd_filename)
   luafunction_to_cs(fn, function ()
     return write_fake_fd(fam, fake_fd, fake_fd_cfg)
-  end, "protected")
+  end, "global", "protected")
   fn = create(fn)
   file_subs_empty(fd_filename)
   sprint(-2, flattened({tok_hook_gput_code, tok_group_begin, 
@@ -2437,6 +2437,22 @@ doc_meta_families.__new   = function(name)
   }
   return known[name] 
 end
+doc_meta_families.__copy  = function(base,name) 
+  local known = doc_meta_families.__known
+  local new = doc_meta_families.__new(name)
+  msg_assert(known[base], concat({"Font set \'", base, "\' unknown!"}), "err")
+  msg_assert(known[base].nfss_doc_families and known[base].nfss_default_families,
+    concat({"Font set \'", base, "\' not setup properly!"}), "bug")
+  for i,j in sortedpairs(known[base].nfss_default_families) do
+    known[name].nfss_default_families[i] = j
+  end
+  for i,j in sortedpairs(known[base].nfss_doc_families) do
+    if j.default then
+      known[name].nfss_doc_families[i] = j
+    end
+  end
+  return known[name] 
+end
 do
   local mt  = {
     __index     = function(t, key) 
@@ -2474,6 +2490,9 @@ end
 local function new_doc_meta_family(name) 
   return doc_meta_families.__new(name)
 end
+local function copy_doc_meta_family(base,name) 
+  return doc_meta_families.__copy(base,name)
+end
 -- }}}
 
 -------------------------------------------------------------------------------
@@ -2481,13 +2500,14 @@ end
 -- do_with_<one|two|three>_scanner()
 -- get_fam_default_scanner()  get_fam_name_scanner()  get_fam_cfg_scanner()
 -- get_fam_scoped_fea_scanner()         get_fam_features_scanner()
--- get_doc_meta_fam_scanner()            get_new_doc_meta_fam_scanner()
+-- get_doc_meta_fam_scanner()           get_new_doc_meta_fam_scanner()
+-- set_doc_meta_fam()                   get_copy_doc_meta_fam_scanner()
 -- configure_doc_families()
 -- \__lfc_set_rm:n    \__lfc_set_sf:n   \__lfc_set_tt:n   \__lfc_set_math:n
--- \__lfc_set_fam_name:n                \__lfc_set_fam_cfg:nn   
+-- \__lfc_set_fam_name:n                \__lfc_set_fam_cfg:nn
 -- \__lfc_set_fam_scoped_fea:nn         \__lfc_set_fam_features:nnn
--- \__lfc_set_doc_meta_fam:n            \__lfc_new_doc_meta_fam:n            
--- \__lfc_configure_doc_families:
+-- \__lfc_set_doc_meta_fam:n            \__lfc_new_doc_meta_fam:n
+-- \__lfc_configure_doc_families:       \__lfc_new_doc_meta_fam:nn
 -- parse_spec_scanner()                 \__lfc_parse_spec:nn
 -- parse_nfss_scanner()                 \__lfc_parse_nfss:nnn
 -- tables: fam_defaults, fam_to_maths
@@ -2576,6 +2596,11 @@ local function get_fam_default_scanner(fam)
   return do_with_one_scanner(
     function(fam_name)
       local nfss_doc_families, nfss_default_families = get_curr_nfss_families()
+      if nfss_default_families[fam] then
+        -- In case this is a copied font set  and we're overriding an existing
+        --    family, drop it.
+        nfss_doc_families[nfss_default_families[fam]] = nil
+      end
       local cleanname = cleanfilename(fam_name)
       nfss_doc_families_cnt = nfss_doc_families_cnt + 1
       local t_name = concat({cleanname, nfss_doc_families_cnt}, "_")
@@ -2583,6 +2608,7 @@ local function get_fam_default_scanner(fam)
         name = tostring(fam_name),
         cleanname = cleanname,
         default = fam,
+        t_name = t_name,
       }
       nfss_doc_families[t_name].typeset_mode = fam ~= "math" and 0 or 1
       nfss_default_families[fam] = nfss_doc_families[t_name]
@@ -2611,6 +2637,17 @@ local function get_fam_name_scanner()
 end
 -- }}}
 
+---@function set_doc_meta_fam(name) {{{
+---@param       name    <string>
+---@description Sets the current doc meta family to name.
+---@description   doc meta family to that name.
+local function set_doc_meta_fam(name)
+  name = name and tostring(name) or "default"
+  doc_meta_families.__curr = name
+  msg_debug("lfc doc meta families: ", "doc", doc_meta_families)
+end
+-- }}}
+
 ---@function get_doc_meta_fam_scanner() {{{
 ---@description Returns a function which takes a name and sets the current
 ---@description   doc meta family to that name.
@@ -2633,6 +2670,20 @@ local function get_new_doc_meta_fam_scanner()
     function(name)
       if not name then return nil end
       new_doc_meta_family(tostring(name))
+      msg_debug("lfc doc meta families: ", "doc", doc_meta_families)
+    end)
+end
+-- }}}
+
+---@function get_copy_doc_meta_fam_scanner() {{{
+---@description Returns a function which takes two names and creates a
+---@description   copies a document meta family of the first name to a new
+---@description   document meta family of the second name.
+local function get_copy_doc_meta_fam_scanner()
+  return do_with_two_scanner(
+    function(base, name)
+      if not base or not name then return nil end
+      copy_doc_meta_family(tostring(base), tostring(name))
       msg_debug("lfc doc meta families: ", "doc", doc_meta_families)
     end)
 end
@@ -2749,15 +2800,18 @@ end
 ---@description This doesn't work if I make this a direct fn. rather than a
 ---@description generator. Something to do with (Lua) scope, maybe?
 local function configure_doc_families_aux(dmf)
+  local dflt = dmf == "default" and true or false
   local nfss_doc_families, nfss_default_families = get_curr_nfss_families()
   msg_debug("Configuring doc families ...", "doc",
     nfss_default_families,
     nfss_doc_families,
     fam_defaults)
   local config = {fea = nil, scale = nil, force = nil, typeset_mode = nil}
-  local do_math = nfss_default_families.math and true or false
+  local do_math = nfss_default_families.math and true or dflt
   for t_name,cfg in sortedpairs(nfss_doc_families) do
-    if t_name ~= "curr" then
+    -- If dmf is a copy, configuration may or may not have been done for some
+    --    families, so check this explicitly.
+    if t_name ~= "curr" and not cfg.nfss_fam then
       if cfg.features then -- is this ever true?
         if cfg.fea then
           cfg.fea = format("%s%s;", cfg.fea, concat(cfg.features, ";"))
@@ -2787,9 +2841,7 @@ local function configure_doc_families_aux(dmf)
       config.typeset_mode = cfg.typeset_mode or 0
 
       config.default = cfg.default or nil
-      config.maths = cfg.maths or nil
-      config.maths = config.maths or ((cfg.default and (dmf == "default" or
-        do_math)) and true or false)
+      config.maths = cfg.maths or do_math
       -- Needed below.
       cfg.maths = config.maths
 
@@ -2800,8 +2852,8 @@ local function configure_doc_families_aux(dmf)
       -- For the default set, things are different as LaTeX does things based
       --    on the various text defaults etc. at begindocument, so these should
       --    be written immediately.
-      local nfss_fam = font_config(cfg.cleanname, config, (cfg.default and 
-        dmf == "default") and true or false)
+      local nfss_fam = font_config(cfg.cleanname, config, (cfg.default and
+        dflt) and true or false)
 
       if nfss_fam ~= nil then 
         cfg.nfss_fam = nfss_fam
@@ -2812,7 +2864,7 @@ local function configure_doc_families_aux(dmf)
             msg({"Creating NFSS family ", nfss_fam}, "debug")
             luafunction_to_cs(cfg.csname or cfg.cleanname, function()
               return sprint(-2, flattened({tok_fontfamily, embrace(nfss_fam),
-              tok_selectfont}), "protected")
+              tok_selectfont}), "global", "protected")
             end)
           end
 
@@ -2822,7 +2874,7 @@ local function configure_doc_families_aux(dmf)
         end
 
       else
-        msg({"No family found for ", cfg.name, "!"}, "warn") 
+        msg({"No family found for ", cfg.name or cfg.cleanname or t_name, "!"}, "warn") 
         nfss_doc_families[t_name] = nil
       end
     end
@@ -2833,14 +2885,12 @@ local function configure_doc_families_aux(dmf)
   -- Create fn always as additional sets may be created later, so counting
   --    metas is no good (and I do not want to do what um etc. all do and
   --    delay til begindocument - that just causes more problems.
-  local dflt = dmf == "default" and true or false
   local out = {}
   local out_math = {}
   -- do_math is used in the non-default case to trigger a switch to a true 
   --    default for switching the math text alphabets to match the new text
   --    fonts, if the math font is specified for the font set.
   -- In the default case, we do not need to track here (I think?).
-  local do_math = false
   msg(dflt and "Setting default families ..."
     or {"Configuring doc meta family ", dmf, " ..."}, "log")
   for fam,cfg in sortedpairs(nfss_default_families) do
@@ -2856,11 +2906,11 @@ local function configure_doc_families_aux(dmf)
         --    specified; otherwise false.
         -- Since we iterate over sortedpairs, we're guaranteed the math font
         --    to be set before the text fonts, if there is one.
-        local maths = cfg.maths or (dflt and true or do_maths)
+        local maths = cfg.maths -- or (dflt and true or do_maths)
 
         -- Need double subs to accommodate case where there is no suffix.
-        fam_name_base = maths and format("%s-base", (gsub(fam_name, "%-.*$",
-          ""))) or nil
+        fam_name_base = maths and (cfg.fam_name_base or format("%s-base",
+          (gsub(fam_name, "%-.*$", "")))) or nil
         local bold     = embrace(cfg.bfseries or "b")
         local medium   = embrace(cfg.mdseries or "m")
 
@@ -2885,11 +2935,11 @@ local function configure_doc_families_aux(dmf)
         if maths then
           msg(concat({"Setting math for font set \'", dmf, "\' to ", 
             fam_name_base, "."}), "log")
+          cfg.fam_name_base = fam_name_base
           -- Here we must split, since the non-default case requires a not-
           --    yet-defined maths version.
           if dflt then
             sprint(-2, flattened({fam_to_maths[fam], embrace(fam_name_base)}))
-            cfg.fam_name_base = fam_name_base
           else
             out_math[fam] = {fam_name_base, medium, bold}
           end
@@ -2906,8 +2956,8 @@ local function configure_doc_families_aux(dmf)
           sprint(-2, flattened({tok_declare_lum_fnts, embrace(fam_name), 
             embrace(fam_name)}))
         else
+          -- Can't set this yet as we need to declare new maths versions first.
           out_math.math = fam_name
-          do_maths = true
         end
 
       end
@@ -2947,28 +2997,22 @@ local function configure_doc_families_aux(dmf)
   -- So for the dflt case, we always restore the normal/bold math versions when
   --    resetting.
 
-
   local vnormal = dflt and "normal" or "normal@" .. dmf
   local vbold = dflt and "bold" or "bold@" .. dmf
 
-  -- Possibilities:
-  --  - register versions so we can reuse repeat versions? 
-  --  - but are multiple font configs including multiple maths configs really 
-  --      needed often enough? Seems unlikely to justify the effort?
-
   -- out_math is specific to non-default dmfs.
-  -- These need special treatment as we need to create new math versions.
   if dflt or count(out_math) > 0 then
     if not dflt then
+      -- These need special treatment as we need to create new math versions.
       msg(concat({"New math versions: ", vnormal, " and ", vbold, "."}), "log")
       -- Note this is anyway delayed for non-default font sets, so these are only
       --    created if the font set is actually used in the document.
       -- Font sets beyond the default require lua-unicode-math, so this is the
       --    default.
       local vmath = out_math.math or "lmm"
-      local vrm = out_math.rm or {"lmr", embrace("m"), embrace("bx")}
-      local vsf = out_math.sf or {"lmss", embrace("m"), embrace("bx")}
-      local vtt = out_math.tt or {"lmtt", embrace("m"), embrace("bx")}
+      local vrm = out_math.rm or {"lmr-base", embrace("m"), embrace("bx")}
+      local vsf = out_math.sf or {"lmss-base", embrace("m"), embrace("bx")}
+      local vtt = out_math.tt or {"lmtt-base", embrace("m"), embrace("bx")}
       sprint(-2, flattened({
         tok_declaremathversion, embrace(vnormal), tok_declaremathversion,
           embrace(vbold),
@@ -3035,7 +3079,7 @@ local function configure_doc_families()
       configure_doc_families_aux("default")
     else
       local function fn() return configure_doc_families_aux(dmf) end
-      luafunction_to_cs(concat({"__lfc_doc_meta_fam_", dmf, ":"}), fn, "protected")
+      luafunction_to_cs(concat({"__lfc_doc_meta_fam_", dmf, ":"}), fn, "global", "protected")
     end
   end
 end
@@ -3054,6 +3098,7 @@ luafunction_to_cs("__lfc_set_math:n", get_fam_default_scanner("math"))
 luafunction_to_cs("__lfc_set_fam_name:n", get_fam_name_scanner())
 luafunction_to_cs("__lfc_set_doc_meta_fam:n", get_doc_meta_fam_scanner())
 luafunction_to_cs("__lfc_new_doc_meta_fam:n", get_new_doc_meta_fam_scanner())
+luafunction_to_cs("__lfc_new_doc_meta_fam:nn", get_copy_doc_meta_fam_scanner())
 luafunction_to_cs("__lfc_set_fam_cfg:nn", get_fam_cfg_scanner())
 luafunction_to_cs("__lfc_set_fam_scoped_fea:nn", get_fam_scoped_fea_scanner())
 luafunction_to_cs("__lfc_set_fam_features:nnn", get_fam_features_scanner())

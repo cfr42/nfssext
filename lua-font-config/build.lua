@@ -1,4 +1,4 @@
--- $Id: build.lua 12210 2026-11-19 00:37:18Z cfrees $
+-- $Id: build.lua 12219 2026-11-24 03:31:45Z cfrees $
 --------------------------------------------------------------------------------
 -- This package combines files released under distinct licences. 
 --
@@ -38,6 +38,7 @@ table.insert(versionpatterns, "SVN Rev: %d+")
 table.insert(versionpatterns, "v%d+[%d%.]* %d+")
 -- ignored if unpacked
 -- demofiles = {"example-*.tex"}
+typesetfiles = {"*-doc.tex", "*-code.tex"}
 typesetexe = "lualatex"
 typesetopts = "-interaction=nonstopmode -cnf-line='TEXMFHOME=.' -cnf-line='TEXMFLOCAL=.' -cnf-line='TEXMFARCH=.'"
 date = "2026-2026"
