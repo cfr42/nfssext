@@ -34,7 +34,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12222 2026-11-24 06:32:53Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12224 2026-11-24 07:07:44Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -1268,7 +1268,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12222 2026-11-24 06:32:53Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12224 2026-11-24 07:07:44Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -2138,299 +2138,7 @@
 %</sty>
 %% ^^A >>>
 %
-% \iffalse
-%<*ui1>
-%% ^^A <<<
-% UI Experiment \Roman{1}
-%
-% I'm really unclear which, if any, of the structures \LaTeX{} provides are appropriate here.
-% \begin{description}
-%   \item[Hooks] OK for injecting code, if they are in the right places, but not good for swapping it in and out.
-%   \item[Sockets]  Possibly, but then you must arrange for the sockets to be executed in the right places. 
-%     But lend themselves to switching code in and out.
-%   \item[Templates] These seem to be the right ‘level’--i.e.~design level--but otherwise seem wrong.
-%     As far as I can tell, a template is supposed to provide a recipe for typesetting something, but font setup doesn't do that.
-%     \pkg{lua-unicode-math} uses them, but there fonts are switched at the moment of typesetting, which isn't the case here. 
-%   \item[Custom] I guess? 
-%     You'd think with all the new-fangled do-dads, \emph{something} would fit out-of-the-box.
-%     But maybe not \dots.
-% \end{description}
-%    \begin{macrocode}
-\ProvidesPackageSVN[\filebase-ui1.sty]{$Id: lua-font-config.dtx 12222 2026-11-24 06:32:53Z cfrees $}[v0.2 \revinfo][\filebase-ui1: UI 1]
-\DefineFileInfoSVN[lfcuii]
-%    \begin{macrocode}
-\ExplSyntaxOn
-%    \end{macrocode}
-%    \begin{macrocode}
-\msg_new:nnnn {lfc} {exists-new} {
-  \msg_error_text:n {lfc} :: ~the~#1~#2~already~exists.~
-  Reported~\msg_line_context:
-} { You~requested~I~create~a~new~#1~'#2',~but~this~already~exists.~
-  Please~choose~a~new~name~or~overwrite~explicitly.~
-  \msg_see_documentation_text:n {lfc}
-}
-\msg_new:nnnn {lfc} {exists-use} {
-  \msg_error_text:n {lfc} :: ~the~#1~#2~does~not~exist.~
-  #3~
-  Reported~\msg_line_context:
-} { \msg_see_documentation_text:n {lfc} }
-%    \end{macrocode}
-% \begin{function}{\@@_metafam_new:nn}
-% Should I go lower level here for efficiency?
-% All it really needs is a few \cs{csname}s?
-% Or would I just write something even less efficient than using overkill constructs?
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_metafam_new:nn {
-  \prop_if_exists:cTF {g_@@_metafam_#1_prop} {
-    \msg_error:nnnn {lfc} {exists-new} {meta~family} {#1}
-  } {
-    \prop_new:c {g_@@_metafam_#1_prop}
-    \group_begin:
-      \str_set:Nn \l_@@_metafam_curr_str {#1}
-      \keys_set:nn {lfc/metafam} {#2}
-    \group_end:
-  }
-}
-%    \end{macrocode}
-% \end{function}
-%    \begin{macrocode}
-\str_new:N \l_@@_metafam_curr_str
-\clist_map_inline:nn {rm,sf,tt,math} {
-  \keys_define:ne {lfc/metafam} {
-    #1        .code:n   = {
-      \prop_if_exist:cTF {g_@@_fam_##1_prop} {
-        \prop_gput:cnn {g_@@_metafam_\l_@@_metafam_curr_str _prop}
-          {#1} {##1}
-      } {
-        \msg_error:nnnnn {lfc} {exists-use} {family} {##1} {
-          Before~creating~a~metafamily,~make~sure~all~the~families~exist.
-        }
-      }
-    },
-  }
-}
-\keys_define:nn {lfc/metafam} {
-  main        .meta:n     = {rm={#1}},
-  serif       .meta:n     = {rm={#1}},
-  sans        .meta:n     = {sf={#1}},
-  mono        .meta:n     = {tt={#1}},
-  typewriter  .meta:n     = {tt={#1}},
-  additional  .meta:n     = {add={#1}},
-  maths       .meta:n     = {math={#1}},
-}
-%    \end{macrocode}
-%    \begin{macrocode}
-%    \end{macrocode}
-%    \begin{macrocode}
-%    \end{macrocode}
-%    \begin{macrocode}
-%    \end{macrocode}
-%    \begin{macrocode}
-%    \end{macrocode}
-%    \begin{macrocode}
-%    \end{macrocode}
-% \begin{template}{lfc-meta-family,lfc-family}
-%   Concept: meta-families group a serif, sans, typewriter, math and (possibly?) additional fonts.
-%   Families are standard \textsc{nfss} font families.
-%    \begin{macrocode}
-\NewTemplateType{lfc-meta-family}{0}
-\NewTemplateType{lfc-family}{0}
-%<discard>    ^^A type template no, interface (kv list of kvs)
-\DeclareTemplateInterface{lfc-meta-family}{meta-family}{0}{
-%<discard>    ^^A <key>: <type> [= <default>],
-  rm      : instance {lfc-family},
-  sf      : instance {lfc-family},
-  tt      : instance {lfc-family},
-  math    : instance {lfc-family},
-  add     : instance {lfc-family},
-}
-%<discard>    ^^A type template no. key-bindings code
-\DeclareTemplateCode{lfc-meta-family}{meta-family}{0}{
-%<discard>    ^^A ????
-  rm      : \@@_instance_rm:n,
-  sf      : \@@_instance_sf:n,
-  tt      : \@@_instance_tt:n,
-  math    : \@@_instance_math:n,
-  add     : \@@_instance_add:n,
-} {
-  \@@_instance_rm:n   {rm}
-  \@@_instance_sf:n   {sf}
-  \@@_instance_tt:n   {tt}
-  \@@_instance_math:n {math}
-  \@@_instance_add:n  {add}
-}
-\DeclareTemplateInterface{lfc-family}{family}{0}{
-%<discard>    ^^A <key>: <type> [= <default>],
-  type    : choice  {rm,main,sf,sans,tt,mono,math,additional},
-  family  : tokenlist,
-  config  : commalist = \c_empty_clist,
-}
-%<discard>    type template no. key-bindings code
-\DeclareTemplateCode{lfc-family}{family}{0}{
-%<discard>    <key> = \variable
-%<discard>    <key> = global \variable
-%<discard>    <key> = name {csname}
-  type    = {
-    rm          = \str_set:Nn \l_@@_tc_type_str {rm},
-    main        = \str_set:Nn \l_@@_tc_type_str {rm},
-    sf          = \str_set:Nn \l_@@_tc_type_str {sf},
-    sans        = \str_set:Nn \l_@@_tc_type_str {sf},
-    tt          = \str_set:Nn \l_@@_tc_type_str {tt},
-    mono        = \str_set:Nn \l_@@_tc_type_str {tt},
-    math        = \str_set:Nn \l_@@_tc_type_str {math},
-    additional  = \str_set:Nn \l_@@_tc_type_str {fam},
-  },
-  family  = \l_@@_tc_family_tl,
-  config  = \l_@@_tc_config_clist = \c_empty_clist,
-  name    = \l_@@_tc_name_tl = \KeyValue {family},
-  normal  = \l_@@_tc_md_tl,
-  bold    = \l_@@_tc_bf_tl,
-}{
-  \bool_lazy_any:nTF {
-    {\str_if_eq_p:nV {rm} \l_@@_tc_type_str}
-    {\str_if_eq_p:nV {sf} \l_@@_tc_type_str}
-    {\str_if_eq_p:nV {tt} \l_@@_tc_type_str}
-  } {
-    \tl_set_eq:cV {\l_@@_tc_type_str default} \l_@@_tc_name_tl
-    \tl_set_eq:cV {mdseries@\l_@@_tc_type_str} \l_@@_tc_md_tl
-    \tl_set_eq:cV {bfseries@\l_@@_tc_type_str} \l_@@_tc_bf_tl
-  } {
-    \str_if_eq:nVT {math} \l_@@_tc_type_str {
-    }
-  }
-%<discard>    ^^A   \str_if_eq:vnTF \l_@@_tc_type_str {additional} {
-%<discard>    ^^A     \clist_put_right:NV \l_@@_tc_family_additional_clist \l_@@_tc_family_tl
-%<discard>    ^^A     \int_compare:nNnT {0} = {\l_@@_tc_todo_int} {
-%<discard>    ^^A       \int_set:Nn \l_@@_tc_todo_int {\clist_count:N \l_@@_tc_family_additional_clist}
-%<discard>    ^^A     }
-%<discard>    ^^A   } {
-%<discard>    ^^A     \tl_set:cV {l_@@_tc_family_curr_\l_@@_tc_type_str _tl} \l_@@_tc_family_tl
-%<discard>    ^^A   }
-%<discard>    ^^A   \clist_if_exist:cF {l_@@_tc_\tl_to_str:V \l_@@_tc_name_tl _clist} {
-%<discard>    ^^A     \clist_new:c {l_@@_tc_\tl_to_str:V \l_@@_tc_name_tl _clist}
-%<discard>    ^^A   }
-%<discard>    ^^A   \clist_set_eq:cN {l_@@_tc_\tl_to_str:V \l_@@_tc_name_tl _clist} \l_@@_tc_config_clist
-}
-%    \end{macrocode}
-% \end{template}
-% \begin{instance}{rm-default,sf-default,tt-default,math-default}
-%    \begin{macrocode}
-\clist_map_inline:nn {rm,sf,tt}{
-  \hook_gput_code:nnn {begindocument/end} {./#1} {
-%<discard>    *** NOTE REQUIRES REVERSED ORDER!!! ***
-%<discard>    type instance template parameters (kv)
-    \DeclareInstance{lfc-family}{#1-default}{family}{
-      type          = #1,
-      family:v      = {#1default},
-      normal:v      = {mdseries@#1},
-      bold:v        = {bfseries@#1},
-    }
-  }
-}
-\hook_gput_code:nnn {begindocument/end} {./math} {
-%<discard>    *** NOTE REQUIRES REVERSED ORDER!!! ***
-  \DeclareInstance{lfc-family}{math-default}{family}{
-    type          = math,
-    family        = \c_empty_tl,
-    normal        = \c_empty_tl,
-    bold          = \c_empty_tl,
-  }
-}
-%    \end{macrocode}
-% \end{instance}
-% \begin{function}{\@@_fam_rm_new:nnnn,\@@_fam_sf_new:nnnn,\@@_fam_tt_new:nnnn}
-% \begin{function}{\@@_fam_rm_new:nvvv,\@@_fam_sf_new:nvvv,\@@_fam_tt_new:nvvv}
-% \begin{socket}{lfc/fam-rm,lfc/fam-sf,lfc/fam-tt}
-% \begin{plug}{lfc/fam-rm default,lfc/fam-sf default,lfc/fam-tt default}
-%   A \emph{family} is an \textsc{nfss} font family suitable for use as the roman, sans, typewriter or maths.
-%   Because \LaTeX{} uses different names for text and maths mode fonts, this first group apply only to the former.
-%    \begin{macrocode}
-%<discard>    ^^A \clist_map_inline:nn {rm,sf,tt,math} {
-%<discard>    ^^A   \tl_new:c {l_@@_tc_family_curr_#1_tl}
-%<discard>    ^^A }
-%<discard>    ^^A \clist_new:N  \l_@@_tc_family_additional_clist
-%<discard>    ^^A \seq_new:N    \l_@@_tc_delayed_seq
-%<discard>    ^^A \int_new:N    \l_@@_tc_todo_int
-\clist_map_inline:nn {rm,sf,tt} {
-  \socket_new:nn {lfc/fam-#1} {0}
-  \cs_new:cpn {@@_fam_#1_new:nnnn} ##1##2##3##4 {
-    \tl_new:c {g_@@_fam_#1_##1_tl} {##2}
-    \tl_new:c {g_@@_bfseries_#1_##1_tl} {##4}
-    \tl_new:c {g_@@_mdseries_#1_##1_tl} {##3}
-    \socket_new_plug:nnn {lfc/fam-#1}   {##1} {
-      \tl_set:cv {#1default}    {g_@@_fam_#1_##1_tl}
-      \tl_set:cv {bfseries@#1}  {g_@@_bfseries_#1_##1_tl}
-      \tl_set:cv {mdseries@#1}  {g_@@_mdseries_#1_##1_tl}
-    }
-  }
-  \cs_generate_variant:cn {@@_fam_#1_new:nnnn} {nvvv}
-  \cs_new:cpn {@@_fam_#1_reset_defaults:nnn} ##1##2##3 {
-    \tl_gset:cv {g_@@_fam_#1_default_tl}      {#1default}  
-    \tl_gset:cv {g_@@_bfseries_#1_default_tl} {bfseries@#1}
-    \tl_gset:cv {g_@@_mdseries_#1_default_tl} {mdseries@#1}
-    \socket_set_plug:nnn {lfc/fam-#1}   {default} {
-      \tl_set:cv {g_@@_fam_#1_default_tl}       {#1default}    
-      \tl_set:cv {g_@@_bfseries_#1_default_tl}  {bfseries@#1}  
-      \tl_set:cv {g_@@_mdseries_#1_default_tl}  {mdseries@#1}  
-    }
-  }
-  \cs_generate_variant:cn {@@_fam_#1_new:nnnn} {nvvv}
-%<discard>    ^^A TO DO: update later
-  \use:c {@@_fam_#1_new:nvvv} {default} {#1default} {mdseries@#1} {bfseries@#1}
-}
-%    \end{macrocode}
-% \end{plug}
-% \end{socket}
-% \end{function}
-% \end{function}
-% \begin{function}{\@@_fam_math_new:nnnn}
-% \begin{socket}{lfc/fam-math}
-% \begin{plug}{lfc/fam-math default}
-%   Now for maths.
-%   Currently only a partial implementation because versions, basically.
-%    \begin{macrocode}
-\socket_new:nn {lfc/fam-math} {0}
-\cs_new:Npn \@@_fam_math_new:nnnn #1#2#3#4 {
-%<discard>    ^^A ???????????????????
-  \tl_new:c {g_@@_fam_math_#1_tl}     {#2}
-  \tl_new:c {g_@@_bold_math_#1_tl}    {#4}
-  \tl_new:c {g_@@_normal_math_#1_tl}  {#3}
-}
-\@@_fam_math_new:nnnn   {default} {normal}  {bold}
-%    \end{macrocode}
-% \end{plug}
-% \end{socket}
-% \end{function}
-% \begin{function}{\@@_meta_fam_new:nnnnn}
-% \begin{socket}{lfc/meta-fam}
-% \begin{plug}{lfc/meta-fam default}
-%   A \emph{meta-family} is a complete font configuration, specifying families to use for serif, sans, typewriter and maths normal and bold versions.
-%   Currently this is only a concept plus a partial implementation.
-%    \begin{macrocode}
-\socket_new:nn {lfc/meta-fam} {0}
-\cs_new_protected:Npn \@@_meta_fam_new:nnnnn #1#2#3#4#5 {
-  \socket_new_plug:nnn      {lfc/meta-fam}  {#1}  {
-    \socket_assign_plug:nn  {lfc/fam-rm}    {#2}
-    \socket_assign_plug:nn  {lfc/fam-sf}    {#3}
-    \socket_assign_plug:nn  {lfc/fam-tt}    {#4}
-    \socket_assign_plug:nn  {lfc/fam-math}  {#5}
-  }
-}
-\cs_new_protected:Npn \@@_meta_fam_new:n #1 {
-  \@@_meta_fam_new:nnnnn  {#1} {#1} {#1} {#1} {#1}
-}
-\@@_meta_fam_new:n      {default}
-%    \end{macrocode}
-% \end{plug}
-% \end{socket}
-% \end{function}
-%    \begin{macrocode}
-\ExplSyntaxOff
-%    \end{macrocode}
-%</ui1>
 %% ^^A >>>
-%% ^^A >>>
-% \fi
 %
 %% ^^A eeiau <<<
 % \iffalse
@@ -2503,7 +2211,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-fea <<<
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12222 2026-11-24 06:32:53Z cfrees $
+%% $Id: lua-font-config.dtx 12224 2026-11-24 07:07:44Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -2563,7 +2271,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-features <<<
 %<*ee-features>
-%% $Id: lua-font-config.dtx 12222 2026-11-24 06:32:53Z cfrees $
+%% $Id: lua-font-config.dtx 12224 2026-11-24 07:07:44Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -2862,7 +2570,7 @@ Oh, sphinx of black quartz, judge my vow!
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2-#3-#4\nil{#1-#2-#3}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName-doc]{$Id: lua-font-config.dtx 12222 2026-11-24 06:32:53Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName-doc]{$Id: lua-font-config.dtx 12224 2026-11-24 07:07:44Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \AddToHook{begindocument}{\OnlyDescription\setcounter{IndexColumns}{3}}
 \input{\MyFileBaseName.dtx}
@@ -2876,7 +2584,7 @@ Oh, sphinx of black quartz, judge my vow!
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2-#3-#4\nil{#1-#2-#3}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName-code]{$Id: lua-font-config.dtx 12222 2026-11-24 06:32:53Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName-code]{$Id: lua-font-config.dtx 12224 2026-11-24 07:07:44Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \AddToHook{begindocument}{\AlsoImplementation\setcounter{IndexColumns}{2}}
 \input{\MyFileBaseName.dtx}
