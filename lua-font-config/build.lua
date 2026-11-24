@@ -1,4 +1,4 @@
--- $Id: build.lua 12223 2026-11-24 06:56:28Z cfrees $
+-- $Id: build.lua 12227 2026-11-24 21:40:46Z cfrees $
 --------------------------------------------------------------------------------
 -- This package combines files released under distinct licences. 
 --
@@ -42,7 +42,7 @@ typesetfiles = {"*-doc.tex", "*-code.tex"}
 typesetexe = "lualatex"
 typesetopts = "-interaction=nonstopmode -cnf-line='TEXMFHOME=.' -cnf-line='TEXMFLOCAL=.' -cnf-line='TEXMFARCH=.'"
 date = "2026-2026"
-tagfiles = {"README.md", "*.dtx", checkconfigs, "lua-font-config.lua", "*.ins", manifestfile}
+tagfiles = {"README.md", "*.dtx", "build.lua", "config-once.lua", "lua-font-config.lua", "*.ins", manifestfile}
 if fileexists(maindir .. "tag.lua") then
   dofile(maindir .. "/tag.lua")
 elseif direxists(sourcefiledir .. "/../../adnoddau/l3build") then
@@ -138,20 +138,21 @@ uploadconfig = {
 	pkg           = ctanpkg,
 	summary       = "Lua-based opentype font configuration for LuaLaTeX.",
   uploader      = "Clea F. Rees",
-	version       = "v0.2",
+	version       = "v0.3",
   -- optional --
 	bugtracker    = {"https://codeberg.org/cfr/nfssext/issues"},
   description   = "Fast and simple opentype font configuration for LuaLaTeX.\z
     Efficient auto-generation of font families providing easy access to the multiple shapes, weights, widths and features provided by many of today's fonts.\z
     Engine callbacks, LaTeX hooks and caching are used to eliminate pre-loading, reduce lookups and minimise pre-defining.\z
     This allows very rich font families to be quicky generated, with minimal user input and zero configuration files.\z
+    ‘Font sets’ support use of multiple font configurations (text and math modes) and delayed setup of non-default sets minimises overhead.\z
     The core code consists of two Lua modules: one taken as-is from ConTeXt (MKIV) and one providing the LaTeX interface and data processing.\n\n\z
     The package is experimental and, while already usable in many cases, currently(?) provides only a small part of fontspec's functionality.\z
-    Implemented features include configuration of the main document font families (roman, sans, typewriter), use of these families in maths mode, creation of additional families (text mode) and support for Unicode maths (via lua-unicode-math).\z
-    Missing features include support for multi-lingual typesetting, variable fonts, spot colours etc. and a user interface beyond the rudimentary.",
+    Implemented features include configuration of the main document font families (roman, sans, typewriter), use of these families in maths mode, creation of additional families (text mode), support for Unicode maths (via lua-unicode-math) and ‘font sets’.\z
+    Missing features include support for automated multi-lingual typesetting, an interface for variable fonts, spot colours etc. and a more extensive and intuitive user interface.",
   -- development {}
   -- home {}
-	-- note          = "Non-standard layout. Please retain TDS.",
+	note          = "Please not updated description (v0.3).",
 	repository    = {"https://codeberg.org/cfr/nfssext", "https://github.com/cfr42/nfssext"},
   -- support {}
 	topic         = {"font-mgmt", "font-sel", "font-use", "luatex", "tagged-pdf"},

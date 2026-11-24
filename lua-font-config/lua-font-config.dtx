@@ -34,7 +34,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12225 2026-11-24 20:29:03Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12227 2026-11-24 21:40:46Z cfrees $}[v0.3 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -1237,9 +1237,9 @@
 %
 % \changes{v0.1}{2026-10-15}{First public release.}
 % \changes{v0.2}{2026-10-29}{Bug fixes, code cleanup, somewhat better UI, doc improvements.}
-% \changes{v0.0}{2026-11-20}{Introduction of font sets to support multiple switchable font configurations.
+% \changes{v0.3}{2026-11-20}{Introduction of font sets to support multiple switchable font configurations.
 %   Two new public commands: \cs{newfontset} and \cs{usefontset} allow users to manage these and \cs{fontconfig} gets a new optional argument to accommodate them.}
-% \changes{v0.0}{2026-11-24}{Separate user documentation.}
+% \changes{v0.3}{2026-11-24}{Separate user documentation.}
 %
 % \MaybeStop{%
 %   \def\glossaryname{Change History}%
@@ -1265,7 +1265,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12225 2026-11-24 20:29:03Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12227 2026-11-24 21:40:46Z cfrees $}[v0.3 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -1378,9 +1378,9 @@
 % ^^A >>>
 % 
 %   \changes{v0.2}{2026-10-29}{Added \cs{l_@@_features_seq}, \cs{l_@@_tmpb_tl}.}
-%   \changes{v0.0}{2026-11-05}{Added temporary string, tl and \cs{l_@@_do_bool}, \cs{l_@@_scope_str}, \cs{l_@@_scope_seq}, \cs{c_@@_scope_default_str}.}
-%   \changes{v0.0}{2026-11-17}{Added \cs{g_@@_lum_done_bool}.}
-%   \changes{v0.0}{2026-11-20}{Added \cs{g_@@_tmpa_bool}.}
+%   \changes{v0.3}{2026-11-05}{Added temporary string, tl and \cs{l_@@_do_bool}, \cs{l_@@_scope_str}, \cs{l_@@_scope_seq}, \cs{c_@@_scope_default_str}.}
+%   \changes{v0.3}{2026-11-17}{Added \cs{g_@@_lum_done_bool}.}
+%   \changes{v0.3}{2026-11-20}{Added \cs{g_@@_tmpa_bool}.}
 % \begin{variable}{\l_@@_features_seq,\l_@@_scope_seq,\l_@@_do_bool,\l_@@_tmpa_tl,\l_@@_tmpb_tl,\l_@@_tmpa_str,\l_@@_scope_str,\c_@@_scope_default_str,\g_@@_lum_done_bool,\l_@@_tmpa_bool}%% ^^A <<<
 %   Custom ephemeral variables, named variables and constants.
 %    \begin{macrocode}
@@ -1415,8 +1415,8 @@
   }
 %    \end{macrocode}
 % \end{keyname}%% ^^A >>>
-%   \changes{v0.0}{2026-11-07}{Add keys to configure bold and regular series for default families and to enable use of fake bold and oblique.}
-%   \changes{v0.0}{2026-11-10}{Add key to disable hyphenation character.}
+%   \changes{v0.3}{2026-11-07}{Add keys to configure bold and regular series for default families and to enable use of fake bold and oblique.}
+%   \changes{v0.3}{2026-11-10}{Add key to disable hyphenation character.}
 % \begin{keyname}{.../name,.../bfseries,.../bold,.../mdseries,.../normal,.../fakebold,.../fakeoblique,.../fea,.../force,.../scale,.../scoped,.../maths,.../math,.../nomaths,.../nomath,.../hyphenchar}%% ^^A <<<
 %   Configure keys for default text families.
 %   Most of these just forward their values to \texttt{lfc/fam}.
@@ -1527,12 +1527,12 @@
 % \begin{keyname}{fam}%% ^^A <<<
 %   Configure keys for families.
 %   \changes{v0.2}{2026-10-29}{Add \texttt{fea} user-interface wrapper: \texttt{features} provides a key-value interface for configuration.}
-%   \changes{v0.0}{2026-11-06}{Add \texttt{scoped} key: low-level interface to configure font features selectively. 
+%   \changes{v0.3}{2026-11-06}{Add \texttt{scoped} key: low-level interface to configure font features selectively. 
 %     This is intended to complement the \texttt{fea} key and similarly supports expert/advanced usage, prioritising performance with few checks and a relatively low-level interface.}
 % \begin{keyname}{fam/name,fam/fakebold,fam/fakeoblique,fam/fea,fam/features,fam/force,fam/hyphenchar,fam/scale,fam/scoped}%% ^^A <<<
 %   Configure keys for families.
-%   \changes{v0.0}{2026-11-07}{Add \texttt{scoped}, \texttt{fakebold}, \texttt{fakeoblique}.}
-%   \changes{v0.0}{2026-11-10}{Add \texttt{hyphenchar}.}
+%   \changes{v0.3}{2026-11-07}{Add \texttt{scoped}, \texttt{fakebold}, \texttt{fakeoblique}.}
+%   \changes{v0.3}{2026-11-10}{Add \texttt{hyphenchar}.}
 %
 %   Note to self: \pkg{l3keys} does not work the way you think!!!
 %   \emph{The hierarchy is not a tree!}
@@ -1645,9 +1645,9 @@
 % \end{keyname}%% ^^A >>>
 % \begin{keyname}{features}%% ^^A <<<
 % \changes{v0.2}{2026-10-29}{Initial \texttt{features} keys: \texttt{alternates}, \texttt{embolden}, \texttt{figures}, \texttt{forms}, \texttt{language}, \texttt{ligatures}, \texttt{node}, \texttt{script}, \texttt{spacing}.}
-% \changes{v0.0}{2026-11-05}{Add \texttt{scope} key.
+% \changes{v0.3}{2026-11-05}{Add \texttt{scope} key.
 %   This provides a more user-friendly wrapper around the \texttt{scoped} key.}
-% \changes{v0.0}{2026-11-21}{Renamed \texttt{standard}, \texttt{nostandard} \texttt{ligatures} keys \texttt{common}, \texttt{nocommon} as this seems more \dots, er, standard.}
+% \changes{v0.3}{2026-11-21}{Renamed \texttt{standard}, \texttt{nostandard} \texttt{ligatures} keys \texttt{common}, \texttt{nocommon} as this seems more \dots, er, standard.}
 % \begin{keyname}{features/alternates,
 %   features/embolden,
 %   features/figures,
@@ -1794,7 +1794,7 @@
 %    \end{macrocode}
 % \end{keyname}%% ^^A >>>
 % \begin{function}{\_@@_font_config:nn}%% ^^A <<<
-%   \changes{v0.0}{2026-11-13}{New internal function to support multiple configurations.}
+%   \changes{v0.3}{2026-11-13}{New internal function to support multiple configurations.}
 %   The same internal function supports standard and multiple configuration macros.
 %    \begin{macrocode}
 \cs_new_protected:Npn \_@@_font_config:nn #1#2 {
@@ -1810,7 +1810,7 @@
 % \begin{macro}{\fontconfig}%% ^^A <<<
 %   The main configuration function and main public macro.
 %   \changes{v0.2}{2026-10-30}{Forbid \cs{par} in input.}
-%   \changes{v0.0}{2026-11-13}{Optional argument to set a different ‘meta-family’.}
+%   \changes{v0.3}{2026-11-13}{Optional argument to set a different ‘meta-family’.}
 %    \begin{macrocode}
 \NewDocumentCommand\fontconfig { O {default} m } {
   \_@@_font_config:nn {#1} {#2}
@@ -1818,7 +1818,7 @@
 %    \end{macrocode}
 % \end{macro}%% ^^A >>>
 % \begin{macro}{\newfontset}%% ^^A <<<
-%   \changes{v0.0}{2026-11-13}{New macro to define a new font set.}
+%   \changes{v0.3}{2026-11-13}{New macro to define a new font set.}
 %    \begin{macrocode}
 \NewDocumentCommand\newfontset { o m } {
   \str_if_eq:eeTF {default} {#2} {
@@ -1854,7 +1854,7 @@
 %    \end{macrocode}
 % \end{macro}%% ^^A >>>
 % \begin{macro}{\usefontset}%% ^^A <<<
-%   \changes{v0.0}{2026-11-13}{New macro to switch font sets.} \cs{usefontset} is a simple wrapper around the Lua functions.
+%   \changes{v0.3}{2026-11-13}{New macro to switch font sets.} \cs{usefontset} is a simple wrapper around the Lua functions.
 %    \begin{macrocode}
 \NewDocumentCommand\usefontset { m } {
   \cs_if_exist_use:cF { __@@_font_set_#1: } {
@@ -1874,8 +1874,8 @@
 }
 %    \end{macrocode}
 % \end{macro}%% ^^A >>>
-% \changes{v0.0}{2026-11-16}{Extended to support multiple \fontsettarg*.}
-% \changes{v0.0}{2026-11-24}{Addition of disposable variants \dots.}
+% \changes{v0.3}{2026-11-16}{Extended to support multiple \fontsettarg*.}
+% \changes{v0.3}{2026-11-24}{Addition of disposable variants \dots.}
 % \begin{function}{\_@@_set_mathrm:n,\_@@_set_mathsf:n,\_@@_set_mathtt:n,
 %   \_@@_set_mathrm:,\_@@_set_mathsf:,\_@@_set_mathtt:,
 %   \_@@_set_mathrm:nnnnnn,\_@@_set_mathsf:nnnnn,\_@@_set_mathtt:nnnnn,
@@ -1957,7 +1957,7 @@
 }
 %    \end{macrocode}
 % \end{function}%% ^^A >>>
-%   \changes{v0.0}{2026-22-20}{Accommodate multiple font sets.}
+%   \changes{v0.3}{2026-22-20}{Accommodate multiple font sets.}
 % \begin{function}{\_@@_declare_lum_symbol_fonts:nn,\_@@_set_lum_symbol_fonts:nnn}%% ^^A <<<
 %   Maths setup functions.
 %    \begin{macrocode}
@@ -2021,8 +2021,8 @@
   \_@@_set_mathtt:
 }
 %    \end{macrocode}
-%   \changes{v0.0}{2026-11-04}{\cs{_@@_set_fam_features:nnn} replaces \cs{_@@_set_fam_features:nn}. Added \cs{_@@_set_fam_fea_scoped:nn}, \cs{_@@_parse_spec:nn}, , \cs{_@@_parse_series:nn}, \cs{_@@_parse_series:nnn}.}
-%   \changes{v0.0}{2026-11-13}{Add \cs{_@@_set_font_set:n}.}
+%   \changes{v0.3}{2026-11-04}{\cs{_@@_set_fam_features:nnn} replaces \cs{_@@_set_fam_features:nn}. Added \cs{_@@_set_fam_fea_scoped:nn}, \cs{_@@_parse_spec:nn}, , \cs{_@@_parse_series:nn}, \cs{_@@_parse_series:nnn}.}
+%   \changes{v0.3}{2026-11-13}{Add \cs{_@@_set_font_set:n}.}
 % \begin{function}{%
 %   \__@@_set_fam_cfg:nn,
 %   \__@@_set_fam_fea_scoped:nn,
@@ -2208,7 +2208,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-fea <<<
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12225 2026-11-24 20:29:03Z cfrees $
+%% $Id: lua-font-config.dtx 12227 2026-11-24 21:40:46Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -2268,7 +2268,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-features <<<
 %<*ee-features>
-%% $Id: lua-font-config.dtx 12225 2026-11-24 20:29:03Z cfrees $
+%% $Id: lua-font-config.dtx 12227 2026-11-24 21:40:46Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -2567,7 +2567,7 @@ Oh, sphinx of black quartz, judge my vow!
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2-#3-#4\nil{#1-#2-#3}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName-doc]{$Id: lua-font-config.dtx 12225 2026-11-24 20:29:03Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName-doc]{$Id: lua-font-config.dtx 12227 2026-11-24 21:40:46Z cfrees $}[v0.3 \revinfo]
 \DefineFileInfoSVN
 \AddToHook{begindocument}{\OnlyDescription\setcounter{IndexColumns}{3}}
 \input{\MyFileBaseName.dtx}
@@ -2581,7 +2581,7 @@ Oh, sphinx of black quartz, judge my vow!
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2-#3-#4\nil{#1-#2-#3}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName-code]{$Id: lua-font-config.dtx 12225 2026-11-24 20:29:03Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName-code]{$Id: lua-font-config.dtx 12227 2026-11-24 21:40:46Z cfrees $}[v0.3 \revinfo]
 \DefineFileInfoSVN
 \AddToHook{begindocument}{\AlsoImplementation\setcounter{IndexColumns}{2}}
 \input{\MyFileBaseName.dtx}

@@ -1,4 +1,4 @@
-<!-- $Id: README.md 12187 2026-11-03 12:22:58Z cfrees $ -->
+<!-- $Id: README.md 12227 2026-11-24 21:40:46Z cfrees $ -->
 
 -------------------------------------------------
 # lua-font-config
@@ -15,33 +15,42 @@ to be quickly generated, with minimal user input and zero configuration files.
 The core code consists of two Lua modules: one taken modified from ConTeXt
 (MKIV) and one providing the LaTeX interface and data processing.
 
-The package is experimental and, while already usable in many cases, 
-currently(?) provides only a small part of fontspec's functionality.
+Version 0.3 introduces ‘font sets’: multiple independent font configurations
+which may be enabled and disabled during typesetting. Non-default font sets are
+only configured when first used, so may be defined in the preamble with minimal
+overhead.
 
-Implemented features include:
+The package is experimental and, while already usable in many cases, 
+lacks some features provided by fontspec.
+
+Currently implemented:
 - configuration of the main document font families (roman, sans, 
     typewriter); 
-- optional use of these families in maths mode;
-- creation of additional families (text mode);
-- key-value or 'raw' features specifications for text fonts;
-- support for Unicode maths (via lua-unicode-math).
+- use of these families in maths mode;
+- support for Unicode maths (via lua-unicode-math);
+- ‘font sets’ as described above;
+- creation of additional specialist families (text mode);
+- key-value or 'raw' features specifications for text fonts.
 
 Missing features include:
-- support for multi-lingual typesetting;
-- support for variable fonts;
+- automated support for multi-lingual typesetting;
+- UI support for variable fonts;
 - spot colours etc.;
 - a more complete key-value interface.
 
 While I have tested the package, I can only do this on Arch Linux (locally)
 and Ubuntu (GitHub). Given how system-dependent Unicode font configuration
-is, I would particularly welcome feedback on whether and how well it works
-elsewhere.
+is, I am very grateful to all those who provided feedback on version 0.1 and
+particularly welcome feedback on whether and how well it works elsewhere.
 
 -------------------------------------------------
 ## Compatibility
 -------------------------------------------------
 
 The package requires LuaLaTeX.
+
+Font sets and Unicode maths support require lua-unicode-math, which is
+incompatible with unicode-math.
 
 -------------------------------------------------
 ## Licence
@@ -103,8 +112,8 @@ should be filed at
 
 
 Clea F. Rees 
-Version 0.2
-2026-11-02
+Version 0.3
+2026-11-24
 
 -------------------------------------------------
 <!--
