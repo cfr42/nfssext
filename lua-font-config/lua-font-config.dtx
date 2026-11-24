@@ -34,7 +34,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12219 2026-11-24 03:31:45Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12220 2026-11-24 03:59:40Z cfrees $}[v0.2 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -1366,7 +1366,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12219 2026-11-24 03:31:45Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12220 2026-11-24 03:59:40Z cfrees $}[v0.2 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -1900,7 +1900,7 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \_@@_font_config:nn #1#2 {
   \bool_set_false:N \l_@@_do_bool
-  \__@@_set_doc_meta_fam:n {#1}
+  \__@@_set_font_set:n {#1}
   \keys_set:nn {lfc} {#2}
   \bool_if:NT \l_@@_do_bool {
     \__@@_configure_doc_families:
@@ -1925,7 +1925,7 @@
   \str_if_eq:eeTF {default} {#2} {
     \msg_warning:nn {lfc} {meta-fam-default-name}
   } {
-    \cs_if_exist:NF \__@@_doc_meta_fam_default:  {
+    \cs_if_exist:NF \__@@_font_set_default:  {
       \msg_error:nn {lfc} {meta-fam-no-default}
     }
     \bool_if:NF \g_@@_lum_done_bool {
@@ -1937,14 +1937,14 @@
         \bool_gset_true:N \g_@@_lum_done_bool
       }
     }
-    \cs_if_free:cTF { __@@_doc_meta_fam_#2: } {
+    \cs_if_free:cTF { __@@_font_set_#2: } {
       \tl_if_novalue:nTF {#1} {
-        \__@@_new_doc_meta_fam:n {#2}
+        \__@@_new_font_set:n {#2}
       } {
-        \cs_if_free:cTF { __@@_doc_meta_fam_#1: } {
+        \cs_if_free:cTF { __@@_font_set_#1: } {
           \msg_error:nnnn {lfc} {base-set-not-configured} {#1} {#2}
         } {
-          \__@@_new_doc_meta_fam:nn {#1} {#2}
+          \__@@_new_font_set:nn {#1} {#2}
         }
       }
     } {
@@ -1958,7 +1958,7 @@
 %   \changes{v0.0}{2026-11-13}{New macro to switch font sets.} \cs{usefontset} is a simple wrapper around the Lua functions.
 %    \begin{macrocode}
 \NewDocumentCommand\usefontset { m } {
-  \cs_if_exist_use:cF { __@@_doc_meta_fam_#1: } {
+  \cs_if_exist_use:cF { __@@_font_set_#1: } {
     \msg_error:nnn {lfc} {meta-fam-missing} {#1}
   }
 }
@@ -2150,16 +2150,16 @@
 }
 %    \end{macrocode}
 %   \changes{v0.0}{2026-11-04}{\cs{_@@_set_fam_features:nnn} replaces \cs{_@@_set_fam_features:nn}. Added \cs{_@@_set_fam_fea_scoped:nn}, \cs{_@@_parse_spec:nn}, , \cs{_@@_parse_series:nn}, \cs{_@@_parse_series:nnn}.}
-%   \changes{v0.0}{2026-11-13}{Add \cs{_@@_set_doc_meta_fam:n}.}
+%   \changes{v0.0}{2026-11-13}{Add \cs{_@@_set_font_set:n}.}
 % \begin{function}{%
 %   \__@@_set_fam_cfg:nn,
 %   \__@@_set_fam_fea_scoped:nn,
 %   \__@@_set_fam_fea_scoped:Ve,
 %   \__@@_set_fam_features:nnn,
 %   \__@@_set_fam_name:n,
-%   \__@@_set_doc_meta_fam:n,
-%   \__@@_new_doc_meta_fam:n,
-%   \__@@_new_doc_meta_fam:nn,
+%   \__@@_set_font_set:n,
+%   \__@@_new_font_set:n,
+%   \__@@_new_font_set:nn,
 %   \__@@_parse_series:nn,
 %   \__@@_parse_series:nnn,
 %   \__@@_parse_series:nVV,
@@ -2182,7 +2182,7 @@
 %    \end{macrocode}
 % \end{function}%% ^^A >>>
 % \usesafecs
-% \Fontsettarg*\ get functios such as \cs{_@@_doc_meta_fam_default:} where \texttt{default} is either literal or the name of a configured meta-family.
+% \Fontsettarg*\ get functios such as \cs{_@@_font_set_default:} where \texttt{default} is either literal or the name of a configured meta-family.
 % \resetcs
 %
 %   The following removes various commands from \cs{@preamblecmds}, allowing them to be used in the body of the document and not only in the preamble.
@@ -2281,7 +2281,7 @@
 %     But maybe not \dots.
 % \end{description}
 %    \begin{macrocode}
-\ProvidesPackageSVN[\filebase-ui1.sty]{$Id: lua-font-config.dtx 12219 2026-11-24 03:31:45Z cfrees $}[v0.2 \revinfo][\filebase-ui1: UI 1]
+\ProvidesPackageSVN[\filebase-ui1.sty]{$Id: lua-font-config.dtx 12220 2026-11-24 03:59:40Z cfrees $}[v0.2 \revinfo][\filebase-ui1: UI 1]
 \DefineFileInfoSVN[lfcuii]
 %    \begin{macrocode}
 \ExplSyntaxOn
@@ -2628,7 +2628,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-fea <<<
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12219 2026-11-24 03:31:45Z cfrees $
+%% $Id: lua-font-config.dtx 12220 2026-11-24 03:59:40Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -2688,7 +2688,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-features <<<
 %<*ee-features>
-%% $Id: lua-font-config.dtx 12219 2026-11-24 03:31:45Z cfrees $
+%% $Id: lua-font-config.dtx 12220 2026-11-24 03:59:40Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -2987,7 +2987,7 @@ Oh, sphinx of black quartz, judge my vow!
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2-#3-#4\nil{#1-#2-#3}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName-doc]{$Id: lua-font-config.dtx 12219 2026-11-24 03:31:45Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName-doc]{$Id: lua-font-config.dtx 12220 2026-11-24 03:59:40Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \AddToHook{begindocument}{\OnlyDescription\setcounter{IndexColumns}{3}}
 \input{\MyFileBaseName.dtx}
@@ -3001,7 +3001,7 @@ Oh, sphinx of black quartz, judge my vow!
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2-#3-#4\nil{#1-#2-#3}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName-code]{$Id: lua-font-config.dtx 12219 2026-11-24 03:31:45Z cfrees $}[v0.0 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName-code]{$Id: lua-font-config.dtx 12220 2026-11-24 03:59:40Z cfrees $}[v0.0 \revinfo]
 \DefineFileInfoSVN
 \AddToHook{begindocument}{\AlsoImplementation\setcounter{IndexColumns}{2}}
 \input{\MyFileBaseName.dtx}

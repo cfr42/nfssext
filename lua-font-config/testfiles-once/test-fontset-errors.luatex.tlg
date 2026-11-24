@@ -81,7 +81,7 @@ You tried to define a new font set (meta-family) with the same name as an existi
 ============================================================
 TEST 4: \newfontset error: forbidden names
 ============================================================
-Package lfc Error: Doc meta family '__aardvark' not permitted!
+Package lfc Error: Font set '__aardvark' not permitted!
 (lfc)              on input line ....2
 stack traceback:
 ^^I[C]: in function 'error'
@@ -91,11 +91,11 @@ stack traceback:
 ^^I(...tail calls...)
 ^^I./lua-font-config.lua:...: in function <./lua-font-config.lua:...>
 ^^I(...tail calls...).
-<argument> \__lfc_new_doc_meta_fam:n {__aardvark}
+<argument> \__lfc_new_font_set:n {__aardvark}
 l. ...\newfontset{__aardvark}
 The lua interpreter ran into a problem, so the
 remainder of this lua chunk will be ignored.
-Package lfc Error: Doc meta family 'nfss_doc_families' not permitted!
+Package lfc Error: Font set 'nfss_doc_families' not permitted!
 (lfc)              on input line ....2
 stack traceback:
 ^^I[C]: in function 'error'
@@ -105,11 +105,11 @@ stack traceback:
 ^^I(...tail calls...)
 ^^I./lua-font-config.lua:...: in function <./lua-font-config.lua:...>
 ^^I(...tail calls...).
-<argument> ...w_doc_meta_fam:n {nfss_doc_families}
+<argument> ...c_new_font_set:n {nfss_doc_families}
 l. ...\newfontset{nfss_doc_families}
 The lua interpreter ran into a problem, so the
 remainder of this lua chunk will be ignored.
-Package lfc Error: Doc meta family 'nfss_default_families' not permitted!
+Package lfc Error: Font set 'nfss_default_families' not permitted!
 (lfc)              on input line ....2
 stack traceback:
 ^^I[C]: in function 'error'
@@ -119,7 +119,7 @@ stack traceback:
 ^^I(...tail calls...)
 ^^I./lua-font-config.lua:...: in function <./lua-font-config.lua:...>
 ^^I(...tail calls...).
-<argument> ...c_meta_fam:n {nfss_default_families}
+<argument> ...w_font_set:n {nfss_default_families}
 l. ...\newfontset{nfss_default_families}
 The lua interpreter ran into a problem, so the
 remainder of this lua chunk will be ignored.
@@ -139,7 +139,7 @@ stack traceback:
 l. ...}
 The lua interpreter ran into a problem, so the
 remainder of this lua chunk will be ignored.
-Lua function __lfc_doc_meta_fam_trumpton: = ...
+Lua function __lfc_font_set_trumpton: = ...
 ============================================================
 ============================================================
 TEST 6: \usefontset error: unknown font set (undeclared)
