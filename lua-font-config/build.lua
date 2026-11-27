@@ -1,4 +1,4 @@
--- $Id: build.lua 12233 2026-11-27 08:06:33Z cfrees $
+-- $Id: build.lua 12235 2026-11-27 09:03:40Z cfrees $
 --------------------------------------------------------------------------------
 -- This package combines files released under distinct licences. 
 --
@@ -152,7 +152,7 @@ uploadconfig = {
     Missing features include support for automated multi-lingual typesetting, an interface for variable fonts, spot colours etc. and a more extensive and intuitive user interface.",
   -- development {}
   -- home {}
-	note          = "Please not updated description (v0.3).",
+	-- note          = "Please not updated description (v0.3).",
 	repository    = {"https://codeberg.org/cfr/nfssext", "https://github.com/cfr42/nfssext"},
   -- support {}
 	topic         = {"font-mgmt", "font-sel", "font-use", "luatex", "tagged-pdf"},
