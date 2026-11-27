@@ -1,9 +1,9 @@
--- $Id: lua-font-config.lua 12230 2026-11-27 07:27:12Z cfrees $
+-- $Id: lua-font-config.lua 12231 2026-11-27 07:55:10Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 do
   local name, rev, date = string.match(
-    "$Id: lua-font-config.lua 12230 2026-11-27 07:27:12Z cfrees $", 
+    "$Id: lua-font-config.lua 12231 2026-11-27 07:55:10Z cfrees $", 
     "Id: ([a-z][a-z-]*)%.lua (%d%d*) (%d%d%d%d%-%d%d%-%d%d) ")
   luatexbase.provides_module({
     name      = name,
@@ -12,6 +12,8 @@ do
     version   = "v0.3",
   })
 end
+
+local lfc_cache_version = "v0.3.1"
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 
@@ -454,6 +456,12 @@ local function read_cache(loc)
   write_nl("[lfc] Reading cache ...")
   loc = loc or get_cache_path()
   local cache = isfile(loc) and load(loc) or {}
+  if not cache.__version or cache.__version < lfc_cache_version then
+    msg({"(Re)creating cache version ", lfc_cache_version, "."}, "log")
+    cache = {
+      __version = lfc_cache_version,
+    }
+  end
   cache.resources = cache.resources or {}
   cache.meta_families = cache.meta_families or {}
   cache.meta_families.by_meta_fam = cache.meta_families.by_meta_fam or {}
