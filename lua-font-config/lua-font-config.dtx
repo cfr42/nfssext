@@ -34,7 +34,7 @@
   pdf.setminorversion(0)
 }
 \RequirePackage{svn-prov}
-\ProvidesFileSVN{$Id: lua-font-config.dtx 12228 2026-11-24 22:01:15Z cfrees $}[v0.3 \revinfo][\filename: \filebase]
+\ProvidesFileSVN{$Id: lua-font-config.dtx 12234 2026-11-27 08:50:19Z cfrees $}[v0.3.1 \revinfo][\filename: \filebase]
 \DefineFileInfoSVN[lfc]
 \GetFileInfoSVN*
 \begingroup
@@ -184,8 +184,29 @@
     \cs_if_free:cT { \l_keys_key_str }
     {
       \tl_gset:cn { \l_keys_key_str } { #1 }
+      \__lfcdoc_split:Nnn #1
+      \tl_new:c { g__lfcdoc_ \l_keys_key_str _url_tl }
+      \tl_gset:cV { g__lfcdoc_ \l_keys_key_str _url_tl } \l__lfcdoc_tmpa_tl
+      \__lfcdoc_new_link:Vn  \l_keys_key_str  {#1}
     }
   },
+}
+\tl_new:N \l__lfcdoc_tmpa_tl
+\tl_new:N \l__lfcdoc_tmpb_tl
+\cs_new_nopar:Npn \__lfcdoc_split:Nnn #1#2#3 {
+  \tl_set:Nn \l__lfcdoc_tmpa_tl {#2}
+  \tl_set:Nn \l__lfcdoc_tmpb_tl {#3}
+}
+\cs_new_protected_nopar:Npn \__lfcdoc_new_link:nn #1#2 {
+  \cs_new_protected:cpn { __lfcdoc_ #1 _ link:n } ##1 {
+    \tl_set:Nv \l__lfcdoc_tmpa_tl { g__lfcdoc_#1_url_tl }
+    \tl_put_right:Nn \l__lfcdoc_tmpa_tl {/##1}
+    \exp_args:NV \href \l__lfcdoc_tmpa_tl {#2~\# ##1}
+  }
+}
+\cs_generate_variant:Nn \__lfcdoc_new_link:nn {Vn}
+\NewDocumentCommand \issue { O {codeberg} +m } {
+  \use:c { __lfcdoc_ #1 _link:n } {#2}
 }
 \NewDocumentCommand \lfcdocset { +m }
 {
@@ -1240,6 +1261,7 @@
 % \changes{v0.3}{2026-11-20}{Introduction of font sets to support multiple switchable font configurations.
 %   Two new public commands: \cs{newfontset} and \cs{usefontset} allow users to manage these and \cs{fontconfig} gets a new optional argument to accommodate them.}
 % \changes{v0.3}{2026-11-24}{Separate user documentation.}
+% \changes{v0.3.1}{2026-11-27}{Bug fix (\issue{30}). Introduces versioned database.}
 %
 % \MaybeStop{%
 %   \def\glossaryname{Change History}%
@@ -1265,7 +1287,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[2021-11-15]
 \RequirePackage{svn-prov}
-\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12228 2026-11-24 22:01:15Z cfrees $}[v0.3 \revinfo][\filebase: Font configuration for LuaLaTeX]
+\ProvidesPackageSVN[\filebase.sty]{$Id: lua-font-config.dtx 12234 2026-11-27 08:50:19Z cfrees $}[v0.3.1 \revinfo][\filebase: Font configuration for LuaLaTeX]
 % This is needed only because l3doc overwrites \fileversion and \filedate.
 % Neither ltxdoc nor doc does this.
 % But it seems better to do it this way on the basis of the general precautionary principle.
@@ -2208,7 +2230,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-fea <<<
 %<*ee-fea>
-%% $Id: lua-font-config.dtx 12228 2026-11-24 22:01:15Z cfrees $
+%% $Id: lua-font-config.dtx 12234 2026-11-27 08:50:19Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -2268,7 +2290,7 @@ The output should look very much as if ‘lua-font-config’ had not been loaded
 %
 %% ^^A ee-features <<<
 %<*ee-features>
-%% $Id: lua-font-config.dtx 12228 2026-11-24 22:01:15Z cfrees $
+%% $Id: lua-font-config.dtx 12234 2026-11-27 08:50:19Z cfrees $
 \documentclass{article}
 \parindent=0pt
 \usepackage{lua-font-config}
@@ -2567,7 +2589,7 @@ Oh, sphinx of black quartz, judge my vow!
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2-#3-#4\nil{#1-#2-#3}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName-doc]{$Id: lua-font-config.dtx 12228 2026-11-24 22:01:15Z cfrees $}[v0.3 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName-doc]{$Id: lua-font-config.dtx 12234 2026-11-27 08:50:19Z cfrees $}[v0.3.1 \revinfo]
 \DefineFileInfoSVN
 \AddToHook{begindocument}{\OnlyDescription\setcounter{IndexColumns}{3}}
 \input{\MyFileBaseName.dtx}
@@ -2581,7 +2603,7 @@ Oh, sphinx of black quartz, judge my vow!
 \RequirePackage{svn-prov}
 \def\GetFileBaseName#1-#2-#3-#4\nil{#1-#2-#3}
 \edef\MyFileBaseName{\expandafter\GetFileBaseName\jobname\nil}
-\ProvidesFileSVN[\MyFileBaseName-code]{$Id: lua-font-config.dtx 12228 2026-11-24 22:01:15Z cfrees $}[v0.3 \revinfo]
+\ProvidesFileSVN[\MyFileBaseName-code]{$Id: lua-font-config.dtx 12234 2026-11-27 08:50:19Z cfrees $}[v0.3.1 \revinfo]
 \DefineFileInfoSVN
 \AddToHook{begindocument}{\AlsoImplementation\setcounter{IndexColumns}{2}}
 \input{\MyFileBaseName.dtx}

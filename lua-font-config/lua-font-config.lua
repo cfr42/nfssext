@@ -1,17 +1,19 @@
--- $Id: lua-font-config.lua 12227 2026-11-24 21:40:46Z cfrees $
+-- $Id: lua-font-config.lua 12233 2026-11-27 08:06:33Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 do
   local name, rev, date = string.match(
-    "$Id: lua-font-config.lua 12227 2026-11-24 21:40:46Z cfrees $", 
+    "$Id: lua-font-config.lua 12233 2026-11-27 08:06:33Z cfrees $", 
     "Id: ([a-z][a-z-]*)%.lua (%d%d*) (%d%d%d%d%-%d%d%-%d%d) ")
   luatexbase.provides_module({
     name      = name,
     date      = date,
     revision  = rev,
-    version   = "v0.3",
+    version   = "v0.3.1",
   })
 end
+
+local lfc_cache_version = "v0.3.1"
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 
@@ -454,6 +456,12 @@ local function read_cache(loc)
   write_nl("[lfc] Reading cache ...")
   loc = loc or get_cache_path()
   local cache = isfile(loc) and load(loc) or {}
+  if not cache.__version or cache.__version < lfc_cache_version then
+    msg({"(Re)creating cache version ", lfc_cache_version, "."}, "log")
+    cache = {
+      __version = lfc_cache_version,
+    }
+  end
   cache.resources = cache.resources or {}
   cache.meta_families = cache.meta_families or {}
   cache.meta_families.by_meta_fam = cache.meta_families.by_meta_fam or {}
@@ -972,7 +980,7 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
         else
           for _,i in ipairs(ssubs) do
             -- Need empty placeholder for cfg.
-            fake_fd_insert({series, shape, enquote(i[2]), i[3], ""})
+            fake_fd_insert({series, shape, i[2], i[3], ""})
           end
           msg({"Apparent duplicates for ", fam, "/", series,
           "/", shape, "."})
