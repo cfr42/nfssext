@@ -1,4 +1,4 @@
--- $Id: build.lua 12227 2026-11-24 21:40:46Z cfrees $
+-- $Id: build.lua 12233 2026-11-27 08:06:33Z cfrees $
 --------------------------------------------------------------------------------
 -- This package combines files released under distinct licences. 
 --
@@ -138,7 +138,7 @@ uploadconfig = {
 	pkg           = ctanpkg,
 	summary       = "Lua-based opentype font configuration for LuaLaTeX.",
   uploader      = "Clea F. Rees",
-	version       = "v0.3",
+	version       = "v0.3.1",
   -- optional --
 	bugtracker    = {"https://codeberg.org/cfr/nfssext/issues"},
   description   = "Fast and simple opentype font configuration for LuaLaTeX.\z

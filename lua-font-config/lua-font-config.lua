@@ -1,15 +1,15 @@
--- $Id: lua-font-config.lua 12231 2026-11-27 07:55:10Z cfrees $
+-- $Id: lua-font-config.lua 12233 2026-11-27 08:06:33Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 do
   local name, rev, date = string.match(
-    "$Id: lua-font-config.lua 12231 2026-11-27 07:55:10Z cfrees $", 
+    "$Id: lua-font-config.lua 12233 2026-11-27 08:06:33Z cfrees $", 
     "Id: ([a-z][a-z-]*)%.lua (%d%d*) (%d%d%d%d%-%d%d%-%d%d) ")
   luatexbase.provides_module({
     name      = name,
     date      = date,
     revision  = rev,
-    version   = "v0.3",
+    version   = "v0.3.1",
   })
 end
 
