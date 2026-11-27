@@ -1,9 +1,9 @@
--- $Id: lua-font-config.lua 12227 2026-11-24 21:40:46Z cfrees $
+-- $Id: lua-font-config.lua 12230 2026-11-27 07:27:12Z cfrees $
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 do
   local name, rev, date = string.match(
-    "$Id: lua-font-config.lua 12227 2026-11-24 21:40:46Z cfrees $", 
+    "$Id: lua-font-config.lua 12230 2026-11-27 07:27:12Z cfrees $", 
     "Id: ([a-z][a-z-]*)%.lua (%d%d*) (%d%d%d%d%-%d%d%-%d%d) ")
   luatexbase.provides_module({
     name      = name,
@@ -972,7 +972,7 @@ local function prepare_fake_fd(fam, fam_data, typeset_mode, force)
         else
           for _,i in ipairs(ssubs) do
             -- Need empty placeholder for cfg.
-            fake_fd_insert({series, shape, enquote(i[2]), i[3], ""})
+            fake_fd_insert({series, shape, i[2], i[3], ""})
           end
           msg({"Apparent duplicates for ", fam, "/", series,
           "/", shape, "."})
